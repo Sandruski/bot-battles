@@ -1,6 +1,7 @@
 #include "ModuleWindow.h"
 #include "Engine.h"
 
+#include "Log.h"
 #include "Utils.h"
 #include <SDL.h>
 #include <stdio.h>
@@ -27,14 +28,14 @@ namespace sand
 	{
 		if (SDL_Init(SDL_INIT_VIDEO) != 0)
 		{
-			printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
+			LOG("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
 			return m_isInitOk;
 		}
 
 		m_window = SDL_CreateWindow(g_engine->GetName(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 		if (m_window == nullptr)
 		{
-			printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
+			LOG("Window could not be created! SDL_Error: %s\n", SDL_GetError());
 			SDL_Quit();
 			return m_isInitOk;
 		}

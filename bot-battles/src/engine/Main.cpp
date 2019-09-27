@@ -1,6 +1,7 @@
 #include <SDL.h>
 
 #include "Engine.h"
+#include "Log.h"
 #include "Utils.h"
 
 enum MainState 
@@ -32,7 +33,7 @@ int main(int /*argc*/, char* /*args*/[])
 		{
 		case MainState::CREATE:
 		{
-			printf_s("MainState::CREATE");
+			LOG("MainState::CREATE");
 
 			sand::g_engine = new sand::Engine("Sand");
 			if (sand::g_engine != nullptr)
@@ -41,7 +42,7 @@ int main(int /*argc*/, char* /*args*/[])
 			}
 			else
 			{
-				printf_s("Error: could not create the engine");
+				LOG("Error: could not create the engine");
 				mainState = MainState::EXIT;
 			}
 			break;
@@ -49,17 +50,17 @@ int main(int /*argc*/, char* /*args*/[])
 
 		case MainState::INIT:
 		{
-			printf_s("MainState::INIT");
+			LOG("MainState::INIT");
 
 			bool isInitOk = sand::g_engine->Init();
 			if (isInitOk)
 			{
-				printf_s("MainState::UPDATE");
+				LOG("MainState::UPDATE");
 				mainState = MainState::UPDATE;
 			}
 			else
 			{
-				printf_s("Error: could not initialize the engine");
+				LOG("Error: could not initialize the engine");
 				mainState = MainState::EXIT;
 			}
 			break;
@@ -77,7 +78,7 @@ int main(int /*argc*/, char* /*args*/[])
 
 		case MainState::END:
 		{
-			printf_s("MainState::END");
+			LOG("MainState::END");
 
 			bool isEndOk = sand::g_engine->End();
 			if (isEndOk)
@@ -86,7 +87,7 @@ int main(int /*argc*/, char* /*args*/[])
 			}
 			else
 			{
-				printf_s("Error: could not end the engine");
+				LOG("Error: could not end the engine");
 			}
 
 			mainState = MainState::EXIT;
@@ -96,7 +97,7 @@ int main(int /*argc*/, char* /*args*/[])
 
 		case MainState::EXIT:
 		{
-			printf_s("MainState::EXIT");
+			LOG("MainState::EXIT");
 
 			SAFE_DELETE_POINTER(sand::g_engine);
 

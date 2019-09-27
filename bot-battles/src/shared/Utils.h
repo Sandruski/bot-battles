@@ -36,7 +36,7 @@ template <class T> inline void SAFE_DELETE_ARRAY(T*&p)
 	}
 }
 
-enum class ModuleType
+enum ModuleType
 {
 	WINDOW,
 
