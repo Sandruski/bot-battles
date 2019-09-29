@@ -1,8 +1,9 @@
 #include <SDL.h>
 
 #include "Engine.h"
+
 #include "Log.h"
-#include "Utils.h"
+#include "Memory.h"
 
 enum MainState 
 {

@@ -2,15 +2,18 @@
 #define __ENGINE_H__
 
 #include <memory>
-#include <vector>
 
-#include "Utils.h"
+// uncomment to disable assert()
+// #define NDEBUG
 
 namespace sand
 {
 
-	class IModule;
 	class ModuleWindow;
+	class ModuleRenderer;
+	class ModuleTextureImporter;
+	class ResourceManager;
+	class ResourceTexture;
 
 	//----------------------------------------------------------------------------------------------------
 	struct EngineConfiguration 
@@ -22,7 +25,8 @@ namespace sand
 	};
 
 	//----------------------------------------------------------------------------------------------------
-	class Engine 
+	// single point of contact
+	class Engine
 	{
 	public:
 		Engine(const char* name);
@@ -33,16 +37,24 @@ namespace sand
 		bool End();
 
 		ModuleWindow& GetWindow() { return *m_window; }
+		ModuleRenderer& GetRenderer() { return *m_renderer; }
+		ResourceManager& GetResourceManager() { return *m_resourceManager; }
+		ModuleTextureImporter& GetTextureImporter() { return *m_textureImporter; }
 
 		const char* GetName() const { return m_configuration.name; }
 
 	private:
-		void CleanUp();
+		bool PreUpdate();
+		bool PostUpdate();
 
 	private:
-		std::vector<IModule*> m_modules;
 		EngineConfiguration m_configuration;
-		ModuleWindow* m_window;
+
+		std::unique_ptr<ModuleWindow> m_window;
+		std::unique_ptr<ModuleRenderer> m_renderer;
+		std::unique_ptr<ResourceManager> m_resourceManager;
+		std::unique_ptr<ModuleTextureImporter> m_textureImporter;
+
 		bool m_isInitOk;
 		bool m_isActive;
 	};

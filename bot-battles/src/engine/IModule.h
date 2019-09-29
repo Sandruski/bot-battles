@@ -1,7 +1,5 @@
-#ifndef __I_MODULE_H__
-#define __I_MODULE_H__
-
-#include "Utils.h"
+#ifndef __IMODULE_H__
+#define __IMODULE_H__
 
 namespace sand
 {
@@ -13,11 +11,10 @@ namespace sand
 		IModule() {}
 		virtual ~IModule() {}
 
+		virtual const char* GetName() const = 0;
+
 		virtual bool StartUp() = 0;
 		virtual bool ShutDown() = 0;
-
-		virtual ModuleType GetType() const = 0;
-		virtual bool IsActive() const = 0;
 	};
 }
 

@@ -1,31 +1,32 @@
-#ifndef __MODULE_WINDOW_H__
-#define __MODULE_WINDOW_H__
+#ifndef __MODULE_RENDERER_H__
+#define __MODULE_RENDERER_H__
 
 #include "IModule.h"
 
-struct SDL_Window;
-struct SDL_Surface;
+struct SDL_Renderer;
 
 namespace sand
 {
 
 	//----------------------------------------------------------------------------------------------------
-	class ModuleWindow : public IModule
+	class ModuleRenderer : public IModule
 	{
 	public:
-		ModuleWindow();
-		~ModuleWindow();
+		ModuleRenderer();
+		~ModuleRenderer();
 
 		const char* GetName() const override;
 
 		bool StartUp() override;
 		bool ShutDown() override;
 
-		SDL_Window* GetWindow() const;
+		bool PreUpdate();
+		bool PostUpdate();
+
+		SDL_Renderer* GetRenderer() const;
 
 	private:
-		SDL_Window* m_window;
-		SDL_Surface* m_surface;
+		SDL_Renderer* m_renderer;
 
 		bool m_isInitOk;
 	};

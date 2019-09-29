@@ -1,32 +1,30 @@
-#ifndef __MODULE_WINDOW_H__
-#define __MODULE_WINDOW_H__
+#ifndef __MODULE_TEXTURE_IMPORTER_H__
+#define __MODULE_TEXTURE_IMPORTER_H__
 
 #include "IModule.h"
 
-struct SDL_Window;
+struct SDL_Texture;
 struct SDL_Surface;
 
 namespace sand
 {
 
 	//----------------------------------------------------------------------------------------------------
-	class ModuleWindow : public IModule
+	class ModuleTextureImporter : public IModule
 	{
 	public:
-		ModuleWindow();
-		~ModuleWindow();
+		ModuleTextureImporter();
+		~ModuleTextureImporter();
 
 		const char* GetName() const override;
 
 		bool StartUp() override;
 		bool ShutDown() override;
 
-		SDL_Window* GetWindow() const;
+		SDL_Texture* Load(const char* path) const;
+		void UnLoad(SDL_Texture* texture);
 
 	private:
-		SDL_Window* m_window;
-		SDL_Surface* m_surface;
-
 		bool m_isInitOk;
 	};
 }

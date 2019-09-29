@@ -1,0 +1,26 @@
+#ifndef __RESOURCE_TEXTURE_H__
+#define __RESOURCE_TEXTURE_H__
+
+#include "Resource.h"
+
+struct SDL_Texture;
+
+namespace sand
+{
+
+	//----------------------------------------------------------------------------------------------------
+	class ResourceTexture : public Resource
+	{
+	public:
+		ResourceTexture(const char* dir, const char* file);
+		virtual ~ResourceTexture();
+
+		bool Load() override;
+		bool UnLoad() override;
+
+	private:
+		SDL_Texture* m_texture;
+	};
+}
+
+#endif

@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <windows.h>
 
-void Log(const char file[], int line, const char* format, ...)
+void Log(const char* file, int line, const char* function, const char* format, ...)
 {
 	static char tmp_string[4096];
 	static char tmp_string2[4096];
@@ -12,6 +12,6 @@ void Log(const char file[], int line, const char* format, ...)
 	va_start(ap, format);
 	vsprintf_s(tmp_string, 4096, format, ap);
 	va_end(ap);
-	sprintf_s(tmp_string2, 4096, "%s(%d): %s\n", file, line, tmp_string);
+	sprintf_s(tmp_string2, 4096, "%s(%d): %s: %s\n", file, line, function, tmp_string);
 	OutputDebugString(tmp_string2);
 }
