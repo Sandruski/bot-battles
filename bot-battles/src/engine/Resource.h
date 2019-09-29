@@ -10,7 +10,7 @@ namespace sand
 	class Resource
 	{
 	public:
-		Resource(const char* file, const char* dir);
+		Resource(U64 uuid, const char* file, const char* dir);
 		virtual ~Resource();
 
 		const char* GetFile() const;

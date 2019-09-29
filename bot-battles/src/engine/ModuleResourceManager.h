@@ -60,7 +60,9 @@ namespace sand
 			return resource;
 		}
 
-		resource = std::make_shared<T>(file, dir);
+		U64 uuid = 0;
+		resource = std::make_shared<T>(uuid, file, dir);
+
 		const bool isLoaded = resource->Load();
 		if (!isLoaded)
 		{
@@ -68,8 +70,12 @@ namespace sand
 			return nullptr;
 		}
 
-		U64 uuid = 0;
-		m_resources.emplace(uuid, resource);
+		auto ret = m_resources.insert(std::pair<U32, std::shared_ptr<Resource>>(uuid, resource));
+		if (!ret.second)
+		{
+			LOG("Resource %s%s could not be inserted", dir, file);
+			return std::static_pointer_cast<T>(ret.second);
+		}
 
 		return resource;
 	}
@@ -96,11 +102,6 @@ namespace sand
 	template<class T>
 	inline std::shared_ptr<T> ResourceManager::Get(U64 uuid)
 	{
-		if (m_resources.empty())
-		{
-			return nullptr;
-		}
-
 		auto it = m_resources.find(uuid);
 		if (it != m_resources.end())
 		{

@@ -10,8 +10,8 @@ namespace sand
 {
 
 	//----------------------------------------------------------------------------------------------------
-	Resource::Resource(const char* file, const char* dir) :
-		m_uuid(0),
+	Resource::Resource(U64 uuid, const char* file, const char* dir) :
+		m_uuid(uuid),
 		m_references(0)
 	{
 		assert(file != nullptr && dir != nullptr);

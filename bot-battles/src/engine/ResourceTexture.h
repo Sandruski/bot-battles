@@ -12,7 +12,7 @@ namespace sand
 	class ResourceTexture : public Resource
 	{
 	public:
-		ResourceTexture(const char* dir, const char* file);
+		ResourceTexture(U64 uuid, const char* dir, const char* file);
 		virtual ~ResourceTexture();
 
 		bool Load() override;
