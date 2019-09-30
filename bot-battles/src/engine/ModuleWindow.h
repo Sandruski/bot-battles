@@ -2,6 +2,7 @@
 #define __MODULE_WINDOW_H__
 
 #include "IModule.h"
+#include "Memory.h"
 
 struct SDL_Window;
 struct SDL_Surface;
@@ -23,9 +24,15 @@ namespace sand
 
 		SDL_Window* GetWindow() const;
 
+		U32 GetWidth() const { return m_width; }
+		U32 GetHeight() const { return m_height; }
+
 	private:
 		SDL_Window* m_window;
 		SDL_Surface* m_surface;
+
+		U32 m_width;
+		U32 m_height;
 
 		bool m_isInitOk;
 	};

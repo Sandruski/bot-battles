@@ -13,4 +13,6 @@ inline bool COMPARE_STRINGS(const char* str1, const char* str2)
 	return false;
 }
 
+#define SDL_ERROR -1
+
 #endif

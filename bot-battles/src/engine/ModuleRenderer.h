@@ -3,6 +3,8 @@
 
 #include "IModule.h"
 
+#include <SDL_pixels.h>
+
 struct SDL_Renderer;
 
 namespace sand
@@ -26,8 +28,10 @@ namespace sand
 
 	private:
 		SDL_Renderer* m_renderer;
+		SDL_Color m_backgroundColor;
 
 		bool m_isInitOk;
+		bool m_isDebugDraw;
 	};
 }
 

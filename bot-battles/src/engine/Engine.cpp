@@ -7,6 +7,7 @@
 
 namespace sand
 {
+
 	//----------------------------------------------------------------------------------------------------
 	Engine::Engine(const char* name) :
 		m_configuration(name),

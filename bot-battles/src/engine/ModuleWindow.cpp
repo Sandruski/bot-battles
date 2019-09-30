@@ -3,12 +3,10 @@
 
 #include "Log.h"
 #include "Memory.h"
+#include "Utils.h"
 
 #include <SDL.h>
 #include <stdio.h>
-
-const U32 SCREEN_WIDTH = 640;
-const U32 SCREEN_HEIGHT = 480;
 
 namespace sand
 {
@@ -17,7 +15,9 @@ namespace sand
 	ModuleWindow::ModuleWindow() : 
 		m_window(nullptr),
 		m_surface(nullptr),
-		m_isInitOk(false) 
+		m_width(640),
+		m_height(480),
+		m_isInitOk(false)
 	{
 	}
 
@@ -35,13 +35,13 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	bool ModuleWindow::StartUp()
 	{
-		if (SDL_Init(SDL_INIT_VIDEO) != 0)
+		if (SDL_Init(SDL_INIT_VIDEO) == SDL_ERROR)
 		{
 			LOG("SDL could not be initialized! SDL Error: %s", SDL_GetError());
 			return m_isInitOk;
 		}
 
-		m_window = SDL_CreateWindow(g_engine->GetName(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+		m_window = SDL_CreateWindow(g_engine->GetName(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, m_width, m_height, SDL_WINDOW_SHOWN);
 		if (m_window == nullptr)
 		{
 			LOG("Window could not be created! SDL Error: %s", SDL_GetError());
