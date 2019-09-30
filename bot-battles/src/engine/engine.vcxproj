@@ -144,6 +144,7 @@
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="ModuleInput.cpp" />
     <ClCompile Include="ModuleResourceManager.cpp" />
     <ClCompile Include="ModuleTextureImporter.cpp" />
     <ClCompile Include="ModuleRenderer.cpp" />
@@ -158,6 +159,7 @@
     <ClInclude Include="Engine.h" />
     <ClInclude Include="IModule.h" />
     <ClInclude Include="Memory.h" />
+    <ClInclude Include="ModuleInput.h" />
     <ClInclude Include="ModuleTextureImporter.h" />
     <ClInclude Include="Log.h" />
     <ClInclude Include="ModuleRenderer.h" />

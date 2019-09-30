@@ -6,6 +6,7 @@
 #include "Log.h"
 
 #include <SDL_image.h>
+#include <cassert>
 
 namespace sand
 {
@@ -50,6 +51,8 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	SDL_Texture* ModuleTextureImporter::Load(const char* path) const
 	{
+		assert(path != nullptr);
+
 		SDL_Texture* texture = nullptr;
 
 		SDL_Surface* surface = IMG_Load(path);
@@ -73,6 +76,8 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	void ModuleTextureImporter::UnLoad(SDL_Texture* texture)
 	{
+		assert(texture != nullptr);
+
 		SDL_DestroyTexture(texture);
 		texture = nullptr;
 	}

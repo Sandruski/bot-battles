@@ -12,6 +12,7 @@ namespace sand
 	class ModuleWindow;
 	class ModuleRenderer;
 	class ModuleTextureImporter;
+	class ModuleInput;
 	class ResourceManager;
 	class ResourceTexture;
 
@@ -36,12 +37,14 @@ namespace sand
 		bool Update();
 		bool End();
 
-		ModuleWindow& GetWindow() { return *m_window; }
-		ModuleRenderer& GetRenderer() { return *m_renderer; }
-		ResourceManager& GetResourceManager() { return *m_resourceManager; }
-		ModuleTextureImporter& GetTextureImporter() { return *m_textureImporter; }
+		ModuleWindow& GetWindow() const { return *m_window; }
+		ModuleRenderer& GetRenderer() const { return *m_renderer; }
+		ModuleTextureImporter& GetTextureImporter() const { return *m_textureImporter; }
+		ModuleInput& GetInput() const { return *m_input; }
+		ResourceManager& GetResourceManager() const { return *m_resourceManager; }
 
 		const char* GetName() const { return m_configuration.name; }
+		bool IsExit() const { return m_exit; }
 
 	private:
 		bool LateUpdate();
@@ -55,11 +58,12 @@ namespace sand
 
 		std::unique_ptr<ModuleWindow> m_window;
 		std::unique_ptr<ModuleRenderer> m_renderer;
-		std::unique_ptr<ResourceManager> m_resourceManager;
 		std::unique_ptr<ModuleTextureImporter> m_textureImporter;
+		std::unique_ptr<ModuleInput> m_input;
+		std::unique_ptr<ResourceManager> m_resourceManager;
 
 		bool m_isInitOk;
-		bool m_isActive;
+		bool m_exit;
 	};
 
 	extern Engine* g_engine;

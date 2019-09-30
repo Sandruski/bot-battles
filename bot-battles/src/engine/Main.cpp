@@ -70,7 +70,7 @@ int main(int /*argc*/, char* /*args*/[])
 		case MainState::UPDATE:
 		{
 			bool isUpdateOk = sand::g_engine->Update();
-			if (!isUpdateOk)
+			if (!isUpdateOk || sand::g_engine->IsExit())
 			{
 				mainState = MainState::END;
 			}

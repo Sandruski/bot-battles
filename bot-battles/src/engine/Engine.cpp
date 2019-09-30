@@ -4,6 +4,7 @@
 #include "ModuleResourceManager.h"
 #include "ModuleWindow.h"
 #include "ResourceTexture.h"
+#include "ModuleInput.h"
 
 namespace sand
 {
@@ -13,9 +14,10 @@ namespace sand
 		m_configuration(name),
 		m_window(nullptr), 
 		m_isInitOk(false),
-		m_isActive(false) 
+		m_exit(false)
 	{
 		m_window = std::make_unique<ModuleWindow>();
+		m_input = std::make_unique<ModuleInput>();
 		m_renderer = std::make_unique<ModuleRenderer>();
 		m_textureImporter = std::make_unique<ModuleTextureImporter>();
 		m_resourceManager = std::make_unique<ResourceManager>();
@@ -30,6 +32,12 @@ namespace sand
 	bool Engine::Init() 
 	{
 		m_isInitOk = m_window->StartUp();
+		if (!m_isInitOk)
+		{
+			return false;
+		}
+
+		m_isInitOk = m_input->StartUp();
 		if (!m_isInitOk)
 		{
 			return false;
@@ -67,7 +75,13 @@ namespace sand
 			return false;
 		}
 
-		bool ret = LateUpdate();
+		bool ret = m_input->Update();
+		if (!ret)
+		{
+			return false;
+		}
+
+		ret = LateUpdate();
 		if (!ret)
 		{
 			return false;
@@ -103,6 +117,12 @@ namespace sand
 		}
 
 		ret = m_renderer->ShutDown();
+		if (!ret)
+		{
+			return false;
+		}
+
+		ret = m_input->ShutDown();
 		if (!ret)
 		{
 			return false;
