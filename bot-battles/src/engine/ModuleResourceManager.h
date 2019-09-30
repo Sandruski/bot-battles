@@ -71,10 +71,10 @@ namespace sand
 		}
 
 		auto ret = m_resources.insert(std::pair<U32, std::shared_ptr<Resource>>(uuid, resource));
-		if (!ret.second)
+		if (ret.second)
 		{
 			LOG("Resource %s%s could not be inserted", dir, file);
-			return std::static_pointer_cast<T>(ret.second);
+			return std::static_pointer_cast<T>(ret.first->second);
 		}
 
 		return resource;

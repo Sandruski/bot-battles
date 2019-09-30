@@ -18,6 +18,8 @@ namespace sand
 		bool Load() override;
 		bool UnLoad() override;
 
+		SDL_Texture* GetTexture() const;
+
 	private:
 		SDL_Texture* m_texture;
 	};

@@ -44,8 +44,11 @@ namespace sand
 		const char* GetName() const { return m_configuration.name; }
 
 	private:
-		bool PreUpdate();
-		bool PostUpdate();
+		bool LateUpdate();
+		bool Draw();
+
+	public:
+		std::shared_ptr<ResourceTexture> m_resourceTexture;
 
 	private:
 		EngineConfiguration m_configuration;

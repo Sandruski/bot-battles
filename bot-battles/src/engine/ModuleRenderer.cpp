@@ -2,6 +2,8 @@
 
 #include "Engine.h"
 #include "ModuleWindow.h"
+#include "ModuleResourceManager.h"
+#include "ResourceTexture.h"
 
 #include "Log.h"
 
@@ -57,23 +59,15 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	bool ModuleRenderer::PreUpdate()
+	bool ModuleRenderer::Draw()
 	{
 		if (m_isInitOk)
 		{
 			SDL_RenderClear(m_renderer);
-		}
 
-		return m_isInitOk;
-	}
-
-	//----------------------------------------------------------------------------------------------------
-	bool ModuleRenderer::PostUpdate()
-	{
-		if (m_isInitOk)
-		{
-			// for auto (iterate all game objects)
+			// TODO: for auto (iterate all game objects)
 			//SDL_RenderCopy(m_renderer, gTexture, nullptr, nullptr);
+			SDL_RenderCopy(m_renderer, g_engine->m_resourceTexture->GetTexture(), nullptr, nullptr);
 
 			SDL_RenderPresent(m_renderer);
 		}

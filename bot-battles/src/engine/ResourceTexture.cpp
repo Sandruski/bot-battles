@@ -36,4 +36,10 @@ namespace sand
 		g_engine->GetTextureImporter().UnLoad(m_texture);
 		return true;
 	}
+
+	//----------------------------------------------------------------------------------------------------
+	SDL_Texture* ResourceTexture::GetTexture() const
+	{
+		return m_texture;
+	}
 }

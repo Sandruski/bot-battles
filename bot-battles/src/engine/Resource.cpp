@@ -18,11 +18,11 @@ namespace sand
 
 		size_t fileSize = strlen(file);
 		m_file = new char[fileSize + 1];
-		memcpy(&m_file, file, (fileSize + 1) * sizeof(char));
+		memcpy(m_file, file, (fileSize + 1) * sizeof(char));
 
 		size_t dirSize = strlen(dir);
 		m_dir = new char[dirSize + 1];
-		memcpy(&m_dir, dir, (dirSize + 1) * sizeof(char));
+		memcpy(m_dir, dir, (dirSize + 1) * sizeof(char));
 
 		size_t pathSize = fileSize + dirSize;
 		m_path = new char[pathSize + 1];

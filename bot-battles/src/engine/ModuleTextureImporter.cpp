@@ -29,7 +29,7 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	bool ModuleTextureImporter::StartUp()
 	{
-		int imgFlags = IMG_INIT_PNG;
+		int imgFlags = IMG_INIT_PNG | IMG_INIT_JPG;
 		if (!(IMG_Init(imgFlags) & imgFlags))
 		{
 			LOG("SDL_image could not be initialized! SDL_image Error: %s", IMG_GetError());

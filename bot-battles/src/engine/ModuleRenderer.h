@@ -20,8 +20,7 @@ namespace sand
 		bool StartUp() override;
 		bool ShutDown() override;
 
-		bool PreUpdate();
-		bool PostUpdate();
+		bool Draw();
 
 		SDL_Renderer* GetRenderer() const;
 

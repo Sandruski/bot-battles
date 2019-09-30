@@ -28,76 +28,114 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	bool Engine::Init() 
 	{
-		m_window->StartUp();
-		m_renderer->StartUp();
-		m_textureImporter->StartUp();
-		m_resourceManager->StartUp();
+		m_isInitOk = m_window->StartUp();
+		if (!m_isInitOk)
+		{
+			return false;
+		}
 
-		m_isInitOk = true;
+		m_isInitOk = m_renderer->StartUp();
+		if (!m_isInitOk)
+		{
+			return false;
+		}
 
-		return m_isInitOk;
+		m_isInitOk = m_textureImporter->StartUp();
+		if (!m_isInitOk)
+		{
+			return false;
+		}
+
+		m_isInitOk = m_resourceManager->StartUp();
+		if (!m_isInitOk)
+		{
+			return false;
+		}
+
+		m_resourceTexture = g_engine->GetResourceManager().Add<ResourceTexture>("baker_house.png", "../../data/textures/");
+
+		return true;
 	}
 
 	//----------------------------------------------------------------------------------------------------
 	// game loop
 	bool Engine::Update() 
 	{
-		bool ret = m_isInitOk;
-
-		if (ret) 
+		if (!m_isInitOk)
 		{
-			ret = PreUpdate();
-
-			if (ret)
-			{
-
-				ret = PostUpdate();
-			}
-
+			return false;
 		}
 
-		return ret;
+		bool ret = LateUpdate();
+		if (!ret)
+		{
+			return false;
+		}
+
+		ret = Draw();
+		if (!ret)
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 	//----------------------------------------------------------------------------------------------------
 	bool Engine::End() 
 	{
-		bool ret = m_isInitOk;
-
-		if (ret)
+		if (!m_isInitOk)
 		{
-			m_resourceManager->ShutDown();
-			m_textureImporter->ShutDown();
-			m_renderer->ShutDown();
-			m_window->ShutDown();
+			return false;
 		}
 
-		return ret;
+		bool ret = m_resourceManager->ShutDown();
+		if (!ret)
+		{
+			return false;
+		}
+
+		ret = m_textureImporter->ShutDown();
+		if (!ret)
+		{
+			return false;
+		}
+
+		ret = m_renderer->ShutDown();
+		if (!ret)
+		{
+			return false;
+		}
+
+		ret = m_window->ShutDown();
+		if (!ret)
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	bool Engine::PreUpdate()
+	bool Engine::LateUpdate()
 	{
-		bool ret = m_isInitOk;
-
-		if (ret)
-		{
-			ret = m_renderer->PreUpdate();
-		}
-
-		return ret;
+		return m_isInitOk;
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	bool Engine::PostUpdate()
+	bool Engine::Draw()
 	{
-		bool ret = m_isInitOk;
-
-		if (ret)
+		if (!m_isInitOk)
 		{
-			ret = m_renderer->PostUpdate();
+			return false;
 		}
 
-		return ret;
+		bool ret = m_renderer->Draw();
+		if (!ret)
+		{
+			return false;
+		}
+
+		return true;
 	}
 }
