@@ -6,6 +6,8 @@
 #include "ResourceTexture.h"
 #include "ModuleInput.h"
 
+#include <SDL.h>
+
 namespace sand
 {
 
@@ -13,8 +15,7 @@ namespace sand
 	Engine::Engine(const char* name) :
 		m_configuration(name),
 		m_window(nullptr), 
-		m_isInitOk(false),
-		m_exit(false)
+		m_isInitOk(false)
 	{
 		m_window = std::make_unique<ModuleWindow>();
 		m_input = std::make_unique<ModuleInput>();

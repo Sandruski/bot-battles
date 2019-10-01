@@ -29,7 +29,6 @@ namespace sand
 
 	private:
 		SDL_Window* m_window;
-		SDL_Surface* m_surface;
 
 		U32 m_width;
 		U32 m_height;

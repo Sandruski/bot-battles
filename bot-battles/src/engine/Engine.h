@@ -44,7 +44,6 @@ namespace sand
 		ResourceManager& GetResourceManager() const { return *m_resourceManager; }
 
 		const char* GetName() const { return m_configuration.name; }
-		bool IsExit() const { return m_exit; }
 
 	private:
 		bool LateUpdate();
@@ -63,7 +62,6 @@ namespace sand
 		std::unique_ptr<ResourceManager> m_resourceManager;
 
 		bool m_isInitOk;
-		bool m_exit;
 	};
 
 	extern Engine* g_engine;

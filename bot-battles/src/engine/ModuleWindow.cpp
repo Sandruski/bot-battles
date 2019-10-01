@@ -14,7 +14,6 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	ModuleWindow::ModuleWindow() : 
 		m_window(nullptr),
-		m_surface(nullptr),
 		m_width(640),
 		m_height(480),
 		m_isInitOk(false)
@@ -37,7 +36,7 @@ namespace sand
 	{
 		if (SDL_Init(SDL_INIT_VIDEO) == SDL_ERROR)
 		{
-			LOG("SDL could not be initialized! SDL Error: %s", SDL_GetError());
+			LOG("SDL video subsystem could not be initialized! SDL Error: %s", SDL_GetError());
 			return m_isInitOk;
 		}
 
@@ -45,13 +44,8 @@ namespace sand
 		if (m_window == nullptr)
 		{
 			LOG("Window could not be created! SDL Error: %s", SDL_GetError());
-			SDL_Quit();
 			return m_isInitOk;
 		}
-
-		m_surface = SDL_GetWindowSurface(m_window);
-		//SDL_FillRect(screenSurface, nullptr, SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
-		//SDL_UpdateWindowSurface(m_window);
 
 		m_isInitOk = true;
 
@@ -66,10 +60,11 @@ namespace sand
 			SDL_DestroyWindow(m_window);
 			m_window = nullptr;
 
-			SDL_Quit();
+			LOG("Quitting SDL video subsystem");
+			SDL_QuitSubSystem(SDL_INIT_VIDEO);
 		}
 
-		return m_isInitOk;
+		return true;
 	}
 
 	//----------------------------------------------------------------------------------------------------

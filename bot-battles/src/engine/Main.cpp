@@ -70,7 +70,7 @@ int main(int /*argc*/, char* /*args*/[])
 		case MainState::UPDATE:
 		{
 			bool isUpdateOk = sand::g_engine->Update();
-			if (!isUpdateOk || sand::g_engine->IsExit())
+			if (!isUpdateOk)
 			{
 				mainState = MainState::END;
 			}
@@ -106,6 +106,8 @@ int main(int /*argc*/, char* /*args*/[])
 		}
 		}
 	}
+
+	SDL_Quit();
 
     return ret;
 }
