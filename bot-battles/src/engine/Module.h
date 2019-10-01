@@ -1,20 +1,23 @@
-#ifndef __IMODULE_H__
-#define __IMODULE_H__
+#ifndef __MODULE_H__
+#define __MODULE_H__
 
 namespace sand
 {
 
 	//----------------------------------------------------------------------------------------------------
-	class IModule
+	class Module
 	{
 	public:
-		IModule() {}
-		virtual ~IModule() {}
-
-		virtual const char* GetName() const = 0;
+		Module(bool isActive) : m_isActive(isActive) {}
+		virtual ~Module() {}
 
 		virtual bool StartUp() = 0;
 		virtual bool ShutDown() = 0;
+
+		virtual const char* GetName() const = 0;
+
+	public:
+		bool m_isActive;
 	};
 }
 

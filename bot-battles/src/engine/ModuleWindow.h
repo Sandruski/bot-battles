@@ -1,7 +1,7 @@
 #ifndef __MODULE_WINDOW_H__
 #define __MODULE_WINDOW_H__
 
-#include "IModule.h"
+#include "Module.h"
 #include "Memory.h"
 
 struct SDL_Window;
@@ -11,7 +11,7 @@ namespace sand
 {
 
 	//----------------------------------------------------------------------------------------------------
-	class ModuleWindow : public IModule
+	class ModuleWindow : public Module
 	{
 	public:
 		ModuleWindow();

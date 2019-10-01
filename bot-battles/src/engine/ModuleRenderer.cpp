@@ -15,7 +15,7 @@ namespace sand
 {
 
 	//----------------------------------------------------------------------------------------------------
-	ModuleRenderer::ModuleRenderer() : 
+	ModuleRenderer::ModuleRenderer() : Module(true),
 		m_renderer(nullptr), 
 		m_backgroundColor(Black),
 		m_isInitOk(false),
@@ -64,15 +64,14 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	bool ModuleRenderer::Draw()
+	bool ModuleRenderer::Draw() const
 	{
 		if (!m_isInitOk)
 		{
 			return false;
 		}
 
-		SDL_SetRenderDrawColor(m_renderer, m_backgroundColor.r, m_backgroundColor.g, m_backgroundColor.b, m_backgroundColor.a);
-		SDL_RenderClear(m_renderer);
+		BeginDraw();
 
 		/*
 		1. All level geometry
@@ -112,7 +111,7 @@ namespace sand
 				Blue);
 		}
 
-		SDL_RenderPresent(m_renderer);
+		EndDraw();
 
 		return true;
 	}
@@ -121,5 +120,18 @@ namespace sand
 	SDL_Renderer* ModuleRenderer::GetRenderer() const
 	{
 		return m_renderer;
+	}
+
+	//----------------------------------------------------------------------------------------------------
+	void ModuleRenderer::BeginDraw() const
+	{
+		SDL_SetRenderDrawColor(m_renderer, m_backgroundColor.r, m_backgroundColor.g, m_backgroundColor.b, m_backgroundColor.a);
+		SDL_RenderClear(m_renderer);
+	}
+
+	//----------------------------------------------------------------------------------------------------
+	void ModuleRenderer::EndDraw() const
+	{
+		SDL_RenderPresent(m_renderer);
 	}
 }

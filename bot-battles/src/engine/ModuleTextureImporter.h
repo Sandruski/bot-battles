@@ -1,7 +1,7 @@
 #ifndef __MODULE_TEXTURE_IMPORTER_H__
 #define __MODULE_TEXTURE_IMPORTER_H__
 
-#include "IModule.h"
+#include "Module.h"
 
 struct SDL_Texture;
 struct SDL_Surface;
@@ -10,7 +10,7 @@ namespace sand
 {
 
 	//----------------------------------------------------------------------------------------------------
-	class ModuleTextureImporter : public IModule
+	class ModuleTextureImporter : public Module
 	{
 	public:
 		ModuleTextureImporter();

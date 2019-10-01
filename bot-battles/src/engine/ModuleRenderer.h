@@ -1,7 +1,7 @@
 #ifndef __MODULE_RENDERER_H__
 #define __MODULE_RENDERER_H__
 
-#include "IModule.h"
+#include "Module.h"
 
 #include <SDL_pixels.h>
 
@@ -11,7 +11,7 @@ namespace sand
 {
 
 	//----------------------------------------------------------------------------------------------------
-	class ModuleRenderer : public IModule
+	class ModuleRenderer : public Module
 	{
 	public:
 		ModuleRenderer();
@@ -22,9 +22,13 @@ namespace sand
 		bool StartUp() override;
 		bool ShutDown() override;
 
-		bool Draw();
+		bool Draw() const;
 
 		SDL_Renderer* GetRenderer() const;
+
+	private:
+		void BeginDraw() const;
+		void EndDraw() const;
 
 	private:
 		SDL_Renderer* m_renderer;

@@ -1,7 +1,7 @@
 #ifndef __MODULE_INPUT_H__
 #define __MODULE_INPUT_H__
 
-#include "IModule.h"
+#include "Module.h"
 #include "Memory.h"
 #include "Utils.h"
 
@@ -12,7 +12,7 @@ namespace sand
 {
 
 	//----------------------------------------------------------------------------------------------------
-	class ModuleInput : public IModule
+	class ModuleInput : public Module
 	{
 	public:
 		enum class KeyState : int

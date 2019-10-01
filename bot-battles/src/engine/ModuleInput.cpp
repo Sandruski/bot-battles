@@ -9,7 +9,7 @@ namespace sand
 {
 
 	//----------------------------------------------------------------------------------------------------
-	ModuleInput::ModuleInput() :
+	ModuleInput::ModuleInput() : Module(true),
 		m_mousePosition(),
 		m_isInitOk(false)
 	{
@@ -128,6 +128,7 @@ namespace sand
 			case SDL_QUIT:
 			{
 				// TODO SEND EVENT
+				return false;
 				break;
 			}
 
@@ -137,15 +138,21 @@ namespace sand
 				{
 				case SDL_WINDOWEVENT_SHOWN:
 				case SDL_WINDOWEVENT_MAXIMIZED:
+				case SDL_WINDOWEVENT_FOCUS_GAINED:
 				{
-					// TODO WE SHOW
+					// TODO: we show and update m_isRunning accordingly
+					// TODO: Event System
+
 					break;
 				}
 
 				case SDL_WINDOWEVENT_HIDDEN:
 				case SDL_WINDOWEVENT_MINIMIZED:
+				case SDL_WINDOWEVENT_FOCUS_LOST:
 				{
-					// TODO WE HIDE
+					// TODO: we hide and update m_isRunning accordingly
+					// TODO: Event System
+					
 					break;
 				}
 

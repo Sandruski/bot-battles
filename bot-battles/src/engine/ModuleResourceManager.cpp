@@ -4,30 +4,30 @@ namespace sand
 {
 
 	//----------------------------------------------------------------------------------------------------
-	ResourceManager::ResourceManager() :
+	ModuleResourceManager::ModuleResourceManager() : Module(true),
 		m_resources()
 	{
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	ResourceManager::~ResourceManager()
+	ModuleResourceManager::~ModuleResourceManager()
 	{
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	const char* ResourceManager::GetName() const
+	const char* ModuleResourceManager::GetName() const
 	{
 		return "ResourceManager";
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	bool ResourceManager::StartUp()
+	bool ModuleResourceManager::StartUp()
 	{
 		return true;
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	bool ResourceManager::ShutDown()
+	bool ModuleResourceManager::ShutDown()
 	{
 		RemoveAll();
 
@@ -35,7 +35,7 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	void ResourceManager::RemoveAll()
+	void ModuleResourceManager::RemoveAll()
 	{
 		m_resources.clear();
 	}

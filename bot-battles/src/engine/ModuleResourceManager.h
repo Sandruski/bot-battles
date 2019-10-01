@@ -1,7 +1,7 @@
 #ifndef __MODULE_RESOURCE_MANAGER_H__
 #define __MODULE_RESOURCE_MANAGER_H__
 
-#include "IModule.h"
+#include "Module.h"
 
 #include "Memory.h"
 #include "Utils.h"
@@ -17,11 +17,11 @@ namespace sand
 	class Resource;
 
 	//----------------------------------------------------------------------------------------------------
-	class ResourceManager : public IModule
+	class ModuleResourceManager : public Module
 	{
 	public:
-		ResourceManager();
-		~ResourceManager();
+		ModuleResourceManager();
+		~ModuleResourceManager();
 
 		const char* GetName() const override;
 
@@ -44,12 +44,12 @@ namespace sand
 		std::shared_ptr<T> Get(const char* file, const char* dir);
 
 	private:
-		std::unordered_map<U32, std::shared_ptr<Resource>> m_resources;
+		std::unordered_map<U64, std::shared_ptr<Resource>> m_resources;
 	};
 
 	//----------------------------------------------------------------------------------------------------
 	template<class T>
-	inline std::shared_ptr<T> ResourceManager::Add(const char* file, const char* dir)
+	inline std::shared_ptr<T> ModuleResourceManager::Add(const char* file, const char* dir)
 	{
 		assert(file != nullptr && dir != nullptr);
 
@@ -82,9 +82,13 @@ namespace sand
 
 	//----------------------------------------------------------------------------------------------------
 	template<class T>
-	inline U32 ResourceManager::Remove(U64 uuid)
+	inline U32 ModuleResourceManager::Remove(U64 uuid)
 	{
 		std::shared_ptr<T> resource = Get(uuid);
+		if (resource == nullptr)
+		{
+			return -1;
+		}
 
 		resource->DecreaseReferences();
 		if (!resource->HasReferences())
@@ -100,7 +104,7 @@ namespace sand
 
 	//----------------------------------------------------------------------------------------------------
 	template<class T>
-	inline std::shared_ptr<T> ResourceManager::Get(U64 uuid)
+	inline std::shared_ptr<T> ModuleResourceManager::Get(U64 uuid)
 	{
 		auto it = m_resources.find(uuid);
 		if (it != m_resources.end())
@@ -113,7 +117,7 @@ namespace sand
 
 	//----------------------------------------------------------------------------------------------------
 	template<class T>
-	inline std::shared_ptr<T> ResourceManager::Get(const char* file, const char* dir)
+	inline std::shared_ptr<T> ModuleResourceManager::Get(const char* file, const char* dir)
 	{
 		assert(file != nullptr && dir != nullptr);
 

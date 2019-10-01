@@ -12,7 +12,8 @@ namespace sand
 {
 
 	//----------------------------------------------------------------------------------------------------
-	ModuleTextureImporter::ModuleTextureImporter() : m_isInitOk(false)
+	ModuleTextureImporter::ModuleTextureImporter() : Module(true), 
+		m_isInitOk(false)
 	{
 	}
 

@@ -1,9 +1,10 @@
-#include <SDL.h>
-
 #include "Engine.h"
 
 #include "Log.h"
 #include "Memory.h"
+
+#include <SDL.h>
+#include <assert.h>
 
 enum MainState 
 {
@@ -102,6 +103,12 @@ int main(int /*argc*/, char* /*args*/[])
 
 			SAFE_DELETE_POINTER(sand::g_engine);
 
+			break;
+		}
+
+		default:
+		{
+			assert(false);
 			break;
 		}
 		}
