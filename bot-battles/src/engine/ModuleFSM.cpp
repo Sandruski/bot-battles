@@ -3,13 +3,16 @@
 #include "State.h"
 #include "Log.h"
 
+#include <cassert>
+
 namespace sand
 {
 
 	//----------------------------------------------------------------------------------------------------
 	ModuleFSM::ModuleFSM() : Module(true),
 		m_states(),
-		m_currentState(nullptr)
+		m_currentState(nullptr),
+		m_id(0)
 	{
 	}
 
@@ -27,7 +30,7 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	bool ModuleFSM::ShutDown()
 	{
-		RemoveAllStates();
+		RemoveAll();
 
 		return true;
 	}
@@ -43,47 +46,70 @@ namespace sand
 	{
 		if (m_currentState != nullptr)
 		{
-			m_currentState->Update(0.0f); // TODO dt
+			return m_currentState->Update(0.0f); // TODO dt
 		}
 
 		return true;
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	std::shared_ptr<State> ModuleFSM::AddState(std::shared_ptr<State> state, bool isCurrent)
+	bool ModuleFSM::LateUpdate()
 	{
-		std::shared_ptr<State> newState = state;
-
-		auto ret = m_states.insert(std::pair<U64, std::shared_ptr<State>>(state->GetID(), state));
-		if (ret.second)
+		if (m_currentState != nullptr)
 		{
-			LOG("State could not be inserted");
-			newState = ret.first->second;
+			return m_currentState->LateUpdate(0.0f); // TODO dt
 		}
 
-		if (isCurrent)
-		{
-			m_currentState->Exit();
-			m_currentState = newState;
-			m_currentState->Enter();
-		}
-
-		return state;
+		return true;
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	bool ModuleFSM::RemoveState(U64 id)
+	bool ModuleFSM::Draw()
 	{
-		std::shared_ptr<State> state = GetState(id);
+		if (m_currentState != nullptr)
+		{
+			return m_currentState->Draw();
+		}
+
+		return true;
+	}
+
+	//----------------------------------------------------------------------------------------------------
+	U64 ModuleFSM::Add(std::shared_ptr<State> state)
+	{
+		assert(state != nullptr);
+
+		auto inserted = m_states.insert(std::make_pair(m_id, state));
+		if (inserted.second)
+		{
+			inserted.first->second->Create();
+
+			++m_id;
+		}
+		else
+		{
+			LOG("State could not be inserted");
+		}
+
+		return inserted.first->first;
+	}
+
+	//----------------------------------------------------------------------------------------------------
+	bool ModuleFSM::Remove(U64 id)
+	{
+		std::shared_ptr<State> state = Get(id);
 		if (state == nullptr)
 		{
+			LOG("State could not be removed");
 			return false;
 		}
 
-		if (m_currentState == state)
+		if (state == m_currentState)
 		{
 			m_currentState->Exit();
 		}
+
+		state->Destroy();
 
 		m_states.erase(id);
 
@@ -91,27 +117,37 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	void ModuleFSM::RemoveAllStates()
+	void ModuleFSM::RemoveAll()
 	{
 		if (m_currentState != nullptr)
 		{
 			m_currentState->Exit();
 		}
 
+		for (auto& state : m_states)
+		{
+			state.second->Destroy();
+		}
+
 		m_states.clear();
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	bool ModuleFSM::ChangeState(U64 id)
+	bool ModuleFSM::Change(U64 id)
 	{
-		std::shared_ptr<State> newState = GetState(id);
-		if (newState == nullptr)
+		std::shared_ptr<State> state = Get(id);
+		if (state == nullptr)
 		{
+			LOG("State could not be changed");
 			return false;
 		}
 
-		m_currentState->Exit();
-		m_currentState = newState;
+		if (m_currentState != nullptr)
+		{
+			m_currentState->Exit();
+		}
+
+		m_currentState = state;
 		m_currentState->Enter();
 
 		return true;
@@ -120,20 +156,14 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	std::shared_ptr<State> ModuleFSM::GetState(U64 id) const
+	std::shared_ptr<State> ModuleFSM::Get(U64 id) const
 	{
 		auto it = m_states.find(id);
 		if (it != m_states.end())
 		{
 			return (*it).second;
 		}
-
+		
 		return nullptr;
-	}
-
-	//----------------------------------------------------------------------------------------------------
-	std::shared_ptr<State> ModuleFSM::GetCurrentState() const
-	{
-		return m_currentState;
 	}
 }

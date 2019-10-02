@@ -10,18 +10,17 @@ namespace sand
 	class State
 	{
 	public:
-		State(U64 id) : m_id(id) {}
+		State() {}
 		virtual ~State() {}
 
-		virtual void Enter() = 0;
-		virtual void Update(F32 dt) {}
-		virtual void Render() {}
-		virtual void Exit() = 0;
+		virtual bool Create() = 0;
+		virtual bool Destroy() = 0;
 
-		U64 GetID() const { return m_id; }
-
-	private:
-		U64 m_id;
+		virtual bool Enter() { return true; }
+		virtual bool Update(F32 /*dt*/) { return true; }
+		virtual bool LateUpdate(F32 /*dt*/) { return true; }
+		virtual bool Draw() { return true; }
+		virtual bool Exit() { return true; }
 	};
 }
 

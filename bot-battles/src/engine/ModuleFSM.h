@@ -25,19 +25,21 @@ namespace sand
 		const char* GetName() const override;
 
 		bool Update();
+		bool LateUpdate();
+		bool Draw();
 
-		std::shared_ptr<State> AddState(std::shared_ptr<State> state, bool isCurrent);
-		bool RemoveState(U64 id);
-		void RemoveAllStates();
+		U64 Add(std::shared_ptr<State> state);
+		bool Remove(U64 id);
+		void RemoveAll();
+		bool Change(U64 id);
 
-		bool ChangeState(U64 id);
-
-		std::shared_ptr<State> GetState(U64 id) const;
-		std::shared_ptr<State> GetCurrentState() const;
+	private:
+		std::shared_ptr<State> Get(U64 id) const;
 
 	private:
 		std::unordered_map<U64, std::shared_ptr<State>> m_states;
 		std::shared_ptr<State> m_currentState;
+		U64 m_id;
 	};
 }
 

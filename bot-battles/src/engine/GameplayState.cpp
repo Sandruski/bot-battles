@@ -1,25 +1,27 @@
-#include "Game.h"
+#include "GameplayState.h"
 
 #include "Engine.h"
 #include "ModuleResourceManager.h"
 #include "ResourceTexture.h"
+#include "ModuleFSM.h"
 
 namespace sand
 {
 
 	//----------------------------------------------------------------------------------------------------
-	Game::Game() : Module(true),
+	GameplayState::GameplayState(std::shared_ptr<ModuleFSM> fsm) : 
+		m_fsm(fsm),
 		m_resourceTexture(nullptr)
 	{
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	Game::~Game()
+	GameplayState::~GameplayState()
 	{
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	bool Game::StartUp()
+	bool GameplayState::Create()
 	{
 		m_resourceTexture = g_engine->GetResourceManager().Add<ResourceTexture>("baker_house.png", "../../data/textures/");
 
@@ -27,19 +29,37 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	bool Game::ShutDown()
+	bool GameplayState::Destroy()
 	{
 		return true;
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	const char* Game::GetName() const
+	bool GameplayState::Enter()
 	{
-		return "Game";
+		return true;
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	bool Game::Update()
+	bool GameplayState::Update(F32 /*dt*/)
+	{
+		return true;
+	}
+
+	//----------------------------------------------------------------------------------------------------
+	bool GameplayState::LateUpdate(F32 /*dt*/)
+	{
+		return true;
+	}
+
+	//----------------------------------------------------------------------------------------------------
+	bool GameplayState::Draw()
+	{
+		return true;
+	}
+
+	//----------------------------------------------------------------------------------------------------
+	bool GameplayState::Exit()
 	{
 		return true;
 	}

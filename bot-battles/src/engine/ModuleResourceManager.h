@@ -30,10 +30,8 @@ namespace sand
 
 		template<class T>
 		std::shared_ptr<T> Add(const char* file, const char* dir);
-
 		template<class T>
 		U32 Remove(U64 uuid);
-
 		void RemoveAll();
 
 		template<class T>
@@ -70,11 +68,11 @@ namespace sand
 			return nullptr;
 		}
 
-		auto ret = m_resources.insert(std::pair<U32, std::shared_ptr<Resource>>(uuid, resource));
-		if (ret.second)
+		auto inserted = m_resources.insert(std::make_pair(uuid, resource));
+		if (inserted.second)
 		{
 			LOG("Resource %s%s could not be inserted", dir, file);
-			return std::static_pointer_cast<T>(ret.first->second);
+			return std::static_pointer_cast<T>(inserted.first->second);
 		}
 
 		return resource;

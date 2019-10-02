@@ -6,8 +6,6 @@
 #include "ModuleInput.h"
 #include "ModuleFSM.h"
 
-#include "Game.h"
-
 #include <SDL.h>
 
 namespace sand
@@ -26,8 +24,6 @@ namespace sand
 		m_textureImporter = std::make_unique<ModuleTextureImporter>();
 		m_resourceManager = std::make_unique<ModuleResourceManager>();
 		m_FSM = std::make_unique<ModuleFSM>();
-
-		m_game = std::make_unique<Game>();
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -74,8 +70,6 @@ namespace sand
 			return false;
 		}
 
-		m_game->StartUp();
-
 		m_isRunning = true;
 
 		return true;
@@ -108,8 +102,6 @@ namespace sand
 			return false;
 		}
 
-		m_game->Update();
-
 		ret = LateUpdate();
 		if (!ret)
 		{
@@ -132,8 +124,6 @@ namespace sand
 		{
 			return false;
 		}
-
-		m_game->ShutDown();
 
 		bool ret = m_FSM->ShutDown();
 		if (!ret)
