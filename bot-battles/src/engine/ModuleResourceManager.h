@@ -23,10 +23,10 @@ namespace sand
 		ModuleResourceManager();
 		~ModuleResourceManager();
 
-		const char* GetName() const override;
-
 		bool StartUp() override;
 		bool ShutDown() override;
+
+		const char* GetName() const override;
 
 		template<class T>
 		std::shared_ptr<T> Add(const char* file, const char* dir);

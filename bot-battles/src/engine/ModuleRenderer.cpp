@@ -9,6 +9,8 @@
 #include "Log.h"
 #include "Colors.h"
 
+#include "Game.h"
+
 #include <SDL.h>
 
 namespace sand
@@ -26,12 +28,6 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	ModuleRenderer::~ModuleRenderer()
 	{
-	}
-
-	//----------------------------------------------------------------------------------------------------
-	const char* ModuleRenderer::GetName() const
-	{
-		return "Renderer";
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -64,6 +60,12 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
+	const char* ModuleRenderer::GetName() const
+	{
+		return "Renderer";
+	}
+
+	//----------------------------------------------------------------------------------------------------
 	bool ModuleRenderer::Draw() const
 	{
 		if (!m_isInitOk)
@@ -82,10 +84,11 @@ namespace sand
 
 		// TODO: for auto (iterate all game objects)
 		//SDL_RenderCopy(m_renderer, gTexture, nullptr, nullptr);
-		SDL_RenderCopy(m_renderer, g_engine->m_resourceTexture->GetTexture(), nullptr, nullptr);
+		SDL_RenderCopy(m_renderer, g_engine->GetGame().m_resourceTexture->GetTexture(), nullptr, nullptr);
 
 		if (m_isDebugDraw)
 		{
+			/*
 			DebugDrawer::DrawQuad(
 				{
 				(int)g_engine->GetWindow().GetWidth() / 4,
@@ -109,6 +112,7 @@ namespace sand
 				(int)g_engine->GetWindow().GetHeight() / 2,
 				},
 				Blue);
+			*/
 		}
 
 		EndDraw();

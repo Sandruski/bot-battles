@@ -1,42 +1,46 @@
+#include "Game.h"
+
+#include "Engine.h"
 #include "ModuleResourceManager.h"
+#include "ResourceTexture.h"
 
 namespace sand
 {
 
 	//----------------------------------------------------------------------------------------------------
-	ModuleResourceManager::ModuleResourceManager() : Module(true),
-		m_resources()
+	Game::Game() : Module(true),
+		m_resourceTexture(nullptr)
 	{
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	ModuleResourceManager::~ModuleResourceManager()
+	Game::~Game()
 	{
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	bool ModuleResourceManager::StartUp()
+	bool Game::StartUp()
 	{
-		return true;
-	}
-
-	//----------------------------------------------------------------------------------------------------
-	bool ModuleResourceManager::ShutDown()
-	{
-		RemoveAll();
+		m_resourceTexture = g_engine->GetResourceManager().Add<ResourceTexture>("baker_house.png", "../../data/textures/");
 
 		return true;
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	const char* ModuleResourceManager::GetName() const
+	bool Game::ShutDown()
 	{
-		return "ResourceManager";
+		return true;
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	void ModuleResourceManager::RemoveAll()
+	const char* Game::GetName() const
 	{
-		m_resources.clear();
+		return "Game";
+	}
+
+	//----------------------------------------------------------------------------------------------------
+	bool Game::Update()
+	{
+		return true;
 	}
 }

@@ -1,9 +1,11 @@
 #include "ModuleInput.h"
 
 #include "Log.h"
+#include "Defines.h"
 
 #include <SDL.h>
 #include <cassert>
+#include <cstring>
 
 namespace sand
 {
@@ -20,12 +22,6 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	ModuleInput::~ModuleInput()
 	{
-	}
-
-	//----------------------------------------------------------------------------------------------------
-	const char* ModuleInput::GetName() const
-	{
-		return "Input";
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -54,6 +50,12 @@ namespace sand
 		SDL_QuitSubSystem(SDL_INIT_EVENTS);
 
 		return true;
+	}
+
+	//----------------------------------------------------------------------------------------------------
+	const char* ModuleInput::GetName() const
+	{
+		return "Input";
 	}
 
 	//----------------------------------------------------------------------------------------------------

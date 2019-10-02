@@ -17,10 +17,10 @@ namespace sand
 		ModuleRenderer();
 		~ModuleRenderer();
 
-		const char* GetName() const override;
-
 		bool StartUp() override;
 		bool ShutDown() override;
+
+		const char* GetName() const override;
 
 		bool Draw() const;
 

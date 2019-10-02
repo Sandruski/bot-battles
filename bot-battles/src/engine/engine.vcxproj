@@ -142,6 +142,7 @@
     <ClCompile Include="Colors.cpp" />
     <ClCompile Include="DebugDrawer.cpp" />
     <ClCompile Include="Engine.cpp" />
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="ModuleFSM.cpp" />
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -157,7 +158,9 @@
     <ClInclude Include="..\shared\Utils.h" />
     <ClInclude Include="Colors.h" />
     <ClInclude Include="DebugDrawer.h" />
+    <ClInclude Include="Defines.h" />
     <ClInclude Include="Engine.h" />
+    <ClInclude Include="Game.h" />
     <ClInclude Include="ModuleFSM.h" />
     <ClInclude Include="Module.h" />
     <ClInclude Include="Memory.h" />

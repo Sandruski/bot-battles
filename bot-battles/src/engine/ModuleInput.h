@@ -3,7 +3,6 @@
 
 #include "Module.h"
 #include "Memory.h"
-#include "Utils.h"
 
 #include <SDL_scancode.h>
 #include <SDL_mouse.h>
@@ -30,10 +29,10 @@ namespace sand
 		ModuleInput();
 		~ModuleInput();
 
-		const char* GetName() const override;
-
 		bool StartUp() override;
 		bool ShutDown() override;
+
+		const char* GetName() const override;
 
 		bool Update();
 

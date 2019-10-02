@@ -3,9 +3,10 @@
 #include "ModuleRenderer.h"
 #include "ModuleResourceManager.h"
 #include "ModuleWindow.h"
-#include "ResourceTexture.h"
 #include "ModuleInput.h"
 #include "ModuleFSM.h"
+
+#include "Game.h"
 
 #include <SDL.h>
 
@@ -25,6 +26,8 @@ namespace sand
 		m_textureImporter = std::make_unique<ModuleTextureImporter>();
 		m_resourceManager = std::make_unique<ModuleResourceManager>();
 		m_FSM = std::make_unique<ModuleFSM>();
+
+		m_game = std::make_unique<Game>();
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -71,9 +74,9 @@ namespace sand
 			return false;
 		}
 
-		m_isRunning = true;
+		m_game->StartUp();
 
-		m_resourceTexture = g_engine->GetResourceManager().Add<ResourceTexture>("baker_house.png", "../../data/textures/");
+		m_isRunning = true;
 
 		return true;
 	}
@@ -105,6 +108,8 @@ namespace sand
 			return false;
 		}
 
+		m_game->Update();
+
 		ret = LateUpdate();
 		if (!ret)
 		{
@@ -127,6 +132,8 @@ namespace sand
 		{
 			return false;
 		}
+
+		m_game->ShutDown();
 
 		bool ret = m_FSM->ShutDown();
 		if (!ret)

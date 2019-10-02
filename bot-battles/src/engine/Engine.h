@@ -16,7 +16,7 @@ namespace sand
 	class ModuleResourceManager;
 	class ModuleFSM;
 
-	class ResourceTexture;
+	class Game;
 
 	//----------------------------------------------------------------------------------------------------
 	struct EngineConfiguration 
@@ -46,14 +46,13 @@ namespace sand
 		ModuleResourceManager& GetResourceManager() const { return *m_resourceManager; }
 		ModuleFSM& GetFSM() const { return *m_FSM; }
 
+		Game& GetGame() const { return *m_game; }
+
 		const char* GetName() const { return m_configuration.name; }
 
 	private:
 		bool LateUpdate();
 		bool Draw();
-
-	public:
-		std::shared_ptr<ResourceTexture> m_resourceTexture;
 
 	private:
 		EngineConfiguration m_configuration;
@@ -64,6 +63,8 @@ namespace sand
 		std::unique_ptr<ModuleInput> m_input;
 		std::unique_ptr<ModuleResourceManager> m_resourceManager;
 		std::unique_ptr<ModuleFSM> m_FSM;
+
+		std::unique_ptr<Game> m_game;
 
 		bool m_isInitOk;
 		bool m_isRunning;

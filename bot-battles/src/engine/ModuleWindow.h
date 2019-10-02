@@ -17,10 +17,10 @@ namespace sand
 		ModuleWindow();
 		~ModuleWindow();
 
-		const char* GetName() const override;
-
 		bool StartUp() override;
 		bool ShutDown() override;
+
+		const char* GetName() const override;
 
 		SDL_Window* GetWindow() const;
 

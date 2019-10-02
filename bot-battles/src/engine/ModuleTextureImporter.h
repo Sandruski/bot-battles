@@ -16,10 +16,10 @@ namespace sand
 		ModuleTextureImporter();
 		~ModuleTextureImporter();
 
-		const char* GetName() const override;
-
 		bool StartUp() override;
 		bool ShutDown() override;
+
+		const char* GetName() const override;
 
 		SDL_Texture* Load(const char* path) const;
 		void UnLoad(SDL_Texture* texture);

@@ -23,12 +23,6 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	const char* ModuleTextureImporter::GetName() const
-	{
-		return "TextureImporter";
-	}
-
-	//----------------------------------------------------------------------------------------------------
 	bool ModuleTextureImporter::StartUp()
 	{
 		int imgFlags = IMG_INIT_PNG | IMG_INIT_JPG;
@@ -47,6 +41,12 @@ namespace sand
 	bool ModuleTextureImporter::ShutDown()
 	{
 		return true;
+	}
+
+	//----------------------------------------------------------------------------------------------------
+	const char* ModuleTextureImporter::GetName() const
+	{
+		return "TextureImporter";
 	}
 
 	//----------------------------------------------------------------------------------------------------

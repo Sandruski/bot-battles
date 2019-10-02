@@ -5,7 +5,7 @@
 
 #include "Log.h"
 #include "Memory.h"
-#include "Utils.h"
+#include "Defines.h"
 
 #include <SDL.h>
 

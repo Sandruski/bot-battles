@@ -19,12 +19,12 @@ namespace sand
 		ModuleFSM();
 		~ModuleFSM();
 
-		bool StartUp();
-		bool ShutDown();
+		bool StartUp() override;
+		bool ShutDown() override;
+
+		const char* GetName() const override;
 
 		bool Update();
-
-		const char* GetName() const;
 
 		std::shared_ptr<State> AddState(std::shared_ptr<State> state, bool isCurrent);
 		bool RemoveState(U64 id);
