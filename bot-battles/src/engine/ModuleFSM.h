@@ -34,11 +34,8 @@ namespace sand
 		bool Change(U64 id);
 
 	private:
-		std::shared_ptr<State> Get(U64 id) const;
-
-	private:
 		std::unordered_map<U64, std::shared_ptr<State>> m_states;
-		std::weak_ptr<State> m_currentState;
+		std::shared_ptr<State> m_currentState;
 		U64 m_id;
 	};
 }

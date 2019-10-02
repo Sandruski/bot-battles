@@ -44,9 +44,9 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	bool ModuleFSM::Update()
 	{
-		if (m_currentState.lock() != nullptr)
+		if (m_currentState != nullptr)
 		{
-			return m_currentState.lock()->Update(0.0f); // TODO dt
+			return m_currentState->Update(0.0f); // TODO dt
 		}
 
 		return true;
@@ -55,9 +55,9 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	bool ModuleFSM::LateUpdate()
 	{
-		if (m_currentState.lock() != nullptr)
+		if (m_currentState != nullptr)
 		{
-			return m_currentState.lock()->LateUpdate(0.0f); // TODO dt
+			return m_currentState->LateUpdate(0.0f); // TODO dt
 		}
 
 		return true;
@@ -66,9 +66,9 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	bool ModuleFSM::Draw()
 	{
-		if (m_currentState.lock() != nullptr)
+		if (m_currentState != nullptr)
 		{
-			return m_currentState.lock()->Draw();
+			return m_currentState->Draw();
 		}
 
 		return true;
@@ -97,19 +97,19 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	bool ModuleFSM::Remove(U64 id)
 	{
-		std::shared_ptr<State> state = Get(id);
-		if (state == nullptr)
+		auto it = m_states.find(id);
+		if (it == m_states.end())
 		{
 			LOG("State could not be removed");
 			return false;
 		}
 
-		if (state == m_currentState.lock())
+		if ((*it).second == m_currentState)
 		{
-			m_currentState.lock()->Exit();
+			m_currentState->Exit();
 		}
 
-		state->Destroy();
+		(*it).second->Destroy();
 
 		m_states.erase(id);
 
@@ -119,9 +119,9 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	void ModuleFSM::RemoveAll()
 	{
-		if (m_currentState.lock() != nullptr)
+		if (m_currentState != nullptr)
 		{
-			m_currentState.lock()->Exit();
+			m_currentState->Exit();
 		}
 
 		for (auto& state : m_states)
@@ -135,35 +135,23 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	bool ModuleFSM::Change(U64 id)
 	{
-		std::shared_ptr<State> state = Get(id);
-		if (state == nullptr)
+		auto it = m_states.find(id);
+		if (it == m_states.end())
 		{
 			LOG("State could not be changed");
 			return false;
 		}
 
-		if (m_currentState.lock() != nullptr)
+		if (m_currentState != nullptr)
 		{
-			m_currentState.lock()->Exit();
+			m_currentState->Exit();
 		}
 
-		m_currentState = state;
-		m_currentState.lock()->Enter();
+		m_currentState = (*it).second;
+		m_currentState->Enter();
 
 		return true;
 
 		// TODO: send event ("the state has been changed to blablabla")
-	}
-
-	//----------------------------------------------------------------------------------------------------
-	std::shared_ptr<State> ModuleFSM::Get(U64 id) const
-	{
-		auto it = m_states.find(id);
-		if (it != m_states.end())
-		{
-			return (*it).second;
-		}
-		
-		return nullptr;
 	}
 }
