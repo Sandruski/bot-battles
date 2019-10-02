@@ -9,8 +9,7 @@ namespace sand
 {
 
 	//----------------------------------------------------------------------------------------------------
-	GameplayState::GameplayState(std::shared_ptr<ModuleFSM> fsm) : 
-		m_fsm(fsm),
+	GameplayState::GameplayState() :
 		m_resourceTexture(nullptr)
 	{
 	}

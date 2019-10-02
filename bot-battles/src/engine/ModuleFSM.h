@@ -17,7 +17,7 @@ namespace sand
 	{
 	public:
 		ModuleFSM();
-		~ModuleFSM();
+		~ModuleFSM() override;
 
 		bool StartUp() override;
 		bool ShutDown() override;
@@ -38,7 +38,7 @@ namespace sand
 
 	private:
 		std::unordered_map<U64, std::shared_ptr<State>> m_states;
-		std::shared_ptr<State> m_currentState;
+		std::weak_ptr<State> m_currentState;
 		U64 m_id;
 	};
 }

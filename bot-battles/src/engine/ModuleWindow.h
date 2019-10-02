@@ -15,7 +15,7 @@ namespace sand
 	{
 	public:
 		ModuleWindow();
-		~ModuleWindow();
+		~ModuleWindow() override;
 
 		bool StartUp() override;
 		bool ShutDown() override;

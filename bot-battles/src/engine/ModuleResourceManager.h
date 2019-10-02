@@ -21,7 +21,7 @@ namespace sand
 	{
 	public:
 		ModuleResourceManager();
-		~ModuleResourceManager();
+		~ModuleResourceManager() override;
 
 		bool StartUp() override;
 		bool ShutDown() override;

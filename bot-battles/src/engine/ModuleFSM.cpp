@@ -11,7 +11,7 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	ModuleFSM::ModuleFSM() : Module(true),
 		m_states(),
-		m_currentState(nullptr),
+		m_currentState(),
 		m_id(0)
 	{
 	}
@@ -44,9 +44,9 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	bool ModuleFSM::Update()
 	{
-		if (m_currentState != nullptr)
+		if (m_currentState.lock() != nullptr)
 		{
-			return m_currentState->Update(0.0f); // TODO dt
+			return m_currentState.lock()->Update(0.0f); // TODO dt
 		}
 
 		return true;
@@ -55,9 +55,9 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	bool ModuleFSM::LateUpdate()
 	{
-		if (m_currentState != nullptr)
+		if (m_currentState.lock() != nullptr)
 		{
-			return m_currentState->LateUpdate(0.0f); // TODO dt
+			return m_currentState.lock()->LateUpdate(0.0f); // TODO dt
 		}
 
 		return true;
@@ -66,9 +66,9 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	bool ModuleFSM::Draw()
 	{
-		if (m_currentState != nullptr)
+		if (m_currentState.lock() != nullptr)
 		{
-			return m_currentState->Draw();
+			return m_currentState.lock()->Draw();
 		}
 
 		return true;
@@ -104,9 +104,9 @@ namespace sand
 			return false;
 		}
 
-		if (state == m_currentState)
+		if (state == m_currentState.lock())
 		{
-			m_currentState->Exit();
+			m_currentState.lock()->Exit();
 		}
 
 		state->Destroy();
@@ -119,9 +119,9 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	void ModuleFSM::RemoveAll()
 	{
-		if (m_currentState != nullptr)
+		if (m_currentState.lock() != nullptr)
 		{
-			m_currentState->Exit();
+			m_currentState.lock()->Exit();
 		}
 
 		for (auto& state : m_states)
@@ -142,13 +142,13 @@ namespace sand
 			return false;
 		}
 
-		if (m_currentState != nullptr)
+		if (m_currentState.lock() != nullptr)
 		{
-			m_currentState->Exit();
+			m_currentState.lock()->Exit();
 		}
 
 		m_currentState = state;
-		m_currentState->Enter();
+		m_currentState.lock()->Enter();
 
 		return true;
 

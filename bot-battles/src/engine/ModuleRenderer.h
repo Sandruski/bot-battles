@@ -15,7 +15,7 @@ namespace sand
 	{
 	public:
 		ModuleRenderer();
-		~ModuleRenderer();
+		~ModuleRenderer() override;
 
 		bool StartUp() override;
 		bool ShutDown() override;

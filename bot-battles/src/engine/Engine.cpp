@@ -12,9 +12,8 @@ namespace sand
 {
 
 	//----------------------------------------------------------------------------------------------------
-	Engine::Engine(const char* name) :
-		m_configuration(name),
-		m_window(nullptr), 
+	Engine::Engine(const EngineConfiguration& configuration) :
+		m_configuration(configuration), 
 		m_isInitOk(false),
 		m_isRunning(false)
 	{
@@ -23,7 +22,7 @@ namespace sand
 		m_renderer = std::make_unique<ModuleRenderer>();
 		m_textureImporter = std::make_unique<ModuleTextureImporter>();
 		m_resourceManager = std::make_unique<ModuleResourceManager>();
-		m_FSM = std::make_unique<ModuleFSM>();
+		m_fsm = std::make_unique<ModuleFSM>();
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -64,10 +63,15 @@ namespace sand
 			return false;
 		}
 
-		m_isInitOk = m_FSM->StartUp();
+		m_isInitOk = m_fsm->StartUp();
 		if (!m_isInitOk)
 		{
 			return false;
+		}
+
+		if (m_configuration.StatesSetup != nullptr)
+		{
+			m_configuration.StatesSetup();
 		}
 
 		m_isRunning = true;
@@ -96,7 +100,7 @@ namespace sand
 		}
 #endif
 
-		ret = m_FSM->m_isActive && m_FSM->Update();
+		ret = m_fsm->m_isActive && m_fsm->Update();
 		if (!ret)
 		{
 			return false;
@@ -125,7 +129,7 @@ namespace sand
 			return false;
 		}
 
-		bool ret = m_FSM->ShutDown();
+		bool ret = m_fsm->ShutDown();
 		if (!ret)
 		{
 			return false;
@@ -172,7 +176,7 @@ namespace sand
 			return false;
 		}
 
-		bool ret = m_FSM->m_isActive && m_FSM->LateUpdate();
+		bool ret = m_fsm->m_isActive && m_fsm->LateUpdate();
 		if (!ret)
 		{
 			return false;
@@ -195,12 +199,33 @@ namespace sand
 			return false;
 		}
 
-		ret = m_FSM->m_isActive && m_FSM->Draw();
+		ret = m_fsm->m_isActive && m_fsm->Draw();
 		if (!ret)
 		{
 			return false;
 		}
 
 		return true;
+	}
+
+	//----------------------------------------------------------------------------------------------------
+	EngineConfiguration::EngineConfiguration() :
+		name(nullptr),
+		StatesSetup(nullptr)
+	{
+	}
+
+	//----------------------------------------------------------------------------------------------------
+	EngineConfiguration::EngineConfiguration(const char* name, std::function<void()> StatesSetup) :
+		name(name),
+		StatesSetup(StatesSetup)
+	{
+	}
+
+	//----------------------------------------------------------------------------------------------------
+	EngineConfiguration::EngineConfiguration(const EngineConfiguration& configuration) :
+		name(configuration.name),
+		StatesSetup(configuration.StatesSetup)
+	{
 	}
 }

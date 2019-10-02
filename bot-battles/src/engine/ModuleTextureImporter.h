@@ -14,7 +14,7 @@ namespace sand
 	{
 	public:
 		ModuleTextureImporter();
-		~ModuleTextureImporter();
+		~ModuleTextureImporter() override;
 
 		bool StartUp() override;
 		bool ShutDown() override;

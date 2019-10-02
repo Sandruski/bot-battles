@@ -8,14 +8,13 @@
 namespace sand
 {
 
-	class ModuleFSM;
 	class ResourceTexture;
 
 	//----------------------------------------------------------------------------------------------------
 	class GameplayState : public State
 	{
 	public:
-		GameplayState(std::shared_ptr<ModuleFSM> fsm);
+		GameplayState();
 		~GameplayState() override;
 
 		bool Create() override;
@@ -29,9 +28,6 @@ namespace sand
 
 	public:
 		std::shared_ptr<ResourceTexture> m_resourceTexture;
-
-	private:
-		std::shared_ptr<ModuleFSM> m_fsm;
 	};
 }
 

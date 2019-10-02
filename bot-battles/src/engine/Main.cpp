@@ -1,10 +1,14 @@
 #include "Engine.h"
 
+#include "ModuleFSM.h"
+#include "GameplayState.h"
+
 #include "Log.h"
 #include "Memory.h"
 
 #include <SDL.h>
-#include <assert.h>
+#include <cassert>
+#include <memory>
 
 enum MainState 
 {
@@ -21,8 +25,16 @@ enum MainState
 namespace sand
 {
 	Engine* g_engine;
+
+	//----------------------------------------------------------------------------------------------------
+	void StatesSetup()
+	{
+		ModuleFSM fsm = g_engine->GetFSM();
+		fsm.Add(std::make_shared<GameplayState>());
+	}
 }
 
+//----------------------------------------------------------------------------------------------------
 int main(int /*argc*/, char* /*args*/[])
 {
     int ret = EXIT_FAILURE;
@@ -37,7 +49,11 @@ int main(int /*argc*/, char* /*args*/[])
 		{
 			LOG("MainState::CREATE");
 
-			sand::g_engine = new sand::Engine("Sand");
+			sand::EngineConfiguration engineConfiguration(
+				"Sand",
+				sand::StatesSetup
+			);
+			sand::g_engine = new sand::Engine(engineConfiguration);
 			if (sand::g_engine != nullptr)
 			{
 				mainState = MainState::INIT;

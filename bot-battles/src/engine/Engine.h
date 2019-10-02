@@ -2,6 +2,7 @@
 #define __ENGINE_H__
 
 #include <memory>
+#include <functional>
 
 // uncomment to disable assert()
 // #define NDEBUG
@@ -19,10 +20,12 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	struct EngineConfiguration 
 	{
-		EngineConfiguration() : name(nullptr) {}
-		EngineConfiguration(const char* name) : name(name) {}
+		EngineConfiguration();
+		EngineConfiguration(const char* name, std::function<void()> StatesSetup);
+		EngineConfiguration(const EngineConfiguration& configuration);
 
 		const char* name;
+		std::function<void()> StatesSetup;
 	};
 
 	//----------------------------------------------------------------------------------------------------
@@ -30,7 +33,7 @@ namespace sand
 	class Engine
 	{
 	public:
-		Engine(const char* name);
+		Engine(const EngineConfiguration& configuration);
 		virtual ~Engine();
 
 		bool Init();
@@ -42,7 +45,7 @@ namespace sand
 		ModuleTextureImporter& GetTextureImporter() const { return *m_textureImporter; }
 		ModuleInput& GetInput() const { return *m_input; }
 		ModuleResourceManager& GetResourceManager() const { return *m_resourceManager; }
-		ModuleFSM& GetFSM() const { return *m_FSM; }
+		ModuleFSM& GetFSM() const { return *m_fsm; }
 
 		const char* GetName() const { return m_configuration.name; }
 
@@ -58,7 +61,7 @@ namespace sand
 		std::unique_ptr<ModuleTextureImporter> m_textureImporter;
 		std::unique_ptr<ModuleInput> m_input;
 		std::unique_ptr<ModuleResourceManager> m_resourceManager;
-		std::unique_ptr<ModuleFSM> m_FSM;
+		std::unique_ptr<ModuleFSM> m_fsm;
 
 		bool m_isInitOk;
 		bool m_isRunning;

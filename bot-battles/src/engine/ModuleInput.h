@@ -27,7 +27,7 @@ namespace sand
 
 	public:
 		ModuleInput();
-		~ModuleInput();
+		~ModuleInput() override;
 
 		bool StartUp() override;
 		bool ShutDown() override;
