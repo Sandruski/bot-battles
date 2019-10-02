@@ -167,7 +167,18 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	bool Engine::LateUpdate()
 	{
-		return m_isInitOk;
+		if (!m_isInitOk)
+		{
+			return false;
+		}
+
+		bool ret = m_FSM->m_isActive && m_FSM->LateUpdate();
+		if (!ret)
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -179,6 +190,12 @@ namespace sand
 		}
 
 		bool ret = m_renderer->m_isActive && m_renderer->Draw();
+		if (!ret)
+		{
+			return false;
+		}
+
+		ret = m_FSM->m_isActive && m_FSM->Draw();
 		if (!ret)
 		{
 			return false;
