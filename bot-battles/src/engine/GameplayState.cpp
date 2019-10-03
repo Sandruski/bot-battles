@@ -4,6 +4,7 @@
 #include "ModuleResourceManager.h"
 #include "ResourceTexture.h"
 #include "ModuleFSM.h"
+#include "ModuleEntityFactory.h"
 
 namespace sand
 {
@@ -22,7 +23,8 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	bool GameplayState::Create()
 	{
-		m_resourceTexture = g_engine->GetResourceManager().Add<ResourceTexture>("baker_house.png", "../../data/textures/");
+		m_resourceTexture = g_engine->GetResourceManager().AddResource<ResourceTexture>("baker_house.png", "../../data/textures/");
+		std::shared_ptr<Entity> myEntity = g_engine->GetEntityFactory().AddEntity();
 
 		return true;
 	}

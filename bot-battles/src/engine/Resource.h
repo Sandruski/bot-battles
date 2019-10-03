@@ -6,18 +6,20 @@
 namespace sand
 {
 
+	using ResourceID = U64;
+
 	//----------------------------------------------------------------------------------------------------
 	class Resource
 	{
 	public:
-		Resource(U64 uuid, const char* file, const char* dir);
+		Resource(ResourceID id, const char* file, const char* dir);
 		virtual ~Resource();
 
 		const char* GetFile() const;
 		const char* GetDir() const;
 		const char* GetPath() const;
 
-		U64 GetUUID() const;
+		ResourceID GetID() const;
 		U32 GetReferences() const;
 
 		bool HasReferences() const;
@@ -33,7 +35,7 @@ namespace sand
 		char* m_dir;
 		char* m_path;
 
-		U64 m_uuid;
+		ResourceID m_id;
 		U32 m_references;
 	};
 }

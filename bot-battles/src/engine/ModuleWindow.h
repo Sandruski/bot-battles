@@ -14,13 +14,14 @@ namespace sand
 	class ModuleWindow : public Module
 	{
 	public:
+		static const char* GetName();
+
+	public:
 		ModuleWindow();
 		~ModuleWindow() override;
 
 		bool StartUp() override;
 		bool ShutDown() override;
-
-		const char* GetName() const override;
 
 		SDL_Window* GetWindow() const;
 

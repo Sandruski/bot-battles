@@ -9,7 +9,7 @@ namespace sand
 {
 
 	//----------------------------------------------------------------------------------------------------
-	ResourceTexture::ResourceTexture(U64 uuid, const char* dir, const char* file) : Resource(uuid, dir, file),
+	ResourceTexture::ResourceTexture(ResourceID id, const char* dir, const char* file) : Resource(id, dir, file),
 		m_texture(nullptr)
 	{
 	}

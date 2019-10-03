@@ -14,8 +14,6 @@ namespace sand
 		virtual bool StartUp() = 0;
 		virtual bool ShutDown() = 0;
 
-		virtual const char* GetName() const = 0;
-
 	public:
 		bool m_isActive;
 	};

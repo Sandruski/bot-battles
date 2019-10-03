@@ -15,6 +15,7 @@ namespace sand
 	class ModuleTextureImporter;
 	class ModuleInput;
 	class ModuleResourceManager;
+	class ModuleEntityFactory;
 	class ModuleFSM;
 
 	//----------------------------------------------------------------------------------------------------
@@ -45,6 +46,7 @@ namespace sand
 		ModuleTextureImporter& GetTextureImporter() const { return *m_textureImporter; }
 		ModuleInput& GetInput() const { return *m_input; }
 		ModuleResourceManager& GetResourceManager() const { return *m_resourceManager; }
+		ModuleEntityFactory& GetEntityFactory() const { return *m_entityFactory; }
 		ModuleFSM& GetFSM() const { return *m_fsm; }
 
 		const char* GetName() const { return m_configuration.name; }
@@ -61,6 +63,7 @@ namespace sand
 		std::unique_ptr<ModuleTextureImporter> m_textureImporter;
 		std::unique_ptr<ModuleInput> m_input;
 		std::unique_ptr<ModuleResourceManager> m_resourceManager;
+		std::unique_ptr<ModuleEntityFactory> m_entityFactory;
 		std::unique_ptr<ModuleFSM> m_fsm;
 
 		bool m_isInitOk;

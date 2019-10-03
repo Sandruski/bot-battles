@@ -1,50 +1,56 @@
-#include "ModuleResourceManager.h"
+#include "ModuleEntityFactory.h"
+
+#include "Entity.h"
+#include "ComponentTransform.h"
 
 namespace sand
 {
 
 	//----------------------------------------------------------------------------------------------------
-	const char* ModuleResourceManager::GetName()
+	const char* ModuleEntityFactory::GetName()
 	{
-		return "ResourceManager";
+		return "EntityFactory";
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	ResourceID ModuleResourceManager::GenerateID()
+	EntityID ModuleEntityFactory::GenerateID()
 	{
-		static ResourceID currentID = 0;
+		static EntityID currentID = 0;
 		++currentID;
 		return currentID;
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	ModuleResourceManager::ModuleResourceManager() : Module(true),
-		m_resources()
+	ModuleEntityFactory::ModuleEntityFactory() : Module(true)
 	{
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	ModuleResourceManager::~ModuleResourceManager()
+	ModuleEntityFactory::~ModuleEntityFactory()
 	{
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	bool ModuleResourceManager::StartUp()
+	bool ModuleEntityFactory::StartUp()
 	{
 		return true;
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	bool ModuleResourceManager::ShutDown()
+	bool ModuleEntityFactory::ShutDown()
 	{
-		RemoveAllResources();
-
 		return true;
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	void ModuleResourceManager::RemoveAllResources()
+	std::shared_ptr<Entity> ModuleEntityFactory::AddEntity()
 	{
-		m_resources.clear();
+		std::shared_ptr<Entity> entity = std::make_shared<Entity>();
+		entity->AddComponent<ComponentTransform>();
+
+		EntityID id = GenerateID(); // TODO
+		m_entities.insert(std::make_pair(id, entity));
+
+		return entity;
 	}
 }

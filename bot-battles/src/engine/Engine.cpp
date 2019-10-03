@@ -5,6 +5,7 @@
 #include "ModuleWindow.h"
 #include "ModuleInput.h"
 #include "ModuleFSM.h"
+#include "ModuleEntityFactory.h"
 
 #include <SDL.h>
 
@@ -22,6 +23,7 @@ namespace sand
 		m_renderer = std::make_unique<ModuleRenderer>();
 		m_textureImporter = std::make_unique<ModuleTextureImporter>();
 		m_resourceManager = std::make_unique<ModuleResourceManager>();
+		m_entityFactory = std::make_unique<ModuleEntityFactory>();
 		m_fsm = std::make_unique<ModuleFSM>();
 	}
 
@@ -58,6 +60,12 @@ namespace sand
 		}
 
 		m_isInitOk = m_resourceManager->StartUp();
+		if (!m_isInitOk)
+		{
+			return false;
+		}
+
+		m_isInitOk = m_entityFactory->StartUp();
 		if (!m_isInitOk)
 		{
 			return false;
@@ -135,6 +143,12 @@ namespace sand
 			return false;
 		}
 			
+		m_entityFactory->ShutDown();
+		if (!ret)
+		{
+			return false;
+		}
+
 		m_resourceManager->ShutDown();
 		if (!ret)
 		{

@@ -10,8 +10,8 @@ namespace sand
 {
 
 	//----------------------------------------------------------------------------------------------------
-	Resource::Resource(U64 uuid, const char* file, const char* dir) :
-		m_uuid(uuid),
+	Resource::Resource(ResourceID id, const char* file, const char* dir) :
+		m_id(id),
 		m_references(0)
 	{
 		assert(file != nullptr && dir != nullptr);
@@ -56,11 +56,12 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	U64 Resource::GetUUID() const
+	ResourceID Resource::GetID() const
 	{
-		return m_uuid;
+		return m_id;
 	}
 
+	//----------------------------------------------------------------------------------------------------
 	U32 Resource::GetReferences() const
 	{
 		return m_references;

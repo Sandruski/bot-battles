@@ -14,11 +14,17 @@
 namespace sand
 {
 
+	using ResourceID = U64;
+
 	class Resource;
 
 	//----------------------------------------------------------------------------------------------------
 	class ModuleResourceManager : public Module
 	{
+	public:
+		static const char* GetName();
+		static ResourceID GenerateID();
+
 	public:
 		ModuleResourceManager();
 		~ModuleResourceManager() override;
@@ -26,20 +32,18 @@ namespace sand
 		bool StartUp() override;
 		bool ShutDown() override;
 
-		const char* GetName() const override;
+		template<class T>
+		std::shared_ptr<T> AddResource(const char* file, const char* dir);
+		template<class T>
+		U32 RemoveResource(U64 id);
+		void RemoveAllResources();
 
 		template<class T>
-		std::shared_ptr<T> Add(const char* file, const char* dir);
-		template<class T>
-		U32 Remove(U64 uuid);
-		void RemoveAll();
-
-		template<class T>
-		std::shared_ptr<T> Get(U64 uuid);
+		std::shared_ptr<T> GetResource(U64 id);
 
 	private:
 		template<class T>
-		std::shared_ptr<T> Get(const char* file, const char* dir);
+		std::shared_ptr<T> GetResource(const char* file, const char* dir);
 
 	private:
 		std::unordered_map<U64, std::shared_ptr<Resource>> m_resources;
@@ -47,19 +51,20 @@ namespace sand
 
 	//----------------------------------------------------------------------------------------------------
 	template<class T>
-	inline std::shared_ptr<T> ModuleResourceManager::Add(const char* file, const char* dir)
+	inline std::shared_ptr<T> ModuleResourceManager::AddResource(const char* file, const char* dir)
 	{
+		static_assert(std::is_base_of<Resource, T>::value, "T is not derived from Resource");
 		assert(file != nullptr && dir != nullptr);
 
-		std::shared_ptr<T> resource = Get<T>(file, dir);
+		std::shared_ptr<T> resource = GetResource<T>(file, dir);
 		if (resource != nullptr)
 		{
 			resource->IncreaseReferences();
 			return resource;
 		}
 
-		U64 uuid = 0;
-		resource = std::make_shared<T>(uuid, file, dir);
+		ResourceID id = GenerateID();
+		resource = std::make_shared<T>(id, file, dir);
 
 		const bool isLoaded = resource->Load();
 		if (!isLoaded)
@@ -68,7 +73,7 @@ namespace sand
 			return nullptr;
 		}
 
-		auto inserted = m_resources.insert(std::make_pair(uuid, resource));
+		auto inserted = m_resources.insert(std::make_pair(id, resource));
 		if (inserted.second)
 		{
 			LOG("Resource %s%s could not be inserted", dir, file);
@@ -80,9 +85,11 @@ namespace sand
 
 	//----------------------------------------------------------------------------------------------------
 	template<class T>
-	inline U32 ModuleResourceManager::Remove(U64 uuid)
+	inline U32 ModuleResourceManager::RemoveResource(U64 id)
 	{
-		std::shared_ptr<T> resource = Get(uuid);
+		static_assert(std::is_base_of<Resource, T>::value, "T is not derived from Resource");
+
+		std::shared_ptr<T> resource = GetResource<T>(id);
 		if (resource == nullptr)
 		{
 			return -1;
@@ -92,7 +99,7 @@ namespace sand
 		if (!resource->HasReferences())
 		{
 			resource->UnLoad();
-			m_resources.erase(uuid);
+			m_resources.erase(id);
 			
 			return 0;
 		}
@@ -102,9 +109,11 @@ namespace sand
 
 	//----------------------------------------------------------------------------------------------------
 	template<class T>
-	inline std::shared_ptr<T> ModuleResourceManager::Get(U64 uuid)
+	inline std::shared_ptr<T> ModuleResourceManager::GetResource(U64 id)
 	{
-		auto it = m_resources.find(uuid);
+		static_assert(std::is_base_of<Resource, T>::value, "T is not derived from Resource");
+
+		auto it = m_resources.find(id);
 		if (it != m_resources.end())
 		{
 			return std::static_pointer_cast<T>((*it).second);
@@ -115,8 +124,9 @@ namespace sand
 
 	//----------------------------------------------------------------------------------------------------
 	template<class T>
-	inline std::shared_ptr<T> ModuleResourceManager::Get(const char* file, const char* dir)
+	inline std::shared_ptr<T> ModuleResourceManager::GetResource(const char* file, const char* dir)
 	{
+		static_assert(std::is_base_of<Resource, T>::value, "T is not derived from Resource");
 		assert(file != nullptr && dir != nullptr);
 
 		for (auto resource : m_resources)

@@ -29,8 +29,8 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	void StatesSetup()
 	{
-		U64 id = g_engine->GetFSM().Add(std::make_shared<GameplayState>());
-		g_engine->GetFSM().Change(id);
+		U64 id = g_engine->GetFSM().AddState(std::make_shared<GameplayState>());
+		g_engine->GetFSM().ChangeState(id);
 	}
 }
 

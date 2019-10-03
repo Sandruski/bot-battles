@@ -13,13 +13,14 @@ namespace sand
 	class ModuleTextureImporter : public Module
 	{
 	public:
+		static const char* GetName();
+
+	public:
 		ModuleTextureImporter();
 		~ModuleTextureImporter() override;
 
 		bool StartUp() override;
 		bool ShutDown() override;
-
-		const char* GetName() const override;
 
 		SDL_Texture* Load(const char* path) const;
 		void UnLoad(SDL_Texture* texture);

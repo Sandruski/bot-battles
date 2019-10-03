@@ -15,6 +15,12 @@ namespace sand
 {
 
 	//----------------------------------------------------------------------------------------------------
+	const char* ModuleRenderer::GetName()
+	{
+		return "Renderer";
+	}
+
+	//----------------------------------------------------------------------------------------------------
 	ModuleRenderer::ModuleRenderer() : Module(true),
 		m_renderer(nullptr), 
 		m_backgroundColor(Black),
@@ -55,12 +61,6 @@ namespace sand
 		m_renderer = nullptr;
 
 		return true;
-	}
-
-	//----------------------------------------------------------------------------------------------------
-	const char* ModuleRenderer::GetName() const
-	{
-		return "Renderer";
 	}
 
 	//----------------------------------------------------------------------------------------------------

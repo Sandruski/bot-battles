@@ -12,6 +12,12 @@ namespace sand
 {
 
 	//----------------------------------------------------------------------------------------------------
+	const char* ModuleTextureImporter::GetName()
+	{
+		return "TextureImporter";
+	}
+
+	//----------------------------------------------------------------------------------------------------
 	ModuleTextureImporter::ModuleTextureImporter() : Module(true), 
 		m_isInitOk(false)
 	{
@@ -41,12 +47,6 @@ namespace sand
 	bool ModuleTextureImporter::ShutDown()
 	{
 		return true;
-	}
-
-	//----------------------------------------------------------------------------------------------------
-	const char* ModuleTextureImporter::GetName() const
-	{
-		return "TextureImporter";
 	}
 
 	//----------------------------------------------------------------------------------------------------

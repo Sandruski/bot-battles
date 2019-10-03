@@ -10,11 +10,17 @@
 namespace sand
 {
 
+	using StateID = U64;
+
 	class State;
 
 	//----------------------------------------------------------------------------------------------------
 	class ModuleFSM : public Module
 	{
+	public:
+		static const char* GetName();
+		static StateID GenerateID();
+
 	public:
 		ModuleFSM();
 		~ModuleFSM() override;
@@ -22,21 +28,18 @@ namespace sand
 		bool StartUp() override;
 		bool ShutDown() override;
 
-		const char* GetName() const override;
-
 		bool Update();
 		bool LateUpdate();
 		bool Draw();
 
-		U64 Add(std::shared_ptr<State> state);
-		bool Remove(U64 id);
-		void RemoveAll();
-		bool Change(U64 id);
+		StateID AddState(std::shared_ptr<State> state);
+		bool RemoveState(U64 id);
+		void RemoveAllStates();
+		bool ChangeState(U64 id);
 
 	private:
 		std::unordered_map<U64, std::shared_ptr<State>> m_states;
 		std::shared_ptr<State> m_currentState;
-		U64 m_id;
 	};
 }
 

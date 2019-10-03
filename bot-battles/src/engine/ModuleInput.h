@@ -26,13 +26,14 @@ namespace sand
 		};
 
 	public:
+		static const char* GetName();
+
+	public:
 		ModuleInput();
 		~ModuleInput() override;
 
 		bool StartUp() override;
 		bool ShutDown() override;
-
-		const char* GetName() const override;
 
 		bool Update();
 

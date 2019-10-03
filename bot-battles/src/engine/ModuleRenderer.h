@@ -14,13 +14,14 @@ namespace sand
 	class ModuleRenderer : public Module
 	{
 	public:
+		static const char* GetName();
+
+	public:
 		ModuleRenderer();
 		~ModuleRenderer() override;
 
 		bool StartUp() override;
 		bool ShutDown() override;
-
-		const char* GetName() const override;
 
 		bool Draw() const;
 

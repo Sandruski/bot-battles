@@ -9,10 +9,23 @@ namespace sand
 {
 
 	//----------------------------------------------------------------------------------------------------
+	const char* ModuleFSM::GetName()
+	{
+		return "FSM";
+	}
+
+	//----------------------------------------------------------------------------------------------------
+	StateID ModuleFSM::GenerateID()
+	{
+		static StateID currentID = 0;
+		++currentID;
+		return currentID;
+	}
+
+	//----------------------------------------------------------------------------------------------------
 	ModuleFSM::ModuleFSM() : Module(true),
 		m_states(),
-		m_currentState(),
-		m_id(0)
+		m_currentState()
 	{
 	}
 
@@ -30,15 +43,9 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	bool ModuleFSM::ShutDown()
 	{
-		RemoveAll();
+		RemoveAllStates();
 
 		return true;
-	}
-
-	//----------------------------------------------------------------------------------------------------
-	const char* ModuleFSM::GetName() const
-	{
-		return "FSM";
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -75,16 +82,15 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	U64 ModuleFSM::Add(std::shared_ptr<State> state)
+	U64 ModuleFSM::AddState(std::shared_ptr<State> state)
 	{
 		assert(state != nullptr);
 
-		auto inserted = m_states.insert(std::make_pair(m_id, state));
+		StateID id = GenerateID();
+		auto inserted = m_states.insert(std::make_pair(id, state));
 		if (inserted.second)
 		{
 			inserted.first->second->Create();
-
-			++m_id;
 		}
 		else
 		{
@@ -95,7 +101,7 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	bool ModuleFSM::Remove(U64 id)
+	bool ModuleFSM::RemoveState(U64 id)
 	{
 		auto it = m_states.find(id);
 		if (it == m_states.end())
@@ -117,7 +123,7 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	void ModuleFSM::RemoveAll()
+	void ModuleFSM::RemoveAllStates()
 	{
 		if (m_currentState != nullptr)
 		{
@@ -133,7 +139,7 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	bool ModuleFSM::Change(U64 id)
+	bool ModuleFSM::ChangeState(U64 id)
 	{
 		auto it = m_states.find(id);
 		if (it == m_states.end())
