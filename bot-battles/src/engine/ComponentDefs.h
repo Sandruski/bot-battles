@@ -8,18 +8,19 @@ namespace sand
 
 	using ComponentID = std::size_t;
 
-	enum ComponentType
+	enum class ComponentType
 	{
 		TRANSFORM,
 		SPRITE,
 
 		RENDERER,
+		INPUT,
 
 		COMPONENT_COUNT,
 		COMPONENT_INVALID
 	};
 
-	const ComponentID MAX_COMPONENTS = ComponentType::COMPONENT_COUNT;
+	const std::size_t MAX_COMPONENTS = static_cast<ComponentID>(ComponentType::COMPONENT_COUNT);
 	const ComponentID INVALID_COMPONENT = MAX_COMPONENTS;
 }
 

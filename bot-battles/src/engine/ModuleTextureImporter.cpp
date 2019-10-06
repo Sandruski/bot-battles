@@ -65,7 +65,7 @@ namespace sand
 			return texture;
 		}
 
-		RendererComponent& renderer = g_game->GetComponentManager().GetSingletonComponent<RendererComponent>();
+		RendererComponent& renderer = g_game->GetRendererComponent();
 
 		texture = SDL_CreateTextureFromSurface(renderer.m_renderer, surface);
 		if (texture == nullptr)

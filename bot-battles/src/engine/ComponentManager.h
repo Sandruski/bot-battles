@@ -16,7 +16,6 @@ namespace sand
 	struct Component;
 	struct TransformComponent;
 	struct SpriteComponent;
-	struct RendererComponent;
 
 	//----------------------------------------------------------------------------------------------------
 	template<class T>
@@ -50,13 +49,10 @@ namespace sand
 		bool RemoveComponent(EntityID entityID);
 		template<class T>
 		const T& GetComponent(EntityID entityID);
-		template<class T>
-		T& GetSingletonComponent();
 
 	private:
 		std::unique_ptr<ComponentArray<TransformComponent>> m_transform;
 		std::unique_ptr<ComponentArray<SpriteComponent>> m_sprite;
-		std::unique_ptr<RendererComponent> m_renderer;
 	};
 }
 

@@ -20,8 +20,8 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	RendererSystem::RendererSystem()
 	{
-		m_signature.set(ComponentType::TRANSFORM);
-		m_signature.set(ComponentType::SPRITE);
+		m_signature.set(static_cast<size_t>(ComponentType::TRANSFORM));
+		m_signature.set(static_cast<size_t>(ComponentType::SPRITE));
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -32,7 +32,7 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	bool RendererSystem::StartUp()
 	{
-		RendererComponent& renderer = g_game->GetComponentManager().GetSingletonComponent<RendererComponent>();
+		RendererComponent& renderer = g_game->GetRendererComponent();
 		
 		renderer.m_renderer = SDL_CreateRenderer(g_game->GetWindow().GetWindow(), -1, SDL_RENDERER_ACCELERATED);
 		if (renderer.m_renderer == nullptr)
@@ -45,20 +45,9 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	bool RendererSystem::ShutDown()
-	{
-		RendererComponent& renderer = g_game->GetComponentManager().GetSingletonComponent<RendererComponent>();
-
-		SDL_DestroyRenderer(renderer.m_renderer);
-		renderer.m_renderer = nullptr;
-
-		return true;
-	}
-
-	//----------------------------------------------------------------------------------------------------
 	bool RendererSystem::Render()
 	{
-		RendererComponent& renderer = g_game->GetComponentManager().GetSingletonComponent<RendererComponent>();
+		RendererComponent& renderer = g_game->GetRendererComponent();
 
 		BeginDraw(renderer);
 
@@ -105,6 +94,18 @@ namespace sand
 		}
 
 		EndDraw(renderer);
+
+		return true;
+	}
+
+
+	//----------------------------------------------------------------------------------------------------
+	bool RendererSystem::ShutDown()
+	{
+		RendererComponent& renderer = g_game->GetRendererComponent();
+
+		SDL_DestroyRenderer(renderer.m_renderer);
+		renderer.m_renderer = nullptr;
 
 		return true;
 	}

@@ -1,5 +1,5 @@
-#ifndef __VECTOR_3_H__
-#define __VECTOR_3_H__
+#ifndef __VECTOR_2_H__
+#define __VECTOR_2_H__
 
 #include "Memory.h"
 
@@ -7,32 +7,29 @@ namespace sand
 {
 
 	//----------------------------------------------------------------------------------------------------
-	class Vector3
+	class Vector2
 	{
 	public:
-		Vector3();
-		Vector3(F32 x, F32 y, F32 z);
-		~Vector3();
+		Vector2();
+		Vector2(F32 x, F32 y);
+		~Vector2();
 
-		void operator+=(const Vector3& vector)
+		void operator+=(const Vector2& vector)
 		{
 			x += vector.x;
 			y += vector.y;
-			z += vector.z;
 		}
 
-		void operator-=(const Vector3& vector)
+		void operator-=(const Vector2& vector)
 		{
 			x -= vector.x;
 			y -= vector.y;
-			z -= vector.z;
 		}
 
 		void operator*=(F32 value)
 		{
 			x *= value;
 			y *= value;
-			z *= value;
 		}
 
 		void operator/=(F32 value)
@@ -41,25 +38,23 @@ namespace sand
 			{
 				x /= value;
 				y /= value;
-				z /= value;
 			}
 		}
 
 	public:
-		static const Vector3 zero;
-		static const Vector3 one;
+		static const Vector2 zero;
+		static const Vector2 one;
 
 	public:
 
 		union {
-			struct 
+			struct
 			{
 				F32 x;
 				F32 y;
-				F32 z;
 			};
 
-			F32 coord[3];
+			F32 coord[2];
 		};
 	};
 }

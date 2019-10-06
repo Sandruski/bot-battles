@@ -1,4 +1,8 @@
-#include "ModuleInput.h"
+#include "InputSystem.h"
+
+#include "Game.h"
+#include "ComponentManager.h"
+#include "InputComponent.h"
 
 #include "Log.h"
 #include "Defines.h"
@@ -11,113 +15,84 @@ namespace sand
 {
 
 	//----------------------------------------------------------------------------------------------------
-	const char* ModuleInput::GetName()
-	{
-		return "Input";
-	}
-
-	//----------------------------------------------------------------------------------------------------
-	ModuleInput::ModuleInput() : Module(true),
-		m_mousePosition(),
-		m_isInitOk(false)
-	{
-		memset(m_keyboard, static_cast<int>(KeyState::KEY_IDLE), sizeof(KeyState) * SDL_NUM_SCANCODES);
-		memset(m_mouse, static_cast<int>(KeyState::KEY_IDLE), sizeof(KeyState) * SDL_BUTTON_X2);
-	}
-
-	//----------------------------------------------------------------------------------------------------
-	ModuleInput::~ModuleInput()
+	InputSystem::InputSystem()
 	{
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	bool ModuleInput::StartUp()
+	InputSystem::~InputSystem()
+	{
+	}
+
+	//----------------------------------------------------------------------------------------------------
+	bool InputSystem::StartUp()
 	{
 		if (SDL_Init(SDL_INIT_EVENTS) == SDL_ERROR)
 		{
 			LOG("SDL events subsystem could not be initialized! SDL Error: %s", SDL_GetError());
-			return m_isInitOk;
-		}
-
-		m_isInitOk = true;
-
-		return m_isInitOk;
-	}
-
-	//----------------------------------------------------------------------------------------------------
-	bool ModuleInput::ShutDown()
-	{
-		if (!m_isInitOk)
-		{
 			return false;
 		}
-
-		LOG("Quitting SDL events subsystem");
-		SDL_QuitSubSystem(SDL_INIT_EVENTS);
 
 		return true;
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	bool ModuleInput::Update()
+	bool InputSystem::Update(F32 /*dt*/)
 	{
-		if (!m_isInitOk)
-		{
-			return false;
-		}
+		InputComponent& input = g_game->GetInputComponent();
 
 		const U8* keyboardState = SDL_GetKeyboardState(nullptr);
 		for (U16 i = 0; i < SDL_NUM_SCANCODES; ++i)
 		{
 			if (keyboardState[i] == SDL_KEY_PRESSED)
 			{
-				if (m_keyboard[i] == KeyState::KEY_IDLE)
+				if (input.m_keyboard[i] == InputComponent::KeyState::KEY_IDLE)
 				{
-					m_keyboard[i] = KeyState::KEY_DOWN;
+					input.m_keyboard[i] = InputComponent::KeyState::KEY_DOWN;
 				}
 				else
 				{
-					m_keyboard[i] = KeyState::KEY_REPEAT;
+					input.m_keyboard[i] = InputComponent::KeyState::KEY_REPEAT;
 				}
 			}
 			else
 			{
-				if (m_keyboard[i] == KeyState::KEY_DOWN
-					|| m_keyboard[i] == KeyState::KEY_REPEAT)
+				if (input.m_keyboard[i] == InputComponent::KeyState::KEY_DOWN
+					|| input.m_keyboard[i] == InputComponent::KeyState::KEY_REPEAT)
 				{
-					m_keyboard[i] = KeyState::KEY_UP;
+					input.m_keyboard[i] = InputComponent::KeyState::KEY_UP;
 				}
 				else
 				{
-					m_keyboard[i] = KeyState::KEY_IDLE;
+					input.m_keyboard[i] = InputComponent::KeyState::KEY_IDLE;
 				}
 			}
 		}
 
-		U32 mouseState = SDL_GetMouseState(&m_mousePosition[0], &m_mousePosition[1]);
+		U32 mouseState = SDL_GetMouseState(&input.m_mousePosition.x, &input.m_mousePosition.y);
 		for (U8 i = 0; i < SDL_BUTTON_X2; ++i)
 		{
 			if (mouseState & SDL_BUTTON(i + SDL_BUTTON_LEFT))
 			{
-				if (m_mouse[i] == KeyState::KEY_IDLE)
+				if (input.m_mouse[i] == InputComponent::KeyState::KEY_IDLE)
 				{
-					m_mouse[i] = KeyState::KEY_DOWN;
+					input.m_mouse[i] = InputComponent::KeyState::KEY_DOWN;
 				}
 				else
 				{
-					m_mouse[i] = KeyState::KEY_REPEAT;
+					input.m_mouse[i] = InputComponent::KeyState::KEY_REPEAT;
 				}
 			}
 			else
 			{
-				if (m_mouse[i] == KeyState::KEY_DOWN
-					|| m_mouse[i] == KeyState::KEY_REPEAT)
+				if (input.m_mouse[i] == InputComponent::KeyState::KEY_DOWN
+					|| input.m_mouse[i] == InputComponent::KeyState::KEY_REPEAT)
 				{
-					m_mouse[i] = KeyState::KEY_UP;
+					input.m_mouse[i] = InputComponent::KeyState::KEY_UP;
 				}
 				else
 				{
-					m_mouse[i] = KeyState::KEY_IDLE;
+					input.m_mouse[i] = InputComponent::KeyState::KEY_IDLE;
 				}
 			}
 		}
@@ -177,16 +152,11 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	ModuleInput::KeyState ModuleInput::GetKey(U32 key)
+	bool InputSystem::ShutDown()
 	{
-		assert(key > SDL_SCANCODE_UNKNOWN && key < SDL_NUM_SCANCODES);
-		return m_keyboard[key];
-	}
+		LOG("Quitting SDL events subsystem");
+		SDL_QuitSubSystem(SDL_INIT_EVENTS);
 
-	//----------------------------------------------------------------------------------------------------
-	ModuleInput::KeyState ModuleInput::GetMouseButton(U8 button)
-	{
-		assert(button >= SDL_BUTTON_LEFT && button <= SDL_BUTTON_X2);
-		return m_mouse[button - SDL_BUTTON_LEFT];
+		return true;
 	}
 }

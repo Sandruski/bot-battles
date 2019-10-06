@@ -2,6 +2,7 @@
 #define __SYSTEM_H__
 
 #include "Memory.h"
+#include "SystemDefs.h"
 #include "ComponentDefs.h"
 
 #include <bitset>
@@ -16,6 +17,9 @@ namespace sand
 	class System
 	{
 	public:
+		static SystemType GetType() { return SystemType::SYSTEM_INVALID; }
+
+	public:
 		System();
 		virtual ~System();
 
@@ -24,12 +28,12 @@ namespace sand
 			return true; 
 		}
 
-		virtual bool Update(F32 dt) 
+		virtual bool Update(F32 /*dt*/) 
 		{
 			return true;
 		}
 
-		virtual bool LateUpdate(F32 dt)
+		virtual bool LateUpdate(F32 /*dt*/)
 		{
 			return true;
 		}

@@ -4,6 +4,7 @@
 #include "TransformComponent.h"
 #include "SpriteComponent.h"
 #include "RendererComponent.h"
+#include "InputComponent.h"
 
 #include "Log.h"
 
@@ -107,7 +108,6 @@ namespace sand
 	{
 		m_transform = std::make_unique<ComponentArray<TransformComponent>>();
 		m_sprite = std::make_unique<ComponentArray<SpriteComponent>>();
-		m_renderer = std::make_unique<RendererComponent>(0);
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -138,7 +138,9 @@ namespace sand
 		}
 
 		default:
+		{
 			break;
+		}
 		}
 
 		return INVALID_COMPONENT;
@@ -167,7 +169,9 @@ namespace sand
 		}
 
 		default:
+		{
 			break;
+		}
 		}
 
 		return false;
@@ -193,31 +197,11 @@ namespace sand
 		}
 
 		default:
+		{
 			break;
+		}
 		}
 
 		return INVALID_COMPONENT;
-	}
-
-	//----------------------------------------------------------------------------------------------------
-	template RendererComponent& ComponentManager::GetSingletonComponent<RendererComponent>();
-
-	template<class T>
-	T& ComponentManager::GetSingletonComponent()
-	{
-		static_assert(std::is_base_of<Component, T>::value, "T is not derived from Component");
-
-		switch (T::GetType())
-		{
-		case ComponentType::RENDERER:
-		{
-			return *m_renderer;
-		}
-
-		default:
-			break;
-		}
-
-		return *m_renderer;
 	}
 }

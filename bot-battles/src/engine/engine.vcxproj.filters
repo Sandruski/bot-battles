@@ -64,15 +64,15 @@
     <Filter Include="Archivos de origen\Entities">
       <UniqueIdentifier>{0d20d7b4-bad6-47f4-adbe-d5dac738fa0c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Archivos de origen\Components\Singletons">
+      <UniqueIdentifier>{89fd6716-c4d4-460a-90bb-70b7d5e14a4a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
     <ClCompile Include="ModuleFSM.cpp">
-      <Filter>Archivos de origen\Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="ModuleInput.cpp">
       <Filter>Archivos de origen\Modules</Filter>
     </ClCompile>
     <ClCompile Include="ModuleResourceManager.cpp">
@@ -120,6 +120,21 @@
     <ClCompile Include="ComponentManager.cpp">
       <Filter>Archivos de origen\Components</Filter>
     </ClCompile>
+    <ClCompile Include="InputSystem.cpp">
+      <Filter>Archivos de origen\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector2.cpp">
+      <Filter>Archivos de origen\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="InputComponent.cpp">
+      <Filter>Archivos de origen\Components\Singletons</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector2Int.h">
+      <Filter>Archivos de encabezado\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector2Int.cpp">
+      <Filter>Archivos de origen\Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="State.h">
@@ -129,9 +144,6 @@
       <Filter>Archivos de encabezado\Modules</Filter>
     </ClInclude>
     <ClInclude Include="ModuleFSM.h">
-      <Filter>Archivos de encabezado\Modules</Filter>
-    </ClInclude>
-    <ClInclude Include="ModuleInput.h">
       <Filter>Archivos de encabezado\Modules</Filter>
     </ClInclude>
     <ClInclude Include="ModuleResourceManager.h">
@@ -208,6 +220,18 @@
     </ClInclude>
     <ClInclude Include="ComponentManager.h">
       <Filter>Archivos de encabezado\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="SystemDefs.h">
+      <Filter>Archivos de encabezado\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="InputSystem.h">
+      <Filter>Archivos de encabezado\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="InputComponent.h">
+      <Filter>Archivos de encabezado\Components\Singletons</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector2.h">
+      <Filter>Archivos de encabezado\Math</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

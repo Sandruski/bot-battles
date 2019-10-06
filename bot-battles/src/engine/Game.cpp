@@ -2,13 +2,18 @@
 #include "ModuleTextureImporter.h"
 #include "ModuleResourceManager.h"
 #include "ModuleWindow.h"
-#include "ModuleInput.h"
 #include "ModuleFSM.h"
 
 #include "EntityManager.h"
 #include "ComponentManager.h"
 
+#include "RendererComponent.h"
+#include "InputComponent.h"
+
 #include "RendererSystem.h"
+#include "InputSystem.h"
+
+#include "SystemDefs.h"
 
 #include <SDL.h>
 
@@ -22,7 +27,6 @@ namespace sand
 		m_isRunning(false)
 	{
 		m_window = std::make_unique<ModuleWindow>();
-		m_input = std::make_unique<ModuleInput>();
 		m_textureImporter = std::make_unique<ModuleTextureImporter>();
 		m_resourceManager = std::make_unique<ModuleResourceManager>();
 		m_fsm = std::make_unique<ModuleFSM>();
@@ -30,7 +34,12 @@ namespace sand
 		m_entityManager = std::make_unique<EntityManager>();
 		m_componentManager = std::make_unique<ComponentManager>();
 
-		m_renderer = std::make_unique<RendererSystem>();
+		m_rendererComponent = std::make_unique<RendererComponent>(0);
+		m_inputComponent = std::make_unique<InputComponent>(0);
+
+		m_systems.reserve(MAX_SYSTEMS);
+		m_systems.push_back(std::make_unique<RendererSystem>());
+		m_systems.push_back(std::make_unique<InputSystem>());
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -41,19 +50,13 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	bool Game::Init()
 	{
+		bool ret = true;
+		for (U32 i = 0; i < m_systems.size() && ret; ++i)
+		{
+			ret = m_systems[i]->StartUp();
+		}
+
 		m_isInitOk = m_window->StartUp();
-		if (!m_isInitOk)
-		{
-			return false;
-		}
-
-		m_isInitOk = m_input->StartUp();
-		if (!m_isInitOk)
-		{
-			return false;
-		}
-
-		m_isInitOk = m_renderer->StartUp();
 		if (!m_isInitOk)
 		{
 			return false;
@@ -91,16 +94,16 @@ namespace sand
 	// game loop
 	bool Game::Update()
 	{
-		if (!m_isInitOk)
+		bool ret = true;
+		for (U32 i = 0; i < m_systems.size() && ret; ++i)
 		{
-			return false;
+			ret = m_systems[i]->Update(12); // TODO DT
 		}
-
-		bool ret = m_input->m_isActive && m_input->Update();
 		if (!ret)
 		{
 			return false;
 		}
+
 #ifdef _RELEASE
 		else if (!m_isRunning)
 		{
@@ -126,18 +129,19 @@ namespace sand
 			return false;
 		}
 
-		return true;
+		return ret;
 	}
 
 	//----------------------------------------------------------------------------------------------------
 	bool Game::End()
 	{
-		if (!m_isInitOk)
+		bool ret = true;
+		for (U32 i = m_systems.size() - 1; i > 0 && ret; --i)
 		{
-			return false;
+			ret = m_systems[i]->ShutDown();
 		}
 
-		bool ret = m_fsm->ShutDown();
+		ret = m_fsm->ShutDown();
 		if (!ret)
 		{
 			return false;
@@ -155,65 +159,37 @@ namespace sand
 			return false;
 		}
 
-		ret = m_renderer->ShutDown();
-		if (!ret)
-		{
-			return false;
-		}
-
-		ret = m_input->ShutDown();
-		if (!ret)
-		{
-			return false;
-		}
-
 		ret = m_window->ShutDown();
 		if (!ret)
 		{
 			return false;
 		}
 
-		return true;
+		return ret;
 	}
 
 	//----------------------------------------------------------------------------------------------------
 	bool Game::LateUpdate()
 	{
-		if (!m_isInitOk)
+		bool ret = true;
+		for (U32 i = 0; i < m_systems.size() && ret; ++i)
 		{
-			return false;
+			ret = m_systems[i]->LateUpdate(12); // TODO DT
 		}
 
-		bool ret = m_fsm->m_isActive && m_fsm->LateUpdate();
-		if (!ret)
-		{
-			return false;
-		}
-
-		return true;
+		return ret;
 	}
 
 	//----------------------------------------------------------------------------------------------------
 	bool Game::Render()
 	{
-		if (!m_isInitOk)
+		bool ret = true;
+		for (U32 i = 0; i < m_systems.size() && ret; ++i)
 		{
-			return false;
+			ret = m_systems[i]->Render();
 		}
 
-		bool ret = m_renderer->Render();
-		if (!ret)
-		{
-			return false;
-		}
-
-		ret = m_fsm->m_isActive && m_fsm->Draw();
-		if (!ret)
-		{
-			return false;
-		}
-
-		return true;
+		return ret;
 	}
 
 	//----------------------------------------------------------------------------------------------------

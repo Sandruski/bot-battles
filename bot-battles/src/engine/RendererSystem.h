@@ -12,6 +12,9 @@ namespace sand
 	class RendererSystem : public System
 	{
 	public:
+		static SystemType GetType() { return SystemType::INPUT; }
+
+	public:
 		RendererSystem();
 		~RendererSystem() override;
 
