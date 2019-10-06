@@ -12,7 +12,7 @@ namespace sand
 	class RendererSystem : public System
 	{
 	public:
-		static SystemType GetType() { return SystemType::INPUT; }
+		static SystemType GetType() { return SystemType::RENDERER; }
 
 	public:
 		RendererSystem();
