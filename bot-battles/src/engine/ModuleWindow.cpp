@@ -1,5 +1,6 @@
 #include "ModuleWindow.h"
-#include "Engine.h"
+
+#include "Game.h"
 
 #include "Log.h"
 #include "Memory.h"
@@ -40,7 +41,7 @@ namespace sand
 			return m_isInitOk;
 		}
 
-		m_window = SDL_CreateWindow(g_engine->GetName(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, m_width, m_height, SDL_WINDOW_SHOWN);
+		m_window = SDL_CreateWindow(g_game->GetName(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, m_width, m_height, SDL_WINDOW_SHOWN);
 		if (m_window == nullptr)
 		{
 			LOG("Window could not be created! SDL Error: %s", SDL_GetError());

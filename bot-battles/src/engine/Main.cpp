@@ -1,4 +1,4 @@
-#include "Engine.h"
+#include "Game.h"
 
 #include "ModuleFSM.h"
 #include "GameplayState.h"
@@ -24,13 +24,13 @@ enum MainState
 
 namespace sand
 {
-	Engine* g_engine;
+	Game* g_game;
 
 	//----------------------------------------------------------------------------------------------------
 	void StatesSetup()
 	{
-		U64 id = g_engine->GetFSM().AddState(std::make_shared<GameplayState>());
-		g_engine->GetFSM().ChangeState(id);
+		U64 id = g_game->GetFSM().AddState(std::make_shared<GameplayState>());
+		g_game->GetFSM().ChangeState(id);
 	}
 }
 
@@ -49,18 +49,18 @@ int main(int /*argc*/, char* /*args*/[])
 		{
 			LOG("MainState::CREATE");
 
-			sand::EngineConfiguration engineConfiguration(
+			sand::GameConfiguration gameConfiguration(
 				"Sand",
 				sand::StatesSetup
 			);
-			sand::g_engine = new sand::Engine(engineConfiguration);
-			if (sand::g_engine != nullptr)
+			sand::g_game = new sand::Game(gameConfiguration);
+			if (sand::g_game != nullptr)
 			{
 				mainState = MainState::INIT;
 			}
 			else
 			{
-				LOG("Error: could not create the engine");
+				LOG("Error: could not create the game");
 				mainState = MainState::EXIT;
 			}
 			break;
@@ -70,7 +70,7 @@ int main(int /*argc*/, char* /*args*/[])
 		{
 			LOG("MainState::INIT");
 
-			bool isInitOk = sand::g_engine->Init();
+			bool isInitOk = sand::g_game->Init();
 			if (isInitOk)
 			{
 				LOG("MainState::UPDATE");
@@ -78,7 +78,7 @@ int main(int /*argc*/, char* /*args*/[])
 			}
 			else
 			{
-				LOG("Error: could not initialize the engine");
+				LOG("Error: could not initialize the game");
 				mainState = MainState::EXIT;
 			}
 			break;
@@ -86,7 +86,7 @@ int main(int /*argc*/, char* /*args*/[])
 
 		case MainState::UPDATE:
 		{
-			bool isUpdateOk = sand::g_engine->Update();
+			bool isUpdateOk = sand::g_game->Update();
 			if (!isUpdateOk)
 			{
 				mainState = MainState::END;
@@ -98,14 +98,14 @@ int main(int /*argc*/, char* /*args*/[])
 		{
 			LOG("MainState::END");
 
-			bool isEndOk = sand::g_engine->End();
+			bool isEndOk = sand::g_game->End();
 			if (isEndOk)
 			{
 				ret = EXIT_SUCCESS;
 			}
 			else
 			{
-				LOG("Error: could not end the engine");
+				LOG("Error: could not end the game");
 			}
 
 			mainState = MainState::EXIT;
@@ -117,7 +117,7 @@ int main(int /*argc*/, char* /*args*/[])
 		{
 			LOG("MainState::EXIT");
 
-			SAFE_DELETE_POINTER(sand::g_engine);
+			SAFE_DELETE_POINTER(sand::g_game);
 
 			break;
 		}

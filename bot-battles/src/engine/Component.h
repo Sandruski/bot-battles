@@ -1,33 +1,20 @@
 #ifndef __COMPONENT_H__
 #define __COMPONENT_H__
 
-#include <memory>
+#include "ComponentDefs.h"
 
 namespace sand
 {
 
-	class Entity;
-
 	//----------------------------------------------------------------------------------------------------
-	class Component
+	struct Component
 	{
-	public:
-		Component(Entity* owner);
-		virtual ~Component();
+		static ComponentType GetType() { return ComponentType::COMPONENT_INVALID; }
 
-		std::shared_ptr<Entity> GetOwner() const
-		{
-			return m_owner;
-		}
+		Component(ComponentID id) : m_id(id) {}
+		virtual ~Component() {}
 
-		bool IsEnabled() const
-		{
-			return m_isEnabled;
-		}
-
-	private:
-		std::shared_ptr<Entity> m_owner;
-		bool m_isEnabled;
+		ComponentID m_id;
 	};
 }
 

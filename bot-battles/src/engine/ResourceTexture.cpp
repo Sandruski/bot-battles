@@ -1,6 +1,6 @@
 #include "ResourceTexture.h"
 
-#include "Engine.h"
+#include "Game.h"
 #include "ModuleTextureImporter.h"
 
 #include <cassert>
@@ -24,7 +24,7 @@ namespace sand
 	{
 		assert(m_texture == nullptr);
 
-		m_texture = g_engine->GetTextureImporter().Load(GetPath());
+		m_texture = g_game->GetTextureImporter().Load(GetPath());
 		return m_texture != nullptr;
 	}
 
@@ -33,7 +33,7 @@ namespace sand
 	{
 		assert(m_texture != nullptr);
 
-		g_engine->GetTextureImporter().UnLoad(m_texture);
+		g_game->GetTextureImporter().UnLoad(m_texture);
 		return true;
 	}
 

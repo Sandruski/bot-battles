@@ -1,11 +1,13 @@
-#include "Engine.h"
+#include "Game.h"
 #include "ModuleTextureImporter.h"
 #include "ModuleRenderer.h"
 #include "ModuleResourceManager.h"
 #include "ModuleWindow.h"
 #include "ModuleInput.h"
 #include "ModuleFSM.h"
-#include "ModuleEntityFactory.h"
+
+#include "EntityManager.h"
+#include "ComponentManager.h"
 
 #include <SDL.h>
 
@@ -13,7 +15,7 @@ namespace sand
 {
 
 	//----------------------------------------------------------------------------------------------------
-	Engine::Engine(const EngineConfiguration& configuration) :
+	Game::Game(const GameConfiguration& configuration) :
 		m_configuration(configuration), 
 		m_isInitOk(false),
 		m_isRunning(false)
@@ -23,17 +25,19 @@ namespace sand
 		m_renderer = std::make_unique<ModuleRenderer>();
 		m_textureImporter = std::make_unique<ModuleTextureImporter>();
 		m_resourceManager = std::make_unique<ModuleResourceManager>();
-		m_entityFactory = std::make_unique<ModuleEntityFactory>();
 		m_fsm = std::make_unique<ModuleFSM>();
+
+		m_entityManager = std::make_unique<EntityManager>();
+		m_componentManager = std::make_unique<ComponentManager>();
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	Engine::~Engine() 
+	Game::~Game()
 	{
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	bool Engine::Init() 
+	bool Game::Init()
 	{
 		m_isInitOk = m_window->StartUp();
 		if (!m_isInitOk)
@@ -65,12 +69,6 @@ namespace sand
 			return false;
 		}
 
-		m_isInitOk = m_entityFactory->StartUp();
-		if (!m_isInitOk)
-		{
-			return false;
-		}
-
 		m_isInitOk = m_fsm->StartUp();
 		if (!m_isInitOk)
 		{
@@ -89,7 +87,7 @@ namespace sand
 
 	//----------------------------------------------------------------------------------------------------
 	// game loop
-	bool Engine::Update() 
+	bool Game::Update()
 	{
 		if (!m_isInitOk)
 		{
@@ -130,7 +128,7 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	bool Engine::End() 
+	bool Game::End()
 	{
 		if (!m_isInitOk)
 		{
@@ -138,12 +136,6 @@ namespace sand
 		}
 
 		bool ret = m_fsm->ShutDown();
-		if (!ret)
-		{
-			return false;
-		}
-			
-		m_entityFactory->ShutDown();
 		if (!ret)
 		{
 			return false;
@@ -183,7 +175,7 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	bool Engine::LateUpdate()
+	bool Game::LateUpdate()
 	{
 		if (!m_isInitOk)
 		{
@@ -200,7 +192,7 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	bool Engine::Draw()
+	bool Game::Draw()
 	{
 		if (!m_isInitOk)
 		{
@@ -223,21 +215,21 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	EngineConfiguration::EngineConfiguration() :
+	GameConfiguration::GameConfiguration() :
 		name(nullptr),
 		StatesSetup(nullptr)
 	{
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	EngineConfiguration::EngineConfiguration(const char* name, std::function<void()> StatesSetup) :
+	GameConfiguration::GameConfiguration(const char* name, std::function<void()> StatesSetup) :
 		name(name),
 		StatesSetup(StatesSetup)
 	{
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	EngineConfiguration::EngineConfiguration(const EngineConfiguration& configuration) :
+	GameConfiguration::GameConfiguration(const GameConfiguration& configuration) :
 		name(configuration.name),
 		StatesSetup(configuration.StatesSetup)
 	{

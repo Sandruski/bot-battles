@@ -2,7 +2,6 @@
 #define __COMPONENT_TRANSFORM_H__
 
 #include "Component.h"
-#include "ComponentTypes.h"
 
 #include "Vector3.h"
 
@@ -10,17 +9,14 @@ namespace sand
 {
 
 	//----------------------------------------------------------------------------------------------------
-	class ComponentTransform : public Component
+	struct ComponentTransform : public Component
 	{
-	public:
-		static ComponentType GetType();
+		static ComponentType GetType() { return ComponentType::TRANSFORM; }
 
-	public:
-		ComponentTransform(Entity* owner);
-		~ComponentTransform() override;
+		ComponentTransform(ComponentID id) : Component(id) {}
+		~ComponentTransform() override {}
 
-	public:
-		Vector3 position;
+		Vector3 m_position;
 	};
 }
 

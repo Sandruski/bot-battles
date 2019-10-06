@@ -1,10 +1,13 @@
 #include "GameplayState.h"
 
-#include "Engine.h"
+#include "Game.h"
 #include "ModuleResourceManager.h"
 #include "ResourceTexture.h"
 #include "ModuleFSM.h"
-#include "ModuleEntityFactory.h"
+
+#include "EntityManager.h"
+#include "ComponentManager.h"
+#include "ComponentTransform.h"
 
 namespace sand
 {
@@ -23,8 +26,16 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	bool GameplayState::Create()
 	{
-		m_resourceTexture = g_engine->GetResourceManager().AddResource<ResourceTexture>("baker_house.png", "../../data/textures/");
-		std::shared_ptr<Entity> myEntity = g_engine->GetEntityFactory().AddEntity();
+		m_resourceTexture = g_game->GetResourceManager().AddResource<ResourceTexture>("baker_house.png", "../../data/textures/");
+		
+		EntityID entityID = g_game->GetEntityManager().AddEntity();
+		EntityID entityID2 = g_game->GetEntityManager().AddEntity();
+		ComponentID transformID = g_game->GetComponentManager().AddComponent<ComponentTransform>(entityID);
+		ComponentID transformID2 = g_game->GetComponentManager().AddComponent<ComponentTransform>(entityID2);
+		ComponentID spriteID = g_game->GetComponentManager().AddComponent<ComponentSprite>(entityID);
+		ComponentID spriteID2 = g_game->GetComponentManager().AddComponent<ComponentSprite>(entityID2);
+
+		bool removed = g_game->GetComponentManager().RemoveComponent<ComponentTransform>(entityID);
 
 		return true;
 	}

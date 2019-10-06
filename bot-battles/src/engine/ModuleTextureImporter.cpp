@@ -1,6 +1,6 @@
 #include "ModuleTextureImporter.h"
 
-#include "Engine.h"
+#include "Game.h"
 #include "ModuleRenderer.h"
 
 #include "Log.h"
@@ -63,7 +63,7 @@ namespace sand
 			return texture;
 		}
 
-		texture = SDL_CreateTextureFromSurface(g_engine->GetRenderer().GetRenderer(), surface);
+		texture = SDL_CreateTextureFromSurface(g_game->GetRenderer().GetRenderer(), surface);
 		if (texture == nullptr)
 		{
 			LOG("Texture could not be created from file %s! SDL Error: %s", path, SDL_GetError());

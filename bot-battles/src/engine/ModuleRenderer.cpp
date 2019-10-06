@@ -1,6 +1,6 @@
 #include "ModuleRenderer.h"
 
-#include "Engine.h"
+#include "Game.h"
 #include "ModuleWindow.h"
 #include "ModuleResourceManager.h"
 #include "ResourceTexture.h"
@@ -37,7 +37,7 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	bool ModuleRenderer::StartUp()
 	{
-		m_renderer = SDL_CreateRenderer(g_engine->GetWindow().GetWindow(), -1, SDL_RENDERER_ACCELERATED);
+		m_renderer = SDL_CreateRenderer(g_game->GetWindow().GetWindow(), -1, SDL_RENDERER_ACCELERATED);
 		if (m_renderer == nullptr)
 		{
 			LOG("Renderer could not be created! SDL Error: %s", SDL_GetError());

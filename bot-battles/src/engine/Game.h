@@ -1,5 +1,5 @@
-#ifndef __ENGINE_H__
-#define __ENGINE_H__
+#ifndef __GAME_H__
+#define __GAME_H__
 
 #include <memory>
 #include <functional>
@@ -15,15 +15,17 @@ namespace sand
 	class ModuleTextureImporter;
 	class ModuleInput;
 	class ModuleResourceManager;
-	class ModuleEntityFactory;
 	class ModuleFSM;
 
+	class EntityManager;
+	class ComponentManager;
+
 	//----------------------------------------------------------------------------------------------------
-	struct EngineConfiguration 
+	struct GameConfiguration
 	{
-		EngineConfiguration();
-		EngineConfiguration(const char* name, std::function<void()> StatesSetup);
-		EngineConfiguration(const EngineConfiguration& configuration);
+		GameConfiguration();
+		GameConfiguration(const char* name, std::function<void()> StatesSetup);
+		GameConfiguration(const GameConfiguration& configuration);
 
 		const char* name;
 		std::function<void()> StatesSetup;
@@ -31,11 +33,11 @@ namespace sand
 
 	//----------------------------------------------------------------------------------------------------
 	// single point of contact
-	class Engine
+	class Game
 	{
 	public:
-		Engine(const EngineConfiguration& configuration);
-		virtual ~Engine();
+		Game(const GameConfiguration& configuration);
+		virtual ~Game();
 
 		bool Init();
 		bool Update();
@@ -46,8 +48,10 @@ namespace sand
 		ModuleTextureImporter& GetTextureImporter() const { return *m_textureImporter; }
 		ModuleInput& GetInput() const { return *m_input; }
 		ModuleResourceManager& GetResourceManager() const { return *m_resourceManager; }
-		ModuleEntityFactory& GetEntityFactory() const { return *m_entityFactory; }
 		ModuleFSM& GetFSM() const { return *m_fsm; }
+
+		EntityManager& GetEntityManager() const { return *m_entityManager; }
+		ComponentManager& GetComponentManager() const { return *m_componentManager; }
 
 		const char* GetName() const { return m_configuration.name; }
 
@@ -56,21 +60,23 @@ namespace sand
 		bool Draw();
 
 	private:
-		EngineConfiguration m_configuration;
+		GameConfiguration m_configuration;
 
 		std::unique_ptr<ModuleWindow> m_window;
 		std::unique_ptr<ModuleRenderer> m_renderer;
 		std::unique_ptr<ModuleTextureImporter> m_textureImporter;
 		std::unique_ptr<ModuleInput> m_input;
 		std::unique_ptr<ModuleResourceManager> m_resourceManager;
-		std::unique_ptr<ModuleEntityFactory> m_entityFactory;
 		std::unique_ptr<ModuleFSM> m_fsm;
+
+		std::unique_ptr<EntityManager> m_entityManager;
+		std::unique_ptr<ComponentManager> m_componentManager;
 
 		bool m_isInitOk;
 		bool m_isRunning;
 	};
 
-	extern Engine* g_engine;
+	extern Game* g_game;
 }
 
 #endif
