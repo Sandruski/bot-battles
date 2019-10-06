@@ -1,5 +1,5 @@
-#ifndef __COMPONENT_RENDERER_H__
-#define __COMPONENT_RENDERER_H__
+#ifndef __RENDERER_COMPONENT_H__
+#define __RENDERER_COMPONENT_H__
 
 #include "Component.h"
 
@@ -11,16 +11,16 @@ namespace sand
 {
 
 	//----------------------------------------------------------------------------------------------------
-	struct ComponentRenderer : public Component
+	struct RendererComponent : public Component
 	{
 		static ComponentType GetType() { return ComponentType::RENDERER; }
 
-		ComponentRenderer(ComponentID id) : Component(id),
+		RendererComponent(ComponentID id) : Component(id),
 			m_renderer(nullptr),
 			m_backgroundColor(),
 			m_isDebugDraw(false)
 		{}
-		~ComponentRenderer() override {}
+		~RendererComponent() override {}
 
 		SDL_Renderer* m_renderer;
 		SDL_Color m_backgroundColor;

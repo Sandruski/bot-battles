@@ -1,5 +1,5 @@
-#ifndef __COMPONENT_SPRITE_H__
-#define __COMPONENT_SPRITE_H__
+#ifndef __SPRITE_COMPONENT_H__
+#define __SPRITE_COMPONENT_H__
 
 #include "Component.h"
 
@@ -11,12 +11,12 @@ namespace sand
 	class ResourceTexture;
 
 	//----------------------------------------------------------------------------------------------------
-	struct ComponentSprite : public Component
+	struct SpriteComponent : public Component
 	{
 		static ComponentType GetType() { return ComponentType::SPRITE; }
 
-		ComponentSprite(ComponentID id) : Component(id) {}
-		~ComponentSprite() override {}
+		SpriteComponent(ComponentID id) : Component(id) {}
+		~SpriteComponent() override {}
 
 		std::shared_ptr<ResourceTexture> m_texture;
 	};

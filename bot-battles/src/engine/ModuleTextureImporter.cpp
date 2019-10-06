@@ -1,10 +1,9 @@
 #include "ModuleTextureImporter.h"
 
 #include "Game.h"
-#include "ModuleRenderer.h"
+#include "RendererSystem.h"
 #include "ComponentManager.h"
-
-#include "ComponentRenderer.h"
+#include "RendererComponent.h"
 
 #include "Log.h"
 
@@ -66,7 +65,7 @@ namespace sand
 			return texture;
 		}
 
-		ComponentRenderer& renderer = g_game->GetComponentManager().GetSingletonComponent<ComponentRenderer>();
+		RendererComponent& renderer = g_game->GetComponentManager().GetSingletonComponent<RendererComponent>();
 
 		texture = SDL_CreateTextureFromSurface(renderer.m_renderer, surface);
 		if (texture == nullptr)

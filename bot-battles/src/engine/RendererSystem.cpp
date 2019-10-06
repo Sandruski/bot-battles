@@ -1,4 +1,4 @@
-#include "ModuleRenderer.h"
+#include "RendererSystem.h"
 
 #include "Game.h"
 #include "ModuleWindow.h"
@@ -7,7 +7,7 @@
 #include "DebugDrawer.h"
 
 #include "ComponentManager.h"
-#include "ComponentRenderer.h"
+#include "RendererComponent.h"
 
 #include "Log.h"
 #include "Colors.h"
@@ -18,25 +18,21 @@ namespace sand
 {
 
 	//----------------------------------------------------------------------------------------------------
-	const char* ModuleRenderer::GetName()
+	RendererSystem::RendererSystem()
 	{
-		return "Renderer";
+		m_signature.set(ComponentType::TRANSFORM);
+		m_signature.set(ComponentType::SPRITE);
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	ModuleRenderer::ModuleRenderer() : Module(true)
-	{
-	}
-
-	//----------------------------------------------------------------------------------------------------
-	ModuleRenderer::~ModuleRenderer()
+	RendererSystem::~RendererSystem()
 	{
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	bool ModuleRenderer::StartUp()
+	bool RendererSystem::StartUp()
 	{
-		ComponentRenderer& renderer = g_game->GetComponentManager().GetSingletonComponent<ComponentRenderer>();
+		RendererComponent& renderer = g_game->GetComponentManager().GetSingletonComponent<RendererComponent>();
 		
 		renderer.m_renderer = SDL_CreateRenderer(g_game->GetWindow().GetWindow(), -1, SDL_RENDERER_ACCELERATED);
 		if (renderer.m_renderer == nullptr)
@@ -49,9 +45,9 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	bool ModuleRenderer::ShutDown()
+	bool RendererSystem::ShutDown()
 	{
-		ComponentRenderer& renderer = g_game->GetComponentManager().GetSingletonComponent<ComponentRenderer>();
+		RendererComponent& renderer = g_game->GetComponentManager().GetSingletonComponent<RendererComponent>();
 
 		SDL_DestroyRenderer(renderer.m_renderer);
 		renderer.m_renderer = nullptr;
@@ -60,9 +56,9 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	bool ModuleRenderer::Draw() const
+	bool RendererSystem::Render()
 	{
-		ComponentRenderer& renderer = g_game->GetComponentManager().GetSingletonComponent<ComponentRenderer>();
+		RendererComponent& renderer = g_game->GetComponentManager().GetSingletonComponent<RendererComponent>();
 
 		BeginDraw(renderer);
 
@@ -73,9 +69,11 @@ namespace sand
 		4. Swap buffers
 		*/
 
-		// TODO: for auto (iterate all game objects)
-		//SDL_RenderCopy(m_renderer, gTexture, nullptr, nullptr);
-		//SDL_RenderCopy(m_renderer, g_engine->GetGame().m_resourceTexture->GetTexture(), nullptr, nullptr);
+		for (auto& entity : m_entities)
+		{
+			//SDL_RenderCopy(m_renderer, gTexture, nullptr, nullptr);
+			//SDL_RenderCopy(m_renderer, g_engine->GetGame().m_resourceTexture->GetTexture(), nullptr, nullptr);
+		}
 
 		if (renderer.m_isDebugDraw)
 		{
@@ -112,14 +110,14 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	void ModuleRenderer::BeginDraw(const ComponentRenderer& renderer) const
+	void RendererSystem::BeginDraw(const RendererComponent& renderer) const
 	{
 		SDL_SetRenderDrawColor(renderer.m_renderer, renderer.m_backgroundColor.r, renderer.m_backgroundColor.g, renderer.m_backgroundColor.b, renderer.m_backgroundColor.a);
 		SDL_RenderClear(renderer.m_renderer);
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	void ModuleRenderer::EndDraw(const ComponentRenderer& renderer) const
+	void RendererSystem::EndDraw(const RendererComponent& renderer) const
 	{
 		SDL_RenderPresent(renderer.m_renderer);
 	}

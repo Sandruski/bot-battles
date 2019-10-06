@@ -7,7 +7,9 @@
 
 #include "EntityManager.h"
 #include "ComponentManager.h"
-#include "ComponentTransform.h"
+
+#include "TransformComponent.h"
+#include "SpriteComponent.h"
 
 namespace sand
 {
@@ -30,12 +32,12 @@ namespace sand
 		
 		EntityID entityID = g_game->GetEntityManager().AddEntity();
 		EntityID entityID2 = g_game->GetEntityManager().AddEntity();
-		ComponentID transformID = g_game->GetComponentManager().AddComponent<ComponentTransform>(entityID);
-		ComponentID transformID2 = g_game->GetComponentManager().AddComponent<ComponentTransform>(entityID2);
-		ComponentID spriteID = g_game->GetComponentManager().AddComponent<ComponentSprite>(entityID);
-		ComponentID spriteID2 = g_game->GetComponentManager().AddComponent<ComponentSprite>(entityID2);
+		ComponentID transformID = g_game->GetComponentManager().AddComponent<TransformComponent>(entityID);
+		ComponentID transformID2 = g_game->GetComponentManager().AddComponent<TransformComponent>(entityID2);
+		ComponentID spriteID = g_game->GetComponentManager().AddComponent<SpriteComponent>(entityID);
+		ComponentID spriteID2 = g_game->GetComponentManager().AddComponent<SpriteComponent>(entityID2);
 
-		bool removed = g_game->GetComponentManager().RemoveComponent<ComponentTransform>(entityID);
+		bool removed = g_game->GetComponentManager().RemoveComponent<TransformComponent>(entityID);
 
 		return true;
 	}

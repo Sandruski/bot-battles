@@ -1,13 +1,9 @@
 #include "ComponentManager.h"
 
 #include "Component.h"
-#include "ComponentTransform.h"
-#include "ComponentSprite.h"
-#include "ComponentRenderer.h"
-
-#include "Game.h"
-#include "EntityManager.h"
-#include "Entity.h"
+#include "TransformComponent.h"
+#include "SpriteComponent.h"
+#include "RendererComponent.h"
 
 #include "Log.h"
 
@@ -84,8 +80,8 @@ namespace sand
 		m_entityIDsToComponentArrayIDs.erase(entityID);
 
 		ComponentID lastComponentID = lastComponent->m_id;
-		it = std::find_if(m_entityIDsToComponentArrayIDs.begin(), 
-			m_entityIDsToComponentArrayIDs.end(), 
+		it = std::find_if(m_entityIDsToComponentArrayIDs.begin(),
+			m_entityIDsToComponentArrayIDs.end(),
 			[lastComponentArrayID](const auto& value)
 			{
 				return value.second == lastComponentArrayID;
@@ -109,10 +105,9 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	ComponentManager::ComponentManager()
 	{
-		m_transform = std::make_unique<ComponentArray<ComponentTransform>>();
-		m_sprite = std::make_unique<ComponentArray<ComponentSprite>>();
-
-		m_renderer = std::make_unique<ComponentRenderer>(0);
+		m_transform = std::make_unique<ComponentArray<TransformComponent>>();
+		m_sprite = std::make_unique<ComponentArray<SpriteComponent>>();
+		m_renderer = std::make_unique<RendererComponent>(0);
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -121,8 +116,8 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	template ComponentID ComponentManager::AddComponent<ComponentTransform>(EntityID entityID);
-	template ComponentID ComponentManager::AddComponent<ComponentSprite>(EntityID entityID);
+	template ComponentID ComponentManager::AddComponent<TransformComponent>(EntityID entityID);
+	template ComponentID ComponentManager::AddComponent<SpriteComponent>(EntityID entityID);
 
 	template<class T>
 	ComponentID ComponentManager::AddComponent(EntityID entityID)
@@ -150,8 +145,8 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	template bool ComponentManager::RemoveComponent<ComponentTransform>(EntityID entityID);
-	template bool ComponentManager::RemoveComponent<ComponentSprite>(EntityID entityID);
+	template bool ComponentManager::RemoveComponent<TransformComponent>(EntityID entityID);
+	template bool ComponentManager::RemoveComponent<SpriteComponent>(EntityID entityID);
 
 	template<class T>
 	bool ComponentManager::RemoveComponent(EntityID entityID)
@@ -205,7 +200,7 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	template ComponentRenderer& ComponentManager::GetSingletonComponent<ComponentRenderer>();
+	template RendererComponent& ComponentManager::GetSingletonComponent<RendererComponent>();
 
 	template<class T>
 	T& ComponentManager::GetSingletonComponent()

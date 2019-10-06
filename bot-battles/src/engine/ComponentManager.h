@@ -14,10 +14,9 @@ namespace sand
 {
 
 	struct Component;
-	struct ComponentTransform;
-	struct ComponentSprite;
-
-	struct ComponentRenderer;
+	struct TransformComponent;
+	struct SpriteComponent;
+	struct RendererComponent;
 
 	//----------------------------------------------------------------------------------------------------
 	template<class T>
@@ -55,10 +54,9 @@ namespace sand
 		T& GetSingletonComponent();
 
 	private:
-		std::unique_ptr<ComponentArray<ComponentTransform>> m_transform;
-		std::unique_ptr<ComponentArray<ComponentSprite>> m_sprite;
-
-		std::unique_ptr<ComponentRenderer> m_renderer;
+		std::unique_ptr<ComponentArray<TransformComponent>> m_transform;
+		std::unique_ptr<ComponentArray<SpriteComponent>> m_sprite;
+		std::unique_ptr<RendererComponent> m_renderer;
 	};
 }
 

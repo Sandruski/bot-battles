@@ -1,5 +1,5 @@
-#ifndef __COMPONENT_TRANSFORM_H__
-#define __COMPONENT_TRANSFORM_H__
+#ifndef __TRANSFORM_COMPONENT_H__
+#define __TRANSFORM_COMPONENT_H__
 
 #include "Component.h"
 
@@ -9,12 +9,12 @@ namespace sand
 {
 
 	//----------------------------------------------------------------------------------------------------
-	struct ComponentTransform : public Component
+	struct TransformComponent : public Component
 	{
 		static ComponentType GetType() { return ComponentType::TRANSFORM; }
 
-		ComponentTransform(ComponentID id) : Component(id) {}
-		~ComponentTransform() override {}
+		TransformComponent(ComponentID id) : Component(id) {}
+		~TransformComponent() override {}
 
 		Vector3 m_position;
 	};

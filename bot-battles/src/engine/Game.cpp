@@ -1,6 +1,5 @@
 #include "Game.h"
 #include "ModuleTextureImporter.h"
-#include "ModuleRenderer.h"
 #include "ModuleResourceManager.h"
 #include "ModuleWindow.h"
 #include "ModuleInput.h"
@@ -8,6 +7,8 @@
 
 #include "EntityManager.h"
 #include "ComponentManager.h"
+
+#include "RendererSystem.h"
 
 #include <SDL.h>
 
@@ -22,13 +23,14 @@ namespace sand
 	{
 		m_window = std::make_unique<ModuleWindow>();
 		m_input = std::make_unique<ModuleInput>();
-		m_renderer = std::make_unique<ModuleRenderer>();
 		m_textureImporter = std::make_unique<ModuleTextureImporter>();
 		m_resourceManager = std::make_unique<ModuleResourceManager>();
 		m_fsm = std::make_unique<ModuleFSM>();
 
 		m_entityManager = std::make_unique<EntityManager>();
 		m_componentManager = std::make_unique<ComponentManager>();
+
+		m_renderer = std::make_unique<RendererSystem>();
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -118,7 +120,7 @@ namespace sand
 			return false;
 		}
 
-		ret = Draw();
+		ret = Render();
 		if (!ret)
 		{
 			return false;
@@ -192,14 +194,14 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	bool Game::Draw()
+	bool Game::Render()
 	{
 		if (!m_isInitOk)
 		{
 			return false;
 		}
 
-		bool ret = m_renderer->m_isActive && m_renderer->Draw();
+		bool ret = m_renderer->Render();
 		if (!ret)
 		{
 			return false;

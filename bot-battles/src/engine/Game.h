@@ -11,7 +11,6 @@ namespace sand
 {
 
 	class ModuleWindow;
-	class ModuleRenderer;
 	class ModuleTextureImporter;
 	class ModuleInput;
 	class ModuleResourceManager;
@@ -19,6 +18,8 @@ namespace sand
 
 	class EntityManager;
 	class ComponentManager;
+
+	class RendererSystem;
 
 	//----------------------------------------------------------------------------------------------------
 	struct GameConfiguration
@@ -44,7 +45,6 @@ namespace sand
 		bool End();
 
 		ModuleWindow& GetWindow() const { return *m_window; }
-		ModuleRenderer& GetRenderer() const { return *m_renderer; }
 		ModuleTextureImporter& GetTextureImporter() const { return *m_textureImporter; }
 		ModuleInput& GetInput() const { return *m_input; }
 		ModuleResourceManager& GetResourceManager() const { return *m_resourceManager; }
@@ -53,17 +53,18 @@ namespace sand
 		EntityManager& GetEntityManager() const { return *m_entityManager; }
 		ComponentManager& GetComponentManager() const { return *m_componentManager; }
 
+		RendererSystem& GetRenderer() const { return *m_renderer; }
+
 		const char* GetName() const { return m_configuration.name; }
 
 	private:
 		bool LateUpdate();
-		bool Draw();
+		bool Render();
 
 	private:
 		GameConfiguration m_configuration;
 
 		std::unique_ptr<ModuleWindow> m_window;
-		std::unique_ptr<ModuleRenderer> m_renderer;
 		std::unique_ptr<ModuleTextureImporter> m_textureImporter;
 		std::unique_ptr<ModuleInput> m_input;
 		std::unique_ptr<ModuleResourceManager> m_resourceManager;
@@ -71,6 +72,8 @@ namespace sand
 
 		std::unique_ptr<EntityManager> m_entityManager;
 		std::unique_ptr<ComponentManager> m_componentManager;
+
+		std::unique_ptr<RendererSystem> m_renderer;
 
 		bool m_isInitOk;
 		bool m_isRunning;

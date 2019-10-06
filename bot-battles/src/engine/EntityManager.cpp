@@ -1,10 +1,6 @@
 #include "EntityManager.h"
+
 #include "Entity.h"
-
-#include "Game.h"
-#include "ComponentManager.h"
-#include "ComponentTransform.h"
-
 #include "Log.h"
 
 #include <cassert>

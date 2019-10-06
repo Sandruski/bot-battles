@@ -1,7 +1,7 @@
 #include "DebugDrawer.h"
 
 #include "Game.h"
-#include "ModuleRenderer.h"
+#include "RendererSystem.h"
 
 #include "Log.h"
 #include "Memory.h"
