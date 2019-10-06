@@ -3,6 +3,7 @@
 #include "Component.h"
 #include "ComponentTransform.h"
 #include "ComponentSprite.h"
+#include "ComponentRenderer.h"
 
 #include "Game.h"
 #include "EntityManager.h"
@@ -35,8 +36,6 @@ namespace sand
 		{
 			m_availableComponentIDs.pop();
 		}
-
-		m_componentIDsToComponentArrayIDs.clear();
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -57,7 +56,7 @@ namespace sand
 		m_components[componentArrayID] = std::make_shared<T>(componentID);
 		++m_componentsSize;
 
-		m_entityIDsToComponentArrayIDs[entityID] = m_componentIDsToComponentArrayIDs[componentID] = componentArrayID;
+		m_entityIDsToComponentArrayIDs[entityID] = componentArrayID;
 
 		return componentID;
 	}
@@ -83,7 +82,6 @@ namespace sand
 		--m_componentsSize;
 
 		m_entityIDsToComponentArrayIDs.erase(entityID);
-		m_componentIDsToComponentArrayIDs.erase(componentID);
 
 		ComponentID lastComponentID = lastComponent->m_id;
 		it = std::find_if(m_entityIDsToComponentArrayIDs.begin(), 
@@ -92,7 +90,7 @@ namespace sand
 			{
 				return value.second == lastComponentArrayID;
 			});
-		m_entityIDsToComponentArrayIDs[it->first] = m_componentIDsToComponentArrayIDs[lastComponentID] = componentArrayID;
+		m_entityIDsToComponentArrayIDs[it->first] = componentArrayID;
 
 		m_availableComponentIDs.push(componentID);
 
@@ -111,6 +109,10 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	ComponentManager::ComponentManager()
 	{
+		m_transform = std::make_unique<ComponentArray<ComponentTransform>>();
+		m_sprite = std::make_unique<ComponentArray<ComponentSprite>>();
+
+		m_renderer = std::make_unique<ComponentRenderer>(0);
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -128,11 +130,23 @@ namespace sand
 		static_assert(std::is_base_of<Component, T>::value, "T is not derived from Component");
 		assert(entityID < INVALID_ENTITY);
 
-		ComponentType componentType = T::GetType();
-		assert(componentType < ComponentType::COMPONENT_COUNT
-			&& componentType < ComponentType::COMPONENT_INVALID);
+		switch (T::GetType())
+		{
+		case ComponentType::TRANSFORM:
+		{
+			return m_transform->AddComponent(entityID);
+		}
 
-		return m_components[componentType].AddComponent(entityID);
+		case ComponentType::SPRITE:
+		{
+			return m_sprite->AddComponent(entityID);
+		}
+
+		default:
+			break;
+		}
+
+		return INVALID_COMPONENT;
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -145,11 +159,23 @@ namespace sand
 		static_assert(std::is_base_of<Component, T>::value, "T is not derived from Component");
 		assert(entityID < INVALID_ENTITY);
 
-		ComponentType componentType = T::GetType();
-		assert(componentType < ComponentType::COMPONENT_COUNT
-			&& componentType < ComponentType::COMPONENT_INVALID);
+		switch (T::GetType())
+		{
+		case ComponentType::TRANSFORM:
+		{
+			return m_transform->RemoveComponent(entityID);
+		}
 
-		return m_components[componentType].RemoveComponent(entityID);
+		case ComponentType::SPRITE:
+		{
+			return m_sprite->RemoveComponent(entityID);
+		}
+
+		default:
+			break;
+		}
+
+		return false;
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -159,10 +185,44 @@ namespace sand
 		static_assert(std::is_base_of<Component, T>::value, "T is not derived from Component");
 		assert(entityID < INVALID_ENTITY);
 
-		ComponentType componentType = T::GetType();
-		assert(componentType < ComponentType::COMPONENT_COUNT
-			&& componentType < ComponentType::COMPONENT_INVALID);
+		switch (T::GetType())
+		{
+		case ComponentType::TRANSFORM:
+		{
+			return m_transform->GetComponent(entityID);
+		}
 
-		return m_components[componentType].GetComponent(entityID);
+		case ComponentType::SPRITE:
+		{
+			return m_sprite->GetComponent(entityID);
+		}
+
+		default:
+			break;
+		}
+
+		return INVALID_COMPONENT;
+	}
+
+	//----------------------------------------------------------------------------------------------------
+	template ComponentRenderer& ComponentManager::GetSingletonComponent<ComponentRenderer>();
+
+	template<class T>
+	T& ComponentManager::GetSingletonComponent()
+	{
+		static_assert(std::is_base_of<Component, T>::value, "T is not derived from Component");
+
+		switch (T::GetType())
+		{
+		case ComponentType::RENDERER:
+		{
+			return *m_renderer;
+		}
+
+		default:
+			break;
+		}
+
+		return *m_renderer;
 	}
 }

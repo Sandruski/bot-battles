@@ -40,6 +40,9 @@
     <Filter Include="Archivos de origen\Math">
       <UniqueIdentifier>{54438940-a85a-4e08-b1a8-56c494e33a9f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Archivos de encabezado\Components\Singletons">
+      <UniqueIdentifier>{8f29481e-57d8-4c8f-8948-ffc44ed78372}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -178,6 +181,9 @@
     </ClInclude>
     <ClInclude Include="ComponentDefs.h">
       <Filter>Archivos de encabezado\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentRenderer.h">
+      <Filter>Archivos de encabezado\Components\Singletons</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

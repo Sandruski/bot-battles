@@ -17,6 +17,8 @@ namespace sand
 	struct ComponentTransform;
 	struct ComponentSprite;
 
+	struct ComponentRenderer;
+
 	//----------------------------------------------------------------------------------------------------
 	template<class T>
 	class ComponentArray
@@ -32,7 +34,6 @@ namespace sand
 	private:
 		std::array<std::shared_ptr<T>, MAX_ENTITIES> m_components;
 		std::queue<ComponentID> m_availableComponentIDs;
-		std::unordered_map<ComponentID, ComponentID> m_componentIDsToComponentArrayIDs;
 		std::unordered_map<EntityID, ComponentID> m_entityIDsToComponentArrayIDs;
 		U32 m_componentsSize;
 	};
@@ -50,9 +51,14 @@ namespace sand
 		bool RemoveComponent(EntityID entityID);
 		template<class T>
 		const T& GetComponent(EntityID entityID);
+		template<class T>
+		T& GetSingletonComponent();
 
 	private:
-		std::array<ComponentArray<ComponentTransform>, MAX_COMPONENTS> m_components;
+		std::unique_ptr<ComponentArray<ComponentTransform>> m_transform;
+		std::unique_ptr<ComponentArray<ComponentSprite>> m_sprite;
+
+		std::unique_ptr<ComponentRenderer> m_renderer;
 	};
 }
 

@@ -3,12 +3,10 @@
 
 #include "Module.h"
 
-#include <SDL_pixels.h>
-
-struct SDL_Renderer;
-
 namespace sand
 {
+
+	struct ComponentRenderer;
 
 	//----------------------------------------------------------------------------------------------------
 	class ModuleRenderer : public Module
@@ -25,18 +23,9 @@ namespace sand
 
 		bool Draw() const;
 
-		SDL_Renderer* GetRenderer() const;
-
 	private:
-		void BeginDraw() const;
-		void EndDraw() const;
-
-	private:
-		SDL_Renderer* m_renderer;
-		SDL_Color m_backgroundColor;
-
-		bool m_isInitOk;
-		bool m_isDebugDraw;
+		void BeginDraw(const ComponentRenderer& renderer) const;
+		void EndDraw(const ComponentRenderer& renderer) const;
 	};
 }
 

@@ -2,6 +2,9 @@
 
 #include "Game.h"
 #include "ModuleRenderer.h"
+#include "ComponentManager.h"
+
+#include "ComponentRenderer.h"
 
 #include "Log.h"
 
@@ -63,7 +66,9 @@ namespace sand
 			return texture;
 		}
 
-		texture = SDL_CreateTextureFromSurface(g_game->GetRenderer().GetRenderer(), surface);
+		ComponentRenderer& renderer = g_game->GetComponentManager().GetSingletonComponent<ComponentRenderer>();
+
+		texture = SDL_CreateTextureFromSurface(renderer.m_renderer, surface);
 		if (texture == nullptr)
 		{
 			LOG("Texture could not be created from file %s! SDL Error: %s", path, SDL_GetError());

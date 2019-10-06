@@ -6,6 +6,9 @@
 #include "ResourceTexture.h"
 #include "DebugDrawer.h"
 
+#include "ComponentManager.h"
+#include "ComponentRenderer.h"
+
 #include "Log.h"
 #include "Colors.h"
 
@@ -21,11 +24,7 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	ModuleRenderer::ModuleRenderer() : Module(true),
-		m_renderer(nullptr), 
-		m_backgroundColor(Black),
-		m_isInitOk(false),
-		m_isDebugDraw(true)
+	ModuleRenderer::ModuleRenderer() : Module(true)
 	{
 	}
 
@@ -37,28 +36,25 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	bool ModuleRenderer::StartUp()
 	{
-		m_renderer = SDL_CreateRenderer(g_game->GetWindow().GetWindow(), -1, SDL_RENDERER_ACCELERATED);
-		if (m_renderer == nullptr)
+		ComponentRenderer& renderer = g_game->GetComponentManager().GetSingletonComponent<ComponentRenderer>();
+		
+		renderer.m_renderer = SDL_CreateRenderer(g_game->GetWindow().GetWindow(), -1, SDL_RENDERER_ACCELERATED);
+		if (renderer.m_renderer == nullptr)
 		{
 			LOG("Renderer could not be created! SDL Error: %s", SDL_GetError());
-			return m_isInitOk;
+			return false;
 		}
 
-		m_isInitOk = true;
-
-		return m_isInitOk;
+		return true;
 	}
 
 	//----------------------------------------------------------------------------------------------------
 	bool ModuleRenderer::ShutDown()
 	{
-		if (!m_isInitOk)
-		{
-			return false;
-		}
+		ComponentRenderer& renderer = g_game->GetComponentManager().GetSingletonComponent<ComponentRenderer>();
 
-		SDL_DestroyRenderer(m_renderer);
-		m_renderer = nullptr;
+		SDL_DestroyRenderer(renderer.m_renderer);
+		renderer.m_renderer = nullptr;
 
 		return true;
 	}
@@ -66,12 +62,9 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	bool ModuleRenderer::Draw() const
 	{
-		if (!m_isInitOk)
-		{
-			return false;
-		}
+		ComponentRenderer& renderer = g_game->GetComponentManager().GetSingletonComponent<ComponentRenderer>();
 
-		BeginDraw();
+		BeginDraw(renderer);
 
 		/*
 		1. All level geometry
@@ -84,7 +77,7 @@ namespace sand
 		//SDL_RenderCopy(m_renderer, gTexture, nullptr, nullptr);
 		//SDL_RenderCopy(m_renderer, g_engine->GetGame().m_resourceTexture->GetTexture(), nullptr, nullptr);
 
-		if (m_isDebugDraw)
+		if (renderer.m_isDebugDraw)
 		{
 			/*
 			DebugDrawer::DrawQuad(
@@ -113,27 +106,21 @@ namespace sand
 			*/
 		}
 
-		EndDraw();
+		EndDraw(renderer);
 
 		return true;
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	SDL_Renderer* ModuleRenderer::GetRenderer() const
+	void ModuleRenderer::BeginDraw(const ComponentRenderer& renderer) const
 	{
-		return m_renderer;
+		SDL_SetRenderDrawColor(renderer.m_renderer, renderer.m_backgroundColor.r, renderer.m_backgroundColor.g, renderer.m_backgroundColor.b, renderer.m_backgroundColor.a);
+		SDL_RenderClear(renderer.m_renderer);
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	void ModuleRenderer::BeginDraw() const
+	void ModuleRenderer::EndDraw(const ComponentRenderer& renderer) const
 	{
-		SDL_SetRenderDrawColor(m_renderer, m_backgroundColor.r, m_backgroundColor.g, m_backgroundColor.b, m_backgroundColor.a);
-		SDL_RenderClear(m_renderer);
-	}
-
-	//----------------------------------------------------------------------------------------------------
-	void ModuleRenderer::EndDraw() const
-	{
-		SDL_RenderPresent(m_renderer);
+		SDL_RenderPresent(renderer.m_renderer);
 	}
 }

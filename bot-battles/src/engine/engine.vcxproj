@@ -167,6 +167,7 @@
     <ClInclude Include="Component.h" />
     <ClInclude Include="ComponentManager.h" />
     <ClInclude Include="ComponentDefs.h" />
+    <ClInclude Include="ComponentRenderer.h" />
     <ClInclude Include="ComponentSprite.h" />
     <ClInclude Include="DebugDrawer.h" />
     <ClInclude Include="Defines.h" />

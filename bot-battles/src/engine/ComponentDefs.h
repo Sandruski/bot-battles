@@ -13,6 +13,8 @@ namespace sand
 		TRANSFORM,
 		SPRITE,
 
+		RENDERER,
+
 		COMPONENT_COUNT,
 		COMPONENT_INVALID
 	};
