@@ -23,8 +23,14 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	bool ResourceManager::ShutDown()
 	{
-		m_resources.clear();
+		RemoveAllResources();
 
 		return true;
+	}
+
+	//----------------------------------------------------------------------------------------------------
+	void ResourceManager::RemoveAllResources()
+	{
+		m_resources.clear();
 	}
 }

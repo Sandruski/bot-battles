@@ -29,7 +29,7 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	void StatesSetup()
 	{
-		U32 id = g_game->GetFSM().AddState(std::make_shared<GameplayState>());
+		U32 id = g_game->GetFSM().AddState<GameplayState>();
 		g_game->GetFSM().ChangeState(id);
 	}
 }

@@ -15,7 +15,7 @@ struct TransformComponent {
     }
     ~TransformComponent() { }
 
-    Vec3 m_position;
+	Vec3 m_position;
 };
 }
 

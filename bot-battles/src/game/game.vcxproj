@@ -158,15 +158,14 @@
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="TextureImporter.cpp" />
     <ClCompile Include="RendererSystem.cpp" />
+    <ClCompile Include="Vec2.cpp" />
+    <ClCompile Include="Vec2I.cpp" />
+    <ClCompile Include="Vec3.cpp" />
     <ClCompile Include="WindowSystem.cpp" />
     <ClCompile Include="Resource.cpp" />
     <ClCompile Include="ResourceTexture.cpp" />
     <ClCompile Include="System.cpp" />
     <ClCompile Include="SystemManager.cpp" />
-    <ClCompile Include="Vec2.cpp" />
-    <ClCompile Include="Vec2I.cpp" />
-    <ClCompile Include="Vec2I.h" />
-    <ClCompile Include="Vec3.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\shared\Utils.h" />
@@ -187,10 +186,14 @@
     <ClInclude Include="FSM.h" />
     <ClInclude Include="Memory.h" />
     <ClInclude Include="InputSystem.h" />
+    <ClInclude Include="StateDefs.h" />
     <ClInclude Include="TextureImporter.h" />
     <ClInclude Include="Log.h" />
     <ClInclude Include="RendererSystem.h" />
     <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="Vec2.h" />
+    <ClInclude Include="Vec2I.h" />
+    <ClInclude Include="Vec3.h" />
     <ClInclude Include="WindowSystem.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceTexture.h" />
@@ -199,8 +202,6 @@
     <ClInclude Include="SystemManager.h" />
     <ClInclude Include="TransformComponent.h" />
     <ClInclude Include="System.h" />
-    <ClInclude Include="Vec2.h" />
-    <ClInclude Include="Vec3.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

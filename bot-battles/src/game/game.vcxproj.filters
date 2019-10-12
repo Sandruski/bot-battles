@@ -19,9 +19,6 @@
     <Filter Include="Archivos de origen\Resources">
       <UniqueIdentifier>{03e4cc79-12b1-4178-bb09-1de53efed2c7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Archivos de encabezado\Scenes">
-      <UniqueIdentifier>{a37ce05d-0495-4604-b6df-aa67e52ceb80}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Archivos de origen\Scenes">
       <UniqueIdentifier>{5c4e7fd5-d843-45eb-a7fa-62c6f38c9dc1}</UniqueIdentifier>
     </Filter>
@@ -54,6 +51,9 @@
     </Filter>
     <Filter Include="Archivos de origen\Entities">
       <UniqueIdentifier>{7c6bc204-36d6-4591-90b6-be4449d53e62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\States">
+      <UniqueIdentifier>{a37ce05d-0495-4604-b6df-aa67e52ceb80}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -117,20 +117,14 @@
     <ClCompile Include="Vec2.cpp">
       <Filter>Archivos de origen\Math</Filter>
     </ClCompile>
-    <ClCompile Include="Vec3.cpp">
+    <ClCompile Include="Vec2I.cpp">
       <Filter>Archivos de origen\Math</Filter>
     </ClCompile>
-    <ClCompile Include="Vec2I.h">
-      <Filter>Archivos de encabezado\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Vec2I.cpp">
+    <ClCompile Include="Vec3.cpp">
       <Filter>Archivos de origen\Math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="State.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
     <ClInclude Include="ResourceTexture.h">
       <Filter>Archivos de encabezado\Resources</Filter>
     </ClInclude>
@@ -138,7 +132,7 @@
       <Filter>Archivos de encabezado\Resources</Filter>
     </ClInclude>
     <ClInclude Include="GameplayState.h">
-      <Filter>Archivos de encabezado\Scenes</Filter>
+      <Filter>Archivos de encabezado\States</Filter>
     </ClInclude>
     <ClInclude Include="Game.h">
       <Filter>Archivos de encabezado</Filter>
@@ -218,7 +212,16 @@
     <ClInclude Include="ResourceDefs.h">
       <Filter>Archivos de encabezado\Resources</Filter>
     </ClInclude>
+    <ClInclude Include="StateDefs.h">
+      <Filter>Archivos de encabezado\States</Filter>
+    </ClInclude>
+    <ClInclude Include="State.h">
+      <Filter>Archivos de encabezado\States</Filter>
+    </ClInclude>
     <ClInclude Include="Vec2.h">
+      <Filter>Archivos de encabezado\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Vec2I.h">
       <Filter>Archivos de encabezado\Math</Filter>
     </ClInclude>
     <ClInclude Include="Vec3.h">

@@ -25,9 +25,6 @@ namespace sand
 		bool LateUpdate(F32 dt) override;
 		bool Draw() override;
 		bool Exit() override;
-
-	public:
-		std::shared_ptr<ResourceTexture> m_resourceTexture;
 	};
 }
 

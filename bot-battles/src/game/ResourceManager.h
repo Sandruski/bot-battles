@@ -29,6 +29,7 @@ namespace sand
 		std::shared_ptr<T> AddResource(const char* file, const char* dir);
 		template<class T>
 		U32 RemoveResource(U32 id);
+		void RemoveAllResources();
 
 		template<class T>
 		std::shared_ptr<T> GetResource(U32 id);
@@ -58,6 +59,7 @@ namespace sand
 
 		U32 id = m_availableResources.front();
 		m_availableResources.pop();
+
 		resource = std::make_shared<T>(id, file, dir);
 
 		const bool isLoaded = resource->Load();
@@ -95,6 +97,7 @@ namespace sand
 		{
 			resource->UnLoad();
 			m_resources.erase(id);
+
 			m_availableResources.push(id);
 
 			return 0;

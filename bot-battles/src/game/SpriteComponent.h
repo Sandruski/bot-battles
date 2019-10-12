@@ -13,6 +13,10 @@ struct SpriteComponent {
         : m_texture(nullptr)
     {
     }
+	SpriteComponent(std::shared_ptr<ResourceTexture> texture)
+		: m_texture(texture)
+	{
+	}
     ~SpriteComponent() { }
 
     std::shared_ptr<ResourceTexture> m_texture;

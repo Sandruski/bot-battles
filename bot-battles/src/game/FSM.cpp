@@ -1,7 +1,7 @@
 #include "FSM.h"
 
 #include "State.h"
-#include "Log.h"
+#include "StateDefs.h"
 
 #include <cassert>
 
@@ -11,8 +11,14 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	FSM::FSM() :
 		m_states(),
-		m_currentState()
+		m_availableStates(),
+		m_currentState(nullptr)
 	{
+		m_states.reserve(MAX_STATES);
+
+		for (U32 i = 0; i < MAX_STATES; ++i) {
+			m_availableStates.push(i);
+		}
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -59,25 +65,6 @@ namespace sand
 		}
 
 		return true;
-	}
-
-	//----------------------------------------------------------------------------------------------------
-	U32 FSM::AddState(std::shared_ptr<State> state)
-	{
-		assert(state != nullptr);
-
-		U32 id = 0; // TODO
-		auto inserted = m_states.insert(std::make_pair(id, state));
-		if (inserted.second)
-		{
-			inserted.first->second->Create();
-		}
-		else
-		{
-			LOG("State could not be inserted");
-		}
-
-		return inserted.first->first;
 	}
 
 	//----------------------------------------------------------------------------------------------------
