@@ -1,6 +1,7 @@
 #include "SystemManager.h"
 
 #include "System.h"
+#include "Events.h"
 
 namespace sand {
 
@@ -89,11 +90,29 @@ bool SystemManager::ShutDown()
 }
 
 //----------------------------------------------------------------------------------------------------
-void SystemManager::OnEntityRemoved(Entity entity)
+void SystemManager::OnNotify(const Event& event)
 {
-    for (const auto& system : m_systems) {
+	switch (event.type)
+	{
+	case EventType::ENTITY_REMOVED:
+	{
+		for (const auto& system : m_systems) {
+			system->DeRegisterEntity(event.entity.entity);
+		}
 
-        system->DeRegisterEntity(entity);
-    }
+		break;
+	}
+
+	case EventType::COMPONENT_ADDED:
+	case EventType::COMPONENT_REMOVED:
+	{
+		break;
+	}
+
+	default:
+	{
+		break;
+	}
+	}
 }
 }

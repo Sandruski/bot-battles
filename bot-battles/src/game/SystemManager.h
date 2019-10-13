@@ -5,6 +5,8 @@
 #include "EntityDefs.h"
 #include "SystemDefs.h"
 
+#include "Observer.h"
+
 #include "Log.h"
 
 #include <cassert>
@@ -16,7 +18,7 @@ namespace sand {
 class System;
 
 //----------------------------------------------------------------------------------------------------
-class SystemManager {
+class SystemManager : public Observer {
 public:
     SystemManager();
     ~SystemManager();
@@ -33,8 +35,7 @@ public:
     bool Render();
     bool ShutDown();
 
-    void OnEntityRemoved(Entity entity);
-    //void OnEntitySignatureChanged(Entity entity);
+    void OnNotify(const Event& event);
 
 private:
     std::vector<std::unique_ptr<System>> m_systems;

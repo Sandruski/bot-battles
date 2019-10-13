@@ -3,17 +3,17 @@
 
 #include "ComponentDefs.h"
 #include "EntityDefs.h"
+
 #include "Observer.h"
 #include "Subject.h"
 #include "Events.h"
 
 #include "Log.h"
 
-#include <array>
-#include <cassert>
 #include <memory>
-#include <queue>
+#include <array>
 #include <unordered_map>
+#include <cassert>
 
 // TODO: interface IComponent struct where all components derive from. Create() method implementation for resources
 // NOTE: entities can only have one component of each type
@@ -45,7 +45,7 @@ public:
     bool RemoveComponent(Entity entity);
     std::shared_ptr<T> GetComponent(Entity entity);
 
-    void OnNotify(const Event& event) override;
+	void OnNotify(const Event& event) override;
 
 private:
     std::array<std::shared_ptr<T>, MAX_ENTITIES> m_components;
@@ -71,7 +71,7 @@ inline ComponentArray<T>::~ComponentArray()
 
 //----------------------------------------------------------------------------------------------------
 template<class T>
-inline bool ComponentArray<T>::PreUpdate(F32 /*dt*/)
+inline bool ComponentArray<T>::PreUpdate(F32)
 {
 	NotifyAll();
 
@@ -158,16 +158,7 @@ inline void ComponentArray<T>::OnNotify(const Event& event)
 {
 	switch (event.type)
 	{
-	case EventType::ENTITY_REMOVED:
-	{
-		RemoveComponent(event.entity.entity);
-		break;
-	}
 
-	default:
-	{
-		break;
-	}
 	}
 }
 
@@ -177,7 +168,7 @@ public:
     ComponentManager();
     ~ComponentManager();
 
-	bool PreUpdate(F32 /*dt*/);
+	bool PreUpdate(F32 dt);
 
     template <class T>
     bool RegisterComponent();
@@ -247,7 +238,7 @@ std::shared_ptr<T> ComponentManager::AddComponent(Entity entity)
     ComponentType type = T::GetType();
 	assert(type != ComponentType::COUNT && type != ComponentType::INVALID);
 
-    return std::static_pointer_cast<ComponentArray<T>>(m_componentArrays[static_cast<std::size_t>(type)])->AddComponent(entity);
+	return std::static_pointer_cast<ComponentArray<T>>(m_componentArrays[static_cast<std::size_t>(type)])->AddComponent(entity);
 }
 
 //----------------------------------------------------------------------------------------------------
