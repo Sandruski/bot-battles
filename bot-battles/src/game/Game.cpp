@@ -27,12 +27,12 @@ Game::Game(const GameConfiguration& configuration)
     : m_configuration(configuration)
     , m_isRunning(false)
 {
-    m_entityManager = std::make_unique<EntityManager>();
-    m_componentManager = std::make_unique<ComponentManager>();
-    m_systemManager = std::make_unique<SystemManager>();
-	m_resourceManager = std::make_unique<ResourceManager>();
-	m_fsm = std::make_unique<FSM>();
-	m_textureImporter = std::make_unique<TextureImporter>();
+    m_entityManager = std::make_shared<EntityManager>();
+    m_componentManager = std::make_shared<ComponentManager>();
+    m_systemManager = std::make_shared<SystemManager>();
+	m_resourceManager = std::make_shared<ResourceManager>();
+	m_fsm = std::make_shared<FSM>();
+	m_textureImporter = std::make_shared<TextureImporter>();
 
 	m_singletonInputComponent = std::make_shared<SingletonInputComponent>();
 	m_singletonRendererComponent = std::make_shared<SingletonRendererComponent>();
@@ -47,6 +47,7 @@ Game::~Game()
 //----------------------------------------------------------------------------------------------------
 bool Game::Init()
 {
+	// Systems
 	bool ret = m_systemManager->RegisterSystem<WindowSystem>();
 	if (!ret)
 	{
@@ -63,12 +64,32 @@ bool Game::Init()
 		return false;
 	}
 
+	// Components
 	ret = m_componentManager->RegisterComponent<TransformComponent>();
 	if (!ret)
 	{
 		return false;
 	}
 	ret = m_componentManager->RegisterComponent<SpriteComponent>();
+	if (!ret)
+	{
+		return false;
+	}
+
+	// Observers
+	ret = m_entityManager->AddObserver(m_systemManager);
+	if (!ret)
+	{
+		return false;
+	}
+
+	ret = m_entityManager->AddObserver(m_componentManager);
+	if (!ret)
+	{
+		return false;
+	}
+
+	ret = m_componentManager->AddObserver(m_systemManager);
 	if (!ret)
 	{
 		return false;
@@ -97,7 +118,17 @@ bool Game::Init()
 // game loop
 bool Game::Update()
 {
-    bool ret = m_systemManager->PreUpdate(23);
+	bool ret = m_entityManager->PreUpdate(23);
+	if (!ret) {
+		return false;
+	}
+
+	m_componentManager->PreUpdate(23);
+	if (!ret) {
+		return false;
+	}
+
+	m_systemManager->PreUpdate(23);
 	if (!ret) {
 		return false;
 	}

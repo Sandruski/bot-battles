@@ -25,6 +25,26 @@ bool ComponentManager::PreUpdate(F32 dt)
 }
 
 //----------------------------------------------------------------------------------------------------
+bool ComponentManager::AddObserver(std::shared_ptr<Observer> observer)
+{
+	for (const auto& componentArray : m_componentArrays) {
+		componentArray->AddObserver(observer);
+	}
+
+	return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool ComponentManager::RemoveObserver(std::shared_ptr<Observer> observer)
+{
+	for (const auto& componentArray : m_componentArrays) {
+		componentArray->RemoveObserver(observer);
+	}
+
+	return true;
+}
+
+//----------------------------------------------------------------------------------------------------
 void ComponentManager::OnNotify(const Event& event)
 {
 	for (const auto& componentArray : m_componentArrays) {

@@ -22,7 +22,7 @@ namespace sand {
 
 
 //----------------------------------------------------------------------------------------------------
-class IComponentArray {
+class IComponentArray : public Subject {
 public:
     IComponentArray() { }
     virtual ~IComponentArray() { }
@@ -34,7 +34,7 @@ public:
 
 //----------------------------------------------------------------------------------------------------
 template <class T>
-class ComponentArray : public IComponentArray, public Subject {
+class ComponentArray : public IComponentArray {
 public:
     ComponentArray();
     ~ComponentArray();
@@ -158,7 +158,11 @@ inline void ComponentArray<T>::OnNotify(const Event& event)
 {
 	switch (event.type)
 	{
-
+	case EventType::ENTITY_REMOVED:
+	{
+		RemoveComponent(event.entity.entity);
+		break;
+	}
 	}
 }
 
@@ -181,6 +185,9 @@ public:
     bool RemoveComponent(Entity entity);
     template <class T>
     std::shared_ptr<T> GetComponent(Entity entity);
+
+	bool AddObserver(std::shared_ptr<Observer> observer);
+	bool RemoveObserver(std::shared_ptr<Observer> observer);
 
 	void OnNotify(const Event& event) override;
 

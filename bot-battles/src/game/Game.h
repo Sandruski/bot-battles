@@ -58,12 +58,12 @@ public:
 private:
     GameConfiguration m_configuration;
 
-    std::unique_ptr<EntityManager> m_entityManager;
-    std::unique_ptr<ComponentManager> m_componentManager;
-    std::unique_ptr<SystemManager> m_systemManager;
-	std::unique_ptr<ResourceManager> m_resourceManager;
-	std::unique_ptr<FSM> m_fsm;
-	std::unique_ptr<TextureImporter> m_textureImporter;
+    std::shared_ptr<EntityManager> m_entityManager;
+    std::shared_ptr<ComponentManager> m_componentManager;
+    std::shared_ptr<SystemManager> m_systemManager;
+	std::shared_ptr<ResourceManager> m_resourceManager;
+	std::shared_ptr<FSM> m_fsm;
+	std::shared_ptr<TextureImporter> m_textureImporter;
 
 	std::shared_ptr<SingletonWindowComponent> m_singletonWindowComponent;
 	std::shared_ptr<SingletonRendererComponent> m_singletonRendererComponent;
