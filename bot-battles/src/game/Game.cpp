@@ -77,23 +77,24 @@ bool Game::Init()
 	}
 
 	// Observers
-	ret = m_entityManager->AddObserver(m_systemManager);
-	if (!ret)
-	{
-		return false;
-	}
-
 	ret = m_entityManager->AddObserver(m_componentManager);
 	if (!ret)
 	{
 		return false;
 	}
 
-	ret = m_componentManager->AddObserver(m_systemManager);
+	ret = m_entityManager->AddObserver(m_systemManager);
 	if (!ret)
 	{
 		return false;
 	}
+
+	ret = m_componentManager->AddObserver(m_entityManager);
+	if (!ret)
+	{
+		return false;
+	}
+
 
     ret = m_systemManager->StartUp();
 	if (!ret) {

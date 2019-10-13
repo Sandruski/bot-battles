@@ -4,6 +4,7 @@
 #include "ComponentDefs.h"
 #include "EntityDefs.h"
 #include "Subject.h"
+#include "Observer.h"
 
 #include <array>
 #include <memory>
@@ -13,7 +14,7 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class EntityManager : public Subject {
+class EntityManager : public Subject, public Observer {
 public:
     EntityManager();
     ~EntityManager();
@@ -22,6 +23,8 @@ public:
 
     Entity AddEntity();
     bool RemoveEntity(Entity entity);
+
+	void OnNotify(const Event& event) override;
 
 private:
     std::array<Signature, MAX_ENTITIES> m_signatures;

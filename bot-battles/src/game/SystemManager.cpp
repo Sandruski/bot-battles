@@ -103,9 +103,18 @@ void SystemManager::OnNotify(const Event& event)
 		break;
 	}
 
-	case EventType::COMPONENT_ADDED:
-	case EventType::COMPONENT_REMOVED:
+	case EventType::ENTITY_SIGNATURE_CHANGED:
 	{
+		for (const auto& system : m_systems) {
+			if (static_cast<unsigned long>(system->GetType()) & event.entity.signature)
+			{
+				system->RegisterEntity(event.entity.entity);
+			}
+			else
+			{
+				system->DeRegisterEntity(event.entity.entity);
+			}
+		}
 		break;
 	}
 

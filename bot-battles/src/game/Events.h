@@ -2,12 +2,15 @@
 #define __EVENTS_H__
 
 #include "EntityDefs.h"
+#include "ComponentDefs.h"
 
 namespace sand
 {
 
 	enum class EventType {
 		ENTITY_REMOVED,
+		ENTITY_SIGNATURE_CHANGED,
+
 		COMPONENT_ADDED,
 		COMPONENT_REMOVED,
 
@@ -19,6 +22,14 @@ namespace sand
 	{
 		EventType type;
 		Entity entity;
+		unsigned long signature;
+	};
+
+	struct ComponentEvent
+	{
+		EventType type;
+		Entity entity;
+		ComponentType componentType;
 	};
 
 	//----------------------------------------------------------------------------------------------------
@@ -26,6 +37,7 @@ namespace sand
 	{
 		EventType type;
 		EntityEvent entity;
+		ComponentEvent component;
 	};
 }
 

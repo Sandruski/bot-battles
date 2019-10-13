@@ -96,10 +96,11 @@ inline std::shared_ptr<T> ComponentArray<T>::AddComponent(Entity entity)
     std::shared_ptr component = std::make_shared<T>();
     m_components[componentIndex] = component;
 
-	Event event;
-	event.type = EventType::COMPONENT_ADDED;
-	event.entity.entity = entity;
-	PushEvent(event);
+	Event newEvent;
+	newEvent.type = EventType::COMPONENT_ADDED;
+	newEvent.component.entity = entity;
+	newEvent.component.componentType = T::GetType();
+	PushEvent(newEvent);
 
     return component;
 }
@@ -131,10 +132,11 @@ bool ComponentArray<T>::RemoveComponent(Entity entity)
 
     --m_componentsSize;
 
-	Event event;
-	event.type = EventType::COMPONENT_REMOVED;
-	event.entity.entity = entity;
-	PushEvent(event);
+	Event newEvent;
+	newEvent.type = EventType::COMPONENT_REMOVED;
+	newEvent.component.entity = entity;
+	newEvent.component.componentType = T::GetType();
+	PushEvent(newEvent);
 
     return true;
 }
@@ -266,10 +268,10 @@ template <class T>
 std::shared_ptr<T> ComponentManager::GetComponent(Entity entity)
 {
     //static_assert(std::is_base_of<Component, T>::value, "T is not derived from Component");
-    static_assert(entity < INVALID_ENTITY);
+    assert(entity < INVALID_ENTITY);
 
     ComponentType type = T::GetType();
-    static_assert(type != ComponentType::COUNT && type != ComponentType::INVALID);
+    assert(type != ComponentType::COUNT && type != ComponentType::INVALID);
 
     return std::static_pointer_cast<ComponentArray<T>>(m_componentArrays[static_cast<std::size_t>(type)])->GetComponent(entity);
 }

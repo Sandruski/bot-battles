@@ -3,6 +3,8 @@
 #include "DebugDrawer.h"
 #include "Game.h"
 #include "ResourceTexture.h"
+#include "ComponentManager.h"
+#include "SpriteComponent.h"
 
 #include "SingletonRendererComponent.h"
 #include "SingletonWindowComponent.h"
@@ -54,8 +56,10 @@ bool RendererSystem::Render()
 		*/
 
     for (auto& entity : m_entities) {
-        //SDL_RenderCopy(m_renderer, gTexture, nullptr, nullptr);
-        //SDL_RenderCopy(m_renderer, g_engine->GetGame().m_resourceTexture->GetTexture(), nullptr, nullptr);
+
+		std::shared_ptr<SpriteComponent> sprite = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
+        
+		SDL_RenderCopy(renderer->m_renderer, sprite->m_texture->GetTexture(), nullptr, nullptr);
     }
 
     if (renderer->m_isDebugDraw) {

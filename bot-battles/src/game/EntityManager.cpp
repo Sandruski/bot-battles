@@ -86,11 +86,51 @@ bool EntityManager::RemoveEntity(Entity entity)
 
     --m_signaturesSize;
 
-	Event event;
-	event.type = EventType::ENTITY_REMOVED;
-	event.entity.entity = entity;
-	PushEvent(event);
+	Event newEvent;
+	newEvent.type = EventType::ENTITY_REMOVED;
+	newEvent.entity.entity = entity;
+	PushEvent(newEvent);
 
     return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+void EntityManager::OnNotify(const Event& event)
+{
+	switch (event.type)
+	{
+	case EventType::COMPONENT_ADDED:
+	{
+		U32 signatureIndex = m_entitiesToSignatures[event.component.entity];
+		m_signatures[signatureIndex].set(static_cast<std::size_t>(event.component.componentType));
+
+		Event newEvent;
+		newEvent.type = EventType::ENTITY_SIGNATURE_CHANGED;
+		newEvent.entity.entity = event.component.entity;
+		newEvent.entity.signature = m_signatures[signatureIndex].to_ulong();
+		PushEvent(newEvent);
+
+		break;
+	}
+
+	case EventType::COMPONENT_REMOVED:
+	{
+		U32 signatureIndex = m_entitiesToSignatures[event.component.entity];
+		m_signatures[signatureIndex].reset(static_cast<std::size_t>(event.component.componentType));
+
+		Event newEvent;
+		newEvent.type = EventType::ENTITY_SIGNATURE_CHANGED;
+		newEvent.entity.entity = event.component.entity;
+		newEvent.entity.signature = m_signatures[signatureIndex].to_ulong();
+		PushEvent(newEvent);
+
+		break;
+	}
+
+	default:
+	{
+		break;
+	}
+	}
 }
 }
