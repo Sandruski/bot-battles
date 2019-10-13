@@ -3,6 +3,8 @@
 
 #include "Resource.h"
 
+#include "Vec2I.h"
+
 struct SDL_Texture;
 
 namespace sand
@@ -19,9 +21,12 @@ namespace sand
 		bool UnLoad() override;
 
 		SDL_Texture* GetTexture() const;
+		U32 GetWidth() const;
+		U32 GetHeight() const;
 
 	private:
 		SDL_Texture* m_texture;
+		Vec2I m_size;
 	};
 }
 

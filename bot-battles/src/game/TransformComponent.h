@@ -1,7 +1,7 @@
 #ifndef __TRANSFORM_COMPONENT_H__
 #define __TRANSFORM_COMPONENT_H__
 
-#include "Vec3.h"
+#include "Vec2.h"
 
 namespace sand {
 
@@ -15,7 +15,7 @@ struct TransformComponent {
     }
     ~TransformComponent() { }
 
-	Vec3 m_position;
+	Vec2 m_position;
 };
 }
 

@@ -15,11 +15,6 @@ public:
         return SystemType::INPUT;
     }
 
-    static Signature GetSignature()
-    {
-        return Signature();
-    }
-
 public:
     InputSystem();
     ~InputSystem() override;

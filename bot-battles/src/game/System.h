@@ -3,6 +3,7 @@
 
 #include "EntityDefs.h"
 #include "SystemDefs.h"
+#include "ComponentDefs.h"
 
 #include <vector>
 
@@ -53,8 +54,11 @@ public:
         return true;
     }
 
+	const Signature& GetSignature();
+
 protected:
     std::vector<Entity> m_entities;
+	Signature m_signature;
 };
 }
 

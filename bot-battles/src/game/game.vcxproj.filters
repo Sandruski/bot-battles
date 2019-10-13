@@ -19,9 +19,6 @@
     <Filter Include="Archivos de origen\Resources">
       <UniqueIdentifier>{03e4cc79-12b1-4178-bb09-1de53efed2c7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Archivos de origen\Scenes">
-      <UniqueIdentifier>{5c4e7fd5-d843-45eb-a7fa-62c6f38c9dc1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Archivos de encabezado\Components">
       <UniqueIdentifier>{c32f65b7-1915-4c7a-8b50-e42faa24203b}</UniqueIdentifier>
     </Filter>
@@ -61,6 +58,9 @@
     <Filter Include="Archivos de encabezado\Events">
       <UniqueIdentifier>{bad021f6-e29b-47e8-b41e-6c9080fd95d2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Archivos de origen\States">
+      <UniqueIdentifier>{5c4e7fd5-d843-45eb-a7fa-62c6f38c9dc1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -73,7 +73,7 @@
       <Filter>Archivos de origen\Resources</Filter>
     </ClCompile>
     <ClCompile Include="GameplayState.cpp">
-      <Filter>Archivos de origen\Scenes</Filter>
+      <Filter>Archivos de origen\States</Filter>
     </ClCompile>
     <ClCompile Include="Game.cpp">
       <Filter>Archivos de origen</Filter>
@@ -233,9 +233,6 @@
     <ClInclude Include="Vec2I.h">
       <Filter>Archivos de encabezado\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Vec3.h">
-      <Filter>Archivos de encabezado\Math</Filter>
-    </ClInclude>
     <ClInclude Include="Observer.h">
       <Filter>Archivos de encabezado\Events</Filter>
     </ClInclude>
@@ -244,6 +241,12 @@
     </ClInclude>
     <ClInclude Include="Subject.h">
       <Filter>Archivos de encabezado\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="WorkingDirDefs.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Vec3.h">
+      <Filter>Archivos de encabezado\Math</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

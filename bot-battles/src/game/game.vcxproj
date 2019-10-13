@@ -206,6 +206,7 @@
     <ClInclude Include="SystemManager.h" />
     <ClInclude Include="TransformComponent.h" />
     <ClInclude Include="System.h" />
+    <ClInclude Include="WorkingDirDefs.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

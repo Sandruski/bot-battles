@@ -22,7 +22,6 @@ namespace sand
 	{
 		EventType type;
 		Entity entity;
-		unsigned long signature;
 	};
 
 	struct ComponentEvent

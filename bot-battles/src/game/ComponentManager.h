@@ -44,6 +44,7 @@ public:
     std::shared_ptr<T> AddComponent(Entity entity);
     bool RemoveComponent(Entity entity);
     std::shared_ptr<T> GetComponent(Entity entity);
+	void KillComponent(Entity entity);
 
 	void OnNotify(const Event& event) override;
 
@@ -115,23 +116,6 @@ bool ComponentArray<T>::RemoveComponent(Entity entity)
         return false;
     }
 
-    U32 componentIndex = entityToComponent->second;
-    U32 lastComponentIndex = m_componentsSize - 1;
-    m_components[componentIndex] = m_components[lastComponentIndex];
-    m_components[lastComponentIndex] = nullptr;
-
-    auto lastEntityToComponent = std::find_if(m_entitiesToComponents.begin(),
-        m_entitiesToComponents.end(),
-        [lastComponentIndex](const auto& value) {
-            return value.second == lastComponentIndex;
-        });
-    assert(lastEntityToComponent != m_entitiesToComponents.end());
-
-    m_entitiesToComponents[lastEntityToComponent->first] = componentIndex;
-    m_entitiesToComponents.erase(entity);
-
-    --m_componentsSize;
-
 	Event newEvent;
 	newEvent.type = EventType::COMPONENT_REMOVED;
 	newEvent.component.entity = entity;
@@ -156,10 +140,41 @@ std::shared_ptr<T> ComponentArray<T>::GetComponent(Entity entity)
 
 //----------------------------------------------------------------------------------------------------
 template<class T>
+inline void ComponentArray<T>::KillComponent(Entity entity)
+{
+	U32 componentIndex = m_entitiesToComponents[entity];
+	U32 lastComponentIndex = m_componentsSize - 1;
+	m_components[componentIndex] = m_components[lastComponentIndex];
+	m_components[lastComponentIndex] = nullptr;
+
+	auto lastEntityToComponent = std::find_if(m_entitiesToComponents.begin(),
+		m_entitiesToComponents.end(),
+		[lastComponentIndex](const auto& value) {
+			return value.second == lastComponentIndex;
+		});
+	assert(lastEntityToComponent != m_entitiesToComponents.end());
+
+	m_entitiesToComponents[lastEntityToComponent->first] = componentIndex;
+	m_entitiesToComponents.erase(entity);
+
+	--m_componentsSize;
+}
+
+//----------------------------------------------------------------------------------------------------
+template<class T>
 inline void ComponentArray<T>::OnNotify(const Event& event)
 {
 	switch (event.type)
 	{
+	case EventType::COMPONENT_REMOVED:
+	{
+		if (event.component.componentType == T::GetType())
+		{
+			KillComponent(event.component.entity);
+		}
+		break;
+	}
+
 	case EventType::ENTITY_REMOVED:
 	{
 		RemoveComponent(event.entity.entity);

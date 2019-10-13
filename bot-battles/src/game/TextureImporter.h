@@ -15,7 +15,7 @@ namespace sand
 
 		bool StartUp();
 
-		SDL_Texture* Load(const char* path) const;
+		SDL_Texture* Load(const char* path, int& width, int& height) const;
 		void UnLoad(SDL_Texture* texture) const;
 	};
 }

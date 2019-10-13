@@ -48,9 +48,6 @@ Entity EntityManager::AddEntity()
 
     m_entitiesToSignatures[entity] = signatureIndex;
 
-    // TODO: add default Transform component
-    //g_game->GetComponentManager().AddComponent<TransformComponent>(entity);
-
     return entity;
 }
 
@@ -65,27 +62,6 @@ bool EntityManager::RemoveEntity(Entity entity)
         return false;
     }
 
-    // TODO: remove all components
-
-    U32 signatureIndex = entityToSignature->second;
-    U32 lastSignatureIndex = m_signaturesSize - 1;
-    m_signatures[signatureIndex] = m_signatures[lastSignatureIndex];
-    m_signatures[lastSignatureIndex] = NULL;
-
-    auto lastEntityToSignature = std::find_if(m_entitiesToSignatures.begin(),
-        m_entitiesToSignatures.end(),
-        [lastSignatureIndex](const auto& value) {
-            return value.second == lastSignatureIndex;
-        });
-    assert(lastEntityToSignature != m_entitiesToSignatures.end());
-
-    m_entitiesToSignatures[lastEntityToSignature->first] = signatureIndex;
-    m_entitiesToSignatures.erase(entity);
-
-    m_availableEntities.push(entity);
-
-    --m_signaturesSize;
-
 	Event newEvent;
 	newEvent.type = EventType::ENTITY_REMOVED;
 	newEvent.entity.entity = entity;
@@ -95,10 +71,26 @@ bool EntityManager::RemoveEntity(Entity entity)
 }
 
 //----------------------------------------------------------------------------------------------------
+const Signature& EntityManager::GetSignature(Entity entity)
+{
+	assert(entity < INVALID_ENTITY);
+
+	U32 signatureIndex = m_entitiesToSignatures.at(entity);
+	return m_signatures[signatureIndex];
+}
+
+//----------------------------------------------------------------------------------------------------
 void EntityManager::OnNotify(const Event& event)
 {
 	switch (event.type)
 	{
+	case EventType::ENTITY_REMOVED:
+	{
+		KillEntity(event.entity.entity);
+
+		break;
+	}
+
 	case EventType::COMPONENT_ADDED:
 	{
 		U32 signatureIndex = m_entitiesToSignatures[event.component.entity];
@@ -107,7 +99,6 @@ void EntityManager::OnNotify(const Event& event)
 		Event newEvent;
 		newEvent.type = EventType::ENTITY_SIGNATURE_CHANGED;
 		newEvent.entity.entity = event.component.entity;
-		newEvent.entity.signature = m_signatures[signatureIndex].to_ulong();
 		PushEvent(newEvent);
 
 		break;
@@ -121,7 +112,6 @@ void EntityManager::OnNotify(const Event& event)
 		Event newEvent;
 		newEvent.type = EventType::ENTITY_SIGNATURE_CHANGED;
 		newEvent.entity.entity = event.component.entity;
-		newEvent.entity.signature = m_signatures[signatureIndex].to_ulong();
 		PushEvent(newEvent);
 
 		break;
@@ -132,5 +122,28 @@ void EntityManager::OnNotify(const Event& event)
 		break;
 	}
 	}
+}
+
+//----------------------------------------------------------------------------------------------------
+void EntityManager::KillEntity(Entity entity)
+{
+	U32 signatureIndex = m_entitiesToSignatures[entity];
+	U32 lastSignatureIndex = m_signaturesSize - 1;
+	m_signatures[signatureIndex] = m_signatures[lastSignatureIndex];
+	m_signatures[lastSignatureIndex] = NULL;
+
+	auto lastEntityToSignature = std::find_if(m_entitiesToSignatures.begin(),
+		m_entitiesToSignatures.end(),
+		[lastSignatureIndex](const auto& value) {
+			return value.second == lastSignatureIndex;
+		});
+	assert(lastEntityToSignature != m_entitiesToSignatures.end());
+
+	m_entitiesToSignatures[lastEntityToSignature->first] = signatureIndex;
+	m_entitiesToSignatures.erase(entity);
+
+	m_availableEntities.push(entity);
+
+	--m_signaturesSize;
 }
 }

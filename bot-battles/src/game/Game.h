@@ -27,7 +27,7 @@ struct GameConfiguration {
     GameConfiguration(const char* name, std::function<void()> StatesSetup);
     GameConfiguration(const GameConfiguration& configuration);
 
-    const char* name;
+    const char* m_name;
     std::function<void()> StatesSetup;
 };
 
@@ -53,7 +53,7 @@ public:
 	std::shared_ptr<SingletonRendererComponent> GetSingletonRendererComponent() const { return m_singletonRendererComponent; }
 	std::shared_ptr<SingletonInputComponent> GetSingletonInputComponent() const { return m_singletonInputComponent; }
 
-    const char* GetName() const { return m_configuration.name; }
+    const char* GetName() const { return m_configuration.m_name; }
 
 private:
     GameConfiguration m_configuration;

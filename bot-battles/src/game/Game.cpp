@@ -76,20 +76,32 @@ bool Game::Init()
 		return false;
 	}
 
-	// Observers
+	// Observers (add own class last)
 	ret = m_entityManager->AddObserver(m_componentManager);
 	if (!ret)
 	{
 		return false;
 	}
 
-	ret = m_entityManager->AddObserver(m_systemManager);
+	m_entityManager->AddObserver(m_systemManager);
+	if (!ret)
+	{
+		return false;
+	}
+
+	ret = m_entityManager->AddObserver(m_entityManager);
 	if (!ret)
 	{
 		return false;
 	}
 
 	ret = m_componentManager->AddObserver(m_entityManager);
+	if (!ret)
+	{
+		return false;
+	}
+
+	m_componentManager->AddObserver(m_componentManager);
 	if (!ret)
 	{
 		return false;
@@ -175,21 +187,21 @@ bool Game::End()
 
 //----------------------------------------------------------------------------------------------------
 GameConfiguration::GameConfiguration()
-    : name(nullptr)
+    : m_name(nullptr)
     , StatesSetup(nullptr)
 {
 }
 
 //----------------------------------------------------------------------------------------------------
 GameConfiguration::GameConfiguration(const char* name, std::function<void()> StatesSetup)
-    : name(name)
+    : m_name(name)
     , StatesSetup(StatesSetup)
 {
 }
 
 //----------------------------------------------------------------------------------------------------
 GameConfiguration::GameConfiguration(const GameConfiguration& configuration)
-    : name(configuration.name)
+    : m_name(configuration.m_name)
     , StatesSetup(configuration.StatesSetup)
 {
 }

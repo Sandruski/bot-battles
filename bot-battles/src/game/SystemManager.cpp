@@ -1,5 +1,8 @@
 #include "SystemManager.h"
 
+#include "Game.h"
+#include "EntityManager.h"
+
 #include "System.h"
 #include "Events.h"
 
@@ -106,7 +109,10 @@ void SystemManager::OnNotify(const Event& event)
 	case EventType::ENTITY_SIGNATURE_CHANGED:
 	{
 		for (const auto& system : m_systems) {
-			if (static_cast<unsigned long>(system->GetType()) & event.entity.signature)
+
+			const Signature systemSignature = system->GetSignature().to_ulong();
+			const Signature entitySignature = g_game->GetEntityManager().GetSignature(event.entity.entity);
+			if (systemSignature == entitySignature)
 			{
 				system->RegisterEntity(event.entity.entity);
 			}

@@ -36,7 +36,7 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	SDL_Texture* TextureImporter::Load(const char* path) const
+	SDL_Texture* TextureImporter::Load(const char* path, int& width, int& height) const
 	{
 		assert(path != nullptr);
 
@@ -56,6 +56,9 @@ namespace sand
 		{
 			LOG("Texture could not be created from file %s! SDL Error: %s", path, SDL_GetError());
 		}
+
+		width = surface->w;
+		height = surface->h;
 
 		SDL_FreeSurface(surface);
 

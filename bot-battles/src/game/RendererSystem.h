@@ -16,11 +16,6 @@ public:
         return SystemType::RENDERER;
     }
 
-    static Signature GetSignature()
-    {
-        return Signature(static_cast<std::size_t>(ComponentType::SPRITE));
-    }
-
 public:
     RendererSystem();
     ~RendererSystem() override;

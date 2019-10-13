@@ -5,6 +5,7 @@
 #include "ResourceTexture.h"
 #include "ComponentManager.h"
 #include "SpriteComponent.h"
+#include "TransformComponent.h"
 
 #include "SingletonRendererComponent.h"
 #include "SingletonWindowComponent.h"
@@ -19,6 +20,8 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 RendererSystem::RendererSystem()
 {
+	m_signature.set(static_cast<std::size_t>(ComponentType::SPRITE));
+	m_signature.set(static_cast<std::size_t>(ComponentType::TRANSFORM));
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -58,8 +61,16 @@ bool RendererSystem::Render()
     for (auto& entity : m_entities) {
 
 		std::shared_ptr<SpriteComponent> sprite = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
-        
-		SDL_RenderCopy(renderer->m_renderer, sprite->m_texture->GetTexture(), nullptr, nullptr);
+		std::shared_ptr<TransformComponent> transform = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
+
+		SDL_Rect renderQuad = { 
+			static_cast<I32>(transform->m_position.x), 
+			static_cast<I32>(transform->m_position.y), 
+			sprite->m_texture->GetWidth(),
+			sprite->m_texture->GetHeight() 
+		};
+
+		SDL_RenderCopy(renderer->m_renderer, sprite->m_texture->GetTexture(), nullptr, &renderQuad);
     }
 
     if (renderer->m_isDebugDraw) {

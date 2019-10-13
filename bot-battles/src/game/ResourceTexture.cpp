@@ -10,7 +10,8 @@ namespace sand
 
 	//----------------------------------------------------------------------------------------------------
 	ResourceTexture::ResourceTexture(U32 id, const char* dir, const char* file) : Resource(id, dir, file),
-		m_texture(nullptr)
+		m_texture(nullptr),
+		m_size()
 	{
 	}
 
@@ -24,7 +25,8 @@ namespace sand
 	{
 		assert(m_texture == nullptr);
 
-		m_texture = g_game->GetTextureImporter().Load(GetPath());
+		m_texture = g_game->GetTextureImporter().Load(GetPath(), m_size.x, m_size.y);
+
 		return m_texture != nullptr;
 	}
 
@@ -34,6 +36,7 @@ namespace sand
 		assert(m_texture != nullptr);
 
 		g_game->GetTextureImporter().UnLoad(m_texture);
+
 		return true;
 	}
 
@@ -41,5 +44,17 @@ namespace sand
 	SDL_Texture* ResourceTexture::GetTexture() const
 	{
 		return m_texture;
+	}
+
+	//----------------------------------------------------------------------------------------------------
+	U32 ResourceTexture::GetWidth() const
+	{
+		return m_size.x;
+	}
+
+	//----------------------------------------------------------------------------------------------------
+	U32 ResourceTexture::GetHeight() const
+	{
+		return m_size.y;
 	}
 }

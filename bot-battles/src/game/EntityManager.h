@@ -24,7 +24,12 @@ public:
     Entity AddEntity();
     bool RemoveEntity(Entity entity);
 
+	const Signature& GetSignature(Entity entity);
+
 	void OnNotify(const Event& event) override;
+
+private:
+	void KillEntity(Entity entity);
 
 private:
     std::array<Signature, MAX_ENTITIES> m_signatures;
