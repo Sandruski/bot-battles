@@ -180,6 +180,11 @@ inline void ComponentArray<T>::OnNotify(const Event& event)
 		RemoveComponent(event.entity.entity);
 		break;
 	}
+
+	default
+	{
+		break;
+	}
 	}
 }
 
