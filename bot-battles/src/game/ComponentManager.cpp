@@ -1,5 +1,7 @@
 #include "ComponentManager.h"
 
+#include "Events.h"
+
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
@@ -15,12 +17,20 @@ ComponentManager::~ComponentManager()
 }
 
 //----------------------------------------------------------------------------------------------------
-void ComponentManager::OnEntityRemoved(Entity entity)
+bool ComponentManager::PreUpdate(F32 dt)
 {
-    assert(entity < INVALID_ENTITY);
+	for (const auto& componentArray : m_componentArrays) {
+		componentArray->PreUpdate(dt);
+	}
 
-    for (const auto& componentArray : m_componentArrays) {
-        componentArray->OnEntityRemoved(entity);
-    }
+	return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+void ComponentManager::OnNotify(const Event& event)
+{
+	for (const auto& componentArray : m_componentArrays) {
+		componentArray->OnNotify(event);
+	}
 }
 }

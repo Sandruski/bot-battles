@@ -97,12 +97,17 @@ bool Game::Init()
 // game loop
 bool Game::Update()
 {
-    bool ret = m_systemManager->Update(23);
+    bool ret = m_systemManager->PreUpdate(23);
+	if (!ret) {
+		return false;
+	}
+		
+	ret = m_systemManager->Update(23);
     if (!ret) {
         return false;
     }
 
-    ret = m_systemManager->LateUpdate(23);
+    ret = m_systemManager->PostUpdate(23);
     if (!ret) {
         return false;
     }

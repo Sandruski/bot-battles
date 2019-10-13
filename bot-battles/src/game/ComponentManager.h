@@ -3,6 +3,9 @@
 
 #include "ComponentDefs.h"
 #include "EntityDefs.h"
+#include "Observer.h"
+#include "Subject.h"
+#include "Events.h"
 
 #include "Log.h"
 
@@ -17,28 +20,32 @@
 
 namespace sand {
 
+
 //----------------------------------------------------------------------------------------------------
 class IComponentArray {
 public:
     IComponentArray() { }
     virtual ~IComponentArray() { }
 
-    virtual void OnEntityRemoved(Entity entity) = 0;
-    // TODO
+	virtual bool PreUpdate(F32 /*dt*/) = 0;
+
+	virtual void OnNotify(const Event& event) = 0;
 };
 
 //----------------------------------------------------------------------------------------------------
 template <class T>
-class ComponentArray : public IComponentArray {
+class ComponentArray : public IComponentArray, public Subject {
 public:
     ComponentArray();
     ~ComponentArray();
+
+	bool PreUpdate(F32 /*dt*/) override;
 
     std::shared_ptr<T> AddComponent(Entity entity);
     bool RemoveComponent(Entity entity);
     std::shared_ptr<T> GetComponent(Entity entity);
 
-    void OnEntityRemoved(Entity entity) override;
+    void OnNotify(const Event& event) override;
 
 private:
     std::array<std::shared_ptr<T>, MAX_ENTITIES> m_components;
@@ -63,6 +70,15 @@ inline ComponentArray<T>::~ComponentArray()
 }
 
 //----------------------------------------------------------------------------------------------------
+template<class T>
+inline bool ComponentArray<T>::PreUpdate(F32 /*dt*/)
+{
+	NotifyAll();
+
+	return true;
+}
+
+//----------------------------------------------------------------------------------------------------
 template <class T>
 inline std::shared_ptr<T> ComponentArray<T>::AddComponent(Entity entity)
 {
@@ -79,6 +95,11 @@ inline std::shared_ptr<T> ComponentArray<T>::AddComponent(Entity entity)
 
     std::shared_ptr component = std::make_shared<T>();
     m_components[componentIndex] = component;
+
+	Event event;
+	event.type = EventType::COMPONENT_ADDED;
+	event.entity.entity = entity;
+	PushEvent(event);
 
     return component;
 }
@@ -110,6 +131,11 @@ bool ComponentArray<T>::RemoveComponent(Entity entity)
 
     --m_componentsSize;
 
+	Event event;
+	event.type = EventType::COMPONENT_REMOVED;
+	event.entity.entity = entity;
+	PushEvent(event);
+
     return true;
 }
 
@@ -127,17 +153,31 @@ std::shared_ptr<T> ComponentArray<T>::GetComponent(Entity entity)
 }
 
 //----------------------------------------------------------------------------------------------------
-template <class T>
-inline void ComponentArray<T>::OnEntityRemoved(Entity entity)
+template<class T>
+inline void ComponentArray<T>::OnNotify(const Event& event)
 {
-    RemoveComponent(entity);
+	switch (event.type)
+	{
+	case EventType::ENTITY_REMOVED:
+	{
+		RemoveComponent(event.entity.entity);
+		break;
+	}
+
+	default:
+	{
+		break;
+	}
+	}
 }
 
 //----------------------------------------------------------------------------------------------------
-class ComponentManager {
+class ComponentManager : public Observer {
 public:
     ComponentManager();
     ~ComponentManager();
+
+	bool PreUpdate(F32 /*dt*/);
 
     template <class T>
     bool RegisterComponent();
@@ -151,7 +191,7 @@ public:
     template <class T>
     std::shared_ptr<T> GetComponent(Entity entity);
 
-    void OnEntityRemoved(Entity entity);
+	void OnNotify(const Event& event) override;
 
 private:
     std::array<std::shared_ptr<IComponentArray>, static_cast<std::size_t>(ComponentType::COUNT)> m_componentArrays;

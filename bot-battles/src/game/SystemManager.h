@@ -27,8 +27,9 @@ public:
     bool DeRegisterSystem();
 
     bool StartUp();
+	bool PreUpdate(F32 dt);
     bool Update(F32 dt);
-    bool LateUpdate(F32 dt);
+    bool PostUpdate(F32 dt);
     bool Render();
     bool ShutDown();
 

@@ -28,12 +28,17 @@ public:
         return true;
     }
 
+	virtual bool PreUpdate(F32 /*dt*/)
+	{
+		return true;
+	}
+
     virtual bool Update(F32 /*dt*/)
     {
         return true;
     }
 
-    virtual bool LateUpdate(F32 /*dt*/)
+    virtual bool PostUpdate(F32 /*dt*/)
     {
         return true;
     }

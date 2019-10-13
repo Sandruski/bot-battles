@@ -25,8 +25,6 @@ GameplayState::~GameplayState()
 //----------------------------------------------------------------------------------------------------
 bool GameplayState::Create()
 {
-
-
     Entity background = g_game->GetEntityManager().AddEntity();
     auto sprite = g_game->GetComponentManager().AddComponent<SpriteComponent>(background);
 	auto texture = g_game->GetResourceManager().AddResource<ResourceTexture>("baker_house.png", "../../data/textures/");

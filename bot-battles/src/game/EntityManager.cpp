@@ -1,7 +1,8 @@
 #include "EntityManager.h"
 
-#include "ComponentManager.h"
 #include "Game.h"
+#include "ComponentManager.h"
+#include "Events.h"
 
 #include "Log.h"
 
@@ -26,6 +27,14 @@ EntityManager::EntityManager()
 //----------------------------------------------------------------------------------------------------
 EntityManager::~EntityManager()
 {
+}
+
+//----------------------------------------------------------------------------------------------------
+bool EntityManager::PreUpdate(F32 /*dt*/)
+{
+	NotifyAll();
+
+	return true;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -76,6 +85,11 @@ bool EntityManager::RemoveEntity(Entity entity)
     m_availableEntities.push(entity);
 
     --m_signaturesSize;
+
+	Event event;
+	event.type = EventType::ENTITY_REMOVED;
+	event.entity.entity = entity;
+	PushEvent(event);
 
     return true;
 }

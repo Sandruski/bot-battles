@@ -55,6 +55,12 @@
     <Filter Include="Archivos de encabezado\States">
       <UniqueIdentifier>{a37ce05d-0495-4604-b6df-aa67e52ceb80}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Archivos de origen\Events">
+      <UniqueIdentifier>{b36a38dc-2445-48ac-acc1-362df8ce2830}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\Events">
+      <UniqueIdentifier>{bad021f6-e29b-47e8-b41e-6c9080fd95d2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -122,6 +128,9 @@
     </ClCompile>
     <ClCompile Include="Vec3.cpp">
       <Filter>Archivos de origen\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Subject.cpp">
+      <Filter>Archivos de origen\Events</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -226,6 +235,15 @@
     </ClInclude>
     <ClInclude Include="Vec3.h">
       <Filter>Archivos de encabezado\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Observer.h">
+      <Filter>Archivos de encabezado\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Events.h">
+      <Filter>Archivos de encabezado\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Subject.h">
+      <Filter>Archivos de encabezado\Events</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

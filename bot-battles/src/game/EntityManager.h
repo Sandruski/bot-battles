@@ -3,6 +3,7 @@
 
 #include "ComponentDefs.h"
 #include "EntityDefs.h"
+#include "Subject.h"
 
 #include <array>
 #include <memory>
@@ -12,10 +13,12 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class EntityManager {
+class EntityManager : public Subject {
 public:
     EntityManager();
     ~EntityManager();
+
+	bool PreUpdate(F32 /*dt*/);
 
     Entity AddEntity();
     bool RemoveEntity(Entity entity);
