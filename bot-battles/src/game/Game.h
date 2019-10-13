@@ -1,6 +1,8 @@
 #ifndef __GAME_H__
 #define __GAME_H__
 
+#include "Timer.h"
+
 #include <functional>
 #include <memory>
 #include <vector>
@@ -68,6 +70,12 @@ private:
 	std::shared_ptr<SingletonWindowComponent> m_singletonWindowComponent;
 	std::shared_ptr<SingletonRendererComponent> m_singletonRendererComponent;
 	std::shared_ptr<SingletonInputComponent> m_singletonInputComponent;
+
+	Timer m_timer;
+	F64 m_lastFrameMs;
+	F64 m_desiredFramerate;
+	F64 m_fps;
+	F64 m_dt;
 
     bool m_isRunning;
 };

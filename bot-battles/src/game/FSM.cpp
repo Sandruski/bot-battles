@@ -35,33 +35,44 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	bool FSM::Update()
+	bool FSM::PreUpdate(F32 dt)
 	{
 		if (m_currentState != nullptr)
 		{
-			return m_currentState->Update(0.0f); // TODO dt
+			return m_currentState->PreUpdate(dt); // TODO dt
 		}
 
 		return true;
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	bool FSM::LateUpdate()
+	bool FSM::Update(F32 dt)
 	{
 		if (m_currentState != nullptr)
 		{
-			return m_currentState->LateUpdate(0.0f); // TODO dt
+			return m_currentState->Update(dt); // TODO dt
 		}
 
 		return true;
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	bool FSM::Draw()
+	bool FSM::PostUpdate(F32 dt)
 	{
 		if (m_currentState != nullptr)
 		{
-			return m_currentState->Draw();
+			return m_currentState->PostUpdate(dt); // TODO dt
+		}
+
+		return true;
+	}
+
+	//----------------------------------------------------------------------------------------------------
+	bool FSM::Render()
+	{
+		if (m_currentState != nullptr)
+		{
+			return m_currentState->Render();
 		}
 
 		return true;

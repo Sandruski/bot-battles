@@ -25,6 +25,11 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 Game::Game(const GameConfiguration& configuration)
     : m_configuration(configuration)
+	, m_timer()
+	, m_lastFrameMs(0)
+	, m_desiredFramerate(60.0)
+	, m_fps(0)
+	, m_dt(0)
     , m_isRunning(false)
 {
     m_entityManager = std::make_shared<EntityManager>();
@@ -131,35 +136,73 @@ bool Game::Init()
 // game loop
 bool Game::Update()
 {
-	bool ret = m_entityManager->PreUpdate(23);
+	m_timer.Start();
+
+	// PreUpdate
+	bool ret = m_entityManager->PreUpdate(m_dt);
 	if (!ret) {
 		return false;
 	}
 
-	m_componentManager->PreUpdate(23);
+	m_componentManager->PreUpdate(m_dt);
 	if (!ret) {
 		return false;
 	}
 
-	m_systemManager->PreUpdate(23);
+	m_systemManager->PreUpdate(m_dt);
 	if (!ret) {
 		return false;
 	}
-		
-	ret = m_systemManager->Update(23);
+
+	m_fsm->PreUpdate(m_dt);
+	if (!ret) {
+		return false;
+	}
+	
+	// Update
+	ret = m_systemManager->Update(m_dt);
     if (!ret) {
         return false;
     }
 
-    ret = m_systemManager->PostUpdate(23);
+	m_fsm->Update(m_dt);
+	if (!ret) {
+		return false;
+	}
+
+	// PostUpdate
+    ret = m_systemManager->PostUpdate(m_dt);
     if (!ret) {
         return false;
     }
 
+	m_fsm->PostUpdate(m_dt);
+	if (!ret) {
+		return false;
+	}
+
+	// Render
     ret = m_systemManager->Render();
     if (!ret) {
         return false;
     }
+
+	m_fsm->Render();
+	if (!ret) {
+		return false;
+	}
+
+
+	m_lastFrameMs = m_timer.ReadMs();
+	U64 desiredLastFrameMs = 1000.0 / m_desiredFramerate;
+	if (m_lastFrameMs < desiredLastFrameMs)
+	{
+		SDL_Delay(desiredLastFrameMs - m_lastFrameMs);
+		m_lastFrameMs = m_timer.ReadMs();
+	}
+
+	m_fps = 1000.0 / m_lastFrameMs;
+	m_dt = 1.0 / m_fps;
 
     return ret;
 }

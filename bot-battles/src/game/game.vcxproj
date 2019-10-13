@@ -159,6 +159,7 @@
     <ClCompile Include="Subject.cpp" />
     <ClCompile Include="TextureImporter.cpp" />
     <ClCompile Include="RendererSystem.cpp" />
+    <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Vec2.cpp" />
     <ClCompile Include="Vec2I.cpp" />
     <ClCompile Include="Vec3.cpp" />
@@ -195,6 +196,7 @@
     <ClInclude Include="Log.h" />
     <ClInclude Include="RendererSystem.h" />
     <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="Timer.h" />
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="Vec2I.h" />
     <ClInclude Include="Vec3.h" />

@@ -23,9 +23,10 @@ namespace sand
 
 		bool ShutDown();
 
-		bool Update();
-		bool LateUpdate();
-		bool Draw();
+		bool PreUpdate(F32 dt);
+		bool Update(F32 dt);
+		bool PostUpdate(F32 dt);
+		bool Render();
 
 		template<class T>
 		U32 AddState();

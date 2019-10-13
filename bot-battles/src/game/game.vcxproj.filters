@@ -132,6 +132,9 @@
     <ClCompile Include="Subject.cpp">
       <Filter>Archivos de origen\Events</Filter>
     </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>Archivos de origen\Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ResourceTexture.h">
@@ -247,6 +250,9 @@
     </ClInclude>
     <ClInclude Include="Vec3.h">
       <Filter>Archivos de encabezado\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>Archivos de encabezado\Utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

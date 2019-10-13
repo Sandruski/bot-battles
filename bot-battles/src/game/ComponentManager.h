@@ -181,7 +181,7 @@ inline void ComponentArray<T>::OnNotify(const Event& event)
 		break;
 	}
 
-	default
+	default:
 	{
 		break;
 	}

@@ -17,9 +17,10 @@ namespace sand
 		virtual bool Destroy() = 0;
 
 		virtual bool Enter() { return true; }
+		virtual bool PreUpdate(F32 /*dt*/) { return true; }
 		virtual bool Update(F32 /*dt*/) { return true; }
-		virtual bool LateUpdate(F32 /*dt*/) { return true; }
-		virtual bool Draw() { return true; }
+		virtual bool PostUpdate(F32 /*dt*/) { return true; }
+		virtual bool Render() { return true; }
 		virtual bool Exit() { return true; }
 	};
 }

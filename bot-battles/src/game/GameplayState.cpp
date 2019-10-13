@@ -9,6 +9,7 @@
 
 #include "SpriteComponent.h"
 #include "TransformComponent.h"
+#include "SingletonInputComponent.h"
 
 #include "WorkingDirDefs.h"
 
@@ -36,10 +37,8 @@ bool GameplayState::Create()
 	auto sprite2 = g_game->GetComponentManager().AddComponent<SpriteComponent>(character);
 	auto texture2 = g_game->GetResourceManager().AddResource<ResourceTexture>("character.png", TEXTURES_DIR);
 	sprite2->m_texture = texture2;
-	auto transform = g_game->GetComponentManager().AddComponent<TransformComponent>(character);
-	transform->m_position = Vec2(10.0f, 40.0f);
-
-	g_game->GetEntityManager().RemoveEntity(character);
+	m_transform = g_game->GetComponentManager().AddComponent<TransformComponent>(character);
+	m_transform->m_position = Vec2(10.0f, 40.0f);
 
     return true;
 }
@@ -57,19 +56,32 @@ bool GameplayState::Enter()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool GameplayState::Update(F32 /*dt*/)
+bool GameplayState::PreUpdate(F32 /*dt*/)
+{
+	return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool GameplayState::Update(F32 dt)
+{
+	std::shared_ptr<SingletonInputComponent> input = g_game->GetSingletonInputComponent();
+	if (input->GetKey(SDL_SCANCODE_RIGHT) == SingletonInputComponent::KeyState::KEY_DOWN
+		|| input->GetKey(SDL_SCANCODE_RIGHT) == SingletonInputComponent::KeyState::KEY_REPEAT)
+	{
+		m_transform->m_position.x += 30.0f * dt;
+	}
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool GameplayState::PostUpdate(F32 /*dt*/)
 {
     return true;
 }
 
 //----------------------------------------------------------------------------------------------------
-bool GameplayState::LateUpdate(F32 /*dt*/)
-{
-    return true;
-}
-
-//----------------------------------------------------------------------------------------------------
-bool GameplayState::Draw()
+bool GameplayState::Render()
 {
     return true;
 }

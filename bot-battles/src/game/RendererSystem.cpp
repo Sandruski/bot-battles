@@ -53,8 +53,8 @@ bool RendererSystem::Render()
 
     /*
 		1. All level geometry
-		2. All debug geometry
-		3. The editor
+		2. All debug geometry -> Maybe from each state/system? Render()
+		3. The editor -> Maybe from each system? Render()
 		4. Swap buffers
 		*/
 
