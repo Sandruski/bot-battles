@@ -10,10 +10,14 @@
 #include "WindowSystem.h"
 #include "RendererSystem.h"
 #include "InputSystem.h"
+//#include "ServerSystem.h"
+//#include "ClientSystem.h"
 
 #include "SingletonInputComponent.h"
 #include "SingletonRendererComponent.h"
 #include "SingletonWindowComponent.h"
+//#include "SingletonServerComponent.h"
+//#include "SingletonClientComponent.h"
 
 #include "TransformComponent.h"
 #include "SpriteComponent.h"
@@ -42,6 +46,8 @@ Game::Game(const GameConfiguration& configuration)
 	m_singletonInputComponent = std::make_shared<SingletonInputComponent>();
 	m_singletonRendererComponent = std::make_shared<SingletonRendererComponent>();
 	m_singletonWindowComponent = std::make_shared<SingletonWindowComponent>();
+	//m_singletonServerComponent = std::make_shared<SingletonServerComponent>();
+	//m_singletonClientComponent = std::make_shared<SingletonClientComponent>();
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -68,6 +74,18 @@ bool Game::Init()
 	{
 		return false;
 	}
+	/*
+	ret = m_systemManager->RegisterSystem<ServerSystem>();
+	if (!ret)
+	{
+		return false;
+	}
+	ret = m_systemManager->RegisterSystem<ClientSystem>();
+	if (!ret)
+	{
+		return false;
+	}
+	*/
 
 	// Components
 	ret = m_componentManager->RegisterComponent<TransformComponent>();

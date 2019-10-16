@@ -8,9 +8,9 @@ namespace sand {
 enum class SystemType {
 	WINDOW,
     RENDERER,
-	TEXTURE_IMPORTER,
-	FSM,
     INPUT,
+	SERVER,
+	CLIENT,
 
     COUNT,
     INVALID

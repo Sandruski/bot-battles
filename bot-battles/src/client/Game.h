@@ -22,6 +22,8 @@ class TextureImporter;
 struct SingletonWindowComponent;
 struct SingletonRendererComponent;
 struct SingletonInputComponent;
+//struct SingletonServerComponent;
+//struct SingletonClientComponent;
 
 //----------------------------------------------------------------------------------------------------
 struct GameConfiguration {
@@ -54,6 +56,8 @@ public:
 	std::shared_ptr<SingletonWindowComponent> GetSingletonWindowComponent() const { return m_singletonWindowComponent; }
 	std::shared_ptr<SingletonRendererComponent> GetSingletonRendererComponent() const { return m_singletonRendererComponent; }
 	std::shared_ptr<SingletonInputComponent> GetSingletonInputComponent() const { return m_singletonInputComponent; }
+	//std::shared_ptr<SingletonServerComponent> GetSingletonServerComponent() const { return m_singletonServerComponent; }
+	//std::shared_ptr<SingletonClientComponent> GetSingletonClientComponent() const { return m_singletonClientComponent; }
 
     const char* GetName() const { return m_configuration.m_name; }
 
@@ -70,6 +74,8 @@ private:
 	std::shared_ptr<SingletonWindowComponent> m_singletonWindowComponent;
 	std::shared_ptr<SingletonRendererComponent> m_singletonRendererComponent;
 	std::shared_ptr<SingletonInputComponent> m_singletonInputComponent;
+	//std::shared_ptr<SingletonServerComponent> m_singletonServerComponent;
+	//std::shared_ptr<SingletonClientComponent> m_singletonClientComponent;
 
 	Timer m_timer;
 	F64 m_lastFrameMs;

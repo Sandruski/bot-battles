@@ -19,6 +19,8 @@ enum class SingletonComponentType {
 	WINDOW,
 	RENDERER,
 	INPUT,
+	SERVER,
+	CLIENT,
 
 	COUNT,
 	INVALID

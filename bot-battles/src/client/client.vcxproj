@@ -23,7 +23,7 @@
     <ProjectGuid>{50AA5DBE-79B7-4B0E-8D43-5A661C44965A}</ProjectGuid>
     <RootNamespace>engine</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
-    <ProjectName>game</ProjectName>
+    <ProjectName>client</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -144,6 +144,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\shared\Log.cpp" />
+    <ClCompile Include="..\shared\Timer.cpp" />
+    <ClCompile Include="..\shared\Vec2.cpp" />
+    <ClCompile Include="..\shared\Vec2I.cpp" />
+    <ClCompile Include="..\shared\Vec3.cpp" />
     <ClCompile Include="Colors.cpp" />
     <ClCompile Include="ComponentManager.cpp" />
     <ClCompile Include="DebugDrawer.cpp" />
@@ -152,17 +157,12 @@
     <ClCompile Include="GameplayState.cpp" />
     <ClCompile Include="SingletonInputComponent.cpp" />
     <ClCompile Include="FSM.cpp" />
-    <ClCompile Include="Log.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="InputSystem.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Subject.cpp" />
     <ClCompile Include="TextureImporter.cpp" />
     <ClCompile Include="RendererSystem.cpp" />
-    <ClCompile Include="Timer.cpp" />
-    <ClCompile Include="Vec2.cpp" />
-    <ClCompile Include="Vec2I.cpp" />
-    <ClCompile Include="Vec3.cpp" />
     <ClCompile Include="WindowSystem.cpp" />
     <ClCompile Include="Resource.cpp" />
     <ClCompile Include="ResourceTexture.cpp" />
@@ -170,7 +170,13 @@
     <ClCompile Include="SystemManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\shared\Log.h" />
+    <ClInclude Include="..\shared\Memory.h" />
+    <ClInclude Include="..\shared\Timer.h" />
     <ClInclude Include="..\shared\Utils.h" />
+    <ClInclude Include="..\shared\Vec2.h" />
+    <ClInclude Include="..\shared\Vec2I.h" />
+    <ClInclude Include="..\shared\Vec3.h" />
     <ClInclude Include="Colors.h" />
     <ClInclude Include="ComponentManager.h" />
     <ClInclude Include="ComponentDefs.h" />
@@ -188,18 +194,12 @@
     <ClInclude Include="EntityManager.h" />
     <ClInclude Include="GameplayState.h" />
     <ClInclude Include="FSM.h" />
-    <ClInclude Include="Memory.h" />
     <ClInclude Include="InputSystem.h" />
     <ClInclude Include="StateDefs.h" />
     <ClInclude Include="Subject.h" />
     <ClInclude Include="TextureImporter.h" />
-    <ClInclude Include="Log.h" />
     <ClInclude Include="RendererSystem.h" />
     <ClInclude Include="ResourceManager.h" />
-    <ClInclude Include="Timer.h" />
-    <ClInclude Include="Vec2.h" />
-    <ClInclude Include="Vec2I.h" />
-    <ClInclude Include="Vec3.h" />
     <ClInclude Include="WindowSystem.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceTexture.h" />

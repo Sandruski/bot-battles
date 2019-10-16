@@ -81,9 +81,6 @@
     <ClCompile Include="RendererSystem.cpp">
       <Filter>Archivos de origen\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="Log.cpp">
-      <Filter>Archivos de origen\Utils</Filter>
-    </ClCompile>
     <ClCompile Include="Colors.cpp">
       <Filter>Archivos de origen\Utils</Filter>
     </ClCompile>
@@ -120,20 +117,23 @@
     <ClCompile Include="SystemManager.cpp">
       <Filter>Archivos de origen\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="Vec2.cpp">
-      <Filter>Archivos de origen\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Vec2I.cpp">
-      <Filter>Archivos de origen\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Vec3.cpp">
-      <Filter>Archivos de origen\Math</Filter>
-    </ClCompile>
     <ClCompile Include="Subject.cpp">
       <Filter>Archivos de origen\Events</Filter>
     </ClCompile>
-    <ClCompile Include="Timer.cpp">
+    <ClCompile Include="..\shared\Log.cpp">
       <Filter>Archivos de origen\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\shared\Timer.cpp">
+      <Filter>Archivos de origen\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\shared\Vec2.cpp">
+      <Filter>Archivos de origen\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\shared\Vec2I.cpp">
+      <Filter>Archivos de origen\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\shared\Vec3.cpp">
+      <Filter>Archivos de origen\Math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -171,12 +171,6 @@
       <Filter>Archivos de encabezado\Utils</Filter>
     </ClInclude>
     <ClInclude Include="DebugDrawer.h">
-      <Filter>Archivos de encabezado\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Log.h">
-      <Filter>Archivos de encabezado\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Memory.h">
       <Filter>Archivos de encabezado\Utils</Filter>
     </ClInclude>
     <ClInclude Include="..\shared\Utils.h">
@@ -230,12 +224,6 @@
     <ClInclude Include="State.h">
       <Filter>Archivos de encabezado\States</Filter>
     </ClInclude>
-    <ClInclude Include="Vec2.h">
-      <Filter>Archivos de encabezado\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Vec2I.h">
-      <Filter>Archivos de encabezado\Math</Filter>
-    </ClInclude>
     <ClInclude Include="Observer.h">
       <Filter>Archivos de encabezado\Events</Filter>
     </ClInclude>
@@ -248,11 +236,23 @@
     <ClInclude Include="WorkingDirDefs.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="Vec3.h">
+    <ClInclude Include="..\shared\Log.h">
+      <Filter>Archivos de encabezado\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\shared\Memory.h">
+      <Filter>Archivos de encabezado\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\shared\Timer.h">
+      <Filter>Archivos de encabezado\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\shared\Vec2.h">
       <Filter>Archivos de encabezado\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Timer.h">
-      <Filter>Archivos de encabezado\Utils</Filter>
+    <ClInclude Include="..\shared\Vec2I.h">
+      <Filter>Archivos de encabezado\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\shared\Vec3.h">
+      <Filter>Archivos de encabezado\Math</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
