@@ -80,9 +80,12 @@
       <AdditionalIncludeDirectories>C:\Projects\bot-battles\bot-battles\src\shared;C:\Projects\bot-battles\bot-battles\src\dependencies\include\SDL2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>false</TreatWarningAsError>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <ForcedIncludeFiles>pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Ws2_32.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\Projects\bot-battles\bot-battles\src\dependencies\lib\lib86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SubSystem>Windows</SubSystem>
     </Link>
@@ -96,9 +99,11 @@
       <AdditionalIncludeDirectories>C:\Projects\bot-battles\bot-battles\src\shared;C:\Projects\bot-battles\bot-battles\src\dependencies\include\SDL2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>false</TreatWarningAsError>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Ws2_32.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\Projects\bot-battles\bot-battles\src\dependencies\lib\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SubSystem>Windows</SubSystem>
     </Link>
@@ -114,11 +119,13 @@
       <AdditionalIncludeDirectories>C:\Projects\bot-battles\bot-battles\src\shared;C:\Projects\bot-battles\bot-battles\src\dependencies\include\SDL2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>false</TreatWarningAsError>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Ws2_32.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\Projects\bot-battles\bot-battles\src\dependencies\lib\lib86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SubSystem>Windows</SubSystem>
     </Link>
@@ -134,11 +141,13 @@
       <AdditionalIncludeDirectories>C:\Projects\bot-battles\bot-battles\src\shared;C:\Projects\bot-battles\bot-battles\src\dependencies\include\SDL2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>false</TreatWarningAsError>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Ws2_32.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\Projects\bot-battles\bot-battles\src\dependencies\lib\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SubSystem>Windows</SubSystem>
     </Link>
@@ -149,20 +158,33 @@
     <ClCompile Include="..\shared\Vec2.cpp" />
     <ClCompile Include="..\shared\Vec2I.cpp" />
     <ClCompile Include="..\shared\Vec3.cpp" />
+    <ClCompile Include="ClientSystem.cpp" />
     <ClCompile Include="Colors.cpp" />
     <ClCompile Include="ComponentManager.cpp" />
     <ClCompile Include="DebugDrawer.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="EntityManager.cpp" />
     <ClCompile Include="GameplayState.cpp" />
+    <ClCompile Include="NetworkLog.cpp" />
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="SingletonInputComponent.cpp" />
     <ClCompile Include="FSM.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="InputSystem.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="SocketAddress.cpp" />
     <ClCompile Include="Subject.cpp" />
     <ClCompile Include="TextureImporter.cpp" />
     <ClCompile Include="RendererSystem.cpp" />
+    <ClCompile Include="UDPSocket.cpp" />
     <ClCompile Include="WindowSystem.cpp" />
     <ClCompile Include="Resource.cpp" />
     <ClCompile Include="ResourceTexture.cpp" />
@@ -177,15 +199,20 @@
     <ClInclude Include="..\shared\Vec2.h" />
     <ClInclude Include="..\shared\Vec2I.h" />
     <ClInclude Include="..\shared\Vec3.h" />
+    <ClInclude Include="ClientSystem.h" />
     <ClInclude Include="Colors.h" />
     <ClInclude Include="ComponentManager.h" />
     <ClInclude Include="ComponentDefs.h" />
     <ClInclude Include="Events.h" />
+    <ClInclude Include="NetworkLog.h" />
     <ClInclude Include="Observer.h" />
+    <ClInclude Include="pch.h" />
     <ClInclude Include="ResourceDefs.h" />
+    <ClInclude Include="SingletonClientComponent.h" />
     <ClInclude Include="SingletonInputComponent.h" />
     <ClInclude Include="SingletonRendererComponent.h" />
     <ClInclude Include="SingletonWindowComponent.h" />
+    <ClInclude Include="SocketAddress.h" />
     <ClInclude Include="SpriteComponent.h" />
     <ClInclude Include="DebugDrawer.h" />
     <ClInclude Include="Defines.h" />
@@ -200,6 +227,7 @@
     <ClInclude Include="TextureImporter.h" />
     <ClInclude Include="RendererSystem.h" />
     <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="UDPSocket.h" />
     <ClInclude Include="WindowSystem.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceTexture.h" />

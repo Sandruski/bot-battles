@@ -5,9 +5,6 @@
 
 #include "Vec2I.h"
 
-#include <SDL_mouse.h>
-#include <SDL_scancode.h>
-#include <cstring>
 
 namespace sand {
 

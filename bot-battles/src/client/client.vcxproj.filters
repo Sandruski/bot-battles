@@ -61,6 +61,12 @@
     <Filter Include="Archivos de origen\States">
       <UniqueIdentifier>{5c4e7fd5-d843-45eb-a7fa-62c6f38c9dc1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Archivos de encabezado\Network">
+      <UniqueIdentifier>{61016cfe-7022-4fe0-a644-5f35b6152c39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de origen\Network">
+      <UniqueIdentifier>{85c3aafd-a2f1-4319-bdec-ef29a9e44590}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -134,6 +140,21 @@
     </ClCompile>
     <ClCompile Include="..\shared\Vec3.cpp">
       <Filter>Archivos de origen\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientSystem.cpp">
+      <Filter>Archivos de origen\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="SocketAddress.cpp">
+      <Filter>Archivos de origen\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkLog.cpp">
+      <Filter>Archivos de origen\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="UDPSocket.cpp">
+      <Filter>Archivos de origen\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Archivos de origen</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -253,6 +274,24 @@
     </ClInclude>
     <ClInclude Include="..\shared\Vec3.h">
       <Filter>Archivos de encabezado\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientSystem.h">
+      <Filter>Archivos de encabezado\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="SingletonClientComponent.h">
+      <Filter>Archivos de encabezado\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="SocketAddress.h">
+      <Filter>Archivos de encabezado\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkLog.h">
+      <Filter>Archivos de encabezado\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="UDPSocket.h">
+      <Filter>Archivos de encabezado\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

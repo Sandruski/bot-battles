@@ -1,8 +1,5 @@
 #include "Log.h"
 
-#include <stdio.h>
-#include <windows.h>
-
 void Log(const char* file, int line, const char* function, const char* format, ...)
 {
 	static char tmp_string[4096];

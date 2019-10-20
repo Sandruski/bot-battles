@@ -1,8 +1,6 @@
 #ifndef __ENTITY_DEFS_H__
 #define __ENTITY_DEFS_H__
 
-#include "Memory.h"
-
 namespace sand {
 
 using Entity = U32;

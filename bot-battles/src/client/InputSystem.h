@@ -2,7 +2,6 @@
 #define __INPUT_SYSTEM_H__
 
 #include "ComponentDefs.h"
-#include "Memory.h"
 #include "System.h"
 
 namespace sand {

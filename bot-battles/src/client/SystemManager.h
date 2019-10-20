@@ -7,12 +7,6 @@
 
 #include "Observer.h"
 
-#include "Log.h"
-
-#include <cassert>
-#include <memory>
-#include <vector>
-
 namespace sand {
 
 class System;

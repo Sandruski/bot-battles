@@ -1,8 +1,6 @@
 #ifndef __RESOURCE_H__
 #define __RESOURCE_H__
 
-#include "Memory.h"
-
 namespace sand
 {
 

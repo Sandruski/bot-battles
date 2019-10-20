@@ -3,13 +3,6 @@
 #include "FSM.h"
 #include "GameplayState.h"
 
-#include "Log.h"
-#include "Memory.h"
-
-#include <SDL.h>
-#include <cassert>
-#include <memory>
-
 enum MainState 
 {
     CREATE,

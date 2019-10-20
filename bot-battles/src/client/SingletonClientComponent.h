@@ -3,27 +3,26 @@
 
 #include "ComponentDefs.h"
 
-#include "Memory.h"
-
-#include <WinSock2.h>
 
 namespace sand {
+
+
+	class SocketAddress;
+	class UDPSocket;
 
 	//----------------------------------------------------------------------------------------------------
 	struct SingletonClientComponent {
 		static SingletonComponentType GetType() { return SingletonComponentType::CLIENT; }
 
 		SingletonClientComponent()
-			: m_socket(NULL),
-			toAddress(),
-			m_port(9999)
-		{
+			: m_socket(nullptr),
+			m_socketAddress(nullptr)
+		{		
 		}
 		~SingletonClientComponent() { }
 
-		SOCKET m_socket;
-		SOCKADDR_IN toAddress;
-		U16 m_port;
+		std::shared_ptr<UDPSocket> m_socket;
+		std::shared_ptr<SocketAddress> m_socketAddress;
 	};
 }
 

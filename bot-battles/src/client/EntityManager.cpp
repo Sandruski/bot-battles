@@ -4,10 +4,6 @@
 #include "ComponentManager.h"
 #include "Events.h"
 
-#include "Log.h"
-
-#include <cassert>
-
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------

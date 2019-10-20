@@ -3,7 +3,6 @@
 
 #include "ComponentDefs.h"
 
-#include <SDL_pixels.h>
 
 struct SDL_Renderer;
 

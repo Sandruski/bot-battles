@@ -3,9 +3,6 @@
 
 #include "Events.h"
 
-#include <memory>
-#include <vector>
-#include <queue>
 
 namespace sand
 {

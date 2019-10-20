@@ -1,8 +1,5 @@
 #include "Resource.h"
 
-#include <cstring>
-#include <cstdio>
-#include <cassert>
 
 namespace sand
 {

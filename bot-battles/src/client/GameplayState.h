@@ -3,7 +3,6 @@
 
 #include "State.h"
 
-#include <memory>
 
 namespace sand
 {

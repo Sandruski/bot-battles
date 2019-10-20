@@ -4,12 +4,7 @@
 
 #include "SingletonInputComponent.h"
 
-#include "Log.h"
 #include "Defines.h"
-
-#include <SDL.h>
-#include <cassert>
-#include <cstring>
 
 namespace sand
 {

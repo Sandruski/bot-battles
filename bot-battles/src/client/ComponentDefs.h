@@ -1,10 +1,6 @@
 #ifndef __COMPONENT_DEFS_H__
 #define __COMPONENT_DEFS_H__
 
-#include "Memory.h"
-
-#include <bitset>
-
 namespace sand {
 
 enum class ComponentType {

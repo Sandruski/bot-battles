@@ -5,7 +5,6 @@
 #include "SystemDefs.h"
 #include "ComponentDefs.h"
 
-#include <vector>
 
 namespace sand {
 

@@ -11,9 +11,6 @@
 #include "SingletonWindowComponent.h"
 
 #include "Colors.h"
-#include "Log.h"
-
-#include <SDL.h>
 
 namespace sand {
 

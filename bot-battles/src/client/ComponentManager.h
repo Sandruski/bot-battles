@@ -8,13 +8,6 @@
 #include "Subject.h"
 #include "Events.h"
 
-#include "Log.h"
-
-#include <memory>
-#include <array>
-#include <unordered_map>
-#include <cassert>
-
 // TODO: interface IComponent struct where all components derive from. Create() method implementation for resources
 // NOTE: entities can only have one component of each type
 

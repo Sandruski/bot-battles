@@ -1,6 +1,5 @@
 #include "Timer.h"
 
-#include <SDL_timer.h>
 
 namespace sand
 {

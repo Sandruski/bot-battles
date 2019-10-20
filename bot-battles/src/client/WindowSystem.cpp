@@ -2,14 +2,10 @@
 
 #include "Game.h"
 
-#include "Log.h"
-#include "Memory.h"
 #include "Defines.h"
 
 #include "SingletonWindowComponent.h"
 
-#include <SDL.h>
-#include <stdio.h>
 
 namespace sand
 {

@@ -3,7 +3,6 @@
 #include "State.h"
 #include "StateDefs.h"
 
-#include <cassert>
 
 namespace sand
 {

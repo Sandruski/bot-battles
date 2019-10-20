@@ -1,7 +1,5 @@
 #include "Colors.h"
 
-#include <SDL_pixels.h>
-
 
 const SDL_Color Black = { 0, 0, 0, 255 };
 const SDL_Color White = { 255, 255, 255, 255 };

@@ -1,6 +1,5 @@
 #include "SingletonInputComponent.h"
 
-#include <cassert>
 
 namespace sand
 {

@@ -4,11 +4,6 @@
 
 #include "SingletonRendererComponent.h"
 
-#include "Log.h"
-
-#include <SDL_image.h>
-#include <cassert>
-
 namespace sand
 {
 

@@ -6,10 +6,6 @@
 #include "Subject.h"
 #include "Observer.h"
 
-#include <array>
-#include <memory>
-#include <queue>
-#include <unordered_map>
 
 namespace sand {
 

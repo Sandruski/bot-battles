@@ -1,8 +1,6 @@
 #ifndef __MEMORY_H__
 #define __MEMORY_H__
 
-#include <cstdint>
-
 typedef std::uint8_t U8;
 typedef std::int8_t I8;
 

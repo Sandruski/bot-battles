@@ -1,9 +1,6 @@
 #ifndef __DEBUG_DRAWER_H__
 #define __DEBUG_DRAWER_H__
 
-struct SDL_Rect;
-struct SDL_Color;
-
 namespace sand
 {
 

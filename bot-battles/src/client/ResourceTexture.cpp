@@ -3,7 +3,6 @@
 #include "Game.h"
 #include "TextureImporter.h"
 
-#include <cassert>
 
 namespace sand
 {

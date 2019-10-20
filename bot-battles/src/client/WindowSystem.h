@@ -2,7 +2,6 @@
 #define __WINDOW_SYSTEM_H__
 
 #include "System.h"
-#include "Memory.h"
 
 struct SDL_Window;
 struct SDL_Surface;

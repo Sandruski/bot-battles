@@ -1,15 +1,7 @@
 #ifndef __RESOURCE_MANAGER_H__
 #define __RESOURCE_MANAGER_H__
 
-#include "Memory.h"
-#include "Utils.h"
-#include "Log.h"
 #include "ResourceDefs.h"
-
-#include <cassert>
-#include <unordered_map>
-#include <queue>
-#include <memory>
 
 namespace sand
 {

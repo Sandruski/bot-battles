@@ -1,8 +1,6 @@
 #ifndef __STATE_H__
 #define __STATE_H__
 
-#include "Memory.h"
-
 namespace sand
 {
 

@@ -3,8 +3,6 @@
 #include "Observer.h"
 #include "Events.h"
 
-#include "Log.h"
-
 namespace sand {
 
 
