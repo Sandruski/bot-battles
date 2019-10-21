@@ -5,6 +5,8 @@
 
 namespace sand {
 
+	class OutputMemoryStream;
+
 //----------------------------------------------------------------------------------------------------
 struct TransformComponent {
     static ComponentType GetType() { return ComponentType::TRANSFORM; }
@@ -14,6 +16,8 @@ struct TransformComponent {
     {
     }
     ~TransformComponent() { }
+
+	//void Write(OutputMemoryStream& inStream) const;
 
 	Vec2 m_position;
 };
