@@ -162,6 +162,9 @@
     <ClCompile Include="ByteSwap.cpp">
       <Filter>Archivos de origen\Network</Filter>
     </ClCompile>
+    <ClCompile Include="LinkingContext.cpp">
+      <Filter>Archivos de origen\Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ResourceTexture.h">
@@ -306,6 +309,9 @@
       <Filter>Archivos de encabezado\Network</Filter>
     </ClInclude>
     <ClInclude Include="NetworkDefs.h">
+      <Filter>Archivos de encabezado\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="LinkingContext.h">
       <Filter>Archivos de encabezado\Network</Filter>
     </ClInclude>
   </ItemGroup>

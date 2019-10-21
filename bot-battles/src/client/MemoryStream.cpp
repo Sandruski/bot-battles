@@ -17,6 +17,31 @@ OutputMemoryStream::~OutputMemoryStream()
 }
 
 //----------------------------------------------------------------------------------------------------
+void OutputMemoryStream::Write(const std::string& inString)
+{
+	std::size_t size = inString.size();
+	Write(size);
+
+	Write(inString.data(), size * sizeof(char));
+}
+
+//----------------------------------------------------------------------------------------------------
+void OutputMemoryStream::Write(const char* inString)
+{
+	std::size_t size = std::strlen(inString);
+	Write(size);
+
+	Write(inString, size * sizeof(char));
+}
+
+//----------------------------------------------------------------------------------------------------
+void OutputMemoryStream::Write(Entity entity)
+{
+	//NetworkID networkID = mLinkingContext->GetNetworkID(entity);
+	//Write(networkID);
+}
+
+//----------------------------------------------------------------------------------------------------
 void OutputMemoryStream::Write(const void* inData, U32 byteCount)
 {
 	U32 newHead = m_head + byteCount;
@@ -53,6 +78,33 @@ InputMemoryStream::InputMemoryStream(U32 byteCount)
 InputMemoryStream::~InputMemoryStream()
 {
 	std::free(m_buffer);
+}
+
+//----------------------------------------------------------------------------------------------------
+void InputMemoryStream::Read(std::string& outString)
+{
+	std::size_t size;
+	Read(size);
+	outString.resize(size);
+
+	Read(&outString, size * sizeof(char));
+}
+
+//----------------------------------------------------------------------------------------------------
+void InputMemoryStream::Read(char* outString)
+{
+	std::size_t size;
+	Read(size);
+
+	Read(&outString, size * sizeof(char));
+}
+
+//----------------------------------------------------------------------------------------------------
+void InputMemoryStream::Read(Entity& entity)
+{
+	//NetworkID networkID;
+	//Read(networkID);
+	//entity = mLinkingContext->GetEntity(networkID);
 }
 
 //----------------------------------------------------------------------------------------------------

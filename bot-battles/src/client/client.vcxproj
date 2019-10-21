@@ -166,6 +166,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="EntityManager.cpp" />
     <ClCompile Include="GameplayState.cpp" />
+    <ClCompile Include="LinkingContext.cpp" />
     <ClCompile Include="NetworkLog.cpp" />
     <ClCompile Include="MemoryStream.cpp" />
     <ClCompile Include="pch.cpp">
@@ -207,6 +208,7 @@
     <ClInclude Include="ComponentManager.h" />
     <ClInclude Include="ComponentDefs.h" />
     <ClInclude Include="Events.h" />
+    <ClInclude Include="LinkingContext.h" />
     <ClInclude Include="NetworkDefs.h" />
     <ClInclude Include="NetworkLog.h" />
     <ClInclude Include="Observer.h" />

@@ -3,6 +3,7 @@
 
 #include "NetworkDefs.h"
 #include "ByteSwap.h"
+#include "EntityDefs.h"
 
 namespace sand
 {
@@ -16,9 +17,11 @@ namespace sand
 
 		template <typename T>
 		void Write(T inData);
-
 		template <typename T>
 		void Write(const std::vector<T>& inVector);
+		void Write(const std::string& inString);
+		void Write(const char* inString);
+		void Write(Entity entity);
 
 		const char* GetBuffer() const
 		{
@@ -83,9 +86,11 @@ namespace sand
 
 		template <typename T>
 		void Read(T& outData);
-
 		template <typename T>
 		void Read(std::vector<T>& outVector);
+		void Read(std::string& outString);
+		void Read(char* outString);
+		void Read(Entity& entity);
 
 	private:
 		void Read(void* outData, U32 byteCount);
