@@ -159,6 +159,9 @@
     <ClCompile Include="MemoryStream.cpp">
       <Filter>Archivos de origen\Network</Filter>
     </ClCompile>
+    <ClCompile Include="ByteSwap.cpp">
+      <Filter>Archivos de origen\Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ResourceTexture.h">
@@ -297,6 +300,12 @@
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="MemoryStream.h">
+      <Filter>Archivos de encabezado\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="ByteSwap.h">
+      <Filter>Archivos de encabezado\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkDefs.h">
       <Filter>Archivos de encabezado\Network</Filter>
     </ClInclude>
   </ItemGroup>

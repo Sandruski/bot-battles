@@ -1,6 +1,9 @@
 #ifndef __MEMORY_STREAM_H__
 #define __MEMORY_STREAM_H__
 
+#include "NetworkDefs.h"
+#include "ByteSwap.h"
+
 namespace sand
 {
 
@@ -44,7 +47,15 @@ namespace sand
 	{
 		static_assert(std::is_arithmetic<T>::value || std::is_enum<T>::value, "Data is a non-primitive type");
 
-		Write(&inData, sizeof(inData));
+		if (STREAM_ENDIANNESS == PLATFORM_ENDIANNESS)
+		{
+			Write(&inData, sizeof(inData));
+		}
+		else
+		{
+			T swappedData = ByteSwap(inData);
+			Write(&swappedData, sizeof(swappedData));
+		}
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -91,7 +102,16 @@ namespace sand
 	{
 		static_assert(std::is_arithmetic<T>::value || std::is_enum<T>::value, "Data is a non-primitive type");
 
-		Read(&outData, sizeof(outData));
+		if (STREAM_ENDIANNESS == PLATFORM_ENDIANNESS)
+		{
+			Read(&outData, sizeof(outData));
+		}
+		else
+		{
+			T unswappedData;
+			Read(&unswappedData, sizeof(unswappedData));
+			outData = ByteSwap(unswappedData);
+		}
 	}
 
 	//----------------------------------------------------------------------------------------------------
