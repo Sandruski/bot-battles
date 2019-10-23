@@ -159,9 +159,6 @@
     <ClCompile Include="MemoryStream.cpp">
       <Filter>Archivos de origen\Network</Filter>
     </ClCompile>
-    <ClCompile Include="ByteSwap.cpp">
-      <Filter>Archivos de origen\Network</Filter>
-    </ClCompile>
     <ClCompile Include="LinkingContext.cpp">
       <Filter>Archivos de origen\Network</Filter>
     </ClCompile>

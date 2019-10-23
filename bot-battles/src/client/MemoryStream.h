@@ -22,6 +22,7 @@ namespace sand
 		// value << 1 is multiplying by 2, value << 2 is multiplying by 4, value << 3 is multiplying by 8, ... value << n is multiplying by 2^n
 	}
 
+
 	//----------------------------------------------------------------------------------------------------
 	// Bit stream
 	class OutputMemoryStream
@@ -37,17 +38,11 @@ namespace sand
 		void Write(const std::vector<T>& inVector);
 		void Write(const std::string& inString);
 		void Write(const char* inString);
-		void Write(Entity inEntity);
 		void Write(const Vec2& inVec);
 
 		const char* GetPtr() const
 		{
 			return m_buffer;
-		}
-
-		U32 GetBitLength() const
-		{
-			return m_head;
 		}
 
 		U32 GetByteLength() const
@@ -106,19 +101,31 @@ namespace sand
 	class InputMemoryStream
 	{
 	public:
-		InputMemoryStream(U32 byteCount);
+		InputMemoryStream();
 		~InputMemoryStream();
 
 		template <typename T>
-		void Read(T& outData);
+		void Read(T& outData, U32 bitCount = sizeof(T) * 8);
+		void Read(bool& outData);
 		template <typename T>
 		void Read(std::vector<T>& outVector);
 		void Read(std::string& outString);
 		void Read(char* outString);
-		void Read(Entity& entity);
+		void Read(Vec2& outVec);
+
+		const char* GetPtr() const
+		{
+			return m_buffer;
+		}
+
+		void Reset();
 
 	private:
-		void Read(void* outData, U32 byteCount);
+		void ReadBits(void* outData, U32 bitCount);
+		void ReadBits(U8& outData, U32 bitCount);
+		void ReadBytes(void* outData, U32 byteCount);
+
+		void Alloc(U32 bitCapacity);
 
 	private:
 		char* m_buffer;
@@ -128,18 +135,18 @@ namespace sand
 
 	//----------------------------------------------------------------------------------------------------
 	template<typename T>
-	inline void InputMemoryStream::Read(T& outData)
+	inline void InputMemoryStream::Read(T& outData, U32 bitCount)
 	{
 		static_assert(std::is_arithmetic<T>::value || std::is_enum<T>::value, "Data is a non-primitive type");
 
 		if (STREAM_ENDIANNESS == PLATFORM_ENDIANNESS())
 		{
-			Read(&outData, sizeof(outData));
+			ReadBytes(&outData, sizeof(outData));
 		}
 		else
 		{
 			T unswappedData;
-			Read(&unswappedData, sizeof(unswappedData));
+			ReadBytes(&unswappedData, sizeof(unswappedData));
 			outData = ByteSwap(unswappedData);
 		}
 	}

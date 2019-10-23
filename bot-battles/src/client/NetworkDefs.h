@@ -20,6 +20,8 @@ namespace sand {
 		char* ptr = reinterpret_cast<char*>(&word);
 		return ptr[0] ? Endianness::LITTLE_ENDIAN : Endianness::BIG_ENDIAN;
 	}
+
+	const U32 MAX_PACKET_SIZE = 1470;
 }
 
 #endif

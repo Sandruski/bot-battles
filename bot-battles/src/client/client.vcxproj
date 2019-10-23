@@ -158,7 +158,6 @@
     <ClCompile Include="..\shared\Vec2.cpp" />
     <ClCompile Include="..\shared\Vec2I.cpp" />
     <ClCompile Include="..\shared\Vec3.cpp" />
-    <ClCompile Include="ByteSwap.cpp" />
     <ClCompile Include="ClientSystem.cpp" />
     <ClCompile Include="Colors.cpp" />
     <ClCompile Include="ComponentManager.cpp" />
