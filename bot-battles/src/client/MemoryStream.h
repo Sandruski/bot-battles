@@ -22,6 +22,20 @@ namespace sand
 		// value << 1 is multiplying by 2, value << 2 is multiplying by 4, value << 3 is multiplying by 8, ... value << n is multiplying by 2^n
 	}
 
+	//----------------------------------------------------------------------------------------------------
+	// Fixed point
+	inline U32 FLOAT_TO_FIXED(float number, float min, float precision)
+	{
+		return static_cast<U32>((number - min) / precision);
+	}
+
+	//----------------------------------------------------------------------------------------------------
+	// Fixed point
+	inline float FIXED_TO_FLOAT(U32 number, float min, float precision)
+	{
+		return static_cast<float>(number) * precision + min;
+	}
+
 
 	//----------------------------------------------------------------------------------------------------
 	// Bit stream
@@ -39,6 +53,8 @@ namespace sand
 		void Write(const std::string& inString);
 		void Write(const char* inString);
 		void Write(const Vec2& inVec);
+		void Write(Entity inEntity);
+		void WritePosition(const Vec2& inVec);
 
 		const char* GetPtr() const
 		{
@@ -112,6 +128,8 @@ namespace sand
 		void Read(std::string& outString);
 		void Read(char* outString);
 		void Read(Vec2& outVec);
+		void Read(Entity& outEntity);
+		void ReadPosition(Vec2& outVec);
 
 		const char* GetPtr() const
 		{

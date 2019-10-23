@@ -2,6 +2,7 @@
 #define __TRANSFORM_COMPONENT_H__
 
 #include "Vec2.h"
+#include "MemoryStream.h"
 
 namespace sand {
 
@@ -17,7 +18,12 @@ struct TransformComponent {
     }
     ~TransformComponent() { }
 
-	//void Write(OutputMemoryStream& inStream) const;
+	// TODO: change this method
+	void Write(OutputMemoryStream& outMemoryStream) const
+	{
+		// Serialize
+		outMemoryStream.WritePosition(m_position);
+	}
 
 	Vec2 m_position;
 };

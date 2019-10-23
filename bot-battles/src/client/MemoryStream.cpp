@@ -58,6 +58,13 @@ void OutputMemoryStream::Write(Entity inEntity)
 }
 
 //----------------------------------------------------------------------------------------------------
+void OutputMemoryStream::WritePosition(const Vec2& inVec) // TODO: this should be done properly and without hard-coded values
+{
+	Write(FLOAT_TO_FIXED(inVec.x, -2000.0f, 0.1f));
+	Write(FLOAT_TO_FIXED(inVec.y, -2000.0f, 0.1f));
+}
+
+//----------------------------------------------------------------------------------------------------
 void OutputMemoryStream::WriteBits(const void* inData, U32 bitCount)
 {
 	const char* head = static_cast<const char*>(inData);
@@ -196,6 +203,16 @@ void InputMemoryStream::Read(Entity& outEntity)
 	Read(networkID);
 	outEntity = linkingContext->GetEntity(networkID);
 	*/
+}
+
+//----------------------------------------------------------------------------------------------------
+void InputMemoryStream::ReadPosition(Vec2& outVec) // TODO: this should be done properly and without hard-coded values
+{
+	Vec2 tmpVec;
+	Read(tmpVec.x);
+	Read(tmpVec.y);
+	outVec.x = FIXED_TO_FLOAT(tmpVec.x, -2000.0f, 0.1f);
+	outVec.y = FIXED_TO_FLOAT(tmpVec.y, -2000.0f, 0.1f);
 }
 
 //----------------------------------------------------------------------------------------------------
