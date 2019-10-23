@@ -12,8 +12,14 @@ namespace sand {
 		BIG_ENDIAN // Xbox 360, PlayStation 3, IBM's PowerPC
 	};
 
-	const Endianness STREAM_ENDIANNESS = Endianness::BIG_ENDIAN;
-	const Endianness PLATFORM_ENDIANNESS = Endianness::LITTLE_ENDIAN;
+	const Endianness STREAM_ENDIANNESS = Endianness::LITTLE_ENDIAN;
+
+	inline const Endianness PLATFORM_ENDIANNESS()
+	{
+		short word = 0x1;
+		char* ptr = reinterpret_cast<char*>(&word);
+		return ptr[0] ? Endianness::LITTLE_ENDIAN : Endianness::BIG_ENDIAN;
+	}
 }
 
 #endif

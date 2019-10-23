@@ -33,4 +33,8 @@
 #include "Log.h"
 #include "NetworkLog.h"
 
+#include "Vec2.h"
+#include "Vec2I.h"
+#include "Vec3.h"
+
 #endif //PCH_H
