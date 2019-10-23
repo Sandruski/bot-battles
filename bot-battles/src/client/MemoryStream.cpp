@@ -49,6 +49,15 @@ void OutputMemoryStream::Write(const Vec2& inVec)
 }
 
 //----------------------------------------------------------------------------------------------------
+void OutputMemoryStream::Write(Entity inEntity)
+{
+	/*
+	NetworkID networkID = linkingContext->GetNetworkID(inEntity);
+	Write(networkID);
+	*/
+}
+
+//----------------------------------------------------------------------------------------------------
 void OutputMemoryStream::WriteBits(const void* inData, U32 bitCount)
 {
 	const char* head = static_cast<const char*>(inData);
@@ -177,6 +186,16 @@ void InputMemoryStream::Read(Vec2& outVec)
 {
 	Read(outVec.x);
 	Read(outVec.y);
+}
+
+//----------------------------------------------------------------------------------------------------
+void InputMemoryStream::Read(Entity& outEntity)
+{
+	/*
+	NetworkID networkID;
+	Read(networkID);
+	outEntity = linkingContext->GetEntity(networkID);
+	*/
 }
 
 //----------------------------------------------------------------------------------------------------
