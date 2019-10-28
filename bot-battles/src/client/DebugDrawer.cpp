@@ -18,7 +18,7 @@ namespace sand
 		int ret = isFilled ? SDL_RenderFillRect(renderer, &rect) : SDL_RenderDrawRect(renderer, &rect);
 		if (ret == SDL_ERROR)
 		{
-			LOG("Quad could not be drawn! SDL Error: %s", SDL_GetError());
+			ELOG("Quad could not be drawn! SDL Error: %s", SDL_GetError());
 			return false;
 		}
 		
@@ -35,7 +35,7 @@ namespace sand
 		int ret = SDL_RenderDrawLine(renderer, rect.x, rect.y, rect.w, rect.h);
 		if (ret == SDL_ERROR)
 		{
-			LOG("Line could not be drawn! SDL Error: %s", SDL_GetError());
+			ELOG("Line could not be drawn! SDL Error: %s", SDL_GetError());
 			return false;
 		}
 
@@ -60,7 +60,7 @@ namespace sand
 		int ret = SDL_RenderDrawPoints(renderer, points, 360);
 		if (ret == SDL_ERROR)
 		{
-			LOG("Circle could not be drawn! SDL Error: %s", SDL_GetError());
+			ELOG("Circle could not be drawn! SDL Error: %s", SDL_GetError());
 			return false;
 		}
 

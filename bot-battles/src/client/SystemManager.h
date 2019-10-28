@@ -48,7 +48,7 @@ inline bool SystemManager::RegisterSystem()
 	{
 		if (system->GetType() == type)
 		{
-			LOG("The system is already registered!");
+			WLOG("The system is already registered!");
 			return false;
 		}
 	}
@@ -76,7 +76,7 @@ inline bool SystemManager::DeRegisterSystem()
 		}
 	}
 
-	LOG("The system is not registered!");
+	WLOG("The system is not registered!");
     return false;
 }
 } // namespace sand

@@ -147,9 +147,6 @@
     <ClCompile Include="SocketAddress.cpp">
       <Filter>Archivos de origen\Network</Filter>
     </ClCompile>
-    <ClCompile Include="NetworkLog.cpp">
-      <Filter>Archivos de origen\Network</Filter>
-    </ClCompile>
     <ClCompile Include="UDPSocket.cpp">
       <Filter>Archivos de origen\Network</Filter>
     </ClCompile>
@@ -288,9 +285,6 @@
       <Filter>Archivos de encabezado\Components</Filter>
     </ClInclude>
     <ClInclude Include="SocketAddress.h">
-      <Filter>Archivos de encabezado\Network</Filter>
-    </ClInclude>
-    <ClInclude Include="NetworkLog.h">
       <Filter>Archivos de encabezado\Network</Filter>
     </ClInclude>
     <ClInclude Include="UDPSocket.h">

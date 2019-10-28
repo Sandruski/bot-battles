@@ -31,7 +31,6 @@
 #include "Memory.h"
 #include "Utils.h"
 #include "Log.h"
-#include "NetworkLog.h"
 
 #include "Vec2.h"
 #include "Vec2I.h"

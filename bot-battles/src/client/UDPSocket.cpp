@@ -1,7 +1,6 @@
 #include "UDPSocket.h"
 
 #include "SocketAddress.h"
-#include "NetworkLog.h"
 
 namespace sand
 {
@@ -12,7 +11,7 @@ namespace sand
 		SOCKET sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 		if (sock == INVALID_SOCKET)
 		{
-			NETWORK_LOG("socket");
+			NETLOG("socket");
 			return nullptr;
 		}
 
@@ -32,7 +31,7 @@ namespace sand
 		int iResult = bind(m_socket, &socketAddress.m_sockAddr, sizeof(socketAddress.m_sockAddr));
 		if (iResult == SOCKET_ERROR)
 		{
-			NETWORK_LOG("bind");
+			NETLOG("bind");
 			return false;
 		}
 
@@ -45,7 +44,7 @@ namespace sand
 		int iResult = sendto(m_socket, static_cast<const char*>(data), length, 0, &toSocketAddress.m_sockAddr, sizeof(toSocketAddress.m_sockAddr));
 		if (iResult == SOCKET_ERROR)
 		{
-			NETWORK_LOG("sendto");
+			NETLOG("sendto");
 			return false;
 		}
 
@@ -59,7 +58,7 @@ namespace sand
 		int iResult = recvfrom(m_socket, static_cast<char*>(buffer), length, 0, &fromSocketAddress.m_sockAddr, &fromLength);
 		if (iResult == SOCKET_ERROR)
 		{
-			NETWORK_LOG("recvfrom");
+			NETLOG("recvfrom");
 			return false;
 		}
 

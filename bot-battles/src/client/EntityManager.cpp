@@ -54,7 +54,7 @@ bool EntityManager::RemoveEntity(Entity entity)
 
     auto entityToSignature = m_entitiesToSignatures.find(entity);
     if (entityToSignature == m_entitiesToSignatures.end()) {
-        LOG("The entity %u does not exist!", entity);
+        WLOG("The entity %u does not exist!", entity);
         return false;
     }
 

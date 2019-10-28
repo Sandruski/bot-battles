@@ -5,8 +5,6 @@
 #include "SocketAddress.h"
 #include "UDPSocket.h"
 
-#include "NetworkLog.h"
-
 namespace sand
 {
 
@@ -28,7 +26,7 @@ namespace sand
 		int iResult = WSAStartup(winsockVersion, &winsockData);
 		if (iResult == SOCKET_ERROR)
 		{
-			NETWORK_LOG("WSAStartup");
+			NETLOG("WSAStartup");
 			return false;
 		}
 

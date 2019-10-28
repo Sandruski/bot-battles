@@ -34,7 +34,7 @@ bool RendererSystem::StartUp()
 
     renderer->m_renderer = SDL_CreateRenderer(window->m_window, -1, SDL_RENDERER_ACCELERATED);
     if (renderer->m_renderer == nullptr) {
-        LOG("Renderer could not be created! SDL Error: %s", SDL_GetError());
+        ELOG("Renderer could not be created! SDL Error: %s", SDL_GetError());
         return false;
     }
 

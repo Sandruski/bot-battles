@@ -21,7 +21,7 @@ namespace sand {
 		auto it = std::find(m_entities.begin(), m_entities.end(), entity);
 		if (it != m_entities.end()) {
 
-			LOG("The entity %u is already registered!", entity);
+			WLOG("The entity %u is already registered!", entity);
 			return false;
 		}
 
@@ -36,7 +36,7 @@ namespace sand {
 		auto it = std::find(m_entities.begin(), m_entities.end(), entity);
 		if (it == m_entities.end()) {
 
-			LOG("The entity %u is not registered!", entity);
+			WLOG("The entity %u is not registered!", entity);
 			return false;
 		}
 

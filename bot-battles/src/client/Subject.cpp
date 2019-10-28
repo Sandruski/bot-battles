@@ -22,7 +22,7 @@ namespace sand {
 		auto it = std::find(m_observers.begin(), m_observers.end(), observer);
 		if (it != m_observers.end()) {
 
-			LOG("The observer is already registered!");
+			WLOG("The observer is already registered!");
 			return false;
 		}
 
@@ -37,7 +37,7 @@ namespace sand {
 		auto it = std::find(m_observers.begin(), m_observers.end(), observer);
 		if (it == m_observers.end()) {
 
-			LOG("The observer is not registered!");
+			WLOG("The observer is not registered!");
 			return false;
 		}
 

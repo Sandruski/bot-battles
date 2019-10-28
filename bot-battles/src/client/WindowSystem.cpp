@@ -25,7 +25,7 @@ namespace sand
 	{
 		if (SDL_Init(SDL_INIT_VIDEO) == SDL_ERROR)
 		{
-			LOG("SDL video subsystem could not be initialized! SDL Error: %s", SDL_GetError());
+			ELOG("SDL video subsystem could not be initialized! SDL Error: %s", SDL_GetError());
 			return false;
 		}
 
@@ -34,7 +34,7 @@ namespace sand
 		window->m_window = SDL_CreateWindow(g_game->GetName(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, window->m_width, window->m_height, SDL_WINDOW_SHOWN);
 		if (window->m_window == nullptr)
 		{
-			LOG("Window could not be created! SDL Error: %s", SDL_GetError());
+			ELOG("Window could not be created! SDL Error: %s", SDL_GetError());
 			return false;
 		}
 
@@ -49,7 +49,7 @@ namespace sand
 		SDL_DestroyWindow(window->m_window);
 		window->m_window = nullptr;
 
-		LOG("Quitting SDL video subsystem");
+		ILOG("Quitting SDL video subsystem");
 		SDL_QuitSubSystem(SDL_INIT_VIDEO);
 
 		return true;

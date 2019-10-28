@@ -48,7 +48,7 @@ namespace sand
 		}
 		else
 		{
-			LOG("State could not be inserted");
+			ELOG("State could not be inserted");
 		}
 
 		return inserted.first->first;

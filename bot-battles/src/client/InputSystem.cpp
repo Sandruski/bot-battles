@@ -24,7 +24,7 @@ namespace sand
 	{
 		if (SDL_Init(SDL_INIT_EVENTS) == SDL_ERROR)
 		{
-			LOG("SDL events subsystem could not be initialized! SDL Error: %s", SDL_GetError());
+			ELOG("SDL events subsystem could not be initialized! SDL Error: %s", SDL_GetError());
 			return false;
 		}
 
@@ -149,7 +149,7 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	bool InputSystem::ShutDown()
 	{
-		LOG("Quitting SDL events subsystem");
+		ILOG("Quitting SDL events subsystem");
 		SDL_QuitSubSystem(SDL_INIT_EVENTS);
 
 		return true;

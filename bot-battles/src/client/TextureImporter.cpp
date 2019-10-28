@@ -23,7 +23,7 @@ namespace sand
 		int imgFlags = IMG_INIT_PNG | IMG_INIT_JPG;
 		if (!(IMG_Init(imgFlags) & imgFlags))
 		{
-			LOG("SDL_image could not be initialized! SDL_image Error: %s", IMG_GetError());
+			ELOG("SDL_image could not be initialized! SDL_image Error: %s", IMG_GetError());
 			return false;
 		}
 
@@ -40,7 +40,7 @@ namespace sand
 		SDL_Surface* surface = IMG_Load(path);
 		if (surface == nullptr)
 		{
-			LOG("Surface could not be loaded from file %s! SDL_image Error: %s", path, IMG_GetError());
+			ELOG("Surface could not be loaded from file %s! SDL_image Error: %s", path, IMG_GetError());
 			return texture;
 		}
 
@@ -49,7 +49,7 @@ namespace sand
 		texture = SDL_CreateTextureFromSurface(renderer->m_renderer, surface);
 		if (texture == nullptr)
 		{
-			LOG("Texture could not be created from file %s! SDL Error: %s", path, SDL_GetError());
+			ELOG("Texture could not be created from file %s! SDL Error: %s", path, SDL_GetError());
 		}
 
 		width = surface->w;

@@ -78,7 +78,7 @@ inline std::shared_ptr<T> ComponentArray<T>::AddComponent(Entity entity)
 {
     auto entityToComponent = m_entitiesToComponents.find(entity);
     if (entityToComponent != m_entitiesToComponents.end()) {
-        LOG("The entity %u already has the component!", entity);
+        WLOG("The entity %u already has the component!", entity);
         return m_components[entityToComponent->second];
     }
 
@@ -105,7 +105,7 @@ bool ComponentArray<T>::RemoveComponent(Entity entity)
 {
     auto entityToComponent = m_entitiesToComponents.find(entity);
     if (entityToComponent == m_entitiesToComponents.end()) {
-        LOG("The entity %u does not have the component!", entity);
+        WLOG("The entity %u does not have the component!", entity);
         return false;
     }
 
@@ -124,7 +124,7 @@ std::shared_ptr<T> ComponentArray<T>::GetComponent(Entity entity)
 {
     auto entityToComponent = m_entitiesToComponents.find(entity);
     if (entityToComponent == m_entitiesToComponents.end()) {
-        LOG("The entity %u does not have the component!", entity);
+        WLOG("The entity %u does not have the component!", entity);
         return nullptr;
     }
 
@@ -221,7 +221,7 @@ inline bool ComponentManager::RegisterComponent()
 
     auto componentArray = m_componentArrays[static_cast<std::size_t>(type)];
     if (componentArray != nullptr) {
-        LOG("The component array already exists!");
+        WLOG("The component array already exists!");
         return false;
     }
 
@@ -241,7 +241,7 @@ inline bool ComponentManager::DeRegisterComponent()
 
     std::unique_ptr<IComponentArray> componentArray = m_componentArrays[static_cast<std::size_t>(type)];
     if (componentArray == nullptr) {
-        LOG("The component array does not exist!");
+        WLOG("The component array does not exist!");
         return false;
     }
 

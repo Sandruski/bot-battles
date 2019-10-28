@@ -83,7 +83,7 @@ namespace sand
 		auto it = m_states.find(id);
 		if (it == m_states.end())
 		{
-			LOG("State could not be removed");
+			ELOG("State could not be removed");
 			return false;
 		}
 
@@ -121,7 +121,7 @@ namespace sand
 		auto it = m_states.find(id);
 		if (it == m_states.end())
 		{
-			LOG("State could not be changed");
+			ELOG("State could not be changed");
 			return false;
 		}
 

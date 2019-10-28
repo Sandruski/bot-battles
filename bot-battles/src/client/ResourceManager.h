@@ -57,14 +57,14 @@ namespace sand
 		const bool isLoaded = resource->Load();
 		if (!isLoaded)
 		{
-			LOG("Resource %s%s could not be loaded", dir, file);
+			ELOG("Resource %s%s could not be loaded", dir, file);
 			return nullptr;
 		}
 
 		auto inserted = m_resources.insert(std::make_pair(id, resource));
 		if (inserted.second)
 		{
-			LOG("Resource %s%s could not be inserted", dir, file);
+			ELOG("Resource %s%s could not be inserted", dir, file);
 			return std::static_pointer_cast<T>(inserted.first->second);
 		}
 
@@ -108,7 +108,7 @@ namespace sand
 		auto it = m_resources.find(id);
 		if (it == m_resources.end())
 		{
-			LOG("The resource %u does not exist!", id);
+			WLOG("The resource %u does not exist!", id);
 			return nullptr;
 		}
 
@@ -131,7 +131,7 @@ namespace sand
 			}
 		}
 
-		LOG("The resource %s%s does not exist!", dir, file);
+		WLOG("The resource %s%s does not exist!", dir, file);
 		return nullptr;
 	}
 }

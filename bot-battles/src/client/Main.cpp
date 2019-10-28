@@ -40,7 +40,7 @@ int main(int /*argc*/, char* /*args*/[])
 		{
 		case MainState::CREATE:
 		{
-			LOG("MainState::CREATE");
+			ILOG("MainState::CREATE");
 
 			sand::GameConfiguration gameConfiguration(
 				"Sand",
@@ -53,7 +53,7 @@ int main(int /*argc*/, char* /*args*/[])
 			}
 			else
 			{
-				LOG("Error: could not create the game");
+				ELOG("Error: could not create the game");
 				mainState = MainState::EXIT;
 			}
 			break;
@@ -61,17 +61,17 @@ int main(int /*argc*/, char* /*args*/[])
 
 		case MainState::INIT:
 		{
-			LOG("MainState::INIT");
+			ILOG("MainState::INIT");
 
 			bool isInitOk = sand::g_game->Init();
 			if (isInitOk)
 			{
-				LOG("MainState::UPDATE");
+				ILOG("MainState::UPDATE");
 				mainState = MainState::UPDATE;
 			}
 			else
 			{
-				LOG("Error: could not initialize the game");
+				ELOG("Error: could not initialize the game");
 				mainState = MainState::EXIT;
 			}
 			break;
@@ -89,7 +89,7 @@ int main(int /*argc*/, char* /*args*/[])
 
 		case MainState::END:
 		{
-			LOG("MainState::END");
+			ILOG("MainState::END");
 
 			bool isEndOk = sand::g_game->End();
 			if (isEndOk)
@@ -98,7 +98,7 @@ int main(int /*argc*/, char* /*args*/[])
 			}
 			else
 			{
-				LOG("Error: could not end the game");
+				ELOG("Error: could not end the game");
 			}
 
 			mainState = MainState::EXIT;
@@ -108,7 +108,7 @@ int main(int /*argc*/, char* /*args*/[])
 
 		case MainState::EXIT:
 		{
-			LOG("MainState::EXIT");
+			ILOG("MainState::EXIT");
 
 			SAFE_DELETE_POINTER(sand::g_game);
 

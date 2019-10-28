@@ -1,7 +1,5 @@
 #include "SocketAddress.h"
 
-#include "NetworkLog.h"
-
 namespace sand
 {
 
@@ -16,7 +14,7 @@ namespace sand
 		int iResult = getaddrinfo(address, port, &hints, &result);
 		if (iResult == SOCKET_ERROR)
 		{
-			NETWORK_LOG("getaddrinfo");
+			NETLOG("getaddrinfo");
 
 			if (result != nullptr)
 			{
