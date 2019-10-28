@@ -14,8 +14,8 @@ namespace sand
 		LinkingContext();
 		~LinkingContext();
 
-		NetworkID GetNetworkID(Entity entity);
-		Entity GetEntity(NetworkID networkID);
+		NetworkID GetNetworkID(Entity entity) const;
+		Entity GetEntity(NetworkID networkID) const;
 
 		bool AddEntity(Entity entity);
 		bool RemoveEntity(Entity entity);

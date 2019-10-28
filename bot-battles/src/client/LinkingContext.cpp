@@ -18,7 +18,7 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	NetworkID LinkingContext::GetNetworkID(Entity entity)
+	NetworkID LinkingContext::GetNetworkID(Entity entity) const
 	{
 		assert(entity != INVALID_ENTITY);
 
@@ -33,7 +33,7 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	Entity LinkingContext::GetEntity(NetworkID networkID)
+	Entity LinkingContext::GetEntity(NetworkID networkID) const
 	{
 		assert(networkID != INVALID_NETWORK_ID);
 
