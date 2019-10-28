@@ -2,7 +2,6 @@
 
 namespace sand
 {
-
 	//----------------------------------------------------------------------------------------------------
 	void Log(const char* file, int line, const char* function, LogTypes type, const char* format, ...)
 	{
@@ -35,7 +34,7 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	void NetLog(const char* file, int line, const char* function, LogTypes type, const char* format, ...)
+	void NetLog(const char* file, int line, const char* function, const char* format, ...)
 	{
 		wchar_t* s = nullptr;
 
@@ -47,7 +46,7 @@ namespace sand
 			0,
 			NULL);
 
-		Log(file, line, function, type, format);
+		Log(file, line, function, LogTypes::ELOG, format);
 
 		LocalFree(s);
 	}
