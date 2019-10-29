@@ -176,6 +176,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="ReplicationManager.cpp" />
     <ClCompile Include="SingletonInputComponent.cpp" />
     <ClCompile Include="FSM.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -203,6 +204,7 @@
     <ClInclude Include="ByteSwap.h" />
     <ClInclude Include="ClientSystem.h" />
     <ClInclude Include="Colors.h" />
+    <ClInclude Include="NetComponent.h" />
     <ClInclude Include="ComponentManager.h" />
     <ClInclude Include="ComponentDefs.h" />
     <ClInclude Include="Events.h" />
@@ -211,6 +213,7 @@
     <ClInclude Include="Observer.h" />
     <ClInclude Include="MemoryStream.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="ReplicationManager.h" />
     <ClInclude Include="ResourceDefs.h" />
     <ClInclude Include="SingletonClientComponent.h" />
     <ClInclude Include="SingletonInputComponent.h" />

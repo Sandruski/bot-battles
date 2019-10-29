@@ -159,6 +159,9 @@
     <ClCompile Include="LinkingContext.cpp">
       <Filter>Archivos de origen\Network</Filter>
     </ClCompile>
+    <ClCompile Include="ReplicationManager.cpp">
+      <Filter>Archivos de origen\Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ResourceTexture.h">
@@ -304,6 +307,12 @@
     </ClInclude>
     <ClInclude Include="LinkingContext.h">
       <Filter>Archivos de encabezado\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="ReplicationManager.h">
+      <Filter>Archivos de encabezado\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="NetComponent.h">
+      <Filter>Archivos de encabezado\Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

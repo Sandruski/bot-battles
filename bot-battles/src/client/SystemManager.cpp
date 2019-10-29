@@ -1,10 +1,10 @@
 #include "SystemManager.h"
 
-#include "Game.h"
 #include "EntityManager.h"
+#include "Game.h"
 
-#include "System.h"
 #include "Events.h"
+#include "System.h"
 
 namespace sand {
 
@@ -35,13 +35,13 @@ bool SystemManager::StartUp()
 //----------------------------------------------------------------------------------------------------
 bool SystemManager::PreUpdate(F32 dt)
 {
-	bool ret = true;
+    bool ret = true;
 
-	for (U32 i = 0; i < m_systems.size() && ret; ++i) {
-		ret = m_systems[i]->PreUpdate(dt);
-	}
+    for (U32 i = 0; i < m_systems.size() && ret; ++i) {
+        ret = m_systems[i]->PreUpdate(dt);
+    }
 
-	return ret;
+    return ret;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -95,39 +95,32 @@ bool SystemManager::ShutDown()
 //----------------------------------------------------------------------------------------------------
 void SystemManager::OnNotify(const Event& event)
 {
-	switch (event.type)
-	{
-	case EventType::ENTITY_REMOVED:
-	{
-		for (const auto& system : m_systems) {
-			system->DeRegisterEntity(event.entity.entity);
-		}
+    switch (event.type) {
+    case EventType::ENTITY_REMOVED: {
+        for (const auto& system : m_systems) {
+            system->DeRegisterEntity(event.entity.entity);
+        }
 
-		break;
-	}
+        break;
+    }
 
-	case EventType::ENTITY_SIGNATURE_CHANGED:
-	{
-		for (const auto& system : m_systems) {
+    case EventType::ENTITY_SIGNATURE_CHANGED: {
+        for (const auto& system : m_systems) {
 
-			const Signature systemSignature = system->GetSignature().to_ulong();
-			const Signature entitySignature = g_game->GetEntityManager().GetSignature(event.entity.entity);
-			if (systemSignature == entitySignature)
-			{
-				system->RegisterEntity(event.entity.entity);
-			}
-			else
-			{
-				system->DeRegisterEntity(event.entity.entity);
-			}
-		}
-		break;
-	}
+            const Signature systemSignature = system->GetSignature();
+            const Signature entitySignature = g_game->GetEntityManager().GetSignature(event.entity.entity);
+            if (systemSignature == entitySignature) {
+                system->RegisterEntity(event.entity.entity);
+            } else {
+                system->DeRegisterEntity(event.entity.entity);
+            }
+        }
+        break;
+    }
 
-	default:
-	{
-		break;
-	}
-	}
+    default: {
+        break;
+    }
+    }
 }
 }

@@ -1,16 +1,24 @@
 #ifndef __TRANSFORM_COMPONENT_H__
 #define __TRANSFORM_COMPONENT_H__
 
-#include "Vec2.h"
 #include "MemoryStream.h"
+#include "NetComponent.h"
+#include "ReplicationManager.h"
+#include "Vec2.h"
 
 namespace sand {
 
-	class OutputMemoryStream;
-
 //----------------------------------------------------------------------------------------------------
-struct TransformComponent {
+struct TransformComponent : public NetComponent {
+    enum class MemberType {
+        POSITION = 1 << 0,
+
+        COUNT,
+        INVALID
+    };
+
     static ComponentType GetType() { return ComponentType::TRANSFORM; }
+    static TransformComponent* Instantiate() { return new TransformComponent(); }
 
     TransformComponent()
         : m_position()
@@ -18,14 +26,26 @@ struct TransformComponent {
     }
     ~TransformComponent() { }
 
-	// TODO: change this method
-	void Write(OutputMemoryStream& outMemoryStream) const
-	{
-		// Serialize
-		outMemoryStream.WritePosition(m_position);
-	}
+    void Write(OutputMemoryStream& stream, U32 members) const override
+    {
+        // Serialize
+        //stream.Write(members, GetRequiredBits<static_cast<U32>(MemberType::COUNT)>::value);
+        if (members & static_cast<U32>(MemberType::POSITION)) {
+            stream.WritePosition(m_position);
+        }
+    }
 
-	Vec2 m_position;
+    void Read(InputMemoryStream& stream) override
+    {
+        // DeSerialize
+        U32 members = 0;
+        //stream.Read(members, GetRequiredBits<static_cast<U32>(MemberType::COUNT)>::value);
+        if (members & static_cast<U32>(MemberType::POSITION)) {
+            stream.ReadPosition(m_position);
+        }
+    }
+
+    Vec2 m_position;
 };
 }
 
