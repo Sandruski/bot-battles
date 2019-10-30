@@ -3,7 +3,7 @@
 #include "Game.h"
 #include "RendererSystem.h"
 
-#include "Defines.h"
+#include "SDLDefs.h"
 
 namespace sand
 {

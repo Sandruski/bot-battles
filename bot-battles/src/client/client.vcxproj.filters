@@ -55,10 +55,10 @@
     <Filter Include="Archivos de origen\States">
       <UniqueIdentifier>{5c4e7fd5-d843-45eb-a7fa-62c6f38c9dc1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Archivos de encabezado\Network">
+    <Filter Include="Archivos de encabezado\Networking">
       <UniqueIdentifier>{61016cfe-7022-4fe0-a644-5f35b6152c39}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Archivos de origen\Network">
+    <Filter Include="Archivos de origen\Networking">
       <UniqueIdentifier>{85c3aafd-a2f1-4319-bdec-ef29a9e44590}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -124,22 +124,22 @@
       <Filter>Archivos de origen\Systems</Filter>
     </ClCompile>
     <ClCompile Include="SocketAddress.cpp">
-      <Filter>Archivos de origen\Network</Filter>
+      <Filter>Archivos de origen\Networking</Filter>
     </ClCompile>
     <ClCompile Include="UDPSocket.cpp">
-      <Filter>Archivos de origen\Network</Filter>
+      <Filter>Archivos de origen\Networking</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
     <ClCompile Include="MemoryStream.cpp">
-      <Filter>Archivos de origen\Network</Filter>
+      <Filter>Archivos de origen\Networking</Filter>
     </ClCompile>
     <ClCompile Include="LinkingContext.cpp">
-      <Filter>Archivos de origen\Network</Filter>
+      <Filter>Archivos de origen\Networking</Filter>
     </ClCompile>
     <ClCompile Include="ReplicationManager.cpp">
-      <Filter>Archivos de origen\Network</Filter>
+      <Filter>Archivos de origen\Networking</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -171,9 +171,6 @@
       <Filter>Archivos de encabezado\Components</Filter>
     </ClInclude>
     <ClInclude Include="Colors.h">
-      <Filter>Archivos de encabezado\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Defines.h">
       <Filter>Archivos de encabezado\Utils</Filter>
     </ClInclude>
     <ClInclude Include="DebugDrawer.h">
@@ -246,31 +243,34 @@
       <Filter>Archivos de encabezado\Components</Filter>
     </ClInclude>
     <ClInclude Include="SocketAddress.h">
-      <Filter>Archivos de encabezado\Network</Filter>
+      <Filter>Archivos de encabezado\Networking</Filter>
     </ClInclude>
     <ClInclude Include="UDPSocket.h">
-      <Filter>Archivos de encabezado\Network</Filter>
+      <Filter>Archivos de encabezado\Networking</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="MemoryStream.h">
-      <Filter>Archivos de encabezado\Network</Filter>
+      <Filter>Archivos de encabezado\Networking</Filter>
     </ClInclude>
     <ClInclude Include="ByteSwap.h">
-      <Filter>Archivos de encabezado\Network</Filter>
-    </ClInclude>
-    <ClInclude Include="NetworkDefs.h">
-      <Filter>Archivos de encabezado\Network</Filter>
+      <Filter>Archivos de encabezado\Networking</Filter>
     </ClInclude>
     <ClInclude Include="LinkingContext.h">
-      <Filter>Archivos de encabezado\Network</Filter>
+      <Filter>Archivos de encabezado\Networking</Filter>
     </ClInclude>
     <ClInclude Include="ReplicationManager.h">
-      <Filter>Archivos de encabezado\Network</Filter>
+      <Filter>Archivos de encabezado\Networking</Filter>
     </ClInclude>
     <ClInclude Include="NetComponent.h">
       <Filter>Archivos de encabezado\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkingDefs.h">
+      <Filter>Archivos de encabezado\Networking</Filter>
+    </ClInclude>
+    <ClInclude Include="SDLDefs.h">
+      <Filter>Archivos de encabezado\Utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

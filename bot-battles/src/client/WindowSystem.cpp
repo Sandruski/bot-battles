@@ -2,7 +2,7 @@
 
 #include "Game.h"
 
-#include "Defines.h"
+#include "SDLDefs.h"
 
 #include "SingletonWindowComponent.h"
 

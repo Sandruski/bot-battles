@@ -4,7 +4,7 @@
 
 #include "SingletonInputComponent.h"
 
-#include "Defines.h"
+#include "SDLDefs.h"
 
 namespace sand
 {

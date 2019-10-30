@@ -197,7 +197,7 @@
     <ClInclude Include="ComponentDefs.h" />
     <ClInclude Include="Events.h" />
     <ClInclude Include="LinkingContext.h" />
-    <ClInclude Include="NetworkDefs.h" />
+    <ClInclude Include="NetworkingDefs.h" />
     <ClInclude Include="Observer.h" />
     <ClInclude Include="MemoryStream.h" />
     <ClInclude Include="pch.h" />
@@ -210,7 +210,7 @@
     <ClInclude Include="SocketAddress.h" />
     <ClInclude Include="SpriteComponent.h" />
     <ClInclude Include="DebugDrawer.h" />
-    <ClInclude Include="Defines.h" />
+    <ClInclude Include="SDLDefs.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="EntityDefs.h" />
     <ClInclude Include="EntityManager.h" />

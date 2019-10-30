@@ -3,7 +3,7 @@
 
 #include "ByteSwap.h"
 #include "EntityDefs.h"
-#include "NetworkDefs.h"
+#include "NetworkingDefs.h"
 
 namespace sand {
 
