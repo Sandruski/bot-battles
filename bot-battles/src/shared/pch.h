@@ -23,8 +23,6 @@
 
 // SDL
 #include <SDL_timer.h>
-#include <SDL.h>
-#include <SDL_image.h>
 
 //----------------------------------------------------------------------------------------------------
 // Math
@@ -38,15 +36,4 @@
 #include "Timer.h"
 #include "Utils.h"
 
-//----------------------------------------------------------------------------------------------------
-// Project
-#include "Colors.h"
-
 #endif //PCH_H
-
-
-//#include <SDL.h>
-//#include <SDL_mouse.h>
-//#include <SDL_scancode.h>
-//#include <SDL_pixels.h>
-//#include <SDL_image.h>
