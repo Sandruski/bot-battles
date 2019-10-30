@@ -115,7 +115,7 @@ void ReplicationManager::ProcessAction(InputMemoryStream& stream) const
 }
 
 //----------------------------------------------------------------------------------------------------
-void ReplicationManager::CreateEntity(InputMemoryStream& stream, const ReplicationHeader& replicationHeader) const
+void ReplicationManager::CreateEntity(InputMemoryStream& /*stream*/, const ReplicationHeader& replicationHeader) const
 {
     Entity entity = g_game->GetEntityManager().AddEntity();
     g_game->GetLinkingContext().AddEntity(entity, replicationHeader.GetNetworkID());
@@ -137,7 +137,7 @@ void ReplicationManager::UpdateEntity(InputMemoryStream& stream, const Replicati
 }
 
 //----------------------------------------------------------------------------------------------------
-void ReplicationManager::RemoveEntity(InputMemoryStream& stream, const ReplicationHeader& replicationHeader) const
+void ReplicationManager::RemoveEntity(InputMemoryStream& /*stream*/, const ReplicationHeader& replicationHeader) const
 {
     Entity entity = g_game->GetLinkingContext().GetEntity(replicationHeader.GetNetworkID());
     g_game->GetLinkingContext().RemoveEntity(entity);

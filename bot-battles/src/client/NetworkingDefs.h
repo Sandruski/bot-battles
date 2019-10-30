@@ -4,7 +4,7 @@
 namespace sand {
 
 	using NetworkID = U32;
-	const NetworkID INVALID_NETWORK_ID = -1; // TODO: this should be the number of MAX_NETWORK_IDs
+	const NetworkID INVALID_NETWORK_ID = 0; // TODO: this should be the number of MAX_NETWORK_IDs
 
 	enum class Endianness 
 	{

@@ -146,45 +146,47 @@ bool Game::Update()
 {
     m_timer.Start();
 
+	F32 dt = static_cast<F32>(m_dt);
+
     // PreUpdate
-    bool ret = m_entityManager->PreUpdate(m_dt);
+    bool ret = m_entityManager->PreUpdate(dt);
     if (!ret) {
         return false;
     }
 
-    m_componentManager->PreUpdate(m_dt);
+    m_componentManager->PreUpdate(dt);
     if (!ret) {
         return false;
     }
 
-    m_systemManager->PreUpdate(m_dt);
+    m_systemManager->PreUpdate(dt);
     if (!ret) {
         return false;
     }
 
-    m_fsm->PreUpdate(m_dt);
+    m_fsm->PreUpdate(dt);
     if (!ret) {
         return false;
     }
 
     // Update
-    ret = m_systemManager->Update(m_dt);
+    ret = m_systemManager->Update(dt);
     if (!ret) {
         return false;
     }
 
-    m_fsm->Update(m_dt);
+    m_fsm->Update(dt);
     if (!ret) {
         return false;
     }
 
     // PostUpdate
-    ret = m_systemManager->PostUpdate(m_dt);
+    ret = m_systemManager->PostUpdate(dt);
     if (!ret) {
         return false;
     }
 
-    m_fsm->PostUpdate(m_dt);
+    m_fsm->PostUpdate(dt);
     if (!ret) {
         return false;
     }
@@ -201,9 +203,9 @@ bool Game::Update()
     }
 
     m_lastFrameMs = m_timer.ReadMs();
-    U64 desiredLastFrameMs = 1000.0 / m_desiredFramerate;
+    F64 desiredLastFrameMs = 1000.0 / m_desiredFramerate;
     if (m_lastFrameMs < desiredLastFrameMs) {
-        SDL_Delay(desiredLastFrameMs - m_lastFrameMs);
+        SDL_Delay(static_cast<U32>(desiredLastFrameMs - m_lastFrameMs));
         m_lastFrameMs = m_timer.ReadMs();
     }
 

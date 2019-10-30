@@ -23,16 +23,16 @@ inline U32 BYTES_TO_BITS(U32 bytes)
 
 //----------------------------------------------------------------------------------------------------
 // Fixed point
-inline U32 FLOAT_TO_FIXED(float number, float min, float precision)
+inline U32 FLOAT_TO_FIXED(F32 number, F32 min, F32 precision)
 {
     return static_cast<U32>((number - min) / precision);
 }
 
 //----------------------------------------------------------------------------------------------------
 // Fixed point
-inline float FIXED_TO_FLOAT(U32 number, float min, float precision)
+inline F32 FIXED_TO_FLOAT(U32 number, F32 min, F32 precision)
 {
-    return static_cast<float>(number) * precision + min;
+    return static_cast<F32>(number) * precision + min;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -83,10 +83,10 @@ inline void OutputMemoryStream::Write(T inData, U32 bitCount)
     static_assert(std::is_arithmetic<T>::value || std::is_enum<T>::value, "Data is a non-primitive type");
 
     if (STREAM_ENDIANNESS == PLATFORM_ENDIANNESS()) {
-        WriteBytes(&inData, sizeof(inData));
+        WriteBits(&inData, bitCount);
     } else {
         T swappedData = ByteSwap(inData);
-        WriteBytes(&swappedData, sizeof(swappedData));
+		WriteBits(&swappedData, bitCount);
     }
 }
 
@@ -150,10 +150,10 @@ inline void InputMemoryStream::Read(T& outData, U32 bitCount)
     static_assert(std::is_arithmetic<T>::value || std::is_enum<T>::value, "Data is a non-primitive type");
 
     if (STREAM_ENDIANNESS == PLATFORM_ENDIANNESS()) {
-        ReadBytes(&outData, sizeof(outData));
+        ReadBits(&outData, bitCount);
     } else {
         T unswappedData;
-        ReadBytes(&unswappedData, sizeof(unswappedData));
+		ReadBits(&unswappedData, bitCount);
         outData = ByteSwap(unswappedData);
     }
 }

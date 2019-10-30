@@ -63,8 +63,8 @@ bool RendererSystem::Render()
 		SDL_Rect renderQuad = { 
 			static_cast<I32>(transform->m_position.x), 
 			static_cast<I32>(transform->m_position.y), 
-			sprite->m_texture->GetWidth(),
-			sprite->m_texture->GetHeight() 
+			static_cast<I32>(sprite->m_texture->GetWidth()),
+			static_cast<I32>(sprite->m_texture->GetHeight()) 
 		};
 
 		SDL_RenderCopy(renderer->m_renderer, sprite->m_texture->GetTexture(), nullptr, &renderQuad);

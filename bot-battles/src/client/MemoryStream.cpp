@@ -106,7 +106,7 @@ void OutputMemoryStream::Write(const Vec2& inVec)
 }
 
 //----------------------------------------------------------------------------------------------------
-void OutputMemoryStream::Write(Entity inEntity)
+void OutputMemoryStream::Write(Entity /*inEntity*/)
 {
     /*
 	NetworkID networkID = linkingContext->GetNetworkID(inEntity);
@@ -243,7 +243,7 @@ void InputMemoryStream::Read(Vec2& outVec)
 }
 
 //----------------------------------------------------------------------------------------------------
-void InputMemoryStream::Read(Entity& outEntity)
+void InputMemoryStream::Read(Entity& /*outEntity*/)
 {
     /*
 	NetworkID networkID;
@@ -258,8 +258,8 @@ void InputMemoryStream::ReadPosition(Vec2& outVec) // TODO: this should be done 
     Vec2 tmpVec;
     Read(tmpVec.x);
     Read(tmpVec.y);
-    outVec.x = FIXED_TO_FLOAT(tmpVec.x, -2000.0f, 0.1f);
-    outVec.y = FIXED_TO_FLOAT(tmpVec.y, -2000.0f, 0.1f);
+    outVec.x = FIXED_TO_FLOAT(static_cast<U32>(tmpVec.x), -2000.0f, 0.1f);
+    outVec.y = FIXED_TO_FLOAT(static_cast<U32>(tmpVec.y), -2000.0f, 0.1f);
 }
 
 //----------------------------------------------------------------------------------------------------
