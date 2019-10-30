@@ -7,9 +7,8 @@ namespace sand
 	//----------------------------------------------------------------------------------------------------
 	Timer::Timer() :
 		m_startCounter(0),
-		m_frequency(0)
+		m_frequency(SDL_GetPerformanceFrequency())
 	{
-		m_frequency = SDL_GetPerformanceFrequency();
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -24,8 +23,14 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	F64 Timer::ReadMs()
+	F64 Timer::ReadSec() const
 	{
-		return 1000.0 * static_cast<F64>(SDL_GetPerformanceCounter() - m_startCounter) / static_cast<F64>(m_frequency);
+		return static_cast<F64>(SDL_GetPerformanceCounter() - m_startCounter) / static_cast<F64>(m_frequency);
+	}
+
+	//----------------------------------------------------------------------------------------------------
+	F64 Timer::ReadMs() const
+	{
+		return 1000.0 * ReadSec();
 	}
 }

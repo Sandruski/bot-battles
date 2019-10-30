@@ -164,6 +164,7 @@
     </ClCompile>
     <ClCompile Include="SocketAddress.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="Time.cpp" />
     <ClCompile Include="UDPSocket.cpp" />
     <ClCompile Include="Vec2.cpp" />
     <ClCompile Include="Vec2I.cpp" />
@@ -176,6 +177,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="SocketAddress.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="Time.h" />
     <ClInclude Include="UDPSocket.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Vec2.h" />

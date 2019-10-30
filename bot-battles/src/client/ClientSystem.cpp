@@ -38,9 +38,28 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	bool ClientSystem::Update(F32 /*dt*/)
+	bool ClientSystem::Update()
 	{
 		std::shared_ptr<SingletonClientComponent> client = g_game->GetSingletonClientComponent();
+		switch (client->m_state)
+		{
+		case SingletonClientComponent::ClientState::SAYING_HELLO:
+		{
+			UpdateSayingHelloPacket();
+			break;
+		}
+
+		case SingletonClientComponent::ClientState::WELCOMED:
+		{
+			UpdateSendingInputPacket();
+			break;
+		}
+
+		default:
+		{
+			break;
+		}
+		}
 
 		return true;
 	}
@@ -49,5 +68,15 @@ namespace sand
 	bool ClientSystem::ShutDown()
 	{
 		return true;
+	}
+
+	//----------------------------------------------------------------------------------------------------
+	void ClientSystem::UpdateSayingHelloPacket()
+	{
+	}
+
+	//----------------------------------------------------------------------------------------------------
+	void ClientSystem::UpdateSendingInputPacket()
+	{
 	}
 }

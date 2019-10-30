@@ -33,15 +33,30 @@ public:
 		return true;
 	}
 
+	virtual bool PreUpdate()
+	{
+		return true;
+	}
+
     virtual bool Update(F32 /*dt*/)
     {
         return true;
     }
 
+	virtual bool Update()
+	{
+		return true;
+	}
+
     virtual bool PostUpdate(F32 /*dt*/)
     {
         return true;
     }
+
+	virtual bool PostUpdate()
+	{
+		return true;
+	}
 
     virtual bool Render()
     {

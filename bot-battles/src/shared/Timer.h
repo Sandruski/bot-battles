@@ -1,8 +1,6 @@
 #ifndef __TIMER_H__
 #define __TIMER_H__
 
-#include "Memory.h"
-
 namespace sand
 {
 
@@ -15,7 +13,8 @@ namespace sand
 
 		void Start();
 
-		F64 ReadMs();
+		F64 ReadSec() const;
+		F64 ReadMs() const;
 
 	private:
 		U64 m_startCounter;

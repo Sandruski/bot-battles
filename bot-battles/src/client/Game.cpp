@@ -27,11 +27,6 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 Game::Game(const GameConfiguration& configuration)
     : m_configuration(configuration)
-    , m_timer()
-    , m_lastFrameMs(0)
-    , m_desiredFramerate(60.0)
-    , m_fps(0)
-    , m_dt(0)
     , m_isRunning(false)
 {
     m_entityManager = std::make_shared<EntityManager>();
@@ -134,9 +129,9 @@ bool Game::Init()
 // game loop
 bool Game::Update()
 {
-    m_timer.Start();
+	Time::GetInstance().StartUpdate();
 
-	F32 dt = static_cast<F32>(m_dt);
+	F32 dt = static_cast<F32>(Time::GetInstance().GetDt());
 
     // PreUpdate
     bool ret = m_entityManager->PreUpdate(dt);
@@ -192,15 +187,7 @@ bool Game::Update()
         return false;
     }
 
-    m_lastFrameMs = m_timer.ReadMs();
-    F64 desiredLastFrameMs = 1000.0 / m_desiredFramerate;
-    if (m_lastFrameMs < desiredLastFrameMs) {
-        SDL_Delay(static_cast<U32>(desiredLastFrameMs - m_lastFrameMs));
-        m_lastFrameMs = m_timer.ReadMs();
-    }
-
-    m_fps = 1000.0 / m_lastFrameMs;
-    m_dt = 1.0 / m_fps;
+	Time::GetInstance().FinishUpdate();
 
     return ret;
 }

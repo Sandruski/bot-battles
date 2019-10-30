@@ -1,8 +1,6 @@
 #ifndef __GAME_H__
 #define __GAME_H__
 
-#include "Timer.h"
-
 // uncomment to disable assert()
 // #define NDEBUG
 
@@ -75,12 +73,6 @@ private:
     std::shared_ptr<SingletonRendererComponent> m_singletonRendererComponent;
     std::shared_ptr<SingletonInputComponent> m_singletonInputComponent;
     std::shared_ptr<SingletonClientComponent> m_singletonClientComponent;
-
-    Timer m_timer;
-    F64 m_lastFrameMs;
-    F64 m_desiredFramerate;
-    F64 m_fps;
-    F64 m_dt;
 
     bool m_isRunning;
 };

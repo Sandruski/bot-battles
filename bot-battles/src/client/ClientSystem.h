@@ -19,8 +19,12 @@ namespace sand {
 		~ClientSystem() override;
 
 		bool StartUp() override;
-		bool Update(F32 dt) override;
+		bool Update() override;
 		bool ShutDown() override;
+
+	private:
+		void UpdateSayingHelloPacket();
+		void UpdateSendingInputPacket();
 	};
 }
 

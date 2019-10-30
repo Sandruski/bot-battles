@@ -12,17 +12,26 @@ namespace sand {
 
 	//----------------------------------------------------------------------------------------------------
 	struct SingletonClientComponent {
+		enum class ClientState
+		{
+			UNINITIALIZED,
+			SAYING_HELLO,
+			WELCOMED
+		};
+
 		static SingletonComponentType GetType() { return SingletonComponentType::CLIENT; }
 
 		SingletonClientComponent()
 			: m_socket(nullptr),
-			m_socketAddress(nullptr)
+			m_socketAddress(nullptr),
+			m_state(ClientState::UNINITIALIZED)
 		{		
 		}
 		~SingletonClientComponent() { }
 
 		std::shared_ptr<UDPSocket> m_socket;
 		std::shared_ptr<SocketAddress> m_socketAddress;
+		ClientState m_state;
 	};
 }
 
