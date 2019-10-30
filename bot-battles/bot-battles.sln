@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "client", "src\client\client
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "shared", "C:\Projects\bot-battles\bot-battles\src\shared\shared.vcxproj", "{66364BBA-9F36-40A1-8D3F-4DDE44E9BDFD}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "server", "C:\Projects\bot-battles\bot-battles\src\server\server.vcxproj", "{3226A0AE-857C-4EE5-B27B-5219157789CC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,6 +33,14 @@ Global
 		{66364BBA-9F36-40A1-8D3F-4DDE44E9BDFD}.Release|x64.Build.0 = Release|x64
 		{66364BBA-9F36-40A1-8D3F-4DDE44E9BDFD}.Release|x86.ActiveCfg = Release|Win32
 		{66364BBA-9F36-40A1-8D3F-4DDE44E9BDFD}.Release|x86.Build.0 = Release|Win32
+		{3226A0AE-857C-4EE5-B27B-5219157789CC}.Debug|x64.ActiveCfg = Debug|x64
+		{3226A0AE-857C-4EE5-B27B-5219157789CC}.Debug|x64.Build.0 = Debug|x64
+		{3226A0AE-857C-4EE5-B27B-5219157789CC}.Debug|x86.ActiveCfg = Debug|Win32
+		{3226A0AE-857C-4EE5-B27B-5219157789CC}.Debug|x86.Build.0 = Debug|Win32
+		{3226A0AE-857C-4EE5-B27B-5219157789CC}.Release|x64.ActiveCfg = Release|x64
+		{3226A0AE-857C-4EE5-B27B-5219157789CC}.Release|x64.Build.0 = Release|x64
+		{3226A0AE-857C-4EE5-B27B-5219157789CC}.Release|x86.ActiveCfg = Release|Win32
+		{3226A0AE-857C-4EE5-B27B-5219157789CC}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

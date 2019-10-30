@@ -5,21 +5,15 @@
 #include "FSM.h"
 #include "ResourceManager.h"
 #include "SystemManager.h"
-#include "TextureImporter.h"
 
 #include "LinkingContext.h"
 
 #include "InputSystem.h"
-#include "RendererSystem.h"
-#include "WindowSystem.h"
-#include "ClientSystem.h"
+#include "ServerSystem.h"
 
 #include "SingletonInputComponent.h"
-#include "SingletonRendererComponent.h"
-#include "SingletonWindowComponent.h"
-#include "SingletonClientComponent.h"
+#include "SingletonServerComponent.h"
 
-#include "SpriteComponent.h"
 #include "TransformComponent.h"
 
 namespace sand {
@@ -39,14 +33,11 @@ Game::Game(const GameConfiguration& configuration)
     m_systemManager = std::make_shared<SystemManager>();
     m_resourceManager = std::make_shared<ResourceManager>();
     m_fsm = std::make_shared<FSM>();
-    m_textureImporter = std::make_shared<TextureImporter>();
 
     m_linkingContext = std::make_unique<LinkingContext>();
 
     m_singletonInputComponent = std::make_shared<SingletonInputComponent>();
-    m_singletonRendererComponent = std::make_shared<SingletonRendererComponent>();
-    m_singletonWindowComponent = std::make_shared<SingletonWindowComponent>();
-    m_singletonClientComponent = std::make_shared<SingletonClientComponent>();
+    m_singletonServerComponent = std::make_shared<SingletonServerComponent>();
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -58,29 +49,18 @@ Game::~Game()
 bool Game::Init()
 {
     // Systems
-    bool ret = m_systemManager->RegisterSystem<WindowSystem>();
+    bool ret = m_systemManager->RegisterSystem<InputSystem>();
     if (!ret) {
         return false;
     }
-    ret = m_systemManager->RegisterSystem<RendererSystem>();
-    if (!ret) {
-        return false;
-    }
-    ret = m_systemManager->RegisterSystem<InputSystem>();
-    if (!ret) {
-        return false;
-    }
-    ret = m_systemManager->RegisterSystem<ClientSystem>();
-    if (!ret) {
-        return false;
-    }
+	ret = m_systemManager->RegisterSystem<ServerSystem>();
+	if (!ret)
+	{
+		return false;
+	}
 
     // Components
     ret = m_componentManager->RegisterComponent<TransformComponent>();
-    if (!ret) {
-        return false;
-    }
-    ret = m_componentManager->RegisterComponent<SpriteComponent>();
     if (!ret) {
         return false;
     }
@@ -112,11 +92,6 @@ bool Game::Init()
     }
 
     ret = m_systemManager->StartUp();
-    if (!ret) {
-        return false;
-    }
-
-    ret = m_textureImporter->StartUp();
     if (!ret) {
         return false;
     }

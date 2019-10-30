@@ -5,17 +5,14 @@ namespace sand {
 
 enum class ComponentType {
     TRANSFORM,
-    SPRITE,
 
     COUNT,
     INVALID
 };
 
 enum class SingletonComponentType {
-	WINDOW,
-	RENDERER,
 	INPUT,
-	CLIENT,
+	SERVER,
 
 	COUNT,
 	INVALID

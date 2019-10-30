@@ -13,14 +13,11 @@ class ComponentManager;
 class SystemManager;
 class ResourceManager;
 class FSM;
-class TextureImporter;
 
 class LinkingContext;
 
-struct SingletonWindowComponent;
-struct SingletonRendererComponent;
 struct SingletonInputComponent;
-struct SingletonClientComponent;
+struct SingletonServerComponent;
 
 //----------------------------------------------------------------------------------------------------
 struct GameConfiguration {
@@ -48,14 +45,11 @@ public:
     SystemManager& GetSystemManager() const { return *m_systemManager; }
     ResourceManager& GetResourceManager() const { return *m_resourceManager; }
     FSM& GetFSM() const { return *m_fsm; }
-    TextureImporter& GetTextureImporter() const { return *m_textureImporter; }
 
     LinkingContext& GetLinkingContext() const { return *m_linkingContext; }
 
-    std::shared_ptr<SingletonWindowComponent> GetSingletonWindowComponent() const { return m_singletonWindowComponent; }
-    std::shared_ptr<SingletonRendererComponent> GetSingletonRendererComponent() const { return m_singletonRendererComponent; }
     std::shared_ptr<SingletonInputComponent> GetSingletonInputComponent() const { return m_singletonInputComponent; }
-    std::shared_ptr<SingletonClientComponent> GetSingletonClientComponent() const { return m_singletonClientComponent; }
+    std::shared_ptr<SingletonServerComponent> GetSingletonServerComponent() const { return m_singletonServerComponent; }
 
     const char* GetName() const { return m_configuration.m_name; }
 
@@ -67,14 +61,11 @@ private:
     std::shared_ptr<SystemManager> m_systemManager;
     std::shared_ptr<ResourceManager> m_resourceManager;
     std::shared_ptr<FSM> m_fsm;
-    std::shared_ptr<TextureImporter> m_textureImporter;
 
     std::unique_ptr<LinkingContext> m_linkingContext;
 
-    std::shared_ptr<SingletonWindowComponent> m_singletonWindowComponent;
-    std::shared_ptr<SingletonRendererComponent> m_singletonRendererComponent;
     std::shared_ptr<SingletonInputComponent> m_singletonInputComponent;
-    std::shared_ptr<SingletonClientComponent> m_singletonClientComponent;
+    std::shared_ptr<SingletonServerComponent> m_singletonServerComponent;
 
     Timer m_timer;
     F64 m_lastFrameMs;

@@ -22,9 +22,6 @@ namespace sand {
 		bool StartUp() override;
 		bool Update(F32 dt) override;
 		bool ShutDown() override;
-
-	private:
-		void LogError(const char* message) const;
 	};
 }
 

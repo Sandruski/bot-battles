@@ -28,7 +28,7 @@ namespace sand
 		int iResult = WSAStartup(winsockVersion, &winsockData);
 		if (iResult == SOCKET_ERROR)
 		{
-			LogError("WSAStartup");
+			NETLOG("WSAStartup");
 			return false;
 		}
 
@@ -40,7 +40,7 @@ namespace sand
 		server->m_socket = socket(addressFamily, type, protocol);
 		if (server->m_socket == INVALID_SOCKET)
 		{
-			LogError("socket");
+			NETLOG("socket");
 			return false;
 		}
 
@@ -48,7 +48,7 @@ namespace sand
 		iResult = setsockopt(server->m_socket, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&enable), sizeof(enable));
 		if (iResult == SOCKET_ERROR)
 		{
-			LogError("setsockopt");
+			NETLOG("setsockopt");
 			return false;
 		}
 		
@@ -61,7 +61,7 @@ namespace sand
 		iResult = bind(server->m_socket, reinterpret_cast<SOCKADDR*>(&localAddress), sizeof(localAddress));
 		if (iResult == SOCKET_ERROR)
 		{
-			LogError("bind");
+			NETLOG("bind");
 			return false;
 		}
 
@@ -69,7 +69,7 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	bool ServerSystem::Update(F32 dt)
+	bool ServerSystem::Update(F32 /*dt*/)
 	{
 		std::shared_ptr<SingletonServerComponent> server = g_game->GetSingletonServerComponent();
 
@@ -81,11 +81,11 @@ namespace sand
 		int iResult = recvfrom(server->m_socket, buffer, 1024, flags, reinterpret_cast<SOCKADDR*>(&fromAddress), &fromSize);
 		if (iResult == SOCKET_ERROR)
 		{
-			LogError("recvfrom");
+			NETLOG("recvfrom");
 			return false;
 		}
 
-		LOG("Packet received from address %s port %u", fromAddress.sin_addr, ntohs(fromAddress.sin_port));
+		ILOG("Packet received from address %s port %u", fromAddress.sin_addr, ntohs(fromAddress.sin_port));
 
 		return true;
 	}
@@ -96,22 +96,5 @@ namespace sand
 		// WSACleanup() omitted because Windows will clean up Winsock for us anyway
 
 		return true;
-	}
-
-	//----------------------------------------------------------------------------------------------------
-	void ServerSystem::LogError(const char* message) const
-	{
-		wchar_t* s = nullptr;
-		FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-			NULL, 
-			WSAGetLastError(),
-			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-			reinterpret_cast<LPWSTR>(&s), 
-			0, 
-			NULL);
-
-		LOG("%s: %s", message, s);
-
-		LocalFree(s);
 	}
 }
