@@ -36,7 +36,7 @@ namespace sand
 			return nullptr;
 		}
 
-		std::shared_ptr ret = std::make_shared<SocketAddress>(*result->ai_addr);
+		std::shared_ptr<SocketAddress> ret = std::make_shared<SocketAddress>(*result->ai_addr);
 
 		freeaddrinfo(result);
 

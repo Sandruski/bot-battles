@@ -99,15 +99,6 @@
     <ClCompile Include="WindowSystem.cpp">
       <Filter>Archivos de origen\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="ResourceManager.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
-    <ClCompile Include="FSM.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
-    <ClCompile Include="TextureImporter.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
     <ClCompile Include="ComponentManager.cpp">
       <Filter>Archivos de origen\Components</Filter>
     </ClCompile>
@@ -123,12 +114,6 @@
     <ClCompile Include="ClientSystem.cpp">
       <Filter>Archivos de origen\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="SocketAddress.cpp">
-      <Filter>Archivos de origen\Networking</Filter>
-    </ClCompile>
-    <ClCompile Include="UDPSocket.cpp">
-      <Filter>Archivos de origen\Networking</Filter>
-    </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
@@ -140,6 +125,15 @@
     </ClCompile>
     <ClCompile Include="ReplicationManager.cpp">
       <Filter>Archivos de origen\Networking</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>Archivos de origen\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureImporter.cpp">
+      <Filter>Archivos de origen\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="FSM.cpp">
+      <Filter>Archivos de origen\States</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -200,15 +194,6 @@
     <ClInclude Include="SingletonWindowComponent.h">
       <Filter>Archivos de encabezado\Components</Filter>
     </ClInclude>
-    <ClInclude Include="ResourceManager.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureImporter.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="FSM.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
     <ClInclude Include="SystemManager.h">
       <Filter>Archivos de encabezado\Systems</Filter>
     </ClInclude>
@@ -233,28 +218,16 @@
     <ClInclude Include="Subject.h">
       <Filter>Archivos de encabezado\Events</Filter>
     </ClInclude>
-    <ClInclude Include="WorkingDirDefs.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
     <ClInclude Include="ClientSystem.h">
       <Filter>Archivos de encabezado\Systems</Filter>
     </ClInclude>
     <ClInclude Include="SingletonClientComponent.h">
       <Filter>Archivos de encabezado\Components</Filter>
     </ClInclude>
-    <ClInclude Include="SocketAddress.h">
-      <Filter>Archivos de encabezado\Networking</Filter>
-    </ClInclude>
-    <ClInclude Include="UDPSocket.h">
-      <Filter>Archivos de encabezado\Networking</Filter>
-    </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="MemoryStream.h">
-      <Filter>Archivos de encabezado\Networking</Filter>
-    </ClInclude>
-    <ClInclude Include="ByteSwap.h">
       <Filter>Archivos de encabezado\Networking</Filter>
     </ClInclude>
     <ClInclude Include="LinkingContext.h">
@@ -271,6 +244,18 @@
     </ClInclude>
     <ClInclude Include="SDLDefs.h">
       <Filter>Archivos de encabezado\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>Archivos de encabezado\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureImporter.h">
+      <Filter>Archivos de encabezado\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="WorkingDirDefs.h">
+      <Filter>Archivos de encabezado\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="FSM.h">
+      <Filter>Archivos de encabezado\States</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

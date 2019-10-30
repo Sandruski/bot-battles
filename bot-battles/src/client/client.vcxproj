@@ -177,11 +177,9 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="InputSystem.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
-    <ClCompile Include="SocketAddress.cpp" />
     <ClCompile Include="Subject.cpp" />
     <ClCompile Include="TextureImporter.cpp" />
     <ClCompile Include="RendererSystem.cpp" />
-    <ClCompile Include="UDPSocket.cpp" />
     <ClCompile Include="WindowSystem.cpp" />
     <ClCompile Include="Resource.cpp" />
     <ClCompile Include="ResourceTexture.cpp" />
@@ -189,7 +187,6 @@
     <ClCompile Include="SystemManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ByteSwap.h" />
     <ClInclude Include="ClientSystem.h" />
     <ClInclude Include="Colors.h" />
     <ClInclude Include="NetComponent.h" />
@@ -207,7 +204,6 @@
     <ClInclude Include="SingletonInputComponent.h" />
     <ClInclude Include="SingletonRendererComponent.h" />
     <ClInclude Include="SingletonWindowComponent.h" />
-    <ClInclude Include="SocketAddress.h" />
     <ClInclude Include="SpriteComponent.h" />
     <ClInclude Include="DebugDrawer.h" />
     <ClInclude Include="SDLDefs.h" />
@@ -222,7 +218,6 @@
     <ClInclude Include="TextureImporter.h" />
     <ClInclude Include="RendererSystem.h" />
     <ClInclude Include="ResourceManager.h" />
-    <ClInclude Include="UDPSocket.h" />
     <ClInclude Include="WindowSystem.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceTexture.h" />

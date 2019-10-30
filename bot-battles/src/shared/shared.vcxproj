@@ -162,16 +162,21 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="SocketAddress.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="UDPSocket.cpp" />
     <ClCompile Include="Vec2.cpp" />
     <ClCompile Include="Vec2I.cpp" />
     <ClCompile Include="Vec3.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ByteSwap.h" />
     <ClInclude Include="Log.h" />
     <ClInclude Include="Memory.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="SocketAddress.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="UDPSocket.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="Vec2I.h" />
