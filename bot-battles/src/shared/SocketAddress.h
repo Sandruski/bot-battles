@@ -18,6 +18,8 @@ namespace sand
 	public:
 		SocketAddress(const sockaddr& sockaddr);
 
+
+
 	private:
 		sockaddr m_sockAddr;
 	};

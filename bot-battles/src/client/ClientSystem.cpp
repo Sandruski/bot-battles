@@ -4,6 +4,7 @@
 #include "SingletonClientComponent.h"
 #include "SocketAddress.h"
 #include "UDPSocket.h"
+#include "MemoryStream.h"
 
 namespace sand
 {
@@ -43,15 +44,15 @@ namespace sand
 		std::shared_ptr<SingletonClientComponent> client = g_game->GetSingletonClientComponent();
 		switch (client->m_state)
 		{
-		case SingletonClientComponent::ClientState::SAYING_HELLO:
+		case SingletonClientComponent::ClientState::SAY_HELLO:
 		{
-			UpdateSayingHelloPacket();
+			UpdateSayHello(*client);
 			break;
 		}
 
-		case SingletonClientComponent::ClientState::WELCOMED:
+		case SingletonClientComponent::ClientState::SEND_INPUT:
 		{
-			UpdateSendingInputPacket();
+			UpdateSendInput(*client);
 			break;
 		}
 
@@ -71,12 +72,64 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	void ClientSystem::UpdateSayingHelloPacket()
+	void ClientSystem::UpdateSayHello(SingletonClientComponent& client) const
+	{
+		float time = Time::GetInstance().GetTime();
+		float nextTime = client.m_lastTime + client.m_timeBetweenSayHello;
+		if (time >= nextTime)
+		{
+			SendHelloPacket(client);
+
+			client.m_lastTime = time;
+		}
+	}
+
+	//----------------------------------------------------------------------------------------------------
+	void ClientSystem::UpdateSendInput(SingletonClientComponent& client) const
+	{
+		float time = Time::GetInstance().GetTime();
+		float nextTime = client.m_lastTime + client.m_timeBetweenSendInput;
+		if (time >= nextTime)
+		{
+			SendInputPacket(client);
+
+			client.m_lastTime = time;
+		}
+	}
+
+	//----------------------------------------------------------------------------------------------------
+	void ClientSystem::SendHelloPacket(const SingletonClientComponent& client) const
+	{
+		OutputMemoryStream helloPacket;
+		helloPacket.Write(PacketType::HELLO);
+		helloPacket.Write(client.m_name);
+
+		SendPacket(client, helloPacket);
+	}
+
+	//----------------------------------------------------------------------------------------------------
+	void ClientSystem::SendInputPacket(const SingletonClientComponent& /*client*/) const
 	{
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	void ClientSystem::UpdateSendingInputPacket()
+	void ClientSystem::ReceiveWelcomePacket(SingletonClientComponent& client, InputMemoryStream& stream) const
 	{
+		if (client.m_state != SingletonClientComponent::ClientState::SAY_HELLO)
+		{
+			return;
+		}
+
+		stream.Read(client.m_playerID);
+		ILOG("Player %s has been welcomed as %u", client.m_name.c_str(), client.m_playerID);
+
+		client.m_state = SingletonClientComponent::ClientState::SEND_INPUT;
+	}
+
+	//----------------------------------------------------------------------------------------------------
+	void ClientSystem::SendPacket(const SingletonClientComponent& client, const OutputMemoryStream& stream) const
+	{
+		client.m_socket->SendTo(stream.GetPtr(), stream.GetByteLength(), *client.m_socketAddress);
+		// TODO: how do we handle the return of the SentTo method?
 	}
 }

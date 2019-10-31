@@ -6,6 +6,10 @@
 
 namespace sand {
 
+	struct SingletonClientComponent;
+	class OutputMemoryStream;
+	class InputMemoryStream;
+
 	//----------------------------------------------------------------------------------------------------
 	class ClientSystem : public System {
 	public:
@@ -13,6 +17,12 @@ namespace sand {
 		{
 			return SystemType::CLIENT;
 		}
+
+	public:
+		enum class PacketType
+		{
+			HELLO
+		};
 
 	public:
 		ClientSystem();
@@ -23,8 +33,15 @@ namespace sand {
 		bool ShutDown() override;
 
 	private:
-		void UpdateSayingHelloPacket();
-		void UpdateSendingInputPacket();
+		void UpdateSayHello(SingletonClientComponent& client) const;
+		void UpdateSendInput(SingletonClientComponent& client) const;
+
+		void SendHelloPacket(const SingletonClientComponent& client) const;
+		void SendInputPacket(const SingletonClientComponent& client) const;
+	
+		void ReceiveWelcomePacket(SingletonClientComponent& client, InputMemoryStream& stream) const;
+
+		void SendPacket(const SingletonClientComponent& client, const OutputMemoryStream& stream) const;
 	};
 }
 

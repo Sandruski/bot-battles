@@ -15,8 +15,8 @@ namespace sand {
 		enum class ClientState
 		{
 			UNINITIALIZED,
-			SAYING_HELLO,
-			WELCOMED
+			SAY_HELLO,
+			SEND_INPUT
 		};
 
 		static SingletonComponentType GetType() { return SingletonComponentType::CLIENT; }
@@ -24,14 +24,24 @@ namespace sand {
 		SingletonClientComponent()
 			: m_socket(nullptr),
 			m_socketAddress(nullptr),
-			m_state(ClientState::UNINITIALIZED)
+			m_name(""),
+			m_state(ClientState::UNINITIALIZED),
+			m_timeBetweenSayHello(1.0f),
+			m_timeBetweenSendInput(0.033f),
+			m_lastTime(0.0f),
+			m_playerID(0)
 		{		
 		}
 		~SingletonClientComponent() { }
 
 		std::shared_ptr<UDPSocket> m_socket;
 		std::shared_ptr<SocketAddress> m_socketAddress;
+		std::string m_name;
 		ClientState m_state;
+		F32 m_timeBetweenSayHello;
+		F32 m_timeBetweenSendInput;
+		F32 m_lastTime;
+		U32 m_playerID;
 	};
 }
 
