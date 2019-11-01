@@ -16,7 +16,6 @@ class FSM;
 
 class LinkingContext;
 
-struct SingletonInputComponent;
 struct SingletonServerComponent;
 
 //----------------------------------------------------------------------------------------------------
@@ -48,7 +47,6 @@ public:
 
     LinkingContext& GetLinkingContext() const { return *m_linkingContext; }
 
-    std::shared_ptr<SingletonInputComponent> GetSingletonInputComponent() const { return m_singletonInputComponent; }
     std::shared_ptr<SingletonServerComponent> GetSingletonServerComponent() const { return m_singletonServerComponent; }
 
     const char* GetName() const { return m_configuration.m_name; }
@@ -64,7 +62,6 @@ private:
 
     std::unique_ptr<LinkingContext> m_linkingContext;
 
-    std::shared_ptr<SingletonInputComponent> m_singletonInputComponent;
     std::shared_ptr<SingletonServerComponent> m_singletonServerComponent;
 
     Timer m_timer;

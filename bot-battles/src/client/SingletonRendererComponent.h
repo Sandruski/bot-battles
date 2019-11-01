@@ -3,16 +3,13 @@
 
 #include "ComponentDefs.h"
 
-
 struct SDL_Renderer;
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 struct SingletonRendererComponent {
-    static SingletonComponentType GetType() { return SingletonComponentType::RENDERER; }
-
-	SingletonRendererComponent()
+    SingletonRendererComponent()
         : m_renderer(nullptr)
         , m_backgroundColor()
         , m_isDebugDraw(false)

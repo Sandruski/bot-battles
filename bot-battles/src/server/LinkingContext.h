@@ -2,7 +2,7 @@
 #define __LINKING_CONTEXT_H__
 
 #include "EntityDefs.h"
-#include "NetworkingDefs.h"
+#include "NetDefs.h"
 
 namespace sand {
 

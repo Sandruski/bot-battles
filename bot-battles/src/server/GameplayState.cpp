@@ -7,7 +7,6 @@
 #include "EntityManager.h"
 
 #include "TransformComponent.h"
-#include "SingletonInputComponent.h"
 
 #include "WorkingDirDefs.h"
 
@@ -45,7 +44,7 @@ bool GameplayState::Enter()
 //----------------------------------------------------------------------------------------------------
 bool GameplayState::PreUpdate(F32 /*dt*/)
 {
-	return true;
+    return true;
 }
 
 //----------------------------------------------------------------------------------------------------

@@ -16,12 +16,6 @@
     <Filter Include="Header Files\Components">
       <UniqueIdentifier>{16db9e71-d076-416c-87a6-bc27c9ecddae}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Entities">
-      <UniqueIdentifier>{447cb348-86f0-49ed-b4e6-22acaa02b403}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Events">
-      <UniqueIdentifier>{25d87629-8158-43f9-8d32-89ccd96fd2bb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Networking">
       <UniqueIdentifier>{e9e55fa4-e1ac-42c3-affe-dcb5ca043115}</UniqueIdentifier>
     </Filter>
@@ -37,17 +31,11 @@
     <Filter Include="Header Files\Utils">
       <UniqueIdentifier>{d0824a8a-9c56-42a5-934f-049ab181c9b6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Entities">
-      <UniqueIdentifier>{58630ca0-8551-4299-8216-eebaa1ccd3e9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Components">
       <UniqueIdentifier>{abc262c0-dfd7-44d9-8b29-9ebe2d4facc9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Systems">
       <UniqueIdentifier>{0d2855d0-e2bd-417a-837c-af5952598185}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Events">
-      <UniqueIdentifier>{4a5d24bd-9914-4438-a5cb-90372099a44f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\States">
       <UniqueIdentifier>{c9570b17-ce6b-47f9-93d2-8fb2ad93443e}</UniqueIdentifier>
@@ -66,25 +54,13 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ComponentManager.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="EntityManager.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
     <ClCompile Include="FSM.cpp">
       <Filter>Source Files\States</Filter>
     </ClCompile>
     <ClCompile Include="GameplayState.cpp">
       <Filter>Source Files\States</Filter>
     </ClCompile>
-    <ClCompile Include="InputSystem.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
     <ClCompile Include="LinkingContext.cpp">
-      <Filter>Source Files\Networking</Filter>
-    </ClCompile>
-    <ClCompile Include="MemoryStream.cpp">
       <Filter>Source Files\Networking</Filter>
     </ClCompile>
     <ClCompile Include="ReplicationManager.cpp">
@@ -99,40 +75,25 @@
     <ClCompile Include="ServerSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="SingletonInputComponent.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Subject.cpp">
-      <Filter>Source Files\Events</Filter>
-    </ClCompile>
-    <ClCompile Include="System.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="SystemManager.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Move.cpp">
+      <Filter>Source Files\Networking</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveList.cpp">
+      <Filter>Source Files\Networking</Filter>
+    </ClCompile>
+    <ClCompile Include="MovementSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientProxy.cpp">
+      <Filter>Source Files\Networking</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ComponentDefs.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="ComponentManager.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="EntityDefs.h">
-      <Filter>Header Files\Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="EntityManager.h">
-      <Filter>Header Files\Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="Events.h">
-      <Filter>Header Files\Events</Filter>
     </ClInclude>
     <ClInclude Include="FSM.h">
       <Filter>Header Files\States</Filter>
@@ -140,23 +101,11 @@
     <ClInclude Include="GameplayState.h">
       <Filter>Header Files\States</Filter>
     </ClInclude>
-    <ClInclude Include="InputSystem.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
     <ClInclude Include="LinkingContext.h">
-      <Filter>Header Files\Networking</Filter>
-    </ClInclude>
-    <ClInclude Include="MemoryStream.h">
       <Filter>Header Files\Networking</Filter>
     </ClInclude>
     <ClInclude Include="NetComponent.h">
       <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="NetworkingDefs.h">
-      <Filter>Header Files\Networking</Filter>
-    </ClInclude>
-    <ClInclude Include="Observer.h">
-      <Filter>Header Files\Events</Filter>
     </ClInclude>
     <ClInclude Include="Resource.h">
       <Filter>Header Files\Resources</Filter>
@@ -176,19 +125,7 @@
     <ClInclude Include="ServerSystem.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="System.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="SystemDefs.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="SystemManager.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
     <ClInclude Include="TransformComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="SingletonInputComponent.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="SingletonServerComponent.h">
@@ -200,14 +137,23 @@
     <ClInclude Include="State.h">
       <Filter>Header Files\States</Filter>
     </ClInclude>
-    <ClInclude Include="Subject.h">
-      <Filter>Header Files\Events</Filter>
-    </ClInclude>
     <ClInclude Include="WorkingDirDefs.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientProxy.h">
+      <Filter>Header Files\Networking</Filter>
+    </ClInclude>
+    <ClInclude Include="Move.h">
+      <Filter>Header Files\Networking</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveList.h">
+      <Filter>Header Files\Networking</Filter>
+    </ClInclude>
+    <ClInclude Include="MovementSystem.h">
+      <Filter>Header Files\Systems</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -3,28 +3,29 @@
 
 #include "ComponentDefs.h"
 
-#include "Memory.h"
-
-#include <WinSock2.h>
-
 namespace sand {
 
-	//----------------------------------------------------------------------------------------------------
-	struct SingletonServerComponent {
-		static SingletonComponentType GetType() { return SingletonComponentType::SERVER; }
+class UDPSocket;
+class ClientProxy;
+class SocketAddress;
 
-		SingletonServerComponent()
-			: m_socket(NULL),
-			m_address("127.0.0.1"),
-			m_port(9999)
-		{
-		}
-		~SingletonServerComponent() { }
+//----------------------------------------------------------------------------------------------------
+struct SingletonServerComponent {
+    SingletonServerComponent()
+        : m_socket(nullptr)
+        , m_socketAddress(nullptr)
+        , m_addressToClientProxy()
+        , m_playerIDToClientProxy()
+    {
+    }
+    ~SingletonServerComponent() { }
 
-		SOCKET m_socket;
-		const char* m_address;
-		U16 m_port;
-	};
+    std::shared_ptr<UDPSocket> m_socket;
+    std::shared_ptr<SocketAddress> m_socketAddress;
+
+    std::unordered_map<SocketAddress, std::shared_ptr<ClientProxy>> m_addressToClientProxy;
+    std::unordered_map<U32, std::shared_ptr<ClientProxy>> m_playerIDToClientProxy;
+};
 }
 
 #endif

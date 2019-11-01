@@ -1,100 +1,99 @@
 #include "ServerSystem.h"
 
 #include "Game.h"
+#include "MemoryStream.h"
 #include "SingletonServerComponent.h"
+#include "SocketAddress.h"
+#include "UDPSocket.h"
 
-#include "Log.h"
+namespace sand {
 
-#include <WinSock2.h>
-
-namespace sand
+//----------------------------------------------------------------------------------------------------
+ServerSystem::ServerSystem()
 {
+}
 
-	//----------------------------------------------------------------------------------------------------
-	ServerSystem::ServerSystem()
-	{
-	}
+//----------------------------------------------------------------------------------------------------
+ServerSystem::~ServerSystem()
+{
+}
 
-	//----------------------------------------------------------------------------------------------------
-	ServerSystem::~ServerSystem()
-	{
-	}
+//----------------------------------------------------------------------------------------------------
+bool ServerSystem::StartUp()
+{
+    WORD winsockVersion = MAKEWORD(2, 2);
+    WSADATA winsockData;
+    int iResult = WSAStartup(winsockVersion, &winsockData);
+    if (iResult == SOCKET_ERROR) {
+        NETLOG("WSAStartup");
+        return false;
+    }
 
-	//----------------------------------------------------------------------------------------------------
-	bool ServerSystem::StartUp()
-	{
-		WORD winsockVersion = MAKEWORD(2, 2);
-		WSADATA winsockData;
-		int iResult = WSAStartup(winsockVersion, &winsockData);
-		if (iResult == SOCKET_ERROR)
-		{
-			NETLOG("WSAStartup");
-			return false;
-		}
+    std::shared_ptr<SingletonServerComponent> server = g_game->GetSingletonServerComponent();
+    server->m_socketAddress = SocketAddress::CreateIPv4(INADDR_ANY, static_cast<U16>(atoi("9999")));
+    server->m_socket = UDPSocket::CreateIPv4();
+    server->m_socket->Bind(*server->m_socketAddress);
 
-		std::shared_ptr<SingletonServerComponent> server = g_game->GetSingletonServerComponent();
+    return true;
+}
 
-		int addressFamily = AF_INET; // IPv4
-		int type = SOCK_DGRAM; // UDP
-		int protocol = IPPROTO_UDP;
-		server->m_socket = socket(addressFamily, type, protocol);
-		if (server->m_socket == INVALID_SOCKET)
-		{
-			NETLOG("socket");
-			return false;
-		}
+//----------------------------------------------------------------------------------------------------
+bool ServerSystem::Update()
+{
+    std::shared_ptr<SingletonServerComponent> server = g_game->GetSingletonServerComponent();
+}
 
-		int enable = 1;
-		iResult = setsockopt(server->m_socket, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&enable), sizeof(enable));
-		if (iResult == SOCKET_ERROR)
-		{
-			NETLOG("setsockopt");
-			return false;
-		}
-		
-		// Source IP address
-		SOCKADDR_IN localAddress;
-		localAddress.sin_family = AF_INET; // IPv4
-		localAddress.sin_port = htons(server->m_port); // Port
-		localAddress.sin_addr.S_un.S_addr = INADDR_ANY; // any local IP address
+//----------------------------------------------------------------------------------------------------
+bool ServerSystem::ShutDown()
+{
+    return true;
+}
 
-		iResult = bind(server->m_socket, reinterpret_cast<SOCKADDR*>(&localAddress), sizeof(localAddress));
-		if (iResult == SOCKET_ERROR)
-		{
-			NETLOG("bind");
-			return false;
-		}
+//----------------------------------------------------------------------------------------------------
+void ServerSystem::SendWelcomePacket(const SingletonServerComponent& /*server*/, const ClientProxy& /*clientProxy*/) const
+{
+}
 
-		return true;
-	}
+//----------------------------------------------------------------------------------------------------
+void ServerSystem::ReceivePacket(SingletonServerComponent& server, InputMemoryStream& stream, const SocketAddress& fromAddress) const
+{
+    auto it = server.m_addressToClientProxy.find(fromAddress);
+    if (it == server.m_addressToClientProxy.end()) {
+        ReceivePacketFromNewClient(server, stream, fromAddress);
+    } else {
+        ReceivePacketFromExistingClient(server, stream, fromAddress);
+    }
+}
 
-	//----------------------------------------------------------------------------------------------------
-	bool ServerSystem::Update(F32 /*dt*/)
-	{
-		std::shared_ptr<SingletonServerComponent> server = g_game->GetSingletonServerComponent();
+//----------------------------------------------------------------------------------------------------
+void ServerSystem::ReceivePacketFromNewClient(SingletonServerComponent& /*server*/, InputMemoryStream& stream, const SocketAddress& /*fromAddress*/) const
+{
+    PacketType type;
+    stream.Read(type);
+    if (type != PacketType::HELLO) {
+        WLOG("Bad incoming packet from unknown client");
+        return;
+    }
 
-		char buffer[1024];
+    std::string name;
+    stream.Read(name);
+    // TODO: create a client proxy
 
-		int flags = 0;
-		SOCKADDR_IN fromAddress;
-		int fromSize = sizeof(fromAddress);
-		int iResult = recvfrom(server->m_socket, buffer, 1024, flags, reinterpret_cast<SOCKADDR*>(&fromAddress), &fromSize);
-		if (iResult == SOCKET_ERROR)
-		{
-			NETLOG("recvfrom");
-			return false;
-		}
+    //SendWelcomePacket(server, )
+}
 
-		ILOG("Packet received from address %s port %u", fromAddress.sin_addr, ntohs(fromAddress.sin_port));
+//----------------------------------------------------------------------------------------------------
+void ServerSystem::ReceivePacketFromExistingClient(SingletonServerComponent& /*server*/, InputMemoryStream& stream, const SocketAddress& /*fromAddress*/) const
+{
+    PacketType type;
+    stream.Read(type);
+    /*
+    switch (type) {
 
-		return true;
-	}
-
-	//----------------------------------------------------------------------------------------------------
-	bool ServerSystem::ShutDown()
-	{
-		// WSACleanup() omitted because Windows will clean up Winsock for us anyway
-
-		return true;
-	}
+    default: {
+        break;
+    }
+    }
+	*/
+}
 }

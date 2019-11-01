@@ -1,6 +1,8 @@
 #ifndef __SPRITE_COMPONENT_H__
 #define __SPRITE_COMPONENT_H__
 
+#include "ComponentTypes.h"
+
 namespace sand {
 
 class ResourceTexture;

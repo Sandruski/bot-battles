@@ -5,14 +5,23 @@ VisualStudioVersion = 16.0.29409.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "client", "src\client\client.vcxproj", "{50AA5DBE-79B7-4B0E-8D43-5A661C44965A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "shared", "C:\Projects\bot-battles\bot-battles\src\shared\shared.vcxproj", "{66364BBA-9F36-40A1-8D3F-4DDE44E9BDFD}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "server", "C:\Projects\bot-battles\bot-battles\src\server\server.vcxproj", "{3226A0AE-857C-4EE5-B27B-5219157789CC}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "shared", "C:\Projects\bot-battles\bot-battles\src\shared\shared.vcxitems", "{C57E42E8-FAA7-47C3-A874-35E261F19D38}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		C:\Projects\bot-battles\bot-battles\src\shared\shared.vcxitems*{3226a0ae-857c-4ee5-b27b-5219157789cc}*SharedItemsImports = 4
+		C:\Projects\bot-battles\bot-battles\src\shared\shared.vcxitems*{50aa5dbe-79b7-4b0e-8d43-5a661c44965a}*SharedItemsImports = 4
+		C:\Projects\bot-battles\bot-battles\src\shared\shared.vcxitems*{c57e42e8-faa7-47c3-a874-35e261f19d38}*SharedItemsImports = 9
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		DebugClient|x64 = DebugClient|x64
+		DebugClient|x86 = DebugClient|x86
+		DebugServer|x64 = DebugServer|x64
+		DebugServer|x86 = DebugServer|x86
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
@@ -21,22 +30,30 @@ Global
 		{50AA5DBE-79B7-4B0E-8D43-5A661C44965A}.Debug|x64.Build.0 = Debug|x64
 		{50AA5DBE-79B7-4B0E-8D43-5A661C44965A}.Debug|x86.ActiveCfg = Debug|Win32
 		{50AA5DBE-79B7-4B0E-8D43-5A661C44965A}.Debug|x86.Build.0 = Debug|Win32
+		{50AA5DBE-79B7-4B0E-8D43-5A661C44965A}.DebugClient|x64.ActiveCfg = DebugClient|x64
+		{50AA5DBE-79B7-4B0E-8D43-5A661C44965A}.DebugClient|x64.Build.0 = DebugClient|x64
+		{50AA5DBE-79B7-4B0E-8D43-5A661C44965A}.DebugClient|x86.ActiveCfg = DebugClient|Win32
+		{50AA5DBE-79B7-4B0E-8D43-5A661C44965A}.DebugClient|x86.Build.0 = DebugClient|Win32
+		{50AA5DBE-79B7-4B0E-8D43-5A661C44965A}.DebugServer|x64.ActiveCfg = DebugServer|x64
+		{50AA5DBE-79B7-4B0E-8D43-5A661C44965A}.DebugServer|x64.Build.0 = DebugServer|x64
+		{50AA5DBE-79B7-4B0E-8D43-5A661C44965A}.DebugServer|x86.ActiveCfg = DebugServer|Win32
+		{50AA5DBE-79B7-4B0E-8D43-5A661C44965A}.DebugServer|x86.Build.0 = DebugServer|Win32
 		{50AA5DBE-79B7-4B0E-8D43-5A661C44965A}.Release|x64.ActiveCfg = Release|x64
 		{50AA5DBE-79B7-4B0E-8D43-5A661C44965A}.Release|x64.Build.0 = Release|x64
 		{50AA5DBE-79B7-4B0E-8D43-5A661C44965A}.Release|x86.ActiveCfg = Release|Win32
 		{50AA5DBE-79B7-4B0E-8D43-5A661C44965A}.Release|x86.Build.0 = Release|Win32
-		{66364BBA-9F36-40A1-8D3F-4DDE44E9BDFD}.Debug|x64.ActiveCfg = Debug|x64
-		{66364BBA-9F36-40A1-8D3F-4DDE44E9BDFD}.Debug|x64.Build.0 = Debug|x64
-		{66364BBA-9F36-40A1-8D3F-4DDE44E9BDFD}.Debug|x86.ActiveCfg = Debug|Win32
-		{66364BBA-9F36-40A1-8D3F-4DDE44E9BDFD}.Debug|x86.Build.0 = Debug|Win32
-		{66364BBA-9F36-40A1-8D3F-4DDE44E9BDFD}.Release|x64.ActiveCfg = Release|x64
-		{66364BBA-9F36-40A1-8D3F-4DDE44E9BDFD}.Release|x64.Build.0 = Release|x64
-		{66364BBA-9F36-40A1-8D3F-4DDE44E9BDFD}.Release|x86.ActiveCfg = Release|Win32
-		{66364BBA-9F36-40A1-8D3F-4DDE44E9BDFD}.Release|x86.Build.0 = Release|Win32
 		{3226A0AE-857C-4EE5-B27B-5219157789CC}.Debug|x64.ActiveCfg = Debug|x64
 		{3226A0AE-857C-4EE5-B27B-5219157789CC}.Debug|x64.Build.0 = Debug|x64
 		{3226A0AE-857C-4EE5-B27B-5219157789CC}.Debug|x86.ActiveCfg = Debug|Win32
 		{3226A0AE-857C-4EE5-B27B-5219157789CC}.Debug|x86.Build.0 = Debug|Win32
+		{3226A0AE-857C-4EE5-B27B-5219157789CC}.DebugClient|x64.ActiveCfg = DebugClient|x64
+		{3226A0AE-857C-4EE5-B27B-5219157789CC}.DebugClient|x64.Build.0 = DebugClient|x64
+		{3226A0AE-857C-4EE5-B27B-5219157789CC}.DebugClient|x86.ActiveCfg = DebugClient|Win32
+		{3226A0AE-857C-4EE5-B27B-5219157789CC}.DebugClient|x86.Build.0 = DebugClient|Win32
+		{3226A0AE-857C-4EE5-B27B-5219157789CC}.DebugServer|x64.ActiveCfg = DebugServer|x64
+		{3226A0AE-857C-4EE5-B27B-5219157789CC}.DebugServer|x64.Build.0 = DebugServer|x64
+		{3226A0AE-857C-4EE5-B27B-5219157789CC}.DebugServer|x86.ActiveCfg = DebugServer|Win32
+		{3226A0AE-857C-4EE5-B27B-5219157789CC}.DebugServer|x86.Build.0 = DebugServer|Win32
 		{3226A0AE-857C-4EE5-B27B-5219157789CC}.Release|x64.ActiveCfg = Release|x64
 		{3226A0AE-857C-4EE5-B27B-5219157789CC}.Release|x64.Build.0 = Release|x64
 		{3226A0AE-857C-4EE5-B27B-5219157789CC}.Release|x86.ActiveCfg = Release|Win32

@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{c57e42e8-faa7-47c3-a874-35e261f19d38}</ItemsProjectGuid>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)ByteSwap.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ComponentDefs.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ComponentManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ComponentTypes.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)EntityDefs.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)EntityManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Events.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)EventTypes.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)InputState.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Log.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Memory.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MemoryStream.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)NetDefs.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Observer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)SocketAddress.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Subject.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)System.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)SystemDefs.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)SystemManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)SystemTypes.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Time.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Timer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)UDPSocket.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utils.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Vec2.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Vec2I.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Vec3.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)ComponentManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)EntityManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Events.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)InputState.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)MemoryStream.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)SocketAddress.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Subject.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)System.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)SystemManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Time.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Timer.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)UDPSocket.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Vec2.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Vec2I.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Vec3.cpp" />
+  </ItemGroup>
+</Project>

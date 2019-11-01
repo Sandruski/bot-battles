@@ -1,11 +1,16 @@
 #ifndef __SERVER_SYSTEM_H__
 #define __SERVER_SYSTEM_H__
 
-#include "ComponentDefs.h"
-#include "Memory.h"
 #include "System.h"
+#include "ComponentDefs.h"
 
 namespace sand {
+
+	struct SingletonServerComponent;
+	class OutputMemoryStream;
+	class InputMemoryStream;
+	class SocketAddress;
+	class ClientProxy;
 
 	//----------------------------------------------------------------------------------------------------
 	class ServerSystem : public System {
@@ -16,12 +21,28 @@ namespace sand {
 		}
 
 	public:
+		enum class PacketType
+		{
+			HELLO,
+			WELCOME,
+			STATE
+		};
+
+	public:
 		ServerSystem();
 		~ServerSystem() override;
 
 		bool StartUp() override;
-		bool Update(F32 dt) override;
+		bool Update() override;
 		bool ShutDown() override;
+
+	private:
+		void SendWelcomePacket(const SingletonServerComponent& server, const ClientProxy& clientProxy) const;
+
+		//void SendPacket(const SingletonClientComponent& client, const OutputMemoryStream& stream) const;
+		void ReceivePacket(SingletonServerComponent& server, InputMemoryStream& stream, const SocketAddress& fromAddress) const;
+		void ReceivePacketFromNewClient(SingletonServerComponent& server, InputMemoryStream& stream, const SocketAddress& fromAddress) const;
+		void ReceivePacketFromExistingClient(SingletonServerComponent& server, InputMemoryStream& stream, const SocketAddress& fromAddress) const;
 	};
 }
 

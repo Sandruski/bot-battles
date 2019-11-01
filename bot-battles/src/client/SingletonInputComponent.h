@@ -5,30 +5,27 @@
 
 #include "Vec2I.h"
 
-
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 struct SingletonInputComponent {
     enum class KeyState {
-        KEY_IDLE,
-        KEY_DOWN,
-        KEY_REPEAT,
-        KEY_UP,
+        IDLE,
+        DOWN,
+        REPEAT,
+        UP,
 
-        KEYSTATE_COUNT,
-        KEYSTATE_INVALID
+        COUNT,
+        INVALID
     };
 
-    static SingletonComponentType GetType() { return SingletonComponentType::INPUT; }
-
-	SingletonInputComponent()
+    SingletonInputComponent()
         : m_keyboard()
         , m_mouse()
-		, m_mousePosition()
+        , m_mousePosition()
     {
-        memset(m_keyboard, static_cast<int>(KeyState::KEY_IDLE), sizeof(KeyState) * SDL_NUM_SCANCODES);
-        memset(m_mouse, static_cast<int>(KeyState::KEY_IDLE), sizeof(KeyState) * SDL_BUTTON_X2);
+        memset(m_keyboard, static_cast<int>(KeyState::IDLE), sizeof(KeyState) * SDL_NUM_SCANCODES);
+        memset(m_mouse, static_cast<int>(KeyState::IDLE), sizeof(KeyState) * SDL_BUTTON_X2);
     }
     ~SingletonInputComponent() { }
 
@@ -37,7 +34,7 @@ struct SingletonInputComponent {
 
     KeyState m_keyboard[SDL_NUM_SCANCODES];
     KeyState m_mouse[SDL_BUTTON_X2];
-	Vec2I m_mousePosition;
+    Vec2I m_mousePosition;
 };
 }
 

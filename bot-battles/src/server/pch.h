@@ -10,6 +10,7 @@
 
 #include <array>
 #include <bitset>
+#include <deque>
 #include <functional>
 #include <memory>
 #include <queue>
@@ -22,9 +23,9 @@
 #include <cstring>
 
 // SDL
-#include <SDL_timer.h>
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_timer.h>
 
 //----------------------------------------------------------------------------------------------------
 // Math
@@ -40,12 +41,4 @@
 
 //----------------------------------------------------------------------------------------------------
 
-
 #endif //PCH_H
-
-
-//#include <SDL.h>
-//#include <SDL_mouse.h>
-//#include <SDL_scancode.h>
-//#include <SDL_pixels.h>
-//#include <SDL_image.h>

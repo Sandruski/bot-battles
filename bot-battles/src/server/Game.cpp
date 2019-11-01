@@ -8,10 +8,9 @@
 
 #include "LinkingContext.h"
 
-#include "InputSystem.h"
+#include "MovementSystem.h"
 #include "ServerSystem.h"
 
-#include "SingletonInputComponent.h"
 #include "SingletonServerComponent.h"
 
 #include "TransformComponent.h"
@@ -36,7 +35,6 @@ Game::Game(const GameConfiguration& configuration)
 
     m_linkingContext = std::make_unique<LinkingContext>();
 
-    m_singletonInputComponent = std::make_shared<SingletonInputComponent>();
     m_singletonServerComponent = std::make_shared<SingletonServerComponent>();
 }
 
@@ -49,15 +47,14 @@ Game::~Game()
 bool Game::Init()
 {
     // Systems
-    bool ret = m_systemManager->RegisterSystem<InputSystem>();
+    bool ret = m_systemManager->RegisterSystem<ServerSystem>();
     if (!ret) {
         return false;
     }
-	ret = m_systemManager->RegisterSystem<ServerSystem>();
-	if (!ret)
-	{
-		return false;
-	}
+    ret = m_systemManager->RegisterSystem<MovementSystem>();
+    if (!ret) {
+        return false;
+    }
 
     // Components
     ret = m_componentManager->RegisterComponent<TransformComponent>();
@@ -111,7 +108,7 @@ bool Game::Update()
 {
     m_timer.Start();
 
-	F32 dt = static_cast<F32>(m_dt);
+    F32 dt = static_cast<F32>(m_dt);
 
     // PreUpdate
     bool ret = m_entityManager->PreUpdate(dt);

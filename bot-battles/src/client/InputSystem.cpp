@@ -6,152 +6,121 @@
 
 #include "SDLDefs.h"
 
-namespace sand
+namespace sand {
+
+//----------------------------------------------------------------------------------------------------
+InputSystem::InputSystem()
 {
+}
 
-	//----------------------------------------------------------------------------------------------------
-	InputSystem::InputSystem()
-	{
-	}
+//----------------------------------------------------------------------------------------------------
+InputSystem::~InputSystem()
+{
+}
 
-	//----------------------------------------------------------------------------------------------------
-	InputSystem::~InputSystem()
-	{
-	}
+//----------------------------------------------------------------------------------------------------
+bool InputSystem::StartUp()
+{
+    if (SDL_Init(SDL_INIT_EVENTS) == SDL_ERROR) {
+        ELOG("SDL events subsystem could not be initialized! SDL Error: %s", SDL_GetError());
+        return false;
+    }
 
-	//----------------------------------------------------------------------------------------------------
-	bool InputSystem::StartUp()
-	{
-		if (SDL_Init(SDL_INIT_EVENTS) == SDL_ERROR)
-		{
-			ELOG("SDL events subsystem could not be initialized! SDL Error: %s", SDL_GetError());
-			return false;
-		}
+    return true;
+}
 
-		return true;
-	}
+//----------------------------------------------------------------------------------------------------
+bool InputSystem::Update(F32 /*dt*/)
+{
+    std::shared_ptr<SingletonInputComponent> input = g_game->GetSingletonInputComponent();
 
-	//----------------------------------------------------------------------------------------------------
-	bool InputSystem::Update(F32 /*dt*/)
-	{
-		std::shared_ptr<SingletonInputComponent> input = g_game->GetSingletonInputComponent();
+    const U8* keyboardState = SDL_GetKeyboardState(nullptr);
+    for (U16 i = 0; i < SDL_NUM_SCANCODES; ++i) {
+        if (keyboardState[i] == SDL_KEY_PRESSED) {
+            if (input->m_keyboard[i] == SingletonInputComponent::KeyState::IDLE) {
+                input->m_keyboard[i] = SingletonInputComponent::KeyState::DOWN;
+            } else {
+                input->m_keyboard[i] = SingletonInputComponent::KeyState::REPEAT;
+            }
+        } else {
+            if (input->m_keyboard[i] == SingletonInputComponent::KeyState::DOWN
+                || input->m_keyboard[i] == SingletonInputComponent::KeyState::REPEAT) {
+                input->m_keyboard[i] = SingletonInputComponent::KeyState::UP;
+            } else {
+                input->m_keyboard[i] = SingletonInputComponent::KeyState::IDLE;
+            }
+        }
+    }
 
-		const U8* keyboardState = SDL_GetKeyboardState(nullptr);
-		for (U16 i = 0; i < SDL_NUM_SCANCODES; ++i)
-		{
-			if (keyboardState[i] == SDL_KEY_PRESSED)
-			{
-				if (input->m_keyboard[i] == SingletonInputComponent::KeyState::KEY_IDLE)
-				{
-					input->m_keyboard[i] = SingletonInputComponent::KeyState::KEY_DOWN;
-				}
-				else
-				{
-					input->m_keyboard[i] = SingletonInputComponent::KeyState::KEY_REPEAT;
-				}
-			}
-			else
-			{
-				if (input->m_keyboard[i] == SingletonInputComponent::KeyState::KEY_DOWN
-					|| input->m_keyboard[i] == SingletonInputComponent::KeyState::KEY_REPEAT)
-				{
-					input->m_keyboard[i] = SingletonInputComponent::KeyState::KEY_UP;
-				}
-				else
-				{
-					input->m_keyboard[i] = SingletonInputComponent::KeyState::KEY_IDLE;
-				}
-			}
-		}
+    U32 mouseState = SDL_GetMouseState(&input->m_mousePosition.x, &input->m_mousePosition.y);
+    for (U8 i = 0; i < SDL_BUTTON_X2; ++i) {
+        if (mouseState & SDL_BUTTON(i + SDL_BUTTON_LEFT)) {
+            if (input->m_mouse[i] == SingletonInputComponent::KeyState::IDLE) {
+                input->m_mouse[i] = SingletonInputComponent::KeyState::DOWN;
+            } else {
+                input->m_mouse[i] = SingletonInputComponent::KeyState::REPEAT;
+            }
+        } else {
+            if (input->m_mouse[i] == SingletonInputComponent::KeyState::DOWN
+                || input->m_mouse[i] == SingletonInputComponent::KeyState::REPEAT) {
+                input->m_mouse[i] = SingletonInputComponent::KeyState::UP;
+            } else {
+                input->m_mouse[i] = SingletonInputComponent::KeyState::IDLE;
+            }
+        }
+    }
 
-		U32 mouseState = SDL_GetMouseState(&input->m_mousePosition.x, &input->m_mousePosition.y);
-		for (U8 i = 0; i < SDL_BUTTON_X2; ++i)
-		{
-			if (mouseState & SDL_BUTTON(i + SDL_BUTTON_LEFT))
-			{
-				if (input->m_mouse[i] == SingletonInputComponent::KeyState::KEY_IDLE)
-				{
-					input->m_mouse[i] = SingletonInputComponent::KeyState::KEY_DOWN;
-				}
-				else
-				{
-					input->m_mouse[i] = SingletonInputComponent::KeyState::KEY_REPEAT;
-				}
-			}
-			else
-			{
-				if (input->m_mouse[i] == SingletonInputComponent::KeyState::KEY_DOWN
-					|| input->m_mouse[i] == SingletonInputComponent::KeyState::KEY_REPEAT)
-				{
-					input->m_mouse[i] = SingletonInputComponent::KeyState::KEY_UP;
-				}
-				else
-				{
-					input->m_mouse[i] = SingletonInputComponent::KeyState::KEY_IDLE;
-				}
-			}
-		}
+    static SDL_Event event;
+    while (SDL_PollEvent(&event)) {
+        switch (event.type) {
+        case SDL_QUIT: {
+            // TODO SEND EVENT
+            return false;
+            break;
+        }
 
-		static SDL_Event event;
-		while (SDL_PollEvent(&event))
-		{
-			switch (event.type)
-			{
-			case SDL_QUIT:
-			{
-				// TODO SEND EVENT
-				return false;
-				break;
-			}
+        case SDL_WINDOWEVENT: {
+            switch (event.window.event) {
+            case SDL_WINDOWEVENT_SHOWN:
+            case SDL_WINDOWEVENT_MAXIMIZED:
+            case SDL_WINDOWEVENT_FOCUS_GAINED: {
+                // TODO: we show and update m_isRunning accordingly
+                // TODO: Event System
 
-			case SDL_WINDOWEVENT:
-			{
-				switch (event.window.event)
-				{
-				case SDL_WINDOWEVENT_SHOWN:
-				case SDL_WINDOWEVENT_MAXIMIZED:
-				case SDL_WINDOWEVENT_FOCUS_GAINED:
-				{
-					// TODO: we show and update m_isRunning accordingly
-					// TODO: Event System
+                break;
+            }
 
-					break;
-				}
+            case SDL_WINDOWEVENT_HIDDEN:
+            case SDL_WINDOWEVENT_MINIMIZED:
+            case SDL_WINDOWEVENT_FOCUS_LOST: {
+                // TODO: we hide and update m_isRunning accordingly
+                // TODO: Event System
 
-				case SDL_WINDOWEVENT_HIDDEN:
-				case SDL_WINDOWEVENT_MINIMIZED:
-				case SDL_WINDOWEVENT_FOCUS_LOST:
-				{
-					// TODO: we hide and update m_isRunning accordingly
-					// TODO: Event System
-					
-					break;
-				}
+                break;
+            }
 
-				default:
-				{
-					break;
-				}
-				}
-				break;
-			}
+            default: {
+                break;
+            }
+            }
+            break;
+        }
 
-			default:
-			{
-				break;
-			}
-			}
-		}
+        default: {
+            break;
+        }
+        }
+    }
 
-		return true;
-	}
+    return true;
+}
 
-	//----------------------------------------------------------------------------------------------------
-	bool InputSystem::ShutDown()
-	{
-		ILOG("Quitting SDL events subsystem");
-		SDL_QuitSubSystem(SDL_INIT_EVENTS);
+//----------------------------------------------------------------------------------------------------
+bool InputSystem::ShutDown()
+{
+    ILOG("Quitting SDL events subsystem");
+    SDL_QuitSubSystem(SDL_INIT_EVENTS);
 
-		return true;
-	}
+    return true;
+}
 }
