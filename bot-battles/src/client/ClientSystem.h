@@ -13,18 +13,21 @@ class InputMemoryStream;
 //----------------------------------------------------------------------------------------------------
 class ClientSystem : public System {
 public:
-    static SystemType GetType()
-    {
-        return SystemType::CLIENT;
-    }
-
-public:
     enum class PacketType {
         HELLO,
         WELCOME,
         INPUT,
-        STATE
+        STATE,
+
+        COUNT,
+        INVALID
     };
+
+public:
+    static SystemType GetType()
+    {
+        return SystemType::CLIENT;
+    }
 
 public:
     ClientSystem();

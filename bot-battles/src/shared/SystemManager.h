@@ -23,9 +23,9 @@ public:
     bool DeRegisterSystem();
 
     bool StartUp();
-	bool PreUpdate(F32 dt);
-    bool Update(F32 dt);
-    bool PostUpdate(F32 dt);
+    bool PreUpdate();
+    bool Update();
+    bool PostUpdate();
     bool Render();
     bool ShutDown();
 
@@ -44,14 +44,12 @@ inline bool SystemManager::RegisterSystem()
     SystemType type = T::GetType();
     assert(type != SystemType::COUNT && type != SystemType::INVALID);
 
-	for (const auto& system : m_systems)
-	{
-		if (system->GetType() == type)
-		{
-			WLOG("The system is already registered!");
-			return false;
-		}
-	}
+    for (const auto& system : m_systems) {
+        if (system->GetType() == type) {
+            WLOG("The system is already registered!");
+            return false;
+        }
+    }
 
     m_systems.push_back(std::make_unique<T>());
 
@@ -67,16 +65,14 @@ inline bool SystemManager::DeRegisterSystem()
     SystemType type = T::GetType();
     assert(type != SystemType::COUNT && type != SystemType::INVALID);
 
-	for (const auto& system : m_systems)
-	{
-		if (system->GetType() == type)
-		{
-			m_systems[static_cast<std::size_t>(type)] = nullptr;
-			return true;
-		}
-	}
+    for (const auto& system : m_systems) {
+        if (system->GetType() == type) {
+            m_systems[static_cast<std::size_t>(type)] = nullptr;
+            return true;
+        }
+    }
 
-	WLOG("The system is not registered!");
+    WLOG("The system is not registered!");
     return false;
 }
 } // namespace sand

@@ -9,6 +9,7 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 struct SingletonRendererComponent {
+
     SingletonRendererComponent()
         : m_renderer(nullptr)
         , m_backgroundColor()

@@ -319,10 +319,9 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="ReplicationManager.cpp" />
-    <ClCompile Include="SingletonInputComponent.cpp" />
     <ClCompile Include="FSM.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="InputSystem.cpp" />
+    <ClCompile Include="EventSystem.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="TextureImporter.cpp" />
     <ClCompile Include="RendererSystem.cpp" />
@@ -335,7 +334,6 @@
     <ClInclude Include="Colors.h" />
     <ClInclude Include="Move.h" />
     <ClInclude Include="MoveList.h" />
-    <ClInclude Include="NetComponent.h" />
     <ClInclude Include="LinkingContext.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="ReplicationManager.h" />
@@ -350,7 +348,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameplayState.h" />
     <ClInclude Include="FSM.h" />
-    <ClInclude Include="InputSystem.h" />
+    <ClInclude Include="EventSystem.h" />
     <ClInclude Include="StateDefs.h" />
     <ClInclude Include="TextureImporter.h" />
     <ClInclude Include="RendererSystem.h" />

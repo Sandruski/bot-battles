@@ -132,6 +132,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)EventTypes.h">
       <Filter>Header Files\Events</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)NetComponent.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)InputState.cpp">

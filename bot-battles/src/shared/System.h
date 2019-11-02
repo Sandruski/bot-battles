@@ -1,20 +1,19 @@
 #ifndef __SYSTEM_H__
 #define __SYSTEM_H__
 
+#include "ComponentDefs.h"
 #include "EntityDefs.h"
 #include "SystemDefs.h"
-#include "ComponentDefs.h"
-
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 class System {
 public:
-	static SystemType GetType()
-	{
-		return SystemType::INVALID;
-	}
+    static SystemType GetType()
+    {
+        return SystemType::INVALID;
+    }
 
 public:
     System();
@@ -28,35 +27,20 @@ public:
         return true;
     }
 
-	virtual bool PreUpdate(F32 /*dt*/)
-	{
-		return true;
-	}
-
-	virtual bool PreUpdate()
-	{
-		return true;
-	}
-
-    virtual bool Update(F32 /*dt*/)
+    virtual bool PreUpdate()
     {
         return true;
     }
 
-	virtual bool Update()
-	{
-		return true;
-	}
-
-    virtual bool PostUpdate(F32 /*dt*/)
+    virtual bool Update()
     {
         return true;
     }
 
-	virtual bool PostUpdate()
-	{
-		return true;
-	}
+    virtual bool PostUpdate()
+    {
+        return true;
+    }
 
     virtual bool Render()
     {
@@ -68,11 +52,11 @@ public:
         return true;
     }
 
-	const Signature& GetSignature();
+    const Signature& GetSignature();
 
 protected:
     std::vector<Entity> m_entities;
-	Signature m_signature;
+    Signature m_signature;
 };
 }
 

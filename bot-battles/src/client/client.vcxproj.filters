@@ -36,9 +36,6 @@
     <Filter Include="Source Files\Utils">
       <UniqueIdentifier>{3e7948c3-1a3e-4ccb-9b4f-64f3b487ebce}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Components">
-      <UniqueIdentifier>{641fca38-d5e5-4f07-92a0-49ff484314cd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\States">
       <UniqueIdentifier>{5c4e7fd5-d843-45eb-a7fa-62c6f38c9dc1}</UniqueIdentifier>
     </Filter>
@@ -75,12 +72,6 @@
     <ClCompile Include="DebugDrawer.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="InputSystem.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="SingletonInputComponent.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
     <ClCompile Include="WindowSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
@@ -111,6 +102,9 @@
     <ClCompile Include="MoveList.cpp">
       <Filter>Source Files\Networking</Filter>
     </ClCompile>
+    <ClCompile Include="EventSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ResourceTexture.h">
@@ -139,9 +133,6 @@
     </ClInclude>
     <ClInclude Include="DebugDrawer.h">
       <Filter>Header Files\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="InputSystem.h">
-      <Filter>Header Files\Systems</Filter>
     </ClInclude>
     <ClInclude Include="SingletonInputComponent.h">
       <Filter>Header Files\Components</Filter>
@@ -179,9 +170,6 @@
     <ClInclude Include="ReplicationManager.h">
       <Filter>Header Files\Networking</Filter>
     </ClInclude>
-    <ClInclude Include="NetComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
     <ClInclude Include="SDLDefs.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
@@ -202,6 +190,9 @@
     </ClInclude>
     <ClInclude Include="MoveList.h">
       <Filter>Header Files\Networking</Filter>
+    </ClInclude>
+    <ClInclude Include="EventSystem.h">
+      <Filter>Header Files\Systems</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

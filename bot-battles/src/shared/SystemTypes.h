@@ -9,7 +9,7 @@ enum class SystemType {
 
     WINDOW,
     RENDERER,
-    INPUT,
+    EVENT,
 
     COUNT,
     INVALID

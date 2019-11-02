@@ -6,25 +6,23 @@
 struct SDL_Window;
 struct SDL_Surface;
 
-namespace sand
-{
+namespace sand {
 
-	//----------------------------------------------------------------------------------------------------
-	class WindowSystem : public System
-	{
-	public:
-		static SystemType GetType()
-		{
-			return SystemType::INPUT;
-		}
+//----------------------------------------------------------------------------------------------------
+class WindowSystem : public System {
+public:
+    static SystemType GetType()
+    {
+        return SystemType::WINDOW;
+    }
 
-	public:
-		WindowSystem();
-		~WindowSystem() override;
+public:
+    WindowSystem();
+    ~WindowSystem() override;
 
-		bool StartUp() override;
-		bool ShutDown() override;
-	};
+    bool StartUp() override;
+    bool ShutDown() override;
+};
 }
 
 #endif

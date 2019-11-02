@@ -14,7 +14,7 @@ public:
     EntityManager();
     ~EntityManager();
 
-    bool PreUpdate(F32 /*dt*/);
+    bool PreUpdate();
 
     Entity AddEntity();
     bool RemoveEntity(Entity entity);

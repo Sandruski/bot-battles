@@ -7,7 +7,6 @@
 #include "ComponentManager.h"
 #include "EntityManager.h"
 
-#include "SingletonInputComponent.h"
 #include "SpriteComponent.h"
 #include "TransformComponent.h"
 
@@ -56,25 +55,19 @@ bool GameplayState::Enter()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool GameplayState::PreUpdate(F32 /*dt*/)
+bool GameplayState::PreUpdate()
 {
     return true;
 }
 
 //----------------------------------------------------------------------------------------------------
-bool GameplayState::Update(F32 dt)
+bool GameplayState::Update()
 {
-    std::shared_ptr<SingletonInputComponent> input = g_game->GetSingletonInputComponent();
-    if (input->GetKey(SDL_SCANCODE_RIGHT) == SingletonInputComponent::KeyState::DOWN
-        || input->GetKey(SDL_SCANCODE_RIGHT) == SingletonInputComponent::KeyState::REPEAT) {
-        m_transform->m_position.x += 30.0f * dt;
-    }
-
     return true;
 }
 
 //----------------------------------------------------------------------------------------------------
-bool GameplayState::PostUpdate(F32 /*dt*/)
+bool GameplayState::PostUpdate()
 {
     return true;
 }

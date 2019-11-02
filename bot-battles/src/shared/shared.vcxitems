@@ -26,6 +26,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Log.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Memory.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MemoryStream.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)NetComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)NetDefs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Observer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SocketAddress.h" />

@@ -9,15 +9,15 @@
 
 #include "LinkingContext.h"
 
-#include "InputSystem.h"
+#include "ClientSystem.h"
+#include "EventSystem.h"
 #include "RendererSystem.h"
 #include "WindowSystem.h"
-#include "ClientSystem.h"
 
+#include "SingletonClientComponent.h"
 #include "SingletonInputComponent.h"
 #include "SingletonRendererComponent.h"
 #include "SingletonWindowComponent.h"
-#include "SingletonClientComponent.h"
 
 #include "SpriteComponent.h"
 #include "TransformComponent.h"
@@ -61,7 +61,7 @@ bool Game::Init()
     if (!ret) {
         return false;
     }
-    ret = m_systemManager->RegisterSystem<InputSystem>();
+    ret = m_systemManager->RegisterSystem<EventSystem>();
     if (!ret) {
         return false;
     }
@@ -129,49 +129,47 @@ bool Game::Init()
 // game loop
 bool Game::Update()
 {
-	Time::GetInstance().StartUpdate();
-
-	F32 dt = static_cast<F32>(Time::GetInstance().GetDt());
+    Time::GetInstance().StartUpdate();
 
     // PreUpdate
-    bool ret = m_entityManager->PreUpdate(dt);
+    bool ret = m_entityManager->PreUpdate();
     if (!ret) {
         return false;
     }
 
-    m_componentManager->PreUpdate(dt);
+    m_componentManager->PreUpdate();
     if (!ret) {
         return false;
     }
 
-    m_systemManager->PreUpdate(dt);
+    m_systemManager->PreUpdate();
     if (!ret) {
         return false;
     }
 
-    m_fsm->PreUpdate(dt);
+    m_fsm->PreUpdate();
     if (!ret) {
         return false;
     }
 
     // Update
-    ret = m_systemManager->Update(dt);
+    ret = m_systemManager->Update();
     if (!ret) {
         return false;
     }
 
-    m_fsm->Update(dt);
+    m_fsm->Update();
     if (!ret) {
         return false;
     }
 
     // PostUpdate
-    ret = m_systemManager->PostUpdate(dt);
+    ret = m_systemManager->PostUpdate();
     if (!ret) {
         return false;
     }
 
-    m_fsm->PostUpdate(dt);
+    m_fsm->PostUpdate();
     if (!ret) {
         return false;
     }
@@ -187,7 +185,7 @@ bool Game::Update()
         return false;
     }
 
-	Time::GetInstance().FinishUpdate();
+    Time::GetInstance().FinishUpdate();
 
     return ret;
 }

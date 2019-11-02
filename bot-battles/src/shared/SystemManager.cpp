@@ -32,36 +32,36 @@ bool SystemManager::StartUp()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool SystemManager::PreUpdate(F32 dt)
+bool SystemManager::PreUpdate()
 {
     bool ret = true;
 
     for (U32 i = 0; i < m_systems.size() && ret; ++i) {
-        ret = m_systems[i]->PreUpdate(dt);
+        ret = m_systems[i]->PreUpdate();
     }
 
     return ret;
 }
 
 //----------------------------------------------------------------------------------------------------
-bool SystemManager::Update(F32 dt)
+bool SystemManager::Update()
 {
     bool ret = true;
 
     for (U32 i = 0; i < m_systems.size() && ret; ++i) {
-        ret = m_systems[i]->Update(dt);
+        ret = m_systems[i]->Update();
     }
 
     return ret;
 }
 
 //----------------------------------------------------------------------------------------------------
-bool SystemManager::PostUpdate(F32 dt)
+bool SystemManager::PostUpdate()
 {
     bool ret = true;
 
     for (U32 i = 0; i < m_systems.size() && ret; ++i) {
-        ret = m_systems[i]->PostUpdate(dt);
+        ret = m_systems[i]->PostUpdate();
     }
 
     return ret;

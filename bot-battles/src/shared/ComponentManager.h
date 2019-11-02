@@ -19,7 +19,7 @@ public:
     IComponentArray() { }
     virtual ~IComponentArray() { }
 
-    virtual bool PreUpdate(F32 /*dt*/) = 0;
+    virtual bool PreUpdate() = 0;
 
     virtual void OnNotify(const Event& event) = 0;
 };
@@ -31,7 +31,7 @@ public:
     ComponentArray();
     ~ComponentArray();
 
-    bool PreUpdate(F32 /*dt*/) override;
+    bool PreUpdate() override;
 
     std::shared_ptr<T> AddComponent(Entity entity);
     bool RemoveComponent(Entity entity);
@@ -64,7 +64,7 @@ inline ComponentArray<T>::~ComponentArray()
 
 //----------------------------------------------------------------------------------------------------
 template <class T>
-inline bool ComponentArray<T>::PreUpdate(F32)
+inline bool ComponentArray<T>::PreUpdate()
 {
     NotifyAll();
 
@@ -181,7 +181,7 @@ public:
     ComponentManager();
     ~ComponentManager();
 
-    bool PreUpdate(F32 dt);
+    bool PreUpdate();
 
     template <class T>
     bool RegisterComponent();

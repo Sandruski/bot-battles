@@ -9,6 +9,7 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 struct SingletonWindowComponent {
+
     SingletonWindowComponent()
         : m_window(nullptr)
         , m_width(640)

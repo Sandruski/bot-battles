@@ -10,10 +10,14 @@ class UDPSocket;
 
 //----------------------------------------------------------------------------------------------------
 struct SingletonClientComponent {
+
     enum class ClientState {
         UNINITIALIZED,
         SAY_HELLO,
-        SEND_INPUT
+        SEND_INPUT,
+
+        COUNT,
+        INVALID
     };
 
     SingletonClientComponent()

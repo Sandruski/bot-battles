@@ -9,6 +9,7 @@ class ResourceTexture;
 
 //----------------------------------------------------------------------------------------------------
 struct SpriteComponent {
+
     static ComponentType GetType() { return ComponentType::SPRITE; }
     static SpriteComponent* Instantiate() { return new SpriteComponent(); }
 

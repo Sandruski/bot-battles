@@ -104,9 +104,6 @@
     <ClInclude Include="LinkingContext.h">
       <Filter>Header Files\Networking</Filter>
     </ClInclude>
-    <ClInclude Include="NetComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
     <ClInclude Include="Resource.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>

@@ -357,7 +357,6 @@
     <ClInclude Include="Move.h" />
     <ClInclude Include="MoveList.h" />
     <ClInclude Include="MovementSystem.h" />
-    <ClInclude Include="NetComponent.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="ReplicationManager.h" />
     <ClInclude Include="Resource.h" />

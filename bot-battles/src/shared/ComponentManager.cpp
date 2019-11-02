@@ -15,40 +15,40 @@ ComponentManager::~ComponentManager()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool ComponentManager::PreUpdate(F32 dt)
+bool ComponentManager::PreUpdate()
 {
-	for (const auto& componentArray : m_componentArrays) {
-		componentArray->PreUpdate(dt);
-	}
+    for (const auto& componentArray : m_componentArrays) {
+        componentArray->PreUpdate();
+    }
 
-	return true;
+    return true;
 }
 
 //----------------------------------------------------------------------------------------------------
 bool ComponentManager::AddObserver(std::shared_ptr<Observer> observer)
 {
-	for (const auto& componentArray : m_componentArrays) {
-		componentArray->AddObserver(observer);
-	}
+    for (const auto& componentArray : m_componentArrays) {
+        componentArray->AddObserver(observer);
+    }
 
-	return true;
+    return true;
 }
 
 //----------------------------------------------------------------------------------------------------
 bool ComponentManager::RemoveObserver(std::shared_ptr<Observer> observer)
 {
-	for (const auto& componentArray : m_componentArrays) {
-		componentArray->RemoveObserver(observer);
-	}
+    for (const auto& componentArray : m_componentArrays) {
+        componentArray->RemoveObserver(observer);
+    }
 
-	return true;
+    return true;
 }
 
 //----------------------------------------------------------------------------------------------------
 void ComponentManager::OnNotify(const Event& event)
 {
-	for (const auto& componentArray : m_componentArrays) {
-		componentArray->OnNotify(event);
-	}
+    for (const auto& componentArray : m_componentArrays) {
+        componentArray->OnNotify(event);
+    }
 }
 }

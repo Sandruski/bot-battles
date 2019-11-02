@@ -24,7 +24,7 @@ EntityManager::~EntityManager()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool EntityManager::PreUpdate(F32 /*dt*/)
+bool EntityManager::PreUpdate()
 {
     NotifyAll();
 
