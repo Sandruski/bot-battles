@@ -1,8 +1,6 @@
 #ifndef __SINGLETON_WINDOW_COMPONENT_H__
 #define __SINGLETON_WINDOW_COMPONENT_H__
 
-#include "ComponentDefs.h"
-
 struct SDL_Window;
 
 namespace sand {

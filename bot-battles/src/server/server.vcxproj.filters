@@ -31,9 +31,6 @@
     <Filter Include="Header Files\Utils">
       <UniqueIdentifier>{d0824a8a-9c56-42a5-934f-049ab181c9b6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Components">
-      <UniqueIdentifier>{abc262c0-dfd7-44d9-8b29-9ebe2d4facc9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Systems">
       <UniqueIdentifier>{0d2855d0-e2bd-417a-837c-af5952598185}</UniqueIdentifier>
     </Filter>
@@ -122,9 +119,6 @@
     <ClInclude Include="ServerSystem.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="TransformComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
     <ClInclude Include="SingletonServerComponent.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
@@ -151,6 +145,9 @@
     </ClInclude>
     <ClInclude Include="MovementSystem.h">
       <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="TransformComponent.h">
+      <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

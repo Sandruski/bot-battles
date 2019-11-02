@@ -1,8 +1,6 @@
 #ifndef __SINGLETON_CLIENT_COMPONENT_H__
 #define __SINGLETON_CLIENT_COMPONENT_H__
 
-#include "ComponentDefs.h"
-
 namespace sand {
 
 class SocketAddress;

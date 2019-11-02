@@ -4,14 +4,15 @@
 #include "MemoryStream.h"
 #include "NetComponent.h"
 #include "ReplicationManager.h"
-#include "Vec2.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-struct TransformComponent : public NetComponent {
+struct TransformComponent : public NetComponentWrite {
+
     enum class MemberType {
         POSITION = 1 << 0,
+        ROTATION = 1 << 1,
 
         COUNT,
         INVALID
@@ -22,30 +23,24 @@ struct TransformComponent : public NetComponent {
 
     TransformComponent()
         : m_position()
+        , m_rotation(0.0f)
     {
     }
     ~TransformComponent() { }
 
-    void Write(OutputMemoryStream& stream, U32 members) const override
+    void Write(OutputMemoryStream& stream, U16 members) const override
     {
-        // Serialize
-        //stream.Write(members, GetRequiredBits<static_cast<U32>(MemberType::COUNT)>::value);
+        stream.Write(members, GetRequiredBits<static_cast<U32>(MemberType::COUNT)>::value);
         if (members & static_cast<U32>(MemberType::POSITION)) {
-            stream.WritePosition(m_position);
+            stream.Write(m_position);
         }
-    }
-
-    void Read(InputMemoryStream& stream) override
-    {
-        // DeSerialize
-        U32 members = 0;
-        //stream.Read(members, GetRequiredBits<static_cast<U32>(MemberType::COUNT)>::value);
-        if (members & static_cast<U32>(MemberType::POSITION)) {
-            stream.ReadPosition(m_position);
+        if (members & static_cast<U32>(MemberType::ROTATION)) {
+            stream.Write(m_rotation);
         }
     }
 
     Vec2 m_position;
+    float m_rotation;
 };
 }
 

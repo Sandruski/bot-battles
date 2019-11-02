@@ -8,17 +8,15 @@
 
 #define NETLOG(format, ...) sand::NetLog(__FILE__, __LINE__, __FUNCTION__, format, __VA_ARGS__)
 
-namespace sand
-{
-	enum class LogTypes
-	{
-		ILOG,
-		WLOG,
-		ELOG
-	};
+namespace sand {
+enum class LogTypes {
+    ILOG,
+    WLOG,
+    ELOG
+};
 
-	void Log(const char* file, int line, const char* function, LogTypes type, const char* format, ...);
-	void NetLog(const char* file, int line, const char* function, const char* format, ...);
+void Log(const char* file, int line, const char* function, LogTypes type, const char* format, ...);
+void NetLog(const char* file, int line, const char* function, const char* format, ...);
 }
 
 #endif

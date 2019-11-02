@@ -1,8 +1,6 @@
 #ifndef __SINGLETON_SERVER_COMPONENT_H__
 #define __SINGLETON_SERVER_COMPONENT_H__
 
-#include "ComponentDefs.h"
-
 namespace sand {
 
 class UDPSocket;
@@ -11,6 +9,7 @@ class SocketAddress;
 
 //----------------------------------------------------------------------------------------------------
 struct SingletonServerComponent {
+
     SingletonServerComponent()
         : m_socket(nullptr)
         , m_socketAddress(nullptr)
