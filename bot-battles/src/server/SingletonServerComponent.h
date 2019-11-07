@@ -3,7 +3,6 @@
 
 #include "EntityDefs.h"
 #include "NetDefs.h"
-#include "SocketAddress.h"
 
 namespace sand {
 
@@ -20,12 +19,12 @@ struct SingletonServerComponent {
     PlayerID AddPlayer(const SocketAddress& socketAddress, const char* name);
     bool RemovePlayer(const SocketAddress& socketAddress);
 
+    PlayerID GetPlayerID(const SocketAddress& socketAddress) const;
     std::shared_ptr<ClientProxy> GetClientProxy(const SocketAddress& socketAddress) const;
 
     std::shared_ptr<UDPSocket> m_socket;
     std::shared_ptr<SocketAddress> m_socketAddress;
 
-    std::unordered_map<SocketAddress, PlayerID> m_socketAddressToPlayerID;
     std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>> m_playerIDToClientProxy;
     std::queue<Entity> m_availablePlayerIDs;
 };

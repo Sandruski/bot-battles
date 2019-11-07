@@ -11,6 +11,7 @@ public:
     static std::shared_ptr<UDPSocket> CreateIPv4();
 
 public:
+    UDPSocket();
     UDPSocket(SOCKET socket);
     ~UDPSocket();
 

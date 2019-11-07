@@ -11,7 +11,7 @@ namespace sand {
 class ClientProxy {
 public:
     ClientProxy();
-    ClientProxy(const char* name);
+    ClientProxy(const SocketAddress& socketAddress, const char* name);
     ~ClientProxy();
 
     void UpdateLastPacketTime();
@@ -21,8 +21,14 @@ public:
         return m_unprocessedMoves;
     }
 
+    const SocketAddress& GetSocketAddress()
+    {
+        return m_socketAddress;
+    }
+
 private:
     ServerReplicationManager m_replicationManager;
+    SocketAddress m_socketAddress;
     MoveList m_unprocessedMoves;
     std::string m_name;
     F32 m_lastPacketTime;

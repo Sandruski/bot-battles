@@ -17,7 +17,18 @@ public:
     SocketAddress(const sockaddr& sockaddr);
     ~SocketAddress();
 
+    const sockaddr_in* GetSockAddrIn() const;
     const char* GetName() const;
+
+    bool operator==(const SocketAddress& other) const
+    {
+        const sockaddr_in* sockAddrIn = GetSockAddrIn();
+        const sockaddr_in* otherSockAddrIn = other.GetSockAddrIn();
+
+        return (sockAddrIn->sin_family == otherSockAddrIn->sin_family
+            && sockAddrIn->sin_addr.S_un.S_addr == otherSockAddrIn->sin_addr.S_un.S_addr
+            && sockAddrIn->sin_port == otherSockAddrIn->sin_port);
+    }
 
 private:
     void CreateName();

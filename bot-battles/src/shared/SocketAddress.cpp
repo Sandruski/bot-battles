@@ -80,6 +80,12 @@ SocketAddress::~SocketAddress()
 }
 
 //----------------------------------------------------------------------------------------------------
+const sockaddr_in* SocketAddress::GetSockAddrIn() const
+{
+    return reinterpret_cast<const sockaddr_in*>(&m_sockAddr);
+}
+
+//----------------------------------------------------------------------------------------------------
 const char* SocketAddress::GetName() const
 {
     return m_name.c_str();
