@@ -8,7 +8,7 @@
 
 #include "LinkingContext.h"
 
-#include "MovementSystem.h"
+#include "NavigationSystem.h"
 #include "ServerSystem.h"
 
 #include "SingletonServerComponent.h"
@@ -51,7 +51,7 @@ bool Game::Init()
     if (!ret) {
         return false;
     }
-    ret = m_systemManager->RegisterSystem<MovementSystem>();
+    ret = m_systemManager->RegisterSystem<NavigationSystem>();
     if (!ret) {
         return false;
     }
@@ -108,47 +108,45 @@ bool Game::Update()
 {
     m_timer.Start();
 
-    F32 dt = static_cast<F32>(m_dt);
-
     // PreUpdate
-    bool ret = m_entityManager->PreUpdate(dt);
+    bool ret = m_entityManager->PreUpdate();
     if (!ret) {
         return false;
     }
 
-    m_componentManager->PreUpdate(dt);
+    m_componentManager->PreUpdate();
     if (!ret) {
         return false;
     }
 
-    m_systemManager->PreUpdate(dt);
+    m_systemManager->PreUpdate();
     if (!ret) {
         return false;
     }
 
-    m_fsm->PreUpdate(dt);
+    m_fsm->PreUpdate();
     if (!ret) {
         return false;
     }
 
     // Update
-    ret = m_systemManager->Update(dt);
+    ret = m_systemManager->Update();
     if (!ret) {
         return false;
     }
 
-    m_fsm->Update(dt);
+    m_fsm->Update();
     if (!ret) {
         return false;
     }
 
     // PostUpdate
-    ret = m_systemManager->PostUpdate(dt);
+    ret = m_systemManager->PostUpdate();
     if (!ret) {
         return false;
     }
 
-    m_fsm->PostUpdate(dt);
+    m_fsm->PostUpdate();
     if (!ret) {
         return false;
     }

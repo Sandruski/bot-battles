@@ -26,9 +26,11 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Log.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Memory.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MemoryStream.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MessageTypes.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)NetComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)NetDefs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Observer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ReplicationCommand.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SocketAddress.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Subject.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)System.h" />
@@ -46,10 +48,10 @@
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)ComponentManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)EntityManager.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Events.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)InputState.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MemoryStream.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ReplicationCommand.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SocketAddress.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Subject.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)System.cpp" />

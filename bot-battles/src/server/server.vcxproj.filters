@@ -43,6 +43,9 @@
     <Filter Include="Source Files\Resources">
       <UniqueIdentifier>{a701c84d-abe2-4bd6-969b-0b57f042c3ec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Components">
+      <UniqueIdentifier>{5e9170cf-927a-4d30-8b11-6befe9af2302}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -58,9 +61,6 @@
       <Filter>Source Files\States</Filter>
     </ClCompile>
     <ClCompile Include="LinkingContext.cpp">
-      <Filter>Source Files\Networking</Filter>
-    </ClCompile>
-    <ClCompile Include="ReplicationManager.cpp">
       <Filter>Source Files\Networking</Filter>
     </ClCompile>
     <ClCompile Include="Resource.cpp">
@@ -81,10 +81,16 @@
     <ClCompile Include="MoveList.cpp">
       <Filter>Source Files\Networking</Filter>
     </ClCompile>
-    <ClCompile Include="MovementSystem.cpp">
+    <ClCompile Include="ClientProxy.cpp">
+      <Filter>Source Files\Networking</Filter>
+    </ClCompile>
+    <ClCompile Include="NavigationSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="ClientProxy.cpp">
+    <ClCompile Include="SingletonServerComponent.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerReplicationManager.cpp">
       <Filter>Source Files\Networking</Filter>
     </ClCompile>
   </ItemGroup>
@@ -109,9 +115,6 @@
     </ClInclude>
     <ClInclude Include="ResourceManager.h">
       <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="ReplicationManager.h">
-      <Filter>Header Files\Networking</Filter>
     </ClInclude>
     <ClInclude Include="SDLDefs.h">
       <Filter>Header Files\Utils</Filter>
@@ -143,11 +146,14 @@
     <ClInclude Include="MoveList.h">
       <Filter>Header Files\Networking</Filter>
     </ClInclude>
-    <ClInclude Include="MovementSystem.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
     <ClInclude Include="TransformComponent.h">
       <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="NavigationSystem.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerReplicationManager.h">
+      <Filter>Header Files\Networking</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

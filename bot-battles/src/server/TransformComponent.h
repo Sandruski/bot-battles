@@ -3,19 +3,20 @@
 
 #include "MemoryStream.h"
 #include "NetComponent.h"
-#include "ReplicationManager.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 struct TransformComponent : public NetComponentWrite {
 
-    enum class MemberType {
+    enum class MemberType : U16 {
         POSITION = 1 << 0,
         ROTATION = 1 << 1,
 
         COUNT,
-        INVALID
+        INVALID,
+
+        ALL = POSITION | ROTATION
     };
 
     static ComponentType GetType() { return ComponentType::TRANSFORM; }
@@ -28,14 +29,14 @@ struct TransformComponent : public NetComponentWrite {
     }
     ~TransformComponent() { }
 
-    void Write(OutputMemoryStream& stream, U16 members) const override
+    void Write(OutputMemoryStream& outputStream, U16 memberFlags) const override
     {
-        stream.Write(members, GetRequiredBits<static_cast<U32>(MemberType::COUNT)>::value);
-        if (members & static_cast<U32>(MemberType::POSITION)) {
-            stream.Write(m_position);
+        outputStream.Write(memberFlags, GetRequiredBits<static_cast<U16>(MemberType::COUNT)>::value);
+        if (memberFlags & static_cast<U16>(MemberType::POSITION)) {
+            outputStream.Write(m_position);
         }
-        if (members & static_cast<U32>(MemberType::ROTATION)) {
-            stream.Write(m_rotation);
+        if (memberFlags & static_cast<U16>(MemberType::ROTATION)) {
+            outputStream.Write(m_rotation);
         }
     }
 

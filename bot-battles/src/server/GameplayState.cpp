@@ -42,19 +42,19 @@ bool GameplayState::Enter()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool GameplayState::PreUpdate(F32 /*dt*/)
+bool GameplayState::PreUpdate()
 {
     return true;
 }
 
 //----------------------------------------------------------------------------------------------------
-bool GameplayState::Update(F32 /*dt*/)
+bool GameplayState::Update()
 {
     return true;
 }
 
 //----------------------------------------------------------------------------------------------------
-bool GameplayState::PostUpdate(F32 /*dt*/)
+bool GameplayState::PostUpdate()
 {
     return true;
 }

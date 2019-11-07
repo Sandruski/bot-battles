@@ -36,6 +36,7 @@
 // Utils
 #include "Log.h"
 #include "Memory.h"
+#include "Time.h"
 #include "Timer.h"
 #include "Utils.h"
 

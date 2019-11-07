@@ -4,7 +4,7 @@
 namespace sand {
 
 #ifdef _CLIENT
-enum class SystemType {
+enum class SystemType : U16 {
     CLIENT,
 
     WINDOW,
@@ -15,10 +15,10 @@ enum class SystemType {
     INVALID
 };
 #elif _SERVER
-enum class SystemType {
+enum class SystemType : U16 {
     SERVER,
 
-    MOVEMENT,
+    NAVIGATION,
 
     COUNT,
     INVALID

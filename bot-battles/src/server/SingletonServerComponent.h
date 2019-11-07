@@ -4,26 +4,26 @@
 namespace sand {
 
 class UDPSocket;
-class ClientProxy;
 class SocketAddress;
+class ClientProxy;
 
 //----------------------------------------------------------------------------------------------------
 struct SingletonServerComponent {
 
-    SingletonServerComponent()
-        : m_socket(nullptr)
-        , m_socketAddress(nullptr)
-        , m_addressToClientProxy()
-        , m_playerIDToClientProxy()
-    {
-    }
-    ~SingletonServerComponent() { }
+    SingletonServerComponent();
+    ~SingletonServerComponent();
+
+    PlayerID AddPlayer(const SocketAddress& socketAddress, const char* name);
+    bool RemovePlayer(const SocketAddress& socketAddress);
+
+    std::shared_ptr<ClientProxy> GetClientProxy(const SocketAddress& socketAddress) const;
 
     std::shared_ptr<UDPSocket> m_socket;
     std::shared_ptr<SocketAddress> m_socketAddress;
 
-    std::unordered_map<SocketAddress, std::shared_ptr<ClientProxy>> m_addressToClientProxy;
-    std::unordered_map<U32, std::shared_ptr<ClientProxy>> m_playerIDToClientProxy;
+    std::unordered_map<SocketAddress, PlayerID> m_socketAddressToPlayerID;
+    std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>> m_playerIDToClientProxy;
+    std::queue<Entity> m_availablePlayerIDs;
 };
 }
 

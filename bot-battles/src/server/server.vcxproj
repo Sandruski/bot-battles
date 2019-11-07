@@ -332,7 +332,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Move.cpp" />
     <ClCompile Include="MoveList.cpp" />
-    <ClCompile Include="MovementSystem.cpp" />
+    <ClCompile Include="NavigationSystem.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugServer|Win32'">Create</PrecompiledHeader>
@@ -343,10 +343,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugClient|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="ReplicationManager.cpp" />
+    <ClCompile Include="ServerReplicationManager.cpp" />
     <ClCompile Include="Resource.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="ServerSystem.cpp" />
+    <ClCompile Include="SingletonServerComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientProxy.h" />
@@ -356,9 +357,9 @@
     <ClInclude Include="LinkingContext.h" />
     <ClInclude Include="Move.h" />
     <ClInclude Include="MoveList.h" />
-    <ClInclude Include="MovementSystem.h" />
+    <ClInclude Include="NavigationSystem.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="ReplicationManager.h" />
+    <ClInclude Include="ServerReplicationManager.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceDefs.h" />
     <ClInclude Include="ResourceManager.h" />

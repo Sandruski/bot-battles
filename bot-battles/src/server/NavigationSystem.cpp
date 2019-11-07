@@ -1,4 +1,4 @@
-#include "MovementSystem.h"
+#include "NavigationSystem.h"
 
 #include "ClientProxy.h"
 #include "Game.h"
@@ -9,23 +9,23 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-MovementSystem::MovementSystem()
+NavigationSystem::NavigationSystem()
 {
 }
 
 //----------------------------------------------------------------------------------------------------
-MovementSystem::~MovementSystem()
+NavigationSystem::~NavigationSystem()
 {
 }
 
 //----------------------------------------------------------------------------------------------------
-bool MovementSystem::StartUp()
+bool NavigationSystem::StartUp()
 {
     return false;
 }
 
 //----------------------------------------------------------------------------------------------------
-bool MovementSystem::Update()
+bool NavigationSystem::Update()
 {
     std::shared_ptr<SingletonServerComponent> server = g_game->GetSingletonServerComponent();
 
@@ -45,18 +45,18 @@ bool MovementSystem::Update()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool MovementSystem::ShutDown()
+bool NavigationSystem::ShutDown()
 {
     return false;
 }
 
 //----------------------------------------------------------------------------------------------------
-void MovementSystem::ProcessInput(F32 /*dt*/, const InputState& /*inputState*/) const
+void NavigationSystem::ProcessInput(F32 /*dt*/, const InputState& /*inputState*/) const
 {
 }
 
 //----------------------------------------------------------------------------------------------------
-void MovementSystem::UpdateMovement(F32 /*dt*/) const
+void NavigationSystem::UpdateMovement(F32 /*dt*/) const
 {
 }
 }

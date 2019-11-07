@@ -1,5 +1,5 @@
-#ifndef __REPLICATION_MANAGER_H__
-#define __REPLICATION_MANAGER_H__
+#ifndef __REPLICATION_COMMAND_H__
+#define __REPLICATION_COMMAND_H__
 
 #include "EntityDefs.h"
 #include "NetDefs.h"
@@ -26,7 +26,7 @@ struct GetRequiredBits {
 
 // World state delta
 // Object state delta
-enum class ReplicationAction {
+enum class ReplicationAction : U8 {
     CREATE_ENTITY,
     UPDATE_ENTITY,
     REMOVE_ENTITY,
@@ -39,23 +39,28 @@ class OutputMemoryStream;
 class InputMemoryStream;
 
 //----------------------------------------------------------------------------------------------------
-class ReplicationHeader {
+class ReplicationCommand {
 public:
-    ReplicationHeader();
-    ReplicationHeader(ReplicationAction replicationAction, NetworkID networkID);
-    ~ReplicationHeader();
+    ReplicationCommand();
+    ReplicationCommand(ReplicationAction replicationAction);
+    ~ReplicationCommand();
 
     void Write(OutputMemoryStream& stream);
     void Read(InputMemoryStream& stream);
 
+    void SetRemoveEntityAction()
+    {
+        m_replicationAction = ReplicationAction::REMOVE_ENTITY;
+    }
+
+    bool IsDirty() const
+    {
+        return m_replicationAction == ReplicationAction::REMOVE_ENTITY;
+    }
+
     ReplicationAction GetAction() const
     {
         return m_replicationAction;
-    }
-
-    NetworkID GetNetworkID() const
-    {
-        return m_networkID;
     }
 
     U32 GetBitCount() const
@@ -65,24 +70,7 @@ public:
 
 private:
     ReplicationAction m_replicationAction;
-    NetworkID m_networkID;
     U32 m_bitCount; // TODO: total size of the data
-};
-
-//----------------------------------------------------------------------------------------------------
-class ReplicationManager {
-public:
-    ReplicationManager();
-    ~ReplicationManager();
-
-    void CreateEntityAction(OutputMemoryStream& stream, Entity entity) const;
-    void UpdateEntityAction(OutputMemoryStream& stream, Entity entity) const;
-    void RemoveEntityAction(OutputMemoryStream& stream, Entity entity) const;
-
-    void ProcessAction(InputMemoryStream& stream) const;
-    void CreateEntity(InputMemoryStream& stream, const ReplicationHeader& replicationHeader) const;
-    void UpdateEntity(InputMemoryStream& stream, const ReplicationHeader& replicationHeader) const;
-    void RemoveEntity(InputMemoryStream& stream, const ReplicationHeader& replicationHeader) const;
 };
 }
 

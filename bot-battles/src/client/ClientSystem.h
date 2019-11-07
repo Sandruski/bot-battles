@@ -13,17 +13,6 @@ class InputMemoryStream;
 //----------------------------------------------------------------------------------------------------
 class ClientSystem : public System {
 public:
-    enum class PacketType {
-        HELLO,
-        WELCOME,
-        INPUT,
-        STATE,
-
-        COUNT,
-        INVALID
-    };
-
-public:
     static SystemType GetType()
     {
         return SystemType::CLIENT;
@@ -47,7 +36,7 @@ private:
     void ReceiveWelcomePacket(SingletonClientComponent& client, InputMemoryStream& stream) const;
     void ReceiveStatePacket(SingletonClientComponent& client, InputMemoryStream& stream) const;
 
-    void SendPacket(const SingletonClientComponent& client, const OutputMemoryStream& stream) const;
+    bool SendPacket(const SingletonClientComponent& client, const OutputMemoryStream& stream) const;
     void ReceivePacket(SingletonClientComponent& client, InputMemoryStream& stream) const;
 };
 }

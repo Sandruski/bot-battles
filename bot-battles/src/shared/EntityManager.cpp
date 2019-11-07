@@ -85,7 +85,7 @@ void EntityManager::OnNotify(const Event& event)
 
     case EventType::COMPONENT_ADDED: {
         U32 signatureIndex = m_entitiesToSignatures[event.component.entity];
-        m_signatures[signatureIndex].set(static_cast<std::size_t>(event.component.componentType));
+        m_signatures[signatureIndex] |= 1 << static_cast<std::size_t>(event.component.componentType);
 
         Event newEvent;
         newEvent.eventType = EventType::ENTITY_SIGNATURE_CHANGED;
@@ -98,7 +98,7 @@ void EntityManager::OnNotify(const Event& event)
 
     case EventType::COMPONENT_REMOVED: {
         U32 signatureIndex = m_entitiesToSignatures[event.component.entity];
-        m_signatures[signatureIndex].reset(static_cast<std::size_t>(event.component.componentType));
+        m_signatures[signatureIndex] &= ~(1 << static_cast<std::size_t>(event.component.componentType));
 
         Event newEvent;
         newEvent.eventType = EventType::ENTITY_SIGNATURE_CHANGED;

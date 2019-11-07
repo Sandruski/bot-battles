@@ -3,138 +3,126 @@
 #include "State.h"
 #include "StateDefs.h"
 
+namespace sand {
 
-namespace sand
+//----------------------------------------------------------------------------------------------------
+FSM::FSM()
+    : m_states()
+    , m_availableStates()
+    , m_currentState(nullptr)
 {
+    m_states.reserve(MAX_STATES);
 
-	//----------------------------------------------------------------------------------------------------
-	FSM::FSM() :
-		m_states(),
-		m_availableStates(),
-		m_currentState(nullptr)
-	{
-		m_states.reserve(MAX_STATES);
+    for (U32 i = 0; i < MAX_STATES; ++i) {
+        m_availableStates.push(i);
+    }
+}
 
-		for (U32 i = 0; i < MAX_STATES; ++i) {
-			m_availableStates.push(i);
-		}
-	}
+//----------------------------------------------------------------------------------------------------
+FSM::~FSM()
+{
+}
 
-	//----------------------------------------------------------------------------------------------------
-	FSM::~FSM()
-	{
-	}
+//----------------------------------------------------------------------------------------------------
+bool FSM::ShutDown()
+{
+    m_states.clear();
 
-	//----------------------------------------------------------------------------------------------------
-	bool FSM::ShutDown()
-	{
-		m_states.clear();
+    return true;
+}
 
-		return true;
-	}
+//----------------------------------------------------------------------------------------------------
+bool FSM::PreUpdate()
+{
+    if (m_currentState != nullptr) {
+        return m_currentState->PreUpdate();
+    }
 
-	//----------------------------------------------------------------------------------------------------
-	bool FSM::PreUpdate(F32 dt)
-	{
-		if (m_currentState != nullptr)
-		{
-			return m_currentState->PreUpdate(dt); // TODO dt
-		}
+    return true;
+}
 
-		return true;
-	}
+//----------------------------------------------------------------------------------------------------
+bool FSM::Update()
+{
+    if (m_currentState != nullptr) {
+        return m_currentState->Update();
+    }
 
-	//----------------------------------------------------------------------------------------------------
-	bool FSM::Update(F32 dt)
-	{
-		if (m_currentState != nullptr)
-		{
-			return m_currentState->Update(dt); // TODO dt
-		}
+    return true;
+}
 
-		return true;
-	}
+//----------------------------------------------------------------------------------------------------
+bool FSM::PostUpdate()
+{
+    if (m_currentState != nullptr) {
+        return m_currentState->PostUpdate();
+    }
 
-	//----------------------------------------------------------------------------------------------------
-	bool FSM::PostUpdate(F32 dt)
-	{
-		if (m_currentState != nullptr)
-		{
-			return m_currentState->PostUpdate(dt); // TODO dt
-		}
+    return true;
+}
 
-		return true;
-	}
+//----------------------------------------------------------------------------------------------------
+bool FSM::Render()
+{
+    if (m_currentState != nullptr) {
+        return m_currentState->Render();
+    }
 
-	//----------------------------------------------------------------------------------------------------
-	bool FSM::Render()
-	{
-		if (m_currentState != nullptr)
-		{
-			return m_currentState->Render();
-		}
+    return true;
+}
 
-		return true;
-	}
+//----------------------------------------------------------------------------------------------------
+bool FSM::RemoveState(U32 id)
+{
+    auto it = m_states.find(id);
+    if (it == m_states.end()) {
+        ELOG("State could not be removed");
+        return false;
+    }
 
-	//----------------------------------------------------------------------------------------------------
-	bool FSM::RemoveState(U32 id)
-	{
-		auto it = m_states.find(id);
-		if (it == m_states.end())
-		{
-			ELOG("State could not be removed");
-			return false;
-		}
+    if ((*it).second == m_currentState) {
+        m_currentState->Exit();
+    }
 
-		if ((*it).second == m_currentState)
-		{
-			m_currentState->Exit();
-		}
+    (*it).second->Destroy();
 
-		(*it).second->Destroy();
+    m_states.erase(id);
 
-		m_states.erase(id);
+    return true;
+}
 
-		return true;
-	}
+//----------------------------------------------------------------------------------------------------
+void FSM::RemoveAllStates()
+{
+    if (m_currentState != nullptr) {
+        m_currentState->Exit();
+    }
 
-	//----------------------------------------------------------------------------------------------------
-	void FSM::RemoveAllStates()
-	{
-		if (m_currentState != nullptr)
-		{
-			m_currentState->Exit();
-		}
+    for (auto& state : m_states) {
+        state.second->Destroy();
+    }
 
-		for (auto& state : m_states)
-		{
-			state.second->Destroy();
-		}
+    m_states.clear();
+}
 
-		m_states.clear();
-	}
+//----------------------------------------------------------------------------------------------------
+bool FSM::ChangeState(U32 id)
+{
+    auto it = m_states.find(id);
+    if (it == m_states.end()) {
+        ELOG("State could not be changed");
+        return false;
+    }
 
-	//----------------------------------------------------------------------------------------------------
-	bool FSM::ChangeState(U32 id)
-	{
-		auto it = m_states.find(id);
-		if (it == m_states.end())
-		{
-			ELOG("State could not be changed");
-			return false;
-		}
+    if (m_currentState != nullptr) {
+        m_currentState->Exit();
+    }
 
-		if (m_currentState != nullptr)
-		{
-			m_currentState->Exit();
-		}
+    m_currentState = (*it).second;
+    m_currentState->Enter();
 
-		m_currentState = (*it).second;
-		m_currentState->Enter();
+    return true;
 
-		return true;
-
-		// TODO: send event ("the state has been changed to blablabla")
-	}
+    // TODO: send event ("the state has been changed to blablabla")
+}
 }

@@ -34,8 +34,8 @@ void ReplicationHeader::Write(OutputMemoryStream& stream)
     switch (m_replicationAction) {
     case ReplicationAction::CREATE_ENTITY:
     case ReplicationAction::UPDATE_ENTITY: {
-        Entity entity = g_game->GetLinkingContext().GetEntity(m_networkID);
-        Signature signature = g_game->GetEntityManager().GetSignature(entity);
+        //Entity entity = g_game->GetLinkingContext().GetEntity(m_networkID);
+        //Signature signature = g_game->GetEntityManager().GetSignature(entity);
         //stream.Write(signature); // TODO WRITE WELL THE SIGNATURE
         break;
     }
@@ -55,8 +55,8 @@ void ReplicationHeader::Read(InputMemoryStream& stream)
     switch (m_replicationAction) {
     case ReplicationAction::CREATE_ENTITY:
     case ReplicationAction::UPDATE_ENTITY: {
-        Entity entity = g_game->GetLinkingContext().GetEntity(m_networkID);
-        Signature signature = g_game->GetEntityManager().GetSignature(entity);
+        //Entity entity = g_game->GetLinkingContext().GetEntity(m_networkID);
+        //Signature signature = g_game->GetEntityManager().GetSignature(entity);
         //stream.Read(signature); // TODO READ WELL THE SIGNATURE
         break;
     }

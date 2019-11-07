@@ -1,5 +1,5 @@
-#ifndef __MOVEMENT_SYSTEM_H__
-#define __MOVEMENT_SYSTEM_H__
+#ifndef __NAVIGATION_SYSTEM_H__
+#define __NAVIGATION_SYSTEM_H__
 
 #include "ComponentDefs.h"
 #include "System.h"
@@ -9,16 +9,16 @@ namespace sand {
 class InputState;
 
 //----------------------------------------------------------------------------------------------------
-class MovementSystem : public System {
+class NavigationSystem : public System {
 public:
     static SystemType GetType()
     {
-        return SystemType::MOVEMENT;
+        return SystemType::NAVIGATION;
     }
 
 public:
-    MovementSystem();
-    ~MovementSystem() override;
+    NavigationSystem();
+    ~NavigationSystem() override;
 
     bool StartUp() override;
     bool Update() override;

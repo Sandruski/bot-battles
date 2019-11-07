@@ -8,12 +8,12 @@ class InputMemoryStream;
 
 //----------------------------------------------------------------------------------------------------
 struct NetComponentWrite {
-    virtual void Write(OutputMemoryStream& stream, U16 members) const = 0;
+    virtual void Write(OutputMemoryStream& outputStream, U16 memberFlags) const = 0;
 };
 
 //----------------------------------------------------------------------------------------------------
 struct NetComponentRead {
-    virtual void Read(InputMemoryStream& stream) = 0;
+    virtual void Read(InputMemoryStream& inputStream) = 0;
 };
 }
 

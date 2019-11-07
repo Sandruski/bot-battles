@@ -135,6 +135,12 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)NetComponent.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)MessageTypes.h">
+      <Filter>Header Files\Networking</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)ReplicationCommand.h">
+      <Filter>Header Files\Networking</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)InputState.cpp">
@@ -182,8 +188,8 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)SystemManager.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Events.cpp">
-      <Filter>Source Files\Events</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)ReplicationCommand.cpp">
+      <Filter>Source Files\Networking</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

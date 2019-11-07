@@ -21,6 +21,10 @@ inline const Endianness PLATFORM_ENDIANNESS()
 }
 
 const U32 MAX_PACKET_SIZE = 1470;
+
+using PlayerID = U32;
+const U32 MAX_PLAYER_IDS = 1;
+const PlayerID INVALID_PLAYER_ID = MAX_PLAYER_IDS + 1;
 }
 
 #endif

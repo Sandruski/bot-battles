@@ -2,6 +2,7 @@
 
 #include "Game.h"
 #include "MemoryStream.h"
+#include "MessageTypes.h"
 #include "Move.h"
 #include "MoveList.h"
 #include "SingletonClientComponent.h"
@@ -95,7 +96,7 @@ void ClientSystem::UpdateSendInput(SingletonClientComponent& client) const
 void ClientSystem::SendHelloPacket(const SingletonClientComponent& client) const
 {
     OutputMemoryStream helloPacket;
-    helloPacket.Write(PacketType::HELLO);
+    helloPacket.Write(ClientMessageType::HELLO);
     helloPacket.Write(client.m_name);
 
     SendPacket(client, helloPacket);
@@ -110,7 +111,7 @@ void ClientSystem::SendInputPacket(const SingletonClientComponent& client) const
     }
 
     OutputMemoryStream inputPacket;
-    inputPacket.Write(PacketType::INPUT);
+    inputPacket.Write(ClientMessageType::INPUT);
 
     U32 moveCount = moves.GetMoveCount();
     U32 startIndex = moveCount > 3 ? moveCount - 3 - 1 : 0;
@@ -143,24 +144,25 @@ void ClientSystem::ReceiveStatePacket(SingletonClientComponent& /*client*/, Inpu
 }
 
 //----------------------------------------------------------------------------------------------------
-void ClientSystem::SendPacket(const SingletonClientComponent& client, const OutputMemoryStream& stream) const
+bool ClientSystem::SendPacket(const SingletonClientComponent& client, const OutputMemoryStream& stream) const
 {
     client.m_socket->SendTo(stream.GetPtr(), stream.GetByteLength(), *client.m_socketAddress);
-    // TODO: how do we handle the return of the SentTo method?
+
+    return true;
 }
 
 //----------------------------------------------------------------------------------------------------
 void ClientSystem::ReceivePacket(SingletonClientComponent& client, InputMemoryStream& stream) const
 {
-    PacketType type;
+    ServerMessageType type;
     stream.Read(type);
     switch (type) {
-    case PacketType::WELCOME: {
+    case ServerMessageType::WELCOME: {
         ReceiveWelcomePacket(client, stream);
         break;
     }
 
-    case PacketType::STATE: {
+    case ServerMessageType::STATE: {
         ReceiveStatePacket(client, stream);
         break;
     }

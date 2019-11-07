@@ -1,7 +1,9 @@
 #include "ServerSystem.h"
 
+#include "ClientProxy.h"
 #include "Game.h"
 #include "MemoryStream.h"
+#include "MessageTypes.h"
 #include "SingletonServerComponent.h"
 #include "SocketAddress.h"
 #include "UDPSocket.h"
@@ -41,6 +43,8 @@ bool ServerSystem::StartUp()
 bool ServerSystem::Update()
 {
     std::shared_ptr<SingletonServerComponent> server = g_game->GetSingletonServerComponent();
+
+    // TODO: call ReceivePacket
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -50,50 +54,75 @@ bool ServerSystem::ShutDown()
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerSystem::SendWelcomePacket(const SingletonServerComponent& /*server*/, const ClientProxy& /*clientProxy*/) const
+void ServerSystem::SendWelcomePacket(const SingletonServerComponent& server, PlayerID playerID, const SocketAddress& toSocketAddress) const
 {
-}
+    OutputMemoryStream welcomePacket;
+    welcomePacket.Write(ServerMessageType::WELCOME);
+    welcomePacket.Write(playerID);
 
-//----------------------------------------------------------------------------------------------------
-void ServerSystem::ReceivePacket(SingletonServerComponent& server, InputMemoryStream& stream, const SocketAddress& fromAddress) const
-{
-    auto it = server.m_addressToClientProxy.find(fromAddress);
-    if (it == server.m_addressToClientProxy.end()) {
-        ReceivePacketFromNewClient(server, stream, fromAddress);
-    } else {
-        ReceivePacketFromExistingClient(server, stream, fromAddress);
+    const bool result = SendPacket(server, welcomePacket, toSocketAddress);
+    if (result) {
+        ILOG("Welcome packet successfully sent to player %u", playerID);
     }
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerSystem::ReceivePacketFromNewClient(SingletonServerComponent& /*server*/, InputMemoryStream& stream, const SocketAddress& /*fromAddress*/) const
+bool ServerSystem::SendPacket(const SingletonServerComponent& server, const OutputMemoryStream& outputStream, const SocketAddress& toSocketAddress) const
 {
-    PacketType type;
-    stream.Read(type);
-    if (type != PacketType::HELLO) {
-        WLOG("Bad incoming packet from unknown client");
-        return;
-    }
+    server.m_socket->SendTo(outputStream.GetPtr(), outputStream.GetByteLength(), toSocketAddress);
 
-    std::string name;
-    stream.Read(name);
-    // TODO: create a client proxy
-
-    //SendWelcomePacket(server, )
+    return true;
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerSystem::ReceivePacketFromExistingClient(SingletonServerComponent& /*server*/, InputMemoryStream& stream, const SocketAddress& /*fromAddress*/) const
+void ServerSystem::ReceivePacket(SingletonServerComponent& server, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress) const
 {
-    PacketType type;
-    stream.Read(type);
-    /*
+    ClientMessageType type;
+    inputStream.Read(type);
     switch (type) {
+    case ClientMessageType::HELLO: {
+        ReceiveHelloPacket(server, inputStream, fromSocketAddress);
+        break;
+    }
+
+    case ClientMessageType::INPUT: {
+        ReceiveInputPacket(server, inputStream, fromSocketAddress);
+        break;
+    }
 
     default: {
+        WLOG("Unknown packet type received from socket address %s", fromSocketAddress.GetAsString());
         break;
     }
     }
-	*/
+
+    std::shared_ptr<ClientProxy> clientProxy = server.GetClientProxy(fromSocketAddress);
+    clientProxy->UpdateLastPacketTime();
+}
+
+//----------------------------------------------------------------------------------------------------
+void ServerSystem::ReceiveHelloPacket(SingletonServerComponent& server, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress) const
+{
+    std::string name;
+    inputStream.Read(name);
+
+    const PlayerID playerID = server.AddPlayer(fromSocketAddress, name.c_str());
+    if (playerID != INVALID_PLAYER_ID) {
+
+        ILOG("Player %s with the ID %u has joined the game", name.c_str(), playerID);
+
+        /* TODO (GAMEPLAY): add a new entity for this player. 
+		The entity MUST be linked to the playerID somewhere so it can be removed properly if necessary.
+        E.g. send an event, etc. */
+
+        // TODO: init the replication manager with everything we know about!
+    }
+
+    SendWelcomePacket(server, playerID, fromSocketAddress);
+}
+
+//----------------------------------------------------------------------------------------------------
+void ServerSystem::ReceiveInputPacket(SingletonServerComponent& server, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress) const
+{
 }
 }

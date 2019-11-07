@@ -17,8 +17,14 @@ public:
     SocketAddress(const sockaddr& sockaddr);
     ~SocketAddress();
 
+    const char* GetName() const;
+
+private:
+    void CreateName();
+
 private:
     sockaddr m_sockAddr;
+    std::string m_name;
 };
 }
 

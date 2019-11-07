@@ -4,7 +4,7 @@
 namespace sand {
 
 #ifdef _CLIENT
-enum class ComponentType {
+enum class ComponentType : U16 {
     TRANSFORM,
     SPRITE,
 
@@ -12,7 +12,7 @@ enum class ComponentType {
     INVALID
 };
 #elif _SERVER
-enum class ComponentType {
+enum class ComponentType : U16 {
     TRANSFORM,
 
     COUNT,

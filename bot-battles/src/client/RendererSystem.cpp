@@ -1,9 +1,9 @@
 #include "RendererSystem.h"
 
+#include "ComponentManager.h"
 #include "DebugDrawer.h"
 #include "Game.h"
 #include "ResourceTexture.h"
-#include "ComponentManager.h"
 #include "SpriteComponent.h"
 #include "TransformComponent.h"
 
@@ -17,8 +17,8 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 RendererSystem::RendererSystem()
 {
-	m_signature.set(static_cast<std::size_t>(ComponentType::SPRITE));
-	m_signature.set(static_cast<std::size_t>(ComponentType::TRANSFORM));
+    m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
+    m_signature |= 1 << static_cast<U16>(ComponentType::SPRITE);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -29,8 +29,8 @@ RendererSystem::~RendererSystem()
 //----------------------------------------------------------------------------------------------------
 bool RendererSystem::StartUp()
 {
-	std::shared_ptr<SingletonRendererComponent> renderer = g_game->GetSingletonRendererComponent();
-	std::shared_ptr<SingletonWindowComponent> window = g_game->GetSingletonWindowComponent();
+    std::shared_ptr<SingletonRendererComponent> renderer = g_game->GetSingletonRendererComponent();
+    std::shared_ptr<SingletonWindowComponent> window = g_game->GetSingletonWindowComponent();
 
     renderer->m_renderer = SDL_CreateRenderer(window->m_window, -1, SDL_RENDERER_ACCELERATED);
     if (renderer->m_renderer == nullptr) {
@@ -44,7 +44,7 @@ bool RendererSystem::StartUp()
 //----------------------------------------------------------------------------------------------------
 bool RendererSystem::Render()
 {
-	std::shared_ptr<SingletonRendererComponent> renderer = g_game->GetSingletonRendererComponent();
+    std::shared_ptr<SingletonRendererComponent> renderer = g_game->GetSingletonRendererComponent();
 
     BeginDraw(*renderer);
 
@@ -57,17 +57,17 @@ bool RendererSystem::Render()
 
     for (auto& entity : m_entities) {
 
-		std::shared_ptr<SpriteComponent> sprite = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
-		std::shared_ptr<TransformComponent> transform = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
+        std::shared_ptr<SpriteComponent> sprite = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
+        std::shared_ptr<TransformComponent> transform = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
 
-		SDL_Rect renderQuad = { 
-			static_cast<I32>(transform->m_position.x), 
-			static_cast<I32>(transform->m_position.y), 
-			static_cast<I32>(sprite->m_texture->GetWidth()),
-			static_cast<I32>(sprite->m_texture->GetHeight()) 
-		};
+        SDL_Rect renderQuad = {
+            static_cast<I32>(transform->m_position.x),
+            static_cast<I32>(transform->m_position.y),
+            static_cast<I32>(sprite->m_texture->GetWidth()),
+            static_cast<I32>(sprite->m_texture->GetHeight())
+        };
 
-		SDL_RenderCopy(renderer->m_renderer, sprite->m_texture->GetTexture(), nullptr, &renderQuad);
+        SDL_RenderCopy(renderer->m_renderer, sprite->m_texture->GetTexture(), nullptr, &renderQuad);
     }
 
     if (renderer->m_isDebugDraw) {

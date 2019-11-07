@@ -21,10 +21,6 @@ struct ComponentEvent {
 
 //----------------------------------------------------------------------------------------------------
 union Event {
-    Event();
-    Event(const Event& event);
-    ~Event();
-
     EventType eventType;
     EntityEvent entity;
     ComponentEvent component;

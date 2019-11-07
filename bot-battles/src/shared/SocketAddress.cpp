@@ -47,28 +47,54 @@ std::shared_ptr<SocketAddress> SocketAddress::CreateIPv4(const char* address, co
 //----------------------------------------------------------------------------------------------------
 SocketAddress::SocketAddress()
     : m_sockAddr()
+    , m_name()
 {
 }
 
 //----------------------------------------------------------------------------------------------------
 SocketAddress::SocketAddress(U32 address, U16 port)
     : m_sockAddr()
+    , m_name()
 {
     sockaddr_in* sockAddrIn = reinterpret_cast<sockaddr_in*>(&m_sockAddr);
     sockAddrIn->sin_family = AF_INET;
     sockAddrIn->sin_addr.S_un.S_addr = htonl(address);
     sockAddrIn->sin_port = htons(port);
+
+    CreateName();
 }
 
 //----------------------------------------------------------------------------------------------------
 SocketAddress::SocketAddress(const sockaddr& sockaddr)
     : m_sockAddr()
+    , m_name()
 {
     memcpy_s(&m_sockAddr, sizeof(m_sockAddr), &sockaddr, sizeof(sockaddr));
+
+    CreateName();
 }
 
 //----------------------------------------------------------------------------------------------------
 SocketAddress::~SocketAddress()
 {
+}
+
+//----------------------------------------------------------------------------------------------------
+const char* SocketAddress::GetName() const
+{
+    return m_name.c_str();
+}
+
+//----------------------------------------------------------------------------------------------------
+void SocketAddress::CreateName()
+{
+    sockaddr_in* sockAddrIn = reinterpret_cast<sockaddr_in*>(&m_sockAddr);
+    char addr[INET_ADDRSTRLEN];
+    inet_ntop(sockAddrIn->sin_family, &sockAddrIn->sin_addr, addr, INET_ADDRSTRLEN);
+    U16 port = htons(sockAddrIn->sin_port);
+
+    m_name += addr;
+    m_name += ":";
+    m_name += std::to_string(port);
 }
 }

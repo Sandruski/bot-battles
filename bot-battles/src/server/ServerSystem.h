@@ -21,16 +21,6 @@ public:
     }
 
 public:
-    enum class PacketType {
-        HELLO,
-        WELCOME,
-        STATE,
-
-        COUNT,
-        INVALID
-    };
-
-public:
     ServerSystem();
     ~ServerSystem() override;
 
@@ -39,12 +29,12 @@ public:
     bool ShutDown() override;
 
 private:
-    void SendWelcomePacket(const SingletonServerComponent& server, const ClientProxy& clientProxy) const;
+    void SendWelcomePacket(const SingletonServerComponent& server, PlayerID playerID, const SocketAddress& toSocketAddress) const;
+    bool SendPacket(const SingletonServerComponent& server, const OutputMemoryStream& outputStream, const SocketAddress& toSocketAddress) const;
 
-    //void SendPacket(const SingletonClientComponent& client, const OutputMemoryStream& stream) const;
-    void ReceivePacket(SingletonServerComponent& server, InputMemoryStream& stream, const SocketAddress& fromAddress) const;
-    void ReceivePacketFromNewClient(SingletonServerComponent& server, InputMemoryStream& stream, const SocketAddress& fromAddress) const;
-    void ReceivePacketFromExistingClient(SingletonServerComponent& server, InputMemoryStream& stream, const SocketAddress& fromAddress) const;
+    void ReceivePacket(SingletonServerComponent& server, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress) const;
+    void ReceiveHelloPacket(SingletonServerComponent& server, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress) const;
+    void ReceiveInputPacket(SingletonServerComponent& server, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress) const;
 };
 }
 
