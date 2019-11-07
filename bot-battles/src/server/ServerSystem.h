@@ -2,6 +2,7 @@
 #define __SERVER_SYSTEM_H__
 
 #include "ComponentDefs.h"
+#include "NetDefs.h"
 #include "System.h"
 
 namespace sand {
@@ -30,6 +31,7 @@ public:
 
 private:
     void SendWelcomePacket(const SingletonServerComponent& server, PlayerID playerID, const SocketAddress& toSocketAddress) const;
+    void SendStatePacket(const SingletonServerComponent& server, PlayerID playerID, const SocketAddress& toSocketAddress) const;
     bool SendPacket(const SingletonServerComponent& server, const OutputMemoryStream& outputStream, const SocketAddress& toSocketAddress) const;
 
     void ReceivePacket(SingletonServerComponent& server, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress) const;

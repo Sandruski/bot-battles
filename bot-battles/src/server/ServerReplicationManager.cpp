@@ -44,7 +44,7 @@ bool ServerReplicationManager::RemoveEntityCommand(NetworkID networkID)
         return false;
     }
 
-    (*it).second.SetRemoveEntityAction();
+    (*it).second.m_replicationAction = ReplicationAction::REMOVE_ENTITY;
 
     return true;
 }
@@ -56,10 +56,11 @@ void ServerReplicationManager::ProcessCommands(OutputMemoryStream& outputStream)
 
         ReplicationCommand& replicationCommand = pair.second;
         if (replicationCommand.IsDirty()) {
+
             NetworkID networkID = pair.first;
             outputStream.Write(networkID);
 
-            ReplicationAction replicationAction = replicationCommand.GetAction();
+            ReplicationAction replicationAction = replicationCommand.m_replicationAction;
             outputStream.Write(replicationAction, GetRequiredBits<static_cast<U8>(ReplicationAction::COUNT)>::value);
 
             /*
@@ -70,14 +71,24 @@ void ServerReplicationManager::ProcessCommands(OutputMemoryStream& outputStream)
             switch (replicationAction) {
 
             case ReplicationAction::CREATE_ENTITY: {
+
+                WriteCreateEntityAction(outputStream, networkID);
+                replicationCommand.m_replicationAction = ReplicationAction::UPDATE_ENTITY;
+
                 break;
             }
 
             case ReplicationAction::UPDATE_ENTITY: {
+
+                WriteUpdateEntityAction(outputStream, networkID);
+
                 break;
             }
 
             case ReplicationAction::REMOVE_ENTITY: {
+
+                // TODO
+
                 break;
             }
 
@@ -87,6 +98,8 @@ void ServerReplicationManager::ProcessCommands(OutputMemoryStream& outputStream)
             }
         }
     }
+
+    // TODO
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -94,9 +107,9 @@ void ServerReplicationManager::WriteCreateEntityAction(OutputMemoryStream& outpu
 {
     Entity entity = g_game->GetLinkingContext().GetEntity(networkID);
     Signature signature = g_game->GetEntityManager().GetSignature(entity);
-    outputStream.Write(signature.to_ulong(), signature.size());
+    outputStream.Write(signature /*, GetRequiredBits<static_cast<U16>(MAX_COMPONENTS)>::value*/); // TODO: write max server components
 
-    if (signature.test(static_cast<std::size_t>(ComponentType::TRANSFORM))) {
+    if (signature & static_cast<std::size_t>(ComponentType::TRANSFORM)) {
 
         std::shared_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
         transformComponent->Write(outputStream, static_cast<U16>(TransformComponent::MemberType::ALL));
@@ -110,12 +123,14 @@ void ServerReplicationManager::WriteUpdateEntityAction(OutputMemoryStream& outpu
 {
     Entity entity = g_game->GetLinkingContext().GetEntity(networkID);
     Signature signature = g_game->GetEntityManager().GetSignature(entity);
-    outputStream.Write(signature.to_ulong(), signature.size());
+    outputStream.Write(signature /*, GetRequiredBits<static_cast<U16>(MAX_COMPONENTS)>::value*/); // TODO: write max server components
 
-    if (signature.test(static_cast<std::size_t>(ComponentType::TRANSFORM))) {
+    if (signature & static_cast<std::size_t>(ComponentType::TRANSFORM)) {
 
         std::shared_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
         transformComponent->Write(outputStream, static_cast<U16>(TransformComponent::MemberType::ALL));
     }
+
+    // TODO: Write total size of things written
 }
 }

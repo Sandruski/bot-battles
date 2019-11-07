@@ -44,7 +44,9 @@ bool ServerSystem::Update()
 {
     std::shared_ptr<SingletonServerComponent> server = g_game->GetSingletonServerComponent();
 
-    // TODO: call ReceivePacket
+    // TODO
+
+    return true;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -64,6 +66,16 @@ void ServerSystem::SendWelcomePacket(const SingletonServerComponent& server, Pla
     if (result) {
         ILOG("Welcome packet successfully sent to player %u", playerID);
     }
+}
+
+//----------------------------------------------------------------------------------------------------
+void ServerSystem::SendStatePacket(const SingletonServerComponent& /*server*/, PlayerID playerID, const SocketAddress& /*toSocketAddress*/) const
+{
+    OutputMemoryStream welcomePacket;
+    welcomePacket.Write(ServerMessageType::STATE);
+    welcomePacket.Write(playerID);
+
+    // TODO
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -91,7 +103,7 @@ void ServerSystem::ReceivePacket(SingletonServerComponent& server, InputMemorySt
     }
 
     default: {
-        WLOG("Unknown packet type received from socket address %s", fromSocketAddress.GetAsString());
+        WLOG("Unknown packet type received from socket address %s", fromSocketAddress.GetName());
         break;
     }
     }
@@ -115,14 +127,17 @@ void ServerSystem::ReceiveHelloPacket(SingletonServerComponent& server, InputMem
 		The entity MUST be linked to the playerID somewhere so it can be removed properly if necessary.
         E.g. send an event, etc. */
 
-        // TODO: init the replication manager with everything we know about!
+        /* TODO: init the replication manager with everything we know about!
+		Everything we know about is stored in a map here and contains all objects that clients have registered to the server.
+		*/
     }
 
     SendWelcomePacket(server, playerID, fromSocketAddress);
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerSystem::ReceiveInputPacket(SingletonServerComponent& server, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress) const
+void ServerSystem::ReceiveInputPacket(SingletonServerComponent& /*server*/, InputMemoryStream& /*inputStream*/, const SocketAddress& /*fromSocketAddress*/) const
 {
+    // Handle moves, etc.
 }
 }

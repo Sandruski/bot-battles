@@ -26,11 +26,12 @@ bool NavigationSystem::StartUp()
 
 //----------------------------------------------------------------------------------------------------
 bool NavigationSystem::Update()
-{
+{ /*
     std::shared_ptr<SingletonServerComponent> server = g_game->GetSingletonServerComponent();
 
     // TODO: loop all clients? = All entities with the component clientblablabla
     U32 playerID = 0; // TODO: where does this come from?
+
     std::shared_ptr<ClientProxy> clientProxy = server->m_playerIDToClientProxy.at(playerID);
     MoveList& unprocessedMoves = clientProxy->GetUnprocessedMoveList();
     std::deque<Move> moves = unprocessedMoves.GetMoves();
@@ -41,7 +42,9 @@ bool NavigationSystem::Update()
         UpdateMovement(dt);
     }
 
-    unprocessedMoves.Clear();
+    unprocessedMoves.Clear();*/
+
+    return true;
 }
 
 //----------------------------------------------------------------------------------------------------

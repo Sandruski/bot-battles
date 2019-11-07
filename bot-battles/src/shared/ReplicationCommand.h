@@ -26,7 +26,7 @@ struct GetRequiredBits {
 
 // World state delta
 // Object state delta
-enum class ReplicationAction : U8 {
+enum class ReplicationAction : U16 {
     CREATE_ENTITY,
     UPDATE_ENTITY,
     REMOVE_ENTITY,
@@ -48,19 +48,9 @@ public:
     void Write(OutputMemoryStream& stream);
     void Read(InputMemoryStream& stream);
 
-    void SetRemoveEntityAction()
-    {
-        m_replicationAction = ReplicationAction::REMOVE_ENTITY;
-    }
-
     bool IsDirty() const
     {
         return m_replicationAction == ReplicationAction::REMOVE_ENTITY;
-    }
-
-    ReplicationAction GetAction() const
-    {
-        return m_replicationAction;
     }
 
     U32 GetBitCount() const
@@ -68,7 +58,7 @@ public:
         return m_bitCount;
     }
 
-private:
+public:
     ReplicationAction m_replicationAction;
     U32 m_bitCount; // TODO: total size of the data
 };

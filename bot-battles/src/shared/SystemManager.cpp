@@ -107,8 +107,8 @@ void SystemManager::OnNotify(const Event& event)
 
         for (const auto& system : m_systems) {
 
-            const Signature systemSignature = system->GetSignature();
-            const Signature entitySignature = event.entity.signature;
+            Signature systemSignature = system->GetSignature();
+            Signature entitySignature = event.entity.signature;
             if (systemSignature == entitySignature) {
                 system->RegisterEntity(event.entity.entity);
             } else {

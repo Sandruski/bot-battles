@@ -1,6 +1,10 @@
 #ifndef __SINGLETON_SERVER_COMPONENT_H__
 #define __SINGLETON_SERVER_COMPONENT_H__
 
+#include "EntityDefs.h"
+#include "NetDefs.h"
+#include "SocketAddress.h"
+
 namespace sand {
 
 class UDPSocket;

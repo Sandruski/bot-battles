@@ -3,6 +3,7 @@
 
 #include "MemoryStream.h"
 #include "NetComponent.h"
+#include "ReplicationCommand.h"
 
 namespace sand {
 

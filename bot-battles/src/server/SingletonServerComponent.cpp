@@ -1,5 +1,6 @@
 #include "SingletonServerComponent.h"
 
+#include "ClientProxy.h"
 #include "SocketAddress.h"
 
 namespace sand {
@@ -27,8 +28,8 @@ PlayerID SingletonServerComponent::AddPlayer(const SocketAddress& socketAddress,
 {
     auto it = m_socketAddressToPlayerID.find(socketAddress);
     if (it != m_socketAddressToPlayerID.end()) {
-        WLOG("Player %s with the address %s is already registered and cannot be registered again", name, socketAddress.GetAsString());
-        return *it;
+        WLOG("Player %s with the address %s is already registered and cannot be registered again", name, socketAddress.GetName());
+        return it->second;
     }
 
     PlayerID playerID = m_availablePlayerIDs.front();
@@ -45,11 +46,11 @@ bool SingletonServerComponent::RemovePlayer(const SocketAddress& socketAddress)
 {
     auto it = m_socketAddressToPlayerID.find(socketAddress);
     if (it == m_socketAddressToPlayerID.end()) {
-        WLOG("Player with the address %s is not registered and cannot be removed", socketAddress.GetAsString());
+        WLOG("Player with the address %s is not registered and cannot be removed", socketAddress.GetName());
         return false;
     }
 
-    PlayerID playerID = *it;
+    PlayerID playerID = it->second;
     m_socketAddressToPlayerID.erase(socketAddress);
     m_playerIDToClientProxy.erase(playerID);
     m_availablePlayerIDs.push(playerID);
@@ -62,17 +63,17 @@ std::shared_ptr<ClientProxy> SingletonServerComponent::GetClientProxy(const Sock
 {
     auto playerIDIt = m_socketAddressToPlayerID.find(socketAddress);
     if (playerIDIt == m_socketAddressToPlayerID.end()) {
-        WLOG("The socket address %s has no associated playerID", socketAddress.GetAsString());
+        WLOG("The socket address %s has no associated playerID", socketAddress.GetName());
         return nullptr;
     }
 
-    PlayerID playerID = *playerIDIt;
+    PlayerID playerID = playerIDIt->second;
     auto clientProxyIt = m_playerIDToClientProxy.find(playerID);
-    if (clientProxyIt == m_socketAddressToPlayerID.end()) {
+    if (clientProxyIt == m_playerIDToClientProxy.end()) {
         WLOG("The playerID %u has no associated client proxy", playerID);
         return nullptr;
     }
 
-    return *clientProxyIt;
+    return clientProxyIt->second;
 }
 }
