@@ -12,15 +12,22 @@ public:
 
 public:
     UDPSocket();
-    UDPSocket(SOCKET socket);
+    UDPSocket(SOCKET socket, bool isNonBlockingMode);
     ~UDPSocket();
 
+    bool SetNonBlockingMode(bool isNonBlockingMode);
     bool Bind(const SocketAddress& socketAddress);
     bool SendTo(const void* data, int length, const SocketAddress& toSocketAddress);
-    bool ReceiveFrom(void* buffer, int length, SocketAddress& fromSocketAddress);
+    I32 ReceiveFrom(void* buffer, int length, SocketAddress& fromSocketAddress);
+
+    const SOCKET& GetSocket() const
+    {
+        return m_socket;
+    }
 
 private:
     SOCKET m_socket;
+    bool m_isNonBlockingMode;
 };
 }
 

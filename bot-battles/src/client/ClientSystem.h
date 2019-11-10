@@ -24,7 +24,6 @@ public:
 
     bool StartUp() override;
     bool Update() override;
-    bool ShutDown() override;
 
 private:
     void UpdateSendHelloPacket(SingletonClientComponent& client) const;
@@ -33,9 +32,13 @@ private:
     bool SendInputPacket(const SingletonClientComponent& client) const;
     bool SendPacket(const SingletonClientComponent& client, const OutputMemoryStream& outputStream) const;
 
+    void ReceivePackets(SingletonClientComponent& client) const;
     void ReceivePacket(SingletonClientComponent& client, InputMemoryStream& inputStream) const;
     void ReceiveWelcomePacket(SingletonClientComponent& client, InputMemoryStream& inputStream) const;
     void ReceiveStatePacket(SingletonClientComponent& client, InputMemoryStream& inputStream) const;
+
+    void OnConnectionReset(SingletonClientComponent& client) const;
+    void OnDisconnect(SingletonClientComponent& client) const;
 };
 }
 

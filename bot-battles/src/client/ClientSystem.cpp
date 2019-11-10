@@ -1,6 +1,7 @@
 #include "ClientSystem.h"
 
 #include "Game.h"
+#include "LinkingContext.h"
 #include "MemoryStream.h"
 #include "MessageTypes.h"
 #include "Move.h"
@@ -34,7 +35,10 @@ bool ClientSystem::StartUp()
 
     std::shared_ptr<SingletonClientComponent> client = g_game->GetSingletonClientComponent();
     client->m_socketAddress = SocketAddress::CreateIPv4("127.0.0.1", "9999");
+    assert(client->m_socketAddress != nullptr);
     client->m_socket = UDPSocket::CreateIPv4();
+    assert(client->m_socket != nullptr);
+    client->m_socket->SetNonBlockingMode(true);
 
     return true;
 }
@@ -44,6 +48,9 @@ bool ClientSystem::Update()
 {
     std::shared_ptr<SingletonClientComponent> client = g_game->GetSingletonClientComponent();
 
+    ReceivePackets(*client);
+    // TODO: ProcessQueuedPackets()
+
     const bool isConnected = client->IsConnected();
     if (isConnected) {
         UpdateSendHelloPacket(*client);
@@ -51,12 +58,6 @@ bool ClientSystem::Update()
         UpdateSendInputPacket(*client);
     }
 
-    return true;
-}
-
-//----------------------------------------------------------------------------------------------------
-bool ClientSystem::ShutDown()
-{
     return true;
 }
 
@@ -140,6 +141,36 @@ bool ClientSystem::SendPacket(const SingletonClientComponent& client, const Outp
 }
 
 //----------------------------------------------------------------------------------------------------
+void ClientSystem::ReceivePackets(SingletonClientComponent& client) const
+{
+    InputMemoryStream packet;
+    SocketAddress fromSocketAddress;
+
+    U32 receivedPacketCount = 0;
+
+    while (receivedPacketCount < MAX_PACKETS_PER_FRAME) {
+
+        I32 readByteCount = client.m_socket->ReceiveFrom(packet.GetPtr(), packet.GetByteCapacity(), fromSocketAddress);
+        if (readByteCount > 0) {
+
+            packet.ResetHead();
+            packet.SetCapacity(readByteCount);
+            ReceivePacket(client, packet);
+
+            ++receivedPacketCount;
+        } else {
+
+            int error = WSAGetLastError();
+            if (error == WSAECONNRESET) {
+                OnConnectionReset(client);
+            }
+
+            break;
+        }
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
 void ClientSystem::ReceivePacket(SingletonClientComponent& client, InputMemoryStream& inputStream) const
 {
     ServerMessageType type;
@@ -157,6 +188,7 @@ void ClientSystem::ReceivePacket(SingletonClientComponent& client, InputMemorySt
 
     default: {
         //WLOG("Unknown packet received from socket address %s", fromSocketAddress.GetName());
+        // Should receive packet contain fromSocketAddress as well?
         break;
     }
     }
@@ -185,5 +217,19 @@ void ClientSystem::ReceiveStatePacket(SingletonClientComponent& client, InputMem
     }
 
     // TODO
+}
+
+//----------------------------------------------------------------------------------------------------
+void ClientSystem::OnConnectionReset(SingletonClientComponent& client) const
+{
+    OnDisconnect(client);
+}
+
+//----------------------------------------------------------------------------------------------------
+void ClientSystem::OnDisconnect(SingletonClientComponent& client) const
+{
+    client.m_playerID = INVALID_PLAYER_ID;
+    // Clear linkingContext
+    // Clear networkGameObjects
 }
 }

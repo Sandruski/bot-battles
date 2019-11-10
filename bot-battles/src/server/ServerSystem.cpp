@@ -33,7 +33,10 @@ bool ServerSystem::StartUp()
 
     std::shared_ptr<SingletonServerComponent> server = g_game->GetSingletonServerComponent();
     server->m_socketAddress = SocketAddress::CreateIPv4(INADDR_ANY, static_cast<U16>(atoi("9999")));
+    assert(server->m_socketAddress != nullptr);
     server->m_socket = UDPSocket::CreateIPv4();
+    assert(server->m_socket != nullptr);
+    server->m_socket->SetNonBlockingMode(true);
     server->m_socket->Bind(*server->m_socketAddress);
 
     return true;
@@ -44,14 +47,9 @@ bool ServerSystem::Update()
 {
     std::shared_ptr<SingletonServerComponent> server = g_game->GetSingletonServerComponent();
 
-    // TODO
+    ReceivePackets(*server);
+    // TODO: ProcessQueuedPackets()
 
-    return true;
-}
-
-//----------------------------------------------------------------------------------------------------
-bool ServerSystem::ShutDown()
-{
     return true;
 }
 
@@ -82,6 +80,36 @@ void ServerSystem::SendStatePacket(const SingletonServerComponent& /*server*/, P
 bool ServerSystem::SendPacket(const SingletonServerComponent& server, const OutputMemoryStream& outputStream, const SocketAddress& toSocketAddress) const
 {
     return server.m_socket->SendTo(outputStream.GetPtr(), outputStream.GetByteLength(), toSocketAddress);
+}
+
+//----------------------------------------------------------------------------------------------------
+void ServerSystem::ReceivePackets(SingletonServerComponent& server) const
+{
+    InputMemoryStream packet;
+    SocketAddress fromSocketAddress;
+
+    U32 receivedPacketCount = 0;
+
+    while (receivedPacketCount < MAX_PACKETS_PER_FRAME) {
+
+        I32 readByteCount = server.m_socket->ReceiveFrom(packet.GetPtr(), packet.GetByteCapacity(), fromSocketAddress);
+        if (readByteCount > 0) {
+
+            packet.ResetHead();
+            packet.SetCapacity(readByteCount);
+            ReceivePacket(server, packet, fromSocketAddress);
+
+            ++receivedPacketCount;
+        } else {
+
+            int error = WSAGetLastError();
+            if (error == WSAECONNRESET) {
+                OnConnectionReset(fromSocketAddress);
+            }
+
+            break;
+        }
+    }
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -141,7 +169,7 @@ void ServerSystem::ReceiveHelloPacket(SingletonServerComponent& server, InputMem
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerSystem::ReceiveInputPacket(SingletonServerComponent& server, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress) const
+void ServerSystem::ReceiveInputPacket(SingletonServerComponent& server, InputMemoryStream& /*inputStream*/, const SocketAddress& fromSocketAddress) const
 {
     std::shared_ptr<ClientProxy> clientProxy = server.GetClientProxy(fromSocketAddress);
     if (clientProxy == nullptr) {
@@ -149,5 +177,15 @@ void ServerSystem::ReceiveInputPacket(SingletonServerComponent& server, InputMem
     }
 
     // TODO: handle moves, etc.
+}
+
+//----------------------------------------------------------------------------------------------------
+void ServerSystem::OnConnectionReset(const SocketAddress& /*fromSocketAddress*/) const
+{
+}
+
+//----------------------------------------------------------------------------------------------------
+void ServerSystem::OnDisconnect() const
+{
 }
 }

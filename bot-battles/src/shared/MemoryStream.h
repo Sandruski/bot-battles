@@ -123,9 +123,14 @@ public:
     void Read(Vec2& outVec);
     void ReadPosition(Vec2& outVec);
 
-    const char* GetPtr() const
+    char* GetPtr() const
     {
         return m_buffer;
+    }
+
+    U32 GetByteCapacity() const
+    {
+        return BITS_TO_BYTES(m_capacity);
     }
 
     U32 GetRemainingBitCount() const
@@ -133,8 +138,9 @@ public:
         return m_capacity - m_head;
     }
 
+    void SetCapacity(U32 byteCapacity);
     void AdvanceHead(U32 bitCount);
-    void Reset();
+    void ResetHead();
 
 private:
     void Alloc(U32 bitCapacity);

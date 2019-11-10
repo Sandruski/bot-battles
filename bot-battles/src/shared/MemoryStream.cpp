@@ -244,6 +244,12 @@ void InputMemoryStream::ReadPosition(Vec2& outVec) // TODO: this should be done 
 }
 
 //----------------------------------------------------------------------------------------------------
+void InputMemoryStream::SetCapacity(U32 byteCapacity)
+{
+    m_capacity = BYTES_TO_BITS(byteCapacity);
+}
+
+//----------------------------------------------------------------------------------------------------
 void InputMemoryStream::AdvanceHead(U32 bitCount)
 {
     U32 nextHead = m_head + bitCount;
@@ -253,7 +259,7 @@ void InputMemoryStream::AdvanceHead(U32 bitCount)
 }
 
 //----------------------------------------------------------------------------------------------------
-void InputMemoryStream::Reset()
+void InputMemoryStream::ResetHead()
 {
     m_head = 0;
 }
