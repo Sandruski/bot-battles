@@ -8,7 +8,7 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-struct TransformComponent : public NetComponentWrite {
+struct TransformComponent : public WriteNetComponent {
 
     enum class MemberType : U16 {
         POSITION = 1 << 0,

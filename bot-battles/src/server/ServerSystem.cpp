@@ -81,9 +81,7 @@ void ServerSystem::SendStatePacket(const SingletonServerComponent& /*server*/, P
 //----------------------------------------------------------------------------------------------------
 bool ServerSystem::SendPacket(const SingletonServerComponent& server, const OutputMemoryStream& outputStream, const SocketAddress& toSocketAddress) const
 {
-    server.m_socket->SendTo(outputStream.GetPtr(), outputStream.GetByteLength(), toSocketAddress);
-
-    return true;
+    return server.m_socket->SendTo(outputStream.GetPtr(), outputStream.GetByteLength(), toSocketAddress);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -103,7 +101,7 @@ void ServerSystem::ReceivePacket(SingletonServerComponent& server, InputMemorySt
     }
 
     default: {
-        WLOG("Unknown packet type received from socket address %s", fromSocketAddress.GetName());
+        WLOG("Unknown packet received from socket address %s", fromSocketAddress.GetName());
         break;
     }
     }
@@ -115,29 +113,41 @@ void ServerSystem::ReceivePacket(SingletonServerComponent& server, InputMemorySt
 //----------------------------------------------------------------------------------------------------
 void ServerSystem::ReceiveHelloPacket(SingletonServerComponent& server, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress) const
 {
-    std::string name;
-    inputStream.Read(name);
+    PlayerID playerID = server.GetPlayerID(fromSocketAddress);
+    if (playerID == INVALID_PLAYER_ID) {
+        std::string name;
+        inputStream.Read(name);
+        ILOG("Hello packet received from new player %s", name.c_str());
 
-    const PlayerID playerID = server.AddPlayer(fromSocketAddress, name.c_str());
-    if (playerID != INVALID_PLAYER_ID) {
+        playerID = server.AddPlayer(fromSocketAddress, name.c_str());
+        if (playerID != INVALID_PLAYER_ID) {
+            /* TODO (GAMEPLAY): add a new entity for this player.
+			The entity MUST be linked to the playerID somewhere so it can be removed properly if necessary.
+			E.g. send an event, etc. */
 
-        ILOG("Player %s with the ID %u has joined the game", name.c_str(), playerID);
+            /* TODO: init the replication manager with everything we know about!
+			Everything we know about is stored in a map here and contains all objects that clients have registered to the server.
+			*/
+            ILOG("New player %s with the ID %u has joined the game", name.c_str(), playerID);
+        }
 
-        /* TODO (GAMEPLAY): add a new entity for this player. 
-		The entity MUST be linked to the playerID somewhere so it can be removed properly if necessary.
-        E.g. send an event, etc. */
-
-        /* TODO: init the replication manager with everything we know about!
-		Everything we know about is stored in a map here and contains all objects that clients have registered to the server.
-		*/
+        ILOG("Sending welcome packet to new player %u", playerID);
+    } else {
+        ILOG("Hello packet received from existing player %u", playerID);
+        ILOG("Resending welcome packet to existing player %u", playerID);
     }
 
     SendWelcomePacket(server, playerID, fromSocketAddress);
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerSystem::ReceiveInputPacket(SingletonServerComponent& /*server*/, InputMemoryStream& /*inputStream*/, const SocketAddress& /*fromSocketAddress*/) const
+void ServerSystem::ReceiveInputPacket(SingletonServerComponent& server, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress) const
 {
-    // Handle moves, etc.
+    std::shared_ptr<ClientProxy> clientProxy = server.GetClientProxy(fromSocketAddress);
+    if (clientProxy == nullptr) {
+        return;
+    }
+
+    // TODO: handle moves, etc.
 }
 }

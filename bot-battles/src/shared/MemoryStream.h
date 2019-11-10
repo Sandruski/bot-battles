@@ -128,6 +128,11 @@ public:
         return m_buffer;
     }
 
+    U32 GetRemainingBitCount() const
+    {
+        return m_capacity - m_head;
+    }
+
     void AdvanceHead(U32 bitCount);
     void Reset();
 

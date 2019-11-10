@@ -50,7 +50,7 @@ bool ServerReplicationManager::RemoveEntityCommand(NetworkID networkID)
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerReplicationManager::ProcessCommands(OutputMemoryStream& outputStream)
+void ServerReplicationManager::WriteActions(OutputMemoryStream& outputStream)
 {
     for (auto& pair : m_networkIDToReplicationCommand) {
 
@@ -87,12 +87,13 @@ void ServerReplicationManager::ProcessCommands(OutputMemoryStream& outputStream)
 
             case ReplicationAction::REMOVE_ENTITY: {
 
-                // TODO
+                // Nothing to do here...
 
                 break;
             }
 
             default: {
+                WLOG("Unknown replication action received from networkID %u", networkID);
                 break;
             }
             }
@@ -106,7 +107,7 @@ void ServerReplicationManager::ProcessCommands(OutputMemoryStream& outputStream)
 void ServerReplicationManager::WriteCreateEntityAction(OutputMemoryStream& outputStream, NetworkID networkID) const
 {
     Entity entity = g_game->GetLinkingContext().GetEntity(networkID);
-    Signature signature = g_game->GetEntityManager().GetSignature(entity);
+    Signature signature = g_game->GetEntityManager().GetSignature(entity); // Signature contains ALL components
     outputStream.Write(signature /*, GetRequiredBits<static_cast<U16>(MAX_COMPONENTS)>::value*/); // TODO: write max server components
 
     if (signature & static_cast<std::size_t>(ComponentType::TRANSFORM)) {
@@ -115,14 +116,14 @@ void ServerReplicationManager::WriteCreateEntityAction(OutputMemoryStream& outpu
         transformComponent->Write(outputStream, static_cast<U16>(TransformComponent::MemberType::ALL));
     }
 
-    // TODO: Write total size of things written
+    // TODO: Write total size of things written instead of static_cast<U16>(TransformComponent::MemberType::ALL)
 }
 
 //----------------------------------------------------------------------------------------------------
 void ServerReplicationManager::WriteUpdateEntityAction(OutputMemoryStream& outputStream, NetworkID networkID) const
 {
     Entity entity = g_game->GetLinkingContext().GetEntity(networkID);
-    Signature signature = g_game->GetEntityManager().GetSignature(entity);
+    Signature signature = g_game->GetEntityManager().GetSignature(entity); // Signature ONLY contains components that have suffered changes
     outputStream.Write(signature /*, GetRequiredBits<static_cast<U16>(MAX_COMPONENTS)>::value*/); // TODO: write max server components
 
     if (signature & static_cast<std::size_t>(ComponentType::TRANSFORM)) {
@@ -131,6 +132,6 @@ void ServerReplicationManager::WriteUpdateEntityAction(OutputMemoryStream& outpu
         transformComponent->Write(outputStream, static_cast<U16>(TransformComponent::MemberType::ALL));
     }
 
-    // TODO: Write total size of things written
+    // TODO: Write total size of things written instead of static_cast<U16>(TransformComponent::MemberType::ALL)
 }
 }

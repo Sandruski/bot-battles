@@ -3,19 +3,21 @@
 
 #include "MemoryStream.h"
 #include "NetComponent.h"
-#include "ReplicationManager.h"
+#include "ReplicationCommand.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-struct TransformComponent : public NetComponentRead {
+struct TransformComponent : public ReadNetComponent {
 
-    enum class MemberType {
+    enum class MemberType : U16 {
         POSITION = 1 << 0,
         ROTATION = 1 << 1,
 
         COUNT,
-        INVALID
+        INVALID,
+
+        ALL = POSITION | ROTATION
     };
 
     static ComponentType GetType() { return ComponentType::TRANSFORM; }
@@ -28,15 +30,15 @@ struct TransformComponent : public NetComponentRead {
     }
     ~TransformComponent() { }
 
-    void Read(InputMemoryStream& stream) override
+    void Read(InputMemoryStream& inputStream) override
     {
-        U32 members = 0;
-        stream.Read(members, GetRequiredBits<static_cast<U32>(MemberType::COUNT)>::value);
-        if (members & static_cast<U32>(MemberType::POSITION)) {
-            stream.Read(m_position);
+        U16 memberFlags = 0;
+        inputStream.Read(memberFlags, GetRequiredBits<static_cast<U16>(MemberType::COUNT)>::value);
+        if (memberFlags & static_cast<U32>(MemberType::POSITION)) {
+            inputStream.Read(m_position);
         }
-        if (members & static_cast<U32>(MemberType::ROTATION)) {
-            stream.Read(m_rotation);
+        if (memberFlags & static_cast<U32>(MemberType::ROTATION)) {
+            inputStream.Read(m_rotation);
         }
     }
 

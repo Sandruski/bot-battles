@@ -3,19 +3,21 @@
 
 #include "MemoryStream.h"
 #include "NetComponent.h"
-#include "ReplicationManager.h"
+#include "ReplicationCommand.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-struct SingletonInputComponent : public NetComponentWrite {
+struct SingletonInputComponent : public WriteNetComponent {
 
     enum class MemberType {
         ACCELERATION = 1 << 0,
         ANGULAR_ACCELERATION = 1 << 1,
 
         COUNT,
-        INVALID
+        INVALID,
+
+        ALL = ACCELERATION | ANGULAR_ACCELERATION
     };
 
     SingletonInputComponent()
@@ -27,14 +29,14 @@ struct SingletonInputComponent : public NetComponentWrite {
     {
     }
 
-    void Write(OutputMemoryStream& stream, U16 members) const override
+    void Write(OutputMemoryStream& outputStream, U16 memberFlags) const override
     {
-        stream.Write(members, GetRequiredBits<static_cast<U32>(MemberType::COUNT)>::value);
-        if (members & static_cast<U32>(MemberType::ACCELERATION)) {
-            stream.Write(m_acceleration);
+        outputStream.Write(memberFlags, GetRequiredBits<static_cast<U16>(MemberType::COUNT)>::value);
+        if (memberFlags & static_cast<U16>(MemberType::ACCELERATION)) {
+            outputStream.Write(m_acceleration);
         }
-        if (members & static_cast<U32>(MemberType::ANGULAR_ACCELERATION)) {
-            stream.Write(m_angularAcceleration);
+        if (memberFlags & static_cast<U16>(MemberType::ANGULAR_ACCELERATION)) {
+            outputStream.Write(m_angularAcceleration);
         }
     }
 

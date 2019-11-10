@@ -6,7 +6,6 @@
 namespace sand {
 
 class OutputMemoryStream;
-class InputMemoryStream;
 class ReplicationCommand;
 
 //----------------------------------------------------------------------------------------------------
@@ -18,7 +17,7 @@ public:
     bool CreateEntityCommand(NetworkID networkID);
     bool RemoveEntityCommand(NetworkID networkID);
 
-    void ProcessCommands(OutputMemoryStream& outputStream);
+    void WriteActions(OutputMemoryStream& outputStream);
     void WriteCreateEntityAction(OutputMemoryStream& outputStream, NetworkID networkID) const;
     void WriteUpdateEntityAction(OutputMemoryStream& outputStream, NetworkID networkID) const;
 

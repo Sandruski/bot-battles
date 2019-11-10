@@ -27,17 +27,15 @@ public:
     bool ShutDown() override;
 
 private:
-    void UpdateSayHello(SingletonClientComponent& client) const;
-    void UpdateSendInput(SingletonClientComponent& client) const;
+    void UpdateSendHelloPacket(SingletonClientComponent& client) const;
+    void UpdateSendInputPacket(SingletonClientComponent& client) const;
+    bool SendHelloPacket(const SingletonClientComponent& client) const;
+    bool SendInputPacket(const SingletonClientComponent& client) const;
+    bool SendPacket(const SingletonClientComponent& client, const OutputMemoryStream& outputStream) const;
 
-    void SendHelloPacket(const SingletonClientComponent& client) const;
-    void SendInputPacket(const SingletonClientComponent& client) const;
-
-    void ReceiveWelcomePacket(SingletonClientComponent& client, InputMemoryStream& stream) const;
-    void ReceiveStatePacket(SingletonClientComponent& client, InputMemoryStream& stream) const;
-
-    bool SendPacket(const SingletonClientComponent& client, const OutputMemoryStream& stream) const;
-    void ReceivePacket(SingletonClientComponent& client, InputMemoryStream& stream) const;
+    void ReceivePacket(SingletonClientComponent& client, InputMemoryStream& inputStream) const;
+    void ReceiveWelcomePacket(SingletonClientComponent& client, InputMemoryStream& inputStream) const;
+    void ReceiveStatePacket(SingletonClientComponent& client, InputMemoryStream& inputStream) const;
 };
 }
 

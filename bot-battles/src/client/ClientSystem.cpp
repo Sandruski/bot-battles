@@ -43,20 +43,12 @@ bool ClientSystem::StartUp()
 bool ClientSystem::Update()
 {
     std::shared_ptr<SingletonClientComponent> client = g_game->GetSingletonClientComponent();
-    switch (client->m_state) {
-    case SingletonClientComponent::ClientState::SAY_HELLO: {
-        UpdateSayHello(*client);
-        break;
-    }
 
-    case SingletonClientComponent::ClientState::SEND_INPUT: {
-        UpdateSendInput(*client);
-        break;
-    }
-
-    default: {
-        break;
-    }
+    const bool isConnected = client->IsConnected();
+    if (isConnected) {
+        UpdateSendHelloPacket(*client);
+    } else {
+        UpdateSendInputPacket(*client);
     }
 
     return true;
@@ -69,46 +61,57 @@ bool ClientSystem::ShutDown()
 }
 
 //----------------------------------------------------------------------------------------------------
-void ClientSystem::UpdateSayHello(SingletonClientComponent& client) const
+void ClientSystem::UpdateSendHelloPacket(SingletonClientComponent& client) const
 {
     float time = Time::GetInstance().GetTime();
-    float nextTime = client.m_lastTime + client.m_timeBetweenSayHello;
-    if (time >= nextTime) {
-        SendHelloPacket(client);
-
-        client.m_lastTime = time;
+    float nextHelloTime = client.GetNextHelloTime();
+    if (time >= nextHelloTime) {
+        const bool result = SendHelloPacket(client);
+        if (result) {
+            client.m_lastTime = time;
+        }
     }
 }
 
 //----------------------------------------------------------------------------------------------------
-void ClientSystem::UpdateSendInput(SingletonClientComponent& client) const
+void ClientSystem::UpdateSendInputPacket(SingletonClientComponent& client) const
 {
     float time = Time::GetInstance().GetTime();
-    float nextTime = client.m_lastTime + client.m_timeBetweenSendInput;
-    if (time >= nextTime) {
-        SendInputPacket(client);
-
-        client.m_lastTime = time;
+    float nextInputTime = client.GetNextInputTime();
+    if (time >= nextInputTime) {
+        const bool result = SendInputPacket(client);
+        if (result) {
+            client.m_lastTime = time;
+        }
     }
 }
 
 //----------------------------------------------------------------------------------------------------
-void ClientSystem::SendHelloPacket(const SingletonClientComponent& client) const
+bool ClientSystem::SendHelloPacket(const SingletonClientComponent& client) const
 {
     OutputMemoryStream helloPacket;
     helloPacket.Write(ClientMessageType::HELLO);
     helloPacket.Write(client.m_name);
 
-    SendPacket(client, helloPacket);
+    ILOG("Sending hello packet to server...");
+
+    const bool result = SendPacket(client, helloPacket);
+    if (result) {
+        ILOG("Hello packet successfully sent to server");
+    }
+
+    return result;
 }
 
 //----------------------------------------------------------------------------------------------------
-void ClientSystem::SendInputPacket(const SingletonClientComponent& client) const
+bool ClientSystem::SendInputPacket(const SingletonClientComponent& client) const
 {
     MoveList moves; // TODO: input system
     if (!moves.HasMoves()) {
-        return;
+        return false;
     }
+
+    ILOG("Sending input packet to server...");
 
     OutputMemoryStream inputPacket;
     inputPacket.Write(ClientMessageType::INPUT);
@@ -120,56 +123,67 @@ void ClientSystem::SendInputPacket(const SingletonClientComponent& client) const
         moves.GetMove(i).Write(inputPacket);
     }
 
-    SendPacket(client, inputPacket);
-
-    moves.Clear();
-}
-
-//----------------------------------------------------------------------------------------------------
-void ClientSystem::ReceiveWelcomePacket(SingletonClientComponent& client, InputMemoryStream& stream) const
-{
-    if (client.m_state != SingletonClientComponent::ClientState::SAY_HELLO) {
-        return;
+    const bool result = SendPacket(client, inputPacket);
+    if (result) {
+        ILOG("Input packet successfully sent to server");
     }
 
-    stream.Read(client.m_playerID);
-    ILOG("Player %s has been welcomed as %u", client.m_name.c_str(), client.m_playerID);
-
-    client.m_state = SingletonClientComponent::ClientState::SEND_INPUT;
-}
-
-//----------------------------------------------------------------------------------------------------
-void ClientSystem::ReceiveStatePacket(SingletonClientComponent& /*client*/, InputMemoryStream& /*stream*/) const
-{
-}
-
-//----------------------------------------------------------------------------------------------------
-bool ClientSystem::SendPacket(const SingletonClientComponent& client, const OutputMemoryStream& stream) const
-{
-    client.m_socket->SendTo(stream.GetPtr(), stream.GetByteLength(), *client.m_socketAddress);
+    moves.Clear();
 
     return true;
 }
 
 //----------------------------------------------------------------------------------------------------
-void ClientSystem::ReceivePacket(SingletonClientComponent& client, InputMemoryStream& stream) const
+bool ClientSystem::SendPacket(const SingletonClientComponent& client, const OutputMemoryStream& outputStream) const
+{
+    return client.m_socket->SendTo(outputStream.GetPtr(), outputStream.GetByteLength(), *client.m_socketAddress);
+}
+
+//----------------------------------------------------------------------------------------------------
+void ClientSystem::ReceivePacket(SingletonClientComponent& client, InputMemoryStream& inputStream) const
 {
     ServerMessageType type;
-    stream.Read(type);
+    inputStream.Read(type);
     switch (type) {
     case ServerMessageType::WELCOME: {
-        ReceiveWelcomePacket(client, stream);
+        ReceiveWelcomePacket(client, inputStream);
         break;
     }
 
     case ServerMessageType::STATE: {
-        ReceiveStatePacket(client, stream);
+        ReceiveStatePacket(client, inputStream);
         break;
     }
 
     default: {
+        //WLOG("Unknown packet received from socket address %s", fromSocketAddress.GetName());
         break;
     }
     }
+}
+
+//----------------------------------------------------------------------------------------------------
+void ClientSystem::ReceiveWelcomePacket(SingletonClientComponent& client, InputMemoryStream& inputStream) const
+{
+    if (client.IsConnected()) {
+        return;
+    }
+
+    PlayerID playerID = INVALID_PLAYER_ID;
+    inputStream.Read(playerID);
+    if (playerID != INVALID_PLAYER_ID) {
+        client.m_playerID = playerID;
+        ILOG("Player %s with the ID %u has joined the game", client.m_name.c_str(), client.m_playerID);
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
+void ClientSystem::ReceiveStatePacket(SingletonClientComponent& client, InputMemoryStream& /*inputStream*/) const
+{
+    if (!client.IsConnected()) {
+        return;
+    }
+
+    // TODO
 }
 }
