@@ -10,6 +10,7 @@ class Time {
 public:
     static Time& GetInstance();
 
+public:
     Time();
     ~Time();
 
@@ -25,6 +26,7 @@ public:
 
 private:
     Timer m_timer;
+    Timer m_dtTimer;
 
     F64 m_lastFrameMs;
     F64 m_desiredFramerate;

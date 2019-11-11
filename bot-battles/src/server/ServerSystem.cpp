@@ -58,7 +58,13 @@ void ServerSystem::SendWelcomePacket(const SingletonServerComponent& server, Pla
 {
     OutputMemoryStream welcomePacket;
     welcomePacket.Write(ServerMessageType::WELCOME);
-    welcomePacket.Write(playerID);
+    const bool isSuccessful = playerID != INVALID_PLAYER_ID;
+    welcomePacket.Write(isSuccessful);
+    if (isSuccessful) {
+        welcomePacket.Write(playerID);
+    }
+
+    ILOG("Sending welcome packet to player %u...", playerID);
 
     const bool result = SendPacket(server, welcomePacket, toSocketAddress);
     if (result) {
@@ -72,6 +78,8 @@ void ServerSystem::SendStatePacket(const SingletonServerComponent& /*server*/, P
     OutputMemoryStream welcomePacket;
     welcomePacket.Write(ServerMessageType::STATE);
     welcomePacket.Write(playerID);
+
+    ILOG("Sending state packet to player %u...", playerID);
 
     // TODO
 }
@@ -117,14 +125,16 @@ void ServerSystem::ReceivePacket(SingletonServerComponent& server, InputMemorySt
 {
     ClientMessageType type;
     inputStream.Read(type);
+    PlayerID playerID = INVALID_PLAYER_ID;
     switch (type) {
     case ClientMessageType::HELLO: {
-        ReceiveHelloPacket(server, inputStream, fromSocketAddress);
+        ReceiveHelloPacket(server, inputStream, fromSocketAddress, playerID);
         break;
     }
 
     case ClientMessageType::INPUT: {
-        ReceiveInputPacket(server, inputStream, fromSocketAddress);
+
+        ReceiveInputPacket(server, inputStream, fromSocketAddress, playerID);
         break;
     }
 
@@ -133,15 +143,16 @@ void ServerSystem::ReceivePacket(SingletonServerComponent& server, InputMemorySt
         break;
     }
     }
+    assert(playerID != INVALID_PLAYER_ID);
 
-    std::shared_ptr<ClientProxy> clientProxy = server.GetClientProxy(fromSocketAddress);
+    std::shared_ptr<ClientProxy> clientProxy = server.GetClientProxy(playerID);
     clientProxy->UpdateLastPacketTime();
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerSystem::ReceiveHelloPacket(SingletonServerComponent& server, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress) const
+void ServerSystem::ReceiveHelloPacket(SingletonServerComponent& server, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress, PlayerID& playerID) const
 {
-    PlayerID playerID = server.GetPlayerID(fromSocketAddress);
+    playerID = server.GetPlayerID(fromSocketAddress);
     if (playerID == INVALID_PLAYER_ID) {
         std::string name;
         inputStream.Read(name);
@@ -156,22 +167,20 @@ void ServerSystem::ReceiveHelloPacket(SingletonServerComponent& server, InputMem
             /* TODO: init the replication manager with everything we know about!
 			Everything we know about is stored in a map here and contains all objects that clients have registered to the server.
 			*/
-            ILOG("New player %s with the ID %u has joined the game", name.c_str(), playerID);
+            ILOG("New player %s %u has joined the game", name.c_str(), playerID);
         }
-
-        ILOG("Sending welcome packet to new player %u", playerID);
     } else {
-        ILOG("Hello packet received from existing player %u", playerID);
-        ILOG("Resending welcome packet to existing player %u", playerID);
+        std::shared_ptr<ClientProxy> clientProxy = server.GetClientProxy(playerID);
+        ILOG("Hello packet received from existing player %s", clientProxy->GetName());
     }
 
     SendWelcomePacket(server, playerID, fromSocketAddress);
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerSystem::ReceiveInputPacket(SingletonServerComponent& server, InputMemoryStream& /*inputStream*/, const SocketAddress& fromSocketAddress) const
+void ServerSystem::ReceiveInputPacket(SingletonServerComponent& server, InputMemoryStream& /*inputStream*/, const SocketAddress& /*fromSocketAddress*/, PlayerID playerID) const
 {
-    std::shared_ptr<ClientProxy> clientProxy = server.GetClientProxy(fromSocketAddress);
+    std::shared_ptr<ClientProxy> clientProxy = server.GetClientProxy(playerID);
     if (clientProxy == nullptr) {
         return;
     }

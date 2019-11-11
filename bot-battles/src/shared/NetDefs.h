@@ -3,9 +3,6 @@
 
 namespace sand {
 
-using NetworkID = U32;
-const NetworkID INVALID_NETWORK_ID = 0; // TODO: this should be the number of MAX_NETWORK_IDs
-
 enum class Endianness {
     LITTLE_ENDIAN, // Intel's x86, Intel's x64, Apple's iOS
     BIG_ENDIAN // Xbox 360, PlayStation 3, IBM's PowerPC
@@ -24,8 +21,12 @@ const U32 MAX_PACKET_SIZE = 1470;
 const U32 MAX_PACKETS_PER_FRAME = 10;
 
 using PlayerID = U32;
-const U32 MAX_PLAYER_IDS = 1;
+const U32 MAX_PLAYER_IDS = 2; // MAX_CLIENTS
 const PlayerID INVALID_PLAYER_ID = MAX_PLAYER_IDS + 1;
+
+using NetworkID = U32;
+const U32 MAX_NETWORK_IDS = 32; // MAX_OBJECTS_PER_CLIENT
+const NetworkID INVALID_NETWORK_ID = MAX_NETWORK_IDS + 1;
 }
 
 #endif

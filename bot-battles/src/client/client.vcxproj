@@ -300,7 +300,6 @@
     <ClCompile Include="DebugDrawer.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameplayState.cpp" />
-    <ClCompile Include="LinkingContext.cpp" />
     <ClCompile Include="Move.cpp" />
     <ClCompile Include="MoveList.cpp" />
     <ClCompile Include="pch.cpp">
@@ -334,7 +333,6 @@
     <ClInclude Include="Colors.h" />
     <ClInclude Include="Move.h" />
     <ClInclude Include="MoveList.h" />
-    <ClInclude Include="LinkingContext.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="ClientReplicationManager.h" />
     <ClInclude Include="ResourceDefs.h" />

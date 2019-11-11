@@ -336,7 +336,6 @@
     <ClCompile Include="FSM.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameplayState.cpp" />
-    <ClCompile Include="LinkingContext.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Move.cpp" />
     <ClCompile Include="MoveList.cpp" />
@@ -362,7 +361,6 @@
     <ClInclude Include="FSM.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameplayState.h" />
-    <ClInclude Include="LinkingContext.h" />
     <ClInclude Include="Move.h" />
     <ClInclude Include="MoveList.h" />
     <ClInclude Include="NavigationSystem.h" />

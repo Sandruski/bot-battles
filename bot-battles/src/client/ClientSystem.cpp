@@ -52,7 +52,7 @@ bool ClientSystem::Update()
     // TODO: ProcessQueuedPackets()
 
     const bool isConnected = client->IsConnected();
-    if (isConnected) {
+    if (!isConnected) {
         UpdateSendHelloPacket(*client);
     } else {
         UpdateSendInputPacket(*client);
@@ -201,11 +201,15 @@ void ClientSystem::ReceiveWelcomePacket(SingletonClientComponent& client, InputM
         return;
     }
 
-    PlayerID playerID = INVALID_PLAYER_ID;
-    inputStream.Read(playerID);
-    if (playerID != INVALID_PLAYER_ID) {
-        client.m_playerID = playerID;
-        ILOG("Player %s with the ID %u has joined the game", client.m_name.c_str(), client.m_playerID);
+    bool isSuccessful = false;
+    inputStream.Read(isSuccessful);
+    if (isSuccessful) {
+        PlayerID playerID = INVALID_PLAYER_ID;
+        inputStream.Read(playerID);
+        if (playerID != INVALID_PLAYER_ID) {
+            client.m_playerID = playerID;
+            ILOG("Player %s %u has joined the game", client.m_name.c_str(), client.m_playerID);
+        }
     }
 }
 

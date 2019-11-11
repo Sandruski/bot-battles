@@ -7,6 +7,7 @@ enum class ClientMessageType {
 
     HELLO,
     INPUT,
+    GOODBYE,
 
     COUNT,
     INVALID

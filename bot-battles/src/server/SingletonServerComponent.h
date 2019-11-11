@@ -17,10 +17,9 @@ struct SingletonServerComponent {
     ~SingletonServerComponent();
 
     PlayerID AddPlayer(const SocketAddress& socketAddress, const char* name);
-    bool RemovePlayer(const SocketAddress& socketAddress);
-
+    bool RemovePlayer(PlayerID playerID);
     PlayerID GetPlayerID(const SocketAddress& socketAddress) const;
-    std::shared_ptr<ClientProxy> GetClientProxy(const SocketAddress& socketAddress) const;
+    std::shared_ptr<ClientProxy> GetClientProxy(PlayerID playerID) const;
 
     std::shared_ptr<UDPSocket> m_socket;
     std::shared_ptr<SocketAddress> m_socketAddress;

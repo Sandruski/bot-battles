@@ -21,9 +21,14 @@ public:
         return m_unprocessedMoves;
     }
 
-    const SocketAddress& GetSocketAddress()
+    const SocketAddress& GetSocketAddress() const
     {
         return m_socketAddress;
+    }
+
+    const char* GetName() const
+    {
+        return m_name.c_str();
     }
 
 private:

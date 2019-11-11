@@ -12,6 +12,8 @@ SingletonServerComponent::SingletonServerComponent()
     , m_playerIDToClientProxy()
     , m_availablePlayerIDs()
 {
+    m_playerIDToClientProxy.reserve(MAX_PLAYER_IDS);
+
     for (PlayerID i = 0; i < MAX_PLAYER_IDS; ++i) {
         m_availablePlayerIDs.push(i);
     }
@@ -27,24 +29,34 @@ PlayerID SingletonServerComponent::AddPlayer(const SocketAddress& socketAddress,
 {
     PlayerID playerID = GetPlayerID(socketAddress);
     if (playerID != INVALID_PLAYER_ID) {
-        WLOG("Player %s with the address %s is already registered", name, socketAddress.GetName());
+        std::shared_ptr<ClientProxy> clientProxy = GetClientProxy(playerID);
+        if (COMPARE_STRINGS(clientProxy->GetName(), name)) {
+            WLOG("Player with the socket address %s is already registered", socketAddress.GetName());
+        } else {
+            WLOG("Player with the socket address %s is already registered with a different name", socketAddress.GetName());
+        }
         return playerID;
     }
 
     playerID = m_availablePlayerIDs.front();
     m_availablePlayerIDs.pop();
     std::shared_ptr<ClientProxy> clientProxy = std::make_shared<ClientProxy>(socketAddress, name);
-    m_playerIDToClientProxy[playerID] = clientProxy;
+    std::pair<std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>::iterator, bool> pair = m_playerIDToClientProxy.insert(std::make_pair(playerID, clientProxy));
+    if (!pair.second) {
+        WLOG("Player with the socket address %s could not be registered", socketAddress.GetName());
+        m_availablePlayerIDs.push(playerID);
+        return INVALID_PLAYER_ID;
+    }
 
     return playerID;
 }
 
 //----------------------------------------------------------------------------------------------------
-bool SingletonServerComponent::RemovePlayer(const SocketAddress& socketAddress)
+bool SingletonServerComponent::RemovePlayer(PlayerID playerID)
 {
-    PlayerID playerID = GetPlayerID(socketAddress);
-    if (playerID == INVALID_PLAYER_ID) {
-        WLOG("Player with the address %s is not registered", socketAddress.GetName());
+    auto it = m_playerIDToClientProxy.find(playerID);
+    if (it == m_playerIDToClientProxy.end()) {
+        WLOG("Player %u is not registered", playerID);
         return false;
     }
 
@@ -59,7 +71,7 @@ PlayerID SingletonServerComponent::GetPlayerID(const SocketAddress& socketAddres
 {
     for (const auto& pair : m_playerIDToClientProxy) {
         std::shared_ptr<ClientProxy> clientProxy = pair.second;
-        if (socketAddress == clientProxy->GetSocketAddress()) {
+        if (clientProxy->GetSocketAddress() == socketAddress) {
             return pair.first;
         }
     }
@@ -68,15 +80,14 @@ PlayerID SingletonServerComponent::GetPlayerID(const SocketAddress& socketAddres
 }
 
 //----------------------------------------------------------------------------------------------------
-std::shared_ptr<ClientProxy> SingletonServerComponent::GetClientProxy(const SocketAddress& socketAddress) const
+std::shared_ptr<ClientProxy> SingletonServerComponent::GetClientProxy(PlayerID playerID) const
 {
-    for (const auto& pair : m_playerIDToClientProxy) {
-        std::shared_ptr<ClientProxy> clientProxy = pair.second;
-        if (socketAddress == clientProxy->GetSocketAddress()) {
-            return pair.second;
-        }
+    auto it = m_playerIDToClientProxy.find(playerID);
+    if (it == m_playerIDToClientProxy.end()) {
+        WLOG("Player %u is not registered", playerID);
+        return nullptr;
     }
 
-    return nullptr;
+    return it->second;
 }
 }
