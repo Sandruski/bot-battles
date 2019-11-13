@@ -12,7 +12,7 @@ struct SingletonClientComponent {
     SingletonClientComponent()
         : m_socket(nullptr)
         , m_socketAddress(nullptr)
-        , m_name("ExamplePlayerName")
+        , m_name("ExamplePlayer")
         , m_helloTime(1.0f)
         , m_inputTime(0.033f)
         , m_lastTime(0.0f)

@@ -92,7 +92,7 @@ void OutputMemoryStream::Write(const std::string& inString)
 //----------------------------------------------------------------------------------------------------
 void OutputMemoryStream::Write(const char* inString)
 {
-    std::size_t size = std::strlen(inString);
+    std::size_t size = std::strlen(inString) + 1;
     Write(size);
 
     WriteBytes(inString, size * sizeof(char));
@@ -214,16 +214,17 @@ void InputMemoryStream::Read(std::string& outString)
     Read(size);
     outString.resize(size);
 
-    ReadBytes(&outString, size * sizeof(char));
+    ReadBytes(const_cast<char*>(outString.c_str()), size * sizeof(char));
 }
 
 //----------------------------------------------------------------------------------------------------
-void InputMemoryStream::Read(char* outString)
+void InputMemoryStream::Read(char*& outString)
 {
     std::size_t size;
     Read(size);
+    outString = new char[size];
 
-    ReadBytes(&outString, size * sizeof(char));
+    ReadBytes(outString, size * sizeof(char));
 }
 
 //----------------------------------------------------------------------------------------------------

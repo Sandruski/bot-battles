@@ -119,7 +119,7 @@ public:
     template <typename T>
     void Read(std::vector<T>& outVector);
     void Read(std::string& outString);
-    void Read(char* outString);
+    void Read(char*& outString);
     void Read(Vec2& outVec);
     void ReadPosition(Vec2& outVec);
 
