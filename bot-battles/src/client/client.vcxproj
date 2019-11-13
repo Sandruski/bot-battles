@@ -300,8 +300,6 @@
     <ClCompile Include="DebugDrawer.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameplayState.cpp" />
-    <ClCompile Include="Move.cpp" />
-    <ClCompile Include="MoveList.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugServer|Win32'">Create</PrecompiledHeader>
@@ -322,6 +320,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="EventSystem.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="SingletonClientComponent.cpp" />
     <ClCompile Include="TextureImporter.cpp" />
     <ClCompile Include="RendererSystem.cpp" />
     <ClCompile Include="WindowSystem.cpp" />
@@ -331,13 +330,10 @@
   <ItemGroup>
     <ClInclude Include="ClientSystem.h" />
     <ClInclude Include="Colors.h" />
-    <ClInclude Include="Move.h" />
-    <ClInclude Include="MoveList.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="ClientReplicationManager.h" />
     <ClInclude Include="ResourceDefs.h" />
     <ClInclude Include="SingletonClientComponent.h" />
-    <ClInclude Include="SingletonInputComponent.h" />
     <ClInclude Include="SingletonRendererComponent.h" />
     <ClInclude Include="SingletonWindowComponent.h" />
     <ClInclude Include="SpriteComponent.h" />

@@ -8,7 +8,7 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-struct SingletonInputComponent : public WriteNetComponent {
+struct SingletonInputComponent : public WriteNetComponent, public ReadNetComponent {
 
     enum class MemberType {
         ACCELERATION = 1 << 0,
@@ -37,6 +37,18 @@ struct SingletonInputComponent : public WriteNetComponent {
         }
         if (memberFlags & static_cast<U16>(MemberType::ANGULAR_ACCELERATION)) {
             outputStream.Write(m_angularAcceleration);
+        }
+    }
+
+    void Read(InputMemoryStream& inputStream) override
+    {
+        U16 memberFlags = 0;
+        inputStream.Read(memberFlags, GetRequiredBits<static_cast<U16>(MemberType::COUNT)>::value);
+        if (memberFlags & static_cast<U32>(MemberType::ACCELERATION)) {
+            inputStream.Read(m_acceleration);
+        }
+        if (memberFlags & static_cast<U32>(MemberType::ANGULAR_ACCELERATION)) {
+            inputStream.Read(m_angularAcceleration);
         }
     }
 

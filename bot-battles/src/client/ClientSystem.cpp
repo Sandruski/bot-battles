@@ -5,7 +5,6 @@
 #include "MemoryStream.h"
 #include "MessageTypes.h"
 #include "Move.h"
-#include "MoveList.h"
 #include "SingletonClientComponent.h"
 #include "SocketAddress.h"
 #include "UDPSocket.h"
@@ -83,6 +82,7 @@ void ClientSystem::UpdateSendInputPacket(SingletonClientComponent& client) const
         const bool result = SendInputPacket(client);
         if (result) {
             client.m_lastTime = time;
+            client.ClearMoves();
         }
     }
 }
@@ -92,6 +92,7 @@ bool ClientSystem::SendHelloPacket(const SingletonClientComponent& client) const
 {
     OutputMemoryStream helloPacket;
     helloPacket.Write(ClientMessageType::HELLO);
+
     helloPacket.Write(client.m_name);
 
     ILOG("Sending hello packet to server...");
@@ -107,29 +108,28 @@ bool ClientSystem::SendHelloPacket(const SingletonClientComponent& client) const
 //----------------------------------------------------------------------------------------------------
 bool ClientSystem::SendInputPacket(const SingletonClientComponent& client) const
 {
-    MoveList moves; // TODO: input system
-    if (!moves.HasMoves()) {
+    if (!client.HasMoves()) {
         return false;
     }
-
-    ILOG("Sending input packet to server...");
 
     OutputMemoryStream inputPacket;
     inputPacket.Write(ClientMessageType::INPUT);
 
-    U32 moveCount = moves.GetMoveCount();
-    U32 startIndex = moveCount > 3 ? moveCount - 3 - 1 : 0;
-    inputPacket.Write(moveCount - startIndex, 2);
+    U32 totalMoveCount = client.GetMoveCount();
+    U32 startIndex = totalMoveCount > MAX_MOVES_PER_PACKET ? totalMoveCount - MAX_MOVES_PER_PACKET - 1 : 0;
+    U32 moveCount = totalMoveCount - startIndex;
+    inputPacket.Write(moveCount);
     for (U32 i = startIndex; i < moveCount; ++i) {
-        moves.GetMove(i).Write(inputPacket);
+        const Move& move = client.GetMove(i);
+        move.Write(inputPacket, static_cast<U16>(SingletonInputComponent::MemberType::ALL));
     }
+
+    ILOG("Sending input packet to server...");
 
     const bool result = SendPacket(client, inputPacket);
     if (result) {
         ILOG("Input packet successfully sent to server");
     }
-
-    moves.Clear();
 
     return true;
 }

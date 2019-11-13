@@ -46,6 +46,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\Components">
+      <UniqueIdentifier>{c6c5bf1a-ae10-4d05-ad4c-d930110ddd8b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -90,17 +93,14 @@
     <ClCompile Include="FSM.cpp">
       <Filter>Source Files\States</Filter>
     </ClCompile>
-    <ClCompile Include="Move.cpp">
-      <Filter>Source Files\Networking</Filter>
-    </ClCompile>
-    <ClCompile Include="MoveList.cpp">
-      <Filter>Source Files\Networking</Filter>
-    </ClCompile>
     <ClCompile Include="EventSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
     <ClCompile Include="ClientReplicationManager.cpp">
       <Filter>Source Files\Networking</Filter>
+    </ClCompile>
+    <ClCompile Include="SingletonClientComponent.cpp">
+      <Filter>Source Files\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -127,9 +127,6 @@
     </ClInclude>
     <ClInclude Include="DebugDrawer.h">
       <Filter>Header Files\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="SingletonInputComponent.h">
-      <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="SingletonRendererComponent.h">
       <Filter>Header Files\Components</Filter>
@@ -172,12 +169,6 @@
     </ClInclude>
     <ClInclude Include="FSM.h">
       <Filter>Header Files\States</Filter>
-    </ClInclude>
-    <ClInclude Include="Move.h">
-      <Filter>Header Files\Networking</Filter>
-    </ClInclude>
-    <ClInclude Include="MoveList.h">
-      <Filter>Header Files\Networking</Filter>
     </ClInclude>
     <ClInclude Include="EventSystem.h">
       <Filter>Header Files\Systems</Filter>

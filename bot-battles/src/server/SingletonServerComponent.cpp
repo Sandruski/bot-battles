@@ -54,13 +54,12 @@ PlayerID SingletonServerComponent::AddPlayer(const SocketAddress& socketAddress,
 //----------------------------------------------------------------------------------------------------
 bool SingletonServerComponent::RemovePlayer(PlayerID playerID)
 {
-    auto it = m_playerIDToClientProxy.find(playerID);
-    if (it == m_playerIDToClientProxy.end()) {
-        WLOG("Player %u is not registered", playerID);
+    std::size_t ret = m_playerIDToClientProxy.erase(playerID);
+    if (ret == 0) {
+        WLOG("Player %u could not be removed", playerID);
         return false;
     }
 
-    m_playerIDToClientProxy.erase(playerID);
     m_availablePlayerIDs.push(playerID);
 
     return true;

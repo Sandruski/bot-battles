@@ -1,33 +1,31 @@
-#include "MoveList.h"
+#include "Move.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-MoveList::MoveList()
-    : m_moves()
-    , m_lastMoveTimestamp(0.0f)
+Move::Move(const SingletonInputComponent& input, F32 timestamp, F32 dt)
+    : m_input(input)
+    , m_timestamp(timestamp)
+    , m_dt(dt)
 {
 }
 
 //----------------------------------------------------------------------------------------------------
-MoveList::~MoveList()
+Move::~Move()
 {
 }
 
 //----------------------------------------------------------------------------------------------------
-const Move& MoveList::AddMove(const InputState& inputState, F32 timestamp)
+void Move::Write(OutputMemoryStream& outputStream, U16 memberFlags) const
 {
-    float dt = m_lastMoveTimestamp > 0.0f ? timestamp - m_lastMoveTimestamp : 0.0f;
-
-    m_moves.emplace_back(inputState, timestamp, dt);
-    m_lastMoveTimestamp = timestamp;
-
-    return m_moves.back();
+    m_input.Write(outputStream, memberFlags);
+    outputStream.Write(m_timestamp);
 }
 
 //----------------------------------------------------------------------------------------------------
-void MoveList::Clear()
+void Move::Read(InputMemoryStream& inputStream)
 {
-    m_moves.clear();
+    m_input.Read(inputStream);
+    inputStream.Read(m_timestamp);
 }
 }
