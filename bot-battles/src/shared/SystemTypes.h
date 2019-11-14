@@ -11,7 +11,6 @@ enum class SystemType : U16 {
     RENDERER,
     EVENT,
     INPUT,
-    SPAWNER,
 
     COUNT,
     INVALID

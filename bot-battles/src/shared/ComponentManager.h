@@ -194,7 +194,7 @@ public:
     void OnNotify(const Event& event) override;
 
 private:
-    std::array<std::shared_ptr<IComponentArray>, static_cast<std::size_t>(ComponentType::COUNT)> m_componentArrays;
+    std::array<std::shared_ptr<IComponentArray>, MAX_COMPONENTS> m_componentArrays;
 };
 
 //----------------------------------------------------------------------------------------------------
@@ -204,15 +204,14 @@ inline bool ComponentManager::RegisterComponent()
     //static_assert(std::is_base_of<Component, T>::value, "T is not derived from Component");
 
     ComponentType type = T::GetType();
-    assert(type != ComponentType::COUNT && type != ComponentType::INVALID);
-
-    auto componentArray = m_componentArrays[static_cast<std::size_t>(type)];
+    std::size_t index = static_cast<std::size_t>(type);
+    std::shared_ptr<IComponentArray> componentArray = m_componentArrays.at(index);
     if (componentArray != nullptr) {
-        WLOG("The component array already exists!");
+        WLOG("The component array is already registered!");
         return false;
     }
 
-    m_componentArrays[static_cast<std::size_t>(type)] = std::make_shared<ComponentArray<T>>();
+    m_componentArrays[index] = std::make_shared<ComponentArray<T>>();
 
     return true;
 }
@@ -224,15 +223,14 @@ inline bool ComponentManager::DeRegisterComponent()
     //static_assert(std::is_base_of<Component, T>::value, "T is not derived from Component");
 
     ComponentType type = T::GetType();
-    assert(type != ComponentType::COUNT && type != ComponentType::INVALID);
-
-    std::unique_ptr<IComponentArray> componentArray = m_componentArrays[static_cast<std::size_t>(type)];
+    std::size_t index = static_cast<std::size_t>(type);
+    std::shared_ptr<IComponentArray> componentArray = m_componentArrays.at(index);
     if (componentArray == nullptr) {
-        WLOG("The component array does not exist!");
+        WLOG("The component array is not registered!");
         return false;
     }
 
-    m_componentArrays[static_cast<std::size_t>(type)] = nullptr;
+    m_componentArrays[index] = nullptr;
 
     return true;
 }
@@ -247,7 +245,8 @@ std::shared_ptr<T> ComponentManager::AddComponent(Entity entity)
     ComponentType type = T::GetType();
     assert(type != ComponentType::COUNT && type != ComponentType::INVALID);
 
-    return std::static_pointer_cast<ComponentArray<T>>(m_componentArrays[static_cast<std::size_t>(type)])->AddComponent(entity);
+    std::size_t index = static_cast<std::size_t>(type);
+    return std::static_pointer_cast<ComponentArray<T>>(m_componentArrays[index])->AddComponent(entity);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -260,7 +259,8 @@ bool ComponentManager::RemoveComponent(Entity entity)
     ComponentType type = T::GetType();
     assert(type != ComponentType::COUNT && type != ComponentType::INVALID);
 
-    return std::static_pointer_cast<ComponentArray<T>>(m_componentArrays[static_cast<std::size_t>(type)])->RemoveComponent(entity);
+    std::size_t index = static_cast<std::size_t>(type);
+    return std::static_pointer_cast<ComponentArray<T>>(m_componentArrays[index])->RemoveComponent(entity);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -273,7 +273,8 @@ std::shared_ptr<T> ComponentManager::GetComponent(Entity entity)
     ComponentType type = T::GetType();
     assert(type != ComponentType::COUNT && type != ComponentType::INVALID);
 
-    return std::static_pointer_cast<ComponentArray<T>>(m_componentArrays[static_cast<std::size_t>(type)])->GetComponent(entity);
+    std::size_t index = static_cast<std::size_t>(type);
+    return std::static_pointer_cast<ComponentArray<T>>(m_componentArrays[index])->GetComponent(entity);
 }
 }
 

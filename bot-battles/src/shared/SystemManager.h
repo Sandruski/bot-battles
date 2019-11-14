@@ -28,7 +28,7 @@ public:
     void OnNotify(const Event& event);
 
 private:
-    std::vector<std::shared_ptr<System>> m_systems;
+    std::array<std::shared_ptr<System>, MAX_SYSTEMS> m_systems;
 };
 
 //----------------------------------------------------------------------------------------------------
@@ -38,16 +38,14 @@ inline bool SystemManager::RegisterSystem()
     static_assert(std::is_base_of<System, T>::value, "T is not derived from System");
 
     SystemType type = T::GetType();
-    assert(type != SystemType::COUNT && type != SystemType::INVALID);
-
-    for (const auto& system : m_systems) {
-        if (system->GetType() == type) {
-            WLOG("The system is already registered!");
-            return false;
-        }
+    std::size_t index = static_cast<std::size_t>(type);
+    std::shared_ptr<System> system = m_systems.at(index);
+    if (system != nullptr) {
+        WLOG("The system is already registered!");
+        return false;
     }
 
-    m_systems.push_back(std::make_shared<T>());
+    m_systems[index] = std::make_shared<T>();
 
     return true;
 }
@@ -59,17 +57,15 @@ inline bool SystemManager::DeRegisterSystem()
     static_assert(std::is_base_of<System, T>::value, "T is not derived from System");
 
     SystemType type = T::GetType();
-    assert(type != SystemType::COUNT && type != SystemType::INVALID);
-
-    for (auto it = m_systems.begin(); it != m_systems.end(); ++it) {
-        std::shared_ptr<T> system = std::static_pointer_cast<T>(*it);
-        if (system->GetType() == type) {
-            m_systems.erase(it);
-            return true;
-        }
+    std::size_t index = static_cast<std::size_t>(type);
+    std::shared_ptr<System> system = m_systems.at(index);
+    if (system == nullptr) {
+        WLOG("The system is not registered!");
+        return false;
     }
 
-    WLOG("The system is not registered!");
+    m_systems[index] = nullptr;
+
     return false;
 }
 
@@ -80,16 +76,9 @@ inline std::shared_ptr<T> SystemManager::GetSystem()
     static_assert(std::is_base_of<System, T>::value, "T is not derived from System");
 
     SystemType type = T::GetType();
-    assert(type != SystemType::COUNT && type != SystemType::INVALID);
-
-    for (auto it = m_systems.begin(); it != m_systems.end(); ++it) {
-        std::shared_ptr<T> system = std::static_pointer_cast<T>(*it);
-        if (system->GetType() == type) {
-            return system;
-        }
-    }
-
-    return nullptr;
+    std::size_t index = static_cast<std::size_t>(type);
+    std::shared_ptr<System> system = m_systems.at(index);
+    return std::static_pointer_cast<T>(system);
 }
 } // namespace sand
 

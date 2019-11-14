@@ -10,7 +10,7 @@ namespace sand {
 SystemManager::SystemManager()
     : m_systems()
 {
-    m_systems.reserve(MAX_SYSTEMS);
+    m_systems.fill(NULL);
 }
 
 //----------------------------------------------------------------------------------------------------

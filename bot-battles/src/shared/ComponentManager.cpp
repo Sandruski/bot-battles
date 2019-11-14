@@ -6,7 +6,7 @@ namespace sand {
 ComponentManager::ComponentManager()
     : m_componentArrays()
 {
-    memset(&m_componentArrays, NULL, static_cast<std::size_t>(ComponentType::COUNT));
+    m_componentArrays.fill(NULL);
 }
 
 //----------------------------------------------------------------------------------------------------
