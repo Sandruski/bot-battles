@@ -1,9 +1,6 @@
 #ifndef __REPLICATION_COMMAND_H__
 #define __REPLICATION_COMMAND_H__
 
-#include "EntityDefs.h"
-#include "NetDefs.h"
-
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------

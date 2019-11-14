@@ -2,7 +2,6 @@
 
 #include "EntityManager.h"
 
-#include "Events.h"
 #include "System.h"
 
 namespace sand {
@@ -11,7 +10,7 @@ namespace sand {
 SystemManager::SystemManager()
     : m_systems()
 {
-    m_systems.reserve(static_cast<std::size_t>(SystemType::COUNT));
+    m_systems.reserve(MAX_SYSTEMS);
 }
 
 //----------------------------------------------------------------------------------------------------

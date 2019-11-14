@@ -2,7 +2,6 @@
 #define __MEMORY_STREAM_H__
 
 #include "ByteSwap.h"
-#include "NetDefs.h"
 
 namespace sand {
 

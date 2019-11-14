@@ -18,7 +18,7 @@ struct SingletonClientComponent {
         , m_socketAddress(nullptr)
         , m_name("ExamplePlayer")
         , m_helloTime(1.0f)
-        , m_inputTime(0.033f)
+        , m_inputTime(0.03f)
         , m_lastTime(0.0f)
         , m_playerID(INVALID_PLAYER_ID)
     {

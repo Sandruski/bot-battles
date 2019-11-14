@@ -1,10 +1,6 @@
 #ifndef __SYSTEM_H__
 #define __SYSTEM_H__
 
-#include "ComponentDefs.h"
-#include "EntityDefs.h"
-#include "SystemDefs.h"
-
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------

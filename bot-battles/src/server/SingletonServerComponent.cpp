@@ -89,4 +89,10 @@ std::shared_ptr<ClientProxy> SingletonServerComponent::GetClientProxy(PlayerID p
 
     return it->second;
 }
+
+//----------------------------------------------------------------------------------------------------
+const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& SingletonServerComponent::GetPlayerIDToClientProxyMap()
+{
+    return m_playerIDToClientProxy;
+}
 }

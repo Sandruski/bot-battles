@@ -1,7 +1,6 @@
 #ifndef __RENDERER_SYSTEM_H__
 #define __RENDERER_SYSTEM_H__
 
-#include "ComponentDefs.h"
 #include "System.h"
 
 namespace sand {

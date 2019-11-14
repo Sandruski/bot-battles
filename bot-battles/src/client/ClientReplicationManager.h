@@ -1,9 +1,6 @@
 #ifndef __CLIENT_REPLICATION_MANAGER_H__
 #define __CLIENT_REPLICATION_MANAGER_H__
 
-#include "EntityDefs.h"
-#include "NetDefs.h"
-
 namespace sand {
 
 class InputMemoryStream;

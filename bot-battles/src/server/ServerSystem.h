@@ -1,8 +1,6 @@
 #ifndef __SERVER_SYSTEM_H__
 #define __SERVER_SYSTEM_H__
 
-#include "ComponentDefs.h"
-#include "NetDefs.h"
 #include "System.h"
 
 namespace sand {
@@ -13,7 +11,7 @@ class InputMemoryStream;
 class SocketAddress;
 
 //----------------------------------------------------------------------------------------------------
-class ServerSystem : public System {
+class ServerSystem : public System, public Subject, public Observer {
 public:
     static SystemType GetType()
     {
@@ -27,14 +25,16 @@ public:
     bool StartUp() override;
     bool Update() override;
 
+    void OnNotify(const Event& event) override;
+
 private:
     void SendWelcomePacket(const SingletonServerComponent& server, PlayerID playerID, const SocketAddress& toSocketAddress) const;
     void SendStatePacket(const SingletonServerComponent& server, PlayerID playerID, const SocketAddress& toSocketAddress) const;
     bool SendPacket(const SingletonServerComponent& server, const OutputMemoryStream& outputStream, const SocketAddress& toSocketAddress) const;
 
-    void ReceivePackets(SingletonServerComponent& server) const;
-    void ReceivePacket(SingletonServerComponent& server, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress) const;
-    void ReceiveHelloPacket(SingletonServerComponent& server, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress, PlayerID& playerID) const;
+    void ReceivePackets(SingletonServerComponent& server);
+    void ReceivePacket(SingletonServerComponent& server, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress);
+    void ReceiveHelloPacket(SingletonServerComponent& server, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress, PlayerID& playerID);
     void ReceiveInputPacket(SingletonServerComponent& server, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress, PlayerID playerID) const;
 
     void OnConnectionReset(const SocketAddress& fromSocketAddress) const;

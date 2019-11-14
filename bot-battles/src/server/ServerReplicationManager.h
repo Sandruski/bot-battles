@@ -1,8 +1,6 @@
 #ifndef __SERVER_REPLICATION_MANAGER_H__
 #define __SERVER_REPLICATION_MANAGER_H__
 
-#include "NetDefs.h"
-
 namespace sand {
 
 class OutputMemoryStream;

@@ -1,7 +1,6 @@
 #ifndef __CLIENT_SYSTEM_H__
 #define __CLIENT_SYSTEM_H__
 
-#include "ComponentDefs.h"
 #include "System.h"
 
 namespace sand {

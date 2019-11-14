@@ -1,7 +1,7 @@
 #ifndef __CLIENT_PROXY_H__
 #define __CLIENT_PROXY_H__
 
-#include "MoveList.h"
+#include "Move.h"
 #include "ServerReplicationManager.h"
 #include "SocketAddress.h"
 
@@ -16,11 +16,6 @@ public:
 
     void UpdateLastPacketTime();
 
-    MoveList& GetUnprocessedMoveList()
-    {
-        return m_unprocessedMoves;
-    }
-
     const SocketAddress& GetSocketAddress() const
     {
         return m_socketAddress;
@@ -31,11 +26,22 @@ public:
         return m_name.c_str();
     }
 
+    ServerReplicationManager& GetReplicationManager()
+    {
+        return m_replicationManager;
+    }
+
+public:
+    Entity m_entity;
+
 private:
     ServerReplicationManager m_replicationManager;
+
     SocketAddress m_socketAddress;
-    MoveList m_unprocessedMoves;
     std::string m_name;
+
+    std::deque<Move> m_unprocessedMoves;
+
     F32 m_lastPacketTime;
     bool m_isLastMoveTimestampDirty;
 };

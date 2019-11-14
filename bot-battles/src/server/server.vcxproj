@@ -353,6 +353,7 @@
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="ServerSystem.cpp" />
     <ClCompile Include="SingletonServerComponent.cpp" />
+    <ClCompile Include="SpawnerSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientProxy.h" />
@@ -368,6 +369,7 @@
     <ClInclude Include="SDLDefs.h" />
     <ClInclude Include="ServerSystem.h" />
     <ClInclude Include="SingletonServerComponent.h" />
+    <ClInclude Include="SpawnerSystem.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StateDefs.h" />
     <ClInclude Include="TransformComponent.h" />

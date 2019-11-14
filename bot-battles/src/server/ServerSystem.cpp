@@ -2,6 +2,7 @@
 
 #include "ClientProxy.h"
 #include "Game.h"
+#include "LinkingContext.h"
 #include "MemoryStream.h"
 #include "MessageTypes.h"
 #include "SingletonServerComponent.h"
@@ -54,6 +55,34 @@ bool ServerSystem::Update()
 }
 
 //----------------------------------------------------------------------------------------------------
+void ServerSystem::OnNotify(const Event& event)
+{
+    switch (event.eventType) {
+    case EventType::PLAYER_ADDED: {
+        std::shared_ptr<SingletonServerComponent> server = g_game->GetSingletonServerComponent();
+        std::shared_ptr<ClientProxy> clientProxy = server->GetClientProxy(event.server.playerID);
+        const std::unordered_map<NetworkID, Entity>& networkIDToEntity = g_game->GetLinkingContext().GetNetworkIDToEntityMap();
+        for (const auto& pair : networkIDToEntity) {
+            clientProxy->GetReplicationManager().CreateEntityCommand(pair.first);
+        }
+        break;
+    }
+    case EventType::NET_ENTITY_ADDED: {
+        std::shared_ptr<SingletonServerComponent> server = g_game->GetSingletonServerComponent();
+        const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = server->GetPlayerIDToClientProxyMap();
+        for (const auto& pair : playerIDToClientProxy) {
+            pair.second->GetReplicationManager().CreateEntityCommand(event.netEntity.networkID);
+        }
+        break;
+    }
+
+    default: {
+        break;
+    }
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
 void ServerSystem::SendWelcomePacket(const SingletonServerComponent& server, PlayerID playerID, const SocketAddress& toSocketAddress) const
 {
     OutputMemoryStream welcomePacket;
@@ -91,7 +120,7 @@ bool ServerSystem::SendPacket(const SingletonServerComponent& server, const Outp
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerSystem::ReceivePackets(SingletonServerComponent& server) const
+void ServerSystem::ReceivePackets(SingletonServerComponent& server)
 {
     InputMemoryStream packet;
     SocketAddress fromSocketAddress;
@@ -121,7 +150,7 @@ void ServerSystem::ReceivePackets(SingletonServerComponent& server) const
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerSystem::ReceivePacket(SingletonServerComponent& server, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress) const
+void ServerSystem::ReceivePacket(SingletonServerComponent& server, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress)
 {
     ClientMessageType type;
     inputStream.Read(type);
@@ -150,7 +179,7 @@ void ServerSystem::ReceivePacket(SingletonServerComponent& server, InputMemorySt
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerSystem::ReceiveHelloPacket(SingletonServerComponent& server, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress, PlayerID& playerID) const
+void ServerSystem::ReceiveHelloPacket(SingletonServerComponent& server, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress, PlayerID& playerID)
 {
     playerID = server.GetPlayerID(fromSocketAddress);
     if (playerID == INVALID_PLAYER_ID) {
@@ -160,13 +189,12 @@ void ServerSystem::ReceiveHelloPacket(SingletonServerComponent& server, InputMem
 
         playerID = server.AddPlayer(fromSocketAddress, name.c_str());
         if (playerID != INVALID_PLAYER_ID) {
-            /* TODO (GAMEPLAY): add a new entity for this player.
-			The entity MUST be linked to the playerID somewhere so it can be removed properly if necessary.
-			E.g. send an event, etc. */
 
-            /* TODO: init the replication manager with everything we know about!
-			Everything we know about is stored in a map here and contains all objects that clients have registered to the server.
-			*/
+            Event newEvent;
+            newEvent.eventType = EventType::PLAYER_ADDED;
+            newEvent.server.playerID = playerID;
+            PushEvent(newEvent);
+
             ILOG("New player %s %u has joined the game", name.c_str(), playerID);
         }
     } else {

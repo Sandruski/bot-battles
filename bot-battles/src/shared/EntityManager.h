@@ -1,11 +1,6 @@
 #ifndef __ENTITY_MANAGER_H__
 #define __ENTITY_MANAGER_H__
 
-#include "ComponentDefs.h"
-#include "EntityDefs.h"
-#include "Observer.h"
-#include "Subject.h"
-
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------

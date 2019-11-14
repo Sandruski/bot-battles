@@ -10,6 +10,8 @@ enum class SystemType : U16 {
     WINDOW,
     RENDERER,
     EVENT,
+    INPUT,
+    SPAWNER,
 
     COUNT,
     INVALID
@@ -19,6 +21,7 @@ enum class SystemType : U16 {
     SERVER,
 
     NAVIGATION,
+    SPAWNER,
 
     COUNT,
     INVALID

@@ -1,12 +1,6 @@
 #ifndef __SYSTEM_MANAGER_H__
 #define __SYSTEM_MANAGER_H__
 
-#include "ComponentDefs.h"
-#include "EntityDefs.h"
-#include "SystemDefs.h"
-
-#include "Observer.h"
-
 namespace sand {
 
 class System;
@@ -21,6 +15,8 @@ public:
     bool RegisterSystem();
     template <class T>
     bool DeRegisterSystem();
+    template <class T>
+    std::shared_ptr<T> GetSystem();
 
     bool StartUp();
     bool PreUpdate();
@@ -32,7 +28,7 @@ public:
     void OnNotify(const Event& event);
 
 private:
-    std::vector<std::unique_ptr<System>> m_systems;
+    std::vector<std::shared_ptr<System>> m_systems;
 };
 
 //----------------------------------------------------------------------------------------------------
@@ -51,7 +47,7 @@ inline bool SystemManager::RegisterSystem()
         }
     }
 
-    m_systems.push_back(std::make_unique<T>());
+    m_systems.push_back(std::make_shared<T>());
 
     return true;
 }
@@ -65,15 +61,35 @@ inline bool SystemManager::DeRegisterSystem()
     SystemType type = T::GetType();
     assert(type != SystemType::COUNT && type != SystemType::INVALID);
 
-    for (const auto& system : m_systems) {
+    for (auto it = m_systems.begin(); it != m_systems.end(); ++it) {
+        std::shared_ptr<T> system = std::static_pointer_cast<T>(*it);
         if (system->GetType() == type) {
-            m_systems[static_cast<std::size_t>(type)] = nullptr;
+            m_systems.erase(it);
             return true;
         }
     }
 
     WLOG("The system is not registered!");
     return false;
+}
+
+//----------------------------------------------------------------------------------------------------
+template <class T>
+inline std::shared_ptr<T> SystemManager::GetSystem()
+{
+    static_assert(std::is_base_of<System, T>::value, "T is not derived from System");
+
+    SystemType type = T::GetType();
+    assert(type != SystemType::COUNT && type != SystemType::INVALID);
+
+    for (auto it = m_systems.begin(); it != m_systems.end(); ++it) {
+        std::shared_ptr<T> system = std::static_pointer_cast<T>(*it);
+        if (system->GetType() == type) {
+            return system;
+        }
+    }
+
+    return nullptr;
 }
 } // namespace sand
 

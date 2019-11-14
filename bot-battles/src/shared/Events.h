@@ -4,6 +4,7 @@
 #include "ComponentDefs.h"
 #include "EntityDefs.h"
 #include "EventTypes.h"
+#include "NetDefs.h"
 
 namespace sand {
 
@@ -13,17 +14,29 @@ struct EntityEvent {
     Signature signature;
 };
 
+struct NetEntityEvent {
+    EventType eventType;
+    NetworkID networkID;
+};
+
 struct ComponentEvent {
     EventType eventType;
     ComponentType componentType;
     Entity entity;
 };
 
+struct ServerEvent {
+    EventType eventType;
+    PlayerID playerID;
+};
+
 //----------------------------------------------------------------------------------------------------
 union Event {
     EventType eventType;
     EntityEvent entity;
+    NetEntityEvent netEntity;
     ComponentEvent component;
+    ServerEvent server;
 };
 }
 

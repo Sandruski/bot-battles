@@ -1,22 +1,20 @@
 #ifndef __LINKING_CONTEXT_H__
 #define __LINKING_CONTEXT_H__
 
-#include "EntityDefs.h"
-#include "NetDefs.h"
-
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class LinkingContext {
+class LinkingContext : public Subject {
 public:
     LinkingContext();
     ~LinkingContext();
 
-    NetworkID GetNetworkID(Entity entity) const;
-    Entity GetEntity(NetworkID networkID) const;
-
     NetworkID AddEntity(Entity entity, NetworkID networkID = INVALID_NETWORK_ID);
     bool RemoveEntity(Entity entity);
+
+    NetworkID GetNetworkID(Entity entity) const;
+    Entity GetEntity(NetworkID networkID) const;
+    const std::unordered_map<NetworkID, Entity>& GetNetworkIDToEntityMap() const;
 
 private:
     std::unordered_map<NetworkID, Entity> m_networkIDToEntity;

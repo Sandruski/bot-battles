@@ -10,9 +10,10 @@ ClientProxy::ClientProxy()
 //----------------------------------------------------------------------------------------------------
 ClientProxy::ClientProxy(const SocketAddress& socketAddress, const char* name)
     : m_replicationManager()
+    , m_entity()
     , m_socketAddress(socketAddress)
-    , m_unprocessedMoves()
     , m_name(name)
+    , m_unprocessedMoves()
     , m_lastPacketTime(0.0f)
     , m_isLastMoveTimestampDirty(true)
 {

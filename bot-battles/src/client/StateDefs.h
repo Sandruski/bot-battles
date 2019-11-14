@@ -3,8 +3,8 @@
 
 namespace sand {
 
-	const U32 MAX_STATES = 32;
-	const U32 INVALID_ENTITY = MAX_STATES;
+const U32 MAX_STATES = 32;
+const U32 INVALID_STATE = MAX_STATES + 1;
 }
 
 #endif

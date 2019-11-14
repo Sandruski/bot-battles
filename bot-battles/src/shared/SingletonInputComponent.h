@@ -23,10 +23,17 @@ struct SingletonInputComponent : public WriteNetComponent, public ReadNetCompone
     SingletonInputComponent()
         : m_acceleration()
         , m_angularAcceleration(0.0f)
+        , m_inputTime(0.03f)
+        , m_lastTime(0.0f)
     {
     }
     ~SingletonInputComponent()
     {
+    }
+
+    F32 GetNextInputTime() const
+    {
+        return m_lastTime + m_inputTime;
     }
 
     void Write(OutputMemoryStream& outputStream, U16 memberFlags) const override
@@ -54,6 +61,9 @@ struct SingletonInputComponent : public WriteNetComponent, public ReadNetCompone
 
     Vec2 m_acceleration;
     float m_angularAcceleration;
+
+    F32 m_inputTime;
+    F32 m_lastTime;
 };
 }
 

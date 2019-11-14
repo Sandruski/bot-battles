@@ -1,32 +1,27 @@
 #ifndef __SUBJECT_H__
 #define __SUBJECT_H__
 
-#include "Events.h"
+namespace sand {
 
+class Observer;
 
-namespace sand
-{
+//----------------------------------------------------------------------------------------------------
+class Subject {
+public:
+    Subject();
+    virtual ~Subject();
 
-	class Observer;
+    bool AddObserver(std::shared_ptr<Observer> observer);
+    bool RemoveObserver(std::shared_ptr<Observer> observer);
 
-	//----------------------------------------------------------------------------------------------------
-	class Subject
-	{
-	public:
-		Subject();
-		virtual ~Subject();
+    void PushEvent(Event event);
 
-		bool AddObserver(std::shared_ptr<Observer> observer);
-		bool RemoveObserver(std::shared_ptr<Observer> observer);
+    void NotifyAll();
 
-		void PushEvent(Event event);
-
-		void NotifyAll();
-
-	private:
-		std::vector<std::shared_ptr<Observer>> m_observers;
-		std::queue<Event> m_events;
-	};
+private:
+    std::vector<std::shared_ptr<Observer>> m_observers;
+    std::queue<Event> m_events;
+};
 }
 
 #endif

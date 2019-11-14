@@ -11,6 +11,7 @@
 
 #include "ClientSystem.h"
 #include "EventSystem.h"
+#include "InputSystem.h"
 #include "RendererSystem.h"
 #include "WindowSystem.h"
 
@@ -62,6 +63,10 @@ bool Game::Init()
         return false;
     }
     ret = m_systemManager->RegisterSystem<EventSystem>();
+    if (!ret) {
+        return false;
+    }
+    ret = m_systemManager->RegisterSystem<InputSystem>();
     if (!ret) {
         return false;
     }

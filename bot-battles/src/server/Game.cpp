@@ -10,6 +10,7 @@
 
 #include "NavigationSystem.h"
 #include "ServerSystem.h"
+#include "SpawnerSystem.h"
 
 #include "SingletonServerComponent.h"
 
@@ -55,6 +56,10 @@ bool Game::Init()
     if (!ret) {
         return false;
     }
+    ret = m_systemManager->RegisterSystem<SpawnerSystem>();
+    if (!ret) {
+        return false;
+    }
 
     // Components
     ret = m_componentManager->RegisterComponent<TransformComponent>();
@@ -84,6 +89,23 @@ bool Game::Init()
     }
 
     ret = m_componentManager->AddObserver(m_componentManager);
+    if (!ret) {
+        return false;
+    }
+
+    std::shared_ptr<ServerSystem> server = m_systemManager->GetSystem<ServerSystem>();
+    ret = server->AddObserver(server);
+    if (!ret) {
+        return false;
+    }
+
+    ret = m_linkingContext->AddObserver(server);
+    if (!ret) {
+        return false;
+    }
+
+    std::shared_ptr<SpawnerSystem> spawner = m_systemManager->GetSystem<SpawnerSystem>();
+    ret = server->AddObserver(spawner);
     if (!ret) {
         return false;
     }

@@ -41,8 +41,18 @@
 #include "Timer.h"
 #include "Utils.h"
 
+// Events
+#include "Events.h"
+#include "Observer.h"
+#include "Subject.h"
+
+// Defs
+#include "ComponentDefs.h"
+#include "EntityDefs.h"
+#include "NetDefs.h"
+#include "SystemDefs.h"
+
 //----------------------------------------------------------------------------------------------------
-// Project
 #include "Colors.h"
 
 #endif //PCH_H
