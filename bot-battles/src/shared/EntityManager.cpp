@@ -40,6 +40,11 @@ Entity EntityManager::AddEntity()
 
     m_entitiesToSignatures[entity] = signatureIndex;
 
+    Event newEvent;
+    newEvent.eventType = EventType::ENTITY_ADDED;
+    newEvent.entity.entity = entity;
+    PushEvent(newEvent);
+
     return entity;
 }
 

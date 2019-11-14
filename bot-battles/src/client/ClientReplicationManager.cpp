@@ -64,26 +64,27 @@ void ClientReplicationManager::Read(InputMemoryStream& inputStream) const
 //----------------------------------------------------------------------------------------------------
 void ClientReplicationManager::ReadCreateEntityAction(InputMemoryStream& inputStream, NetworkID networkID) const
 {
-    Signature signature = 0;
-    inputStream.Read(signature /*, GetRequiredBits<static_cast<U16>(MAX_COMPONENTS)>::value*/); // TODO: write max server components
-
     Entity entity = g_game->GetLinkingContext().GetEntity(networkID);
-    if (entity == INVALID_ENTITY) {
-        entity = g_game->GetEntityManager().AddEntity();
-        g_game->GetLinkingContext().AddEntity(entity, networkID);
-
-        if (signature & static_cast<std::size_t>(ComponentType::TRANSFORM)) {
-            g_game->GetComponentManager().AddComponent<TransformComponent>(entity);
-        }
+    if (entity != INVALID_ENTITY) {
+        ReadUpdateEntityAction(inputStream, networkID);
+        return;
     }
 
-    if (signature & static_cast<std::size_t>(ComponentType::TRANSFORM)) {
+    entity = g_game->GetEntityManager().AddEntity();
+    g_game->GetLinkingContext().AddEntity(entity, networkID);
 
-        std::shared_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
-        transformComponent->Read(inputStream);
+    Signature signature = 0;
+    inputStream.Read(signature /*, GetRequiredBits<static_cast<U16>(MAX_COMPONENTS)>::value*/); // TODO: read server MAX_COMPONENTS
+
+    U16 hasTransform = 1 << static_cast<std::size_t>(ComponentType::TRANSFORM);
+    if (signature & hasTransform) {
+        U16 memberFlags = 0;
+        inputStream.Read(memberFlags, GetRequiredBits<static_cast<U16>(TransformComponent::MemberType::COUNT)>::value);
+        std::shared_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().AddComponent<TransformComponent>(entity);
+        transformComponent->Read(inputStream, memberFlags);
     }
 
-    // TODO: Read total size of things written
+    // TODO: read total size of things written
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -98,15 +99,17 @@ void ClientReplicationManager::ReadUpdateEntityAction(InputMemoryStream& inputSt
     }
 
     Signature signature = 0;
-    inputStream.Read(signature /*, GetRequiredBits<static_cast<U16>(MAX_COMPONENTS)>::value*/); // TODO: write max server components
+    inputStream.Read(signature /*, GetRequiredBits<static_cast<U16>(MAX_COMPONENTS)>::value*/); // TODO: read server MAX_COMPONENTS
 
-    if (signature & static_cast<std::size_t>(ComponentType::TRANSFORM)) {
-
+    U16 hasTransform = 1 << static_cast<std::size_t>(ComponentType::TRANSFORM);
+    if (signature & hasTransform) {
+        U16 memberFlags = 0;
+        inputStream.Read(memberFlags, GetRequiredBits<static_cast<U16>(TransformComponent::MemberType::COUNT)>::value);
         std::shared_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
-        transformComponent->Read(inputStream);
+        transformComponent->Read(inputStream, memberFlags);
     }
 
-    // TODO: Read total size of things written
+    // TODO: read total size of things written
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -114,7 +117,7 @@ void ClientReplicationManager::ReadRemoveEntityAction(InputMemoryStream& /*input
 {
     Entity entity = g_game->GetLinkingContext().GetEntity(networkID);
     if (entity == INVALID_ENTITY) {
-        // TODO: Read total size of things written
+        // TODO: read total size of things written
         //U32 bitCount = replicationHeader.GetBitCount();
         //WLOG("The entity has not been created yet. Advancing the memory stream's head %u bits...", bitCount);
         //inputStream.AdvanceHead(bitCount);

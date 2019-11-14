@@ -94,12 +94,12 @@ bool Game::Init()
     }
 
     std::shared_ptr<ServerSystem> server = m_systemManager->GetSystem<ServerSystem>();
-    ret = server->AddObserver(server);
+    ret = m_entityManager->AddObserver(server);
     if (!ret) {
         return false;
     }
 
-    ret = m_linkingContext->AddObserver(server);
+    ret = server->AddObserver(server);
     if (!ret) {
         return false;
     }
@@ -142,11 +142,6 @@ bool Game::Update()
     }
 
     ret = m_systemManager->PreUpdate();
-    if (!ret) {
-        return false;
-    }
-
-    ret = m_linkingContext->PreUpdate();
     if (!ret) {
         return false;
     }

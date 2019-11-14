@@ -16,14 +16,6 @@ LinkingContext::~LinkingContext()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool LinkingContext::PreUpdate()
-{
-    NotifyAll();
-
-    return true;
-}
-
-//----------------------------------------------------------------------------------------------------
 NetworkID LinkingContext::AddEntity(Entity entity, NetworkID networkID)
 {
     assert(entity != INVALID_ENTITY);
@@ -42,11 +34,6 @@ NetworkID LinkingContext::AddEntity(Entity entity, NetworkID networkID)
 
     m_networkIDToEntity.insert(std::make_pair(newNetworkID, entity));
     m_entityToNetworkID.insert(std::make_pair(entity, newNetworkID));
-
-    Event newEvent;
-    newEvent.eventType = EventType::NET_ENTITY_ADDED;
-    newEvent.netEntity.networkID = newNetworkID;
-    PushEvent(newEvent);
 
     return newNetworkID;
 }

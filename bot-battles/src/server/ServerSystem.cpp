@@ -76,12 +76,26 @@ void ServerSystem::OnNotify(const Event& event)
         }
         break;
     }
-    case EventType::NET_ENTITY_ADDED: {
+    case EventType::ENTITY_ADDED: {
         std::shared_ptr<SingletonServerComponent> server = g_game->GetSingletonServerComponent();
+        NetworkID networkID = g_game->GetLinkingContext().GetNetworkID(event.entity.entity);
+        if (networkID == INVALID_NETWORK_ID) {
+            break;
+        }
         const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = server->GetPlayerIDToClientProxyMap();
         for (const auto& pair : playerIDToClientProxy) {
-            pair.second->GetReplicationManager().CreateEntityCommand(event.netEntity.networkID);
+            pair.second->GetReplicationManager().CreateEntityCommand(networkID);
         }
+        break;
+    }
+    case EventType::ENTITY_SIGNATURE_CHANGED: {
+        std::shared_ptr<SingletonServerComponent> server = g_game->GetSingletonServerComponent();
+        NetworkID networkID = g_game->GetLinkingContext().GetNetworkID(event.entity.entity);
+        const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = server->GetPlayerIDToClientProxyMap();
+        for (const auto& pair : playerIDToClientProxy) {
+            pair.second->GetReplicationManager().CreateEntityCommand(networkID); // TODO: Update instead of Create
+        }
+        // TODO: only Update changed members of changed components
         break;
     }
 

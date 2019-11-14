@@ -5,6 +5,7 @@ namespace sand {
 
 #ifdef _CLIENT
 enum class EventType {
+    ENTITY_ADDED,
     ENTITY_REMOVED,
     ENTITY_SIGNATURE_CHANGED,
 
@@ -18,10 +19,9 @@ enum class EventType {
 };
 #elif _SERVER
 enum class EventType {
+    ENTITY_ADDED,
     ENTITY_REMOVED,
     ENTITY_SIGNATURE_CHANGED,
-
-    NET_ENTITY_ADDED,
 
     COMPONENT_ADDED,
     COMPONENT_REMOVED,

@@ -107,31 +107,37 @@ void ServerReplicationManager::Write(OutputMemoryStream& outputStream)
 void ServerReplicationManager::WriteCreateEntityAction(OutputMemoryStream& outputStream, NetworkID networkID) const
 {
     Entity entity = g_game->GetLinkingContext().GetEntity(networkID);
+
     Signature signature = g_game->GetEntityManager().GetSignature(entity); // Signature contains ALL components
-    outputStream.Write(signature /*, GetRequiredBits<static_cast<U16>(MAX_COMPONENTS)>::value*/); // TODO: write max server components
+    outputStream.Write(signature /*, GetRequiredBits<static_cast<U16>(MAX_COMPONENTS)>::value*/); // TODO: write server MAX_COMPONENTS
 
-    if (signature & static_cast<std::size_t>(ComponentType::TRANSFORM)) {
-
+    U16 hasTransform = 1 << static_cast<std::size_t>(ComponentType::TRANSFORM);
+    if (signature & hasTransform) {
+        U16 memberFlags = static_cast<U16>(TransformComponent::MemberType::ALL); // MemberFlags contains ALL members
+        outputStream.Write(memberFlags, GetRequiredBits<static_cast<U16>(TransformComponent::MemberType::COUNT)>::value);
         std::shared_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
-        transformComponent->Write(outputStream, static_cast<U16>(TransformComponent::MemberType::ALL));
+        transformComponent->Write(outputStream, memberFlags);
     }
 
-    // TODO: Write total size of things written instead of static_cast<U16>(TransformComponent::MemberType::ALL)
+    // TODO: write total size of things written
 }
 
 //----------------------------------------------------------------------------------------------------
 void ServerReplicationManager::WriteUpdateEntityAction(OutputMemoryStream& outputStream, NetworkID networkID) const
 {
     Entity entity = g_game->GetLinkingContext().GetEntity(networkID);
-    Signature signature = g_game->GetEntityManager().GetSignature(entity); // Signature ONLY contains components that have suffered changes
+
+    Signature signature = g_game->GetEntityManager().GetSignature(entity); // Signature contains ONLY changed components
     outputStream.Write(signature /*, GetRequiredBits<static_cast<U16>(MAX_COMPONENTS)>::value*/); // TODO: write max server components
 
-    if (signature & static_cast<std::size_t>(ComponentType::TRANSFORM)) {
-
+    U16 hasTransform = 1 << static_cast<std::size_t>(ComponentType::TRANSFORM);
+    if (signature & hasTransform) {
+        U16 memberFlags = static_cast<U16>(TransformComponent::MemberType::ALL); // MemberFlags contains ONLY changed memebers
+        outputStream.Write(memberFlags, GetRequiredBits<static_cast<U16>(TransformComponent::MemberType::COUNT)>::value);
         std::shared_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
-        transformComponent->Write(outputStream, static_cast<U16>(TransformComponent::MemberType::ALL));
+        transformComponent->Write(outputStream, memberFlags);
     }
 
-    // TODO: Write total size of things written instead of static_cast<U16>(TransformComponent::MemberType::ALL)
+    // TODO: write total size of things written
 }
 }

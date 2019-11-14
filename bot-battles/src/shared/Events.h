@@ -14,11 +14,6 @@ struct EntityEvent {
     Signature signature;
 };
 
-struct NetEntityEvent {
-    EventType eventType;
-    NetworkID networkID;
-};
-
 struct ComponentEvent {
     EventType eventType;
     ComponentType componentType;
@@ -34,7 +29,6 @@ struct ServerEvent {
 union Event {
     EventType eventType;
     EntityEvent entity;
-    NetEntityEvent netEntity;
     ComponentEvent component;
     ServerEvent server;
 };

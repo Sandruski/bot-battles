@@ -41,10 +41,10 @@ void SpawnerSystem::OnNotify(const Event& event)
 Entity SpawnerSystem::SpawnPlayerEntity() const
 {
     Entity character = g_game->GetEntityManager().AddEntity();
+    g_game->GetLinkingContext().AddEntity(character);
+
     std::shared_ptr<TransformComponent> transform = g_game->GetComponentManager().AddComponent<TransformComponent>(character);
     transform->m_position = Vec2(10.0f, 40.0f);
-
-    g_game->GetLinkingContext().AddEntity(character);
 
     return character;
 }

@@ -27,7 +27,7 @@ public:
     }
 
     void Write(OutputMemoryStream& outputStream, U16 memberFlags) const override;
-    void Read(InputMemoryStream& inputStream) override;
+    void Read(InputMemoryStream& inputStream, U16 memberFlags) override;
 
 private:
     SingletonInputComponent m_input;
