@@ -34,6 +34,8 @@ public:
 public:
     Entity m_entity;
 
+    bool m_isLastMoveTimestampDirty;
+
 private:
     ServerReplicationManager m_replicationManager;
 
@@ -43,7 +45,6 @@ private:
     std::deque<Move> m_unprocessedMoves;
 
     F32 m_lastPacketTime;
-    bool m_isLastMoveTimestampDirty;
 };
 }
 

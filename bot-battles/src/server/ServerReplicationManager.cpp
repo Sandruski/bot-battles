@@ -50,54 +50,54 @@ bool ServerReplicationManager::RemoveEntityCommand(NetworkID networkID)
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerReplicationManager::WriteActions(OutputMemoryStream& outputStream)
+void ServerReplicationManager::Write(OutputMemoryStream& outputStream)
 {
     for (auto& pair : m_networkIDToReplicationCommand) {
 
         ReplicationCommand& replicationCommand = pair.second;
-        if (replicationCommand.IsDirty()) {
+        //if (replicationCommand.IsDirty()) {
 
-            NetworkID networkID = pair.first;
-            outputStream.Write(networkID);
+        NetworkID networkID = pair.first;
+        outputStream.Write(networkID);
 
-            ReplicationAction replicationAction = replicationCommand.m_replicationAction;
-            outputStream.Write(replicationAction, GetRequiredBits<static_cast<U8>(ReplicationAction::COUNT)>::value);
+        ReplicationAction replicationAction = replicationCommand.m_replicationAction;
+        outputStream.Write(replicationAction, GetRequiredBits<static_cast<U8>(ReplicationAction::COUNT)>::value);
 
-            /*
+        /*
 			uint32_t writtenState = 0;
 			uint32_t dirtyState = replicationCommand.GetDirtyState();
 			*/
 
-            switch (replicationAction) {
+        switch (replicationAction) {
 
-            case ReplicationAction::CREATE_ENTITY: {
+        case ReplicationAction::CREATE_ENTITY: {
 
-                WriteCreateEntityAction(outputStream, networkID);
-                replicationCommand.m_replicationAction = ReplicationAction::UPDATE_ENTITY;
+            WriteCreateEntityAction(outputStream, networkID);
+            replicationCommand.m_replicationAction = ReplicationAction::UPDATE_ENTITY;
 
-                break;
-            }
-
-            case ReplicationAction::UPDATE_ENTITY: {
-
-                WriteUpdateEntityAction(outputStream, networkID);
-
-                break;
-            }
-
-            case ReplicationAction::REMOVE_ENTITY: {
-
-                // Nothing to do here...
-
-                break;
-            }
-
-            default: {
-                WLOG("Unknown replication action received from networkID %u", networkID);
-                break;
-            }
-            }
+            break;
         }
+
+        case ReplicationAction::UPDATE_ENTITY: {
+
+            WriteUpdateEntityAction(outputStream, networkID);
+
+            break;
+        }
+
+        case ReplicationAction::REMOVE_ENTITY: {
+
+            // Nothing to do here...
+
+            break;
+        }
+
+        default: {
+            WLOG("Unknown replication action received from networkID %u", networkID);
+            break;
+        }
+        }
+        //}
     }
 
     // TODO

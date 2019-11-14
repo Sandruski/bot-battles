@@ -47,17 +47,22 @@ bool ClientSystem::Update()
 {
     std::shared_ptr<SingletonClientComponent> client = g_game->GetSingletonClientComponent();
 
-    ReceivePackets(*client);
+    ReceiveIncomingPackets(*client);
     // TODO: ProcessQueuedPackets()
-
-    const bool isConnected = client->IsConnected();
-    if (!isConnected) {
-        UpdateSendHelloPacket(*client);
-    } else {
-        UpdateSendInputPacket(*client);
-    }
+    SendOutgoingPackets(*client);
 
     return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+void ClientSystem::SendOutgoingPackets(SingletonClientComponent& client) const
+{
+    const bool isConnected = client.IsConnected();
+    if (!isConnected) {
+        UpdateSendHelloPacket(client);
+    } else {
+        UpdateSendInputPacket(client);
+    }
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -118,7 +123,7 @@ bool ClientSystem::SendInputPacket(const SingletonClientComponent& client) const
     U32 totalMoveCount = client.GetMoveCount();
     U32 startIndex = totalMoveCount > MAX_MOVES_PER_PACKET ? totalMoveCount - MAX_MOVES_PER_PACKET - 1 : 0;
     U32 moveCount = totalMoveCount - startIndex;
-    inputPacket.Write(moveCount);
+    inputPacket.Write(moveCount, GetRequiredBits<MAX_MOVES_PER_PACKET>::value);
     for (U32 i = startIndex; i < moveCount; ++i) {
         const Move& move = client.GetMove(i);
         move.Write(inputPacket, static_cast<U16>(SingletonInputComponent::MemberType::ALL));
@@ -141,7 +146,7 @@ bool ClientSystem::SendPacket(const SingletonClientComponent& client, const Outp
 }
 
 //----------------------------------------------------------------------------------------------------
-void ClientSystem::ReceivePackets(SingletonClientComponent& client) const
+void ClientSystem::ReceiveIncomingPackets(SingletonClientComponent& client) const
 {
     InputMemoryStream packet;
     SocketAddress fromSocketAddress;
@@ -187,8 +192,7 @@ void ClientSystem::ReceivePacket(SingletonClientComponent& client, InputMemorySt
     }
 
     default: {
-        //WLOG("Unknown packet received from socket address %s", fromSocketAddress.GetName());
-        // Should receive packet contain fromSocketAddress as well?
+        WLOG("Unknown packet received");
         break;
     }
     }

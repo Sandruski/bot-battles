@@ -48,8 +48,9 @@ bool ServerSystem::Update()
 {
     std::shared_ptr<SingletonServerComponent> server = g_game->GetSingletonServerComponent();
 
-    ReceivePackets(*server);
+    ReceiveIncomingPackets(*server);
     // TODO: ProcessQueuedPackets()
+    SendOutgoingPackets(*server);
 
     return true;
 }
@@ -83,6 +84,18 @@ void ServerSystem::OnNotify(const Event& event)
 }
 
 //----------------------------------------------------------------------------------------------------
+void ServerSystem::SendOutgoingPackets(SingletonServerComponent& server) const
+{
+    const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = server.GetPlayerIDToClientProxyMap();
+    for (const auto& pair : playerIDToClientProxy) {
+        std::shared_ptr<ClientProxy> clientProxy = pair.second;
+        //if (clientProxy->m_isLastMoveTimestampDirty) {
+        SendStatePacket(server, clientProxy);
+        //}
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
 void ServerSystem::SendWelcomePacket(const SingletonServerComponent& server, PlayerID playerID, const SocketAddress& toSocketAddress) const
 {
     OutputMemoryStream welcomePacket;
@@ -102,15 +115,19 @@ void ServerSystem::SendWelcomePacket(const SingletonServerComponent& server, Pla
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerSystem::SendStatePacket(const SingletonServerComponent& /*server*/, PlayerID playerID, const SocketAddress& /*toSocketAddress*/) const
+void ServerSystem::SendStatePacket(const SingletonServerComponent& server, std::shared_ptr<ClientProxy> clientProxy) const
 {
-    OutputMemoryStream welcomePacket;
-    welcomePacket.Write(ServerMessageType::STATE);
-    welcomePacket.Write(playerID);
+    OutputMemoryStream statePacket;
+    statePacket.Write(ServerMessageType::STATE);
+    clientProxy->GetReplicationManager().Write(statePacket);
 
-    ILOG("Sending state packet to player %u...", playerID);
+    const char* name = clientProxy->GetName();
+    ILOG("Sending state packet to player %s...", name);
 
-    // TODO
+    const bool result = SendPacket(server, statePacket, clientProxy->GetSocketAddress());
+    if (result) {
+        ILOG("Welcome packet successfully sent to player %s", name);
+    }
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -120,7 +137,7 @@ bool ServerSystem::SendPacket(const SingletonServerComponent& server, const Outp
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerSystem::ReceivePackets(SingletonServerComponent& server)
+void ServerSystem::ReceiveIncomingPackets(SingletonServerComponent& server)
 {
     InputMemoryStream packet;
     SocketAddress fromSocketAddress;
@@ -162,7 +179,6 @@ void ServerSystem::ReceivePacket(SingletonServerComponent& server, InputMemorySt
     }
 
     case ClientMessageType::INPUT: {
-
         ReceiveInputPacket(server, inputStream, fromSocketAddress, playerID);
         break;
     }

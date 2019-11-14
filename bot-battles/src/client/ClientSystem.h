@@ -25,13 +25,14 @@ public:
     bool Update() override;
 
 private:
+    void SendOutgoingPackets(SingletonClientComponent& client) const;
     void UpdateSendHelloPacket(SingletonClientComponent& client) const;
     void UpdateSendInputPacket(SingletonClientComponent& client) const;
     bool SendHelloPacket(const SingletonClientComponent& client) const;
     bool SendInputPacket(const SingletonClientComponent& client) const;
     bool SendPacket(const SingletonClientComponent& client, const OutputMemoryStream& outputStream) const;
 
-    void ReceivePackets(SingletonClientComponent& client) const;
+    void ReceiveIncomingPackets(SingletonClientComponent& client) const;
     void ReceivePacket(SingletonClientComponent& client, InputMemoryStream& inputStream) const;
     void ReceiveWelcomePacket(SingletonClientComponent& client, InputMemoryStream& inputStream) const;
     void ReceiveStatePacket(SingletonClientComponent& client, InputMemoryStream& inputStream) const;
