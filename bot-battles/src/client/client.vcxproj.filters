@@ -176,9 +176,6 @@
     <ClInclude Include="EventSystem.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="TransformComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
     <ClInclude Include="ClientReplicationManager.h">
       <Filter>Header Files\Networking</Filter>
     </ClInclude>

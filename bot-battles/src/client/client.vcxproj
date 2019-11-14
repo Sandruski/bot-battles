@@ -349,7 +349,6 @@
     <ClInclude Include="TextureImporter.h" />
     <ClInclude Include="RendererSystem.h" />
     <ClInclude Include="ResourceManager.h" />
-    <ClInclude Include="TransformComponent.h" />
     <ClInclude Include="WindowSystem.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceTexture.h" />

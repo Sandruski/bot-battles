@@ -131,9 +131,6 @@
     <ClInclude Include="ClientProxy.h">
       <Filter>Header Files\Networking</Filter>
     </ClInclude>
-    <ClInclude Include="TransformComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
     <ClInclude Include="NavigationSystem.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>

@@ -8,7 +8,7 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-struct TransformComponent : public ReadNetComponent {
+struct TransformComponent : public WriteNetComponent, public ReadNetComponent {
 
     enum class MemberType : U16 {
         POSITION = 1 << 0,
@@ -30,8 +30,29 @@ struct TransformComponent : public ReadNetComponent {
     }
     ~TransformComponent() { }
 
+    void Write(OutputMemoryStream& outputStream, U16 memberFlags) const override
+    {
+        std::string a = "Hello";
+        outputStream.Write(a);
+        a = "Hiiiiiiiiiiiiiiiii";
+        outputStream.Write(a);
+
+        outputStream.Write(memberFlags, GetRequiredBits<static_cast<U16>(TransformComponent::MemberType::COUNT)>::value);
+        if (memberFlags & static_cast<U16>(MemberType::POSITION)) {
+            outputStream.Write(m_position);
+        }
+        if (memberFlags & static_cast<U16>(MemberType::ROTATION)) {
+            outputStream.Write(m_rotation);
+        }
+    }
+
     void Read(InputMemoryStream& inputStream) override
     {
+        std::string a;
+        inputStream.Read(a);
+        std::string b;
+        inputStream.Read(b);
+
         U16 memberFlags = 0;
         inputStream.Read(memberFlags, GetRequiredBits<static_cast<U16>(TransformComponent::MemberType::COUNT)>::value);
         if (memberFlags & static_cast<U16>(MemberType::POSITION)) {

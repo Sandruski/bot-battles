@@ -41,6 +41,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)SystemTypes.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Time.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Timer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)TransformComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)UDPSocket.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utils.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Vec2.h" />

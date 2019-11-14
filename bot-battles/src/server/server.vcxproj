@@ -372,7 +372,6 @@
     <ClInclude Include="SpawnerSystem.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StateDefs.h" />
-    <ClInclude Include="TransformComponent.h" />
     <ClInclude Include="WorkingDirDefs.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
