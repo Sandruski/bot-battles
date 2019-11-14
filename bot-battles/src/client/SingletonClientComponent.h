@@ -45,7 +45,7 @@ struct SingletonClientComponent {
 
     U32 GetMoveCount() const
     {
-        return m_moves.size();
+        return static_cast<U32>(m_moves.size());
     }
 
     bool HasMoves() const
