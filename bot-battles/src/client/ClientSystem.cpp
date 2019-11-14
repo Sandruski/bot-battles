@@ -149,12 +149,12 @@ bool ClientSystem::SendPacket(const SingletonClientComponent& client, const Outp
 //----------------------------------------------------------------------------------------------------
 void ClientSystem::ReceiveIncomingPackets(SingletonClientComponent& client) const
 {
-    InputMemoryStream packet;
-    SocketAddress fromSocketAddress;
-
     U32 receivedPacketCount = 0;
 
     while (receivedPacketCount < MAX_PACKETS_PER_FRAME) {
+
+        InputMemoryStream packet;
+        SocketAddress fromSocketAddress;
 
         I32 readByteCount = client.m_socket->ReceiveFrom(packet.GetPtr(), packet.GetByteCapacity(), fromSocketAddress);
         if (readByteCount > 0) {

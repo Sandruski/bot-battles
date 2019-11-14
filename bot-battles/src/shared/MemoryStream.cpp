@@ -68,13 +68,6 @@ void OutputMemoryStream::WriteBits(U8 inData, U32 bitCount)
 }
 
 //----------------------------------------------------------------------------------------------------
-void OutputMemoryStream::WriteBytes(const void* inData, U32 byteCount)
-{
-    U32 bitCount = BYTES_TO_BITS(byteCount);
-    WriteBits(inData, bitCount);
-}
-
-//----------------------------------------------------------------------------------------------------
 void OutputMemoryStream::Write(bool inData)
 {
     WriteBits(&inData, 1);
@@ -86,16 +79,9 @@ void OutputMemoryStream::Write(const std::string& inString)
     std::size_t size = inString.size();
     Write(size);
 
-    WriteBytes(inString.c_str(), size * sizeof(char));
-}
-
-//----------------------------------------------------------------------------------------------------
-void OutputMemoryStream::Write(const char* inString)
-{
-    std::size_t size = std::strlen(inString) + 1;
-    Write(size);
-
-    WriteBytes(inString, size * sizeof(char));
+    for (const auto& element : inString) {
+        WriteBits(&element, 1);
+    }
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -108,8 +94,10 @@ void OutputMemoryStream::Write(const Vec2& inVec)
 //----------------------------------------------------------------------------------------------------
 void OutputMemoryStream::WritePosition(const Vec2& inVec) // TODO: this should be done properly and without hard-coded values
 {
-    Write(FLOAT_TO_FIXED(inVec.x, -2000.0f, 0.1f));
-    Write(FLOAT_TO_FIXED(inVec.y, -2000.0f, 0.1f));
+    U32 x = FLOAT_TO_FIXED(inVec.x, -20.0f, 0.1f);
+    U32 y = FLOAT_TO_FIXED(inVec.y, -20.0f, 0.1f);
+    Write(x);
+    Write(y);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -196,12 +184,6 @@ void InputMemoryStream::ReadBits(U8& outData, U32 bitCount)
 }
 
 //----------------------------------------------------------------------------------------------------
-void InputMemoryStream::ReadBytes(void* outData, U32 byteCount)
-{
-    ReadBits(outData, BYTES_TO_BITS(byteCount));
-}
-
-//----------------------------------------------------------------------------------------------------
 void InputMemoryStream::Read(bool& outData)
 {
     ReadBits(&outData, 1);
@@ -214,17 +196,9 @@ void InputMemoryStream::Read(std::string& outString)
     Read(size);
     outString.resize(size);
 
-    ReadBytes(const_cast<char*>(outString.c_str()), size * sizeof(char));
-}
-
-//----------------------------------------------------------------------------------------------------
-void InputMemoryStream::Read(char*& outString)
-{
-    std::size_t size;
-    Read(size);
-    outString = new char[size];
-
-    ReadBytes(outString, size * sizeof(char));
+    for (auto& element : outString) {
+        ReadBits(&element, 1);
+    }
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -237,11 +211,12 @@ void InputMemoryStream::Read(Vec2& outVec)
 //----------------------------------------------------------------------------------------------------
 void InputMemoryStream::ReadPosition(Vec2& outVec) // TODO: this should be done properly and without hard-coded values
 {
-    Vec2 tmpVec;
-    Read(tmpVec.x);
-    Read(tmpVec.y);
-    outVec.x = FIXED_TO_FLOAT(static_cast<U32>(tmpVec.x), -2000.0f, 0.1f);
-    outVec.y = FIXED_TO_FLOAT(static_cast<U32>(tmpVec.y), -2000.0f, 0.1f);
+    U32 x = 0;
+    Read(x);
+    U32 y = 0;
+    Read(y);
+    outVec.x = FIXED_TO_FLOAT(x, -20.0f, 0.1f);
+    outVec.y = FIXED_TO_FLOAT(y, -20.0f, 0.1f);
 }
 
 //----------------------------------------------------------------------------------------------------

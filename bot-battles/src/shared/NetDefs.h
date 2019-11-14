@@ -8,7 +8,8 @@ enum class Endianness {
     BIG_ENDIAN // Xbox 360, PlayStation 3, IBM's PowerPC
 };
 
-const Endianness STREAM_ENDIANNESS = Endianness::LITTLE_ENDIAN;
+const Endianness OUTPUT_STREAM_ENDIANNESS = Endianness::LITTLE_ENDIAN;
+const Endianness INPUT_STREAM_ENDIANNESS = Endianness::LITTLE_ENDIAN;
 
 inline const Endianness PLATFORM_ENDIANNESS()
 {

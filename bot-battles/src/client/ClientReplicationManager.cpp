@@ -24,6 +24,7 @@ ClientReplicationManager::~ClientReplicationManager()
 void ClientReplicationManager::Read(InputMemoryStream& inputStream) const
 {
     while (inputStream.GetRemainingBitCount() >= 32) {
+
         NetworkID networkID = INVALID_NETWORK_ID;
         inputStream.Read(networkID);
 
@@ -48,7 +49,7 @@ void ClientReplicationManager::Read(InputMemoryStream& inputStream) const
 
         case ReplicationAction::REMOVE_ENTITY: {
 
-            ReadUpdateEntityAction(inputStream, networkID);
+            ReadRemoveEntityAction(inputStream, networkID);
 
             break;
         }

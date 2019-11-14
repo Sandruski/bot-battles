@@ -42,7 +42,6 @@ public:
 
     void WriteBits(U8 inData, U32 bitCount);
     void WriteBits(const void* inData, U32 bitCount);
-    void WriteBytes(const void* inData, U32 byteCount);
 
     template <typename T>
     void Write(T inData, U32 bitCount = sizeof(T) * 8);
@@ -50,7 +49,6 @@ public:
     template <typename T>
     void Write(const std::vector<T>& inVector);
     void Write(const std::string& inString);
-    void Write(const char* inString);
     void Write(const Vec2& inVec);
     void WritePosition(const Vec2& inVec);
 
@@ -79,7 +77,7 @@ inline void OutputMemoryStream::Write(T inData, U32 bitCount)
 {
     static_assert(std::is_arithmetic<T>::value || std::is_enum<T>::value, "Data is a non-primitive type");
 
-    if (STREAM_ENDIANNESS == PLATFORM_ENDIANNESS()) {
+    if (OUTPUT_STREAM_ENDIANNESS == PLATFORM_ENDIANNESS()) {
         WriteBits(&inData, bitCount);
     } else {
         T swappedData = ByteSwap(inData);
@@ -110,7 +108,6 @@ public:
 
     void ReadBits(U8& outData, U32 bitCount);
     void ReadBits(void* outData, U32 bitCount);
-    void ReadBytes(void* outData, U32 byteCount);
 
     template <typename T>
     void Read(T& outData, U32 bitCount = sizeof(T) * 8);
@@ -118,7 +115,6 @@ public:
     template <typename T>
     void Read(std::vector<T>& outVector);
     void Read(std::string& outString);
-    void Read(char*& outString);
     void Read(Vec2& outVec);
     void ReadPosition(Vec2& outVec);
 
@@ -156,7 +152,7 @@ inline void InputMemoryStream::Read(T& outData, U32 bitCount)
 {
     static_assert(std::is_arithmetic<T>::value || std::is_enum<T>::value, "Data is a non-primitive type");
 
-    if (STREAM_ENDIANNESS == PLATFORM_ENDIANNESS()) {
+    if (INPUT_STREAM_ENDIANNESS == PLATFORM_ENDIANNESS()) {
         ReadBits(&outData, bitCount);
     } else {
         T unswappedData;

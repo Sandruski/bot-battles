@@ -80,7 +80,7 @@ void ServerReplicationManager::Write(OutputMemoryStream& outputStream)
 
         case ReplicationAction::UPDATE_ENTITY: {
 
-            WriteUpdateEntityAction(outputStream, networkID);
+            //WriteUpdateEntityAction(outputStream, networkID);
 
             break;
         }
