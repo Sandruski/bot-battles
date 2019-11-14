@@ -13,7 +13,7 @@ struct WriteNetComponent {
 
 //----------------------------------------------------------------------------------------------------
 struct ReadNetComponent {
-    virtual void Read(InputMemoryStream& inputStream, U16 memberFlags) = 0;
+    virtual void Read(InputMemoryStream& inputStream) = 0;
 };
 }
 

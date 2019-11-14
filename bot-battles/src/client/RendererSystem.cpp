@@ -18,7 +18,8 @@ namespace sand {
 RendererSystem::RendererSystem()
 {
     m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
-    m_signature |= 1 << static_cast<U16>(ComponentType::SPRITE);
+    //m_signature |= 1 << static_cast<U16>(ComponentType::SPRITE); // TODO: debug draw should not need having a sprite component!
+    // TODO: maybe have a method for debug draw for each module? Like gui?
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -53,13 +54,14 @@ bool RendererSystem::Render()
 		2. All debug geometry -> Maybe from each state/system? Render()
 		3. The editor -> Maybe from each system? Render()
 		4. Swap buffers
-		*/
+	*/
 
     for (auto& entity : m_entities) {
 
         std::shared_ptr<SpriteComponent> sprite = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
         std::shared_ptr<TransformComponent> transform = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
 
+        /*
         SDL_Rect renderQuad = {
             static_cast<I32>(transform->m_position.x),
             static_cast<I32>(transform->m_position.y),
@@ -68,10 +70,18 @@ bool RendererSystem::Render()
         };
 
         SDL_RenderCopy(renderer->m_renderer, sprite->m_texture->GetTexture(), nullptr, &renderQuad);
-    }
+		*/
 
-    if (renderer->m_isDebugDraw) {
-        /*
+        if (renderer->m_isDebugDraw) {
+            DebugDrawer::DrawQuad(
+                {
+                    (int)transform->m_position.x - 20,
+                    (int)transform->m_position.y - 20,
+                    (int)transform->m_position.x + 20,
+                    (int)transform->m_position.y + 20,
+                },
+                Red);
+            /*
 			DebugDrawer::DrawQuad(
 				{
 				(int)g_engine->GetWindow().GetWidth() / 4,
@@ -96,6 +106,7 @@ bool RendererSystem::Render()
 				},
 				Blue);
 			*/
+        }
     }
 
     EndDraw(*renderer);

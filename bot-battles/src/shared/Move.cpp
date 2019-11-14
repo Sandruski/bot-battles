@@ -23,9 +23,9 @@ void Move::Write(OutputMemoryStream& outputStream, U16 memberFlags) const
 }
 
 //----------------------------------------------------------------------------------------------------
-void Move::Read(InputMemoryStream& inputStream, U16 memberFlags)
+void Move::Read(InputMemoryStream& inputStream)
 {
-    m_input.Read(inputStream, memberFlags);
+    m_input.Read(inputStream);
     inputStream.Read(m_timestamp);
 }
 }

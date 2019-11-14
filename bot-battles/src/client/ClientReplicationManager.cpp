@@ -78,10 +78,9 @@ void ClientReplicationManager::ReadCreateEntityAction(InputMemoryStream& inputSt
 
     U16 hasTransform = 1 << static_cast<std::size_t>(ComponentType::TRANSFORM);
     if (signature & hasTransform) {
-        U16 memberFlags = 0;
-        inputStream.Read(memberFlags, GetRequiredBits<static_cast<U16>(TransformComponent::MemberType::COUNT)>::value);
+
         std::shared_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().AddComponent<TransformComponent>(entity);
-        transformComponent->Read(inputStream, memberFlags);
+        transformComponent->Read(inputStream);
     }
 
     // TODO: read total size of things written
@@ -103,10 +102,8 @@ void ClientReplicationManager::ReadUpdateEntityAction(InputMemoryStream& inputSt
 
     U16 hasTransform = 1 << static_cast<std::size_t>(ComponentType::TRANSFORM);
     if (signature & hasTransform) {
-        U16 memberFlags = 0;
-        inputStream.Read(memberFlags, GetRequiredBits<static_cast<U16>(TransformComponent::MemberType::COUNT)>::value);
         std::shared_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
-        transformComponent->Read(inputStream, memberFlags);
+        transformComponent->Read(inputStream);
     }
 
     // TODO: read total size of things written

@@ -47,12 +47,14 @@ struct SingletonInputComponent : public WriteNetComponent, public ReadNetCompone
         }
     }
 
-    void Read(InputMemoryStream& inputStream, U16 memberFlags) override
+    void Read(InputMemoryStream& inputStream) override
     {
-        if (memberFlags & static_cast<U32>(MemberType::ACCELERATION)) {
+        U16 memberFlags = 0;
+        inputStream.Read(memberFlags, GetRequiredBits<static_cast<U16>(SingletonInputComponent::MemberType::COUNT)>::value);
+        if (memberFlags & static_cast<U16>(MemberType::ACCELERATION)) {
             inputStream.Read(m_acceleration);
         }
-        if (memberFlags & static_cast<U32>(MemberType::ANGULAR_ACCELERATION)) {
+        if (memberFlags & static_cast<U16>(MemberType::ANGULAR_ACCELERATION)) {
             inputStream.Read(m_angularAcceleration);
         }
     }
