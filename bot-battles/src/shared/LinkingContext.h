@@ -9,6 +9,8 @@ public:
     LinkingContext();
     ~LinkingContext();
 
+    bool PreUpdate();
+
     NetworkID AddEntity(Entity entity, NetworkID networkID = INVALID_NETWORK_ID);
     bool RemoveEntity(Entity entity);
 

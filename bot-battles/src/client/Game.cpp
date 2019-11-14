@@ -144,17 +144,17 @@ bool Game::Update()
         return false;
     }
 
-    m_componentManager->PreUpdate();
+    ret = m_componentManager->PreUpdate();
     if (!ret) {
         return false;
     }
 
-    m_systemManager->PreUpdate();
+    ret = m_systemManager->PreUpdate();
     if (!ret) {
         return false;
     }
 
-    m_fsm->PreUpdate();
+    ret = m_fsm->PreUpdate();
     if (!ret) {
         return false;
     }
@@ -165,7 +165,7 @@ bool Game::Update()
         return false;
     }
 
-    m_fsm->Update();
+    ret = m_fsm->Update();
     if (!ret) {
         return false;
     }
@@ -176,7 +176,7 @@ bool Game::Update()
         return false;
     }
 
-    m_fsm->PostUpdate();
+    ret = m_fsm->PostUpdate();
     if (!ret) {
         return false;
     }
@@ -187,7 +187,7 @@ bool Game::Update()
         return false;
     }
 
-    m_fsm->Render();
+    ret = m_fsm->Render();
     if (!ret) {
         return false;
     }
@@ -205,12 +205,12 @@ bool Game::End()
         return false;
     }
 
-    m_resourceManager->ShutDown();
+    ret = m_resourceManager->ShutDown();
     if (!ret) {
         return false;
     }
 
-    m_fsm->ShutDown();
+    ret = m_fsm->ShutDown();
     if (!ret) {
         return false;
     }

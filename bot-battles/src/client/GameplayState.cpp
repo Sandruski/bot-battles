@@ -27,6 +27,7 @@ GameplayState::~GameplayState()
 //----------------------------------------------------------------------------------------------------
 bool GameplayState::Create()
 {
+    /*
     Entity background = g_game->GetEntityManager().AddEntity();
     auto sprite = g_game->GetComponentManager().AddComponent<SpriteComponent>(background);
     auto texture = g_game->GetResourceManager().AddResource<ResourceTexture>("baker_house.png", TEXTURES_DIR);
@@ -38,6 +39,7 @@ bool GameplayState::Create()
     sprite2->m_texture = texture2;
     m_transform = g_game->GetComponentManager().AddComponent<TransformComponent>(character);
     m_transform->m_position = Vec2(10.0f, 40.0f);
+	*/
 
     return true;
 }

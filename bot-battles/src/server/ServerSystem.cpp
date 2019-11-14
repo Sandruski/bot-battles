@@ -44,6 +44,14 @@ bool ServerSystem::StartUp()
 }
 
 //----------------------------------------------------------------------------------------------------
+bool ServerSystem::PreUpdate()
+{
+    NotifyAll();
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
 bool ServerSystem::Update()
 {
     std::shared_ptr<SingletonServerComponent> server = g_game->GetSingletonServerComponent();
@@ -126,7 +134,7 @@ void ServerSystem::SendStatePacket(const SingletonServerComponent& server, std::
 
     const bool result = SendPacket(server, statePacket, clientProxy->GetSocketAddress());
     if (result) {
-        ILOG("Welcome packet successfully sent to player %s", name);
+        ILOG("State packet successfully sent to player %s", name);
     }
 }
 

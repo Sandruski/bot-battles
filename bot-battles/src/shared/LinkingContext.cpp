@@ -16,6 +16,14 @@ LinkingContext::~LinkingContext()
 }
 
 //----------------------------------------------------------------------------------------------------
+bool LinkingContext::PreUpdate()
+{
+    NotifyAll();
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
 NetworkID LinkingContext::AddEntity(Entity entity, NetworkID networkID)
 {
     assert(entity != INVALID_ENTITY);
