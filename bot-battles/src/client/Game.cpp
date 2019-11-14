@@ -7,6 +7,7 @@
 #include "SystemManager.h"
 #include "TextureImporter.h"
 
+#include "ClientReplicationManager.h"
 #include "LinkingContext.h"
 
 #include "ClientSystem.h"
@@ -38,6 +39,7 @@ Game::Game(const GameConfiguration& configuration)
     m_textureImporter = std::make_shared<TextureImporter>();
 
     m_linkingContext = std::make_unique<LinkingContext>();
+    m_clientReplicationManager = std::make_unique<ClientReplicationManager>();
 
     m_singletonInputComponent = std::make_shared<SingletonInputComponent>();
     m_singletonRendererComponent = std::make_shared<SingletonRendererComponent>();

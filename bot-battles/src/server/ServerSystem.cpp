@@ -224,6 +224,8 @@ void ServerSystem::ReceiveHelloPacket(SingletonServerComponent& server, InputMem
 //----------------------------------------------------------------------------------------------------
 void ServerSystem::ReceiveInputPacket(SingletonServerComponent& server, InputMemoryStream& /*inputStream*/, const SocketAddress& /*fromSocketAddress*/, PlayerID playerID) const
 {
+    ILOG("Input packet received" /*from player %s*/);
+
     std::shared_ptr<ClientProxy> clientProxy = server.GetClientProxy(playerID);
     if (clientProxy == nullptr) {
         return;

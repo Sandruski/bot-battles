@@ -21,7 +21,7 @@ ClientReplicationManager::~ClientReplicationManager()
 }
 
 //----------------------------------------------------------------------------------------------------
-void ClientReplicationManager::ReadActions(InputMemoryStream& inputStream) const
+void ClientReplicationManager::Read(InputMemoryStream& inputStream) const
 {
     while (inputStream.GetRemainingBitCount() >= 32) {
         NetworkID networkID = INVALID_NETWORK_ID;

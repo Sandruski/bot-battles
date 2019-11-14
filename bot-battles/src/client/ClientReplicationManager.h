@@ -12,7 +12,7 @@ public:
     ClientReplicationManager();
     ~ClientReplicationManager();
 
-    void ReadActions(InputMemoryStream& inputStream) const;
+    void Read(InputMemoryStream& inputStream) const;
     void ReadCreateEntityAction(InputMemoryStream& inputStream, NetworkID networkID) const;
     void ReadUpdateEntityAction(InputMemoryStream& inputStream, NetworkID networkID) const;
     void ReadRemoveEntityAction(InputMemoryStream& inputStream, NetworkID networkID) const;

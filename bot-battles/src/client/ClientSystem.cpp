@@ -1,5 +1,6 @@
 #include "ClientSystem.h"
 
+#include "ClientReplicationManager.h"
 #include "Game.h"
 #include "LinkingContext.h"
 #include "MemoryStream.h"
@@ -201,6 +202,8 @@ void ClientSystem::ReceivePacket(SingletonClientComponent& client, InputMemorySt
 //----------------------------------------------------------------------------------------------------
 void ClientSystem::ReceiveWelcomePacket(SingletonClientComponent& client, InputMemoryStream& inputStream) const
 {
+    ILOG("Welcome packet received");
+
     if (client.IsConnected()) {
         return;
     }
@@ -218,13 +221,16 @@ void ClientSystem::ReceiveWelcomePacket(SingletonClientComponent& client, InputM
 }
 
 //----------------------------------------------------------------------------------------------------
-void ClientSystem::ReceiveStatePacket(SingletonClientComponent& client, InputMemoryStream& /*inputStream*/) const
+void ClientSystem::ReceiveStatePacket(SingletonClientComponent& client, InputMemoryStream& inputStream) const
 {
+    ILOG("State packet received");
+
     if (!client.IsConnected()) {
         return;
     }
 
     // TODO
+    g_game->GetClientReplicationManager().Read(inputStream);
 }
 
 //----------------------------------------------------------------------------------------------------

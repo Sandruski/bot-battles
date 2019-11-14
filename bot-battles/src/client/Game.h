@@ -14,6 +14,7 @@ class FSM;
 class TextureImporter;
 
 class LinkingContext;
+class ClientReplicationManager;
 
 struct SingletonWindowComponent;
 struct SingletonRendererComponent;
@@ -49,6 +50,7 @@ public:
     TextureImporter& GetTextureImporter() const { return *m_textureImporter; }
 
     LinkingContext& GetLinkingContext() const { return *m_linkingContext; }
+    ClientReplicationManager& GetClientReplicationManager() const { return *m_clientReplicationManager; }
 
     std::shared_ptr<SingletonWindowComponent> GetSingletonWindowComponent() const { return m_singletonWindowComponent; }
     std::shared_ptr<SingletonRendererComponent> GetSingletonRendererComponent() const { return m_singletonRendererComponent; }
@@ -68,6 +70,7 @@ private:
     std::shared_ptr<TextureImporter> m_textureImporter;
 
     std::unique_ptr<LinkingContext> m_linkingContext;
+    std::unique_ptr<ClientReplicationManager> m_clientReplicationManager;
 
     std::shared_ptr<SingletonWindowComponent> m_singletonWindowComponent;
     std::shared_ptr<SingletonRendererComponent> m_singletonRendererComponent;
