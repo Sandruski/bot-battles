@@ -7,6 +7,7 @@
 #include "MessageTypes.h"
 #include "Move.h"
 #include "SingletonClientComponent.h"
+#include "SingletonInputComponent.h"
 #include "SocketAddress.h"
 #include "UDPSocket.h"
 
@@ -85,10 +86,11 @@ void ClientSystem::UpdateSendInputPacket(SingletonClientComponent& client) const
     float time = Time::GetInstance().GetTime();
     float nextInputTime = client.GetNextInputTime();
     if (time >= nextInputTime) {
-        const bool result = SendInputPacket(client);
+        std::shared_ptr<SingletonInputComponent> singletonInput = g_game->GetSingletonInputComponent();
+        const bool result = SendInputPacket(client, *singletonInput);
         if (result) {
             client.m_lastTime = time;
-            client.ClearMoves();
+            singletonInput->ClearMoves();
         }
     }
 }
@@ -111,22 +113,22 @@ bool ClientSystem::SendHelloPacket(const SingletonClientComponent& client) const
 }
 
 //----------------------------------------------------------------------------------------------------
-bool ClientSystem::SendInputPacket(const SingletonClientComponent& client) const
+bool ClientSystem::SendInputPacket(const SingletonClientComponent& client, const SingletonInputComponent& singletonInput) const
 {
-    if (!client.HasMoves()) {
+    if (!singletonInput.HasMoves()) {
         return false;
     }
 
     OutputMemoryStream inputPacket;
     inputPacket.Write(ClientMessageType::INPUT);
 
-    U32 totalMoveCount = client.GetMoveCount();
+    U32 totalMoveCount = singletonInput.GetMoveCount();
     U32 startIndex = totalMoveCount > MAX_MOVES_PER_PACKET ? totalMoveCount - MAX_MOVES_PER_PACKET - 1 : 0;
     U32 moveCount = totalMoveCount - startIndex;
     inputPacket.Write(moveCount, GetRequiredBits<MAX_MOVES_PER_PACKET>::value);
     for (U32 i = startIndex; i < moveCount; ++i) {
-        const Move& move = client.GetMove(i);
-        move.Write(inputPacket, static_cast<U16>(SingletonInputComponent::MemberType::ALL));
+        const Move& move = singletonInput.GetMove(i);
+        move.Write(inputPacket, static_cast<U16>(InputComponent::MemberType::ALL));
     }
 
     ILOG("Sending input packet to server...");

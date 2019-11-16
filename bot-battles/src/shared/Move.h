@@ -1,17 +1,20 @@
 #ifndef __MOVE_H__
 #define __MOVE_H__
 
-#include "SingletonInputComponent.h"
+#include "InputComponent.h"
 
 namespace sand {
 
+class OutputMemoryStream;
+class InputMemoryStream;
+
 //----------------------------------------------------------------------------------------------------
-class Move : public WriteNetComponent, public ReadNetComponent {
+class Move {
 public:
-    Move(const SingletonInputComponent& input, F32 timestamp, F32 dt);
+    Move(const InputComponent& input, F32 timestamp, F32 dt);
     ~Move();
 
-    const SingletonInputComponent& GetInput() const
+    const InputComponent& GetInput() const
     {
         return m_input;
     }
@@ -26,11 +29,11 @@ public:
         return m_dt;
     }
 
-    void Write(OutputMemoryStream& outputStream, U16 memberFlags) const override;
-    void Read(InputMemoryStream& inputStream) override;
+    void Write(OutputMemoryStream& outputStream, U16 memberFlags) const;
+    void Read(InputMemoryStream& inputStream);
 
 private:
-    SingletonInputComponent m_input;
+    InputComponent m_input;
 
     F32 m_timestamp;
     F32 m_dt;

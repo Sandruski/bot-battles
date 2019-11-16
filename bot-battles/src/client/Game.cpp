@@ -21,6 +21,7 @@
 #include "SingletonRendererComponent.h"
 #include "SingletonWindowComponent.h"
 
+#include "InputComponent.h"
 #include "SpriteComponent.h"
 #include "TransformComponent.h"
 
@@ -83,6 +84,10 @@ bool Game::Init()
         return false;
     }
     ret = m_componentManager->RegisterComponent<SpriteComponent>();
+    if (!ret) {
+        return false;
+    }
+    ret = m_componentManager->RegisterComponent<InputComponent>();
     if (!ret) {
         return false;
     }

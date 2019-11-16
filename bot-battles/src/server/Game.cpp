@@ -14,6 +14,7 @@
 
 #include "SingletonServerComponent.h"
 
+#include "InputComponent.h"
 #include "TransformComponent.h"
 
 namespace sand {
@@ -63,6 +64,10 @@ bool Game::Init()
 
     // Components
     ret = m_componentManager->RegisterComponent<TransformComponent>();
+    if (!ret) {
+        return false;
+    }
+    ret = m_componentManager->RegisterComponent<InputComponent>();
     if (!ret) {
         return false;
     }

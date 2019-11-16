@@ -1,9 +1,11 @@
 #include "Move.h"
 
+#include "MemoryStream.h"
+
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-Move::Move(const SingletonInputComponent& input, F32 timestamp, F32 dt)
+Move::Move(const InputComponent& input, F32 timestamp, F32 dt)
     : m_input(input)
     , m_timestamp(timestamp)
     , m_dt(dt)

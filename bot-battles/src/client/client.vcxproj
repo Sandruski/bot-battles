@@ -321,7 +321,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="EventSystem.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
-    <ClCompile Include="SingletonClientComponent.cpp" />
+    <ClCompile Include="SingletonInputComponent.cpp" />
     <ClCompile Include="TextureImporter.cpp" />
     <ClCompile Include="RendererSystem.cpp" />
     <ClCompile Include="WindowSystem.cpp" />
@@ -336,6 +336,7 @@
     <ClInclude Include="ClientReplicationManager.h" />
     <ClInclude Include="ResourceDefs.h" />
     <ClInclude Include="SingletonClientComponent.h" />
+    <ClInclude Include="SingletonInputComponent.h" />
     <ClInclude Include="SingletonRendererComponent.h" />
     <ClInclude Include="SingletonWindowComponent.h" />
     <ClInclude Include="SpriteComponent.h" />

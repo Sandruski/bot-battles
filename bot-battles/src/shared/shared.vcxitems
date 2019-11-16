@@ -22,6 +22,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)EntityManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Events.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)EventTypes.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)InputComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)LinkingContext.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Log.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Memory.h" />
@@ -32,7 +33,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)NetDefs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Observer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ReplicationCommand.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)SingletonInputComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SocketAddress.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Subject.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)System.h" />

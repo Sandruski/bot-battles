@@ -1,6 +1,8 @@
 #include "InputSystem.h"
 
+#include "ComponentManager.h"
 #include "Game.h"
+#include "InputComponent.h"
 #include "SingletonInputComponent.h"
 
 namespace sand {
@@ -8,6 +10,7 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 InputSystem::InputSystem()
 {
+    m_signature |= 1 << static_cast<U16>(ComponentType::INPUT);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -18,26 +21,29 @@ InputSystem::~InputSystem()
 //----------------------------------------------------------------------------------------------------
 bool InputSystem::Update()
 {
-    std::shared_ptr<SingletonInputComponent> input = g_game->GetSingletonInputComponent();
+    std::shared_ptr<SingletonInputComponent> singletonInput = g_game->GetSingletonInputComponent();
 
-    UpdateSampleInput(*input);
+    UpdateSampleInput(*singletonInput);
 
     return true;
 }
 
 //----------------------------------------------------------------------------------------------------
-void InputSystem::UpdateSampleInput(SingletonInputComponent& input) const
+void InputSystem::UpdateSampleInput(SingletonInputComponent& singletonInput) const
 {
     float time = Time::GetInstance().GetTime();
-    float nextInputTime = input.GetNextInputTime();
+    float nextInputTime = singletonInput.GetNextInputTime();
     if (time >= nextInputTime) {
-        SampleInput(input);
+        SampleInput(singletonInput, time);
     }
 }
 
 //----------------------------------------------------------------------------------------------------
-void InputSystem::SampleInput(SingletonInputComponent& /*input*/) const
+void InputSystem::SampleInput(SingletonInputComponent& singletonInput, F32 timestamp) const
 {
-    // TODO
+    for (auto& entity : m_entities) {
+        std::shared_ptr<InputComponent> input = g_game->GetComponentManager().GetComponent<InputComponent>(entity);
+        singletonInput.AddMove(*input, timestamp);
+    }
 }
 }

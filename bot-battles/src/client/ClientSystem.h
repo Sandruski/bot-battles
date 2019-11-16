@@ -6,6 +6,7 @@
 namespace sand {
 
 struct SingletonClientComponent;
+struct SingletonInputComponent;
 class OutputMemoryStream;
 class InputMemoryStream;
 
@@ -29,7 +30,7 @@ private:
     void UpdateSendHelloPacket(SingletonClientComponent& client) const;
     void UpdateSendInputPacket(SingletonClientComponent& client) const;
     bool SendHelloPacket(const SingletonClientComponent& client) const;
-    bool SendInputPacket(const SingletonClientComponent& client) const;
+    bool SendInputPacket(const SingletonClientComponent& client, const SingletonInputComponent& singletonInput) const;
     bool SendPacket(const SingletonClientComponent& client, const OutputMemoryStream& outputStream) const;
 
     void ReceiveIncomingPackets(SingletonClientComponent& client) const;

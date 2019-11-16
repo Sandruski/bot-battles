@@ -21,8 +21,8 @@ public:
 
     bool Update() override;
 
-    void UpdateSampleInput(SingletonInputComponent& input) const;
-    void SampleInput(SingletonInputComponent& input) const;
+    void UpdateSampleInput(SingletonInputComponent& singletonInput) const;
+    void SampleInput(SingletonInputComponent& singletonInput, F32 timestamp) const;
 };
 }
 

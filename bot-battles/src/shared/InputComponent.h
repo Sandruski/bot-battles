@@ -1,5 +1,5 @@
-#ifndef __SINGLETON_INPUT_COMPONENT_H__
-#define __SINGLETON_INPUT_COMPONENT_H__
+#ifndef __INPUT_COMPONENT_H__
+#define __INPUT_COMPONENT_H__
 
 #include "MemoryStream.h"
 #include "NetComponent.h"
@@ -8,7 +8,7 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-struct SingletonInputComponent : public WriteNetComponent, public ReadNetComponent {
+struct InputComponent : public WriteNetComponent, public ReadNetComponent {
 
     enum class MemberType {
         ACCELERATION = 1 << 0,
@@ -20,25 +20,19 @@ struct SingletonInputComponent : public WriteNetComponent, public ReadNetCompone
         ALL = ACCELERATION | ANGULAR_ACCELERATION
     };
 
-    SingletonInputComponent()
+    static ComponentType GetType() { return ComponentType::INPUT; }
+    static InputComponent* Instantiate() { return new InputComponent(); }
+
+    InputComponent()
         : m_acceleration()
         , m_angularAcceleration(0.0f)
-        , m_inputTime(0.03f)
-        , m_lastTime(0.0f)
     {
     }
-    ~SingletonInputComponent()
-    {
-    }
-
-    F32 GetNextInputTime() const
-    {
-        return m_lastTime + m_inputTime;
-    }
+    ~InputComponent() { }
 
     void Write(OutputMemoryStream& outputStream, U16 memberFlags) const override
     {
-        outputStream.Write(memberFlags, GetRequiredBits<static_cast<U16>(MemberType::COUNT)>::value);
+        outputStream.Write(memberFlags, GetRequiredBits<static_cast<U16>(InputComponent::MemberType::COUNT)>::value);
         if (memberFlags & static_cast<U16>(MemberType::ACCELERATION)) {
             outputStream.Write(m_acceleration);
         }
@@ -50,7 +44,7 @@ struct SingletonInputComponent : public WriteNetComponent, public ReadNetCompone
     void Read(InputMemoryStream& inputStream) override
     {
         U16 memberFlags = 0;
-        inputStream.Read(memberFlags, GetRequiredBits<static_cast<U16>(SingletonInputComponent::MemberType::COUNT)>::value);
+        inputStream.Read(memberFlags, GetRequiredBits<static_cast<U16>(InputComponent::MemberType::COUNT)>::value);
         if (memberFlags & static_cast<U16>(MemberType::ACCELERATION)) {
             inputStream.Read(m_acceleration);
         }
@@ -61,9 +55,6 @@ struct SingletonInputComponent : public WriteNetComponent, public ReadNetCompone
 
     Vec2 m_acceleration;
     float m_angularAcceleration;
-
-    F32 m_inputTime;
-    F32 m_lastTime;
 };
 }
 

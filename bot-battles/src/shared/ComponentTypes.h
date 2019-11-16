@@ -7,6 +7,7 @@ namespace sand {
 enum class ComponentType : U16 {
     TRANSFORM,
     SPRITE,
+    INPUT,
 
     COUNT,
     INVALID
@@ -14,6 +15,7 @@ enum class ComponentType : U16 {
 #elif _SERVER
 enum class ComponentType : U16 {
     TRANSFORM,
+    INPUT,
 
     COUNT,
     INVALID
