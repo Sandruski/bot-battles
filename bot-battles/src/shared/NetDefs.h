@@ -17,7 +17,7 @@ inline const Endianness PLATFORM_ENDIANNESS()
     return ptr[0] ? Endianness::LITTLE_ENDIAN : Endianness::BIG_ENDIAN;
 }
 
-const U32 MAX_PACKET_SIZE = 1470;
+const U32 MAX_PACKET_SIZE = KILOBYTES(10); // 1470
 const U32 MAX_PACKETS_PER_FRAME = 10;
 const U32 MAX_MOVES_PER_PACKET = 3;
 

@@ -17,23 +17,23 @@ typedef float F32;
 typedef double F64;
 
 template <class T>
-inline void SAFE_DELETE_POINTER(T*&p)
+inline void SAFE_DELETE_POINTER(T*& p)
 {
-	if (p != nullptr)
-	{
-		delete p;
-		p = nullptr;
-	}
+    if (p != nullptr) {
+        delete p;
+        p = nullptr;
+    }
 }
 
 template <class T>
-inline void SAFE_DELETE_ARRAY(T*&p)
+inline void SAFE_DELETE_ARRAY(T*& p)
 {
-	if (p != nullptr)
-	{
-		delete[] p;
-		p = nullptr;
-	}
+    if (p != nullptr) {
+        delete[] p;
+        p = nullptr;
+    }
 }
+
+#define KILOBYTES(x) (1024 * x)
 
 #endif

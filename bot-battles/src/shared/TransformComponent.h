@@ -32,11 +32,6 @@ struct TransformComponent : public WriteNetComponent, public ReadNetComponent {
 
     void Write(OutputMemoryStream& outputStream, U16 memberFlags) const override
     {
-        std::string a = "Hello";
-        outputStream.Write(a);
-        a = "Hiiiiiiiiiiiiiiiii";
-        outputStream.Write(a);
-
         outputStream.Write(memberFlags, GetRequiredBits<static_cast<U16>(TransformComponent::MemberType::COUNT)>::value);
         if (memberFlags & static_cast<U16>(MemberType::POSITION)) {
             outputStream.Write(m_position);
@@ -48,11 +43,6 @@ struct TransformComponent : public WriteNetComponent, public ReadNetComponent {
 
     void Read(InputMemoryStream& inputStream) override
     {
-        std::string a;
-        inputStream.Read(a);
-        std::string b;
-        inputStream.Read(b);
-
         U16 memberFlags = 0;
         inputStream.Read(memberFlags, GetRequiredBits<static_cast<U16>(TransformComponent::MemberType::COUNT)>::value);
         if (memberFlags & static_cast<U16>(MemberType::POSITION)) {

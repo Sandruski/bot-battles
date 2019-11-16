@@ -80,7 +80,7 @@ void OutputMemoryStream::Write(const std::string& inString)
     Write(size);
 
     for (const auto& element : inString) {
-        WriteBits(&element, 1);
+        Write(element);
     }
 }
 
@@ -197,7 +197,7 @@ void InputMemoryStream::Read(std::string& outString)
     outString.resize(size);
 
     for (auto& element : outString) {
-        ReadBits(&element, 1);
+        Read(element);
     }
 }
 
