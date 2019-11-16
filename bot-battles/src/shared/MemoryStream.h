@@ -77,7 +77,7 @@ inline void OutputMemoryStream::Write(T inData, U32 bitCount)
 {
     static_assert(std::is_arithmetic<T>::value || std::is_enum<T>::value, "Data is a non-primitive type");
 
-    if (OUTPUT_STREAM_ENDIANNESS == PLATFORM_ENDIANNESS()) {
+    if (STREAM_ENDIANNESS == PLATFORM_ENDIANNESS()) {
         WriteBits(&inData, bitCount);
     } else {
         T swappedData = ByteSwap(inData);
@@ -152,7 +152,7 @@ inline void InputMemoryStream::Read(T& outData, U32 bitCount)
 {
     static_assert(std::is_arithmetic<T>::value || std::is_enum<T>::value, "Data is a non-primitive type");
 
-    if (INPUT_STREAM_ENDIANNESS == PLATFORM_ENDIANNESS()) {
+    if (STREAM_ENDIANNESS == PLATFORM_ENDIANNESS()) {
         ReadBits(&outData, bitCount);
     } else {
         T unswappedData;
