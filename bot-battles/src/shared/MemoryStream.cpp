@@ -94,8 +94,8 @@ void OutputMemoryStream::Write(const Vec2& inVec)
 //----------------------------------------------------------------------------------------------------
 void OutputMemoryStream::WritePosition(const Vec2& inVec) // TODO: this should be done properly and without hard-coded values
 {
-    U32 x = FLOAT_TO_FIXED(inVec.x, -20.0f, 0.1f);
-    U32 y = FLOAT_TO_FIXED(inVec.y, -20.0f, 0.1f);
+    U32 x = FLOAT_TO_FIXED(inVec.x, -2000.0f, 0.1f);
+    U32 y = FLOAT_TO_FIXED(inVec.y, -2000.0f, 0.1f);
     Write(x);
     Write(y);
 }
@@ -165,13 +165,13 @@ void InputMemoryStream::ReadBits(U8& outData, U32 bitCount)
     U32 currentBitOffset = m_head & 0x7; // bits shifted away in the previous step
     // 0x7 = 0b111
 
-    U8 currentByteData = m_buffer[currentByteOffset] >> currentBitOffset; // written data of the current byte
+    U8 currentByteData = static_cast<U8>(m_buffer[currentByteOffset]) >> currentBitOffset; // written data of the current byte
     outData = currentByteData;
 
     U32 currentByteBitsFree = 8 - currentBitOffset; // bits free in the current byte (some of them now contain in data)
     if (currentByteBitsFree < bitCount) {
         // We need another byte
-        U8 nextByteData = m_buffer[currentByteOffset + 1] << currentByteBitsFree; // written data of the next byte
+        U8 nextByteData = static_cast<U8>(m_buffer[currentByteOffset + 1]) << currentByteBitsFree; // written data of the next byte
         outData |= nextByteData;
     }
 
@@ -215,8 +215,8 @@ void InputMemoryStream::ReadPosition(Vec2& outVec) // TODO: this should be done 
     Read(x);
     U32 y = 0;
     Read(y);
-    outVec.x = FIXED_TO_FLOAT(x, -20.0f, 0.1f);
-    outVec.y = FIXED_TO_FLOAT(y, -20.0f, 0.1f);
+    outVec.x = FIXED_TO_FLOAT(x, -2000.0f, 0.1f);
+    outVec.y = FIXED_TO_FLOAT(y, -2000.0f, 0.1f);
 }
 
 //----------------------------------------------------------------------------------------------------

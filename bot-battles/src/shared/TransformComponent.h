@@ -34,7 +34,7 @@ struct TransformComponent : public WriteNetComponent, public ReadNetComponent {
     {
         outputStream.Write(memberFlags, GetRequiredBits<static_cast<U16>(TransformComponent::MemberType::COUNT)>::value);
         if (memberFlags & static_cast<U16>(MemberType::POSITION)) {
-            outputStream.Write(m_position);
+            outputStream.WritePosition(m_position);
         }
         if (memberFlags & static_cast<U16>(MemberType::ROTATION)) {
             outputStream.Write(m_rotation);
@@ -46,7 +46,7 @@ struct TransformComponent : public WriteNetComponent, public ReadNetComponent {
         U16 memberFlags = 0;
         inputStream.Read(memberFlags, GetRequiredBits<static_cast<U16>(TransformComponent::MemberType::COUNT)>::value);
         if (memberFlags & static_cast<U16>(MemberType::POSITION)) {
-            inputStream.Read(m_position);
+            inputStream.ReadPosition(m_position);
         }
         if (memberFlags & static_cast<U16>(MemberType::ROTATION)) {
             inputStream.Read(m_rotation);
