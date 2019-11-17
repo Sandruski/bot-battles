@@ -121,6 +121,7 @@ bool ClientSystem::SendInputPacket(const SingletonClientComponent& client, const
 
     OutputMemoryStream inputPacket;
     inputPacket.Write(ClientMessageType::INPUT);
+    inputPacket.Write(client.m_playerID);
 
     U32 totalMoveCount = singletonInput.GetMoveCount();
     U32 startIndex = totalMoveCount > MAX_MOVES_PER_PACKET ? totalMoveCount - MAX_MOVES_PER_PACKET - 1 : 0;

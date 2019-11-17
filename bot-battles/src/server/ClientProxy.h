@@ -16,6 +16,8 @@ public:
 
     void UpdateLastPacketTime();
 
+    const Move& AddMove(const Move& move);
+
     const SocketAddress& GetSocketAddress() const
     {
         return m_socketAddress;

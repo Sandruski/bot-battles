@@ -3,6 +3,7 @@
 #include "ComponentManager.h"
 #include "EntityManager.h"
 #include "Game.h"
+#include "InputComponent.h"
 #include "LinkingContext.h"
 #include "MemoryStream.h"
 #include "ReplicationCommand.h"
@@ -114,8 +115,8 @@ void ServerReplicationManager::WriteCreateEntityAction(OutputMemoryStream& outpu
     U16 hasTransform = 1 << static_cast<std::size_t>(ComponentType::TRANSFORM);
     if (signature & hasTransform) {
         U16 memberFlags = static_cast<U16>(TransformComponent::MemberType::ALL); // MemberFlags contains ALL members
-        std::shared_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
-        transformComponent->Write(outputStream, memberFlags);
+        std::shared_ptr<TransformComponent> transform = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
+        transform->Write(outputStream, memberFlags);
     }
 
     // TODO: write total size of things written
@@ -132,8 +133,8 @@ void ServerReplicationManager::WriteUpdateEntityAction(OutputMemoryStream& outpu
     U16 hasTransform = 1 << static_cast<std::size_t>(ComponentType::TRANSFORM);
     if (signature & hasTransform) {
         U16 memberFlags = static_cast<U16>(TransformComponent::MemberType::ALL); // MemberFlags contains ONLY changed memebers
-        std::shared_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
-        transformComponent->Write(outputStream, memberFlags);
+        std::shared_ptr<TransformComponent> transform = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
+        transform->Write(outputStream, memberFlags);
     }
 
     // TODO: write total size of things written

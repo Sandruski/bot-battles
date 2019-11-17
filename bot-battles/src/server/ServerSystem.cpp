@@ -5,6 +5,7 @@
 #include "LinkingContext.h"
 #include "MemoryStream.h"
 #include "MessageTypes.h"
+#include "Move.h"
 #include "SingletonServerComponent.h"
 #include "SocketAddress.h"
 #include "UDPSocket.h"
@@ -201,7 +202,7 @@ void ServerSystem::ReceivePacket(SingletonServerComponent& server, InputMemorySt
     }
 
     case ClientMessageType::INPUT: {
-        ReceiveInputPacket(server, inputStream, fromSocketAddress, playerID);
+        ReceiveInputPacket(server, inputStream, playerID);
         break;
     }
 
@@ -244,16 +245,25 @@ void ServerSystem::ReceiveHelloPacket(SingletonServerComponent& server, InputMem
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerSystem::ReceiveInputPacket(SingletonServerComponent& server, InputMemoryStream& /*inputStream*/, const SocketAddress& /*fromSocketAddress*/, PlayerID playerID) const
+void ServerSystem::ReceiveInputPacket(SingletonServerComponent& server, InputMemoryStream& inputStream, PlayerID& playerID) const
 {
-    ILOG("Input packet received" /*from player %s*/);
-
+    inputStream.Read(playerID);
     std::shared_ptr<ClientProxy> clientProxy = server.GetClientProxy(playerID);
     if (clientProxy == nullptr) {
+        ILOG("Input packet received from unknown player");
+        playerID = INVALID_PLAYER_ID;
         return;
     }
 
-    // TODO: handle moves, etc.
+    ILOG("Input packet received from player %s", clientProxy->GetName());
+
+    U32 moveCount = 0;
+    inputStream.Read(moveCount, GetRequiredBits<MAX_MOVES_PER_PACKET>::value);
+    Move move;
+    while (moveCount > 0) {
+        move.Read(inputStream);
+        clientProxy->AddMove(move);
+    }
 }
 
 //----------------------------------------------------------------------------------------------------

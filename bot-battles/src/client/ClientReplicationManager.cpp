@@ -3,6 +3,7 @@
 #include "ComponentManager.h"
 #include "EntityManager.h"
 #include "Game.h"
+#include "InputComponent.h"
 #include "LinkingContext.h"
 #include "MemoryStream.h"
 #include "ReplicationCommand.h"
@@ -79,9 +80,12 @@ void ClientReplicationManager::ReadCreateEntityAction(InputMemoryStream& inputSt
 
     U16 hasTransform = 1 << static_cast<std::size_t>(ComponentType::TRANSFORM);
     if (signature & hasTransform) {
-
-        std::shared_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().AddComponent<TransformComponent>(entity);
-        transformComponent->Read(inputStream);
+        std::shared_ptr<TransformComponent> transform = g_game->GetComponentManager().AddComponent<TransformComponent>(entity);
+        transform->Read(inputStream);
+    }
+    U16 hasInput = 1 << static_cast<std::size_t>(ComponentType::INPUT);
+    if (signature & hasInput) {
+        g_game->GetComponentManager().AddComponent<InputComponent>(entity);
     }
 
     // TODO: read total size of things written

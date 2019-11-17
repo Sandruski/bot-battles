@@ -23,9 +23,20 @@ ClientProxy::ClientProxy(const SocketAddress& socketAddress, const char* name)
 ClientProxy::~ClientProxy()
 {
 }
+
 //----------------------------------------------------------------------------------------------------
 void ClientProxy::UpdateLastPacketTime()
 {
     m_lastPacketTime = Time::GetInstance().GetTime();
+}
+
+//----------------------------------------------------------------------------------------------------
+const Move& ClientProxy::AddMove(const Move& move)
+{
+    float lastMoveTimestamp = !m_unprocessedMoves.empty() ? m_unprocessedMoves.back().GetTimestamp() : 0.0f;
+    float timestamp = move.GetTimestamp();
+    float dt = lastMoveTimestamp > 0.0f ? timestamp - lastMoveTimestamp : 0.0f;
+
+    return m_unprocessedMoves.emplace_back(move.GetInput(), timestamp, dt);
 }
 }

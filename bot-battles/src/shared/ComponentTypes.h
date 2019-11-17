@@ -6,8 +6,9 @@ namespace sand {
 #ifdef _CLIENT
 enum class ComponentType : U16 {
     TRANSFORM,
-    SPRITE,
     INPUT,
+
+    SPRITE,
 
     COUNT,
     INVALID

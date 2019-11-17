@@ -11,6 +11,7 @@ class InputMemoryStream;
 //----------------------------------------------------------------------------------------------------
 class Move {
 public:
+    Move();
     Move(const InputComponent& input, F32 timestamp, F32 dt);
     ~Move();
 

@@ -38,7 +38,7 @@ private:
     void ReceiveIncomingPackets(SingletonServerComponent& server);
     void ReceivePacket(SingletonServerComponent& server, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress);
     void ReceiveHelloPacket(SingletonServerComponent& server, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress, PlayerID& playerID);
-    void ReceiveInputPacket(SingletonServerComponent& server, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress, PlayerID playerID) const;
+    void ReceiveInputPacket(SingletonServerComponent& server, InputMemoryStream& inputStream, PlayerID& playerID) const;
 
     void OnConnectionReset(const SocketAddress& fromSocketAddress) const;
     void OnDisconnect() const;

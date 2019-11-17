@@ -5,6 +5,14 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
+Move::Move()
+    : m_input()
+    , m_timestamp(0.0f)
+    , m_dt(0.0f)
+{
+}
+
+//----------------------------------------------------------------------------------------------------
 Move::Move(const InputComponent& input, F32 timestamp, F32 dt)
     : m_input(input)
     , m_timestamp(timestamp)

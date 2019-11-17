@@ -45,6 +45,7 @@ Entity SpawnerSystem::SpawnPlayerEntity() const
 
     std::shared_ptr<TransformComponent> transform = g_game->GetComponentManager().AddComponent<TransformComponent>(character);
     transform->m_position = Vec2(225.3f, 150.3f);
+    g_game->GetComponentManager().AddComponent<InputComponent>(character);
 
     return character;
 }
