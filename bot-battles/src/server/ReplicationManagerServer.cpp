@@ -1,4 +1,4 @@
-#include "ServerReplicationManager.h"
+#include "ReplicationManagerServer.h"
 
 #include "ComponentManager.h"
 #include "EntityManager.h"
@@ -12,18 +12,18 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-ServerReplicationManager::ServerReplicationManager()
+ReplicationManagerServer::ReplicationManagerServer()
     : m_networkIDToReplicationCommand()
 {
 }
 
 //----------------------------------------------------------------------------------------------------
-ServerReplicationManager::~ServerReplicationManager()
+ReplicationManagerServer::~ReplicationManagerServer()
 {
 }
 
 //----------------------------------------------------------------------------------------------------
-bool ServerReplicationManager::CreateEntityCommand(NetworkID networkID)
+bool ReplicationManagerServer::CreateEntityCommand(NetworkID networkID)
 {
     auto it = m_networkIDToReplicationCommand.find(networkID);
     if (it != m_networkIDToReplicationCommand.end()) {
@@ -37,7 +37,7 @@ bool ServerReplicationManager::CreateEntityCommand(NetworkID networkID)
 }
 
 //----------------------------------------------------------------------------------------------------
-bool ServerReplicationManager::RemoveEntityCommand(NetworkID networkID)
+bool ReplicationManagerServer::RemoveEntityCommand(NetworkID networkID)
 {
     auto it = m_networkIDToReplicationCommand.find(networkID);
     if (it == m_networkIDToReplicationCommand.end()) {
@@ -51,7 +51,7 @@ bool ServerReplicationManager::RemoveEntityCommand(NetworkID networkID)
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerReplicationManager::Write(OutputMemoryStream& outputStream)
+void ReplicationManagerServer::Write(OutputMemoryStream& outputStream)
 {
     for (auto& pair : m_networkIDToReplicationCommand) {
 
@@ -105,7 +105,7 @@ void ServerReplicationManager::Write(OutputMemoryStream& outputStream)
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerReplicationManager::WriteCreateEntityAction(OutputMemoryStream& outputStream, NetworkID networkID) const
+void ReplicationManagerServer::WriteCreateEntityAction(OutputMemoryStream& outputStream, NetworkID networkID) const
 {
     Entity entity = g_game->GetLinkingContext().GetEntity(networkID);
 
@@ -123,7 +123,7 @@ void ServerReplicationManager::WriteCreateEntityAction(OutputMemoryStream& outpu
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerReplicationManager::WriteUpdateEntityAction(OutputMemoryStream& outputStream, NetworkID networkID) const
+void ReplicationManagerServer::WriteUpdateEntityAction(OutputMemoryStream& outputStream, NetworkID networkID) const
 {
     Entity entity = g_game->GetLinkingContext().GetEntity(networkID);
 

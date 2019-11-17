@@ -1,12 +1,12 @@
-#ifndef __INPUT_SYSTEM_H__
-#define __INPUT_SYSTEM_H__
+#ifndef __INPUT_SYSTEM_SERVER_H__
+#define __INPUT_SYSTEM_SERVER_H__
 
 #include "System.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class InputSystem : public System {
+class InputSystemServer : public System {
 public:
     static SystemType GetType()
     {
@@ -14,8 +14,8 @@ public:
     }
 
 public:
-    InputSystem();
-    ~InputSystem() override;
+    InputSystemServer();
+    ~InputSystemServer() override;
 
     bool Update() override;
 };

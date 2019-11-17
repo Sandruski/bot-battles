@@ -1,4 +1,4 @@
-#include "InputSystem.h"
+#include "InputSystemClient.h"
 
 #include "ComponentManager.h"
 #include "Game.h"
@@ -8,18 +8,18 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-InputSystem::InputSystem()
+InputSystemClient::InputSystemClient()
 {
     m_signature |= 1 << static_cast<U16>(ComponentType::INPUT);
 }
 
 //----------------------------------------------------------------------------------------------------
-InputSystem::~InputSystem()
+InputSystemClient::~InputSystemClient()
 {
 }
 
 //----------------------------------------------------------------------------------------------------
-bool InputSystem::Update()
+bool InputSystemClient::Update()
 {
     for (auto& entity : m_entities) {
         std::shared_ptr<InputComponent> input = g_game->GetComponentManager().GetComponent<InputComponent>(entity);
@@ -34,7 +34,7 @@ bool InputSystem::Update()
 }
 
 //----------------------------------------------------------------------------------------------------
-void InputSystem::UpdateSampleInput(SingletonInputComponent& singletonInput) const
+void InputSystemClient::UpdateSampleInput(SingletonInputComponent& singletonInput) const
 {
     float time = Time::GetInstance().GetTime();
     float nextInputTime = singletonInput.GetNextInputTime();
@@ -44,7 +44,7 @@ void InputSystem::UpdateSampleInput(SingletonInputComponent& singletonInput) con
 }
 
 //----------------------------------------------------------------------------------------------------
-void InputSystem::SampleInput(SingletonInputComponent& singletonInput, F32 timestamp) const
+void InputSystemClient::SampleInput(SingletonInputComponent& singletonInput, F32 timestamp) const
 {
     for (auto& entity : m_entities) {
         std::shared_ptr<InputComponent> input = g_game->GetComponentManager().GetComponent<InputComponent>(entity);

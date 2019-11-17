@@ -344,7 +344,7 @@
     <ClCompile Include="FSM.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameplayState.cpp" />
-    <ClCompile Include="InputSystem.cpp" />
+    <ClCompile Include="InputSystemServer.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="NavigationSystem.cpp" />
     <ClCompile Include="pch.cpp">
@@ -357,7 +357,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugClient|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="ServerReplicationManager.cpp" />
+    <ClCompile Include="ReplicationManagerServer.cpp" />
     <ClCompile Include="Resource.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="ServerSystem.cpp" />
@@ -369,10 +369,10 @@
     <ClInclude Include="FSM.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameplayState.h" />
-    <ClInclude Include="InputSystem.h" />
+    <ClInclude Include="InputSystemServer.h" />
     <ClInclude Include="NavigationSystem.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="ServerReplicationManager.h" />
+    <ClInclude Include="ReplicationManagerServer.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceDefs.h" />
     <ClInclude Include="ResourceManager.h" />

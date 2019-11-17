@@ -1,16 +1,14 @@
-#ifndef __CLIENT_REPLICATION_MANAGER_H__
-#define __CLIENT_REPLICATION_MANAGER_H__
+#ifndef __REPLICATION_MANAGER_CLIENT_H__
+#define __REPLICATION_MANAGER_CLIENT_H__
 
 namespace sand {
 
 class InputMemoryStream;
-class ReplicationCommand;
-
 //----------------------------------------------------------------------------------------------------
-class ClientReplicationManager {
+class ReplicationManagerClient {
 public:
-    ClientReplicationManager();
-    ~ClientReplicationManager();
+    ReplicationManagerClient();
+    ~ReplicationManagerClient();
 
     void Read(InputMemoryStream& inputStream) const;
     void ReadCreateEntityAction(InputMemoryStream& inputStream, NetworkID networkID) const;

@@ -8,7 +8,7 @@
 
 #include "LinkingContext.h"
 
-#include "InputSystem.h"
+#include "InputSystemServer.h"
 #include "NavigationSystem.h"
 #include "ServerSystem.h"
 #include "SpawnerSystem.h"
@@ -58,7 +58,7 @@ bool Game::Init()
     if (!ret) {
         return false;
     }
-    ret = m_systemManager->RegisterSystem<InputSystem>();
+    ret = m_systemManager->RegisterSystem<InputSystemServer>();
     if (!ret) {
         return false;
     }

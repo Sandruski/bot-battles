@@ -300,7 +300,7 @@
     <ClCompile Include="DebugDrawer.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameplayState.cpp" />
-    <ClCompile Include="InputSystem.cpp" />
+    <ClCompile Include="InputSystemClient.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugServer|Win32'">Create</PrecompiledHeader>
@@ -316,7 +316,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="ClientReplicationManager.cpp" />
+    <ClCompile Include="ReplicationManagerClient.cpp" />
     <ClCompile Include="FSM.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="EventSystem.cpp" />
@@ -331,9 +331,9 @@
   <ItemGroup>
     <ClInclude Include="ClientSystem.h" />
     <ClInclude Include="Colors.h" />
-    <ClInclude Include="InputSystem.h" />
+    <ClInclude Include="InputSystemClient.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="ClientReplicationManager.h" />
+    <ClInclude Include="ReplicationManagerClient.h" />
     <ClInclude Include="ResourceDefs.h" />
     <ClInclude Include="SingletonClientComponent.h" />
     <ClInclude Include="SingletonInputComponent.h" />

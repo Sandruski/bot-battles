@@ -1,11 +1,11 @@
 #include "ClientSystem.h"
 
-#include "ClientReplicationManager.h"
 #include "Game.h"
 #include "LinkingContext.h"
 #include "MemoryStream.h"
 #include "MessageTypes.h"
 #include "Move.h"
+#include "ReplicationManagerClient.h"
 #include "SingletonClientComponent.h"
 #include "SingletonInputComponent.h"
 #include "SocketAddress.h"
@@ -232,7 +232,7 @@ void ClientSystem::ReceiveStatePacket(SingletonClientComponent& client, InputMem
     }
 
     // TODO
-    g_game->GetClientReplicationManager().Read(inputStream);
+    g_game->GetReplicationManager().Read(inputStream);
 }
 
 //----------------------------------------------------------------------------------------------------

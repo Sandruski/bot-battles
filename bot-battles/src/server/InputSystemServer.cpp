@@ -1,4 +1,4 @@
-#include "InputSystem.h"
+#include "InputSystemServer.h"
 
 #include "ClientProxy.h"
 #include "ComponentManager.h"
@@ -10,18 +10,18 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-InputSystem::InputSystem()
+InputSystemServer::InputSystemServer()
 {
     m_signature |= 1 << static_cast<U16>(ComponentType::INPUT);
 }
 
 //----------------------------------------------------------------------------------------------------
-InputSystem::~InputSystem()
+InputSystemServer::~InputSystemServer()
 {
 }
 
 //----------------------------------------------------------------------------------------------------
-bool InputSystem::Update()
+bool InputSystemServer::Update()
 {
     std::shared_ptr<SingletonServerComponent> singletonServer = g_game->GetSingletonServerComponent();
 

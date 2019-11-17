@@ -150,6 +150,11 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)InputComponent.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Colors.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)DebugDrawer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)EventSystem.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)RendererSystem.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)WindowSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp">
@@ -203,5 +208,10 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Move.cpp">
       <Filter>Source Files\Networking</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Colors.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)DebugDrawer.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)EventSystem.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)RendererSystem.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)WindowSystem.cpp" />
   </ItemGroup>
 </Project>

@@ -7,12 +7,12 @@
 #include "SystemManager.h"
 #include "TextureImporter.h"
 
-#include "ClientReplicationManager.h"
 #include "LinkingContext.h"
+#include "ReplicationManagerClient.h"
 
 #include "ClientSystem.h"
 #include "EventSystem.h"
-#include "InputSystem.h"
+#include "InputSystemClient.h"
 #include "RendererSystem.h"
 #include "WindowSystem.h"
 
@@ -40,7 +40,7 @@ Game::Game(const GameConfiguration& configuration)
     m_textureImporter = std::make_shared<TextureImporter>();
 
     m_linkingContext = std::make_unique<LinkingContext>();
-    m_clientReplicationManager = std::make_unique<ClientReplicationManager>();
+    m_replicationManager = std::make_unique<ReplicationManagerClient>();
 
     m_singletonInputComponent = std::make_shared<SingletonInputComponent>();
     m_singletonRendererComponent = std::make_shared<SingletonRendererComponent>();
@@ -69,7 +69,7 @@ bool Game::Init()
     if (!ret) {
         return false;
     }
-    ret = m_systemManager->RegisterSystem<InputSystem>();
+    ret = m_systemManager->RegisterSystem<InputSystemClient>();
     if (!ret) {
         return false;
     }

@@ -1,5 +1,5 @@
-#ifndef __SERVER_REPLICATION_MANAGER_H__
-#define __SERVER_REPLICATION_MANAGER_H__
+#ifndef __REPLICATION_MANAGER_SERVER_H__
+#define __REPLICATION_MANAGER_SERVER_H__
 
 namespace sand {
 
@@ -7,10 +7,10 @@ class OutputMemoryStream;
 class ReplicationCommand;
 
 //----------------------------------------------------------------------------------------------------
-class ServerReplicationManager {
+class ReplicationManagerServer {
 public:
-    ServerReplicationManager();
-    ~ServerReplicationManager();
+    ReplicationManagerServer();
+    ~ReplicationManagerServer();
 
     bool CreateEntityCommand(NetworkID networkID);
     bool RemoveEntityCommand(NetworkID networkID);

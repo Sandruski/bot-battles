@@ -1,5 +1,5 @@
-#ifndef __INPUT_SYSTEM_H__
-#define __INPUT_SYSTEM_H__
+#ifndef __INPUT_SYSTEM_CLIENT_H__
+#define __INPUT_SYSTEM_CLIENT_H__
 
 #include "System.h"
 
@@ -8,7 +8,7 @@ namespace sand {
 struct SingletonInputComponent;
 
 //----------------------------------------------------------------------------------------------------
-class InputSystem : public System {
+class InputSystemClient : public System {
 public:
     static SystemType GetType()
     {
@@ -16,8 +16,8 @@ public:
     }
 
 public:
-    InputSystem();
-    ~InputSystem() override;
+    InputSystemClient();
+    ~InputSystemClient() override;
 
     bool Update() override;
 

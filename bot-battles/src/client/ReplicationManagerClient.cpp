@@ -1,4 +1,4 @@
-#include "ClientReplicationManager.h"
+#include "ReplicationManagerClient.h"
 
 #include "ComponentManager.h"
 #include "EntityManager.h"
@@ -12,17 +12,17 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-ClientReplicationManager::ClientReplicationManager()
+ReplicationManagerClient::ReplicationManagerClient()
 {
 }
 
 //----------------------------------------------------------------------------------------------------
-ClientReplicationManager::~ClientReplicationManager()
+ReplicationManagerClient::~ReplicationManagerClient()
 {
 }
 
 //----------------------------------------------------------------------------------------------------
-void ClientReplicationManager::Read(InputMemoryStream& inputStream) const
+void ReplicationManagerClient::Read(InputMemoryStream& inputStream) const
 {
     while (inputStream.GetRemainingBitCount() >= 8) {
 
@@ -64,7 +64,7 @@ void ClientReplicationManager::Read(InputMemoryStream& inputStream) const
 }
 
 //----------------------------------------------------------------------------------------------------
-void ClientReplicationManager::ReadCreateEntityAction(InputMemoryStream& inputStream, NetworkID networkID) const
+void ReplicationManagerClient::ReadCreateEntityAction(InputMemoryStream& inputStream, NetworkID networkID) const
 {
     Entity entity = g_game->GetLinkingContext().GetEntity(networkID);
     if (entity != INVALID_ENTITY) {
@@ -92,7 +92,7 @@ void ClientReplicationManager::ReadCreateEntityAction(InputMemoryStream& inputSt
 }
 
 //----------------------------------------------------------------------------------------------------
-void ClientReplicationManager::ReadUpdateEntityAction(InputMemoryStream& inputStream, NetworkID networkID) const
+void ReplicationManagerClient::ReadUpdateEntityAction(InputMemoryStream& inputStream, NetworkID networkID) const
 {
     Entity entity = g_game->GetLinkingContext().GetEntity(networkID);
     if (entity == INVALID_ENTITY) {
@@ -115,7 +115,7 @@ void ClientReplicationManager::ReadUpdateEntityAction(InputMemoryStream& inputSt
 }
 
 //----------------------------------------------------------------------------------------------------
-void ClientReplicationManager::ReadRemoveEntityAction(InputMemoryStream& /*inputStream*/, NetworkID networkID) const
+void ReplicationManagerClient::ReadRemoveEntityAction(InputMemoryStream& /*inputStream*/, NetworkID networkID) const
 {
     Entity entity = g_game->GetLinkingContext().GetEntity(networkID);
     if (entity == INVALID_ENTITY) {

@@ -2,7 +2,7 @@
 #define __CLIENT_PROXY_H__
 
 #include "Move.h"
-#include "ServerReplicationManager.h"
+#include "ReplicationManagerServer.h"
 #include "SocketAddress.h"
 
 namespace sand {
@@ -28,7 +28,7 @@ public:
         return m_name.c_str();
     }
 
-    ServerReplicationManager& GetReplicationManager()
+    ReplicationManagerServer& GetReplicationManager()
     {
         return m_replicationManager;
     }
@@ -47,7 +47,7 @@ public:
     bool m_isLastMoveTimestampDirty;
 
 private:
-    ServerReplicationManager m_replicationManager;
+    ReplicationManagerServer m_replicationManager;
 
     SocketAddress m_socketAddress;
     std::string m_name;
