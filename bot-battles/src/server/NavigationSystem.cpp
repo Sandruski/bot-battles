@@ -1,16 +1,17 @@
 #include "NavigationSystem.h"
 
-#include "ClientProxy.h"
+#include "ComponentManager.h"
 #include "Game.h"
-#include "LinkingContext.h"
-#include "Move.h"
-#include "SingletonServerComponent.h"
+#include "InputComponent.h"
+#include "TransformComponent.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 NavigationSystem::NavigationSystem()
 {
+    m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
+    m_signature |= 1 << static_cast<U16>(ComponentType::INPUT);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -19,45 +20,21 @@ NavigationSystem::~NavigationSystem()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool NavigationSystem::StartUp()
-{
-    return true;
-}
-
-//----------------------------------------------------------------------------------------------------
 bool NavigationSystem::Update()
 {
-    /*
-    std::shared_ptr<SingletonServerComponent> server = g_game->GetSingletonServerComponent();
-
-    std::shared_ptr<ClientProxy> clientProxy = server->m_playerIDToClientProxy.at(playerID);
-    MoveList& unprocessedMoves = clientProxy->GetUnprocessedMoveList();
-    std::deque<Move> moves = unprocessedMoves.GetMoves();
-    for (const Move& unprocessedMove : moves) {
-        const InputState& inputState = unprocessedMove.GetInputState();
-        float dt = unprocessedMove.GetDt();
-        ProcessInput(dt, inputState);
-        UpdateMovement(dt);
+    for (auto& entity : m_entities) {
+        std::shared_ptr<InputComponent> input = g_game->GetComponentManager().GetComponent<InputComponent>(entity);
+        std::shared_ptr<TransformComponent> transform = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
+        UpdateMovement(*input, *transform, Time::GetInstance().GetDt()); // TODO: use client dt
     }
 
-    unprocessedMoves.Clear();
-	*/
     return true;
 }
 
 //----------------------------------------------------------------------------------------------------
-bool NavigationSystem::ShutDown()
+void NavigationSystem::UpdateMovement(InputComponent& input, TransformComponent& transform, F32 /*dt*/) const
 {
-    return false;
-}
-
-//----------------------------------------------------------------------------------------------------
-void NavigationSystem::ProcessInput(F32 /*dt*/, const InputState& /*inputState*/) const
-{
-}
-
-//----------------------------------------------------------------------------------------------------
-void NavigationSystem::UpdateMovement(F32 /*dt*/) const
-{
+    transform.m_position += input.m_acceleration;
+    transform.m_rotation += input.m_angularAcceleration;
 }
 }

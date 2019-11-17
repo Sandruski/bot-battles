@@ -70,7 +70,7 @@ void ServerSystem::OnNotify(const Event& event)
     switch (event.eventType) {
     case EventType::PLAYER_ADDED: {
         std::shared_ptr<SingletonServerComponent> server = g_game->GetSingletonServerComponent();
-        std::shared_ptr<ClientProxy> clientProxy = server->GetClientProxy(event.server.playerID);
+        std::shared_ptr<ClientProxy> clientProxy = server->GetClientProxyFromPlayerID(event.server.playerID);
         const std::unordered_map<NetworkID, Entity>& networkIDToEntity = g_game->GetLinkingContext().GetNetworkIDToEntityMap();
         for (const auto& pair : networkIDToEntity) {
             clientProxy->GetReplicationManager().CreateEntityCommand(pair.first);
@@ -213,7 +213,7 @@ void ServerSystem::ReceivePacket(SingletonServerComponent& server, InputMemorySt
     }
     assert(playerID != INVALID_PLAYER_ID);
 
-    std::shared_ptr<ClientProxy> clientProxy = server.GetClientProxy(playerID);
+    std::shared_ptr<ClientProxy> clientProxy = server.GetClientProxyFromPlayerID(playerID);
     clientProxy->UpdateLastPacketTime();
 }
 
@@ -237,7 +237,7 @@ void ServerSystem::ReceiveHelloPacket(SingletonServerComponent& server, InputMem
             ILOG("New player %s %u has joined the game", name.c_str(), playerID);
         }
     } else {
-        std::shared_ptr<ClientProxy> clientProxy = server.GetClientProxy(playerID);
+        std::shared_ptr<ClientProxy> clientProxy = server.GetClientProxyFromPlayerID(playerID);
         ILOG("Hello packet received from existing player %s", clientProxy->GetName());
     }
 
@@ -248,7 +248,7 @@ void ServerSystem::ReceiveHelloPacket(SingletonServerComponent& server, InputMem
 void ServerSystem::ReceiveInputPacket(SingletonServerComponent& server, InputMemoryStream& inputStream, PlayerID& playerID) const
 {
     inputStream.Read(playerID);
-    std::shared_ptr<ClientProxy> clientProxy = server.GetClientProxy(playerID);
+    std::shared_ptr<ClientProxy> clientProxy = server.GetClientProxyFromPlayerID(playerID);
     if (clientProxy == nullptr) {
         ILOG("Input packet received from unknown player");
         playerID = INVALID_PLAYER_ID;
@@ -263,6 +263,8 @@ void ServerSystem::ReceiveInputPacket(SingletonServerComponent& server, InputMem
     while (moveCount > 0) {
         move.Read(inputStream);
         clientProxy->AddMove(move);
+        clientProxy->m_isLastMoveTimestampDirty = true;
+        --moveCount;
     }
 }
 

@@ -26,8 +26,8 @@ void SpawnerSystem::OnNotify(const Event& event)
     switch (event.eventType) {
     case EventType::PLAYER_ADDED: {
         std::shared_ptr<SingletonServerComponent> server = g_game->GetSingletonServerComponent();
-        std::shared_ptr<ClientProxy> clientProxy = server->GetClientProxy(event.server.playerID);
-        clientProxy->m_entity = SpawnPlayerEntity();
+        Entity entity = SpawnPlayerEntity();
+        server->AddEntity(entity, event.server.playerID);
         break;
     }
 

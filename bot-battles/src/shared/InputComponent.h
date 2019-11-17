@@ -30,6 +30,12 @@ struct InputComponent : public WriteNetComponent, public ReadNetComponent {
     }
     ~InputComponent() { }
 
+    void Copy(const InputComponent& other)
+    {
+        this->m_acceleration = other.m_acceleration;
+        this->m_angularAcceleration = other.m_angularAcceleration;
+    }
+
     void Write(OutputMemoryStream& outputStream, U16 memberFlags) const override
     {
         outputStream.Write(memberFlags, GetRequiredBits<static_cast<U16>(InputComponent::MemberType::COUNT)>::value);

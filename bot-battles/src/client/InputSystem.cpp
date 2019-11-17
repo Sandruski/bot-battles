@@ -21,6 +21,11 @@ InputSystem::~InputSystem()
 //----------------------------------------------------------------------------------------------------
 bool InputSystem::Update()
 {
+    for (auto& entity : m_entities) {
+        std::shared_ptr<InputComponent> input = g_game->GetComponentManager().GetComponent<InputComponent>(entity);
+        input->m_acceleration = Vec2(0.1f, 0.0f);
+    }
+
     std::shared_ptr<SingletonInputComponent> singletonInput = g_game->GetSingletonInputComponent();
 
     UpdateSampleInput(*singletonInput);

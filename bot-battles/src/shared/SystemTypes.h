@@ -21,6 +21,7 @@ enum class SystemType : U16 {
 
     NAVIGATION,
     SPAWNER,
+    INPUT,
 
     COUNT,
     INVALID

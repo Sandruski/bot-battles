@@ -147,7 +147,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)TransformComponent.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)InputComponent.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)InputComponent.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp">

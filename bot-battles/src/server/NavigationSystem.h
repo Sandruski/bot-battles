@@ -5,7 +5,8 @@
 
 namespace sand {
 
-class InputState;
+struct InputComponent;
+struct TransformComponent;
 
 //----------------------------------------------------------------------------------------------------
 class NavigationSystem : public System {
@@ -19,13 +20,10 @@ public:
     NavigationSystem();
     ~NavigationSystem() override;
 
-    bool StartUp() override;
     bool Update() override;
-    bool ShutDown() override;
 
 private:
-    void ProcessInput(F32 dt, const InputState& inputState) const;
-    void UpdateMovement(F32 dt) const;
+    void UpdateMovement(InputComponent& input, TransformComponent& transform, F32 dt) const;
 };
 }
 

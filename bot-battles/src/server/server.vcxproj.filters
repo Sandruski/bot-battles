@@ -87,6 +87,9 @@
     <ClCompile Include="SpawnerSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="InputSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -138,6 +141,9 @@
       <Filter>Header Files\Networking</Filter>
     </ClInclude>
     <ClInclude Include="SpawnerSystem.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="InputSystem.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
   </ItemGroup>

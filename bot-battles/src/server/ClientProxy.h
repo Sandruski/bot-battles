@@ -33,9 +33,17 @@ public:
         return m_replicationManager;
     }
 
-public:
-    Entity m_entity;
+    const std::deque<Move>& GetUnprocessedMoves()
+    {
+        return m_unprocessedMoves;
+    }
 
+    void ClearUnprocessedMoves()
+    {
+        m_unprocessedMoves.clear();
+    }
+
+public:
     bool m_isLastMoveTimestampDirty;
 
 private:
@@ -45,7 +53,6 @@ private:
     std::string m_name;
 
     std::deque<Move> m_unprocessedMoves;
-
     F32 m_lastPacketTime;
 };
 }

@@ -29,7 +29,7 @@ PlayerID SingletonServerComponent::AddPlayer(const SocketAddress& socketAddress,
 {
     PlayerID playerID = GetPlayerID(socketAddress);
     if (playerID != INVALID_PLAYER_ID) {
-        std::shared_ptr<ClientProxy> clientProxy = GetClientProxy(playerID);
+        std::shared_ptr<ClientProxy> clientProxy = GetClientProxyFromPlayerID(playerID);
         if (COMPARE_STRINGS(clientProxy->GetName(), name)) {
             WLOG("Player with the socket address %s is already registered", socketAddress.GetName());
         } else {
@@ -66,6 +66,31 @@ bool SingletonServerComponent::RemovePlayer(PlayerID playerID)
 }
 
 //----------------------------------------------------------------------------------------------------
+bool SingletonServerComponent::AddEntity(Entity entity, PlayerID playerID)
+{
+    std::shared_ptr<ClientProxy> clientProxy = GetClientProxyFromPlayerID(playerID);
+    if (clientProxy == nullptr) {
+        return false;
+    }
+
+    m_entityToClientProxy.insert(std::make_pair(entity, clientProxy));
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool SingletonServerComponent::RemoveEntity(Entity entity)
+{
+    std::size_t ret = m_entityToClientProxy.erase(entity);
+    if (ret == 0) {
+        WLOG("Entity %u could not be removed", entity);
+        return false;
+    }
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
 PlayerID SingletonServerComponent::GetPlayerID(const SocketAddress& socketAddress) const
 {
     for (const auto& pair : m_playerIDToClientProxy) {
@@ -79,11 +104,23 @@ PlayerID SingletonServerComponent::GetPlayerID(const SocketAddress& socketAddres
 }
 
 //----------------------------------------------------------------------------------------------------
-std::shared_ptr<ClientProxy> SingletonServerComponent::GetClientProxy(PlayerID playerID) const
+std::shared_ptr<ClientProxy> SingletonServerComponent::GetClientProxyFromPlayerID(PlayerID playerID) const
 {
     auto it = m_playerIDToClientProxy.find(playerID);
     if (it == m_playerIDToClientProxy.end()) {
         WLOG("Player %u is not registered", playerID);
+        return nullptr;
+    }
+
+    return it->second;
+}
+
+//----------------------------------------------------------------------------------------------------
+std::shared_ptr<ClientProxy> SingletonServerComponent::GetClientProxyFromEntity(Entity entity) const
+{
+    auto it = m_entityToClientProxy.find(entity);
+    if (it == m_entityToClientProxy.end()) {
+        WLOG("Entity %u is not registered", entity);
         return nullptr;
     }
 

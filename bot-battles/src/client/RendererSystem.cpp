@@ -75,10 +75,10 @@ bool RendererSystem::Render()
         if (renderer->m_isDebugDraw) {
             DebugDrawer::DrawQuad(
                 {
-                    (int)transform->m_position.x - 20,
-                    (int)transform->m_position.y - 20,
-                    (int)transform->m_position.x + 20,
-                    (int)transform->m_position.y + 20,
+                    (int)transform->m_position.x,
+                    (int)transform->m_position.y,
+                    (int)transform->m_position.x + 10,
+                    (int)transform->m_position.y + 10,
                 },
                 Red);
             /*
