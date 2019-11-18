@@ -25,12 +25,6 @@
     <Filter Include="Header Files\Systems">
       <UniqueIdentifier>{090d2354-aad2-458e-ab40-592246d8c08f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Resources">
-      <UniqueIdentifier>{5a26c38e-8819-4127-9235-6daba7534bcb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Utils">
-      <UniqueIdentifier>{d0824a8a-9c56-42a5-934f-049ab181c9b6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Systems">
       <UniqueIdentifier>{0d2855d0-e2bd-417a-837c-af5952598185}</UniqueIdentifier>
     </Filter>
@@ -40,31 +34,16 @@
     <Filter Include="Source Files\Networking">
       <UniqueIdentifier>{23ffd94e-7ed8-4ea2-ba2e-9d6ef0a7c599}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Resources">
-      <UniqueIdentifier>{a701c84d-abe2-4bd6-969b-0b57f042c3ec}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Components">
       <UniqueIdentifier>{5e9170cf-927a-4d30-8b11-6befe9af2302}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Game.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FSM.cpp">
-      <Filter>Source Files\States</Filter>
-    </ClCompile>
     <ClCompile Include="GameplayState.cpp">
       <Filter>Source Files\States</Filter>
-    </ClCompile>
-    <ClCompile Include="Resource.cpp">
-      <Filter>Source Files\Resources</Filter>
-    </ClCompile>
-    <ClCompile Include="ResourceManager.cpp">
-      <Filter>Source Files\Resources</Filter>
     </ClCompile>
     <ClCompile Include="ServerSystem.cpp">
       <Filter>Source Files\Systems</Filter>
@@ -90,43 +69,19 @@
     <ClCompile Include="ReplicationManagerServer.cpp">
       <Filter>Source Files\Networking</Filter>
     </ClCompile>
+    <ClCompile Include="GameServer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Game.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FSM.h">
-      <Filter>Header Files\States</Filter>
-    </ClInclude>
     <ClInclude Include="GameplayState.h">
       <Filter>Header Files\States</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="ResourceDefs.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="ResourceManager.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="SDLDefs.h">
-      <Filter>Header Files\Utils</Filter>
     </ClInclude>
     <ClInclude Include="ServerSystem.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
     <ClInclude Include="SingletonServerComponent.h">
       <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="StateDefs.h">
-      <Filter>Header Files\States</Filter>
-    </ClInclude>
-    <ClInclude Include="State.h">
-      <Filter>Header Files\States</Filter>
-    </ClInclude>
-    <ClInclude Include="WorkingDirDefs.h">
-      <Filter>Header Files\Utils</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
@@ -145,6 +100,9 @@
     </ClInclude>
     <ClInclude Include="ReplicationManagerServer.h">
       <Filter>Header Files\Networking</Filter>
+    </ClInclude>
+    <ClInclude Include="GameServer.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

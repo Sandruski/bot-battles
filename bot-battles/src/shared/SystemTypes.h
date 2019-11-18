@@ -3,30 +3,27 @@
 
 namespace sand {
 
-#ifdef _CLIENT
 enum class SystemType : U16 {
-    CLIENT,
 
+#ifdef _DRAW
     WINDOW,
     RENDERER,
     EVENT,
+#endif
+
     INPUT,
 
-    COUNT,
-    INVALID
-};
+#ifdef _CLIENT
+    CLIENT,
 #elif _SERVER
-enum class SystemType : U16 {
     SERVER,
-
     NAVIGATION,
     SPAWNER,
-    INPUT,
+#endif
 
     COUNT,
     INVALID
 };
-#endif
 }
 
 #endif

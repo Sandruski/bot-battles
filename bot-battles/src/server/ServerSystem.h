@@ -5,11 +5,12 @@
 
 namespace sand {
 
-struct SingletonServerComponent;
 class OutputMemoryStream;
 class InputMemoryStream;
 class SocketAddress;
 class ClientProxy;
+
+struct SingletonServerComponent;
 
 //----------------------------------------------------------------------------------------------------
 class ServerSystem : public System, public Subject, public Observer {

@@ -1,6 +1,6 @@
 #include "ClientSystem.h"
 
-#include "Game.h"
+#include "GameClient.h"
 #include "LinkingContext.h"
 #include "MemoryStream.h"
 #include "MessageTypes.h"
@@ -34,7 +34,7 @@ bool ClientSystem::StartUp()
         return false;
     }
 
-    std::shared_ptr<SingletonClientComponent> client = g_game->GetSingletonClientComponent();
+    std::shared_ptr<SingletonClientComponent> client = g_gameClient->GetSingletonClientComponent();
     client->m_socketAddress = SocketAddress::CreateIPv4("127.0.0.1", "9999");
     assert(client->m_socketAddress != nullptr);
     client->m_socket = UDPSocket::CreateIPv4();
@@ -47,7 +47,7 @@ bool ClientSystem::StartUp()
 //----------------------------------------------------------------------------------------------------
 bool ClientSystem::Update()
 {
-    std::shared_ptr<SingletonClientComponent> client = g_game->GetSingletonClientComponent();
+    std::shared_ptr<SingletonClientComponent> client = g_gameClient->GetSingletonClientComponent();
 
     ReceiveIncomingPackets(*client);
     // TODO: ProcessQueuedPackets()
@@ -86,7 +86,7 @@ void ClientSystem::UpdateSendInputPacket(SingletonClientComponent& client) const
     float time = Time::GetInstance().GetTime();
     float nextInputTime = client.GetNextInputTime();
     if (time >= nextInputTime) {
-        std::shared_ptr<SingletonInputComponent> singletonInput = g_game->GetSingletonInputComponent();
+        std::shared_ptr<SingletonInputComponent> singletonInput = g_gameClient->GetSingletonInputComponent();
         const bool result = SendInputPacket(client, *singletonInput);
         if (result) {
             client.m_lastTime = time;
@@ -232,7 +232,7 @@ void ClientSystem::ReceiveStatePacket(SingletonClientComponent& client, InputMem
     }
 
     // TODO
-    g_game->GetReplicationManager().Read(inputStream);
+    g_gameClient->GetReplicationManager().Read(inputStream);
 }
 
 //----------------------------------------------------------------------------------------------------

@@ -1,10 +1,9 @@
-#include "Game.h"
+#include "GameClient.h"
 
 #include "FSM.h"
 #include "GameplayState.h"
 
-enum MainState 
-{
+enum MainState {
     CREATE,
     INIT,
     UPDATE,
@@ -15,16 +14,16 @@ enum MainState
     STATE_INVALID
 };
 
-namespace sand
-{
-	Game* g_game;
+namespace sand {
+Game* g_game;
+GameClient* g_gameClient;
 
-	//----------------------------------------------------------------------------------------------------
-	void StatesSetup()
-	{
-		U32 id = g_game->GetFSM().AddState<GameplayState>();
-		g_game->GetFSM().ChangeState(id);
-	}
+//----------------------------------------------------------------------------------------------------
+void StatesSetup()
+{
+    U32 id = g_game->GetFSM().AddState<GameplayState>();
+    g_game->GetFSM().ChangeState(id);
+}
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -34,96 +33,78 @@ int main(int /*argc*/, char* /*args*/[])
 
     MainState mainState = MainState::CREATE;
 
-	while (mainState != MainState::EXIT)
-	{
-		switch (mainState)
-		{
-		case MainState::CREATE:
-		{
-			ILOG("MainState::CREATE");
+    while (mainState != MainState::EXIT) {
+        switch (mainState) {
+        case MainState::CREATE: {
+            ILOG("MainState::CREATE");
 
-			sand::GameConfiguration gameConfiguration(
-				"Sand",
-				sand::StatesSetup
-			);
-			sand::g_game = new sand::Game(gameConfiguration);
-			if (sand::g_game != nullptr)
-			{
-				mainState = MainState::INIT;
-			}
-			else
-			{
-				ELOG("Error: could not create the game");
-				mainState = MainState::EXIT;
-			}
-			break;
-		}
+            sand::GameConfiguration gameConfiguration(
+                "Sand Client",
+                sand::StatesSetup);
+            sand::g_game = sand::g_gameClient = new sand::GameClient(gameConfiguration);
+            if (sand::g_game != nullptr) {
+                mainState = MainState::INIT;
+            } else {
+                ELOG("Error: could not create the game");
+                mainState = MainState::EXIT;
+            }
+            break;
+        }
 
-		case MainState::INIT:
-		{
-			ILOG("MainState::INIT");
+        case MainState::INIT: {
+            ILOG("MainState::INIT");
 
-			bool isInitOk = sand::g_game->Init();
-			if (isInitOk)
-			{
-				ILOG("MainState::UPDATE");
-				mainState = MainState::UPDATE;
-			}
-			else
-			{
-				ELOG("Error: could not initialize the game");
-				mainState = MainState::EXIT;
-			}
-			break;
-		}
+            bool isInitOk = sand::g_gameClient->Init();
+            if (isInitOk) {
+                ILOG("MainState::UPDATE");
+                mainState = MainState::UPDATE;
+            } else {
+                ELOG("Error: could not initialize the game");
+                mainState = MainState::EXIT;
+            }
+            break;
+        }
 
-		case MainState::UPDATE:
-		{
-			bool isUpdateOk = sand::g_game->Update();
-			if (!isUpdateOk)
-			{
-				mainState = MainState::END;
-			}
-			break;
-		}
+        case MainState::UPDATE: {
+            bool isUpdateOk = sand::g_gameClient->DoFrame();
+            if (!isUpdateOk) {
+                mainState = MainState::END;
+            }
+            break;
+        }
 
-		case MainState::END:
-		{
-			ILOG("MainState::END");
+        case MainState::END: {
+            ILOG("MainState::END");
 
-			bool isEndOk = sand::g_game->End();
-			if (isEndOk)
-			{
-				ret = EXIT_SUCCESS;
-			}
-			else
-			{
-				ELOG("Error: could not end the game");
-			}
+            bool isEndOk = sand::g_gameClient->End();
+            if (isEndOk) {
+                ret = EXIT_SUCCESS;
+            } else {
+                ELOG("Error: could not end the game");
+            }
 
-			mainState = MainState::EXIT;
+            mainState = MainState::EXIT;
 
-			break;
-		}
+            break;
+        }
 
-		case MainState::EXIT:
-		{
-			ILOG("MainState::EXIT");
+        case MainState::EXIT: {
+            ILOG("MainState::EXIT");
 
-			SAFE_DELETE_POINTER(sand::g_game);
+            SAFE_DELETE_POINTER(sand::g_gameClient);
+            sand::g_game = nullptr;
 
-			break;
-		}
+            break;
+        }
 
-		default:
-		{
-			assert(false);
-			break;
-		}
-		}
-	}
+        default: {
+            assert(false);
+            break;
+        }
+        }
+    }
 
-	SDL_Quit();
+    SDL_Quit();
 
     return ret;
 }

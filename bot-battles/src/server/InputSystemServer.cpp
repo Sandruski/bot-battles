@@ -2,7 +2,7 @@
 
 #include "ClientProxy.h"
 #include "ComponentManager.h"
-#include "Game.h"
+#include "GameServer.h"
 #include "InputComponent.h"
 #include "Move.h"
 #include "SingletonServerComponent.h"
@@ -23,13 +23,13 @@ InputSystemServer::~InputSystemServer()
 //----------------------------------------------------------------------------------------------------
 bool InputSystemServer::Update()
 {
-    std::shared_ptr<SingletonServerComponent> singletonServer = g_game->GetSingletonServerComponent();
+    std::shared_ptr<SingletonServerComponent> singletonServer = g_gameServer->GetSingletonServerComponent();
 
     for (auto& entity : m_entities) {
         std::shared_ptr<ClientProxy> clientProxy = singletonServer->GetClientProxyFromEntity(entity);
         const std::deque<Move>& unprocessedMoves = clientProxy->GetUnprocessedMoves();
         for (const Move& unprocessedMove : unprocessedMoves) {
-            std::shared_ptr<InputComponent> input = g_game->GetComponentManager().GetComponent<InputComponent>(entity);
+            std::shared_ptr<InputComponent> input = g_gameServer->GetComponentManager().GetComponent<InputComponent>(entity);
             input->Copy(unprocessedMove.GetInput());
             //F32 dt = unprocessedMove.GetDt();
         }

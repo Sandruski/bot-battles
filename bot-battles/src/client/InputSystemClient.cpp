@@ -1,7 +1,7 @@
 #include "InputSystemClient.h"
 
 #include "ComponentManager.h"
-#include "Game.h"
+#include "GameClient.h"
 #include "InputComponent.h"
 #include "SingletonInputComponent.h"
 
@@ -22,11 +22,11 @@ InputSystemClient::~InputSystemClient()
 bool InputSystemClient::Update()
 {
     for (auto& entity : m_entities) {
-        std::shared_ptr<InputComponent> input = g_game->GetComponentManager().GetComponent<InputComponent>(entity);
+        std::shared_ptr<InputComponent> input = g_gameClient->GetComponentManager().GetComponent<InputComponent>(entity);
         input->m_acceleration = Vec2(0.1f, 0.0f);
     }
 
-    std::shared_ptr<SingletonInputComponent> singletonInput = g_game->GetSingletonInputComponent();
+    std::shared_ptr<SingletonInputComponent> singletonInput = g_gameClient->GetSingletonInputComponent();
 
     UpdateSampleInput(*singletonInput);
 
@@ -47,7 +47,7 @@ void InputSystemClient::UpdateSampleInput(SingletonInputComponent& singletonInpu
 void InputSystemClient::SampleInput(SingletonInputComponent& singletonInput, F32 timestamp) const
 {
     for (auto& entity : m_entities) {
-        std::shared_ptr<InputComponent> input = g_game->GetComponentManager().GetComponent<InputComponent>(entity);
+        std::shared_ptr<InputComponent> input = g_gameClient->GetComponentManager().GetComponent<InputComponent>(entity);
         singletonInput.AddMove(*input, timestamp);
     }
 }

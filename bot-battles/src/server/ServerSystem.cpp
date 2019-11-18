@@ -1,7 +1,7 @@
 #include "ServerSystem.h"
 
 #include "ClientProxy.h"
-#include "Game.h"
+#include "GameServer.h"
 #include "LinkingContext.h"
 #include "MemoryStream.h"
 #include "MessageTypes.h"
@@ -33,7 +33,7 @@ bool ServerSystem::StartUp()
         return false;
     }
 
-    std::shared_ptr<SingletonServerComponent> server = g_game->GetSingletonServerComponent();
+    std::shared_ptr<SingletonServerComponent> server = g_gameServer->GetSingletonServerComponent();
     server->m_socketAddress = SocketAddress::CreateIPv4(INADDR_ANY, static_cast<U16>(atoi("9999")));
     assert(server->m_socketAddress != nullptr);
     server->m_socket = UDPSocket::CreateIPv4();
@@ -55,7 +55,7 @@ bool ServerSystem::PreUpdate()
 //----------------------------------------------------------------------------------------------------
 bool ServerSystem::Update()
 {
-    std::shared_ptr<SingletonServerComponent> server = g_game->GetSingletonServerComponent();
+    std::shared_ptr<SingletonServerComponent> server = g_gameServer->GetSingletonServerComponent();
 
     ReceiveIncomingPackets(*server);
     // TODO: ProcessQueuedPackets()
@@ -69,17 +69,17 @@ void ServerSystem::OnNotify(const Event& event)
 {
     switch (event.eventType) {
     case EventType::PLAYER_ADDED: {
-        std::shared_ptr<SingletonServerComponent> server = g_game->GetSingletonServerComponent();
+        std::shared_ptr<SingletonServerComponent> server = g_gameServer->GetSingletonServerComponent();
         std::shared_ptr<ClientProxy> clientProxy = server->GetClientProxyFromPlayerID(event.server.playerID);
-        const std::unordered_map<NetworkID, Entity>& networkIDToEntity = g_game->GetLinkingContext().GetNetworkIDToEntityMap();
+        const std::unordered_map<NetworkID, Entity>& networkIDToEntity = g_gameServer->GetLinkingContext().GetNetworkIDToEntityMap();
         for (const auto& pair : networkIDToEntity) {
             clientProxy->GetReplicationManager().CreateEntityCommand(pair.first);
         }
         break;
     }
     case EventType::ENTITY_ADDED: {
-        std::shared_ptr<SingletonServerComponent> server = g_game->GetSingletonServerComponent();
-        NetworkID networkID = g_game->GetLinkingContext().GetNetworkID(event.entity.entity);
+        std::shared_ptr<SingletonServerComponent> server = g_gameServer->GetSingletonServerComponent();
+        NetworkID networkID = g_gameServer->GetLinkingContext().GetNetworkID(event.entity.entity);
         if (networkID == INVALID_NETWORK_ID) {
             break;
         }
@@ -90,8 +90,8 @@ void ServerSystem::OnNotify(const Event& event)
         break;
     }
     case EventType::ENTITY_SIGNATURE_CHANGED: {
-        std::shared_ptr<SingletonServerComponent> server = g_game->GetSingletonServerComponent();
-        NetworkID networkID = g_game->GetLinkingContext().GetNetworkID(event.entity.entity);
+        std::shared_ptr<SingletonServerComponent> server = g_gameServer->GetSingletonServerComponent();
+        NetworkID networkID = g_gameServer->GetLinkingContext().GetNetworkID(event.entity.entity);
         const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = server->GetPlayerIDToClientProxyMap();
         for (const auto& pair : playerIDToClientProxy) {
             pair.second->GetReplicationManager().CreateEntityCommand(networkID); // TODO: Update instead of Create

@@ -2,7 +2,7 @@
 
 #include "ComponentManager.h"
 #include "EntityManager.h"
-#include "Game.h"
+#include "GameClient.h"
 #include "InputComponent.h"
 #include "LinkingContext.h"
 #include "MemoryStream.h"
@@ -66,26 +66,26 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream) const
 //----------------------------------------------------------------------------------------------------
 void ReplicationManagerClient::ReadCreateEntityAction(InputMemoryStream& inputStream, NetworkID networkID) const
 {
-    Entity entity = g_game->GetLinkingContext().GetEntity(networkID);
+    Entity entity = g_gameClient->GetLinkingContext().GetEntity(networkID);
     if (entity != INVALID_ENTITY) {
         ReadUpdateEntityAction(inputStream, networkID);
         return;
     }
 
-    entity = g_game->GetEntityManager().AddEntity();
-    g_game->GetLinkingContext().AddEntity(entity, networkID);
+    entity = g_gameClient->GetEntityManager().AddEntity();
+    g_gameClient->GetLinkingContext().AddEntity(entity, networkID);
 
     Signature signature = 0;
     inputStream.Read(signature /*, GetRequiredBits<static_cast<U16>(MAX_COMPONENTS)>::value*/); // TODO: read server MAX_COMPONENTS
 
     U16 hasTransform = 1 << static_cast<std::size_t>(ComponentType::TRANSFORM);
     if (signature & hasTransform) {
-        std::shared_ptr<TransformComponent> transform = g_game->GetComponentManager().AddComponent<TransformComponent>(entity);
+        std::shared_ptr<TransformComponent> transform = g_gameClient->GetComponentManager().AddComponent<TransformComponent>(entity);
         transform->Read(inputStream);
     }
     U16 hasInput = 1 << static_cast<std::size_t>(ComponentType::INPUT);
     if (signature & hasInput) {
-        g_game->GetComponentManager().AddComponent<InputComponent>(entity);
+        g_gameClient->GetComponentManager().AddComponent<InputComponent>(entity);
     }
 
     // TODO: read total size of things written
@@ -94,7 +94,7 @@ void ReplicationManagerClient::ReadCreateEntityAction(InputMemoryStream& inputSt
 //----------------------------------------------------------------------------------------------------
 void ReplicationManagerClient::ReadUpdateEntityAction(InputMemoryStream& inputStream, NetworkID networkID) const
 {
-    Entity entity = g_game->GetLinkingContext().GetEntity(networkID);
+    Entity entity = g_gameClient->GetLinkingContext().GetEntity(networkID);
     if (entity == INVALID_ENTITY) {
         //U32 bitCount = replicationHeader.GetBitCount();
         //WLOG("The entity has not been created yet. Advancing the memory stream's head %u bits...", bitCount);
@@ -107,7 +107,7 @@ void ReplicationManagerClient::ReadUpdateEntityAction(InputMemoryStream& inputSt
 
     U16 hasTransform = 1 << static_cast<std::size_t>(ComponentType::TRANSFORM);
     if (signature & hasTransform) {
-        std::shared_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
+        std::shared_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
         transformComponent->Read(inputStream);
     }
 
@@ -117,7 +117,7 @@ void ReplicationManagerClient::ReadUpdateEntityAction(InputMemoryStream& inputSt
 //----------------------------------------------------------------------------------------------------
 void ReplicationManagerClient::ReadRemoveEntityAction(InputMemoryStream& /*inputStream*/, NetworkID networkID) const
 {
-    Entity entity = g_game->GetLinkingContext().GetEntity(networkID);
+    Entity entity = g_gameClient->GetLinkingContext().GetEntity(networkID);
     if (entity == INVALID_ENTITY) {
         // TODO: read total size of things written
         //U32 bitCount = replicationHeader.GetBitCount();
@@ -126,7 +126,7 @@ void ReplicationManagerClient::ReadRemoveEntityAction(InputMemoryStream& /*input
         return;
     }
 
-    g_game->GetLinkingContext().RemoveEntity(entity);
-    g_game->GetEntityManager().RemoveEntity(entity);
+    g_gameClient->GetLinkingContext().RemoveEntity(entity);
+    g_gameClient->GetEntityManager().RemoveEntity(entity);
 }
 }

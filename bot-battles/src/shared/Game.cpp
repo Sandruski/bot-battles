@@ -3,26 +3,23 @@
 #include "ComponentManager.h"
 #include "EntityManager.h"
 #include "FSM.h"
-#include "ResourceManager.h"
+#include "LinkingContext.h"
 #include "SystemManager.h"
+#ifdef _DRAW
+#include "ResourceManager.h"
 #include "TextureImporter.h"
 
-#include "LinkingContext.h"
-#include "ReplicationManagerClient.h"
-
-#include "ClientSystem.h"
-#include "EventSystem.h"
-#include "InputSystemClient.h"
 #include "RendererSystem.h"
 #include "WindowSystem.h"
+#endif
+#include "EventSystem.h"
 
-#include "SingletonClientComponent.h"
-#include "SingletonInputComponent.h"
+#ifdef _DRAW
 #include "SingletonRendererComponent.h"
 #include "SingletonWindowComponent.h"
-
-#include "InputComponent.h"
 #include "SpriteComponent.h"
+#endif
+#include "InputComponent.h"
 #include "TransformComponent.h"
 
 namespace sand {
@@ -30,22 +27,28 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 Game::Game(const GameConfiguration& configuration)
     : m_configuration(configuration)
+    , m_entityManager()
+    , m_componentManager()
+    , m_systemManager()
+    , m_linkingContext()
+    , m_resourceManager()
+    , m_textureImporter()
+    , m_singletonWindowComponent()
+    , m_singletonRendererComponent()
     , m_isRunning(false)
 {
     m_entityManager = std::make_shared<EntityManager>();
     m_componentManager = std::make_shared<ComponentManager>();
     m_systemManager = std::make_shared<SystemManager>();
+    m_linkingContext = std::make_unique<LinkingContext>();
+    m_fsm = std::make_shared<FSM>(); // TODO: remove this!
+#ifdef _DRAW
     m_resourceManager = std::make_shared<ResourceManager>();
-    m_fsm = std::make_shared<FSM>();
     m_textureImporter = std::make_shared<TextureImporter>();
 
-    m_linkingContext = std::make_unique<LinkingContext>();
-    m_replicationManager = std::make_unique<ReplicationManagerClient>();
-
-    m_singletonInputComponent = std::make_shared<SingletonInputComponent>();
     m_singletonRendererComponent = std::make_shared<SingletonRendererComponent>();
     m_singletonWindowComponent = std::make_shared<SingletonWindowComponent>();
-    m_singletonClientComponent = std::make_shared<SingletonClientComponent>();
+#endif
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -57,7 +60,10 @@ Game::~Game()
 bool Game::Init()
 {
     // Systems
-    bool ret = m_systemManager->RegisterSystem<WindowSystem>();
+    bool ret = false;
+
+#ifdef _DRAW
+    ret = m_systemManager->RegisterSystem<WindowSystem>();
     if (!ret) {
         return false;
     }
@@ -69,24 +75,18 @@ bool Game::Init()
     if (!ret) {
         return false;
     }
-    ret = m_systemManager->RegisterSystem<InputSystemClient>();
-    if (!ret) {
-        return false;
-    }
-    ret = m_systemManager->RegisterSystem<ClientSystem>();
-    if (!ret) {
-        return false;
-    }
 
     // Components
-    ret = m_componentManager->RegisterComponent<TransformComponent>();
-    if (!ret) {
-        return false;
-    }
     ret = m_componentManager->RegisterComponent<SpriteComponent>();
     if (!ret) {
         return false;
     }
+#endif
+    ret = m_componentManager->RegisterComponent<TransformComponent>();
+    if (!ret) {
+        return false;
+    }
+
     ret = m_componentManager->RegisterComponent<InputComponent>();
     if (!ret) {
         return false;
@@ -123,10 +123,12 @@ bool Game::Init()
         return false;
     }
 
+#ifdef _DRAW
     ret = m_textureImporter->StartUp();
     if (!ret) {
         return false;
     }
+#endif
 
     if (m_configuration.StatesSetup != nullptr) {
         m_configuration.StatesSetup();
@@ -138,12 +140,72 @@ bool Game::Init()
 }
 
 //----------------------------------------------------------------------------------------------------
-// game loop
-bool Game::Update()
+bool Game::InitFrame()
 {
     Time::GetInstance().StartUpdate();
 
-    // PreUpdate
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+// game loop
+bool Game::DoFrame()
+{
+    bool ret = PreUpdate();
+    if (!ret) {
+        return false;
+    }
+
+    ret = Update();
+    if (!ret) {
+        return false;
+    }
+
+    ret = PostUpdate();
+    if (!ret) {
+        return false;
+    }
+
+    ret = Render();
+    if (!ret) {
+        return false;
+    }
+
+    return ret;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool Game::EndFrame()
+{
+    Time::GetInstance().FinishUpdate();
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool Game::End()
+{
+    bool ret = m_systemManager->ShutDown();
+    if (!ret) {
+        return false;
+    }
+
+    ret = m_resourceManager->ShutDown();
+    if (!ret) {
+        return false;
+    }
+
+    ret = m_fsm->ShutDown();
+    if (!ret) {
+        return false;
+    }
+
+    return ret;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool Game::PreUpdate()
+{
     bool ret = m_entityManager->PreUpdate();
     if (!ret) {
         return false;
@@ -164,8 +226,13 @@ bool Game::Update()
         return false;
     }
 
-    // Update
-    ret = m_systemManager->Update();
+    return ret;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool Game::Update()
+{
+    bool ret = m_systemManager->Update();
     if (!ret) {
         return false;
     }
@@ -175,8 +242,13 @@ bool Game::Update()
         return false;
     }
 
-    // PostUpdate
-    ret = m_systemManager->PostUpdate();
+    return ret;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool Game::PostUpdate()
+{
+    bool ret = m_systemManager->PostUpdate();
     if (!ret) {
         return false;
     }
@@ -186,36 +258,18 @@ bool Game::Update()
         return false;
     }
 
-    // Render
-    ret = m_systemManager->Render();
+    return ret;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool Game::Render()
+{
+    bool ret = m_systemManager->Render();
     if (!ret) {
         return false;
     }
 
     ret = m_fsm->Render();
-    if (!ret) {
-        return false;
-    }
-
-    Time::GetInstance().FinishUpdate();
-
-    return ret;
-}
-
-//----------------------------------------------------------------------------------------------------
-bool Game::End()
-{
-    bool ret = m_systemManager->ShutDown();
-    if (!ret) {
-        return false;
-    }
-
-    ret = m_resourceManager->ShutDown();
-    if (!ret) {
-        return false;
-    }
-
-    ret = m_fsm->ShutDown();
     if (!ret) {
         return false;
     }

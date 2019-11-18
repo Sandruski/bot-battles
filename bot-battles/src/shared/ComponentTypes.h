@@ -3,25 +3,17 @@
 
 namespace sand {
 
-#ifdef _CLIENT
 enum class ComponentType : U16 {
     TRANSFORM,
     INPUT,
 
+#ifdef _DRAW
     SPRITE,
-
-    COUNT,
-    INVALID
-};
-#elif _SERVER
-enum class ComponentType : U16 {
-    TRANSFORM,
-    INPUT,
-
-    COUNT,
-    INVALID
-};
 #endif
+
+    COUNT,
+    INVALID
+};
 }
 
 #endif

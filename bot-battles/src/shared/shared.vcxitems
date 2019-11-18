@@ -15,13 +15,18 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)ByteSwap.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Colors.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ComponentDefs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ComponentManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ComponentTypes.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)DebugDrawer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)EntityDefs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)EntityManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Events.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)EventSystem.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)EventTypes.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)FSM.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Game.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)InputComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)LinkingContext.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Log.h" />
@@ -32,13 +37,25 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)NetComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)NetDefs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Observer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)RendererSystem.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ReplicationCommand.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Resource.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ResourceDefs.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ResourceManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ResourceTexture.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)SDLDefs.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)SingletonRendererComponent.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)SingletonWindowComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SocketAddress.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)SpriteComponent.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)State.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)StateDefs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Subject.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)System.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SystemDefs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SystemManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SystemTypes.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)TextureImporter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Time.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Timer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TransformComponent.h" />
@@ -47,24 +64,37 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Vec2.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Vec2I.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Vec3.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)WindowSystem.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)WorkingDirDefs.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Colors.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ComponentManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)DebugDrawer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)EntityManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)EventSystem.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)FSM.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Game.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)LinkingContext.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MemoryStream.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Move.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)RendererSystem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ReplicationCommand.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Resource.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ResourceManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ResourceTexture.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SocketAddress.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Subject.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)System.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SystemManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)TextureImporter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Time.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Timer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)UDPSocket.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Vec2.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Vec2I.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Vec3.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)WindowSystem.cpp" />
   </ItemGroup>
 </Project>

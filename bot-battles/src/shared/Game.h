@@ -9,17 +9,15 @@ namespace sand {
 class EntityManager;
 class ComponentManager;
 class SystemManager;
+class LinkingContext;
+class FSM; // TODO: remove this!
 class ResourceManager;
-class FSM;
 class TextureImporter;
 
-class LinkingContext;
-class ReplicationManagerClient;
-
+#ifdef _DRAW
 struct SingletonWindowComponent;
 struct SingletonRendererComponent;
-struct SingletonInputComponent;
-struct SingletonClientComponent;
+#endif
 
 //----------------------------------------------------------------------------------------------------
 struct GameConfiguration {
@@ -38,44 +36,57 @@ public:
     Game(const GameConfiguration& configuration);
     virtual ~Game();
 
-    bool Init();
-    bool Update();
+    virtual bool Init();
+    bool InitFrame();
+    bool DoFrame();
+    bool EndFrame();
     bool End();
 
     EntityManager& GetEntityManager() const { return *m_entityManager; }
     ComponentManager& GetComponentManager() const { return *m_componentManager; }
     SystemManager& GetSystemManager() const { return *m_systemManager; }
-    ResourceManager& GetResourceManager() const { return *m_resourceManager; }
-    FSM& GetFSM() const { return *m_fsm; }
+    LinkingContext& GetLinkingContext() const { return *m_linkingContext; }
+    FSM& GetFSM() const { return *m_fsm; } // TODO: remove this!
+#ifdef _DRAW
+    ResourceManager& GetResourceManager() const
+    {
+        return *m_resourceManager;
+    }
     TextureImporter& GetTextureImporter() const { return *m_textureImporter; }
 
-    LinkingContext& GetLinkingContext() const { return *m_linkingContext; }
-    ReplicationManagerClient& GetReplicationManager() const { return *m_replicationManager; }
-
-    std::shared_ptr<SingletonWindowComponent> GetSingletonWindowComponent() const { return m_singletonWindowComponent; }
+    std::shared_ptr<SingletonWindowComponent> GetSingletonWindowComponent() const
+    {
+        return m_singletonWindowComponent;
+    }
     std::shared_ptr<SingletonRendererComponent> GetSingletonRendererComponent() const { return m_singletonRendererComponent; }
-    std::shared_ptr<SingletonInputComponent> GetSingletonInputComponent() const { return m_singletonInputComponent; }
-    std::shared_ptr<SingletonClientComponent> GetSingletonClientComponent() const { return m_singletonClientComponent; }
+#endif
 
-    const char* GetName() const { return m_configuration.m_name; }
+    const char* GetName() const
+    {
+        return m_configuration.m_name;
+    }
 
 private:
+    bool PreUpdate();
+    bool Update();
+    bool PostUpdate();
+    bool Render();
+
+protected:
     GameConfiguration m_configuration;
 
     std::shared_ptr<EntityManager> m_entityManager;
     std::shared_ptr<ComponentManager> m_componentManager;
     std::shared_ptr<SystemManager> m_systemManager;
+    std::unique_ptr<LinkingContext> m_linkingContext;
+    std::shared_ptr<FSM> m_fsm; // TODO: remove this!
     std::shared_ptr<ResourceManager> m_resourceManager;
-    std::shared_ptr<FSM> m_fsm;
     std::shared_ptr<TextureImporter> m_textureImporter;
 
-    std::unique_ptr<LinkingContext> m_linkingContext;
-    std::unique_ptr<ReplicationManagerClient> m_replicationManager;
-
+#ifdef _DRAW
     std::shared_ptr<SingletonWindowComponent> m_singletonWindowComponent;
     std::shared_ptr<SingletonRendererComponent> m_singletonRendererComponent;
-    std::shared_ptr<SingletonInputComponent> m_singletonInputComponent;
-    std::shared_ptr<SingletonClientComponent> m_singletonClientComponent;
+#endif
 
     bool m_isRunning;
 };

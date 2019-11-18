@@ -2,7 +2,7 @@
 
 #include "ComponentManager.h"
 #include "EntityManager.h"
-#include "Game.h"
+#include "GameServer.h"
 #include "InputComponent.h"
 #include "LinkingContext.h"
 #include "MemoryStream.h"
@@ -107,15 +107,15 @@ void ReplicationManagerServer::Write(OutputMemoryStream& outputStream)
 //----------------------------------------------------------------------------------------------------
 void ReplicationManagerServer::WriteCreateEntityAction(OutputMemoryStream& outputStream, NetworkID networkID) const
 {
-    Entity entity = g_game->GetLinkingContext().GetEntity(networkID);
+    Entity entity = g_gameServer->GetLinkingContext().GetEntity(networkID);
 
-    Signature signature = g_game->GetEntityManager().GetSignature(entity); // Signature contains ALL components
+    Signature signature = g_gameServer->GetEntityManager().GetSignature(entity); // Signature contains ALL components
     outputStream.Write(signature /*, GetRequiredBits<static_cast<U16>(MAX_COMPONENTS)>::value*/); // TODO: write server MAX_COMPONENTS
 
     U16 hasTransform = 1 << static_cast<std::size_t>(ComponentType::TRANSFORM);
     if (signature & hasTransform) {
         U16 memberFlags = static_cast<U16>(TransformComponent::MemberType::ALL); // MemberFlags contains ALL members
-        std::shared_ptr<TransformComponent> transform = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
+        std::shared_ptr<TransformComponent> transform = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
         transform->Write(outputStream, memberFlags);
     }
 
@@ -125,15 +125,15 @@ void ReplicationManagerServer::WriteCreateEntityAction(OutputMemoryStream& outpu
 //----------------------------------------------------------------------------------------------------
 void ReplicationManagerServer::WriteUpdateEntityAction(OutputMemoryStream& outputStream, NetworkID networkID) const
 {
-    Entity entity = g_game->GetLinkingContext().GetEntity(networkID);
+    Entity entity = g_gameServer->GetLinkingContext().GetEntity(networkID);
 
-    Signature signature = g_game->GetEntityManager().GetSignature(entity); // Signature contains ONLY changed components
+    Signature signature = g_gameServer->GetEntityManager().GetSignature(entity); // Signature contains ONLY changed components
     outputStream.Write(signature /*, GetRequiredBits<static_cast<U16>(MAX_COMPONENTS)>::value*/); // TODO: write max server components
 
     U16 hasTransform = 1 << static_cast<std::size_t>(ComponentType::TRANSFORM);
     if (signature & hasTransform) {
         U16 memberFlags = static_cast<U16>(TransformComponent::MemberType::ALL); // MemberFlags contains ONLY changed memebers
-        std::shared_ptr<TransformComponent> transform = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
+        std::shared_ptr<TransformComponent> transform = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
         transform->Write(outputStream, memberFlags);
     }
 

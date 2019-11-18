@@ -176,7 +176,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_SERVER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SERVER;_DRAW;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <TreatWarningAsError>true</TreatWarningAsError>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -189,7 +189,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Ws2_32.lib;SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Ws2_32.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\Projects\bot-battles\bot-battles\src\dependencies\lib\lib86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -245,7 +245,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_SERVER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SERVER;_DRAW;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <TreatWarningAsError>true</TreatWarningAsError>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -258,7 +258,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Ws2_32.lib;SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Ws2_32.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\Projects\bot-battles\bot-battles\src\dependencies\lib\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -341,8 +341,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ClientProxy.cpp" />
-    <ClCompile Include="FSM.cpp" />
-    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameServer.cpp" />
     <ClCompile Include="GameplayState.cpp" />
     <ClCompile Include="InputSystemServer.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -358,31 +357,21 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="ReplicationManagerServer.cpp" />
-    <ClCompile Include="Resource.cpp" />
-    <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="ServerSystem.cpp" />
     <ClCompile Include="SingletonServerComponent.cpp" />
     <ClCompile Include="SpawnerSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientProxy.h" />
-    <ClInclude Include="FSM.h" />
-    <ClInclude Include="Game.h" />
+    <ClInclude Include="GameServer.h" />
     <ClInclude Include="GameplayState.h" />
     <ClInclude Include="InputSystemServer.h" />
     <ClInclude Include="NavigationSystem.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="ReplicationManagerServer.h" />
-    <ClInclude Include="Resource.h" />
-    <ClInclude Include="ResourceDefs.h" />
-    <ClInclude Include="ResourceManager.h" />
-    <ClInclude Include="SDLDefs.h" />
     <ClInclude Include="ServerSystem.h" />
     <ClInclude Include="SingletonServerComponent.h" />
     <ClInclude Include="SpawnerSystem.h" />
-    <ClInclude Include="State.h" />
-    <ClInclude Include="StateDefs.h" />
-    <ClInclude Include="WorkingDirDefs.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

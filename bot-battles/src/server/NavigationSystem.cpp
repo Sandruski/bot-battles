@@ -1,7 +1,7 @@
 #include "NavigationSystem.h"
 
 #include "ComponentManager.h"
-#include "Game.h"
+#include "GameServer.h"
 #include "InputComponent.h"
 #include "TransformComponent.h"
 
@@ -23,8 +23,8 @@ NavigationSystem::~NavigationSystem()
 bool NavigationSystem::Update()
 {
     for (auto& entity : m_entities) {
-        std::shared_ptr<InputComponent> input = g_game->GetComponentManager().GetComponent<InputComponent>(entity);
-        std::shared_ptr<TransformComponent> transform = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
+        std::shared_ptr<InputComponent> input = g_gameServer->GetComponentManager().GetComponent<InputComponent>(entity);
+        std::shared_ptr<TransformComponent> transform = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
         UpdateMovement(*input, *transform, Time::GetInstance().GetDt()); // TODO: use client dt
     }
 

@@ -1,7 +1,5 @@
 #include "SingletonInputComponent.h"
 
-#include "Move.h"
-
 namespace sand {
 //----------------------------------------------------------------------------------------------------
 const Move& SingletonInputComponent::AddMove(const InputComponent& input, F32 timestamp)

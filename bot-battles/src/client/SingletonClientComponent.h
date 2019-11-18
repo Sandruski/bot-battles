@@ -1,13 +1,10 @@
 #ifndef __SINGLETON_CLIENT_COMPONENT_H__
 #define __SINGLETON_CLIENT_COMPONENT_H__
 
-#include "Move.h"
-
 namespace sand {
 
 class SocketAddress;
 class UDPSocket;
-struct SingletonInputComponent;
 
 //----------------------------------------------------------------------------------------------------
 struct SingletonClientComponent {
