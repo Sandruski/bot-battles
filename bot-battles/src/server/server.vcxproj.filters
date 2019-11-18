@@ -48,9 +48,6 @@
     <ClCompile Include="ServerSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="pch.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ClientProxy.cpp">
       <Filter>Source Files\Networking</Filter>
     </ClCompile>
@@ -82,9 +79,6 @@
     </ClInclude>
     <ClInclude Include="SingletonServerComponent.h">
       <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="pch.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ClientProxy.h">
       <Filter>Header Files\Networking</Filter>

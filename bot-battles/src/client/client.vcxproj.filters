@@ -48,9 +48,6 @@
     <ClCompile Include="ClientSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="pch.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SingletonInputComponent.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
@@ -73,9 +70,6 @@
     </ClInclude>
     <ClInclude Include="SingletonClientComponent.h">
       <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="pch.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SingletonInputComponent.h">
       <Filter>Header Files\Components</Filter>
