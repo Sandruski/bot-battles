@@ -33,13 +33,13 @@ bool ServerSystem::StartUp()
         return false;
     }
 
-    std::shared_ptr<SingletonServerComponent> server = g_gameServer->GetSingletonServerComponent();
-    server->m_socketAddress = SocketAddress::CreateIPv4(INADDR_ANY, static_cast<U16>(atoi("9999")));
-    assert(server->m_socketAddress != nullptr);
-    server->m_socket = UDPSocket::CreateIPv4();
-    assert(server->m_socket != nullptr);
-    server->m_socket->SetNonBlockingMode(true);
-    server->m_socket->Bind(*server->m_socketAddress);
+    std::shared_ptr<SingletonServerComponent> singletonServer = g_gameServer->GetSingletonServerComponent();
+    singletonServer->m_socketAddress = SocketAddress::CreateIPv4(INADDR_ANY, static_cast<U16>(atoi("9999")));
+    assert(singletonServer->m_socketAddress != nullptr);
+    singletonServer->m_socket = UDPSocket::CreateIPv4();
+    assert(singletonServer->m_socket != nullptr);
+    singletonServer->m_socket->SetNonBlockingMode(true);
+    singletonServer->m_socket->Bind(*singletonServer->m_socketAddress);
 
     return true;
 }
@@ -55,11 +55,11 @@ bool ServerSystem::PreUpdate()
 //----------------------------------------------------------------------------------------------------
 bool ServerSystem::Update()
 {
-    std::shared_ptr<SingletonServerComponent> server = g_gameServer->GetSingletonServerComponent();
+    std::shared_ptr<SingletonServerComponent> singletonServer = g_gameServer->GetSingletonServerComponent();
 
-    ReceiveIncomingPackets(*server);
+    ReceiveIncomingPackets(*singletonServer);
     // TODO: ProcessQueuedPackets()
-    SendOutgoingPackets(*server);
+    SendOutgoingPackets(*singletonServer);
 
     return true;
 }
@@ -69,8 +69,8 @@ void ServerSystem::OnNotify(const Event& event)
 {
     switch (event.eventType) {
     case EventType::PLAYER_ADDED: {
-        std::shared_ptr<SingletonServerComponent> server = g_gameServer->GetSingletonServerComponent();
-        std::shared_ptr<ClientProxy> clientProxy = server->GetClientProxyFromPlayerID(event.server.playerID);
+        std::shared_ptr<SingletonServerComponent> singletonServer = g_gameServer->GetSingletonServerComponent();
+        std::shared_ptr<ClientProxy> clientProxy = singletonServer->GetClientProxyFromPlayerID(event.server.playerID);
         const std::unordered_map<NetworkID, Entity>& networkIDToEntity = g_gameServer->GetLinkingContext().GetNetworkIDToEntityMap();
         for (const auto& pair : networkIDToEntity) {
             clientProxy->GetReplicationManager().CreateEntityCommand(pair.first);
@@ -78,21 +78,21 @@ void ServerSystem::OnNotify(const Event& event)
         break;
     }
     case EventType::ENTITY_ADDED: {
-        std::shared_ptr<SingletonServerComponent> server = g_gameServer->GetSingletonServerComponent();
+        std::shared_ptr<SingletonServerComponent> singletonServer = g_gameServer->GetSingletonServerComponent();
         NetworkID networkID = g_gameServer->GetLinkingContext().GetNetworkID(event.entity.entity);
         if (networkID == INVALID_NETWORK_ID) {
             break;
         }
-        const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = server->GetPlayerIDToClientProxyMap();
+        const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = singletonServer->GetPlayerIDToClientProxyMap();
         for (const auto& pair : playerIDToClientProxy) {
             pair.second->GetReplicationManager().CreateEntityCommand(networkID);
         }
         break;
     }
     case EventType::ENTITY_SIGNATURE_CHANGED: {
-        std::shared_ptr<SingletonServerComponent> server = g_gameServer->GetSingletonServerComponent();
+        std::shared_ptr<SingletonServerComponent> singletonServer = g_gameServer->GetSingletonServerComponent();
         NetworkID networkID = g_gameServer->GetLinkingContext().GetNetworkID(event.entity.entity);
-        const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = server->GetPlayerIDToClientProxyMap();
+        const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = singletonServer->GetPlayerIDToClientProxyMap();
         for (const auto& pair : playerIDToClientProxy) {
             pair.second->GetReplicationManager().CreateEntityCommand(networkID); // TODO: Update instead of Create
         }
@@ -107,19 +107,19 @@ void ServerSystem::OnNotify(const Event& event)
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerSystem::SendOutgoingPackets(SingletonServerComponent& server) const
+void ServerSystem::SendOutgoingPackets(SingletonServerComponent& singletonServer) const
 {
-    const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = server.GetPlayerIDToClientProxyMap();
+    const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = singletonServer.GetPlayerIDToClientProxyMap();
     for (const auto& pair : playerIDToClientProxy) {
         std::shared_ptr<ClientProxy> clientProxy = pair.second;
         //if (clientProxy->m_isLastMoveTimestampDirty) {
-        SendStatePacket(server, clientProxy);
+        SendStatePacket(singletonServer, clientProxy);
         //}
     }
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerSystem::SendWelcomePacket(const SingletonServerComponent& server, PlayerID playerID, const SocketAddress& toSocketAddress) const
+void ServerSystem::SendWelcomePacket(const SingletonServerComponent& singletonServer, PlayerID playerID, const SocketAddress& toSocketAddress) const
 {
     OutputMemoryStream welcomePacket;
     welcomePacket.Write(ServerMessageType::WELCOME);
@@ -131,14 +131,14 @@ void ServerSystem::SendWelcomePacket(const SingletonServerComponent& server, Pla
 
     ILOG("Sending welcome packet to player %u...", playerID);
 
-    const bool result = SendPacket(server, welcomePacket, toSocketAddress);
+    const bool result = SendPacket(singletonServer, welcomePacket, toSocketAddress);
     if (result) {
         ILOG("Welcome packet successfully sent to player %u", playerID);
     }
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerSystem::SendStatePacket(const SingletonServerComponent& server, std::shared_ptr<ClientProxy> clientProxy) const
+void ServerSystem::SendStatePacket(const SingletonServerComponent& singletonServer, std::shared_ptr<ClientProxy> clientProxy) const
 {
     OutputMemoryStream statePacket;
     statePacket.Write(ServerMessageType::STATE);
@@ -147,20 +147,20 @@ void ServerSystem::SendStatePacket(const SingletonServerComponent& server, std::
     const char* name = clientProxy->GetName();
     ILOG("Sending state packet to player %s...", name);
 
-    const bool result = SendPacket(server, statePacket, clientProxy->GetSocketAddress());
+    const bool result = SendPacket(singletonServer, statePacket, clientProxy->GetSocketAddress());
     if (result) {
         ILOG("State packet successfully sent to player %s", name);
     }
 }
 
 //----------------------------------------------------------------------------------------------------
-bool ServerSystem::SendPacket(const SingletonServerComponent& server, const OutputMemoryStream& outputStream, const SocketAddress& toSocketAddress) const
+bool ServerSystem::SendPacket(const SingletonServerComponent& singletonServer, const OutputMemoryStream& outputStream, const SocketAddress& toSocketAddress) const
 {
-    return server.m_socket->SendTo(outputStream.GetPtr(), outputStream.GetByteLength(), toSocketAddress);
+    return singletonServer.m_socket->SendTo(outputStream.GetPtr(), outputStream.GetByteLength(), toSocketAddress);
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerSystem::ReceiveIncomingPackets(SingletonServerComponent& server)
+void ServerSystem::ReceiveIncomingPackets(SingletonServerComponent& singletonServer)
 {
     InputMemoryStream packet;
     SocketAddress fromSocketAddress;
@@ -169,12 +169,12 @@ void ServerSystem::ReceiveIncomingPackets(SingletonServerComponent& server)
 
     while (receivedPacketCount < MAX_PACKETS_PER_FRAME) {
 
-        I32 readByteCount = server.m_socket->ReceiveFrom(packet.GetPtr(), packet.GetByteCapacity(), fromSocketAddress);
+        I32 readByteCount = singletonServer.m_socket->ReceiveFrom(packet.GetPtr(), packet.GetByteCapacity(), fromSocketAddress);
         if (readByteCount > 0) {
 
             packet.ResetHead();
             packet.SetCapacity(readByteCount);
-            ReceivePacket(server, packet, fromSocketAddress);
+            ReceivePacket(singletonServer, packet, fromSocketAddress);
 
             ++receivedPacketCount;
         } else {
@@ -190,19 +190,19 @@ void ServerSystem::ReceiveIncomingPackets(SingletonServerComponent& server)
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerSystem::ReceivePacket(SingletonServerComponent& server, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress)
+void ServerSystem::ReceivePacket(SingletonServerComponent& singletonServer, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress)
 {
     ClientMessageType type;
     inputStream.Read(type);
     PlayerID playerID = INVALID_PLAYER_ID;
     switch (type) {
     case ClientMessageType::HELLO: {
-        ReceiveHelloPacket(server, inputStream, fromSocketAddress, playerID);
+        ReceiveHelloPacket(singletonServer, inputStream, fromSocketAddress, playerID);
         break;
     }
 
     case ClientMessageType::INPUT: {
-        ReceiveInputPacket(server, inputStream, playerID);
+        ReceiveInputPacket(singletonServer, inputStream, playerID);
         break;
     }
 
@@ -213,20 +213,20 @@ void ServerSystem::ReceivePacket(SingletonServerComponent& server, InputMemorySt
     }
     assert(playerID != INVALID_PLAYER_ID);
 
-    std::shared_ptr<ClientProxy> clientProxy = server.GetClientProxyFromPlayerID(playerID);
+    std::shared_ptr<ClientProxy> clientProxy = singletonServer.GetClientProxyFromPlayerID(playerID);
     clientProxy->UpdateLastPacketTime();
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerSystem::ReceiveHelloPacket(SingletonServerComponent& server, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress, PlayerID& playerID)
+void ServerSystem::ReceiveHelloPacket(SingletonServerComponent& singletonServer, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress, PlayerID& playerID)
 {
-    playerID = server.GetPlayerID(fromSocketAddress);
+    playerID = singletonServer.GetPlayerID(fromSocketAddress);
     if (playerID == INVALID_PLAYER_ID) {
         std::string name;
         inputStream.Read(name);
         ILOG("Hello packet received from new player %s", name.c_str());
 
-        playerID = server.AddPlayer(fromSocketAddress, name.c_str());
+        playerID = singletonServer.AddPlayer(fromSocketAddress, name.c_str());
         if (playerID != INVALID_PLAYER_ID) {
 
             Event newEvent;
@@ -237,18 +237,18 @@ void ServerSystem::ReceiveHelloPacket(SingletonServerComponent& server, InputMem
             ILOG("New player %s %u has joined the game", name.c_str(), playerID);
         }
     } else {
-        std::shared_ptr<ClientProxy> clientProxy = server.GetClientProxyFromPlayerID(playerID);
+        std::shared_ptr<ClientProxy> clientProxy = singletonServer.GetClientProxyFromPlayerID(playerID);
         ILOG("Hello packet received from existing player %s", clientProxy->GetName());
     }
 
-    SendWelcomePacket(server, playerID, fromSocketAddress);
+    SendWelcomePacket(singletonServer, playerID, fromSocketAddress);
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerSystem::ReceiveInputPacket(SingletonServerComponent& server, InputMemoryStream& inputStream, PlayerID& playerID) const
+void ServerSystem::ReceiveInputPacket(SingletonServerComponent& singletonServer, InputMemoryStream& inputStream, PlayerID& playerID) const
 {
     inputStream.Read(playerID);
-    std::shared_ptr<ClientProxy> clientProxy = server.GetClientProxyFromPlayerID(playerID);
+    std::shared_ptr<ClientProxy> clientProxy = singletonServer.GetClientProxyFromPlayerID(playerID);
     if (clientProxy == nullptr) {
         ILOG("Input packet received from unknown player");
         playerID = INVALID_PLAYER_ID;

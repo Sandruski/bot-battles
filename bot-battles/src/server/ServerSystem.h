@@ -31,15 +31,15 @@ public:
     void OnNotify(const Event& event) override;
 
 private:
-    void SendOutgoingPackets(SingletonServerComponent& server) const;
-    void SendWelcomePacket(const SingletonServerComponent& server, PlayerID playerID, const SocketAddress& toSocketAddress) const;
-    void SendStatePacket(const SingletonServerComponent& server, std::shared_ptr<ClientProxy> clientProxy) const;
-    bool SendPacket(const SingletonServerComponent& server, const OutputMemoryStream& outputStream, const SocketAddress& toSocketAddress) const;
+    void SendOutgoingPackets(SingletonServerComponent& singletonServer) const;
+    void SendWelcomePacket(const SingletonServerComponent& singletonServer, PlayerID playerID, const SocketAddress& toSocketAddress) const;
+    void SendStatePacket(const SingletonServerComponent& singletonServer, std::shared_ptr<ClientProxy> clientProxy) const;
+    bool SendPacket(const SingletonServerComponent& singletonServer, const OutputMemoryStream& outputStream, const SocketAddress& toSocketAddress) const;
 
-    void ReceiveIncomingPackets(SingletonServerComponent& server);
-    void ReceivePacket(SingletonServerComponent& server, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress);
-    void ReceiveHelloPacket(SingletonServerComponent& server, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress, PlayerID& playerID);
-    void ReceiveInputPacket(SingletonServerComponent& server, InputMemoryStream& inputStream, PlayerID& playerID) const;
+    void ReceiveIncomingPackets(SingletonServerComponent& singletonServer);
+    void ReceivePacket(SingletonServerComponent& singletonServer, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress);
+    void ReceiveHelloPacket(SingletonServerComponent& singletonServer, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress, PlayerID& playerID);
+    void ReceiveInputPacket(SingletonServerComponent& singletonServer, InputMemoryStream& inputStream, PlayerID& playerID) const;
 
     void OnConnectionReset(const SocketAddress& fromSocketAddress) const;
     void OnDisconnect() const;

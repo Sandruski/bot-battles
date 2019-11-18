@@ -24,8 +24,8 @@ public:
     bool ShutDown() override;
 
 private:
-    void BeginDraw(const SingletonRendererComponent& renderer) const;
-    void EndDraw(const SingletonRendererComponent& renderer) const;
+    void BeginDraw(const SingletonRendererComponent& singletonRenderer) const;
+    void EndDraw(const SingletonRendererComponent& singletonRenderer) const;
 };
 }
 

@@ -25,9 +25,9 @@ void SpawnerSystem::OnNotify(const Event& event)
 {
     switch (event.eventType) {
     case EventType::PLAYER_ADDED: {
-        std::shared_ptr<SingletonServerComponent> server = g_gameServer->GetSingletonServerComponent();
+        std::shared_ptr<SingletonServerComponent> singletonServer = g_gameServer->GetSingletonServerComponent();
         Entity entity = SpawnPlayerEntity();
-        server->AddEntity(entity, event.server.playerID);
+        singletonServer->AddEntity(entity, event.server.playerID);
         break;
     }
 
