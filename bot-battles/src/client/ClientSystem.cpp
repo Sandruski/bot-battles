@@ -124,10 +124,10 @@ bool ClientSystem::SendInputPacket(const SingletonClientComponent& client, const
     inputPacket.Write(client.m_playerID);
 
     U32 totalMoveCount = singletonInput.GetMoveCount();
-    U32 startIndex = totalMoveCount > MAX_MOVES_PER_PACKET ? totalMoveCount - MAX_MOVES_PER_PACKET - 1 : 0;
+    U32 startIndex = totalMoveCount > MAX_MOVES_PER_PACKET ? totalMoveCount - MAX_MOVES_PER_PACKET : 0;
     U32 moveCount = totalMoveCount - startIndex;
     inputPacket.Write(moveCount, GetRequiredBits<MAX_MOVES_PER_PACKET>::value);
-    for (U32 i = startIndex; i < moveCount; ++i) {
+    for (U32 i = startIndex; i < totalMoveCount; ++i) {
         const Move& move = singletonInput.GetMove(i);
         move.Write(inputPacket, static_cast<U16>(InputComponent::MemberType::ALL));
     }
