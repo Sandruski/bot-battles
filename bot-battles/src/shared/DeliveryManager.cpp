@@ -22,6 +22,40 @@ DeliveryManager::~DeliveryManager()
 }
 
 //----------------------------------------------------------------------------------------------------
+Delivery& DeliveryManager::WriteState(OutputMemoryStream& outputStream)
+{
+    Delivery& delivery = WriteSequenceNumber(outputStream);
+    WritePendingAcks(outputStream);
+
+    return delivery;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool DeliveryManager::ReadState(InputMemoryStream& inputStream)
+{
+    const bool ret = ReadSequenceNumber(inputStream);
+    ReadPendingAcks(inputStream);
+
+    return ret;
+}
+
+//----------------------------------------------------------------------------------------------------
+void DeliveryManager::ProcessTimedOutPackets()
+{
+    F32 timeout = Time::GetInstance().GetTime() - ACK_TIMEOUT;
+    while (!m_deliveries.empty()) {
+        const Delivery& delivery = m_deliveries.front();
+        F32 timestamp = delivery.GetTimestamp();
+        if (timestamp < timeout) {
+            HandleDeliveryFailure(delivery);
+            m_deliveries.pop_front();
+        } else {
+            break;
+        }
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
 Delivery& DeliveryManager::WriteSequenceNumber(OutputMemoryStream& outputStream)
 {
     SequenceNumber sequenceNumber = m_nextOutgoingSequenceNumber++;
@@ -82,11 +116,11 @@ void DeliveryManager::ReadPendingAcks(InputMemoryStream& inputStream)
             const Delivery& delivery = m_deliveries.front();
             SequenceNumber inFlightPacketSequenceNumber = delivery.GetSequenceNumber();
             if (inFlightPacketSequenceNumber >= sequenceNumber) {
-                HandlePacketDeliverySuccess(delivery);
+                HandleDeliverySuccess(delivery);
                 m_deliveries.pop_front();
                 sequenceNumber = inFlightPacketSequenceNumber + 1;
             } else if (inFlightPacketSequenceNumber < sequenceNumber) {
-                HandlePacketDeliveryFailure(delivery);
+                HandleDeliveryFailure(delivery);
                 m_deliveries.pop_front();
             }
         }
@@ -94,23 +128,7 @@ void DeliveryManager::ReadPendingAcks(InputMemoryStream& inputStream)
 }
 
 //----------------------------------------------------------------------------------------------------
-void DeliveryManager::ProcessTimedOutPackets()
-{
-    F32 timeout = Time::GetInstance().GetTime() - ACK_TIMEOUT;
-    while (!m_deliveries.empty()) {
-        const Delivery& delivery = m_deliveries.front();
-        F32 timestamp = delivery.GetTimestamp();
-        if (timestamp < timeout) {
-            HandlePacketDeliveryFailure(delivery);
-            m_deliveries.pop_front();
-        } else {
-            break;
-        }
-    }
-}
-
-//----------------------------------------------------------------------------------------------------
-void DeliveryManager::HandlePacketDeliverySuccess(const Delivery& delivery)
+void DeliveryManager::HandleDeliverySuccess(const Delivery& delivery)
 {
     Event newEvent;
     newEvent.eventType = EventType::DELIVERY_SUCCESS;
@@ -120,7 +138,7 @@ void DeliveryManager::HandlePacketDeliverySuccess(const Delivery& delivery)
 }
 
 //----------------------------------------------------------------------------------------------------
-void DeliveryManager::HandlePacketDeliveryFailure(const Delivery& delivery)
+void DeliveryManager::HandleDeliveryFailure(const Delivery& delivery)
 {
     Event newEvent;
     newEvent.eventType = EventType::DELIVERY_FAILURE;

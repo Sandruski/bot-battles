@@ -15,6 +15,12 @@ public:
     DeliveryManager();
     ~DeliveryManager();
 
+    Delivery& WriteState(OutputMemoryStream& outputStream);
+    bool ReadState(InputMemoryStream& inputStream);
+
+    void ProcessTimedOutPackets();
+
+private:
     Delivery& WriteSequenceNumber(OutputMemoryStream& outputStream);
     bool ReadSequenceNumber(InputMemoryStream& inputStream);
 
@@ -22,10 +28,8 @@ public:
     void WritePendingAcks(OutputMemoryStream& outputStream);
     void ReadPendingAcks(InputMemoryStream& inputStream);
 
-    void ProcessTimedOutPackets();
-
-    void HandlePacketDeliverySuccess(const Delivery& delivery);
-    void HandlePacketDeliveryFailure(const Delivery& delivery);
+    void HandleDeliverySuccess(const Delivery& delivery);
+    void HandleDeliveryFailure(const Delivery& delivery);
 
 private:
     std::deque<Delivery> m_deliveries;

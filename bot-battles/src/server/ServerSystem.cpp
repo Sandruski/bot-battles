@@ -1,6 +1,7 @@
 #include "ServerSystem.h"
 
 #include "ClientProxy.h"
+#include "DeliveryManager.h"
 #include "GameServer.h"
 #include "LinkingContext.h"
 #include "MemoryStream.h"
@@ -112,6 +113,8 @@ void ServerSystem::SendOutgoingPackets(SingletonServerComponent& singletonServer
     const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = singletonServer.GetPlayerIDToClientProxyMap();
     for (const auto& pair : playerIDToClientProxy) {
         std::shared_ptr<ClientProxy> clientProxy = pair.second;
+        clientProxy->GetDeliveryManager().ProcessTimedOutPackets();
+
         //if (clientProxy->m_isLastMoveTimestampDirty) {
         SendStatePacket(singletonServer, clientProxy);
         //}
@@ -142,6 +145,7 @@ void ServerSystem::SendStatePacket(const SingletonServerComponent& singletonServ
 {
     OutputMemoryStream statePacket;
     statePacket.Write(ServerMessageType::STATE);
+    clientProxy->GetDeliveryManager().WriteState(statePacket);
     clientProxy->GetReplicationManager().Write(statePacket);
 
     const char* name = clientProxy->GetName();
@@ -249,7 +253,8 @@ void ServerSystem::ReceiveInputPacket(SingletonServerComponent& singletonServer,
 {
     inputStream.Read(playerID);
     std::shared_ptr<ClientProxy> clientProxy = singletonServer.GetClientProxyFromPlayerID(playerID);
-    if (clientProxy == nullptr) {
+    const bool isValid = clientProxy->GetDeliveryManager().ReadState(inputStream);
+    if (clientProxy == nullptr || !isValid) {
         ILOG("Input packet received from unknown player");
         playerID = INVALID_PLAYER_ID;
         return;

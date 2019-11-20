@@ -1,5 +1,6 @@
 #include "ClientSystem.h"
 
+#include "DeliveryManager.h"
 #include "GameClient.h"
 #include "LinkingContext.h"
 #include "MemoryStream.h"
@@ -121,6 +122,7 @@ bool ClientSystem::SendInputPacket(const SingletonClientComponent& singletonClie
 
     OutputMemoryStream inputPacket;
     inputPacket.Write(ClientMessageType::INPUT);
+    g_gameClient->GetDeliveryManager().WriteState(inputPacket);
     inputPacket.Write(singletonClient.m_playerID);
 
     U32 totalMoveCount = singletonInput.GetMoveCount();
@@ -204,7 +206,8 @@ void ClientSystem::ReceivePacket(SingletonClientComponent& singletonClient, Inpu
 //----------------------------------------------------------------------------------------------------
 void ClientSystem::ReceiveWelcomePacket(SingletonClientComponent& singletonClient, InputMemoryStream& inputStream) const
 {
-    if (singletonClient.IsConnected()) {
+    const bool isConnected = singletonClient.IsConnected();
+    if (isConnected) {
         ILOG("Welcome packet received but skipped");
         return;
     }
@@ -227,7 +230,9 @@ void ClientSystem::ReceiveWelcomePacket(SingletonClientComponent& singletonClien
 //----------------------------------------------------------------------------------------------------
 void ClientSystem::ReceiveStatePacket(SingletonClientComponent& singletonClient, InputMemoryStream& inputStream) const
 {
-    if (!singletonClient.IsConnected()) {
+    const bool isConnected = singletonClient.IsConnected();
+    const bool isValid = g_gameClient->GetDeliveryManager().ReadState(inputStream);
+    if (!isConnected || !isValid) {
         ILOG("State packet received but skipped");
         return;
     }

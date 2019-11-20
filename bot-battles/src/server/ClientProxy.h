@@ -1,6 +1,7 @@
 #ifndef __CLIENT_PROXY_H__
 #define __CLIENT_PROXY_H__
 
+#include "DeliveryManager.h"
 #include "Move.h"
 #include "ReplicationManagerServer.h"
 #include "SocketAddress.h"
@@ -33,6 +34,11 @@ public:
         return m_replicationManager;
     }
 
+    DeliveryManager& GetDeliveryManager()
+    {
+        return m_deliveryManager;
+    }
+
     const std::deque<Move>& GetUnprocessedMoves()
     {
         return m_unprocessedMoves;
@@ -48,6 +54,7 @@ public:
 
 private:
     ReplicationManagerServer m_replicationManager;
+    DeliveryManager m_deliveryManager;
 
     SocketAddress m_socketAddress;
     std::string m_name;

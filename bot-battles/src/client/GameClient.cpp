@@ -1,5 +1,6 @@
 #include "GameClient.h"
 
+#include "DeliveryManager.h"
 #include "ReplicationManagerClient.h"
 #include "SystemManager.h"
 
@@ -19,6 +20,7 @@ GameClient::GameClient(const GameConfiguration& configuration)
     , m_singletonClientComponent()
 {
     m_replicationManager = std::make_unique<ReplicationManagerClient>();
+    m_deliveryManager = std::make_unique<DeliveryManager>();
 
     m_singletonInputComponent = std::make_shared<SingletonInputComponent>();
     m_singletonClientComponent = std::make_shared<SingletonClientComponent>();

@@ -10,6 +10,7 @@ ClientProxy::ClientProxy()
 //----------------------------------------------------------------------------------------------------
 ClientProxy::ClientProxy(const SocketAddress& socketAddress, const char* name)
     : m_replicationManager()
+    , m_deliveryManager()
     , m_socketAddress(socketAddress)
     , m_name(name)
     , m_unprocessedMoves()
