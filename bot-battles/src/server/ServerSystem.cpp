@@ -47,7 +47,7 @@ bool ServerSystem::StartUp()
 //----------------------------------------------------------------------------------------------------
 bool ServerSystem::PreUpdate()
 {
-    NotifyAll();
+    NotifyEvents();
 
     return true;
 }

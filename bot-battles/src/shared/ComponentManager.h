@@ -59,7 +59,7 @@ inline ComponentArray<T>::~ComponentArray()
 template <class T>
 inline bool ComponentArray<T>::PreUpdate()
 {
-    NotifyAll();
+    NotifyEvents();
 
     return true;
 }

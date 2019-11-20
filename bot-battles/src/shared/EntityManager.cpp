@@ -24,7 +24,7 @@ EntityManager::~EntityManager()
 //----------------------------------------------------------------------------------------------------
 bool EntityManager::PreUpdate()
 {
-    NotifyAll();
+    NotifyEvents();
 
     return true;
 }

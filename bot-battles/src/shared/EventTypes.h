@@ -3,35 +3,25 @@
 
 namespace sand {
 
+enum class EventType {
+    ENTITY_ADDED,
+    ENTITY_REMOVED,
+    ENTITY_SIGNATURE_CHANGED,
+
+    COMPONENT_ADDED,
+    COMPONENT_REMOVED,
+
+    DELIVERY_SUCCESS,
+    DELIVERY_FAILURE,
+
 #ifdef _CLIENT
-enum class EventType {
-    ENTITY_ADDED,
-    ENTITY_REMOVED,
-    ENTITY_SIGNATURE_CHANGED,
-
-    NET_ENTITY_ADDED,
-
-    COMPONENT_ADDED,
-    COMPONENT_REMOVED,
-
-    COUNT,
-    INVALID
-};
 #elif _SERVER
-enum class EventType {
-    ENTITY_ADDED,
-    ENTITY_REMOVED,
-    ENTITY_SIGNATURE_CHANGED,
-
-    COMPONENT_ADDED,
-    COMPONENT_REMOVED,
-
     PLAYER_ADDED,
+#endif
 
     COUNT,
     INVALID
 };
-#endif
 }
 
 #endif

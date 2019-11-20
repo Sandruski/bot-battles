@@ -204,15 +204,17 @@ void ClientSystem::ReceivePacket(SingletonClientComponent& singletonClient, Inpu
 //----------------------------------------------------------------------------------------------------
 void ClientSystem::ReceiveWelcomePacket(SingletonClientComponent& singletonClient, InputMemoryStream& inputStream) const
 {
-    ILOG("Welcome packet received");
-
     if (singletonClient.IsConnected()) {
+        ILOG("Welcome packet received but skipped");
         return;
     }
+
+    ILOG("Welcome packet received");
 
     bool isSuccessful = false;
     inputStream.Read(isSuccessful);
     if (isSuccessful) {
+
         PlayerID playerID = INVALID_PLAYER_ID;
         inputStream.Read(playerID);
         if (playerID != INVALID_PLAYER_ID) {
@@ -225,11 +227,12 @@ void ClientSystem::ReceiveWelcomePacket(SingletonClientComponent& singletonClien
 //----------------------------------------------------------------------------------------------------
 void ClientSystem::ReceiveStatePacket(SingletonClientComponent& singletonClient, InputMemoryStream& inputStream) const
 {
-    ILOG("State packet received");
-
     if (!singletonClient.IsConnected()) {
+        ILOG("State packet received but skipped");
         return;
     }
+
+    ILOG("State packet received");
 
     // TODO
     g_gameClient->GetReplicationManager().Read(inputStream);

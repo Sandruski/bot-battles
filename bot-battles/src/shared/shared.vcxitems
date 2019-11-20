@@ -14,12 +14,14 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)AckRange.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ByteSwap.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Colors.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ComponentDefs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ComponentManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ComponentTypes.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)DebugDrawer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)DeliveryManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)EntityDefs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)EntityManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Events.h" />
@@ -27,6 +29,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)EventTypes.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)FSM.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Game.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Delivery.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)InputComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)LinkingContext.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Log.h" />
@@ -69,13 +72,16 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)WorkingDirDefs.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)AckRange.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Colors.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ComponentManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)DebugDrawer.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)DeliveryManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)EntityManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)EventSystem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)FSM.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Game.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Delivery.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)LinkingContext.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MemoryStream.cpp" />

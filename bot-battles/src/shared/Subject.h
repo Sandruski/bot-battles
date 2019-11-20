@@ -16,7 +16,8 @@ public:
 
     void PushEvent(Event event);
 
-    void NotifyAll();
+    void NotifyEvent(Event event) const;
+    void NotifyEvents();
 
 private:
     std::vector<std::shared_ptr<Observer>> m_observers;

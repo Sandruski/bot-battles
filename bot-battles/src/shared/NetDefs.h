@@ -28,6 +28,11 @@ const PlayerID INVALID_PLAYER_ID = MAX_PLAYER_IDS + 1;
 using NetworkID = U32;
 const U32 MAX_NETWORK_IDS = 32; // MAX_OBJECTS_PER_CLIENT
 const NetworkID INVALID_NETWORK_ID = MAX_NETWORK_IDS + 1;
+
+using SequenceNumber = U16;
+const SequenceNumber INVALID_SEQUENCE_NUMBER = UINT16_MAX;
+
+const F32 ACK_TIMEOUT = 0.5f;
 }
 
 #endif

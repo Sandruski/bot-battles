@@ -49,15 +49,21 @@ void Subject::PushEvent(Event event)
 }
 
 //----------------------------------------------------------------------------------------------------
-void Subject::NotifyAll()
+void Subject::NotifyEvent(Event event) const
+{
+    for (const auto& observer : m_observers) {
+        observer->OnNotify(event);
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
+void Subject::NotifyEvents()
 {
     while (!m_events.empty()) {
         Event event = m_events.front();
-
         for (const auto& observer : m_observers) {
             observer->OnNotify(event);
         }
-
         m_events.pop();
     }
 }
