@@ -61,6 +61,12 @@ bool GameServer::Init()
         return false;
     }
 
+    std::shared_ptr<NavigationSystem> navigation = m_systemManager->GetSystem<NavigationSystem>();
+    ret = navigation->AddObserver(server);
+    if (!ret) {
+        return false;
+    }
+
     ret = Game::Init();
 
     return ret;

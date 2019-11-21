@@ -122,8 +122,8 @@ bool ClientSystem::SendInputPacket(const SingletonClientComponent& singletonClie
 
     OutputMemoryStream inputPacket;
     inputPacket.Write(ClientMessageType::INPUT);
-    g_gameClient->GetDeliveryManager().WriteState(inputPacket);
     inputPacket.Write(singletonClient.m_playerID);
+    g_gameClient->GetDeliveryManager().WriteState(inputPacket);
 
     U32 totalMoveCount = singletonInput.GetMoveCount();
     U32 startIndex = totalMoveCount > MAX_MOVES_PER_PACKET ? totalMoveCount - MAX_MOVES_PER_PACKET : 0;
@@ -131,7 +131,7 @@ bool ClientSystem::SendInputPacket(const SingletonClientComponent& singletonClie
     inputPacket.Write(moveCount, GetRequiredBits<MAX_MOVES_PER_PACKET>::value);
     for (U32 i = startIndex; i < totalMoveCount; ++i) {
         const Move& move = singletonInput.GetMove(i);
-        move.Write(inputPacket, static_cast<U32>(ComponentMemberType::INPUT_ALL)); // TODO: do not send all input member variables!
+        move.Write(inputPacket);
     }
 
     ILOG("Sending input packet to server...");

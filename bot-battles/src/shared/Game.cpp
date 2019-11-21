@@ -33,8 +33,10 @@ Game::Game(const GameConfiguration& configuration)
     , m_linkingContext()
     , m_resourceManager()
     , m_textureImporter()
+#ifdef _DRAW
     , m_singletonWindowComponent()
     , m_singletonRendererComponent()
+#endif
     , m_isRunning(false)
 {
     m_entityManager = std::make_shared<EntityManager>();
@@ -140,17 +142,17 @@ bool Game::Init()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool Game::InitFrame()
+void Game::InitFrame()
 {
     Time::GetInstance().StartUpdate();
-
-    return true;
 }
 
 //----------------------------------------------------------------------------------------------------
 // game loop
 bool Game::DoFrame()
 {
+    InitFrame();
+
     bool ret = PreUpdate();
     if (!ret) {
         return false;
@@ -171,15 +173,15 @@ bool Game::DoFrame()
         return false;
     }
 
+    EndFrame();
+
     return ret;
 }
 
 //----------------------------------------------------------------------------------------------------
-bool Game::EndFrame()
+void Game::EndFrame()
 {
     Time::GetInstance().FinishUpdate();
-
-    return true;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -190,10 +192,12 @@ bool Game::End()
         return false;
     }
 
+#ifdef _DRAW
     ret = m_resourceManager->ShutDown();
     if (!ret) {
         return false;
     }
+#endif
 
     ret = m_fsm->ShutDown();
     if (!ret) {

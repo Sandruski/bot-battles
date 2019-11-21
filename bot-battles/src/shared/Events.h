@@ -17,6 +17,7 @@ struct EntityEvent {
 struct ComponentEvent {
     EventType eventType;
     ComponentType componentType;
+    U32 dirtyState;
     Entity entity;
 };
 

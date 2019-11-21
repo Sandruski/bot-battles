@@ -18,7 +18,7 @@ struct SingletonInputComponent {
     {
     }
 
-    const Move& AddMove(const InputComponent& input, F32 timestamp);
+    const Move& AddMove(const InputComponent& input, U32 dirtyState, F32 timestamp);
 
     const Move& GetMove(U32 index) const
     {

@@ -12,12 +12,17 @@ class InputMemoryStream;
 class Move {
 public:
     Move();
-    Move(const InputComponent& input, F32 timestamp, F32 dt);
+    Move(const InputComponent& input, U32 dirtyState, F32 timestamp, F32 dt);
     ~Move();
 
     const InputComponent& GetInput() const
     {
         return m_input;
+    }
+
+    U32 GetDirtyState() const
+    {
+        return m_dirtyState;
     }
 
     F32 GetTimestamp() const
@@ -30,12 +35,12 @@ public:
         return m_dt;
     }
 
-    void Write(OutputMemoryStream& outputStream, U16 memberFlags) const;
+    void Write(OutputMemoryStream& outputStream) const;
     void Read(InputMemoryStream& inputStream);
 
 private:
     InputComponent m_input;
-
+    U32 m_dirtyState;
     F32 m_timestamp;
     F32 m_dt;
 };

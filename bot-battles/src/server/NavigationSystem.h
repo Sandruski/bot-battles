@@ -1,6 +1,7 @@
 #ifndef __NAVIGATION_SYSTEM_H__
 #define __NAVIGATION_SYSTEM_H__
 
+#include "Subject.h"
 #include "System.h"
 
 namespace sand {
@@ -9,7 +10,7 @@ struct InputComponent;
 struct TransformComponent;
 
 //----------------------------------------------------------------------------------------------------
-class NavigationSystem : public System {
+class NavigationSystem : public System, public Subject {
 public:
     static SystemType GetType()
     {
@@ -23,7 +24,7 @@ public:
     bool Update() override;
 
 private:
-    void UpdateMovement(InputComponent& input, TransformComponent& transform, F32 dt) const;
+    void UpdateMovement(Entity entity, InputComponent& input, TransformComponent& transform, F32 dt) const;
 };
 }
 

@@ -37,6 +37,6 @@ const Move& ClientProxy::AddMove(const Move& move)
     float timestamp = move.GetTimestamp();
     float dt = lastMoveTimestamp > 0.0f ? timestamp - lastMoveTimestamp : 0.0f;
 
-    return m_unprocessedMoves.emplace_back(move.GetInput(), timestamp, dt);
+    return m_unprocessedMoves.emplace_back(move.GetInput(), move.GetDirtyState(), timestamp, dt);
 }
 }

@@ -37,9 +37,9 @@ public:
     virtual ~Game();
 
     virtual bool Init();
-    bool InitFrame();
+    void InitFrame();
     bool DoFrame();
-    bool EndFrame();
+    void EndFrame();
     bool End();
 
     EntityManager& GetEntityManager() const { return *m_entityManager; }
