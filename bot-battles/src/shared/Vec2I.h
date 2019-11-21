@@ -18,10 +18,26 @@ public:
         y += vec.y;
     }
 
+    Vec2I operator+(const Vec2I& vec)
+    {
+        Vec2I newVec(x, y);
+        newVec.x += vec.x;
+        newVec.y += vec.y;
+        return newVec;
+    }
+
     void operator-=(const Vec2I& vec)
     {
         x -= vec.x;
         y -= vec.y;
+    }
+
+    Vec2I operator-(const Vec2I& vec)
+    {
+        Vec2I newVec(x, y);
+        newVec.x -= vec.x;
+        newVec.y -= vec.y;
+        return newVec;
     }
 
     void operator*=(I32 val)
@@ -30,12 +46,30 @@ public:
         y *= val;
     }
 
+    Vec2I operator*(I32 val)
+    {
+        Vec2I newVec(x, y);
+        newVec.x *= val;
+        newVec.y *= val;
+        return newVec;
+    }
+
     void operator/=(I32 val)
     {
         if (val != 0) {
             x /= val;
             y /= val;
         }
+    }
+
+    Vec2I operator/(I32 val)
+    {
+        Vec2I newVec(x, y);
+        if (val != 0) {
+            newVec.x /= val;
+            newVec.y /= val;
+        }
+        return newVec;
     }
 
 public:

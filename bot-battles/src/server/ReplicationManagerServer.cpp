@@ -7,6 +7,7 @@
 #include "LinkingContext.h"
 #include "MemoryStream.h"
 #include "ReplicationCommand.h"
+#include "SpriteComponent.h"
 #include "TransformComponent.h"
 
 namespace sand {
@@ -99,8 +100,15 @@ U32 ReplicationManagerServer::WriteCreateOrUpdateAction(OutputMemoryStream& outp
 
     Entity entity = g_gameServer->GetLinkingContext().GetEntity(networkID);
     Signature signature = g_gameServer->GetEntityManager().GetSignature(entity);
-    outputStream.Write(signature, GetRequiredBits<static_cast<U16>(MAX_COMPONENTS)>::value);
+    outputStream.Write(signature);
     outputStream.Write(dirtyState, GetRequiredBits<static_cast<U32>(ComponentMemberType::COUNT)>::value);
+
+    U16 hasInput = 1 << static_cast<std::size_t>(ComponentType::INPUT);
+    const bool hasSignatureInput = signature & hasInput;
+    if (hasSignatureInput) {
+        std::shared_ptr<InputComponent> input = g_gameServer->GetComponentManager().GetComponent<InputComponent>(entity);
+        writtenState |= input->Write(outputStream, dirtyState);
+    }
 
     U16 hasTransform = 1 << static_cast<std::size_t>(ComponentType::TRANSFORM);
     const bool hasSignatureTransform = signature & hasTransform;
@@ -109,11 +117,11 @@ U32 ReplicationManagerServer::WriteCreateOrUpdateAction(OutputMemoryStream& outp
         writtenState |= transform->Write(outputStream, dirtyState);
     }
 
-    U16 hasInput = 1 << static_cast<std::size_t>(ComponentType::INPUT);
-    const bool hasSignatureInput = signature & hasInput;
-    if (hasSignatureInput) {
-        std::shared_ptr<InputComponent> input = g_gameServer->GetComponentManager().GetComponent<InputComponent>(entity);
-        writtenState |= input->Write(outputStream, dirtyState);
+    U16 hasSprite = 1 << static_cast<std::size_t>(ComponentType::SPRITE);
+    const bool hasSignatureSprite = signature & hasSprite;
+    if (hasSignatureSprite) {
+        std::shared_ptr<SpriteComponent> sprite = g_gameServer->GetComponentManager().GetComponent<SpriteComponent>(entity);
+        writtenState |= sprite->Write(outputStream, dirtyState);
     }
 
     // TODO: write total size of things written

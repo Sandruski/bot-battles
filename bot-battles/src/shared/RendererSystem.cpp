@@ -18,7 +18,7 @@ namespace sand {
 RendererSystem::RendererSystem()
 {
     m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
-    //m_signature |= 1 << static_cast<U16>(ComponentType::SPRITE); // TODO: debug draw should not need having a sprite component!
+    m_signature |= 1 << static_cast<U16>(ComponentType::SPRITE); // TODO: debug draw should not need having a sprite component!
     // TODO: maybe have a method for debug draw for each module? Like gui?
 }
 
@@ -58,10 +58,9 @@ bool RendererSystem::Render()
 
     for (auto& entity : m_entities) {
 
-        //std::shared_ptr<SpriteComponent> sprite = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
+        std::shared_ptr<SpriteComponent> sprite = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
         std::shared_ptr<TransformComponent> transform = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
 
-        /*
         SDL_Rect renderQuad = {
             static_cast<I32>(transform->m_position.x),
             static_cast<I32>(transform->m_position.y),
@@ -69,10 +68,10 @@ bool RendererSystem::Render()
             static_cast<I32>(sprite->m_texture->GetHeight())
         };
 
-        SDL_RenderCopy(renderer->m_renderer, sprite->m_texture->GetTexture(), nullptr, &renderQuad);
-		*/
+        SDL_RenderCopy(singletonRenderer->m_renderer, sprite->m_texture->GetTexture(), nullptr, &renderQuad);
 
         if (singletonRenderer->m_isDebugDraw) {
+            /*
             DebugDrawer::DrawQuad(
                 {
                     (int)transform->m_position.x,
@@ -81,7 +80,7 @@ bool RendererSystem::Render()
                     (int)transform->m_position.y + 10,
                 },
                 Red);
-            /*
+
 			DebugDrawer::DrawQuad(
 				{
 				(int)g_engine->GetWindow().GetWidth() / 4,

@@ -8,8 +8,6 @@
 
 #include "TransformComponent.h"
 
-#include "WorkingDirDefs.h"
-
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------

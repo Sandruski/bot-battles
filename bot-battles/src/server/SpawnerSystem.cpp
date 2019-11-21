@@ -6,6 +6,7 @@
 #include "GameServer.h"
 #include "LinkingContext.h"
 #include "SingletonServerComponent.h"
+#include "SpriteComponent.h"
 #include "TransformComponent.h"
 
 namespace sand {
@@ -45,6 +46,11 @@ Entity SpawnerSystem::SpawnPlayerEntity() const
 
     std::shared_ptr<TransformComponent> transform = g_gameServer->GetComponentManager().AddComponent<TransformComponent>(character);
     transform->m_position = Vec2(225.3f, 150.3f);
+
+    std::shared_ptr<ResourceTexture> resourceTexture = g_game->GetResourceManager().AddResource<ResourceTexture>("character.png", "../../data/textures/");
+    std::shared_ptr<SpriteComponent> sprite = g_gameServer->GetComponentManager().AddComponent<SpriteComponent>(character);
+    sprite->m_texture = resourceTexture;
+
     g_gameServer->GetComponentManager().AddComponent<InputComponent>(character);
 
     return character;

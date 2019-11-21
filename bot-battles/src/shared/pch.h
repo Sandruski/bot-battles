@@ -52,6 +52,7 @@
 #include "NetDefs.h"
 #include "SDLDefs.h"
 #include "SystemDefs.h"
+#include "WorkingDirDefs.h"
 
 // Draw
 #include "Colors.h"
