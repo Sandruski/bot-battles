@@ -46,7 +46,7 @@ inline ComponentArray<T>::ComponentArray()
     , m_entitiesToComponents()
     , m_componentsSize(0)
 {
-    memset(&m_components, NULL, MAX_ENTITIES);
+    m_components.fill(NULL);
 }
 
 //----------------------------------------------------------------------------------------------------

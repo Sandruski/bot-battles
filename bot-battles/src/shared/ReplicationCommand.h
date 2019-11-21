@@ -1,36 +1,9 @@
 #ifndef __REPLICATION_COMMAND_H__
 #define __REPLICATION_COMMAND_H__
 
+#include "ReplicationActionTypes.h"
+
 namespace sand {
-
-//----------------------------------------------------------------------------------------------------
-template <U32 value, U32 bits>
-struct GetRequiredBitsHelper {
-    enum { value = GetRequiredBitsHelper<(value >> 1), bits + 1>::value };
-};
-
-//----------------------------------------------------------------------------------------------------
-template <U32 bits>
-struct GetRequiredBitsHelper<0, bits> {
-    enum { value = bits };
-};
-
-//----------------------------------------------------------------------------------------------------
-template <U32 value>
-struct GetRequiredBits {
-    enum { value = GetRequiredBitsHelper<value, 0>::value };
-};
-
-// World state delta
-// Object state delta
-enum class ReplicationAction : U16 {
-    CREATE_ENTITY,
-    UPDATE_ENTITY,
-    REMOVE_ENTITY,
-
-    COUNT,
-    INVALID
-};
 
 class OutputMemoryStream;
 class InputMemoryStream;
@@ -39,25 +12,19 @@ class InputMemoryStream;
 class ReplicationCommand {
 public:
     ReplicationCommand();
-    ReplicationCommand(ReplicationAction replicationAction);
+    ReplicationCommand(U32 dirtyState);
     ~ReplicationCommand();
 
-    void Write(OutputMemoryStream& stream);
-    void Read(InputMemoryStream& stream);
-
-    bool IsDirty() const
-    {
-        return m_replicationAction == ReplicationAction::REMOVE_ENTITY;
-    }
-
-    U32 GetBitCount() const
-    {
-        return m_bitCount;
-    }
+    void AddDirtyState(U32 dirtyState);
+    void RemoveDirtyState(U32 dirtyState);
+    U32 GetDirtyState() const;
+    bool HasDirtyState() const;
 
 public:
-    ReplicationAction m_replicationAction;
-    U32 m_bitCount; // TODO: total size of the data
+    ReplicationActionType m_replicationActionType;
+
+private:
+    U32 m_dirtyState;
 };
 }
 

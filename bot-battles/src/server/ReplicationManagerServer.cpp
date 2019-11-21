@@ -23,7 +23,7 @@ ReplicationManagerServer::~ReplicationManagerServer()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool ReplicationManagerServer::CreateEntityCommand(NetworkID networkID)
+bool ReplicationManagerServer::CreateCommand(NetworkID networkID, U32 dirtyState)
 {
     auto it = m_networkIDToReplicationCommand.find(networkID);
     if (it != m_networkIDToReplicationCommand.end()) {
@@ -31,23 +31,21 @@ bool ReplicationManagerServer::CreateEntityCommand(NetworkID networkID)
         return false;
     }
 
-    m_networkIDToReplicationCommand[networkID] = ReplicationCommand();
+    m_networkIDToReplicationCommand[networkID] = ReplicationCommand(dirtyState);
 
     return true;
 }
 
 //----------------------------------------------------------------------------------------------------
-bool ReplicationManagerServer::RemoveEntityCommand(NetworkID networkID)
+void ReplicationManagerServer::RemoveCommand(NetworkID networkID)
 {
-    auto it = m_networkIDToReplicationCommand.find(networkID);
-    if (it == m_networkIDToReplicationCommand.end()) {
-        WLOG("NetworkID %u is not registered", networkID);
-        return false;
-    }
+    m_networkIDToReplicationCommand.at(networkID).m_replicationActionType = ReplicationActionType::REMOVE;
+}
 
-    (*it).second.m_replicationAction = ReplicationAction::REMOVE_ENTITY;
-
-    return true;
+//----------------------------------------------------------------------------------------------------
+void ReplicationManagerServer::AddDirtyState(NetworkID networkID, U32 dirtyState)
+{
+    m_networkIDToReplicationCommand.at(networkID).AddDirtyState(dirtyState);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -56,87 +54,70 @@ void ReplicationManagerServer::Write(OutputMemoryStream& outputStream)
     for (auto& pair : m_networkIDToReplicationCommand) {
 
         ReplicationCommand& replicationCommand = pair.second;
-        //if (replicationCommand.IsDirty()) {
+        if (replicationCommand.HasDirtyState()) {
+            NetworkID networkID = pair.first;
+            outputStream.Write(networkID);
 
-        NetworkID networkID = pair.first;
-        outputStream.Write(networkID);
+            ReplicationActionType replicationActionType = replicationCommand.m_replicationActionType;
+            outputStream.Write(replicationActionType, 2);
 
-        ReplicationAction replicationAction = replicationCommand.m_replicationAction;
-        outputStream.Write(replicationAction, GetRequiredBits<static_cast<U8>(ReplicationAction::COUNT)>::value);
+            U32 writtenState = 0;
 
-        /*
-			uint32_t writtenState = 0;
-			uint32_t dirtyState = replicationCommand.GetDirtyState();
-			*/
+            switch (replicationActionType) {
 
-        switch (replicationAction) {
+            case ReplicationActionType::CREATE: {
+                writtenState = WriteCreateOrUpdateAction(outputStream, networkID, replicationCommand.GetDirtyState());
+                replicationActionType = ReplicationActionType::UPDATE;
+                break;
+            }
 
-        case ReplicationAction::CREATE_ENTITY: {
+            case ReplicationActionType::UPDATE: {
+                writtenState = WriteCreateOrUpdateAction(outputStream, networkID, replicationCommand.GetDirtyState());
+                break;
+            }
 
-            WriteCreateEntityAction(outputStream, networkID);
-            replicationCommand.m_replicationAction = ReplicationAction::UPDATE_ENTITY;
+            case ReplicationActionType::REMOVE: {
+                replicationActionType = ReplicationActionType::UPDATE;
+                break;
+            }
 
-            break;
+            default: {
+                WLOG("Unknown replication action received from networkID %u", networkID);
+                break;
+            }
+            }
+
+            replicationCommand.RemoveDirtyState(writtenState);
         }
-
-        case ReplicationAction::UPDATE_ENTITY: {
-
-            WriteUpdateEntityAction(outputStream, networkID);
-
-            break;
-        }
-
-        case ReplicationAction::REMOVE_ENTITY: {
-
-            // Nothing to do here...
-
-            break;
-        }
-
-        default: {
-            WLOG("Unknown replication action received from networkID %u", networkID);
-            break;
-        }
-        }
-        //}
     }
-
-    // TODO
 }
 
 //----------------------------------------------------------------------------------------------------
-void ReplicationManagerServer::WriteCreateEntityAction(OutputMemoryStream& outputStream, NetworkID networkID) const
+U32 ReplicationManagerServer::WriteCreateOrUpdateAction(OutputMemoryStream& outputStream, NetworkID networkID, U32 dirtyState) const
 {
-    Entity entity = g_gameServer->GetLinkingContext().GetEntity(networkID);
+    U32 writtenState = 0;
 
-    Signature signature = g_gameServer->GetEntityManager().GetSignature(entity); // Signature contains ALL components
-    outputStream.Write(signature /*, GetRequiredBits<static_cast<U16>(MAX_COMPONENTS)>::value*/); // TODO: write server MAX_COMPONENTS
+    Entity entity = g_gameServer->GetLinkingContext().GetEntity(networkID);
+    Signature signature = g_gameServer->GetEntityManager().GetSignature(entity);
+    outputStream.Write(signature, GetRequiredBits<static_cast<U16>(MAX_COMPONENTS)>::value);
+    outputStream.Write(dirtyState, GetRequiredBits<static_cast<U32>(ComponentMemberType::COUNT)>::value);
 
     U16 hasTransform = 1 << static_cast<std::size_t>(ComponentType::TRANSFORM);
-    if (signature & hasTransform) {
-        U16 memberFlags = static_cast<U16>(TransformComponent::MemberType::ALL); // MemberFlags contains ALL members
+    const bool hasSignatureTransform = signature & hasTransform;
+    if (hasSignatureTransform) {
         std::shared_ptr<TransformComponent> transform = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
-        transform->Write(outputStream, memberFlags);
+        writtenState |= transform->Write(outputStream, dirtyState);
+    }
+
+    U16 hasInput = 1 << static_cast<std::size_t>(ComponentType::INPUT);
+    const bool hasSignatureInput = signature & hasInput;
+    if (hasSignatureInput) {
+        std::shared_ptr<InputComponent> input = g_gameServer->GetComponentManager().GetComponent<InputComponent>(entity);
+        writtenState |= input->Write(outputStream, dirtyState);
     }
 
     // TODO: write total size of things written
-}
 
-//----------------------------------------------------------------------------------------------------
-void ReplicationManagerServer::WriteUpdateEntityAction(OutputMemoryStream& outputStream, NetworkID networkID) const
-{
-    Entity entity = g_gameServer->GetLinkingContext().GetEntity(networkID);
-
-    Signature signature = g_gameServer->GetEntityManager().GetSignature(entity); // Signature contains ONLY changed components
-    outputStream.Write(signature /*, GetRequiredBits<static_cast<U16>(MAX_COMPONENTS)>::value*/); // TODO: write max server components
-
-    U16 hasTransform = 1 << static_cast<std::size_t>(ComponentType::TRANSFORM);
-    if (signature & hasTransform) {
-        U16 memberFlags = static_cast<U16>(TransformComponent::MemberType::ALL); // MemberFlags contains ONLY changed memebers
-        std::shared_ptr<TransformComponent> transform = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
-        transform->Write(outputStream, memberFlags);
-    }
-
-    // TODO: write total size of things written
+    return writtenState;
 }
 }

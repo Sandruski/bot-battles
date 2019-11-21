@@ -1,6 +1,7 @@
 #ifndef __TRANSFORM_COMPONENT_H__
 #define __TRANSFORM_COMPONENT_H__
 
+#include "ComponentMemberTypes.h"
 #include "MemoryStream.h"
 #include "NetComponent.h"
 #include "ReplicationCommand.h"
@@ -8,17 +9,7 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-struct TransformComponent : public WriteNetComponent, public ReadNetComponent {
-
-    enum class MemberType : U16 {
-        POSITION = 1 << 0,
-        ROTATION = 1 << 1,
-
-        COUNT,
-        INVALID,
-
-        ALL = POSITION | ROTATION
-    };
+struct TransformComponent : public NetComponent {
 
     static ComponentType GetType() { return ComponentType::TRANSFORM; }
     static TransformComponent* Instantiate() { return new TransformComponent(); }
@@ -30,25 +21,28 @@ struct TransformComponent : public WriteNetComponent, public ReadNetComponent {
     }
     ~TransformComponent() { }
 
-    void Write(OutputMemoryStream& outputStream, U16 memberFlags) const override
+    U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override
     {
-        outputStream.Write(memberFlags, GetRequiredBits<static_cast<U16>(TransformComponent::MemberType::COUNT)>::value);
-        if (memberFlags & static_cast<U16>(MemberType::POSITION)) {
+        U32 writtenState = 0;
+
+        if (dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION)) {
             outputStream.WritePosition(m_position);
+            writtenState |= static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION);
         }
-        if (memberFlags & static_cast<U16>(MemberType::ROTATION)) {
+        if (dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_ROTATION)) {
             outputStream.Write(m_rotation);
+            writtenState |= static_cast<U32>(ComponentMemberType::TRANSFORM_ROTATION);
         }
+
+        return writtenState;
     }
 
-    void Read(InputMemoryStream& inputStream) override
+    void Read(InputMemoryStream& inputStream, U32 dirtyState) override
     {
-        U16 memberFlags = 0;
-        inputStream.Read(memberFlags, GetRequiredBits<static_cast<U16>(TransformComponent::MemberType::COUNT)>::value);
-        if (memberFlags & static_cast<U16>(MemberType::POSITION)) {
+        if (dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION)) {
             inputStream.ReadPosition(m_position);
         }
-        if (memberFlags & static_cast<U16>(MemberType::ROTATION)) {
+        if (dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_ROTATION)) {
             inputStream.Read(m_rotation);
         }
     }

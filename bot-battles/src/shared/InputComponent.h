@@ -1,24 +1,14 @@
 #ifndef __INPUT_COMPONENT_H__
 #define __INPUT_COMPONENT_H__
 
+#include "ComponentMemberTypes.h"
 #include "MemoryStream.h"
 #include "NetComponent.h"
-#include "ReplicationCommand.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-struct InputComponent : public WriteNetComponent, public ReadNetComponent {
-
-    enum class MemberType {
-        ACCELERATION = 1 << 0,
-        ANGULAR_ACCELERATION = 1 << 1,
-
-        COUNT,
-        INVALID,
-
-        ALL = ACCELERATION | ANGULAR_ACCELERATION
-    };
+struct InputComponent : public NetComponent {
 
     static ComponentType GetType() { return ComponentType::INPUT; }
     static InputComponent* Instantiate() { return new InputComponent(); }
@@ -36,25 +26,28 @@ struct InputComponent : public WriteNetComponent, public ReadNetComponent {
         this->m_angularAcceleration = other.m_angularAcceleration;
     }
 
-    void Write(OutputMemoryStream& outputStream, U16 memberFlags) const override
+    U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override
     {
-        outputStream.Write(memberFlags, GetRequiredBits<static_cast<U16>(InputComponent::MemberType::COUNT)>::value);
-        if (memberFlags & static_cast<U16>(MemberType::ACCELERATION)) {
+        U32 writtenState = 0;
+
+        if (dirtyState & static_cast<U32>(ComponentMemberType::INPUT_ACCELERATION)) {
             outputStream.Write(m_acceleration);
+            writtenState |= static_cast<U32>(ComponentMemberType::INPUT_ACCELERATION);
         }
-        if (memberFlags & static_cast<U16>(MemberType::ANGULAR_ACCELERATION)) {
+        if (dirtyState & static_cast<U32>(ComponentMemberType::INPUT_ANGULAR_ACCELERATION)) {
             outputStream.Write(m_angularAcceleration);
+            writtenState |= static_cast<U32>(ComponentMemberType::INPUT_ANGULAR_ACCELERATION);
         }
+
+        return writtenState;
     }
 
-    void Read(InputMemoryStream& inputStream) override
+    void Read(InputMemoryStream& inputStream, U32 dirtyState) override
     {
-        U16 memberFlags = 0;
-        inputStream.Read(memberFlags, GetRequiredBits<static_cast<U16>(InputComponent::MemberType::COUNT)>::value);
-        if (memberFlags & static_cast<U16>(MemberType::ACCELERATION)) {
+        if (dirtyState & static_cast<U32>(ComponentMemberType::INPUT_ACCELERATION)) {
             inputStream.Read(m_acceleration);
         }
-        if (memberFlags & static_cast<U16>(MemberType::ANGULAR_ACCELERATION)) {
+        if (dirtyState & static_cast<U32>(ComponentMemberType::INPUT_ANGULAR_ACCELERATION)) {
             inputStream.Read(m_angularAcceleration);
         }
     }

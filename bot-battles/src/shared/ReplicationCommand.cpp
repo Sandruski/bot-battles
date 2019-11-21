@@ -1,17 +1,18 @@
 #include "ReplicationCommand.h"
 
-#include "MemoryStream.h"
-
 namespace sand {
+
 //----------------------------------------------------------------------------------------------------
 ReplicationCommand::ReplicationCommand()
-    : m_replicationAction(ReplicationAction::CREATE_ENTITY)
+    : m_replicationActionType(ReplicationActionType::CREATE)
+    , m_dirtyState(0)
 {
 }
 
 //----------------------------------------------------------------------------------------------------
-ReplicationCommand::ReplicationCommand(ReplicationAction replicationAction)
-    : m_replicationAction(replicationAction)
+ReplicationCommand::ReplicationCommand(U32 dirtyState)
+    : m_replicationActionType(ReplicationActionType::CREATE)
+    , m_dirtyState(dirtyState)
 {
 }
 
@@ -21,48 +22,26 @@ ReplicationCommand::~ReplicationCommand()
 }
 
 //----------------------------------------------------------------------------------------------------
-void ReplicationCommand::Write(OutputMemoryStream& /*stream*/)
+void ReplicationCommand::AddDirtyState(U32 dirtyState)
 {
-    /*
-    stream.Write(m_replicationAction, GetRequiredBits<static_cast<U32>(ReplicationAction::COUNT)>::value);
-    stream.Write(m_networkID);
-
-    switch (m_replicationAction) {
-    case ReplicationAction::CREATE_ENTITY:
-    case ReplicationAction::UPDATE_ENTITY: {
-        Entity entity = g_game->GetLinkingContext().GetEntity(m_networkID);
-        Signature signature = g_game->GetEntityManager().GetSignature(entity);
-        //stream.Write(signature); // TODO WRITE WELL THE SIGNATURE
-        break;
-    }
-
-    default: {
-        break;
-    }
-    }
-	*/
+    m_dirtyState |= dirtyState;
 }
 
 //----------------------------------------------------------------------------------------------------
-void ReplicationCommand::Read(InputMemoryStream& /*stream*/)
+void ReplicationCommand::RemoveDirtyState(U32 dirtyState)
 {
-    /*
-    stream.Read(m_replicationAction, GetRequiredBits<static_cast<U32>(ReplicationAction::COUNT)>::value);
-    stream.Read(m_networkID);
+    m_dirtyState &= ~dirtyState;
+}
 
-    switch (m_replicationAction) {
-    case ReplicationAction::CREATE_ENTITY:
-    case ReplicationAction::UPDATE_ENTITY: {
-        Entity entity = g_game->GetLinkingContext().GetEntity(m_networkID);
-        Signature signature = g_game->GetEntityManager().GetSignature(entity);
-        //stream.Read(signature); // TODO READ WELL THE SIGNATURE
-        break;
-    }
+//----------------------------------------------------------------------------------------------------
+U32 ReplicationCommand::GetDirtyState() const
+{
+    return m_dirtyState;
+}
 
-    default: {
-        break;
-    }
-    }
-	*/
+//----------------------------------------------------------------------------------------------------
+bool ReplicationCommand::HasDirtyState() const
+{
+    return (m_dirtyState > 0 || m_replicationActionType == ReplicationActionType::REMOVE);
 }
 }

@@ -225,11 +225,20 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)AckRange.h">
       <Filter>Header Files\Networking</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Projects\bot-battles\bot-battles\src\shared\Delivery.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Delivery.h">
       <Filter>Header Files\Networking</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Projects\bot-battles\bot-battles\src\shared\DeliveryManager.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)DeliveryManager.h">
       <Filter>Header Files\Networking</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)ReplicationActionTypes.h">
+      <Filter>Header Files\Networking</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)NetUtils.h">
+      <Filter>Header Files\Networking</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)ComponentMemberTypes.h">
+      <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -323,10 +332,10 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)AckRange.cpp">
       <Filter>Source Files\Networking</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Projects\bot-battles\bot-battles\src\shared\Delivery.cpp">
+    <ClCompile Include="$(MSBuildThisFileDirectory)Delivery.cpp">
       <Filter>Source Files\Networking</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Projects\bot-battles\bot-battles\src\shared\DeliveryManager.cpp">
+    <ClCompile Include="$(MSBuildThisFileDirectory)DeliveryManager.cpp">
       <Filter>Source Files\Networking</Filter>
     </ClCompile>
   </ItemGroup>

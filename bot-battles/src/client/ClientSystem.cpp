@@ -131,7 +131,7 @@ bool ClientSystem::SendInputPacket(const SingletonClientComponent& singletonClie
     inputPacket.Write(moveCount, GetRequiredBits<MAX_MOVES_PER_PACKET>::value);
     for (U32 i = startIndex; i < totalMoveCount; ++i) {
         const Move& move = singletonInput.GetMove(i);
-        move.Write(inputPacket, static_cast<U16>(InputComponent::MemberType::ALL));
+        move.Write(inputPacket, static_cast<U32>(ComponentMemberType::INPUT_ALL)); // TODO: do not send all input member variables!
     }
 
     ILOG("Sending input packet to server...");

@@ -1,6 +1,7 @@
 #include "ServerSystem.h"
 
 #include "ClientProxy.h"
+#include "ComponentMemberTypes.h"
 #include "DeliveryManager.h"
 #include "GameServer.h"
 #include "LinkingContext.h"
@@ -69,41 +70,69 @@ bool ServerSystem::Update()
 void ServerSystem::OnNotify(const Event& event)
 {
     switch (event.eventType) {
+
     case EventType::PLAYER_ADDED: {
         std::shared_ptr<SingletonServerComponent> singletonServer = g_gameServer->GetSingletonServerComponent();
         std::shared_ptr<ClientProxy> clientProxy = singletonServer->GetClientProxyFromPlayerID(event.server.playerID);
         const std::unordered_map<NetworkID, Entity>& networkIDToEntity = g_gameServer->GetLinkingContext().GetNetworkIDToEntityMap();
         for (const auto& pair : networkIDToEntity) {
-            clientProxy->GetReplicationManager().CreateEntityCommand(pair.first);
+            clientProxy->GetReplicationManager().CreateCommand(pair.first, static_cast<U32>(ComponentMemberType::ALL));
         }
         break;
     }
+
     case EventType::ENTITY_ADDED: {
-        std::shared_ptr<SingletonServerComponent> singletonServer = g_gameServer->GetSingletonServerComponent();
         NetworkID networkID = g_gameServer->GetLinkingContext().GetNetworkID(event.entity.entity);
-        if (networkID == INVALID_NETWORK_ID) {
+        std::shared_ptr<SingletonServerComponent> singletonServer = g_gameServer->GetSingletonServerComponent();
+        const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = singletonServer->GetPlayerIDToClientProxyMap();
+        for (const auto& pair : playerIDToClientProxy) {
+            pair.second->GetReplicationManager().CreateCommand(networkID, static_cast<U32>(ComponentMemberType::ALL));
+        }
+        break;
+    }
+
+    case EventType::COMPONENT_ADDED: {
+        NetworkID networkID = g_gameServer->GetLinkingContext().GetNetworkID(event.component.entity);
+        std::shared_ptr<SingletonServerComponent> singletonServer = g_gameServer->GetSingletonServerComponent();
+        const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = singletonServer->GetPlayerIDToClientProxyMap();
+
+        ComponentMemberType componentMemberType = ComponentMemberType::INVALID;
+        switch (event.component.componentType) {
+
+        case ComponentType::INPUT: {
+            componentMemberType = ComponentMemberType::INPUT_ALL;
             break;
         }
-        const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = singletonServer->GetPlayerIDToClientProxyMap();
-        for (const auto& pair : playerIDToClientProxy) {
-            pair.second->GetReplicationManager().CreateEntityCommand(networkID);
+
+        case ComponentType::TRANSFORM: {
+            componentMemberType = ComponentMemberType::TRANSFORM_ALL;
+            break;
         }
-        break;
-    }
-    case EventType::ENTITY_SIGNATURE_CHANGED: {
-        std::shared_ptr<SingletonServerComponent> singletonServer = g_gameServer->GetSingletonServerComponent();
-        NetworkID networkID = g_gameServer->GetLinkingContext().GetNetworkID(event.entity.entity);
-        const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = singletonServer->GetPlayerIDToClientProxyMap();
-        for (const auto& pair : playerIDToClientProxy) {
-            pair.second->GetReplicationManager().CreateEntityCommand(networkID); // TODO: Update instead of Create
+
+        default: {
+            break;
         }
-        // TODO: only Update changed members of changed components
+        }
+
+        for (const auto& pair : playerIDToClientProxy) {
+            pair.second->GetReplicationManager().AddDirtyState(networkID, static_cast<U32>(componentMemberType));
+        }
         break;
     }
 
     default: {
         break;
     }
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
+void ServerSystem::AddDirtyState(NetworkID networkID, U32 dirtyState)
+{
+    std::shared_ptr<SingletonServerComponent> singletonServer = g_gameServer->GetSingletonServerComponent();
+    const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = singletonServer->GetPlayerIDToClientProxyMap();
+    for (const auto& pair : playerIDToClientProxy) {
+        pair.second->GetReplicationManager().AddDirtyState(networkID, dirtyState);
     }
 }
 

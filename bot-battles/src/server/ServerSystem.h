@@ -30,6 +30,8 @@ public:
 
     void OnNotify(const Event& event) override;
 
+    void AddDirtyState(NetworkID networkID, U32 dirtyState);
+
 private:
     void SendOutgoingPackets(SingletonServerComponent& singletonServer) const;
     void SendWelcomePacket(const SingletonServerComponent& singletonServer, PlayerID playerID, const SocketAddress& toSocketAddress) const;

@@ -12,12 +12,12 @@ public:
     ReplicationManagerServer();
     ~ReplicationManagerServer();
 
-    bool CreateEntityCommand(NetworkID networkID);
-    bool RemoveEntityCommand(NetworkID networkID);
+    bool CreateCommand(NetworkID networkID, U32 dirtyState);
+    void RemoveCommand(NetworkID networkID);
+    void AddDirtyState(NetworkID networkID, U32 dirtyState);
 
     void Write(OutputMemoryStream& outputStream);
-    void WriteCreateEntityAction(OutputMemoryStream& outputStream, NetworkID networkID) const;
-    void WriteUpdateEntityAction(OutputMemoryStream& outputStream, NetworkID networkID) const;
+    U32 WriteCreateOrUpdateAction(OutputMemoryStream& outputStream, NetworkID networkID, U32 dirtyState) const;
 
 private:
     std::unordered_map<NetworkID, ReplicationCommand> m_networkIDToReplicationCommand;

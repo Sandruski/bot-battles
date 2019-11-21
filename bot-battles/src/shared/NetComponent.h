@@ -7,13 +7,9 @@ class OutputMemoryStream;
 class InputMemoryStream;
 
 //----------------------------------------------------------------------------------------------------
-struct WriteNetComponent {
-    virtual void Write(OutputMemoryStream& outputStream, U16 memberFlags) const = 0;
-};
-
-//----------------------------------------------------------------------------------------------------
-struct ReadNetComponent {
-    virtual void Read(InputMemoryStream& inputStream) = 0;
+struct NetComponent {
+    virtual U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const = 0;
+    virtual void Read(InputMemoryStream& inputStream, U32 dirtyState) = 0;
 };
 }
 

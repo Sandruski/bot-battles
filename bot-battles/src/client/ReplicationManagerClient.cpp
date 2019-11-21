@@ -29,29 +29,23 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream) const
         NetworkID networkID = INVALID_NETWORK_ID;
         inputStream.Read(networkID);
 
-        ReplicationAction replicationAction = ReplicationAction::INVALID;
-        inputStream.Read(replicationAction, GetRequiredBits<static_cast<U8>(ReplicationAction::COUNT)>::value);
+        ReplicationActionType replicationActionType = ReplicationActionType::INVALID;
+        inputStream.Read(replicationActionType, 2);
 
-        switch (replicationAction) {
+        switch (replicationActionType) {
 
-        case ReplicationAction::CREATE_ENTITY: {
-
-            ReadCreateEntityAction(inputStream, networkID);
-
+        case ReplicationActionType::CREATE: {
+            ReadCreateAction(inputStream, networkID);
             break;
         }
 
-        case ReplicationAction::UPDATE_ENTITY: {
-
-            ReadUpdateEntityAction(inputStream, networkID);
-
+        case ReplicationActionType::UPDATE: {
+            ReadUpdateAction(inputStream, networkID);
             break;
         }
 
-        case ReplicationAction::REMOVE_ENTITY: {
-
-            ReadRemoveEntityAction(inputStream, networkID);
-
+        case ReplicationActionType::REMOVE: {
+            ReadRemoveAction(networkID);
             break;
         }
 
@@ -64,65 +58,62 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream) const
 }
 
 //----------------------------------------------------------------------------------------------------
-void ReplicationManagerClient::ReadCreateEntityAction(InputMemoryStream& inputStream, NetworkID networkID) const
-{
-    Entity entity = g_gameClient->GetLinkingContext().GetEntity(networkID);
-    if (entity != INVALID_ENTITY) {
-        ReadUpdateEntityAction(inputStream, networkID);
-        return;
-    }
-
-    entity = g_gameClient->GetEntityManager().AddEntity();
-    g_gameClient->GetLinkingContext().AddEntity(entity, networkID);
-
-    Signature signature = 0;
-    inputStream.Read(signature /*, GetRequiredBits<static_cast<U16>(MAX_COMPONENTS)>::value*/); // TODO: read server MAX_COMPONENTS
-
-    U16 hasTransform = 1 << static_cast<std::size_t>(ComponentType::TRANSFORM);
-    if (signature & hasTransform) {
-        std::shared_ptr<TransformComponent> transform = g_gameClient->GetComponentManager().AddComponent<TransformComponent>(entity);
-        transform->Read(inputStream);
-    }
-    U16 hasInput = 1 << static_cast<std::size_t>(ComponentType::INPUT);
-    if (signature & hasInput) {
-        g_gameClient->GetComponentManager().AddComponent<InputComponent>(entity);
-    }
-
-    // TODO: read total size of things written
-}
-
-//----------------------------------------------------------------------------------------------------
-void ReplicationManagerClient::ReadUpdateEntityAction(InputMemoryStream& inputStream, NetworkID networkID) const
+void ReplicationManagerClient::ReadCreateAction(InputMemoryStream& inputStream, NetworkID networkID) const
 {
     Entity entity = g_gameClient->GetLinkingContext().GetEntity(networkID);
     if (entity == INVALID_ENTITY) {
-        //U32 bitCount = replicationHeader.GetBitCount();
-        //WLOG("The entity has not been created yet. Advancing the memory stream's head %u bits...", bitCount);
-        //inputStream.AdvanceHead(bitCount);
-        return;
+        entity = g_gameClient->GetEntityManager().AddEntity();
+        g_gameClient->GetLinkingContext().AddEntity(entity, networkID);
     }
 
-    Signature signature = 0;
-    inputStream.Read(signature /*, GetRequiredBits<static_cast<U16>(MAX_COMPONENTS)>::value*/); // TODO: read server MAX_COMPONENTS
+    ReadUpdateAction(inputStream, networkID);
+}
+
+//----------------------------------------------------------------------------------------------------
+void ReplicationManagerClient::ReadUpdateAction(InputMemoryStream& inputStream, NetworkID networkID) const
+{
+    Entity entity = g_gameClient->GetLinkingContext().GetEntity(networkID);
+    Signature signature = g_gameClient->GetEntityManager().GetSignature(entity);
+
+    Signature newSignature = 0;
+    inputStream.Read(newSignature, GetRequiredBits<static_cast<U16>(MAX_COMPONENTS)>::value);
+    U32 dirtyState = 0;
+    inputStream.Read(dirtyState, GetRequiredBits<static_cast<U32>(ComponentMemberType::COUNT)>::value);
 
     U16 hasTransform = 1 << static_cast<std::size_t>(ComponentType::TRANSFORM);
-    if (signature & hasTransform) {
+    const bool hasSignatureTransform = signature & hasTransform;
+    const bool hasNewSignatureTransform = newSignature & hasTransform;
+    if (hasSignatureTransform && hasNewSignatureTransform) {
         std::shared_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
-        transformComponent->Read(inputStream);
+        transformComponent->Read(inputStream, dirtyState);
+    } else if (hasSignatureTransform) {
+        g_gameClient->GetComponentManager().RemoveComponent<TransformComponent>(entity);
+    } else if (hasNewSignatureTransform) {
+        std::shared_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().AddComponent<TransformComponent>(entity);
+        transformComponent->Read(inputStream, dirtyState);
+    }
+
+    U16 hasInput = 1 << static_cast<std::size_t>(ComponentType::INPUT);
+    const bool hasSignatureInput = signature & hasInput;
+    const bool hasNewSignatureInput = newSignature & hasInput;
+    if (hasSignatureInput && hasNewSignatureInput) {
+        std::shared_ptr<InputComponent> inputComponent = g_gameClient->GetComponentManager().GetComponent<InputComponent>(entity);
+        inputComponent->Read(inputStream, dirtyState);
+    } else if (hasSignatureInput) {
+        g_gameClient->GetComponentManager().RemoveComponent<InputComponent>(entity);
+    } else if (hasNewSignatureInput) {
+        std::shared_ptr<InputComponent> inputComponent = g_gameClient->GetComponentManager().AddComponent<InputComponent>(entity);
+        inputComponent->Read(inputStream, dirtyState);
     }
 
     // TODO: read total size of things written
 }
 
 //----------------------------------------------------------------------------------------------------
-void ReplicationManagerClient::ReadRemoveEntityAction(InputMemoryStream& /*inputStream*/, NetworkID networkID) const
+void ReplicationManagerClient::ReadRemoveAction(NetworkID networkID) const
 {
     Entity entity = g_gameClient->GetLinkingContext().GetEntity(networkID);
     if (entity == INVALID_ENTITY) {
-        // TODO: read total size of things written
-        //U32 bitCount = replicationHeader.GetBitCount();
-        //WLOG("The entity has not been created yet. Advancing the memory stream's head %u bits...", bitCount);
-        //inputStream.AdvanceHead(bitCount);
         return;
     }
 

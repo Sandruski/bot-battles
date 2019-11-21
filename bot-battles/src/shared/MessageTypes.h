@@ -3,8 +3,7 @@
 
 namespace sand {
 
-enum class ClientMessageType {
-
+enum class ClientMessageType : U16 {
     HELLO,
     INPUT,
     GOODBYE,
@@ -13,8 +12,7 @@ enum class ClientMessageType {
     INVALID
 };
 
-enum class ServerMessageType {
-
+enum class ServerMessageType : U16 {
     WELCOME,
     STATE,
 
