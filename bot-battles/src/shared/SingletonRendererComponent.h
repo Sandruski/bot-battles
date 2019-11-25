@@ -1,7 +1,7 @@
 #ifndef __SINGLETON_RENDERER_COMPONENT_H__
 #define __SINGLETON_RENDERER_COMPONENT_H__
 
-struct SDL_Renderer;
+#include "FontResource.h"
 
 namespace sand {
 
@@ -17,6 +17,7 @@ struct SingletonRendererComponent {
     ~SingletonRendererComponent() { }
 
     SDL_Renderer* m_renderer;
+	std::shared_ptr<FontResource> m_font;
     SDL_Color m_backgroundColor;
     bool m_isDebugDraw;
 };

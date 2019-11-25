@@ -1,9 +1,7 @@
 #include "Resource.h"
 
-
 namespace sand
 {
-
 	//----------------------------------------------------------------------------------------------------
 	Resource::Resource(U32 id, const char* file, const char* dir) :
 		m_id(id),

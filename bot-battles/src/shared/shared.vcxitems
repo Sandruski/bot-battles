@@ -28,6 +28,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Events.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)EventSystem.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)EventTypes.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)FontImporter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)FSM.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Game.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Delivery.h" />
@@ -49,8 +50,11 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)ReplicationCommand.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Resource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ResourceDefs.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)FontResource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ResourceManager.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)ResourceTexture.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)SpriteResource.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)TextComponent.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)TextResource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SDLDefs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SingletonRendererComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SingletonWindowComponent.h" />
@@ -83,6 +87,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)DeliveryManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)EntityManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)EventSystem.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)FontImporter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)FSM.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Game.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Delivery.cpp" />
@@ -104,8 +109,10 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)RendererSystem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ReplicationCommand.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Resource.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)FontResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ResourceManager.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)ResourceTexture.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)SpriteResource.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)TextResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SocketAddress.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Subject.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)System.cpp" />

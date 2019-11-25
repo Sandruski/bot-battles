@@ -23,6 +23,7 @@ public:
     void Write(const std::vector<T>& inVector);
     void Write(const std::string& inString);
     void Write(const Vec2& inVec);
+	void Write(const SDL_Color& inColor);
     void WritePosition(const Vec2& inVec);
 
     const char* GetPtr() const
@@ -89,6 +90,7 @@ public:
     void Read(std::vector<T>& outVector);
     void Read(std::string& outString);
     void Read(Vec2& outVec);
+	void Read(SDL_Color& outColor);
     void ReadPosition(Vec2& outVec);
 
     char* GetPtr() const

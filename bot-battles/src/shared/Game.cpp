@@ -6,12 +6,13 @@
 #include "LinkingContext.h"
 #include "SystemManager.h"
 #ifdef _DRAW
+#include "FontImporter.h"
 #include "ResourceManager.h"
 #include "TextureImporter.h"
 
+#include "HUDSystem.h"
 #include "RendererSystem.h"
 #include "WindowSystem.h"
-#include "HUDSystem.h"
 #endif
 #include "EventSystem.h"
 
@@ -19,6 +20,7 @@
 #include "SingletonRendererComponent.h"
 #include "SingletonWindowComponent.h"
 #include "SpriteComponent.h"
+#include "TextComponent.h"
 #endif
 #include "InputComponent.h"
 #include "TransformComponent.h"
@@ -48,6 +50,7 @@ Game::Game(const GameConfiguration& configuration)
 #ifdef _DRAW
     m_resourceManager = std::make_shared<ResourceManager>();
     m_textureImporter = std::make_shared<TextureImporter>();
+	m_fontImporter = std::make_shared<FontImporter>();
 
     m_singletonRendererComponent = std::make_shared<SingletonRendererComponent>();
     m_singletonWindowComponent = std::make_shared<SingletonWindowComponent>();
@@ -90,6 +93,10 @@ bool Game::Init()
     if (!ret) {
         return false;
     }
+	ret = m_componentManager->RegisterComponent<TextComponent>();
+	if (!ret) {
+		return false;
+	}
 #endif
     ret = m_componentManager->RegisterComponent<TransformComponent>();
     if (!ret) {
@@ -137,6 +144,10 @@ bool Game::Init()
     if (!ret) {
         return false;
     }
+	ret = m_fontImporter->StartUp();
+	if (!ret) {
+		return false;
+	}
 #endif
 
     if (m_configuration.StatesSetup != nullptr) {
@@ -204,6 +215,14 @@ bool Game::End()
     if (!ret) {
         return false;
     }
+	ret = m_fontImporter->ShutDown();
+	if (!ret) {
+		return false;
+	}
+	ret = m_textureImporter->ShutDown();
+	if (!ret) {
+		return false;
+	}
 #endif
 
     ret = m_fsm->ShutDown();

@@ -7,7 +7,7 @@
 #include "MemoryStream.h"
 #include "NetComponent.h"
 #include "ResourceManager.h"
-#include "ResourceTexture.h"
+#include "SpriteResource.h"
 
 namespace sand {
 
@@ -18,7 +18,7 @@ struct SpriteComponent : public NetComponent {
     static SpriteComponent* Instantiate() { return new SpriteComponent(); }
 
     SpriteComponent()
-        : m_texture(nullptr)
+        : m_sprite(nullptr)
     {
     }
     ~SpriteComponent() { }
@@ -28,7 +28,7 @@ struct SpriteComponent : public NetComponent {
         U32 writtenState = 0;
 
         if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_FILE)) {
-            std::string file = m_texture->GetFile();
+            std::string file = m_sprite->GetFile();
             outputStream.Write(file);
             writtenState |= static_cast<U32>(ComponentMemberType::SPRITE_FILE);
         }
@@ -41,11 +41,11 @@ struct SpriteComponent : public NetComponent {
         if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_FILE)) {
             std::string file;
             inputStream.Read(file);
-            m_texture = g_game->GetResourceManager().AddResource<ResourceTexture>(file.c_str(), "../../data/textures/");
+			m_sprite = g_game->GetResourceManager().AddResource<SpriteResource>(file.c_str(), "../../data/textures/");
         }
     }
 
-    std::shared_ptr<ResourceTexture> m_texture;
+    std::shared_ptr<SpriteResource> m_sprite;
 };
 }
 

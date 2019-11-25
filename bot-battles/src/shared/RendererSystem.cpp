@@ -3,8 +3,8 @@
 #include "ComponentManager.h"
 #include "DebugDrawer.h"
 #include "Game.h"
-#include "ResourceTexture.h"
 #include "SpriteComponent.h"
+#include "SpriteResource.h"
 #include "TransformComponent.h"
 
 #include "SingletonRendererComponent.h"
@@ -64,11 +64,11 @@ bool RendererSystem::Render()
         SDL_Rect renderQuad = {
             static_cast<I32>(transform->m_position.x),
             static_cast<I32>(transform->m_position.y),
-            static_cast<I32>(sprite->m_texture->GetWidth()),
-            static_cast<I32>(sprite->m_texture->GetHeight())
+            static_cast<I32>(sprite->m_sprite->GetWidth()),
+            static_cast<I32>(sprite->m_sprite->GetHeight())
         };
 
-        SDL_RenderCopy(singletonRenderer->m_renderer, sprite->m_texture->GetTexture(), nullptr, &renderQuad);
+        SDL_RenderCopy(singletonRenderer->m_renderer, sprite->m_sprite->GetTexture(), nullptr, &renderQuad);
 
         if (singletonRenderer->m_isDebugDraw) {
             /*

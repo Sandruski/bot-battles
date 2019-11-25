@@ -18,7 +18,7 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	bool TextureImporter::StartUp()
+	bool TextureImporter::StartUp() const
 	{
 		int imgFlags = IMG_INIT_PNG | IMG_INIT_JPG;
 		if (!(IMG_Init(imgFlags) & imgFlags))
@@ -31,29 +31,63 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	SDL_Texture* TextureImporter::Load(const char* path, int& width, int& height) const
+	bool TextureImporter::ShutDown() const
+	{
+		IMG_Quit();
+
+		return true;
+	}
+
+	//----------------------------------------------------------------------------------------------------
+	SDL_Texture* TextureImporter::LoadFromSprite(const char* path, int& width, int& height) const
 	{
 		assert(path != nullptr);
-
-		SDL_Texture* texture = nullptr;
 
 		SDL_Surface* surface = IMG_Load(path);
 		if (surface == nullptr)
 		{
-			ELOG("Surface could not be loaded from file %s! SDL_image Error: %s", path, IMG_GetError());
-			return texture;
+			ELOG("Surface could not be loaded from sprite! SDL_image Error: %s", IMG_GetError());
+			return nullptr;
 		}
 
-		std::shared_ptr<SingletonRendererComponent> renderer = g_game->GetSingletonRendererComponent();
-
-		texture = SDL_CreateTextureFromSurface(renderer->m_renderer, surface);
+		SDL_Texture* texture = LoadFromSurface(surface);
 		if (texture == nullptr)
 		{
-			ELOG("Texture could not be created from file %s! SDL Error: %s", path, SDL_GetError());
+			ELOG("Texture could not be created from sprite!");
+		}
+		else
+		{
+			width = surface->w;
+			height = surface->h;
 		}
 
-		width = surface->w;
-		height = surface->h;
+		SDL_FreeSurface(surface);
+
+		return texture;
+	}
+
+	//----------------------------------------------------------------------------------------------------
+	SDL_Texture* TextureImporter::LoadFromText(TTF_Font* font, const char* text, const SDL_Color& color, int& width, int& height) const
+	{
+		assert(font != nullptr && text != nullptr);
+
+		SDL_Surface* surface = TTF_RenderText_Solid(font, text, color);
+		if (surface == nullptr)
+		{
+			ELOG("Surface could not be loaded from text! SDL_ttf Error: %s", TTF_GetError());
+			return nullptr;
+		}
+
+		SDL_Texture* texture = LoadFromSurface(surface);
+		if (texture == nullptr)
+		{
+			ELOG("Texture could not be created from text!");
+		}
+		else
+		{
+			width = surface->w;
+			height = surface->h;
+		}
 
 		SDL_FreeSurface(surface);
 
@@ -67,5 +101,20 @@ namespace sand
 
 		SDL_DestroyTexture(texture);
 		texture = nullptr;
+	}
+
+	//----------------------------------------------------------------------------------------------------
+	SDL_Texture* TextureImporter::LoadFromSurface(SDL_Surface* surface) const
+	{
+		assert(surface != nullptr);
+
+		std::shared_ptr<SingletonRendererComponent> renderer = g_game->GetSingletonRendererComponent();
+		SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer->m_renderer, surface);
+		if (texture == nullptr)
+		{
+			ELOG("Texture could not be created from surface! SDL Error: %s", SDL_GetError());
+		}
+
+		return texture;
 	}
 }

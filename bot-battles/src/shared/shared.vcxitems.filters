@@ -180,9 +180,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)ResourceManager.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ResourceTexture.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)TextureImporter.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
@@ -243,6 +240,21 @@
     <ClInclude Include="C:\Projects\bot-battles\bot-battles\src\shared\HUDSystem.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)FontImporter.h">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Projects\bot-battles\bot-battles\src\shared\FontResource.h">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Projects\bot-battles\bot-battles\src\shared\TextResource.h">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Projects\bot-battles\bot-battles\src\shared\SpriteResource.h">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)TextComponent.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp">
@@ -302,9 +314,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)ResourceManager.cpp">
       <Filter>Source Files\Resources</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)ResourceTexture.cpp">
-      <Filter>Source Files\Resources</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)TextureImporter.cpp">
       <Filter>Source Files\Resources</Filter>
     </ClCompile>
@@ -343,6 +352,18 @@
     </ClCompile>
     <ClCompile Include="C:\Projects\bot-battles\bot-battles\src\shared\HUDSystem.cpp">
       <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)FontImporter.cpp">
+      <Filter>Source Files\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Projects\bot-battles\bot-battles\src\shared\FontResource.cpp">
+      <Filter>Source Files\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Projects\bot-battles\bot-battles\src\shared\SpriteResource.cpp">
+      <Filter>Source Files\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Projects\bot-battles\bot-battles\src\shared\TextResource.cpp">
+      <Filter>Source Files\Resources</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

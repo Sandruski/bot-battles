@@ -1,36 +1,38 @@
-#include "ResourceTexture.h"
+#include "TextResource.h"
 
 #include "Game.h"
+#include "ResourceManager.h"
 #include "TextureImporter.h"
-
 
 namespace sand
 {
-
 	//----------------------------------------------------------------------------------------------------
-	ResourceTexture::ResourceTexture(U32 id, const char* dir, const char* file) : Resource(id, dir, file),
+	TextResource::TextResource(U32 id, const char* dir, const char* file) : Resource(id, dir, file),
 		m_texture(nullptr),
-		m_size()
+		m_font(nullptr),
+		m_text(nullptr),
+		m_color(),
+		m_size()	
 	{
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	ResourceTexture::~ResourceTexture()
+	TextResource::~TextResource()
 	{
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	bool ResourceTexture::Load()
+	bool TextResource::Load()
 	{
 		assert(m_texture == nullptr);
 
-		m_texture = g_game->GetTextureImporter().Load(GetPath(), m_size.x, m_size.y);
+		m_texture = g_game->GetTextureImporter().LoadFromText(m_font->GetFont(), m_text.c_str(), m_color, m_size.x, m_size.y);
 
 		return m_texture != nullptr;
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	bool ResourceTexture::UnLoad()
+	bool TextResource::UnLoad()
 	{
 		assert(m_texture != nullptr);
 
@@ -40,20 +42,13 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	SDL_Texture* ResourceTexture::GetTexture() const
+	bool TextResource::ReLoad()
 	{
-		return m_texture;
-	}
+		if (m_texture != nullptr)
+		{
+			UnLoad();
+		}
 
-	//----------------------------------------------------------------------------------------------------
-	U32 ResourceTexture::GetWidth() const
-	{
-		return m_size.x;
-	}
-
-	//----------------------------------------------------------------------------------------------------
-	U32 ResourceTexture::GetHeight() const
-	{
-		return m_size.y;
+		return Load();
 	}
 }

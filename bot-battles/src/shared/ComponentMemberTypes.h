@@ -12,6 +12,7 @@ enum class ComponentMemberType : U32 {
 
 #ifdef _DRAW
     SPRITE_FILE = 1 << 4,
+	TEXT_STUFF = 1 << 5,
 #endif
 
     COUNT,
