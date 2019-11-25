@@ -1,12 +1,10 @@
 #ifndef __DELIVERY_H__
 #define __DELIVERY_H__
 
-#include "Subject.h"
-
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class Delivery : public Subject {
+class Delivery {
 public:
     Delivery(SequenceNumber sequenceNumber);
     ~Delivery();

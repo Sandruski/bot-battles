@@ -9,6 +9,7 @@ enum class SystemType : U16 {
     WINDOW,
     RENDERER,
     EVENT,
+	HUD,
 #endif
 
     INPUT,

@@ -128,4 +128,25 @@ U32 ReplicationManagerServer::WriteCreateOrUpdateAction(OutputMemoryStream& outp
 
     return writtenState;
 }
+
+//----------------------------------------------------------------------------------------------------
+void ReplicationManagerServer::OnNotify(const Event& event)
+{
+    switch (event.eventType) {
+
+    case EventType::DELIVERY_SUCCESS: {
+
+        break;
+    }
+
+    case EventType::DELIVERY_FAILURE: {
+
+        break;
+    }
+
+    default: {
+        break;
+    }
+    }
+}
 }

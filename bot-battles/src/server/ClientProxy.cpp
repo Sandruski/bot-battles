@@ -17,6 +17,7 @@ ClientProxy::ClientProxy(const SocketAddress& socketAddress, const char* name)
     , m_lastPacketTime(0.0f)
     , m_isLastMoveTimestampDirty(true)
 {
+    m_deliveryManager.AddObserver(std::make_shared<ReplicationManagerServer>(m_replicationManager)); // TODO!!!
 }
 
 //----------------------------------------------------------------------------------------------------

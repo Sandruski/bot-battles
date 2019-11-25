@@ -11,6 +11,7 @@
 
 #include "RendererSystem.h"
 #include "WindowSystem.h"
+#include "HUDSystem.h"
 #endif
 #include "EventSystem.h"
 
@@ -73,12 +74,18 @@ bool Game::Init()
     if (!ret) {
         return false;
     }
-    ret = m_systemManager->RegisterSystem<EventSystem>();
-    if (!ret) {
-        return false;
-    }
+	ret = m_systemManager->RegisterSystem<HUDSystem>();
+	if (!ret) {
+		return false;
+	}
+#endif
+	ret = m_systemManager->RegisterSystem<EventSystem>();
+	if (!ret) {
+		return false;
+	}
 
     // Components
+#ifdef _DRAW
     ret = m_componentManager->RegisterComponent<SpriteComponent>();
     if (!ret) {
         return false;

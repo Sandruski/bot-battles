@@ -3,6 +3,7 @@
 
 #include "AckRange.h"
 #include "Delivery.h"
+#include "Subject.h"
 
 namespace sand {
 
@@ -10,7 +11,7 @@ class OutputMemoryStream;
 class InputMemoryStream;
 
 //----------------------------------------------------------------------------------------------------
-class DeliveryManager {
+class DeliveryManager : public Subject {
 public:
     DeliveryManager();
     ~DeliveryManager();
@@ -28,8 +29,8 @@ private:
     void WritePendingAcks(OutputMemoryStream& outputStream);
     void ReadPendingAcks(InputMemoryStream& inputStream);
 
-    void HandleDeliverySuccess(const Delivery& delivery);
-    void HandleDeliveryFailure(const Delivery& delivery);
+    void HandleDeliverySuccess();
+    void HandleDeliveryFailure();
 
 private:
     std::deque<Delivery> m_deliveries;

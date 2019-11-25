@@ -1,13 +1,16 @@
 #ifndef __REPLICATION_MANAGER_SERVER_H__
 #define __REPLICATION_MANAGER_SERVER_H__
 
+#include "Observer.h"
+#include "ReplicationCommand.h"
+
 namespace sand {
 
 class OutputMemoryStream;
-class ReplicationCommand;
+class Delivery;
 
 //----------------------------------------------------------------------------------------------------
-class ReplicationManagerServer {
+class ReplicationManagerServer : public Observer {
 public:
     ReplicationManagerServer();
     ~ReplicationManagerServer();
@@ -19,8 +22,10 @@ public:
     void Write(OutputMemoryStream& outputStream);
     U32 WriteCreateOrUpdateAction(OutputMemoryStream& outputStream, NetworkID networkID, U32 dirtyState) const;
 
-private:
-    std::unordered_map<NetworkID, ReplicationCommand> m_networkIDToReplicationCommand;
+    void OnNotify(const Event& event) override;
+
+private: 
+	std::unordered_map<NetworkID, ReplicationCommand> m_networkIDToReplicationCommand;
 };
 }
 

@@ -47,7 +47,7 @@ void DeliveryManager::ProcessTimedOutPackets()
         const Delivery& delivery = m_deliveries.front();
         F32 timestamp = delivery.GetTimestamp();
         if (timestamp < timeout) {
-            HandleDeliveryFailure(delivery);
+            HandleDeliveryFailure();
             m_deliveries.pop_front();
         } else {
             break;
@@ -116,11 +116,11 @@ void DeliveryManager::ReadPendingAcks(InputMemoryStream& inputStream)
             const Delivery& delivery = m_deliveries.front();
             SequenceNumber inFlightPacketSequenceNumber = delivery.GetSequenceNumber();
             if (inFlightPacketSequenceNumber >= sequenceNumber) {
-                HandleDeliverySuccess(delivery);
+                HandleDeliverySuccess();
                 m_deliveries.pop_front();
                 sequenceNumber = inFlightPacketSequenceNumber + 1;
             } else if (inFlightPacketSequenceNumber < sequenceNumber) {
-                HandleDeliveryFailure(delivery);
+                HandleDeliveryFailure();
                 m_deliveries.pop_front();
             }
         }
@@ -128,21 +128,21 @@ void DeliveryManager::ReadPendingAcks(InputMemoryStream& inputStream)
 }
 
 //----------------------------------------------------------------------------------------------------
-void DeliveryManager::HandleDeliverySuccess(const Delivery& delivery)
+void DeliveryManager::HandleDeliverySuccess()
 {
     Event newEvent;
     newEvent.eventType = EventType::DELIVERY_SUCCESS;
-    delivery.NotifyEvent(newEvent);
+    NotifyEvent(newEvent);
 
     ++m_successfulDeliveriesCount;
 }
 
 //----------------------------------------------------------------------------------------------------
-void DeliveryManager::HandleDeliveryFailure(const Delivery& delivery)
+void DeliveryManager::HandleDeliveryFailure()
 {
     Event newEvent;
     newEvent.eventType = EventType::DELIVERY_FAILURE;
-    delivery.NotifyEvent(newEvent);
+    NotifyEvent(newEvent);
 
     ++m_failedDeliveriesCount;
 }
