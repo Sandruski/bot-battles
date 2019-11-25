@@ -23,31 +23,16 @@ namespace sand
 			return m_texture;
 		}
 
-		void SetFont(std::shared_ptr<FontResource> font)
-		{
-			m_font = font;
+		void SetFont(std::shared_ptr<FontResource> font);
 
-			ReLoad();
-		}
-
-		void SetText(const char* text)
-		{
-			m_text = text;
-
-			ReLoad();
-		}
+		void SetText(const char* text);
 
 		const char* GetText() const
 		{
 			return m_text.c_str();
 		}
 
-		void SetColor(const SDL_Color& color)
-		{
-			m_color = color;
-
-			ReLoad();
-		}
+		void SetColor(const SDL_Color& color);
 
 		const SDL_Color& GetColor() const
 		{

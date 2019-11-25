@@ -92,6 +92,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Game.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Delivery.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)HUDSystem.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)InputComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)LinkingContext.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MemoryStream.cpp" />
@@ -111,7 +112,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Resource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)FontResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ResourceManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)SpriteComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SpriteResource.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)TextComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TextResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SocketAddress.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Subject.cpp" />
@@ -120,6 +123,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)TextureImporter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Time.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Timer.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)TransformComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)UDPSocket.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Vec2.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Vec2I.cpp" />

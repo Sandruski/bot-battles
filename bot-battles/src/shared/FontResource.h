@@ -9,7 +9,7 @@ namespace sand
 	class FontResource : public Resource
 	{
 	public:
-		FontResource(U32 id, const char* dir, const char* file, U16 size);
+		FontResource(U32 id, const char* dir, const char* file);
 		~FontResource() override;
 
 		bool Load() override;
@@ -20,10 +20,15 @@ namespace sand
 			return m_font;
 		}
 
+		void SetSize(U16 size);
+
 		U16 GetSize() const
 		{
 			return m_size;
 		}
+
+	private:
+		bool ReLoad();
 
 	private:
 		TTF_Font* m_font;

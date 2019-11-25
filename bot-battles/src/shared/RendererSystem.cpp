@@ -2,7 +2,9 @@
 
 #include "ComponentManager.h"
 #include "DebugDrawer.h"
+#include "FontResource.h"
 #include "Game.h"
+#include "ResourceManager.h"
 #include "SpriteComponent.h"
 #include "SpriteResource.h"
 #include "TransformComponent.h"
@@ -38,6 +40,10 @@ bool RendererSystem::StartUp()
         ELOG("Renderer could not be created! SDL Error: %s", SDL_GetError());
         return false;
     }
+
+	std::shared_ptr<FontResource> font = g_game->GetResourceManager().AddResource<FontResource>("Dosis-Regular.ttf", FONTS_DIR);
+	font->SetSize(12);
+	singletonRenderer->m_font = font;
 
     return true;
 }

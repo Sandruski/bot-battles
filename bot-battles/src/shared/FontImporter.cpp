@@ -41,14 +41,14 @@ namespace sand
 		TTF_Font* font = TTF_OpenFont(path, size);
 		if (font == nullptr)
 		{
-			ELOG("Texture could not be created from file %s! SDL Error: %s", path, SDL_GetError());
+			ELOG("Font could not be opened from file %s! SDL Error: %s", path, SDL_GetError());
 		}
 
 		return font;
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	void FontImporter::UnLoad(TTF_Font* font) const
+	void FontImporter::UnLoad(TTF_Font*& font) const
 	{
 		assert(font != nullptr);
 

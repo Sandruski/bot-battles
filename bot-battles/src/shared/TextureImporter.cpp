@@ -46,14 +46,14 @@ namespace sand
 		SDL_Surface* surface = IMG_Load(path);
 		if (surface == nullptr)
 		{
-			ELOG("Surface could not be loaded from sprite! SDL_image Error: %s", IMG_GetError());
+			ELOG("Surface could not be loaded from sprite %s! SDL_image Error: %s", path, IMG_GetError());
 			return nullptr;
 		}
 
 		SDL_Texture* texture = LoadFromSurface(surface);
 		if (texture == nullptr)
 		{
-			ELOG("Texture could not be created from sprite!");
+			ELOG("Texture could not be created from sprite %s!", path);
 		}
 		else
 		{
@@ -95,7 +95,7 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	void TextureImporter::UnLoad(SDL_Texture* texture) const
+	void TextureImporter::UnLoad(SDL_Texture*& texture) const
 	{
 		assert(texture != nullptr);
 

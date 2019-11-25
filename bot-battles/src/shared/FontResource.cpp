@@ -6,9 +6,9 @@
 namespace sand
 {
 	//----------------------------------------------------------------------------------------------------
-	FontResource::FontResource(U32 id, const char* dir, const char* file, U16 size) : Resource(id, dir, file),
+	FontResource::FontResource(U32 id, const char* dir, const char* file) : Resource(id, dir, file),
 		m_font(nullptr),
-		m_size(size)
+		m_size(0)
 	{
 	}
 
@@ -35,5 +35,24 @@ namespace sand
 		g_game->GetFontImporter().UnLoad(m_font);
 
 		return true;
+	}
+
+	//----------------------------------------------------------------------------------------------------
+	void FontResource::SetSize(U16 size)
+	{
+		m_size = size;
+
+		ReLoad();
+	}
+
+	//----------------------------------------------------------------------------------------------------
+	bool FontResource::ReLoad()
+	{
+		if (m_font != nullptr)
+		{
+			UnLoad();
+		}
+
+		return Load();
 	}
 }

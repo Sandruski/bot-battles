@@ -5,6 +5,7 @@
 #include "EntityManager.h"
 #include "GameServer.h"
 #include "LinkingContext.h"
+#include "ResourceManager.h"
 #include "SingletonServerComponent.h"
 #include "SpriteComponent.h"
 #include "TransformComponent.h"

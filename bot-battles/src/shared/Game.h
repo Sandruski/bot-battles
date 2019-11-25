@@ -11,9 +11,9 @@ class ComponentManager;
 class SystemManager;
 class LinkingContext;
 class FSM; // TODO: remove this!
-class ResourceManager;
-class TextureImporter;
 class FontImporter;
+class TextureImporter;
+class ResourceManager;
 
 #ifdef _DRAW
 struct SingletonWindowComponent;
@@ -49,12 +49,12 @@ public:
     LinkingContext& GetLinkingContext() const { return *m_linkingContext; }
     FSM& GetFSM() const { return *m_fsm; } // TODO: remove this!
 #ifdef _DRAW
+	FontImporter& GetFontImporter() const { return *m_fontImporter; }
+	TextureImporter& GetTextureImporter() const { return *m_textureImporter; }
     ResourceManager& GetResourceManager() const
     {
         return *m_resourceManager;
     }
-    TextureImporter& GetTextureImporter() const { return *m_textureImporter; }
-	FontImporter& GetFontImporter() const { return *m_fontImporter; }
 
     std::shared_ptr<SingletonWindowComponent> GetSingletonWindowComponent() const
     {
@@ -82,9 +82,9 @@ protected:
     std::shared_ptr<SystemManager> m_systemManager;
     std::unique_ptr<LinkingContext> m_linkingContext;
     std::shared_ptr<FSM> m_fsm; // TODO: remove this!
-    std::shared_ptr<ResourceManager> m_resourceManager;
-    std::shared_ptr<TextureImporter> m_textureImporter;
 	std::shared_ptr<FontImporter> m_fontImporter;
+    std::shared_ptr<TextureImporter> m_textureImporter;
+	std::shared_ptr<ResourceManager> m_resourceManager;
 
 #ifdef _DRAW
     std::shared_ptr<SingletonWindowComponent> m_singletonWindowComponent;

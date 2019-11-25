@@ -48,9 +48,9 @@ Game::Game(const GameConfiguration& configuration)
     m_linkingContext = std::make_unique<LinkingContext>();
     m_fsm = std::make_shared<FSM>(); // TODO: remove this!
 #ifdef _DRAW
-    m_resourceManager = std::make_shared<ResourceManager>();
-    m_textureImporter = std::make_shared<TextureImporter>();
 	m_fontImporter = std::make_shared<FontImporter>();
+	m_textureImporter = std::make_shared<TextureImporter>();
+    m_resourceManager = std::make_shared<ResourceManager>();
 
     m_singletonRendererComponent = std::make_shared<SingletonRendererComponent>();
     m_singletonWindowComponent = std::make_shared<SingletonWindowComponent>();
@@ -134,21 +134,21 @@ bool Game::Init()
         return false;
     }
 
-    ret = m_systemManager->StartUp();
-    if (!ret) {
-        return false;
-    }
-
 #ifdef _DRAW
-    ret = m_textureImporter->StartUp();
-    if (!ret) {
-        return false;
-    }
+	ret = m_textureImporter->StartUp();
+	if (!ret) {
+		return false;
+	}
 	ret = m_fontImporter->StartUp();
 	if (!ret) {
 		return false;
 	}
 #endif
+
+    ret = m_systemManager->StartUp();
+    if (!ret) {
+        return false;
+    }
 
     if (m_configuration.StatesSetup != nullptr) {
         m_configuration.StatesSetup();
@@ -215,11 +215,11 @@ bool Game::End()
     if (!ret) {
         return false;
     }
-	ret = m_fontImporter->ShutDown();
+	ret = m_textureImporter->ShutDown();
 	if (!ret) {
 		return false;
 	}
-	ret = m_textureImporter->ShutDown();
+	ret = m_fontImporter->ShutDown();
 	if (!ret) {
 		return false;
 	}

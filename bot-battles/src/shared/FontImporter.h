@@ -14,7 +14,7 @@ namespace sand
 		bool ShutDown() const;
 
 		TTF_Font* Load(const char* path, U16 size) const;
-		void UnLoad(TTF_Font* font) const;
+		void UnLoad(TTF_Font*& font) const;
 	};
 }
 

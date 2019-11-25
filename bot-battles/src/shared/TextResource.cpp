@@ -42,6 +42,30 @@ namespace sand
 	}
 
 	//----------------------------------------------------------------------------------------------------
+	void TextResource::SetFont(std::shared_ptr<FontResource> font)
+	{
+		m_font = font;
+
+		ReLoad();
+	}
+
+	//----------------------------------------------------------------------------------------------------
+	void TextResource::SetText(const char* text)
+	{
+		m_text = text;
+
+		ReLoad();
+	}
+
+	//----------------------------------------------------------------------------------------------------
+	void TextResource::SetColor(const SDL_Color& color)
+	{
+		m_color = color;
+
+		ReLoad();
+	}
+
+	//----------------------------------------------------------------------------------------------------
 	bool TextResource::ReLoad()
 	{
 		if (m_texture != nullptr)
