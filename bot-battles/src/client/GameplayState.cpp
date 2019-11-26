@@ -2,7 +2,6 @@
 
 #include "Game.h"
 #include "ResourceManager.h"
-#include "ResourceTexture.h"
 
 #include "ComponentManager.h"
 #include "EntityManager.h"

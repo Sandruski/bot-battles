@@ -5,15 +5,15 @@ VisualStudioVersion = 16.0.29409.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "client", "src\client\client.vcxproj", "{50AA5DBE-79B7-4B0E-8D43-5A661C44965A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "server", "C:\Projects\bot-battles\bot-battles\src\server\server.vcxproj", "{3226A0AE-857C-4EE5-B27B-5219157789CC}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "server", "src\server\server.vcxproj", "{3226A0AE-857C-4EE5-B27B-5219157789CC}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "shared", "C:\Projects\bot-battles\bot-battles\src\shared\shared.vcxitems", "{C57E42E8-FAA7-47C3-A874-35E261F19D38}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "shared", "src\shared\shared.vcxitems", "{C57E42E8-FAA7-47C3-A874-35E261F19D38}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		C:\Projects\bot-battles\bot-battles\src\shared\shared.vcxitems*{3226a0ae-857c-4ee5-b27b-5219157789cc}*SharedItemsImports = 4
-		C:\Projects\bot-battles\bot-battles\src\shared\shared.vcxitems*{50aa5dbe-79b7-4b0e-8d43-5a661c44965a}*SharedItemsImports = 4
-		C:\Projects\bot-battles\bot-battles\src\shared\shared.vcxitems*{c57e42e8-faa7-47c3-a874-35e261f19d38}*SharedItemsImports = 9
+		src\shared\shared.vcxitems*{3226a0ae-857c-4ee5-b27b-5219157789cc}*SharedItemsImports = 4
+		src\shared\shared.vcxitems*{50aa5dbe-79b7-4b0e-8d43-5a661c44965a}*SharedItemsImports = 4
+		src\shared\shared.vcxitems*{c57e42e8-faa7-47c3-a874-35e261f19d38}*SharedItemsImports = 9
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
