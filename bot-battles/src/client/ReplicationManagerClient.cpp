@@ -9,6 +9,7 @@
 #include "ReplicationCommand.h"
 #include "SpriteComponent.h"
 #include "TransformComponent.h"
+#include "TextComponent.h"
 
 namespace sand {
 
@@ -119,6 +120,21 @@ void ReplicationManagerClient::ReadUpdateAction(InputMemoryStream& inputStream, 
         std::shared_ptr<SpriteComponent> spriteComponent = g_gameClient->GetComponentManager().AddComponent<SpriteComponent>(entity);
         spriteComponent->Read(inputStream, dirtyState);
     }
+
+	U16 hasText = 1 << static_cast<std::size_t>(ComponentType::TEXT);
+	const bool hasSignatureText = signature & hasText;
+	const bool hasNewSignatureText = newSignature & hasText;
+	if (hasSignatureText && hasNewSignatureText) {
+		std::shared_ptr<TextComponent> textComponent = g_gameClient->GetComponentManager().GetComponent<TextComponent>(entity);
+		textComponent->Read(inputStream, dirtyState);
+	}
+	else if (hasSignatureSprite) {
+		g_gameClient->GetComponentManager().RemoveComponent<TextComponent>(entity);
+	}
+	else if (hasNewSignatureSprite) {
+		std::shared_ptr<TextComponent> textComponent = g_gameClient->GetComponentManager().AddComponent<TextComponent>(entity);
+		textComponent->Read(inputStream, dirtyState);
+	}
 
     // TODO: read total size of things written
 }
