@@ -41,7 +41,11 @@ namespace sand
 
 			SDL_RenderCopy(singletonRenderer->m_renderer, textComponent->m_text->GetTexture(), nullptr, &renderQuad);
 
-			return true;
+			if (singletonRenderer->m_isDebugDraw) {
+				// TODO
+			}
 		}
+
+		return true;
 	}
 }
