@@ -75,14 +75,17 @@ bool RendererSystem::Render()
 		std::shared_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
         std::shared_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
 
-        SDL_Rect renderQuad = {
-            static_cast<I32>(transformComponent->m_position.x),
-            static_cast<I32>(transformComponent->m_position.y),
-            static_cast<I32>(spriteComponent->m_sprite->GetWidth()),
-            static_cast<I32>(spriteComponent->m_sprite->GetHeight())
-        };
+		if (spriteComponent->m_sprite != nullptr)
+		{
+			SDL_Rect renderQuad = {
+				static_cast<I32>(transformComponent->m_position.x),
+				static_cast<I32>(transformComponent->m_position.y),
+				static_cast<I32>(spriteComponent->m_sprite->GetWidth()),
+				static_cast<I32>(spriteComponent->m_sprite->GetHeight())
+			};
 
-        SDL_RenderCopy(singletonRenderer->m_renderer, spriteComponent->m_sprite->GetTexture(), nullptr, &renderQuad);
+			SDL_RenderCopy(singletonRenderer->m_renderer, spriteComponent->m_sprite->GetTexture(), nullptr, &renderQuad);
+		}
 
         if (singletonRenderer->m_isDebugDraw) {
             /*
