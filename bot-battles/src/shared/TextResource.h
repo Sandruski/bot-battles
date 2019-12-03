@@ -18,6 +18,8 @@ namespace sand
 		bool Load() override;
 		bool UnLoad() override;
 
+		bool ReLoad();
+
 		SDL_Texture* GetTexture() const
 		{
 			return m_texture;
@@ -48,9 +50,6 @@ namespace sand
 		{
 			return m_size.y;
 		}
-
-	private:
-		bool ReLoad();
 
 	private:
 		SDL_Texture* m_texture;

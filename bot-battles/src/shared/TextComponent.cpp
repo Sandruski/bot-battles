@@ -47,6 +47,7 @@ namespace sand
 			m_text->SetFont(singletonRenderer->m_font);
 			m_text->SetText(text.c_str());
 			m_text->SetColor(color);
+			m_text->ReLoad();
 		}
 	}
 }

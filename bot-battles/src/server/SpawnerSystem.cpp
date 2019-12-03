@@ -60,6 +60,7 @@ Entity SpawnerSystem::SpawnPlayerEntity() const
 	textResource->SetFont(singletonRenderer->m_font);
 	textResource->SetText(spriteResource->GetFile());
 	textResource->SetColor(Red);
+	textResource->ReLoad();
 	std::shared_ptr<TextComponent> textComponent = g_gameServer->GetComponentManager().AddComponent<TextComponent>(character);
 	textComponent->m_text = textResource;
 
