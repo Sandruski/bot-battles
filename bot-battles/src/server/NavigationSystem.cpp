@@ -23,9 +23,9 @@ NavigationSystem::~NavigationSystem()
 bool NavigationSystem::Update()
 {
     for (auto& entity : m_entities) {
-        std::shared_ptr<InputComponent> input = g_gameServer->GetComponentManager().GetComponent<InputComponent>(entity);
-        std::shared_ptr<TransformComponent> transform = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
-        UpdateMovement(entity, *input, *transform, Time::GetInstance().GetDt()); // TODO: use client dt
+        std::shared_ptr<InputComponent> inputComponent = g_gameServer->GetComponentManager().GetComponent<InputComponent>(entity);
+        std::shared_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
+        UpdateMovement(entity, *inputComponent, *transformComponent, Time::GetInstance().GetDt()); // TODO: use client dt
     }
 
     return true;

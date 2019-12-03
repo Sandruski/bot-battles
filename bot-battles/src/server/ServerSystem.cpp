@@ -264,13 +264,17 @@ void ServerSystem::ReceiveInputPacket(SingletonServerComponent& singletonServer,
 
     U32 moveCount = 0;
     inputStream.Read(moveCount, GetRequiredBits<MAX_MOVES_PER_PACKET>::value);
-    Move move;
-    while (moveCount > 0) {
-        move.Read(inputStream);
-        clientProxy->AddMove(move);
-        clientProxy->m_isLastMoveTimestampDirty = true;
-        --moveCount;
-    }
+	if (moveCount > 0)
+	{
+		Move move;
+		while (moveCount > 0) {
+			move.Read(inputStream);
+			clientProxy->AddMove(move);
+			--moveCount;
+		}
+
+		clientProxy->m_isLastMoveTimestampDirty = true;
+	}
 }
 
 //----------------------------------------------------------------------------------------------------
