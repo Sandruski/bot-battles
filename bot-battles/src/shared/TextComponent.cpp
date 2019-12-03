@@ -42,7 +42,7 @@ namespace sand
 			inputStream.Read(text);
 			SDL_Color color;
 			inputStream.Read(color);
-			m_text = g_game->GetResourceManager().AddResource<TextResource>(nullptr, nullptr);
+			m_text = g_game->GetResourceManager().AddResource<TextResource>("", "");
 			std::shared_ptr<SingletonRendererComponent> singletonRenderer = g_game->GetSingletonRendererComponent();
 			m_text->SetFont(singletonRenderer->m_font);
 			m_text->SetText(text.c_str());

@@ -10,7 +10,7 @@ namespace sand
 	TextResource::TextResource(U32 id, const char* dir, const char* file) : Resource(id, dir, file),
 		m_texture(nullptr),
 		m_font(nullptr),
-		m_text(nullptr),
+		m_text(),
 		m_color(),
 		m_size()	
 	{
@@ -26,9 +26,11 @@ namespace sand
 	{
 		assert(m_texture == nullptr);
 
-		m_texture = g_game->GetTextureImporter().LoadFromText(m_font->GetFont(), m_text.c_str(), m_color, m_size.x, m_size.y);
+		//m_texture = g_game->GetTextureImporter().LoadFromText(m_font->GetFont(), m_text.c_str(), m_color, m_size.x, m_size.y);
 
-		return m_texture != nullptr;
+		//return m_texture != nullptr;
+
+		return true;
 	}
 
 	//----------------------------------------------------------------------------------------------------

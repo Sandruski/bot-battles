@@ -32,14 +32,17 @@ namespace sand
 			std::shared_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
 			std::shared_ptr<TextComponent> textComponent = g_game->GetComponentManager().GetComponent<TextComponent>(entity);
 
-			SDL_Rect renderQuad = {
-				static_cast<I32>(transformComponent->m_position.x),
-				static_cast<I32>(transformComponent->m_position.y),
-				static_cast<I32>(textComponent->m_text->GetWidth()),
-				static_cast<I32>(textComponent->m_text->GetHeight())
-			};
+			if (textComponent->m_text != nullptr)
+			{
+				SDL_Rect renderQuad = {
+					static_cast<I32>(transformComponent->m_position.x),
+					static_cast<I32>(transformComponent->m_position.y),
+					static_cast<I32>(textComponent->m_text->GetWidth()),
+					static_cast<I32>(textComponent->m_text->GetHeight())
+				};
 
-			SDL_RenderCopy(singletonRenderer->m_renderer, textComponent->m_text->GetTexture(), nullptr, &renderQuad);
+				SDL_RenderCopy(singletonRenderer->m_renderer, textComponent->m_text->GetTexture(), nullptr, &renderQuad);
+			}
 
 			if (singletonRenderer->m_isDebugDraw) {
 				// TODO
