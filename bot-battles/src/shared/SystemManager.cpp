@@ -67,6 +67,18 @@ bool SystemManager::PostUpdate()
 }
 
 //----------------------------------------------------------------------------------------------------
+bool SystemManager::PreRender()
+{
+	bool ret = true;
+
+	for (U32 i = 0; i < m_systems.size() && ret; ++i) {
+		ret = m_systems[i]->PreRender();
+	}
+
+	return ret;
+}
+
+//----------------------------------------------------------------------------------------------------
 bool SystemManager::Render()
 {
     bool ret = true;
@@ -76,6 +88,18 @@ bool SystemManager::Render()
     }
 
     return ret;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool SystemManager::PostRender()
+{
+	bool ret = true;
+
+	for (U32 i = 0; i < m_systems.size() && ret; ++i) {
+		ret = m_systems[i]->PostRender();
+	}
+
+	return ret;
 }
 
 //----------------------------------------------------------------------------------------------------

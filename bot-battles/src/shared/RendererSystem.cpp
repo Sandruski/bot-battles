@@ -21,7 +21,6 @@ RendererSystem::RendererSystem()
 {
     m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
     m_signature |= 1 << static_cast<U16>(ComponentType::SPRITE); // TODO: debug draw should not need having a sprite component!
-    // TODO: maybe have a method for debug draw for each module? Like gui?
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -49,11 +48,20 @@ bool RendererSystem::StartUp()
 }
 
 //----------------------------------------------------------------------------------------------------
+bool RendererSystem::PreRender()
+{
+	std::shared_ptr<SingletonRendererComponent> singletonRenderer = g_game->GetSingletonRendererComponent();
+
+	SDL_SetRenderDrawColor(singletonRenderer->m_renderer, singletonRenderer->m_backgroundColor.r, singletonRenderer->m_backgroundColor.g, singletonRenderer->m_backgroundColor.b, singletonRenderer->m_backgroundColor.a);
+	SDL_RenderClear(singletonRenderer->m_renderer);
+
+	return true;
+}
+
+//----------------------------------------------------------------------------------------------------
 bool RendererSystem::Render()
 {
     std::shared_ptr<SingletonRendererComponent> singletonRenderer = g_game->GetSingletonRendererComponent();
-
-    BeginDraw(*singletonRenderer);
 
     /*
 		1. All level geometry
@@ -64,17 +72,17 @@ bool RendererSystem::Render()
 
     for (auto& entity : m_entities) {
 
-        std::shared_ptr<SpriteComponent> sprite = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
-        std::shared_ptr<TransformComponent> transform = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
+		std::shared_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
+        std::shared_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
 
         SDL_Rect renderQuad = {
-            static_cast<I32>(transform->m_position.x),
-            static_cast<I32>(transform->m_position.y),
-            static_cast<I32>(sprite->m_sprite->GetWidth()),
-            static_cast<I32>(sprite->m_sprite->GetHeight())
+            static_cast<I32>(transformComponent->m_position.x),
+            static_cast<I32>(transformComponent->m_position.y),
+            static_cast<I32>(spriteComponent->m_sprite->GetWidth()),
+            static_cast<I32>(spriteComponent->m_sprite->GetHeight())
         };
 
-        SDL_RenderCopy(singletonRenderer->m_renderer, sprite->m_sprite->GetTexture(), nullptr, &renderQuad);
+        SDL_RenderCopy(singletonRenderer->m_renderer, spriteComponent->m_sprite->GetTexture(), nullptr, &renderQuad);
 
         if (singletonRenderer->m_isDebugDraw) {
             /*
@@ -114,9 +122,17 @@ bool RendererSystem::Render()
         }
     }
 
-    EndDraw(*singletonRenderer);
-
     return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool RendererSystem::PostRender()
+{
+	std::shared_ptr<SingletonRendererComponent> singletonRenderer = g_game->GetSingletonRendererComponent();
+
+	SDL_RenderPresent(singletonRenderer->m_renderer);
+
+	return true;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -128,18 +144,5 @@ bool RendererSystem::ShutDown()
     singletonRenderer->m_renderer = nullptr;
 
     return true;
-}
-
-//----------------------------------------------------------------------------------------------------
-void RendererSystem::BeginDraw(const SingletonRendererComponent& singletonRenderer) const
-{
-    SDL_SetRenderDrawColor(singletonRenderer.m_renderer, singletonRenderer.m_backgroundColor.r, singletonRenderer.m_backgroundColor.g, singletonRenderer.m_backgroundColor.b, singletonRenderer.m_backgroundColor.a);
-    SDL_RenderClear(singletonRenderer.m_renderer);
-}
-
-//----------------------------------------------------------------------------------------------------
-void RendererSystem::EndDraw(const SingletonRendererComponent& singletonRenderer) const
-{
-    SDL_RenderPresent(singletonRenderer.m_renderer);
 }
 }

@@ -20,12 +20,10 @@ public:
     ~RendererSystem() override;
 
     bool StartUp() override;
+	bool PreRender() override;
     bool Render() override;
+	bool PostRender() override;
     bool ShutDown() override;
-
-private:
-    void BeginDraw(const SingletonRendererComponent& singletonRenderer) const;
-    void EndDraw(const SingletonRendererComponent& singletonRenderer) const;
 };
 }
 

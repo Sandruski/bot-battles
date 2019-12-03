@@ -186,10 +186,20 @@ bool Game::DoFrame()
         return false;
     }
 
+	ret = PreRender();
+	if (!ret) {
+		return false;
+	}
+
     ret = Render();
     if (!ret) {
         return false;
     }
+
+	ret = PostRender();
+	if (!ret) {
+		return false;
+	}
 
     EndFrame();
 
@@ -292,6 +302,12 @@ bool Game::PostUpdate()
 }
 
 //----------------------------------------------------------------------------------------------------
+bool Game::PreRender()
+{
+	return m_systemManager->PreRender();
+}
+
+//----------------------------------------------------------------------------------------------------
 bool Game::Render()
 {
     bool ret = m_systemManager->Render();
@@ -305,6 +321,12 @@ bool Game::Render()
     }
 
     return ret;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool Game::PostRender()
+{
+	return m_systemManager->PostRender();
 }
 
 //----------------------------------------------------------------------------------------------------

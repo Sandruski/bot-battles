@@ -22,7 +22,9 @@ public:
     bool PreUpdate();
     bool Update();
     bool PostUpdate();
+	bool PreRender();
     bool Render();
+	bool PostRender();
     bool ShutDown();
 
     void OnNotify(const Event& event);

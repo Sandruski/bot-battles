@@ -72,7 +72,9 @@ private:
     bool PreUpdate();
     bool Update();
     bool PostUpdate();
+	bool PreRender();
     bool Render();
+	bool PostRender();
 
 protected:
     GameConfiguration m_configuration;

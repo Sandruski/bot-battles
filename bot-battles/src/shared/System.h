@@ -38,10 +38,20 @@ public:
         return true;
     }
 
+	virtual bool PreRender()
+	{
+		return true;
+	}
+
     virtual bool Render()
     {
         return true;
     }
+
+	virtual bool PostRender()
+	{
+		return true;
+	}
 
     virtual bool ShutDown()
     {

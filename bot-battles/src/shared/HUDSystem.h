@@ -17,9 +17,7 @@ namespace sand {
 		HUDSystem();
 		~HUDSystem() override;
 
-		bool StartUp() override;
 		bool Render() override;
-		bool ShutDown() override;
 	};
 }
 
