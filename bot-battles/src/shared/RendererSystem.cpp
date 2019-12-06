@@ -40,9 +40,9 @@ bool RendererSystem::StartUp()
         return false;
     }
 
-	std::shared_ptr<FontResource> font = g_game->GetResourceManager().AddResource<FontResource>("Dosis-Regular.ttf", FONTS_DIR);
-	font->SetSize(12);
-	singletonRenderer->m_font = font;
+    std::shared_ptr<FontResource> font = g_game->GetResourceManager().AddResource<FontResource>("Dosis-Regular.ttf", FONTS_DIR);
+    font->SetSize(30);
+    singletonRenderer->m_font = font;
 
     return true;
 }
@@ -50,12 +50,12 @@ bool RendererSystem::StartUp()
 //----------------------------------------------------------------------------------------------------
 bool RendererSystem::PreRender()
 {
-	std::shared_ptr<SingletonRendererComponent> singletonRenderer = g_game->GetSingletonRendererComponent();
+    std::shared_ptr<SingletonRendererComponent> singletonRenderer = g_game->GetSingletonRendererComponent();
 
-	SDL_SetRenderDrawColor(singletonRenderer->m_renderer, singletonRenderer->m_backgroundColor.r, singletonRenderer->m_backgroundColor.g, singletonRenderer->m_backgroundColor.b, singletonRenderer->m_backgroundColor.a);
-	SDL_RenderClear(singletonRenderer->m_renderer);
+    SDL_SetRenderDrawColor(singletonRenderer->m_renderer, singletonRenderer->m_backgroundColor.r, singletonRenderer->m_backgroundColor.g, singletonRenderer->m_backgroundColor.b, singletonRenderer->m_backgroundColor.a);
+    SDL_RenderClear(singletonRenderer->m_renderer);
 
-	return true;
+    return true;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -72,20 +72,19 @@ bool RendererSystem::Render()
 
     for (auto& entity : m_entities) {
 
-		std::shared_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
+        std::shared_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
         std::shared_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
 
-		if (spriteComponent->m_sprite != nullptr)
-		{
-			SDL_Rect renderQuad = {
-				static_cast<I32>(transformComponent->m_position.x),
-				static_cast<I32>(transformComponent->m_position.y),
-				static_cast<I32>(spriteComponent->m_sprite->GetWidth()),
-				static_cast<I32>(spriteComponent->m_sprite->GetHeight())
-			};
+        if (spriteComponent->m_sprite != nullptr) {
+            SDL_Rect renderQuad = {
+                static_cast<I32>(transformComponent->m_position.x),
+                static_cast<I32>(transformComponent->m_position.y),
+                static_cast<I32>(spriteComponent->m_sprite->GetWidth()),
+                static_cast<I32>(spriteComponent->m_sprite->GetHeight())
+            };
 
-			SDL_RenderCopy(singletonRenderer->m_renderer, spriteComponent->m_sprite->GetTexture(), nullptr, &renderQuad);
-		}
+            SDL_RenderCopy(singletonRenderer->m_renderer, spriteComponent->m_sprite->GetTexture(), nullptr, &renderQuad);
+        }
 
         if (singletonRenderer->m_isDebugDraw) {
             /*
@@ -131,11 +130,11 @@ bool RendererSystem::Render()
 //----------------------------------------------------------------------------------------------------
 bool RendererSystem::PostRender()
 {
-	std::shared_ptr<SingletonRendererComponent> singletonRenderer = g_game->GetSingletonRendererComponent();
+    std::shared_ptr<SingletonRendererComponent> singletonRenderer = g_game->GetSingletonRendererComponent();
 
-	SDL_RenderPresent(singletonRenderer->m_renderer);
+    SDL_RenderPresent(singletonRenderer->m_renderer);
 
-	return true;
+    return true;
 }
 
 //----------------------------------------------------------------------------------------------------

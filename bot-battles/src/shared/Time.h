@@ -22,6 +22,11 @@ public:
         return static_cast<F32>(m_dt);
     }
 
+    F32 GetFps() const
+    {
+        return static_cast<F32>(m_fps);
+    }
+
     F32 GetTime() const;
 
 private:

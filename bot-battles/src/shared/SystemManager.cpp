@@ -69,13 +69,13 @@ bool SystemManager::PostUpdate()
 //----------------------------------------------------------------------------------------------------
 bool SystemManager::PreRender()
 {
-	bool ret = true;
+    bool ret = true;
 
-	for (U32 i = 0; i < m_systems.size() && ret; ++i) {
-		ret = m_systems[i]->PreRender();
-	}
+    for (U32 i = 0; i < m_systems.size() && ret; ++i) {
+        ret = m_systems[i]->PreRender();
+    }
 
-	return ret;
+    return ret;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -93,13 +93,13 @@ bool SystemManager::Render()
 //----------------------------------------------------------------------------------------------------
 bool SystemManager::PostRender()
 {
-	bool ret = true;
+    bool ret = true;
 
-	for (U32 i = 0; i < m_systems.size() && ret; ++i) {
-		ret = m_systems[i]->PostRender();
-	}
+    for (U32 i = 0; i < m_systems.size() && ret; ++i) {
+        ret = m_systems[i]->PostRender();
+    }
 
-	return ret;
+    return ret;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -132,7 +132,7 @@ void SystemManager::OnNotify(const Event& event)
 
             Signature systemSignature = system->GetSignature();
             Signature entitySignature = event.entity.signature;
-            if (systemSignature & entitySignature) {
+            if ((systemSignature & entitySignature) == systemSignature) {
                 system->RegisterEntity(event.entity.entity);
             } else {
                 system->DeRegisterEntity(event.entity.entity);

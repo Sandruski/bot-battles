@@ -1,54 +1,84 @@
 #include "HUDSystem.h"
 
-#include "Game.h"
 #include "ComponentManager.h"
+#include "EntityManager.h"
+#include "Game.h"
+#include "ResourceManager.h"
 #include "SingletonRendererComponent.h"
-#include "TransformComponent.h"
+#include "SingletonWindowComponent.h"
 #include "TextComponent.h"
+#include "TransformComponent.h"
 
-namespace sand
+namespace sand {
+
+//----------------------------------------------------------------------------------------------------
+HUDSystem::HUDSystem()
 {
+    m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
+    m_signature |= 1 << static_cast<U16>(ComponentType::TEXT);
+}
 
-	//----------------------------------------------------------------------------------------------------
-	HUDSystem::HUDSystem()
-	{
-		m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
-		m_signature |= 1 << static_cast<U16>(ComponentType::TEXT);
-	}
+//----------------------------------------------------------------------------------------------------
+HUDSystem::~HUDSystem()
+{
+}
 
-	//----------------------------------------------------------------------------------------------------
-	HUDSystem::~HUDSystem()
-	{
+//----------------------------------------------------------------------------------------------------
+bool HUDSystem::StartUp()
+{
+    m_fps = g_game->GetEntityManager().AddEntity();
+    g_game->GetComponentManager().AddComponent<TransformComponent>(m_fps);
+    std::shared_ptr<TextResource> textResource = g_game->GetResourceManager().AddResource<TextResource>("", "");
+    std::shared_ptr<SingletonRendererComponent> singletonRenderer = g_game->GetSingletonRendererComponent();
+    textResource->SetFont(singletonRenderer->m_font);
+    textResource->SetColor(Green);
+    std::shared_ptr<TextComponent> textComponent = g_game->GetComponentManager().AddComponent<TextComponent>(m_fps);
+    textComponent->m_text = textResource;
 
-	}
+    return true;
+}
 
-	//----------------------------------------------------------------------------------------------------
-	bool HUDSystem::Render()
-	{
-		std::shared_ptr<SingletonRendererComponent> singletonRenderer = g_game->GetSingletonRendererComponent();
+//----------------------------------------------------------------------------------------------------
+bool HUDSystem::PreUpdate()
+{
+    std::shared_ptr<TextComponent> textComponent = g_game->GetComponentManager().GetComponent<TextComponent>(m_fps);
+    std::string fps = std::to_string(static_cast<U32>(Time::GetInstance().GetFps()));
+    textComponent->m_text->SetText(fps.c_str());
+    textComponent->m_text->ReLoad();
 
-		for (auto& entity : m_entities) {
+    std::shared_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(m_fps);
+    std::shared_ptr<SingletonWindowComponent> singletonWindow = g_game->GetSingletonWindowComponent();
+    transformComponent->m_position.x = singletonWindow->m_width - textComponent->m_text->GetWidth();
 
-			std::shared_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
-			std::shared_ptr<TextComponent> textComponent = g_game->GetComponentManager().GetComponent<TextComponent>(entity);
+    return true;
+}
 
-			if (textComponent->m_text != nullptr)
-			{
-				SDL_Rect renderQuad = {
-					static_cast<I32>(transformComponent->m_position.x),
-					static_cast<I32>(transformComponent->m_position.y),
-					static_cast<I32>(textComponent->m_text->GetWidth()),
-					static_cast<I32>(textComponent->m_text->GetHeight())
-				};
+//----------------------------------------------------------------------------------------------------
+bool HUDSystem::Render()
+{
+    std::shared_ptr<SingletonRendererComponent> singletonRenderer = g_game->GetSingletonRendererComponent();
 
-				SDL_RenderCopy(singletonRenderer->m_renderer, textComponent->m_text->GetTexture(), nullptr, &renderQuad);
-			}
+    for (auto& entity : m_entities) {
 
-			if (singletonRenderer->m_isDebugDraw) {
-				// TODO
-			}
-		}
+        std::shared_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
+        std::shared_ptr<TextComponent> textComponent = g_game->GetComponentManager().GetComponent<TextComponent>(entity);
 
-		return true;
-	}
+        if (textComponent->m_text != nullptr) {
+            SDL_Rect renderQuad = {
+                static_cast<I32>(transformComponent->m_position.x),
+                static_cast<I32>(transformComponent->m_position.y),
+                static_cast<I32>(textComponent->m_text->GetWidth()),
+                static_cast<I32>(textComponent->m_text->GetHeight())
+            };
+
+            SDL_RenderCopy(singletonRenderer->m_renderer, textComponent->m_text->GetTexture(), nullptr, &renderQuad);
+        }
+
+        if (singletonRenderer->m_isDebugDraw) {
+            // TODO
+        }
+    }
+
+    return true;
+}
 }

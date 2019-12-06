@@ -5,20 +5,25 @@
 
 namespace sand {
 
-	//----------------------------------------------------------------------------------------------------
-	class HUDSystem : public System {
-	public:
-		static SystemType GetType()
-		{
-			return SystemType::HUD;
-		}
+//----------------------------------------------------------------------------------------------------
+class HUDSystem : public System {
+public:
+    static SystemType GetType()
+    {
+        return SystemType::HUD;
+    }
 
-	public:
-		HUDSystem();
-		~HUDSystem() override;
+public:
+    HUDSystem();
+    ~HUDSystem() override;
 
-		bool Render() override;
-	};
+    bool StartUp() override;
+    bool PreUpdate() override;
+    bool Render() override;
+
+private:
+    Entity m_fps;
+};
 }
 
 #endif
