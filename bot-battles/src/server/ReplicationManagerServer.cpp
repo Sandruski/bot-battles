@@ -8,8 +8,8 @@
 #include "MemoryStream.h"
 #include "ReplicationCommand.h"
 #include "SpriteComponent.h"
-#include "TransformComponent.h"
 #include "TextComponent.h"
+#include "TransformComponent.h"
 
 namespace sand {
 
@@ -25,7 +25,7 @@ ReplicationManagerServer::~ReplicationManagerServer()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool ReplicationManagerServer::CreateCommand(NetworkID networkID, U32 dirtyState)
+bool ReplicationManagerServer::AddCommand(NetworkID networkID, U32 dirtyState)
 {
     auto it = m_networkIDToReplicationCommand.find(networkID);
     if (it != m_networkIDToReplicationCommand.end()) {
@@ -33,13 +33,46 @@ bool ReplicationManagerServer::CreateCommand(NetworkID networkID, U32 dirtyState
         return false;
     }
 
-    m_networkIDToReplicationCommand[networkID] = ReplicationCommand(dirtyState);
+    m_networkIDToReplicationCommand[networkID] = ReplicationCommand(ReplicationActionType::CREATE, dirtyState);
 
     return true;
 }
 
 //----------------------------------------------------------------------------------------------------
-void ReplicationManagerServer::RemoveCommand(NetworkID networkID)
+bool ReplicationManagerServer::RemoveCommand(NetworkID networkID)
+{
+    auto it = m_networkIDToReplicationCommand.find(networkID);
+    if (it == m_networkIDToReplicationCommand.end()) {
+        WLOG("NetworkID %u is not registered", networkID);
+        return false;
+    }
+
+    m_networkIDToReplicationCommand.erase(it);
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+void ReplicationManagerServer::SetCreate(NetworkID networkID, U32 dirtyState)
+{
+    ReplicationCommand& replicationCommand = m_networkIDToReplicationCommand.at(networkID);
+    if (replicationCommand.m_replicationActionType != ReplicationActionType::REMOVE) {
+        replicationCommand.m_replicationActionType = ReplicationActionType::CREATE;
+        replicationCommand.AddDirtyState(dirtyState);
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
+void ReplicationManagerServer::SetUpdate(NetworkID networkID)
+{
+    ReplicationCommand& replicationCommand = m_networkIDToReplicationCommand.at(networkID);
+    if (replicationCommand.m_replicationActionType != ReplicationActionType::REMOVE) {
+        replicationCommand.m_replicationActionType = ReplicationActionType::UPDATE;
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
+void ReplicationManagerServer::SetRemove(NetworkID networkID)
 {
     m_networkIDToReplicationCommand.at(networkID).m_replicationActionType = ReplicationActionType::REMOVE;
 }
@@ -57,19 +90,21 @@ void ReplicationManagerServer::Write(OutputMemoryStream& outputStream)
 
         ReplicationCommand& replicationCommand = pair.second;
         if (replicationCommand.HasDirtyState()) {
+            ReplicationActionType replicationActionType = replicationCommand.m_replicationActionType;
+            if (replicationActionType == ReplicationActionType::NONE) {
+                continue;
+            }
+
             NetworkID networkID = pair.first;
             outputStream.Write(networkID);
-
-            ReplicationActionType replicationActionType = replicationCommand.m_replicationActionType;
             outputStream.Write(replicationActionType, 2);
 
             U32 writtenState = 0;
 
             switch (replicationActionType) {
-
             case ReplicationActionType::CREATE: {
                 writtenState = WriteCreateOrUpdateAction(outputStream, networkID, replicationCommand.GetDirtyState());
-                replicationActionType = ReplicationActionType::UPDATE;
+                replicationActionType = ReplicationActionType::NONE;
                 break;
             }
 
@@ -79,7 +114,7 @@ void ReplicationManagerServer::Write(OutputMemoryStream& outputStream)
             }
 
             case ReplicationActionType::REMOVE: {
-                replicationActionType = ReplicationActionType::UPDATE;
+                replicationActionType = ReplicationActionType::NONE;
                 break;
             }
 
@@ -125,12 +160,12 @@ U32 ReplicationManagerServer::WriteCreateOrUpdateAction(OutputMemoryStream& outp
         writtenState |= spriteComponent->Write(outputStream, dirtyState);
     }
 
-	U16 hasText = 1 << static_cast<std::size_t>(ComponentType::TEXT);
-	const bool hasSignatureText = signature & hasText;
-	if (hasSignatureText) {
-		std::shared_ptr<TextComponent> textComponent = g_gameServer->GetComponentManager().GetComponent<TextComponent>(entity);
-		writtenState |= textComponent->Write(outputStream, dirtyState);
-	}
+    U16 hasText = 1 << static_cast<std::size_t>(ComponentType::TEXT);
+    const bool hasSignatureText = signature & hasText;
+    if (hasSignatureText) {
+        std::shared_ptr<TextComponent> textComponent = g_gameServer->GetComponentManager().GetComponent<TextComponent>(entity);
+        writtenState |= textComponent->Write(outputStream, dirtyState);
+    }
 
     // TODO: write total size of things written
 

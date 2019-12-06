@@ -196,12 +196,12 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugClient|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <TreatWarningAsError>false</TreatWarningAsError>
+      <TreatWarningAsError>true</TreatWarningAsError>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>..\dependencies\include\SDL2;..\shared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>
@@ -346,6 +346,8 @@
     <ClCompile Include="InputSystemServer.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="NavigationSystem.cpp" />
+    <ClCompile Include="ReplicationDeliveryManagerServer.cpp" />
+    <ClCompile Include="ReplicationDeliveryManagerServer.h" />
     <ClCompile Include="ReplicationManagerServer.cpp" />
     <ClCompile Include="ServerSystem.cpp" />
     <ClCompile Include="SingletonServerComponent.cpp" />

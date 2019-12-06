@@ -4,6 +4,7 @@
 namespace sand {
 
 enum class ReplicationActionType : U16 {
+    NONE,
     CREATE,
     UPDATE,
     REMOVE,

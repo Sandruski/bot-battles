@@ -76,7 +76,7 @@ void ServerSystem::OnNotify(const Event& event)
         std::shared_ptr<ClientProxy> clientProxy = singletonServer->GetClientProxyFromPlayerID(event.server.playerID);
         const std::unordered_map<NetworkID, Entity>& networkIDToEntity = g_gameServer->GetLinkingContext().GetNetworkIDToEntityMap();
         for (const auto& pair : networkIDToEntity) {
-            clientProxy->GetReplicationManager().CreateCommand(pair.first, static_cast<U32>(ComponentMemberType::ALL));
+            clientProxy->GetReplicationManager().AddCommand(pair.first, static_cast<U32>(ComponentMemberType::ALL));
         }
         break;
     }
@@ -86,7 +86,7 @@ void ServerSystem::OnNotify(const Event& event)
         std::shared_ptr<SingletonServerComponent> singletonServer = g_gameServer->GetSingletonServerComponent();
         const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = singletonServer->GetPlayerIDToClientProxyMap();
         for (const auto& pair : playerIDToClientProxy) {
-            pair.second->GetReplicationManager().CreateCommand(networkID, static_cast<U32>(ComponentMemberType::ALL));
+            pair.second->GetReplicationManager().AddCommand(networkID, static_cast<U32>(ComponentMemberType::ALL));
         }
         break;
     }
@@ -264,17 +264,16 @@ void ServerSystem::ReceiveInputPacket(SingletonServerComponent& singletonServer,
 
     U32 moveCount = 0;
     inputStream.Read(moveCount, GetRequiredBits<MAX_MOVES_PER_PACKET>::value);
-	if (moveCount > 0)
-	{
-		Move move;
-		while (moveCount > 0) {
-			move.Read(inputStream);
-			clientProxy->AddMove(move);
-			--moveCount;
-		}
+    if (moveCount > 0) {
+        Move move;
+        while (moveCount > 0) {
+            move.Read(inputStream);
+            clientProxy->AddMove(move);
+            --moveCount;
+        }
 
-		clientProxy->m_isLastMoveTimestampDirty = true;
-	}
+        clientProxy->m_isLastMoveTimestampDirty = true;
+    }
 }
 
 //----------------------------------------------------------------------------------------------------

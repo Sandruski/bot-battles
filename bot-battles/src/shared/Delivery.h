@@ -3,6 +3,8 @@
 
 namespace sand {
 
+class ReplicationDeliveryManagerServer;
+
 //----------------------------------------------------------------------------------------------------
 class Delivery {
 public:
@@ -18,6 +20,9 @@ public:
     {
         return m_timestamp;
     }
+
+public:
+    std::shared_ptr<ReplicationDeliveryManagerServer> m_replicationDeliveryManager;
 
 private:
     SequenceNumber m_sequenceNumber;

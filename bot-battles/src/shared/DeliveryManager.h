@@ -21,6 +21,11 @@ public:
 
     void ProcessTimedOutPackets();
 
+    const std::deque<Delivery>& GetDeliveries() const
+    {
+        return m_deliveries;
+    }
+
 private:
     Delivery& WriteSequenceNumber(OutputMemoryStream& outputStream);
     bool ReadSequenceNumber(InputMemoryStream& inputStream);

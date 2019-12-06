@@ -12,7 +12,7 @@ class InputMemoryStream;
 class ReplicationCommand {
 public:
     ReplicationCommand();
-    ReplicationCommand(U32 dirtyState);
+    ReplicationCommand(ReplicationActionType replicationAction, U32 dirtyState);
     ~ReplicationCommand();
 
     void AddDirtyState(U32 dirtyState);

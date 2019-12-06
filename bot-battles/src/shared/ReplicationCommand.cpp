@@ -10,8 +10,8 @@ ReplicationCommand::ReplicationCommand()
 }
 
 //----------------------------------------------------------------------------------------------------
-ReplicationCommand::ReplicationCommand(U32 dirtyState)
-    : m_replicationActionType(ReplicationActionType::CREATE)
+ReplicationCommand::ReplicationCommand(ReplicationActionType replicationAction, U32 dirtyState)
+    : m_replicationActionType(replicationAction)
     , m_dirtyState(dirtyState)
 {
 }
