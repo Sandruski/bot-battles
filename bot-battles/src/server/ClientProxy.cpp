@@ -1,5 +1,8 @@
 #include "ClientProxy.h"
 
+#include "DeliveryManagerServer.h"
+#include "ReplicationManagerServer.h"
+
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
@@ -9,15 +12,16 @@ ClientProxy::ClientProxy()
 
 //----------------------------------------------------------------------------------------------------
 ClientProxy::ClientProxy(const SocketAddress& socketAddress, const char* name)
-    : m_replicationManagerServer(nullptr)
-    , m_deliveryManagerServer()
+    : m_replicationManager(nullptr)
+    , m_deliveryManager(nullptr)
+    , m_isLastMoveTimestampDirty(true)
     , m_socketAddress(socketAddress)
     , m_name(name)
     , m_unprocessedMoves()
     , m_lastPacketTime(0.0f)
-    , m_isLastMoveTimestampDirty(true)
 {
-    m_replicationManagerServer = std::make_shared<ReplicationManagerServer>();
+    m_replicationManager = std::make_shared<ReplicationManagerServer>();
+    m_deliveryManager = std::make_shared<DeliveryManagerServer>();
 }
 
 //----------------------------------------------------------------------------------------------------

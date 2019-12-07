@@ -5,35 +5,37 @@
 #include "MemoryStream.h"
 #include "ResourceManager.h"
 
-namespace sand
+namespace sand {
+//----------------------------------------------------------------------------------------------------
+SpriteComponent::SpriteComponent()
+    : m_sprite(nullptr)
 {
-	//----------------------------------------------------------------------------------------------------
-	SpriteComponent::SpriteComponent() : m_sprite(nullptr) {}
+}
 
-	//----------------------------------------------------------------------------------------------------
-	SpriteComponent::~SpriteComponent() {}
+//----------------------------------------------------------------------------------------------------
+SpriteComponent::~SpriteComponent() { }
 
-	//----------------------------------------------------------------------------------------------------
-	U32 SpriteComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) const
-	{
-		U32 writtenState = 0;
+//----------------------------------------------------------------------------------------------------
+U32 SpriteComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) const
+{
+    U32 writtenState = 0;
 
-		if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_FILE)) {
-			std::string file = m_sprite->GetFile();
-			outputStream.Write(file);
-			writtenState |= static_cast<U32>(ComponentMemberType::SPRITE_FILE);
-		}
+    if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_FILE)) {
+        std::string file = m_sprite->GetFile();
+        outputStream.Write(file);
+        writtenState |= static_cast<U32>(ComponentMemberType::SPRITE_FILE);
+    }
 
-		return writtenState;
-	}
+    return writtenState;
+}
 
-	//----------------------------------------------------------------------------------------------------
-	void SpriteComponent::Read(InputMemoryStream& inputStream, U32 dirtyState)
-	{
-		if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_FILE)) {
-			std::string file;
-			inputStream.Read(file);
-			m_sprite = g_game->GetResourceManager().AddResource<SpriteResource>(file.c_str(), TEXTURES_DIR);
-		}
-	}
+//----------------------------------------------------------------------------------------------------
+void SpriteComponent::Read(InputMemoryStream& inputStream, U32 dirtyState)
+{
+    if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_FILE)) {
+        std::string file;
+        inputStream.Read(file);
+        m_sprite = g_game->GetResourceManager().AddResource<SpriteResource>(file.c_str(), TEXTURES_DIR, true);
+    }
+}
 }

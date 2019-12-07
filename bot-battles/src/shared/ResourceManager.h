@@ -16,7 +16,7 @@ public:
     bool ShutDown();
 
     template <class T>
-    std::shared_ptr<T> AddResource(const char* file, const char* dir);
+    std::shared_ptr<T> AddResource(const char* file, const char* dir, bool hasPath);
     template <class T>
     U32 RemoveResource(U32 id);
     void RemoveAllResources();
@@ -33,12 +33,12 @@ private:
 
 //----------------------------------------------------------------------------------------------------
 template <class T>
-inline std::shared_ptr<T> ResourceManager::AddResource(const char* file, const char* dir)
+inline std::shared_ptr<T> ResourceManager::AddResource(const char* file, const char* dir, bool hasPath)
 {
     static_assert(std::is_base_of<Resource, T>::value, "T is not derived from Resource");
     assert(file != nullptr && dir != nullptr);
 
-    std::shared_ptr<T> resource = GetResourceByFile<T>(file);
+    std::shared_ptr<T> resource = hasPath ? GetResourceByFile<T>(file) : nullptr;
     if (resource != nullptr) {
         resource->IncreaseReferences();
         return resource;

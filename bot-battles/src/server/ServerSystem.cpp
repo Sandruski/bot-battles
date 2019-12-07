@@ -7,10 +7,9 @@
 #include "LinkingContext.h"
 #include "MemoryStream.h"
 #include "MessageTypes.h"
-#include "Move.h"
+#include "ReplicationManagerServer.h"
 #include "ReplicationResultManager.h"
 #include "SingletonServerComponent.h"
-#include "SocketAddress.h"
 #include "UDPSocket.h"
 
 namespace sand {
@@ -77,7 +76,7 @@ void ServerSystem::OnNotify(const Event& event)
         std::shared_ptr<ClientProxy> clientProxy = singletonServer->GetClientProxyFromPlayerID(event.server.playerID);
         const std::unordered_map<NetworkID, Entity>& networkIDToEntity = g_gameServer->GetLinkingContext().GetNetworkIDToEntityMap();
         for (const auto& pair : networkIDToEntity) {
-            clientProxy->m_replicationManagerServer->AddCommand(pair.first, static_cast<U32>(ComponentMemberType::ALL));
+            clientProxy->m_replicationManager->AddCommand(pair.first, static_cast<U32>(ComponentMemberType::ALL));
         }
         break;
     }
@@ -87,7 +86,7 @@ void ServerSystem::OnNotify(const Event& event)
         std::shared_ptr<SingletonServerComponent> singletonServer = g_gameServer->GetSingletonServerComponent();
         const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = singletonServer->GetPlayerIDToClientProxyMap();
         for (const auto& pair : playerIDToClientProxy) {
-            pair.second->m_replicationManagerServer->AddCommand(networkID, static_cast<U32>(ComponentMemberType::ALL));
+            pair.second->m_replicationManager->AddCommand(networkID, static_cast<U32>(ComponentMemberType::ALL));
         }
         break;
     }
@@ -97,7 +96,7 @@ void ServerSystem::OnNotify(const Event& event)
         std::shared_ptr<SingletonServerComponent> singletonServer = g_gameServer->GetSingletonServerComponent();
         const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = singletonServer->GetPlayerIDToClientProxyMap();
         for (const auto& pair : playerIDToClientProxy) {
-            pair.second->m_replicationManagerServer->AddDirtyState(networkID, event.component.dirtyState);
+            pair.second->m_replicationManager->AddDirtyState(networkID, event.component.dirtyState);
         }
         break;
     }
@@ -114,7 +113,7 @@ void ServerSystem::SendOutgoingPackets(SingletonServerComponent& singletonServer
     const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = singletonServer.GetPlayerIDToClientProxyMap();
     for (const auto& pair : playerIDToClientProxy) {
         std::shared_ptr<ClientProxy> clientProxy = pair.second;
-        clientProxy->GetDeliveryManagerServer().ProcessTimedOutPackets();
+        clientProxy->m_deliveryManager->ProcessTimedOutPackets();
 
         //if (clientProxy->m_isLastMoveTimestampDirty) {
         SendStatePacket(singletonServer, clientProxy);
@@ -146,9 +145,9 @@ void ServerSystem::SendStatePacket(const SingletonServerComponent& singletonServ
 {
     OutputMemoryStream statePacket;
     statePacket.Write(ServerMessageType::STATE);
-    Delivery& delivery = clientProxy->GetDeliveryManagerServer().WriteState(statePacket);
-    delivery.m_replicationResultManager = std::make_shared<ReplicationResultManager>(clientProxy->m_replicationManagerServer);
-    clientProxy->m_replicationManagerServer->Write(statePacket, *delivery.m_replicationResultManager);
+    Delivery& delivery = clientProxy->m_deliveryManager->WriteState(statePacket);
+    delivery.m_replicationResultManager = std::make_shared<ReplicationResultManager>(clientProxy->m_replicationManager);
+    clientProxy->m_replicationManager->Write(statePacket, *delivery.m_replicationResultManager);
 
     const char* name = clientProxy->GetName();
     ILOG("Sending state packet to player %s...", name);
@@ -255,7 +254,7 @@ void ServerSystem::ReceiveInputPacket(SingletonServerComponent& singletonServer,
 {
     inputStream.Read(playerID);
     std::shared_ptr<ClientProxy> clientProxy = singletonServer.GetClientProxyFromPlayerID(playerID);
-    const bool isValid = clientProxy->GetDeliveryManagerServer().ReadState(inputStream);
+    const bool isValid = clientProxy->m_deliveryManager->ReadState(inputStream);
     if (clientProxy == nullptr || !isValid) {
         ILOG("Input packet received from unknown player");
         playerID = INVALID_PLAYER_ID;

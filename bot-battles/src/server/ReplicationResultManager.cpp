@@ -9,7 +9,7 @@
 namespace sand {
 //----------------------------------------------------------------------------------------------------
 ReplicationResultManager::ReplicationResultManager(std::shared_ptr<ReplicationManagerServer> replicationManagerServer)
-    : m_replicationManagerServer(replicationManagerServer) // TODO: std move
+    : m_replicationManagerServer(std::move(replicationManagerServer)) // TODO: std move
     , m_networkIDToReplicationCommand()
 {
 }

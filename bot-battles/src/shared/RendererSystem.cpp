@@ -40,7 +40,7 @@ bool RendererSystem::StartUp()
         return false;
     }
 
-    std::shared_ptr<FontResource> font = g_game->GetResourceManager().AddResource<FontResource>("Dosis-Regular.ttf", FONTS_DIR);
+    std::shared_ptr<FontResource> font = g_game->GetResourceManager().AddResource<FontResource>("Dosis-Regular.ttf", FONTS_DIR, true);
     font->SetSize(30);
     singletonRenderer->m_font = font;
 

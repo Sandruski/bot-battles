@@ -1,12 +1,13 @@
 #ifndef __CLIENT_PROXY_H__
 #define __CLIENT_PROXY_H__
 
-#include "DeliveryManagerServer.h"
 #include "Move.h"
-#include "ReplicationManagerServer.h"
 #include "SocketAddress.h"
 
 namespace sand {
+
+class ReplicationManagerServer;
+class DeliveryManagerServer;
 
 //----------------------------------------------------------------------------------------------------
 class ClientProxy {
@@ -29,11 +30,6 @@ public:
         return m_name.c_str();
     }
 
-    DeliveryManagerServer& GetDeliveryManagerServer()
-    {
-        return m_deliveryManagerServer;
-    }
-
     const std::deque<Move>& GetUnprocessedMoves()
     {
         return m_unprocessedMoves;
@@ -45,12 +41,12 @@ public:
     }
 
 public:
+    std::shared_ptr<ReplicationManagerServer> m_replicationManager;
+    std::shared_ptr<DeliveryManagerServer> m_deliveryManager;
+
     bool m_isLastMoveTimestampDirty;
-    std::shared_ptr<ReplicationManagerServer> m_replicationManagerServer;
 
 private:
-    DeliveryManagerServer m_deliveryManagerServer;
-
     SocketAddress m_socketAddress;
     std::string m_name;
 

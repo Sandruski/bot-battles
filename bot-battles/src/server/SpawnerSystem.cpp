@@ -6,12 +6,12 @@
 #include "GameServer.h"
 #include "LinkingContext.h"
 #include "ResourceManager.h"
+#include "SingletonRendererComponent.h"
 #include "SingletonServerComponent.h"
 #include "SpriteComponent.h"
-#include "TransformComponent.h"
 #include "TextComponent.h"
 #include "TextResource.h"
-#include "SingletonRendererComponent.h"
+#include "TransformComponent.h"
 
 namespace sand {
 
@@ -51,18 +51,18 @@ Entity SpawnerSystem::SpawnPlayerEntity() const
     std::shared_ptr<TransformComponent> transform = g_gameServer->GetComponentManager().AddComponent<TransformComponent>(character);
     transform->m_position = Vec2(225.3f, 150.3f);
 
-    std::shared_ptr<SpriteResource> spriteResource = g_game->GetResourceManager().AddResource<SpriteResource>("character.png", "../../data/textures/");
+    std::shared_ptr<SpriteResource> spriteResource = g_game->GetResourceManager().AddResource<SpriteResource>("character.png", "../../data/textures/", true);
     std::shared_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().AddComponent<SpriteComponent>(character);
-	spriteComponent->m_sprite = spriteResource;
+    spriteComponent->m_sprite = spriteResource;
 
-	std::shared_ptr<TextResource> textResource = g_game->GetResourceManager().AddResource<TextResource>("", "");
-	std::shared_ptr<SingletonRendererComponent> singletonRenderer = g_game->GetSingletonRendererComponent();
-	textResource->SetFont(singletonRenderer->m_font);
-	textResource->SetText(spriteResource->GetFile());
-	textResource->SetColor(Red);
-	textResource->ReLoad();
-	std::shared_ptr<TextComponent> textComponent = g_gameServer->GetComponentManager().AddComponent<TextComponent>(character);
-	textComponent->m_text = textResource;
+    std::shared_ptr<TextResource> textResource = g_game->GetResourceManager().AddResource<TextResource>("", "", false);
+    std::shared_ptr<SingletonRendererComponent> singletonRenderer = g_game->GetSingletonRendererComponent();
+    textResource->SetFont(singletonRenderer->m_font);
+    textResource->SetText(spriteResource->GetFile());
+    textResource->SetColor(Red);
+    textResource->ReLoad();
+    std::shared_ptr<TextComponent> textComponent = g_gameServer->GetComponentManager().AddComponent<TextComponent>(character);
+    textComponent->m_text = textResource;
 
     g_gameServer->GetComponentManager().AddComponent<InputComponent>(character);
 

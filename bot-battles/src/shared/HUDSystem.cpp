@@ -28,7 +28,7 @@ bool HUDSystem::StartUp()
 {
     m_fps = g_game->GetEntityManager().AddEntity();
     g_game->GetComponentManager().AddComponent<TransformComponent>(m_fps);
-    std::shared_ptr<TextResource> textResource = g_game->GetResourceManager().AddResource<TextResource>("", "");
+    std::shared_ptr<TextResource> textResource = g_game->GetResourceManager().AddResource<TextResource>("", "", false);
     std::shared_ptr<SingletonRendererComponent> singletonRenderer = g_game->GetSingletonRendererComponent();
     textResource->SetFont(singletonRenderer->m_font);
     textResource->SetColor(Green);
