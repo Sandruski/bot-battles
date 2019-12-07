@@ -88,34 +88,20 @@ void ReplicationManagerServer::AddDirtyState(NetworkID networkID, U32 dirtyState
 void ReplicationManagerServer::Write(OutputMemoryStream& outputStream, ReplicationResultManager& replicationResultManager)
 {
     for (auto& pair : m_networkIDToReplicationCommand) {
-
         ReplicationCommand& replicationCommand = pair.second;
-        if (replicationCommand.HasDirtyState()) {
-            ReplicationActionType replicationActionType = replicationCommand.m_replicationActionType;
-            if (replicationActionType == ReplicationActionType::NONE) {
-                continue;
-            }
-
+        const bool hasDirtyState = replicationCommand.HasDirtyState();
+        const bool hasReplicationAction = replicationCommand.m_replicationActionType != ReplicationActionType::NONE;
+        if (hasDirtyState && hasReplicationAction) {
             NetworkID networkID = pair.first;
             outputStream.Write(networkID);
-            outputStream.Write(replicationActionType, 2);
+            outputStream.Write(replicationCommand.m_replicationActionType, 2);
 
             U32 writtenState = 0;
 
-            switch (replicationActionType) {
-            case ReplicationActionType::CREATE: {
-                writtenState = WriteCreateOrUpdateAction(outputStream, networkID, replicationCommand.GetDirtyState());
-                replicationActionType = ReplicationActionType::NONE;
-                break;
-            }
-
+            switch (replicationCommand.m_replicationActionType) {
+            case ReplicationActionType::CREATE:
             case ReplicationActionType::UPDATE: {
                 writtenState = WriteCreateOrUpdateAction(outputStream, networkID, replicationCommand.GetDirtyState());
-                break;
-            }
-
-            case ReplicationActionType::REMOVE: {
-                replicationActionType = ReplicationActionType::NONE;
                 break;
             }
 
@@ -128,6 +114,11 @@ void ReplicationManagerServer::Write(OutputMemoryStream& outputStream, Replicati
             replicationResultManager.AddDelivery(networkID, replicationCommand);
 
             replicationCommand.RemoveDirtyState(writtenState);
+
+            if (replicationCommand.m_replicationActionType == ReplicationActionType::CREATE
+                || replicationCommand.m_replicationActionType == ReplicationActionType::REMOVE) {
+                replicationCommand.m_replicationActionType = ReplicationActionType::NONE;
+            }
         }
     }
 }

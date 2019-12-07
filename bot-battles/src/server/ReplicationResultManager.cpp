@@ -128,7 +128,9 @@ void ReplicationResultManager::HandleUpdateDeliveryFailure(NetworkID networkID, 
             }
         }
 
-        m_replicationManagerServer->AddDirtyState(networkID, dirtyState);
+        if (dirtyState > 0) {
+            m_replicationManagerServer->AddDirtyState(networkID, dirtyState);
+        }
     }
 }
 
