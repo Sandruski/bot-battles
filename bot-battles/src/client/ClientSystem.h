@@ -29,11 +29,14 @@ private:
     void SendOutgoingPackets(SingletonClientComponent& singletonClient) const;
     void UpdateSendHelloPacket(SingletonClientComponent& singletonClient) const;
     void UpdateSendInputPacket(SingletonClientComponent& singletonClient) const;
+
     bool SendHelloPacket(const SingletonClientComponent& singletonClient) const;
     bool SendInputPacket(const SingletonClientComponent& singletonClient, const SingletonInputComponent& singletonInput) const;
     bool SendPacket(const SingletonClientComponent& singletonClient, const OutputMemoryStream& outputStream) const;
 
-    void ReceiveIncomingPackets(SingletonClientComponent& singletonClient) const;
+    void EnqueueIncomingPackets(SingletonClientComponent& singletonClient) const;
+    void ProcessIncomingPackets(SingletonClientComponent& singletonClient) const;
+
     void ReceivePacket(SingletonClientComponent& singletonClient, InputMemoryStream& inputStream) const;
     void ReceiveWelcomePacket(SingletonClientComponent& singletonClient, InputMemoryStream& inputStream) const;
     void ReceiveStatePacket(SingletonClientComponent& singletonClient, InputMemoryStream& inputStream) const;

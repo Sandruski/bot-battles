@@ -33,6 +33,12 @@ using SequenceNumber = U16;
 const SequenceNumber INVALID_SEQUENCE_NUMBER = UINT16_MAX;
 
 const F32 ACK_TIMEOUT = 0.5f;
+
+#ifdef _SIMULATE_REAL_WORLD_CONDITIONS
+const F32 DROP_PACKET_CHANCE = 0.5f;
+const F32 SIMULATED_LATENCY = 0.5f;
+const F32 SIMULATED_JITTER = 0.5f;
+#endif
 }
 
 #endif

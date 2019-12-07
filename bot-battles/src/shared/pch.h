@@ -14,6 +14,7 @@
 #include <functional>
 #include <memory>
 #include <queue>
+#include <random>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -30,17 +31,18 @@
 #include <SDL_ttf.h>
 
 //----------------------------------------------------------------------------------------------------
-// Math
-#include "Vec2.h"
-#include "Vec2I.h"
-#include "Vec3.h"
-
 // Utils
 #include "Log.h"
 #include "Memory.h"
 #include "Time.h"
 #include "Timer.h"
 #include "Utils.h"
+
+// Math
+#include "RandomNumberGenerator.h"
+#include "Vec2.h"
+#include "Vec2I.h"
+#include "Vec3.h"
 
 // Events
 #include "Events.h"

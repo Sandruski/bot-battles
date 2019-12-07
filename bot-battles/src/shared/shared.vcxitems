@@ -43,6 +43,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)NetUtils.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Observer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)pch.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)RandomNumberGenerator.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ReceivedPacket.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)RendererSystem.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ReplicationActionTypes.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ReplicationCommand.h" />
@@ -103,6 +105,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugClient|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)ReceivedPacket.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)RendererSystem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ReplicationCommand.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Resource.cpp" />

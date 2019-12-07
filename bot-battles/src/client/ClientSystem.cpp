@@ -6,6 +6,7 @@
 #include "MemoryStream.h"
 #include "MessageTypes.h"
 #include "Move.h"
+#include "ReceivedPacket.h"
 #include "ReplicationManagerClient.h"
 #include "SingletonClientComponent.h"
 #include "SingletonInputComponent.h"
@@ -50,8 +51,9 @@ bool ClientSystem::Update()
 {
     std::shared_ptr<SingletonClientComponent> singletonClient = g_gameClient->GetSingletonClientComponent();
 
-    ReceiveIncomingPackets(*singletonClient);
-    // TODO: ProcessQueuedPackets()
+    EnqueueIncomingPackets(*singletonClient);
+    ProcessIncomingPackets(*singletonClient);
+
     SendOutgoingPackets(*singletonClient);
 
     return true;
@@ -151,24 +153,63 @@ bool ClientSystem::SendPacket(const SingletonClientComponent& singletonClient, c
 }
 
 //----------------------------------------------------------------------------------------------------
-void ClientSystem::ReceiveIncomingPackets(SingletonClientComponent& singletonClient) const
+void ClientSystem::EnqueueIncomingPackets(SingletonClientComponent& singletonClient) const
 {
     InputMemoryStream packet;
     SocketAddress fromSocketAddress;
 
     U32 receivedPacketCount = 0;
 
+    F32 time = Time::GetInstance().GetTime();
+
     while (receivedPacketCount < MAX_PACKETS_PER_FRAME) {
         I32 readByteCount = singletonClient.m_socket->ReceiveFrom(packet.GetPtr(), packet.GetByteCapacity(), fromSocketAddress);
         if (readByteCount > 0) {
             packet.SetCapacity(readByteCount);
             packet.ResetHead();
-            ReceivePacket(singletonClient, packet);
+
+#ifdef _SIMULATE_REAL_WORLD_CONDITIONS
+            F32 randomDropPacketChance = GetRandomFloat(0.0f, 1.0f);
+            if (randomDropPacketChance >= DROP_PACKET_CHANCE) {
+                F32 randomJitterFactor = GetRandomFloat(-1.0f, 1.0f);
+                F32 simulatedTime = time + SIMULATED_LATENCY + SIMULATED_JITTER * randomJitterFactor;
+
+                auto it = singletonClient.m_receivedPackets.end();
+                while (it != singletonClient.m_receivedPackets.begin()) {
+                    --it;
+                    F32 timestamp = it->GetTimestamp();
+                    if (timestamp < simulatedTime) {
+                        ++it;
+                        break;
+                    }
+                }
+                singletonClient.m_receivedPackets.emplace_back(packet, fromSocketAddress, simulatedTime);
+            }
+#else
+            singletonClient.m_receivedPackets.emplace_back(packet, fromSocketAddress, time);
+#endif
 
             ++receivedPacketCount;
         } else if (readByteCount == -WSAECONNRESET) {
             OnConnectionReset(singletonClient);
         } else if (readByteCount == 0 || -WSAEWOULDBLOCK) {
+            break;
+        }
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
+void ClientSystem::ProcessIncomingPackets(SingletonClientComponent& singletonClient) const
+{
+    F32 time = Time::GetInstance().GetTime();
+
+    while (!singletonClient.m_receivedPackets.empty()) {
+        ReceivedPacket& receivedPacket = singletonClient.m_receivedPackets.front();
+        F32 timestamp = receivedPacket.GetTimestamp();
+        if (time >= timestamp) {
+            ReceivePacket(singletonClient, receivedPacket.GetBuffer());
+            singletonClient.m_receivedPackets.pop_front();
+        } else {
             break;
         }
     }

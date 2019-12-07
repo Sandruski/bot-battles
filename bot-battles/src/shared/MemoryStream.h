@@ -23,7 +23,7 @@ public:
     void Write(const std::vector<T>& inVector);
     void Write(const std::string& inString);
     void Write(const Vec2& inVec);
-	void Write(const SDL_Color& inColor);
+    void Write(const SDL_Color& inColor);
     void WritePosition(const Vec2& inVec);
 
     const char* GetPtr() const
@@ -78,7 +78,19 @@ inline void OutputMemoryStream::Write(const std::vector<T>& inVector)
 class InputMemoryStream {
 public:
     InputMemoryStream();
+    InputMemoryStream(const InputMemoryStream& other);
     ~InputMemoryStream();
+
+    InputMemoryStream& operator=(const InputMemoryStream& other)
+    {
+        m_head = other.m_head;
+
+        std::free(m_buffer);
+        Alloc(other.m_capacity);
+        std::memcpy(m_buffer, other.m_buffer, BITS_TO_BYTES(m_capacity));
+
+        return *this;
+    }
 
     void ReadBits(U8& outData, U32 bitCount);
     void ReadBits(void* outData, U32 bitCount);
@@ -90,7 +102,7 @@ public:
     void Read(std::vector<T>& outVector);
     void Read(std::string& outString);
     void Read(Vec2& outVec);
-	void Read(SDL_Color& outColor);
+    void Read(SDL_Color& outColor);
     void ReadPosition(Vec2& outVec);
 
     char* GetPtr() const

@@ -94,10 +94,10 @@ void OutputMemoryStream::Write(const Vec2& inVec)
 //----------------------------------------------------------------------------------------------------
 void OutputMemoryStream::Write(const SDL_Color& inColor)
 {
-	Write(inColor.r);
-	Write(inColor.g);
-	Write(inColor.b);
-	Write(inColor.a);
+    Write(inColor.r);
+    Write(inColor.g);
+    Write(inColor.b);
+    Write(inColor.a);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -135,6 +135,16 @@ InputMemoryStream::InputMemoryStream()
     , m_capacity(0)
 {
     Alloc(BYTES_TO_BITS(MAX_PACKET_SIZE));
+}
+
+//----------------------------------------------------------------------------------------------------
+InputMemoryStream::InputMemoryStream(const InputMemoryStream& other)
+    : m_buffer(nullptr)
+    , m_head(other.m_head)
+    , m_capacity(0)
+{
+    Alloc(other.m_capacity);
+    std::memcpy(m_buffer, other.m_buffer, BITS_TO_BYTES(m_capacity));
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -220,10 +230,10 @@ void InputMemoryStream::Read(Vec2& outVec)
 //----------------------------------------------------------------------------------------------------
 void InputMemoryStream::Read(SDL_Color& outColor)
 {
-	Read(outColor.r);
-	Read(outColor.g);
-	Read(outColor.b);
-	Read(outColor.a);
+    Read(outColor.r);
+    Read(outColor.g);
+    Read(outColor.b);
+    Read(outColor.a);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -266,6 +276,7 @@ void InputMemoryStream::Alloc(U32 bitCapacity)
     U32 newByteCapacity = BITS_TO_BYTES(bitCapacity);
     m_buffer = static_cast<char*>(std::malloc(newByteCapacity));
     assert(m_buffer != nullptr);
+
     std::memset(m_buffer, 0, newByteCapacity);
 
     m_capacity = bitCapacity;

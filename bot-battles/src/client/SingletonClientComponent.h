@@ -1,6 +1,8 @@
 #ifndef __SINGLETON_CLIENT_COMPONENT_H__
 #define __SINGLETON_CLIENT_COMPONENT_H__
 
+#include "ReceivedPacket.h"
+
 namespace sand {
 
 class SocketAddress;
@@ -12,6 +14,7 @@ struct SingletonClientComponent {
     SingletonClientComponent()
         : m_socket(nullptr)
         , m_socketAddress(nullptr)
+        , m_receivedPackets()
         , m_name("ExamplePlayer")
         , m_playerID(INVALID_PLAYER_ID)
         , m_helloTime(1.0f)
@@ -38,6 +41,8 @@ struct SingletonClientComponent {
 
     std::shared_ptr<UDPSocket> m_socket;
     std::shared_ptr<SocketAddress> m_socketAddress;
+
+    std::deque<ReceivedPacket> m_receivedPackets;
 
     std::string m_name;
     PlayerID m_playerID;
