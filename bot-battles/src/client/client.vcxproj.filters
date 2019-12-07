@@ -60,6 +60,9 @@
     <ClCompile Include="GameClient.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DeliveryManagerClient.cpp">
+      <Filter>Source Files\Networking</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameplayState.h">
@@ -82,6 +85,9 @@
     </ClInclude>
     <ClInclude Include="GameClient.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DeliveryManagerClient.h">
+      <Filter>Header Files\Networking</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

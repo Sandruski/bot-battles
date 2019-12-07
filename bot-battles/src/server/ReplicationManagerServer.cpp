@@ -7,6 +7,7 @@
 #include "LinkingContext.h"
 #include "MemoryStream.h"
 #include "ReplicationCommand.h"
+#include "ReplicationResultManager.h"
 #include "SpriteComponent.h"
 #include "TextComponent.h"
 #include "TransformComponent.h"
@@ -84,7 +85,7 @@ void ReplicationManagerServer::AddDirtyState(NetworkID networkID, U32 dirtyState
 }
 
 //----------------------------------------------------------------------------------------------------
-void ReplicationManagerServer::Write(OutputMemoryStream& outputStream)
+void ReplicationManagerServer::Write(OutputMemoryStream& outputStream, ReplicationResultManager& replicationResultManager)
 {
     for (auto& pair : m_networkIDToReplicationCommand) {
 
@@ -123,6 +124,8 @@ void ReplicationManagerServer::Write(OutputMemoryStream& outputStream)
                 break;
             }
             }
+
+            replicationResultManager.AddDelivery(networkID, replicationCommand);
 
             replicationCommand.RemoveDirtyState(writtenState);
         }
@@ -170,26 +173,5 @@ U32 ReplicationManagerServer::WriteCreateOrUpdateAction(OutputMemoryStream& outp
     // TODO: write total size of things written
 
     return writtenState;
-}
-
-//----------------------------------------------------------------------------------------------------
-void ReplicationManagerServer::OnNotify(const Event& event)
-{
-    switch (event.eventType) {
-
-    case EventType::DELIVERY_SUCCESS: {
-
-        break;
-    }
-
-    case EventType::DELIVERY_FAILURE: {
-
-        break;
-    }
-
-    default: {
-        break;
-    }
-    }
 }
 }

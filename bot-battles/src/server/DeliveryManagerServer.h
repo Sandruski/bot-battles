@@ -1,9 +1,8 @@
-#ifndef __DELIVERY_MANAGER_H__
-#define __DELIVERY_MANAGER_H__
+#ifndef __DELIVERY_MANAGER_SERVER_H__
+#define __DELIVERY_MANAGER_SERVER_H__
 
 #include "AckRange.h"
 #include "Delivery.h"
-#include "Subject.h"
 
 namespace sand {
 
@@ -11,10 +10,10 @@ class OutputMemoryStream;
 class InputMemoryStream;
 
 //----------------------------------------------------------------------------------------------------
-class DeliveryManager : public Subject {
+class DeliveryManagerServer {
 public:
-    DeliveryManager();
-    ~DeliveryManager();
+    DeliveryManagerServer();
+    ~DeliveryManagerServer();
 
     Delivery& WriteState(OutputMemoryStream& outputStream);
     bool ReadState(InputMemoryStream& inputStream);
@@ -30,16 +29,13 @@ private:
     Delivery& WriteSequenceNumber(OutputMemoryStream& outputStream);
     bool ReadSequenceNumber(InputMemoryStream& inputStream);
 
-    void AddPendingAck(SequenceNumber sequenceNumber);
-    void WritePendingAcks(OutputMemoryStream& outputStream);
     void ReadPendingAcks(InputMemoryStream& inputStream);
 
-    void HandleDeliverySuccess();
-    void HandleDeliveryFailure();
+    void HandleDeliverySuccess(const Delivery& delivery);
+    void HandleDeliveryFailure(const Delivery& delivery);
 
 private:
     std::deque<Delivery> m_deliveries;
-    std::deque<AckRange> m_pendingAcks;
 
     SequenceNumber m_nextOutgoingSequenceNumber;
     SequenceNumber m_nextExpectedSequenceNumber;

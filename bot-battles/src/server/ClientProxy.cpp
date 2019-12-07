@@ -9,15 +9,15 @@ ClientProxy::ClientProxy()
 
 //----------------------------------------------------------------------------------------------------
 ClientProxy::ClientProxy(const SocketAddress& socketAddress, const char* name)
-    : m_replicationManager()
-    , m_deliveryManager()
+    : m_replicationManagerServer(nullptr)
+    , m_deliveryManagerServer()
     , m_socketAddress(socketAddress)
     , m_name(name)
     , m_unprocessedMoves()
     , m_lastPacketTime(0.0f)
     , m_isLastMoveTimestampDirty(true)
 {
-    m_deliveryManager.AddObserver(std::make_shared<ReplicationManagerServer>(m_replicationManager)); // TODO!!!
+    m_replicationManagerServer = std::make_shared<ReplicationManagerServer>();
 }
 
 //----------------------------------------------------------------------------------------------------

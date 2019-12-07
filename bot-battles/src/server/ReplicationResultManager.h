@@ -1,25 +1,23 @@
-#ifndef __REPLICATION_DELIVERY_MANAGER_SERVER_H__
-#define __REPLICATION_DELIVERY_MANAGER_SERVER_H__
+#ifndef __REPLICATION_RESULT_MANAGER_H__
+#define __REPLICATION_RESULT_MANAGER_H__
 
 #include "ReplicationCommand.h"
 
 namespace sand {
 
-class DeliveryManager;
+class DeliveryManagerServer;
 class ReplicationManagerServer;
 
 //----------------------------------------------------------------------------------------------------
-class ReplicationDeliveryManagerServer : public Observer {
+class ReplicationResultManager {
 public:
-    ReplicationDeliveryManagerServer(std::shared_ptr<ReplicationManagerServer> replicationManagerServer);
-    ~ReplicationDeliveryManagerServer();
+    ReplicationResultManager(std::shared_ptr<ReplicationManagerServer> replicationManagerServer);
+    ~ReplicationResultManager();
 
     bool AddDelivery(NetworkID networkID, const ReplicationCommand& replicationCommand);
 
-    void HandleDeliverySuccess(const DeliveryManager& deliveryManager) const;
-    void HandleDeliveryFailure(const DeliveryManager& deliveryManager) const;
-
-    //void OnNotify(const Event& event) override;
+    void HandleDeliverySuccess(const DeliveryManagerServer& deliveryManagerServer) const;
+    void HandleDeliveryFailure(const DeliveryManagerServer& deliveryManagerServer) const;
 
     const std::unordered_map<NetworkID, ReplicationCommand>& GetNetworkIDToReplicationCommandMap() const
     {
@@ -31,7 +29,7 @@ private:
     void HandleRemoveDeliverySuccess(NetworkID networkID) const;
 
     void HandleCreateDeliveryFailure(NetworkID networkID) const;
-    void HandleUpdateDeliveryFailure(NetworkID networkID, U32 dirtyState, const DeliveryManager& deliveryManager) const;
+    void HandleUpdateDeliveryFailure(NetworkID networkID, U32 dirtyState, const DeliveryManagerServer& deliveryManagerServer) const;
     void HandleRemoveDeliveryFailure(NetworkID networkID) const;
 
 private:

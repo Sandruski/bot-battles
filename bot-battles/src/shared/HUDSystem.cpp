@@ -48,7 +48,7 @@ bool HUDSystem::PreUpdate()
 
     std::shared_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(m_fps);
     std::shared_ptr<SingletonWindowComponent> singletonWindow = g_game->GetSingletonWindowComponent();
-    transformComponent->m_position.x = singletonWindow->m_width - textComponent->m_text->GetWidth();
+    transformComponent->m_position.x = static_cast<F32>(singletonWindow->m_width - textComponent->m_text->GetWidth());
 
     return true;
 }

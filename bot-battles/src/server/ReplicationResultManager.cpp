@@ -1,26 +1,26 @@
-#include "ReplicationDeliveryManagerServer.h"
+#include "ReplicationResultManager.h"
 
 #include "ComponentMemberTypes.h"
-#include "DeliveryManager.h"
+#include "DeliveryManagerServer.h"
 #include "GameServer.h"
 #include "LinkingContext.h"
 #include "ReplicationManagerServer.h"
 
 namespace sand {
 //----------------------------------------------------------------------------------------------------
-ReplicationDeliveryManagerServer::ReplicationDeliveryManagerServer(std::shared_ptr<ReplicationManagerServer> replicationManagerServer)
-    : m_replicationManagerServer(replicationManagerServer)
+ReplicationResultManager::ReplicationResultManager(std::shared_ptr<ReplicationManagerServer> replicationManagerServer)
+    : m_replicationManagerServer(replicationManagerServer) // TODO: std move
     , m_networkIDToReplicationCommand()
 {
 }
 
 //----------------------------------------------------------------------------------------------------
-ReplicationDeliveryManagerServer::~ReplicationDeliveryManagerServer()
+ReplicationResultManager::~ReplicationResultManager()
 {
 }
 
 //----------------------------------------------------------------------------------------------------
-bool ReplicationDeliveryManagerServer::AddDelivery(NetworkID networkID, const ReplicationCommand& replicationCommand)
+bool ReplicationResultManager::AddDelivery(NetworkID networkID, const ReplicationCommand& replicationCommand)
 {
     auto it = m_networkIDToReplicationCommand.find(networkID);
     if (it != m_networkIDToReplicationCommand.end()) {
@@ -34,7 +34,7 @@ bool ReplicationDeliveryManagerServer::AddDelivery(NetworkID networkID, const Re
 }
 
 //----------------------------------------------------------------------------------------------------
-void ReplicationDeliveryManagerServer::HandleDeliverySuccess(const DeliveryManager& deliveryManager) const
+void ReplicationResultManager::HandleDeliverySuccess(const DeliveryManagerServer& deliveryManagerServer) const
 {
     for (const auto& pair : m_networkIDToReplicationCommand) {
         NetworkID networkID = pair.first;
@@ -58,7 +58,7 @@ void ReplicationDeliveryManagerServer::HandleDeliverySuccess(const DeliveryManag
 }
 
 //----------------------------------------------------------------------------------------------------
-void ReplicationDeliveryManagerServer::HandleDeliveryFailure(const DeliveryManager& deliveryManager) const
+void ReplicationResultManager::HandleDeliveryFailure(const DeliveryManagerServer& deliveryManagerServer) const
 {
     for (const auto& pair : m_networkIDToReplicationCommand) {
         NetworkID networkID = pair.first;
@@ -71,7 +71,7 @@ void ReplicationDeliveryManagerServer::HandleDeliveryFailure(const DeliveryManag
 
         case ReplicationActionType::UPDATE: {
             U32 dirtyState = replicationCommand.GetDirtyState();
-            HandleUpdateDeliveryFailure(networkID, dirtyState, deliveryManager);
+            HandleUpdateDeliveryFailure(networkID, dirtyState, deliveryManagerServer);
             break;
         }
 
@@ -88,7 +88,7 @@ void ReplicationDeliveryManagerServer::HandleDeliveryFailure(const DeliveryManag
 }
 
 //----------------------------------------------------------------------------------------------------
-void ReplicationDeliveryManagerServer::HandleCreateDeliverySuccess(NetworkID networkID) const
+void ReplicationResultManager::HandleCreateDeliverySuccess(NetworkID networkID) const
 {
     Entity entity = g_game->GetLinkingContext().GetEntity(networkID);
     if (entity != INVALID_ENTITY) {
@@ -97,13 +97,13 @@ void ReplicationDeliveryManagerServer::HandleCreateDeliverySuccess(NetworkID net
 }
 
 //----------------------------------------------------------------------------------------------------
-void ReplicationDeliveryManagerServer::HandleRemoveDeliverySuccess(NetworkID networkID) const
+void ReplicationResultManager::HandleRemoveDeliverySuccess(NetworkID networkID) const
 {
     m_replicationManagerServer->RemoveCommand(networkID);
 }
 
 //----------------------------------------------------------------------------------------------------
-void ReplicationDeliveryManagerServer::HandleCreateDeliveryFailure(NetworkID networkID) const
+void ReplicationResultManager::HandleCreateDeliveryFailure(NetworkID networkID) const
 {
     Entity entity = g_game->GetLinkingContext().GetEntity(networkID);
     if (entity != INVALID_ENTITY) {
@@ -112,16 +112,19 @@ void ReplicationDeliveryManagerServer::HandleCreateDeliveryFailure(NetworkID net
 }
 
 //----------------------------------------------------------------------------------------------------
-void ReplicationDeliveryManagerServer::HandleUpdateDeliveryFailure(NetworkID networkID, U32 dirtyState, const DeliveryManager& deliveryManager) const
+void ReplicationResultManager::HandleUpdateDeliveryFailure(NetworkID networkID, U32 dirtyState, const DeliveryManagerServer& deliveryManagerServer) const
 {
     Entity entity = g_game->GetLinkingContext().GetEntity(networkID);
     if (entity != INVALID_ENTITY) {
-        const std::deque<Delivery>& deliveries = deliveryManager.GetDeliveries();
+        const std::deque<Delivery>& deliveries = deliveryManagerServer.GetDeliveries();
         for (const Delivery& delivery : deliveries) {
-            const std::unordered_map<NetworkID, ReplicationCommand>& networkIDToReplicationCommand = delivery.m_replicationDeliveryManager->GetNetworkIDToReplicationCommandMap();
+            const std::unordered_map<NetworkID, ReplicationCommand>& networkIDToReplicationCommand = delivery.m_replicationResultManager->GetNetworkIDToReplicationCommandMap();
             for (const auto& pair : networkIDToReplicationCommand) {
-                U32 otherDirtyState = pair.second.GetDirtyState();
-                dirtyState &= ~otherDirtyState;
+                NetworkID otherNetworkID = pair.first;
+                if (otherNetworkID == networkID) {
+                    U32 otherDirtyState = pair.second.GetDirtyState();
+                    dirtyState &= ~otherDirtyState;
+                }
             }
         }
 
@@ -130,7 +133,7 @@ void ReplicationDeliveryManagerServer::HandleUpdateDeliveryFailure(NetworkID net
 }
 
 //----------------------------------------------------------------------------------------------------
-void ReplicationDeliveryManagerServer::HandleRemoveDeliveryFailure(NetworkID networkID) const
+void ReplicationResultManager::HandleRemoveDeliveryFailure(NetworkID networkID) const
 {
     m_replicationManagerServer->SetRemove(networkID);
 }

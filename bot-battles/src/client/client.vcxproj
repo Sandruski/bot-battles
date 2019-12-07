@@ -296,6 +296,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ClientSystem.cpp" />
+    <ClCompile Include="DeliveryManagerClient.cpp" />
     <ClCompile Include="GameClient.cpp" />
     <ClCompile Include="GameplayState.cpp" />
     <ClCompile Include="InputSystemClient.cpp" />
@@ -305,6 +306,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientSystem.h" />
+    <ClInclude Include="DeliveryManagerClient.h" />
     <ClInclude Include="InputSystemClient.h" />
     <ClInclude Include="ReplicationManagerClient.h" />
     <ClInclude Include="SingletonClientComponent.h" />

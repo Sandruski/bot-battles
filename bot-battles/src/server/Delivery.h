@@ -3,7 +3,7 @@
 
 namespace sand {
 
-class ReplicationDeliveryManagerServer;
+class ReplicationResultManager;
 
 //----------------------------------------------------------------------------------------------------
 class Delivery {
@@ -22,7 +22,7 @@ public:
     }
 
 public:
-    std::shared_ptr<ReplicationDeliveryManagerServer> m_replicationDeliveryManager;
+    std::shared_ptr<ReplicationResultManager> m_replicationResultManager;
 
 private:
     SequenceNumber m_sequenceNumber;

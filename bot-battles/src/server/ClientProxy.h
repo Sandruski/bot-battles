@@ -1,7 +1,7 @@
 #ifndef __CLIENT_PROXY_H__
 #define __CLIENT_PROXY_H__
 
-#include "DeliveryManager.h"
+#include "DeliveryManagerServer.h"
 #include "Move.h"
 #include "ReplicationManagerServer.h"
 #include "SocketAddress.h"
@@ -29,14 +29,9 @@ public:
         return m_name.c_str();
     }
 
-    ReplicationManagerServer& GetReplicationManager()
+    DeliveryManagerServer& GetDeliveryManagerServer()
     {
-        return m_replicationManager;
-    }
-
-    DeliveryManager& GetDeliveryManager()
-    {
-        return m_deliveryManager;
+        return m_deliveryManagerServer;
     }
 
     const std::deque<Move>& GetUnprocessedMoves()
@@ -51,10 +46,10 @@ public:
 
 public:
     bool m_isLastMoveTimestampDirty;
+    std::shared_ptr<ReplicationManagerServer> m_replicationManagerServer;
 
 private:
-    ReplicationManagerServer m_replicationManager;
-    DeliveryManager m_deliveryManager;
+    DeliveryManagerServer m_deliveryManagerServer;
 
     SocketAddress m_socketAddress;
     std::string m_name;

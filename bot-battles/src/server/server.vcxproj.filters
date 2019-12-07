@@ -69,10 +69,16 @@
     <ClCompile Include="GameServer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ReplicationDeliveryManagerServer.h">
+    <ClCompile Include="DeliveryManagerServer.cpp">
+      <Filter>Source Files\Networking</Filter>
+    </ClCompile>
+    <ClCompile Include="Delivery.cpp">
+      <Filter>Source Files\Networking</Filter>
+    </ClCompile>
+    <ClCompile Include="ReplicationResultManager.h">
       <Filter>Header Files\Networking</Filter>
     </ClCompile>
-    <ClCompile Include="ReplicationDeliveryManagerServer.cpp">
+    <ClCompile Include="ReplicationResultManager.cpp">
       <Filter>Source Files\Networking</Filter>
     </ClCompile>
   </ItemGroup>
@@ -103,6 +109,12 @@
     </ClInclude>
     <ClInclude Include="GameServer.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DeliveryManagerServer.h">
+      <Filter>Header Files\Networking</Filter>
+    </ClInclude>
+    <ClInclude Include="Delivery.h">
+      <Filter>Header Files\Networking</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

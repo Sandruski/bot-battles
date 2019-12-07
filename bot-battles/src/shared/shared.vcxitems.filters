@@ -222,12 +222,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)AckRange.h">
       <Filter>Header Files\Networking</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Delivery.h">
-      <Filter>Header Files\Networking</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)DeliveryManager.h">
-      <Filter>Header Files\Networking</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)ReplicationActionTypes.h">
       <Filter>Header Files\Networking</Filter>
     </ClInclude>
@@ -342,12 +336,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)AckRange.cpp">
-      <Filter>Source Files\Networking</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Delivery.cpp">
-      <Filter>Source Files\Networking</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)DeliveryManager.cpp">
       <Filter>Source Files\Networking</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)FontImporter.cpp">

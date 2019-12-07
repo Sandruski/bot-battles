@@ -1,6 +1,6 @@
 #include "ClientSystem.h"
 
-#include "DeliveryManager.h"
+#include "DeliveryManagerClient.h"
 #include "GameClient.h"
 #include "LinkingContext.h"
 #include "MemoryStream.h"
