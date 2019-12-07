@@ -82,14 +82,11 @@ I32 UDPSocket::ReceiveFrom(void* buffer, int length, SocketAddress& fromSocketAd
     socklen_t fromSockAddrLength = sizeof(fromSocketAddress.m_sockAddr);
     int iResult = recvfrom(m_socket, static_cast<char*>(buffer), length, 0, &fromSocketAddress.m_sockAddr, &fromSockAddrLength);
     if (iResult == SOCKET_ERROR) {
-        if (m_isNonBlockingMode) {
-            int error = WSAGetLastError();
-            if (error == WSAEWOULDBLOCK) {
-                return iResult;
-            }
+        int iError = WSAGetLastError();
+        if (iError != WSAEWOULDBLOCK) {
+            NETLOG("recvfrom");
         }
-
-        NETLOG("recvfrom");
+        return -iError;
     }
 
     return iResult;

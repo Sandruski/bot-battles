@@ -159,22 +159,16 @@ void ClientSystem::ReceiveIncomingPackets(SingletonClientComponent& singletonCli
     U32 receivedPacketCount = 0;
 
     while (receivedPacketCount < MAX_PACKETS_PER_FRAME) {
-
         I32 readByteCount = singletonClient.m_socket->ReceiveFrom(packet.GetPtr(), packet.GetByteCapacity(), fromSocketAddress);
         if (readByteCount > 0) {
-
-            packet.ResetHead();
             packet.SetCapacity(readByteCount);
+            packet.ResetHead();
             ReceivePacket(singletonClient, packet);
 
             ++receivedPacketCount;
-        } else {
-
-            int error = WSAGetLastError();
-            if (error == WSAECONNRESET) {
-                OnConnectionReset(singletonClient);
-            }
-
+        } else if (readByteCount == -WSAECONNRESET) {
+            OnConnectionReset(singletonClient);
+        } else if (readByteCount == 0 || -WSAEWOULDBLOCK) {
             break;
         }
     }

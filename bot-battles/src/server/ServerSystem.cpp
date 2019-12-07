@@ -173,22 +173,16 @@ void ServerSystem::ReceiveIncomingPackets(SingletonServerComponent& singletonSer
     U32 receivedPacketCount = 0;
 
     while (receivedPacketCount < MAX_PACKETS_PER_FRAME) {
-
         I32 readByteCount = singletonServer.m_socket->ReceiveFrom(packet.GetPtr(), packet.GetByteCapacity(), fromSocketAddress);
         if (readByteCount > 0) {
-
-            packet.ResetHead();
             packet.SetCapacity(readByteCount);
+            packet.ResetHead();
             ReceivePacket(singletonServer, packet, fromSocketAddress);
 
             ++receivedPacketCount;
-        } else {
-
-            int error = WSAGetLastError();
-            if (error == WSAECONNRESET) {
-                OnConnectionReset(fromSocketAddress);
-            }
-
+        } else if (readByteCount == -WSAECONNRESET) {
+            OnConnectionReset(fromSocketAddress);
+        } else if (readByteCount == 0 || -WSAEWOULDBLOCK) {
             break;
         }
     }
