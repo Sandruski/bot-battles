@@ -70,6 +70,12 @@ bool RendererSystem::Render()
 		4. Swap buffers
 	*/
 
+    std::sort(m_entities.begin(), m_entities.end(), [](Entity entity1, Entity entity2) {
+        std::shared_ptr<TransformComponent> transformComponent1 = g_game->GetComponentManager().GetComponent<TransformComponent>(entity1);
+        std::shared_ptr<TransformComponent> transformComponent2 = g_game->GetComponentManager().GetComponent<TransformComponent>(entity2);
+        return transformComponent1->m_position.z < transformComponent2->m_position.z;
+    });
+
     for (auto& entity : m_entities) {
 
         std::shared_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);

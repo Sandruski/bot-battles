@@ -31,7 +31,7 @@ public:
     void OnNotify(const Event& event) override;
 
 private:
-    void SendOutgoingPackets(SingletonServerComponent& singletonServer) const;
+    void SendOutgoingPackets(SingletonServerComponent& singletonServer);
     void SendWelcomePacket(const SingletonServerComponent& singletonServer, PlayerID playerID, const SocketAddress& toSocketAddress) const;
     void SendStatePacket(const SingletonServerComponent& singletonServer, std::shared_ptr<ClientProxy> clientProxy) const;
     bool SendPacket(const SingletonServerComponent& singletonServer, const OutputMemoryStream& outputStream, const SocketAddress& toSocketAddress) const;
@@ -41,8 +41,8 @@ private:
     void ReceiveHelloPacket(SingletonServerComponent& singletonServer, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress, PlayerID& playerID);
     void ReceiveInputPacket(SingletonServerComponent& singletonServer, InputMemoryStream& inputStream, PlayerID& playerID) const;
 
-    void OnConnectionReset(const SocketAddress& fromSocketAddress) const;
-    void OnDisconnect() const;
+    void ClientConnectionReset(SingletonServerComponent& singletonServer, const SocketAddress& socketAddress);
+    void DisconnectClient(SingletonServerComponent& singletonServer, PlayerID playerID, Entity entity);
 };
 }
 

@@ -20,6 +20,7 @@ struct SingletonServerComponent {
     bool RemoveEntity(Entity entity);
 
     PlayerID GetPlayerID(const SocketAddress& socketAddress) const;
+    Entity GetEntity(const SocketAddress& socketAddress) const;
     std::shared_ptr<ClientProxy> GetClientProxyFromPlayerID(PlayerID playerID) const;
     std::shared_ptr<ClientProxy> GetClientProxyFromEntity(Entity entity) const;
     const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& GetPlayerIDToClientProxyMap();

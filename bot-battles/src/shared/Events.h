@@ -24,6 +24,7 @@ struct ComponentEvent {
 struct ServerEvent {
     EventType eventType;
     PlayerID playerID;
+    Entity entity;
 };
 
 //----------------------------------------------------------------------------------------------------

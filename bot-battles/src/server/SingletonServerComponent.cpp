@@ -104,6 +104,19 @@ PlayerID SingletonServerComponent::GetPlayerID(const SocketAddress& socketAddres
 }
 
 //----------------------------------------------------------------------------------------------------
+Entity SingletonServerComponent::GetEntity(const SocketAddress& socketAddress) const
+{
+    for (const auto& pair : m_entityToClientProxy) {
+        std::shared_ptr<ClientProxy> clientProxy = pair.second;
+        if (clientProxy->GetSocketAddress() == socketAddress) {
+            return pair.first;
+        }
+    }
+
+    return INVALID_ENTITY;
+}
+
+//----------------------------------------------------------------------------------------------------
 std::shared_ptr<ClientProxy> SingletonServerComponent::GetClientProxyFromPlayerID(PlayerID playerID) const
 {
     auto it = m_playerIDToClientProxy.find(playerID);

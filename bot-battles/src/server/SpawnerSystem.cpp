@@ -36,6 +36,13 @@ void SpawnerSystem::OnNotify(const Event& event)
         break;
     }
 
+    case EventType::PLAYER_REMOVED: {
+        std::shared_ptr<SingletonServerComponent> singletonServer = g_gameServer->GetSingletonServerComponent();
+        g_game->GetEntityManager().RemoveEntity(event.server.entity);
+        singletonServer->RemoveEntity(event.server.entity);
+        break;
+    }
+
     default: {
         break;
     }
@@ -49,7 +56,8 @@ Entity SpawnerSystem::SpawnPlayerEntity() const
     g_gameServer->GetLinkingContext().AddEntity(character);
 
     std::shared_ptr<TransformComponent> transform = g_gameServer->GetComponentManager().AddComponent<TransformComponent>(character);
-    transform->m_position = Vec2(225.3f, 150.3f);
+    static float zeta = -1.0f;
+    transform->m_position = Vec3(225.3f, 150.3f, zeta++);
 
     std::shared_ptr<SpriteResource> spriteResource = g_game->GetResourceManager().AddResource<SpriteResource>("character.png", "../../data/textures/", true);
     std::shared_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().AddComponent<SpriteComponent>(character);

@@ -92,6 +92,14 @@ void OutputMemoryStream::Write(const Vec2& inVec)
 }
 
 //----------------------------------------------------------------------------------------------------
+void OutputMemoryStream::Write(const Vec3& inVec)
+{
+    Write(inVec.x);
+    Write(inVec.y);
+    Write(inVec.z);
+}
+
+//----------------------------------------------------------------------------------------------------
 void OutputMemoryStream::Write(const SDL_Color& inColor)
 {
     Write(inColor.r);
@@ -225,6 +233,14 @@ void InputMemoryStream::Read(Vec2& outVec)
 {
     Read(outVec.x);
     Read(outVec.y);
+}
+
+//----------------------------------------------------------------------------------------------------
+void InputMemoryStream::Read(Vec3& outVec)
+{
+    Read(outVec.x);
+    Read(outVec.y);
+    Read(outVec.z);
 }
 
 //----------------------------------------------------------------------------------------------------

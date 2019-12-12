@@ -34,7 +34,8 @@ bool NavigationSystem::Update()
 //----------------------------------------------------------------------------------------------------
 void NavigationSystem::UpdateMovement(Entity entity, InputComponent& input, TransformComponent& transform, F32 dt) const
 {
-    transform.m_position += input.m_acceleration * dt;
+    transform.m_position.x += input.m_acceleration.x * dt;
+    transform.m_position.y += input.m_acceleration.y * dt;
     transform.m_rotation += input.m_angularAcceleration * dt;
 
     Event newEvent;

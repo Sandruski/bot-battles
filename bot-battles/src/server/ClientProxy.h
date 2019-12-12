@@ -18,6 +18,11 @@ public:
 
     void UpdateLastPacketTime();
 
+    F32 GetLastPacketTime() const
+    {
+        return m_lastPacketTime;
+    }
+
     const Move& AddMove(const Move& move);
 
     const SocketAddress& GetSocketAddress() const

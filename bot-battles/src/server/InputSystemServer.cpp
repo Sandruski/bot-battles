@@ -27,11 +27,15 @@ bool InputSystemServer::Update()
 
     for (auto& entity : m_entities) {
         std::shared_ptr<ClientProxy> clientProxy = singletonServer->GetClientProxyFromEntity(entity);
+        if (clientProxy == nullptr) {
+            continue;
+        }
+
         const std::deque<Move>& unprocessedMoves = clientProxy->GetUnprocessedMoves();
         for (const Move& unprocessedMove : unprocessedMoves) {
             std::shared_ptr<InputComponent> inputComponent = g_gameServer->GetComponentManager().GetComponent<InputComponent>(entity);
-			inputComponent->Copy(unprocessedMove.GetInput());
-			//F32 dt = unprocessedMove.GetDt();
+            inputComponent->Copy(unprocessedMove.GetInput());
+            //F32 dt = unprocessedMove.GetDt();
         }
         clientProxy->ClearUnprocessedMoves();
     }

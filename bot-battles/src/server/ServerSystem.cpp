@@ -3,6 +3,7 @@
 #include "ClientProxy.h"
 #include "ComponentMemberTypes.h"
 #include "DeliveryManagerServer.h"
+#include "EntityManager.h"
 #include "GameServer.h"
 #include "LinkingContext.h"
 #include "MemoryStream.h"
@@ -71,22 +72,22 @@ void ServerSystem::OnNotify(const Event& event)
 {
     switch (event.eventType) {
 
-    case EventType::PLAYER_ADDED: {
-        std::shared_ptr<SingletonServerComponent> singletonServer = g_gameServer->GetSingletonServerComponent();
-        std::shared_ptr<ClientProxy> clientProxy = singletonServer->GetClientProxyFromPlayerID(event.server.playerID);
-        const std::unordered_map<NetworkID, Entity>& networkIDToEntity = g_gameServer->GetLinkingContext().GetNetworkIDToEntityMap();
-        for (const auto& pair : networkIDToEntity) {
-            clientProxy->m_replicationManager->AddCommand(pair.first, static_cast<U32>(ComponentMemberType::ALL));
-        }
-        break;
-    }
-
     case EventType::ENTITY_ADDED: {
         NetworkID networkID = g_gameServer->GetLinkingContext().GetNetworkID(event.entity.entity);
         std::shared_ptr<SingletonServerComponent> singletonServer = g_gameServer->GetSingletonServerComponent();
         const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = singletonServer->GetPlayerIDToClientProxyMap();
         for (const auto& pair : playerIDToClientProxy) {
             pair.second->m_replicationManager->AddCommand(networkID, static_cast<U32>(ComponentMemberType::ALL));
+        }
+        break;
+    }
+
+    case EventType::ENTITY_REMOVED: {
+        NetworkID networkID = g_gameServer->GetLinkingContext().GetNetworkID(event.entity.entity);
+        std::shared_ptr<SingletonServerComponent> singletonServer = g_gameServer->GetSingletonServerComponent();
+        const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = singletonServer->GetPlayerIDToClientProxyMap();
+        for (const auto& pair : playerIDToClientProxy) {
+            pair.second->m_replicationManager->SetRemove(networkID);
         }
         break;
     }
@@ -108,11 +109,18 @@ void ServerSystem::OnNotify(const Event& event)
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerSystem::SendOutgoingPackets(SingletonServerComponent& singletonServer) const
+void ServerSystem::SendOutgoingPackets(SingletonServerComponent& singletonServer)
 {
     const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = singletonServer.GetPlayerIDToClientProxyMap();
     for (const auto& pair : playerIDToClientProxy) {
         std::shared_ptr<ClientProxy> clientProxy = pair.second;
+        F32 timeout = Time::GetInstance().GetTime() - clientProxy->GetLastPacketTime();
+        if (timeout >= DISCONNECT_TIMEOUT) {
+            PlayerID playerID = pair.first;
+            Entity entity = singletonServer.GetEntity(clientProxy->GetSocketAddress());
+            DisconnectClient(singletonServer, playerID, entity);
+        }
+
         clientProxy->m_deliveryManager->ProcessTimedOutPackets();
 
         //if (clientProxy->m_isLastMoveTimestampDirty) {
@@ -181,8 +189,9 @@ void ServerSystem::ReceiveIncomingPackets(SingletonServerComponent& singletonSer
 
             ++receivedPacketCount;
         } else if (readByteCount == -WSAECONNRESET) {
-            OnConnectionReset(fromSocketAddress);
+            ClientConnectionReset(singletonServer, fromSocketAddress);
         } else if (readByteCount == 0 || -WSAEWOULDBLOCK) {
+            // TODO: graceful disconnection if readByteCount == 0?
             break;
         }
     }
@@ -228,6 +237,12 @@ void ServerSystem::ReceiveHelloPacket(SingletonServerComponent& singletonServer,
         playerID = singletonServer.AddPlayer(fromSocketAddress, name.c_str());
         if (playerID != INVALID_PLAYER_ID) {
 
+            std::shared_ptr<ClientProxy> clientProxy = singletonServer.GetClientProxyFromPlayerID(playerID);
+            const std::unordered_map<NetworkID, Entity>& networkIDToEntity = g_gameServer->GetLinkingContext().GetNetworkIDToEntityMap();
+            for (const auto& pair : networkIDToEntity) {
+                clientProxy->m_replicationManager->AddCommand(pair.first, static_cast<U32>(ComponentMemberType::ALL));
+            }
+
             Event newEvent;
             newEvent.eventType = EventType::PLAYER_ADDED;
             newEvent.server.playerID = playerID;
@@ -272,12 +287,21 @@ void ServerSystem::ReceiveInputPacket(SingletonServerComponent& singletonServer,
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerSystem::OnConnectionReset(const SocketAddress& /*fromSocketAddress*/) const
+void ServerSystem::ClientConnectionReset(SingletonServerComponent& singletonServer, const SocketAddress& socketAddress)
 {
+    PlayerID playerID = singletonServer.GetPlayerID(socketAddress);
+    Entity entity = singletonServer.GetEntity(socketAddress);
+    DisconnectClient(singletonServer, playerID, entity);
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerSystem::OnDisconnect() const
+void ServerSystem::DisconnectClient(SingletonServerComponent& singletonServer, PlayerID playerID, Entity entity)
 {
+    singletonServer.RemovePlayer(playerID);
+
+    Event newEvent;
+    newEvent.eventType = EventType::PLAYER_REMOVED;
+    newEvent.server.entity = entity;
+    PushEvent(newEvent);
 }
 }
