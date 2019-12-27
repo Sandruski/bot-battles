@@ -167,28 +167,7 @@ void ClientSystem::EnqueueIncomingPackets(SingletonClientComponent& singletonCli
         if (readByteCount > 0) {
             packet.SetCapacity(readByteCount);
             packet.ResetHead();
-
-#ifdef _SIMULATE_REAL_WORLD_CONDITIONS
-            F32 randomDropPacketChance = GetRandomFloat(0.0f, 1.0f);
-            if (randomDropPacketChance >= DROP_PACKET_CHANCE) {
-                F32 randomJitterFactor = GetRandomFloat(-1.0f, 1.0f);
-                F32 simulatedTime = time + SIMULATED_LATENCY + SIMULATED_JITTER * randomJitterFactor;
-
-                auto it = singletonClient.m_receivedPackets.end();
-                while (it != singletonClient.m_receivedPackets.begin()) {
-                    --it;
-                    F32 timestamp = it->GetTimestamp();
-                    if (timestamp < simulatedTime) {
-                        ++it;
-                        break;
-                    }
-                }
-                singletonClient.m_receivedPackets.emplace_back(packet, fromSocketAddress, simulatedTime);
-            }
-#else
             singletonClient.m_receivedPackets.emplace_back(packet, fromSocketAddress, time);
-#endif
-
             ++receivedPacketCount;
         } else if (readByteCount == -WSAECONNRESET) {
             OnConnectionReset(singletonClient);
