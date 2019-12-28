@@ -134,35 +134,15 @@ U32 ReplicationManagerServer::WriteCreateOrUpdateAction(OutputMemoryStream& outp
     outputStream.Write(signature);
     outputStream.Write(dirtyState, GetRequiredBits<static_cast<U32>(ComponentMemberType::COUNT)>::value);
 
-    U16 hasInput = 1 << static_cast<std::size_t>(ComponentType::INPUT);
-    const bool hasSignatureInput = signature & hasInput;
-    if (hasSignatureInput) {
-        std::weak_ptr<InputComponent> inputComponent = g_gameServer->GetComponentManager().GetComponent<InputComponent>(entity);
-        writtenState |= inputComponent.lock()->Write(outputStream, dirtyState);
+    for (U16 i = 0; i < MAX_COMPONENTS; ++i) {
+        U16 hasComponent = 1 << i;
+        const bool hasSignatureComponent = signature & hasComponent;
+        if (hasSignatureComponent) {
+            std::weak_ptr<Component> component = g_gameServer->GetComponentManager().GetBaseComponent(static_cast<ComponentType>(i), entity);
+            std::weak_ptr<NetworkableObject> networkableObject = std::weak_ptr<NetworkableObject>(std::dynamic_pointer_cast<NetworkableObject>(component.lock()));
+            writtenState |= networkableObject.lock()->Write(outputStream, dirtyState);
+        }
     }
-
-    U16 hasTransform = 1 << static_cast<std::size_t>(ComponentType::TRANSFORM);
-    const bool hasSignatureTransform = signature & hasTransform;
-    if (hasSignatureTransform) {
-        std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
-        writtenState |= transformComponent.lock()->Write(outputStream, dirtyState);
-    }
-
-    U16 hasSprite = 1 << static_cast<std::size_t>(ComponentType::SPRITE);
-    const bool hasSignatureSprite = signature & hasSprite;
-    if (hasSignatureSprite) {
-        std::weak_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().GetComponent<SpriteComponent>(entity);
-        writtenState |= spriteComponent.lock()->Write(outputStream, dirtyState);
-    }
-
-    U16 hasText = 1 << static_cast<std::size_t>(ComponentType::TEXT);
-    const bool hasSignatureText = signature & hasText;
-    if (hasSignatureText) {
-        std::weak_ptr<TextComponent> textComponent = g_gameServer->GetComponentManager().GetComponent<TextComponent>(entity);
-        writtenState |= textComponent.lock()->Write(outputStream, dirtyState);
-    }
-
-    // TODO: write total size of things written
 
     return writtenState;
 }
