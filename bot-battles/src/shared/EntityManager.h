@@ -7,19 +7,22 @@ namespace sand {
 class EntityManager : public Subject, public Observer {
 public:
     EntityManager();
-    ~EntityManager();
+    ~EntityManager() override = default;
+
+    void OnNotify(const Event& event) override;
 
     bool PreUpdate();
 
     Entity AddEntity();
+    Signature GetSignature(Entity entity);
     bool RemoveEntity(Entity entity);
 
-    const Signature& GetSignature(Entity entity);
-
-    void OnNotify(const Event& event) override;
-
 private:
-    void KillEntity(Entity entity);
+    bool KillEntity(Entity entity);
+
+    void OnEntityRemoved(Entity entity);
+    void OnComponentAdded(ComponentType componentType, Entity entity);
+    void OnComponentRemoved(ComponentType componentType, Entity entity);
 
 private:
     std::array<Signature, MAX_ENTITIES> m_signatures;

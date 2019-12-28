@@ -17,8 +17,29 @@ EntityManager::EntityManager()
 }
 
 //----------------------------------------------------------------------------------------------------
-EntityManager::~EntityManager()
+void EntityManager::OnNotify(const Event& event)
 {
+    switch (event.eventType) {
+
+    case EventType::ENTITY_REMOVED: {
+        OnEntityRemoved(event.entity.entity);
+        break;
+    }
+
+    case EventType::COMPONENT_ADDED: {
+        OnComponentAdded(event.component.componentType, event.component.entity);
+        break;
+    }
+
+    case EventType::COMPONENT_REMOVED: {
+        OnComponentRemoved(event.component.componentType, event.component.entity);
+        break;
+    }
+
+    default: {
+        break;
+    }
+    }
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -36,9 +57,10 @@ Entity EntityManager::AddEntity()
     m_availableEntities.pop();
 
     U32 signatureIndex = m_signaturesSize;
-    ++m_signaturesSize;
 
-    m_entitiesToSignatures[entity] = signatureIndex;
+    m_entitiesToSignatures.insert(std::make_pair(entity, signatureIndex));
+
+    ++m_signaturesSize;
 
     Event newEvent;
     newEvent.eventType = EventType::ENTITY_ADDED;
@@ -49,13 +71,22 @@ Entity EntityManager::AddEntity()
 }
 
 //----------------------------------------------------------------------------------------------------
+Signature EntityManager::GetSignature(Entity entity)
+{
+    assert(entity < INVALID_ENTITY);
+
+    U32 signatureIndex = m_entitiesToSignatures.at(entity);
+    return m_signatures.at(signatureIndex);
+}
+
+//----------------------------------------------------------------------------------------------------
 bool EntityManager::RemoveEntity(Entity entity)
 {
     assert(entity < INVALID_ENTITY);
 
     auto entityToSignature = m_entitiesToSignatures.find(entity);
     if (entityToSignature == m_entitiesToSignatures.end()) {
-        WLOG("The entity %u does not exist!", entity);
+        WLOG("Entity %u does not exist!", entity);
         return false;
     }
 
@@ -68,63 +99,20 @@ bool EntityManager::RemoveEntity(Entity entity)
 }
 
 //----------------------------------------------------------------------------------------------------
-const Signature& EntityManager::GetSignature(Entity entity)
+bool EntityManager::KillEntity(Entity entity)
 {
     assert(entity < INVALID_ENTITY);
 
+    auto entityToSignature = m_entitiesToSignatures.find(entity);
+    if (entityToSignature == m_entitiesToSignatures.end()) {
+        WLOG("Entity %u does not exist!", entity);
+        return false;
+    }
+
     U32 signatureIndex = m_entitiesToSignatures.at(entity);
-    return m_signatures[signatureIndex];
-}
-
-//----------------------------------------------------------------------------------------------------
-void EntityManager::OnNotify(const Event& event)
-{
-    switch (event.eventType) {
-    case EventType::ENTITY_REMOVED: {
-        KillEntity(event.entity.entity);
-
-        break;
-    }
-
-    case EventType::COMPONENT_ADDED: {
-        U32 signatureIndex = m_entitiesToSignatures[event.component.entity];
-        m_signatures[signatureIndex] |= 1 << static_cast<std::size_t>(event.component.componentType);
-
-        Event newEvent;
-        newEvent.eventType = EventType::ENTITY_SIGNATURE_CHANGED;
-        newEvent.entity.entity = event.component.entity;
-        newEvent.entity.signature = m_signatures[signatureIndex];
-        PushEvent(newEvent);
-
-        break;
-    }
-
-    case EventType::COMPONENT_REMOVED: {
-        U32 signatureIndex = m_entitiesToSignatures[event.component.entity];
-        m_signatures[signatureIndex] &= ~(1 << static_cast<std::size_t>(event.component.componentType));
-
-        Event newEvent;
-        newEvent.eventType = EventType::ENTITY_SIGNATURE_CHANGED;
-        newEvent.entity.entity = event.component.entity;
-        newEvent.entity.signature = m_signatures[signatureIndex];
-        PushEvent(newEvent);
-
-        break;
-    }
-
-    default: {
-        break;
-    }
-    }
-}
-
-//----------------------------------------------------------------------------------------------------
-void EntityManager::KillEntity(Entity entity)
-{
-    U32 signatureIndex = m_entitiesToSignatures[entity];
     U32 lastSignatureIndex = m_signaturesSize - 1;
-    m_signatures[signatureIndex] = m_signatures[lastSignatureIndex];
-    m_signatures[lastSignatureIndex] = NULL;
+    m_signatures.at(signatureIndex) = m_signatures.at(lastSignatureIndex);
+    m_signatures.at(lastSignatureIndex) = NULL;
 
     auto lastEntityToSignature = std::find_if(m_entitiesToSignatures.begin(),
         m_entitiesToSignatures.end(),
@@ -133,11 +121,53 @@ void EntityManager::KillEntity(Entity entity)
         });
     assert(lastEntityToSignature != m_entitiesToSignatures.end());
 
-    m_entitiesToSignatures[lastEntityToSignature->first] = signatureIndex;
+    m_entitiesToSignatures.insert(std::make_pair(lastEntityToSignature->first, signatureIndex));
     m_entitiesToSignatures.erase(entity);
 
     m_availableEntities.push(entity);
 
     --m_signaturesSize;
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+void EntityManager::OnEntityRemoved(Entity entity)
+{
+    assert(entity < INVALID_ENTITY);
+
+    KillEntity(entity);
+}
+
+//----------------------------------------------------------------------------------------------------
+void EntityManager::OnComponentAdded(ComponentType componentType, Entity entity)
+{
+    assert(componentType < ComponentType::COUNT && entity < INVALID_ENTITY);
+
+    U32 signatureIndex = m_entitiesToSignatures.at(entity);
+    Signature& signature = m_signatures.at(signatureIndex);
+    signature |= 1 << static_cast<std::size_t>(componentType);
+
+    Event newEvent;
+    newEvent.eventType = EventType::ENTITY_SIGNATURE_CHANGED;
+    newEvent.entity.entity = entity;
+    newEvent.entity.signature = signature;
+    PushEvent(newEvent);
+}
+
+//----------------------------------------------------------------------------------------------------
+void EntityManager::OnComponentRemoved(ComponentType componentType, Entity entity)
+{
+    assert(componentType < ComponentType::COUNT && entity < INVALID_ENTITY);
+
+    U32 signatureIndex = m_entitiesToSignatures.at(entity);
+    Signature& signature = m_signatures.at(signatureIndex);
+    signature &= ~(1 << static_cast<std::size_t>(componentType));
+
+    Event newEvent;
+    newEvent.eventType = EventType::ENTITY_SIGNATURE_CHANGED;
+    newEvent.entity.entity = entity;
+    newEvent.entity.signature = signature;
+    PushEvent(newEvent);
 }
 }

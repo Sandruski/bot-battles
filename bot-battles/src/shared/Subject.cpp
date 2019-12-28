@@ -10,17 +10,13 @@ Subject::Subject()
 }
 
 //----------------------------------------------------------------------------------------------------
-Subject::~Subject()
+bool Subject::AddObserver(std::weak_ptr<Observer> observer)
 {
-}
-
-//----------------------------------------------------------------------------------------------------
-bool Subject::AddObserver(std::shared_ptr<Observer> observer)
-{
-    auto it = std::find(m_observers.begin(), m_observers.end(), observer);
+    auto it = std::find_if(m_observers.begin(), m_observers.end(), [&observer](const auto& value) {
+        return observer.lock() == value.lock();
+    });
     if (it != m_observers.end()) {
-
-        WLOG("The observer is already registered!");
+        WLOG("Observer is already registered!");
         return false;
     }
 
@@ -30,12 +26,13 @@ bool Subject::AddObserver(std::shared_ptr<Observer> observer)
 }
 
 //----------------------------------------------------------------------------------------------------
-bool Subject::RemoveObserver(std::shared_ptr<Observer> observer)
+bool Subject::RemoveObserver(std::weak_ptr<Observer> observer)
 {
-    auto it = std::find(m_observers.begin(), m_observers.end(), observer);
+    auto it = std::find_if(m_observers.begin(), m_observers.end(), [&observer](const auto& value) {
+        return observer.lock() == value.lock();
+    });
     if (it == m_observers.end()) {
-
-        WLOG("The observer is not registered!");
+        WLOG("Observer is not registered!");
         return false;
     }
 
@@ -54,7 +51,7 @@ void Subject::PushEvent(Event event)
 void Subject::NotifyEvent(Event event) const
 {
     for (const auto& observer : m_observers) {
-        observer->OnNotify(event);
+        observer.lock()->OnNotify(event);
     }
 }
 
@@ -62,10 +59,12 @@ void Subject::NotifyEvent(Event event) const
 void Subject::NotifyEvents()
 {
     while (!m_events.empty()) {
+
         Event event = m_events.front();
         for (const auto& observer : m_observers) {
-            observer->OnNotify(event);
+            observer.lock()->OnNotify(event);
         }
+
         m_events.pop();
     }
 }

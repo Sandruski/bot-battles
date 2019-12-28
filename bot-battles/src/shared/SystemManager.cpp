@@ -10,12 +10,28 @@ namespace sand {
 SystemManager::SystemManager()
     : m_systems()
 {
-    m_systems.fill(NULL);
+    m_systems.fill(nullptr);
 }
 
 //----------------------------------------------------------------------------------------------------
-SystemManager::~SystemManager()
+void SystemManager::OnNotify(const Event& event)
 {
+    switch (event.eventType) {
+
+    case EventType::ENTITY_REMOVED: {
+        OnEntityRemoved(event.entity.entity);
+        break;
+    }
+
+    case EventType::ENTITY_SIGNATURE_CHANGED: {
+        OnEntitySignatureChanged(event.entity.signature, event.entity.entity);
+        break;
+    }
+
+    default: {
+        break;
+    }
+    }
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -115,35 +131,27 @@ bool SystemManager::ShutDown()
 }
 
 //----------------------------------------------------------------------------------------------------
-void SystemManager::OnNotify(const Event& event)
+void SystemManager::OnEntityRemoved(Entity entity)
 {
-    switch (event.eventType) {
-    case EventType::ENTITY_REMOVED: {
-        for (const auto& system : m_systems) {
-            system->DeRegisterEntity(event.entity.entity);
+    assert(entity < INVALID_ENTITY);
+
+    for (const auto& system : m_systems) {
+        system->DeRegisterEntity(entity);
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
+void SystemManager::OnEntitySignatureChanged(Signature signature, Entity entity)
+{
+    assert(entity < INVALID_ENTITY);
+
+    for (const auto& system : m_systems) {
+        Signature systemSignature = system->GetSignature();
+        if ((systemSignature & signature) == systemSignature) {
+            system->RegisterEntity(entity);
+        } else {
+            system->DeRegisterEntity(entity);
         }
-
-        break;
-    }
-
-    case EventType::ENTITY_SIGNATURE_CHANGED: {
-
-        for (const auto& system : m_systems) {
-
-            Signature systemSignature = system->GetSignature();
-            Signature entitySignature = event.entity.signature;
-            if ((systemSignature & entitySignature) == systemSignature) {
-                system->RegisterEntity(event.entity.entity);
-            } else {
-                system->DeRegisterEntity(event.entity.entity);
-            }
-        }
-        break;
-    }
-
-    default: {
-        break;
-    }
     }
 }
 }

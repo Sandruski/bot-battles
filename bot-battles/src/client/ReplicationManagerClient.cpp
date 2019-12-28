@@ -1,6 +1,7 @@
 #include "ReplicationManagerClient.h"
 
 #include "ComponentManager.h"
+#include "ComponentMemberTypes.h"
 #include "EntityManager.h"
 #include "GameClient.h"
 #include "InputComponent.h"
@@ -8,8 +9,8 @@
 #include "MemoryStream.h"
 #include "ReplicationCommand.h"
 #include "SpriteComponent.h"
-#include "TransformComponent.h"
 #include "TextComponent.h"
+#include "TransformComponent.h"
 
 namespace sand {
 
@@ -86,55 +87,53 @@ void ReplicationManagerClient::ReadUpdateAction(InputMemoryStream& inputStream, 
     const bool hasSignatureInput = signature & hasInput;
     const bool hasNewSignatureInput = newSignature & hasInput;
     if (hasSignatureInput && hasNewSignatureInput) {
-        std::shared_ptr<InputComponent> inputComponent = g_gameClient->GetComponentManager().GetComponent<InputComponent>(entity);
-        inputComponent->Read(inputStream, dirtyState);
+        std::weak_ptr<InputComponent> inputComponent = g_gameClient->GetComponentManager().GetComponent<InputComponent>(entity);
+        inputComponent.lock()->Read(inputStream, dirtyState);
     } else if (hasSignatureInput) {
         g_gameClient->GetComponentManager().RemoveComponent<InputComponent>(entity);
     } else if (hasNewSignatureInput) {
-        std::shared_ptr<InputComponent> inputComponent = g_gameClient->GetComponentManager().AddComponent<InputComponent>(entity);
-        inputComponent->Read(inputStream, dirtyState);
+        std::weak_ptr<InputComponent> inputComponent = g_gameClient->GetComponentManager().AddComponent<InputComponent>(entity);
+        inputComponent.lock()->Read(inputStream, dirtyState);
     }
 
     U16 hasTransform = 1 << static_cast<std::size_t>(ComponentType::TRANSFORM);
     const bool hasSignatureTransform = signature & hasTransform;
     const bool hasNewSignatureTransform = newSignature & hasTransform;
     if (hasSignatureTransform && hasNewSignatureTransform) {
-        std::shared_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
-        transformComponent->Read(inputStream, dirtyState);
+        std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
+        transformComponent.lock()->Read(inputStream, dirtyState);
     } else if (hasSignatureTransform) {
         g_gameClient->GetComponentManager().RemoveComponent<TransformComponent>(entity);
     } else if (hasNewSignatureTransform) {
-        std::shared_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().AddComponent<TransformComponent>(entity);
-        transformComponent->Read(inputStream, dirtyState);
+        std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().AddComponent<TransformComponent>(entity);
+        transformComponent.lock()->Read(inputStream, dirtyState);
     }
 
     U16 hasSprite = 1 << static_cast<std::size_t>(ComponentType::SPRITE);
     const bool hasSignatureSprite = signature & hasSprite;
     const bool hasNewSignatureSprite = newSignature & hasSprite;
     if (hasSignatureSprite && hasNewSignatureSprite) {
-        std::shared_ptr<SpriteComponent> spriteComponent = g_gameClient->GetComponentManager().GetComponent<SpriteComponent>(entity);
-        spriteComponent->Read(inputStream, dirtyState);
+        std::weak_ptr<SpriteComponent> spriteComponent = g_gameClient->GetComponentManager().GetComponent<SpriteComponent>(entity);
+        spriteComponent.lock()->Read(inputStream, dirtyState);
     } else if (hasSignatureSprite) {
         g_gameClient->GetComponentManager().RemoveComponent<SpriteComponent>(entity);
     } else if (hasNewSignatureSprite) {
-        std::shared_ptr<SpriteComponent> spriteComponent = g_gameClient->GetComponentManager().AddComponent<SpriteComponent>(entity);
-        spriteComponent->Read(inputStream, dirtyState);
+        std::weak_ptr<SpriteComponent> spriteComponent = g_gameClient->GetComponentManager().AddComponent<SpriteComponent>(entity);
+        spriteComponent.lock()->Read(inputStream, dirtyState);
     }
 
-	U16 hasText = 1 << static_cast<std::size_t>(ComponentType::TEXT);
-	const bool hasSignatureText = signature & hasText;
-	const bool hasNewSignatureText = newSignature & hasText;
-	if (hasSignatureText && hasNewSignatureText) {
-		std::shared_ptr<TextComponent> textComponent = g_gameClient->GetComponentManager().GetComponent<TextComponent>(entity);
-		textComponent->Read(inputStream, dirtyState);
-	}
-	else if (hasSignatureSprite) {
-		g_gameClient->GetComponentManager().RemoveComponent<TextComponent>(entity);
-	}
-	else if (hasNewSignatureSprite) {
-		std::shared_ptr<TextComponent> textComponent = g_gameClient->GetComponentManager().AddComponent<TextComponent>(entity);
-		textComponent->Read(inputStream, dirtyState);
-	}
+    U16 hasText = 1 << static_cast<std::size_t>(ComponentType::TEXT);
+    const bool hasSignatureText = signature & hasText;
+    const bool hasNewSignatureText = newSignature & hasText;
+    if (hasSignatureText && hasNewSignatureText) {
+        std::weak_ptr<TextComponent> textComponent = g_gameClient->GetComponentManager().GetComponent<TextComponent>(entity);
+        textComponent.lock()->Read(inputStream, dirtyState);
+    } else if (hasSignatureSprite) {
+        g_gameClient->GetComponentManager().RemoveComponent<TextComponent>(entity);
+    } else if (hasNewSignatureSprite) {
+        std::weak_ptr<TextComponent> textComponent = g_gameClient->GetComponentManager().AddComponent<TextComponent>(entity);
+        textComponent.lock()->Read(inputStream, dirtyState);
+    }
 
     // TODO: read total size of things written
 }

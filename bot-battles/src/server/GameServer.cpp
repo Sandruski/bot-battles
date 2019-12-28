@@ -44,25 +44,25 @@ bool GameServer::Init()
         return false;
     }
 
-    std::shared_ptr<ServerSystem> server = m_systemManager->GetSystem<ServerSystem>();
+    std::weak_ptr<ServerSystem> server = m_systemManager->GetSystem<ServerSystem>();
     ret = m_entityManager->AddObserver(server);
     if (!ret) {
         return false;
     }
 
-    ret = server->AddObserver(server);
+    ret = server.lock()->AddObserver(server);
     if (!ret) {
         return false;
     }
 
-    std::shared_ptr<SpawnerSystem> spawner = m_systemManager->GetSystem<SpawnerSystem>();
-    ret = server->AddObserver(spawner);
+    std::weak_ptr<SpawnerSystem> spawner = m_systemManager->GetSystem<SpawnerSystem>();
+    ret = server.lock()->AddObserver(spawner);
     if (!ret) {
         return false;
     }
 
-    std::shared_ptr<NavigationSystem> navigation = m_systemManager->GetSystem<NavigationSystem>();
-    ret = navigation->AddObserver(server);
+    std::weak_ptr<NavigationSystem> navigation = m_systemManager->GetSystem<NavigationSystem>();
+    ret = navigation.lock()->AddObserver(server);
     if (!ret) {
         return false;
     }
