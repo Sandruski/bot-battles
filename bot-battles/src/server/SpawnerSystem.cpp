@@ -55,13 +55,13 @@ Entity SpawnerSystem::SpawnPlayerEntity() const
     Entity character = g_gameServer->GetEntityManager().AddEntity();
     g_gameServer->GetLinkingContext().AddEntity(character);
 
-    std::shared_ptr<TransformComponent> transform = g_gameServer->GetComponentManager().AddComponent<TransformComponent>(character);
+    std::weak_ptr<TransformComponent> transform = g_gameServer->GetComponentManager().AddComponent<TransformComponent>(character);
     static float zeta = -1.0f;
-    transform->m_position = Vec3(225.3f, 150.3f, zeta++);
+    transform.lock()->m_position = Vec3(225.3f, 150.3f, zeta++);
 
     std::shared_ptr<SpriteResource> spriteResource = g_game->GetResourceManager().AddResource<SpriteResource>("character.png", "../../data/textures/", true);
-    std::shared_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().AddComponent<SpriteComponent>(character);
-    spriteComponent->m_sprite = spriteResource;
+    std::weak_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().AddComponent<SpriteComponent>(character);
+    spriteComponent.lock()->m_sprite = spriteResource;
 
     std::shared_ptr<TextResource> textResource = g_game->GetResourceManager().AddResource<TextResource>("", "", false);
     std::shared_ptr<SingletonRendererComponent> singletonRenderer = g_game->GetSingletonRendererComponent();
@@ -69,8 +69,8 @@ Entity SpawnerSystem::SpawnPlayerEntity() const
     textResource->SetText(spriteResource->GetFile());
     textResource->SetColor(Red);
     textResource->ReLoad();
-    std::shared_ptr<TextComponent> textComponent = g_gameServer->GetComponentManager().AddComponent<TextComponent>(character);
-    textComponent->m_text = textResource;
+    std::weak_ptr<TextComponent> textComponent = g_gameServer->GetComponentManager().AddComponent<TextComponent>(character);
+    textComponent.lock()->m_text = textResource;
 
     g_gameServer->GetComponentManager().AddComponent<InputComponent>(character);
 

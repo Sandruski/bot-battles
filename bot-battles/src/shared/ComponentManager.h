@@ -26,8 +26,8 @@ public:
     bool RemoveComponent(Entity entity, ComponentManager& componentManager) override;
     void KillComponent(Entity entity) override;
 
-    std::shared_ptr<T> AddComponent(Entity entity, ComponentManager& componentManager);
-    std::shared_ptr<T> GetComponent(Entity entity);
+    std::weak_ptr<T> AddComponent(Entity entity, ComponentManager& componentManager);
+    std::weak_ptr<T> GetComponent(Entity entity);
 
 private:
     std::array<std::shared_ptr<T>, MAX_ENTITIES> m_components;
@@ -51,9 +51,9 @@ public:
     bool DeRegisterComponent();
 
     template <class T>
-    std::shared_ptr<T> AddComponent(Entity entity);
+    std::weak_ptr<T> AddComponent(Entity entity);
     template <class T>
-    std::shared_ptr<T> GetComponent(Entity entity);
+    std::weak_ptr<T> GetComponent(Entity entity);
     template <class T>
     bool RemoveComponent(Entity entity);
 
@@ -117,7 +117,7 @@ inline void ComponentArray<T>::KillComponent(Entity entity)
 
 //----------------------------------------------------------------------------------------------------
 template <class T>
-inline std::shared_ptr<T> ComponentArray<T>::AddComponent(Entity entity, ComponentManager& componentManager)
+inline std::weak_ptr<T> ComponentArray<T>::AddComponent(Entity entity, ComponentManager& componentManager)
 {
     auto entityToComponent = m_entitiesToComponents.find(entity);
     if (entityToComponent != m_entitiesToComponents.end()) {
@@ -139,20 +139,22 @@ inline std::shared_ptr<T> ComponentArray<T>::AddComponent(Entity entity, Compone
     newEvent.component.entity = entity;
     componentManager.PushEvent(newEvent);
 
-    return component;
+    return std::weak_ptr(component);
 }
 
 //----------------------------------------------------------------------------------------------------
 template <class T>
-std::shared_ptr<T> ComponentArray<T>::GetComponent(Entity entity)
+std::weak_ptr<T> ComponentArray<T>::GetComponent(Entity entity)
 {
     auto entityToComponent = m_entitiesToComponents.find(entity);
     if (entityToComponent == m_entitiesToComponents.end()) {
         WLOG("Entity %u does not have the component!", entity);
-        return nullptr;
+        return std::weak_ptr<T>();
     }
 
-    return m_components.at(entityToComponent->second);
+    std::shared_ptr component = m_components.at(entityToComponent->second);
+
+    return std::weak_ptr(component);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -197,7 +199,7 @@ inline bool ComponentManager::DeRegisterComponent()
 
 //----------------------------------------------------------------------------------------------------
 template <class T>
-std::shared_ptr<T> ComponentManager::AddComponent(Entity entity)
+std::weak_ptr<T> ComponentManager::AddComponent(Entity entity)
 {
     static_assert(std::is_base_of<Component, T>::value, "T is not derived from Component");
 
@@ -210,7 +212,7 @@ std::shared_ptr<T> ComponentManager::AddComponent(Entity entity)
 
 //----------------------------------------------------------------------------------------------------
 template <class T>
-std::shared_ptr<T> ComponentManager::GetComponent(Entity entity)
+std::weak_ptr<T> ComponentManager::GetComponent(Entity entity)
 {
     static_assert(std::is_base_of<Component, T>::value, "T is not derived from Component");
 

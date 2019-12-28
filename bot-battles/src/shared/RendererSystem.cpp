@@ -71,25 +71,25 @@ bool RendererSystem::Render()
 	*/
 
     std::sort(m_entities.begin(), m_entities.end(), [](Entity entity1, Entity entity2) {
-        std::shared_ptr<TransformComponent> transformComponent1 = g_game->GetComponentManager().GetComponent<TransformComponent>(entity1);
-        std::shared_ptr<TransformComponent> transformComponent2 = g_game->GetComponentManager().GetComponent<TransformComponent>(entity2);
-        return transformComponent1->m_position.z < transformComponent2->m_position.z;
+        std::weak_ptr<TransformComponent> transformComponent1 = g_game->GetComponentManager().GetComponent<TransformComponent>(entity1);
+        std::weak_ptr<TransformComponent> transformComponent2 = g_game->GetComponentManager().GetComponent<TransformComponent>(entity2);
+        return transformComponent1.lock()->m_position.z < transformComponent2.lock()->m_position.z;
     });
 
     for (auto& entity : m_entities) {
 
-        std::shared_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
-        std::shared_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
+        std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
+        std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
 
-        if (spriteComponent->m_sprite != nullptr) {
+        if (spriteComponent.lock()->m_sprite != nullptr) {
             SDL_Rect renderQuad = {
-                static_cast<I32>(transformComponent->m_position.x),
-                static_cast<I32>(transformComponent->m_position.y),
-                static_cast<I32>(spriteComponent->m_sprite->GetWidth()),
-                static_cast<I32>(spriteComponent->m_sprite->GetHeight())
+                static_cast<I32>(transformComponent.lock()->m_position.x),
+                static_cast<I32>(transformComponent.lock()->m_position.y),
+                static_cast<I32>(spriteComponent.lock()->m_sprite->GetWidth()),
+                static_cast<I32>(spriteComponent.lock()->m_sprite->GetHeight())
             };
 
-            SDL_RenderCopy(singletonRenderer->m_renderer, spriteComponent->m_sprite->GetTexture(), nullptr, &renderQuad);
+            SDL_RenderCopy(singletonRenderer->m_renderer, spriteComponent.lock()->m_sprite->GetTexture(), nullptr, &renderQuad);
         }
 
         if (singletonRenderer->m_isDebugDraw) {
