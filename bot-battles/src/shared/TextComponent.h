@@ -2,13 +2,12 @@
 #define __TEXT_COMPONENT_H__
 
 #include "Component.h"
-#include "NetworkableObject.h"
 #include "TextResource.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-struct TextComponent : public Component, public NetworkableObject {
+struct TextComponent : public Component {
 
     static ComponentType GetType() { return ComponentType::TEXT; }
     static std::shared_ptr<TextComponent> Instantiate() { return std::make_shared<TextComponent>(); }

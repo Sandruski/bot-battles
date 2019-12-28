@@ -6,7 +6,8 @@
 namespace sand {
 //----------------------------------------------------------------------------------------------------
 InputComponent::InputComponent()
-    : m_acceleration()
+    : Component()
+    , m_acceleration()
     , m_angularAcceleration(0.0f)
 {
 }

@@ -4,7 +4,8 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 Component::Component()
-    : m_isEnabled(true)
+    : NetworkableObject()
+    , m_isEnabled(true)
 {
 }
 }

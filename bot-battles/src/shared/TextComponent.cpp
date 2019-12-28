@@ -9,7 +9,8 @@
 namespace sand {
 //----------------------------------------------------------------------------------------------------
 TextComponent::TextComponent()
-    : m_text(nullptr)
+    : Component()
+    , m_text(nullptr)
 {
 }
 

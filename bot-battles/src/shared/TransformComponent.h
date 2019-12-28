@@ -2,12 +2,11 @@
 #define __TRANSFORM_COMPONENT_H__
 
 #include "Component.h"
-#include "NetworkableObject.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-struct TransformComponent : public Component, public NetworkableObject {
+struct TransformComponent : public Component {
 
     static ComponentType GetType() { return ComponentType::TRANSFORM; }
     static std::shared_ptr<TransformComponent> Instantiate() { return std::make_shared<TransformComponent>(); }

@@ -8,7 +8,8 @@
 namespace sand {
 //----------------------------------------------------------------------------------------------------
 SpriteComponent::SpriteComponent()
-    : m_sprite(nullptr)
+    : Component()
+    , m_sprite(nullptr)
 {
 }
 

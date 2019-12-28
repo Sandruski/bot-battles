@@ -1,9 +1,6 @@
 #ifndef __COMPONENT_MANAGER_H__
 #define __COMPONENT_MANAGER_H__
 
-// TODO: interface IComponent struct where all components derive from. Create() method implementation for resources
-// NOTE: entities can only have one component of each type
-
 namespace sand {
 
 struct Component;

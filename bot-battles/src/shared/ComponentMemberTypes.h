@@ -4,6 +4,7 @@
 namespace sand {
 
 enum class ComponentMemberType : U32 {
+
     INPUT_ACCELERATION = 1 << 0,
     INPUT_ANGULAR_ACCELERATION = 1 << 1,
 

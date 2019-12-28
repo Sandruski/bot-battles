@@ -2,13 +2,12 @@
 #define __SPRITE_COMPONENT_H__
 
 #include "Component.h"
-#include "NetworkableObject.h"
 #include "SpriteResource.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-struct SpriteComponent : public Component, public NetworkableObject {
+struct SpriteComponent : public Component {
 
     static ComponentType GetType() { return ComponentType::SPRITE; }
     static std::shared_ptr<SpriteComponent> Instantiate() { return std::make_shared<SpriteComponent>(); }
