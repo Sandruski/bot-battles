@@ -11,7 +11,7 @@ namespace sand {
 struct SpriteComponent : public Component, public NetworkableObject {
 
     static ComponentType GetType() { return ComponentType::SPRITE; }
-    static SpriteComponent* Instantiate() { return new SpriteComponent(); }
+    static std::shared_ptr<SpriteComponent> Instantiate() { return std::make_shared<SpriteComponent>(); }
 
     SpriteComponent();
     ~SpriteComponent() override = default;

@@ -28,7 +28,7 @@ bool ReplicationResultManager::AddDelivery(NetworkID networkID, const Replicatio
         return false;
     }
 
-    m_networkIDToReplicationCommand[networkID] = replicationCommand;
+    m_networkIDToReplicationCommand.insert(std::make_pair(networkID, replicationCommand));
 
     return true;
 }

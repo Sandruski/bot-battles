@@ -127,7 +127,7 @@ inline std::shared_ptr<T> ComponentArray<T>::AddComponent(Entity entity, Compone
 
     U32 componentIndex = m_componentsSize;
 
-    std::shared_ptr<T> component = std::make_shared<T>();
+    std::shared_ptr<T> component = T::Instantiate();
     m_components.at(componentIndex) = component;
     m_entitiesToComponents.insert(std::make_pair(entity, componentIndex));
 

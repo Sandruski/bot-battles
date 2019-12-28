@@ -11,7 +11,7 @@ namespace sand {
 struct TextComponent : public Component, public NetworkableObject {
 
     static ComponentType GetType() { return ComponentType::TEXT; }
-    static TextComponent* Instantiate() { return new TextComponent(); }
+    static std::shared_ptr<TextComponent> Instantiate() { return std::make_shared<TextComponent>(); }
 
     TextComponent();
     ~TextComponent() override = default;

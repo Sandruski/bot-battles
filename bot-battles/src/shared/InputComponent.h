@@ -10,7 +10,7 @@ namespace sand {
 struct InputComponent : public Component, public NetworkableObject {
 
     static ComponentType GetType() { return ComponentType::INPUT; }
-    static InputComponent* Instantiate() { return new InputComponent(); }
+    static std::shared_ptr<InputComponent> Instantiate() { return std::make_shared<InputComponent>(); }
 
     InputComponent();
     ~InputComponent() override = default;

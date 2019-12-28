@@ -10,7 +10,7 @@ namespace sand {
 struct TransformComponent : public Component, public NetworkableObject {
 
     static ComponentType GetType() { return ComponentType::TRANSFORM; }
-    static TransformComponent* Instantiate() { return new TransformComponent(); }
+    static std::shared_ptr<TransformComponent> Instantiate() { return std::make_shared<TransformComponent>(); }
 
     TransformComponent();
     ~TransformComponent() override = default;
