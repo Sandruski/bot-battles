@@ -162,6 +162,7 @@ void ClientSystem::EnqueueIncomingPackets(ClientComponent& clientComponent) cons
         } else if (readByteCount == -WSAECONNRESET) {
             OnConnectionReset(clientComponent);
         } else if (readByteCount == 0 || -WSAEWOULDBLOCK) {
+            // TODO: graceful disconnection if readByteCount == 0?
             break;
         }
     }

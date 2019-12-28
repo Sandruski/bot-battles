@@ -22,7 +22,7 @@ NetworkID LinkingContext::AddEntity(Entity entity, NetworkID networkID)
 
     NetworkID existingNetworkID = GetNetworkID(entity);
     if (existingNetworkID != INVALID_NETWORK_ID) {
-        WLOG("The entity %u already exists with the networkID %u", entity, existingNetworkID);
+        WLOG("Entity %u already exists with the networkID %u", entity, existingNetworkID);
         return INVALID_NETWORK_ID;
     }
 
@@ -45,7 +45,7 @@ bool LinkingContext::RemoveEntity(Entity entity)
 
     NetworkID networkID = GetNetworkID(entity);
     if (networkID == INVALID_NETWORK_ID) {
-        WLOG("The entity %u does not exist", entity);
+        WLOG("Entity %u does not exist", entity);
         return false;
     }
 
@@ -64,7 +64,7 @@ NetworkID LinkingContext::GetNetworkID(Entity entity) const
 
     auto it = m_entityToNetworkID.find(entity);
     if (it == m_entityToNetworkID.end()) {
-        WLOG("The entity %u has no associated networkID", entity);
+        WLOG("Entity %u has no associated networkID", entity);
         return INVALID_NETWORK_ID;
     }
 
@@ -78,7 +78,7 @@ Entity LinkingContext::GetEntity(NetworkID networkID) const
 
     auto it = m_networkIDToEntity.find(networkID);
     if (it == m_networkIDToEntity.end()) {
-        WLOG("The networkID %u has no associated entity", networkID);
+        WLOG("networkID %u has no associated entity", networkID);
         return INVALID_ENTITY;
     }
 

@@ -9,6 +9,7 @@ namespace sand {
 ServerComponent::ServerComponent()
     : m_socket(nullptr)
     , m_socketAddress(nullptr)
+    , m_receivedPackets()
     , m_playerIDToClientProxy()
     , m_availablePlayerIDs()
 {

@@ -76,8 +76,9 @@ bool ServerSystem::Update()
 {
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
 
-    ReceiveIncomingPackets(serverComponent);
-    // TODO: ProcessQueuedPackets()
+    EnqueueIncomingPackets(serverComponent);
+    ProcessIncomingPackets(serverComponent);
+
     SendOutgoingPackets(serverComponent);
 
     return true;
@@ -148,25 +149,43 @@ bool ServerSystem::SendPacket(const ServerComponent& serverComponent, const Outp
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerSystem::ReceiveIncomingPackets(ServerComponent& serverComponent)
+void ServerSystem::EnqueueIncomingPackets(ServerComponent& serverComponent)
 {
     InputMemoryStream packet;
     SocketAddress fromSocketAddress;
 
     U32 receivedPacketCount = 0;
 
+    F32 time = Time::GetInstance().GetTime();
+
     while (receivedPacketCount < MAX_PACKETS_PER_FRAME) {
         I32 readByteCount = serverComponent.m_socket->ReceiveFrom(packet.GetPtr(), packet.GetByteCapacity(), fromSocketAddress);
         if (readByteCount > 0) {
             packet.SetCapacity(readByteCount);
             packet.ResetHead();
-            ReceivePacket(serverComponent, packet, fromSocketAddress);
-
+            serverComponent.m_receivedPackets.emplace_back(packet, fromSocketAddress, time);
             ++receivedPacketCount;
         } else if (readByteCount == -WSAECONNRESET) {
             ClientConnectionReset(serverComponent, fromSocketAddress);
         } else if (readByteCount == 0 || -WSAEWOULDBLOCK) {
             // TODO: graceful disconnection if readByteCount == 0?
+            break;
+        }
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
+void ServerSystem::ProcessIncomingPackets(ServerComponent& serverComponent)
+{
+    F32 time = Time::GetInstance().GetTime();
+
+    while (!serverComponent.m_receivedPackets.empty()) {
+        ReceivedPacket& receivedPacket = serverComponent.m_receivedPackets.front();
+        F32 timestamp = receivedPacket.GetTimestamp();
+        if (time >= timestamp) {
+            ReceivePacket(serverComponent, receivedPacket.GetBuffer(), receivedPacket.GetFromAddress());
+            serverComponent.m_receivedPackets.pop_front();
+        } else {
             break;
         }
     }
