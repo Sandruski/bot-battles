@@ -13,9 +13,6 @@ SpriteComponent::SpriteComponent()
 }
 
 //----------------------------------------------------------------------------------------------------
-SpriteComponent::~SpriteComponent() { }
-
-//----------------------------------------------------------------------------------------------------
 U32 SpriteComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) const
 {
     U32 writtenState = 0;

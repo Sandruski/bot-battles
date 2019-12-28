@@ -17,6 +17,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)AckRange.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ByteSwap.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Colors.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Component.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ComponentDefs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ComponentManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ComponentMemberTypes.h" />
@@ -38,9 +39,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)MemoryStream.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MessageTypes.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Move.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)NetComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)NetDefs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)NetUtils.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)NetworkableObject.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Observer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)pch.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)RandomNumberGenerator.h" />
@@ -82,6 +83,7 @@
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)AckRange.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Colors.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Component.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ComponentManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)DebugDrawer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)EntityManager.cpp" />

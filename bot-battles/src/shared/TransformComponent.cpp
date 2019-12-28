@@ -12,11 +12,6 @@ TransformComponent::TransformComponent()
 }
 
 //----------------------------------------------------------------------------------------------------
-TransformComponent::~TransformComponent()
-{
-}
-
-//----------------------------------------------------------------------------------------------------
 U32 TransformComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) const
 {
     U32 writtenState = 0;

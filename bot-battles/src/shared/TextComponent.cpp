@@ -14,11 +14,6 @@ TextComponent::TextComponent()
 }
 
 //----------------------------------------------------------------------------------------------------
-TextComponent::~TextComponent()
-{
-}
-
-//----------------------------------------------------------------------------------------------------
 U32 TextComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) const
 {
     U32 writtenState = 0;

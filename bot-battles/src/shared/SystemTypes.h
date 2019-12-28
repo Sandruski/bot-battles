@@ -9,7 +9,7 @@ enum class SystemType : U16 {
     WINDOW,
     RENDERER,
     EVENT,
-	HUD,
+    HUD,
 #endif
 
     INPUT,
@@ -22,8 +22,7 @@ enum class SystemType : U16 {
     SPAWNER,
 #endif
 
-    COUNT,
-    INVALID
+    COUNT
 };
 }
 

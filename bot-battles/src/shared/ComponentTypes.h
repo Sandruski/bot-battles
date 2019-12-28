@@ -9,11 +9,10 @@ enum class ComponentType : U16 {
 
 #ifdef _DRAW
     SPRITE,
-	TEXT,
+    TEXT,
 #endif
 
-    COUNT,
-    INVALID
+    COUNT
 };
 }
 

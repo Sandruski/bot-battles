@@ -1,6 +1,7 @@
 #include "ReplicationManagerServer.h"
 
 #include "ComponentManager.h"
+#include "ComponentMemberTypes.h"
 #include "EntityManager.h"
 #include "GameServer.h"
 #include "InputComponent.h"

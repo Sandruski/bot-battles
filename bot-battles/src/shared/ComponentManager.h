@@ -6,15 +6,14 @@
 
 namespace sand {
 
+class ComponentManager;
+class Component;
+
 //----------------------------------------------------------------------------------------------------
-class IComponentArray : public Subject {
+class IComponentArray {
 public:
-    IComponentArray() { }
-    virtual ~IComponentArray() { }
-
-    virtual bool PreUpdate() = 0;
-
-    virtual void OnNotify(const Event& event) = 0;
+    virtual bool RemoveComponent(Entity entity, ComponentManager& componentManager) = 0;
+    virtual void KillComponent(Entity entity) = 0;
 };
 
 //----------------------------------------------------------------------------------------------------
@@ -22,21 +21,47 @@ template <class T>
 class ComponentArray : public IComponentArray {
 public:
     ComponentArray();
-    ~ComponentArray();
+    ~ComponentArray() = default;
 
-    bool PreUpdate() override;
+    bool RemoveComponent(Entity entity, ComponentManager& componentManager) override;
+    void KillComponent(Entity entity) override;
 
-    std::shared_ptr<T> AddComponent(Entity entity);
-    bool RemoveComponent(Entity entity);
+    std::shared_ptr<T> AddComponent(Entity entity, ComponentManager& componentManager);
     std::shared_ptr<T> GetComponent(Entity entity);
-    void KillComponent(Entity entity);
-
-    void OnNotify(const Event& event) override;
 
 private:
     std::array<std::shared_ptr<T>, MAX_ENTITIES> m_components;
     std::unordered_map<Entity, U32> m_entitiesToComponents;
     U32 m_componentsSize;
+};
+
+//----------------------------------------------------------------------------------------------------
+class ComponentManager : public Subject, public Observer {
+public:
+    ComponentManager();
+    ~ComponentManager() override = default;
+
+    bool PreUpdate();
+
+    void OnNotify(const Event& event) override;
+
+    template <class T>
+    bool RegisterComponent();
+    template <class T>
+    bool DeRegisterComponent();
+
+    template <class T>
+    std::shared_ptr<T> AddComponent(Entity entity);
+    template <class T>
+    std::shared_ptr<T> GetComponent(Entity entity);
+    template <class T>
+    bool RemoveComponent(Entity entity);
+
+    void OnEntityRemoved(Entity entity);
+    void OnComponentRemoved(ComponentType componentType, Entity entity);
+
+private:
+    std::array<std::shared_ptr<IComponentArray>, MAX_COMPONENTS> m_componentArrays;
 };
 
 //----------------------------------------------------------------------------------------------------
@@ -51,53 +76,11 @@ inline ComponentArray<T>::ComponentArray()
 
 //----------------------------------------------------------------------------------------------------
 template <class T>
-inline ComponentArray<T>::~ComponentArray()
-{
-}
-
-//----------------------------------------------------------------------------------------------------
-template <class T>
-inline bool ComponentArray<T>::PreUpdate()
-{
-    NotifyEvents();
-
-    return true;
-}
-
-//----------------------------------------------------------------------------------------------------
-template <class T>
-inline std::shared_ptr<T> ComponentArray<T>::AddComponent(Entity entity)
-{
-    auto entityToComponent = m_entitiesToComponents.find(entity);
-    if (entityToComponent != m_entitiesToComponents.end()) {
-        WLOG("The entity %u already has the component!", entity);
-        return m_components[entityToComponent->second];
-    }
-
-    U32 componentIndex = m_componentsSize;
-    ++m_componentsSize;
-
-    m_entitiesToComponents[entity] = componentIndex;
-
-    std::shared_ptr component = std::make_shared<T>();
-    m_components[componentIndex] = component;
-
-    Event newEvent;
-    newEvent.eventType = EventType::COMPONENT_ADDED;
-    newEvent.component.componentType = T::GetType();
-    newEvent.component.entity = entity;
-    PushEvent(newEvent);
-
-    return component;
-}
-
-//----------------------------------------------------------------------------------------------------
-template <class T>
-bool ComponentArray<T>::RemoveComponent(Entity entity)
+bool ComponentArray<T>::RemoveComponent(Entity entity, ComponentManager& componentManager)
 {
     auto entityToComponent = m_entitiesToComponents.find(entity);
     if (entityToComponent == m_entitiesToComponents.end()) {
-        WLOG("The entity %u does not have the component!", entity);
+        WLOG("Entity %u does not have the component!", entity);
         return false;
     }
 
@@ -105,32 +88,19 @@ bool ComponentArray<T>::RemoveComponent(Entity entity)
     newEvent.eventType = EventType::COMPONENT_REMOVED;
     newEvent.component.componentType = T::GetType();
     newEvent.component.entity = entity;
-    PushEvent(newEvent);
+    componentManager.PushEvent(newEvent);
 
     return true;
 }
 
 //----------------------------------------------------------------------------------------------------
 template <class T>
-std::shared_ptr<T> ComponentArray<T>::GetComponent(Entity entity)
-{
-    auto entityToComponent = m_entitiesToComponents.find(entity);
-    if (entityToComponent == m_entitiesToComponents.end()) {
-        WLOG("The entity %u does not have the component!", entity);
-        return nullptr;
-    }
-
-    return m_components[entityToComponent->second];
-}
-
-//----------------------------------------------------------------------------------------------------
-template <class T>
 inline void ComponentArray<T>::KillComponent(Entity entity)
 {
-    U32 componentIndex = m_entitiesToComponents[entity];
+    U32 componentIndex = m_entitiesToComponents.at(entity);
     U32 lastComponentIndex = m_componentsSize - 1;
-    m_components[componentIndex] = m_components[lastComponentIndex];
-    m_components[lastComponentIndex] = nullptr;
+    m_components.at(componentIndex) = m_components.at(lastComponentIndex);
+    m_components.at(lastComponentIndex) = nullptr;
 
     auto lastEntityToComponent = std::find_if(m_entitiesToComponents.begin(),
         m_entitiesToComponents.end(),
@@ -139,7 +109,7 @@ inline void ComponentArray<T>::KillComponent(Entity entity)
         });
     assert(lastEntityToComponent != m_entitiesToComponents.end());
 
-    m_entitiesToComponents[lastEntityToComponent->first] = componentIndex;
+    m_entitiesToComponents.insert(std::make_pair(lastEntityToComponent->first, componentIndex));
     m_entitiesToComponents.erase(entity);
 
     --m_componentsSize;
@@ -147,71 +117,60 @@ inline void ComponentArray<T>::KillComponent(Entity entity)
 
 //----------------------------------------------------------------------------------------------------
 template <class T>
-inline void ComponentArray<T>::OnNotify(const Event& event)
+inline std::shared_ptr<T> ComponentArray<T>::AddComponent(Entity entity, ComponentManager& componentManager)
 {
-    switch (event.eventType) {
-    case EventType::COMPONENT_REMOVED: {
-        if (event.component.componentType == T::GetType()) {
-            KillComponent(event.component.entity);
-        }
-        break;
+    auto entityToComponent = m_entitiesToComponents.find(entity);
+    if (entityToComponent != m_entitiesToComponents.end()) {
+        WLOG("Entity %u already has the component!", entity);
+        return m_components.at(entityToComponent->second);
     }
 
-    case EventType::ENTITY_REMOVED: {
-        RemoveComponent(event.entity.entity);
-        break;
-    }
+    U32 componentIndex = m_componentsSize;
 
-    default: {
-        break;
-    }
-    }
+    std::shared_ptr<T> component = std::make_shared<T>();
+    m_components.at(componentIndex) = component;
+    m_entitiesToComponents.insert(std::make_pair(entity, componentIndex));
+
+    ++m_componentsSize;
+
+    Event newEvent;
+    newEvent.eventType = EventType::COMPONENT_ADDED;
+    newEvent.component.componentType = T::GetType();
+    newEvent.component.entity = entity;
+    componentManager.PushEvent(newEvent);
+
+    return component;
 }
 
 //----------------------------------------------------------------------------------------------------
-class ComponentManager : public Observer {
-public:
-    ComponentManager();
-    ~ComponentManager();
+template <class T>
+std::shared_ptr<T> ComponentArray<T>::GetComponent(Entity entity)
+{
+    auto entityToComponent = m_entitiesToComponents.find(entity);
+    if (entityToComponent == m_entitiesToComponents.end()) {
+        WLOG("Entity %u does not have the component!", entity);
+        return nullptr;
+    }
 
-    bool PreUpdate();
-
-    template <class T>
-    bool RegisterComponent();
-    template <class T>
-    bool DeRegisterComponent();
-
-    template <class T>
-    std::shared_ptr<T> AddComponent(Entity entity);
-    template <class T>
-    bool RemoveComponent(Entity entity);
-    template <class T>
-    std::shared_ptr<T> GetComponent(Entity entity);
-
-    bool AddObserver(std::shared_ptr<Observer> observer);
-    bool RemoveObserver(std::shared_ptr<Observer> observer);
-
-    void OnNotify(const Event& event) override;
-
-private:
-    std::array<std::shared_ptr<IComponentArray>, MAX_COMPONENTS> m_componentArrays;
-};
+    return m_components.at(entityToComponent->second);
+}
 
 //----------------------------------------------------------------------------------------------------
 template <class T>
 inline bool ComponentManager::RegisterComponent()
 {
-    //static_assert(std::is_base_of<Component, T>::value, "T is not derived from Component");
+    static_assert(std::is_base_of<Component, T>::value, "T is not derived from Component");
 
-    ComponentType type = T::GetType();
-    std::size_t index = static_cast<std::size_t>(type);
-    std::shared_ptr<IComponentArray> componentArray = m_componentArrays.at(index);
+    ComponentType componentType = T::GetType();
+    assert(componentType < ComponentType::COUNT);
+    std::size_t componentIndex = static_cast<std::size_t>(componentType);
+    std::shared_ptr<IComponentArray> componentArray = m_componentArrays.at(componentIndex);
     if (componentArray != nullptr) {
-        WLOG("The component array is already registered!");
+        WLOG("Component array %u is already registered!", componentIndex);
         return false;
     }
 
-    m_componentArrays[index] = std::make_shared<ComponentArray<T>>();
+    m_componentArrays.at(componentIndex) = std::make_shared<ComponentArray<T>>();
 
     return true;
 }
@@ -220,17 +179,18 @@ inline bool ComponentManager::RegisterComponent()
 template <class T>
 inline bool ComponentManager::DeRegisterComponent()
 {
-    //static_assert(std::is_base_of<Component, T>::value, "T is not derived from Component");
+    static_assert(std::is_base_of<Component, T>::value, "T is not derived from Component");
 
-    ComponentType type = T::GetType();
-    std::size_t index = static_cast<std::size_t>(type);
-    std::shared_ptr<IComponentArray> componentArray = m_componentArrays.at(index);
+    ComponentType componentType = T::GetType();
+    assert(componentType < ComponentType::COUNT);
+    std::size_t componentIndex = static_cast<std::size_t>(componentType);
+    std::shared_ptr<IComponentArray> componentArray = m_componentArrays.at(componentIndex);
     if (componentArray == nullptr) {
-        WLOG("The component array is not registered!");
+        WLOG("Component array %u is not registered!", componentIndex);
         return false;
     }
 
-    m_componentArrays[index] = nullptr;
+    m_componentArrays.at(componentIndex) = nullptr;
 
     return true;
 }
@@ -239,42 +199,39 @@ inline bool ComponentManager::DeRegisterComponent()
 template <class T>
 std::shared_ptr<T> ComponentManager::AddComponent(Entity entity)
 {
-    //static_assert(std::is_base_of<Component, T>::value, "T is not derived from Component");
+    static_assert(std::is_base_of<Component, T>::value, "T is not derived from Component");
+
     assert(entity < INVALID_ENTITY);
-
-    ComponentType type = T::GetType();
-    assert(type != ComponentType::COUNT && type != ComponentType::INVALID);
-
-    std::size_t index = static_cast<std::size_t>(type);
-    return std::static_pointer_cast<ComponentArray<T>>(m_componentArrays[index])->AddComponent(entity);
-}
-
-//----------------------------------------------------------------------------------------------------
-template <class T>
-bool ComponentManager::RemoveComponent(Entity entity)
-{
-    //static_assert(std::is_base_of<Component, T>::value, "T is not derived from Component");
-    assert(entity < INVALID_ENTITY);
-
-    ComponentType type = T::GetType();
-    assert(type != ComponentType::COUNT && type != ComponentType::INVALID);
-
-    std::size_t index = static_cast<std::size_t>(type);
-    return std::static_pointer_cast<ComponentArray<T>>(m_componentArrays[index])->RemoveComponent(entity);
+    ComponentType componentType = T::GetType();
+    assert(componentType < ComponentType::COUNT);
+    std::size_t componentIndex = static_cast<std::size_t>(componentType);
+    return std::static_pointer_cast<ComponentArray<T>>(m_componentArrays[componentIndex])->AddComponent(entity, *this);
 }
 
 //----------------------------------------------------------------------------------------------------
 template <class T>
 std::shared_ptr<T> ComponentManager::GetComponent(Entity entity)
 {
-    //static_assert(std::is_base_of<Component, T>::value, "T is not derived from Component");
+    static_assert(std::is_base_of<Component, T>::value, "T is not derived from Component");
+
     assert(entity < INVALID_ENTITY);
+    ComponentType componentType = T::GetType();
+    assert(componentType < ComponentType::COUNT);
+    std::size_t componentIndex = static_cast<std::size_t>(componentType);
+    return std::static_pointer_cast<ComponentArray<T>>(m_componentArrays[componentIndex])->GetComponent(entity);
+}
 
-    ComponentType type = T::GetType();
-    assert(type != ComponentType::COUNT && type != ComponentType::INVALID);
+//----------------------------------------------------------------------------------------------------
+template <class T>
+bool ComponentManager::RemoveComponent(Entity entity)
+{
+    static_assert(std::is_base_of<Component, T>::value, "T is not derived from Component");
 
-    std::size_t index = static_cast<std::size_t>(type);
-    return std::static_pointer_cast<ComponentArray<T>>(m_componentArrays[index])->GetComponent(entity);
+    assert(entity < INVALID_ENTITY);
+    ComponentType componentType = T::GetType();
+    assert(componentType < ComponentType::COUNT);
+    std::size_t componentIndex = static_cast<std::size_t>(componentType);
+    return std::static_pointer_cast<ComponentArray<T>>(m_componentArrays[componentIndex])->RemoveComponent(entity);
 }
 }
 

@@ -5,8 +5,8 @@
 
 namespace sand {
 
-const U32 MAX_SYSTEMS = static_cast<U32>(SystemType::COUNT);
-const U32 INVALID_SYSTEM = static_cast<U32>(SystemType::INVALID);
+const U16 MAX_SYSTEMS = static_cast<U16>(SystemType::COUNT);
+const U16 INVALID_SYSTEM = static_cast<U16>(SystemType::COUNT);
 }
 
 #endif

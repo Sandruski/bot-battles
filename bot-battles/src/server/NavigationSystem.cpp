@@ -1,6 +1,7 @@
 #include "NavigationSystem.h"
 
 #include "ComponentManager.h"
+#include "ComponentMemberTypes.h"
 #include "GameServer.h"
 #include "InputComponent.h"
 #include "TransformComponent.h"

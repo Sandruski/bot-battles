@@ -10,36 +10,9 @@ ComponentManager::ComponentManager()
 }
 
 //----------------------------------------------------------------------------------------------------
-ComponentManager::~ComponentManager()
-{
-}
-
-//----------------------------------------------------------------------------------------------------
 bool ComponentManager::PreUpdate()
 {
-    for (const auto& componentArray : m_componentArrays) {
-        componentArray->PreUpdate();
-    }
-
-    return true;
-}
-
-//----------------------------------------------------------------------------------------------------
-bool ComponentManager::AddObserver(std::shared_ptr<Observer> observer)
-{
-    for (const auto& componentArray : m_componentArrays) {
-        componentArray->AddObserver(observer);
-    }
-
-    return true;
-}
-
-//----------------------------------------------------------------------------------------------------
-bool ComponentManager::RemoveObserver(std::shared_ptr<Observer> observer)
-{
-    for (const auto& componentArray : m_componentArrays) {
-        componentArray->RemoveObserver(observer);
-    }
+    NotifyEvents();
 
     return true;
 }
@@ -47,8 +20,38 @@ bool ComponentManager::RemoveObserver(std::shared_ptr<Observer> observer)
 //----------------------------------------------------------------------------------------------------
 void ComponentManager::OnNotify(const Event& event)
 {
-    for (const auto& componentArray : m_componentArrays) {
-        componentArray->OnNotify(event);
+    switch (event.eventType) {
+
+    case EventType::ENTITY_REMOVED: {
+        OnEntityRemoved(event.entity.entity);
+        break;
     }
+
+    case EventType::COMPONENT_REMOVED: {
+        OnComponentRemoved(event.component.componentType, event.component.entity);
+        break;
+    }
+
+    default: {
+        break;
+    }
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
+void ComponentManager::OnEntityRemoved(Entity entity)
+{
+    assert(entity < INVALID_ENTITY);
+    for (auto& componentArray : m_componentArrays) {
+        componentArray->RemoveComponent(entity, *this);
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
+void ComponentManager::OnComponentRemoved(ComponentType componentType, Entity entity)
+{
+    assert(componentType < ComponentType::COUNT && entity < INVALID_ENTITY);
+    std::size_t componentIndex = static_cast<std::size_t>(componentType);
+    m_componentArrays.at(componentIndex)->KillComponent(entity);
 }
 }
