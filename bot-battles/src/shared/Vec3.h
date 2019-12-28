@@ -10,7 +10,7 @@ class Vec3 {
 public:
     Vec3();
     Vec3(F32 x, F32 y, F32 z);
-    ~Vec3();
+    ;
 
     void operator+=(const Vec3& vec)
     {

@@ -15,7 +15,6 @@ public:
 
 public:
     HUDSystem();
-    ~HUDSystem() override;
 
     bool StartUp() override;
     bool PreUpdate() override;

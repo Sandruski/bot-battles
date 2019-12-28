@@ -53,7 +53,6 @@
 #include "ComponentDefs.h"
 #include "EntityDefs.h"
 #include "NetDefs.h"
-#include "SDLDefs.h"
 #include "SystemDefs.h"
 #include "WorkingDirDefs.h"
 

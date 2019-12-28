@@ -189,9 +189,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)DebugDrawer.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)SDLDefs.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)WorkingDirDefs.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
@@ -252,8 +249,12 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)NetworkableObject.h">
       <Filter>Header Files\Networking</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)RendererComponent.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)WindowComponent.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)WindowComponent.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)RendererComponent.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp">
@@ -376,7 +377,11 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Component.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)RendererComponent.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)WindowComponent.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)RendererComponent.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)WindowComponent.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

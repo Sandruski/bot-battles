@@ -14,9 +14,6 @@ public:
     }
 
 public:
-    EventSystem();
-    ~EventSystem() override;
-
     bool StartUp() override;
     bool Update() override;
     bool ShutDown() override;

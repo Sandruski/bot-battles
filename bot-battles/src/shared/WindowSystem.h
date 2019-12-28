@@ -3,9 +3,6 @@
 
 #include "System.h"
 
-struct SDL_Window;
-struct SDL_Surface;
-
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
@@ -17,9 +14,6 @@ public:
     }
 
 public:
-    WindowSystem();
-    ~WindowSystem() override;
-
     bool StartUp() override;
     bool ShutDown() override;
 };

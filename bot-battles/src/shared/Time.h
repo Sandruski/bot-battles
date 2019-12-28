@@ -12,21 +12,12 @@ public:
 
 public:
     Time();
-    ~Time();
 
     void StartUpdate();
     void FinishUpdate();
 
-    F32 GetDt() const
-    {
-        return static_cast<F32>(m_dt);
-    }
-
-    F32 GetFps() const
-    {
-        return static_cast<F32>(m_fps);
-    }
-
+    F32 GetDt() const;
+    F32 GetFps() const;
     F32 GetTime() const;
 
 private:

@@ -7,10 +7,7 @@ namespace sand {
 class System {
 public:
     System();
-    virtual ~System();
-
-    bool RegisterEntity(Entity entity);
-    bool DeRegisterEntity(Entity entity);
+    virtual ~System() = default;
 
     virtual bool StartUp()
     {
@@ -52,7 +49,10 @@ public:
         return true;
     }
 
-    const Signature& GetSignature();
+    bool RegisterEntity(Entity entity);
+    bool DeRegisterEntity(Entity entity);
+
+    Signature GetSignature();
 
 protected:
     std::vector<Entity> m_entities;

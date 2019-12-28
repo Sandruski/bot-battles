@@ -95,7 +95,7 @@ inline std::weak_ptr<T> ComponentArray<T>::AddComponent(Entity entity)
 
     U32 componentIndex = m_componentsSize;
 
-    std::shared_ptr<T> component = T::Instantiate();
+    std::shared_ptr<T> component = std::make_shared<T>();
     m_components.at(componentIndex) = component;
     m_entitiesToComponents.insert(std::make_pair(entity, componentIndex));
 

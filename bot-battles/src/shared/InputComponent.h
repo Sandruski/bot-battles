@@ -10,7 +10,6 @@ namespace sand {
 struct InputComponent : public Component {
 
     static ComponentType GetType() { return ComponentType::INPUT; }
-    static std::shared_ptr<InputComponent> Instantiate() { return std::make_shared<InputComponent>(); }
 
     InputComponent();
 

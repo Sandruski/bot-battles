@@ -4,74 +4,102 @@
 #include "ResourceManager.h"
 #include "TextureImporter.h"
 
-namespace sand
+namespace sand {
+//----------------------------------------------------------------------------------------------------
+TextResource::TextResource(U32 id, const char* dir, const char* file)
+    : Resource(id, dir, file)
+    , m_texture(nullptr)
+    , m_font()
+    , m_text()
+    , m_color()
+    , m_size()
 {
-	//----------------------------------------------------------------------------------------------------
-	TextResource::TextResource(U32 id, const char* dir, const char* file) : Resource(id, dir, file),
-		m_texture(nullptr),
-		m_font(nullptr),
-		m_text(),
-		m_color(),
-		m_size()	
-	{
-	}
+}
 
-	//----------------------------------------------------------------------------------------------------
-	TextResource::~TextResource()
-	{
-	}
+//----------------------------------------------------------------------------------------------------
+TextResource::~TextResource()
+{
+}
 
-	//----------------------------------------------------------------------------------------------------
-	bool TextResource::Load()
-	{
-		assert(m_texture == nullptr);
+//----------------------------------------------------------------------------------------------------
+bool TextResource::Load()
+{
+    assert(m_texture == nullptr);
 
-		if (m_font != nullptr)
-		{
-			m_texture = g_game->GetTextureImporter().LoadFromText(m_font->GetFont(), m_text.c_str(), m_color, m_size.x, m_size.y);
-			
-			return m_texture != nullptr;
-		}
+    if (!m_font.expired()) {
+        m_texture = g_game->GetTextureImporter().LoadFromText(m_font.lock()->GetFont(), m_text.c_str(), m_color, m_size.x, m_size.y);
 
-		return true;
-	}
+        return m_texture != nullptr;
+    }
 
-	//----------------------------------------------------------------------------------------------------
-	bool TextResource::UnLoad()
-	{
-		assert(m_texture != nullptr);
+    return true;
+}
 
-		g_game->GetTextureImporter().UnLoad(m_texture);
+//----------------------------------------------------------------------------------------------------
+bool TextResource::UnLoad()
+{
+    assert(m_texture != nullptr);
 
-		return true;
-	}
+    g_game->GetTextureImporter().UnLoad(m_texture);
 
-	//----------------------------------------------------------------------------------------------------
-	bool TextResource::ReLoad()
-	{
-		if (m_texture != nullptr)
-		{
-			UnLoad();
-		}
+    return true;
+}
 
-		return Load();
-	}
+//----------------------------------------------------------------------------------------------------
+bool TextResource::ReLoad()
+{
+    if (m_texture != nullptr) {
+        UnLoad();
+    }
 
-	//----------------------------------------------------------------------------------------------------
-	void TextResource::SetFont(std::shared_ptr<FontResource> font)
-	{
-		m_font = font;
-	}
+    return Load();
+}
 
-	//----------------------------------------------------------------------------------------------------
-	void TextResource::SetText(const char* text)
-	{
-		m_text = text;
-	}
+//----------------------------------------------------------------------------------------------------
+SDL_Texture* TextResource::GetTexture() const
+{
+    return m_texture;
+}
 
-	//----------------------------------------------------------------------------------------------------
-	void TextResource::SetColor(const SDL_Color& color)
-	{
-		m_color = color;
-	}
+//----------------------------------------------------------------------------------------------------
+void TextResource::SetFont(std::weak_ptr<FontResource> font)
+{
+    m_font = font;
+}
+
+//----------------------------------------------------------------------------------------------------
+void TextResource::SetText(const char* text)
+{
+    m_text = text;
+}
+
+//----------------------------------------------------------------------------------------------------
+const char* TextResource::GetText() const
+{
+    return m_text.c_str();
+}
+
+//----------------------------------------------------------------------------------------------------
+void TextResource::SetColor(const SDL_Color& color)
+{
+    m_color = color;
+}
+
+//----------------------------------------------------------------------------------------------------
+const SDL_Color& TextResource::GetColor() const
+{
+    return m_color;
+}
+
+//----------------------------------------------------------------------------------------------------
+U32 TextResource::GetWidth() const
+{
+    return m_size.x;
+}
+
+//----------------------------------------------------------------------------------------------------
+U32 TextResource::GetHeight() const
+{
+    return m_size.y;
+}
 }

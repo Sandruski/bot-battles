@@ -10,7 +10,6 @@ class Vec2 {
 public:
     Vec2();
     Vec2(F32 x, F32 y);
-    ~Vec2();
 
     void operator+=(const Vec2& vec)
     {

@@ -5,8 +5,6 @@
 
 namespace sand {
 
-struct SingletonRendererComponent;
-
 //----------------------------------------------------------------------------------------------------
 class RendererSystem : public System {
 public:
@@ -17,12 +15,11 @@ public:
 
 public:
     RendererSystem();
-    ~RendererSystem() override;
 
     bool StartUp() override;
-	bool PreRender() override;
+    bool PreRender() override;
     bool Render() override;
-	bool PostRender() override;
+    bool PostRender() override;
     bool ShutDown() override;
 };
 }

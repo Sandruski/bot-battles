@@ -4,6 +4,7 @@
 namespace sand {
 
 enum class EventType {
+
     ENTITY_ADDED,
     ENTITY_REMOVED,
     ENTITY_SIGNATURE_CHANGED,
@@ -17,8 +18,7 @@ enum class EventType {
     PLAYER_REMOVED,
 #endif
 
-    COUNT,
-    INVALID
+    COUNT
 };
 }
 

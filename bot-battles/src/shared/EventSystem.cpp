@@ -3,16 +3,6 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-EventSystem::EventSystem()
-{
-}
-
-//----------------------------------------------------------------------------------------------------
-EventSystem::~EventSystem()
-{
-}
-
-//----------------------------------------------------------------------------------------------------
 bool EventSystem::StartUp()
 {
     if (SDL_Init(SDL_INIT_EVENTS) == SDL_ERROR) {
@@ -28,7 +18,9 @@ bool EventSystem::Update()
 {
     static SDL_Event event;
     while (SDL_PollEvent(&event)) {
+
         switch (event.type) {
+
         case SDL_QUIT: {
             // TODO SEND EVENT
             return false;

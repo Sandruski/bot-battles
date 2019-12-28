@@ -25,7 +25,6 @@ public:
 
 public:
     InputSystemClient();
-    ~InputSystemClient() override;
 
     bool Update() override;
 

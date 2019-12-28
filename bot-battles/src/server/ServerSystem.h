@@ -20,14 +20,11 @@ public:
     }
 
 public:
-    ServerSystem();
-    ~ServerSystem() override;
+    void OnNotify(const Event& event) override;
 
     bool StartUp() override;
     bool PreUpdate() override;
     bool Update() override;
-
-    void OnNotify(const Event& event) override;
 
 private:
     void SendOutgoingPackets(ServerComponent& serverComponent);
@@ -42,6 +39,10 @@ private:
 
     void ClientConnectionReset(ServerComponent& serverComponent, const SocketAddress& socketAddress);
     void DisconnectClient(ServerComponent& serverComponent, PlayerID playerID, Entity entity);
+
+    void OnEntityAdded(Entity entity) const;
+    void OnEntityRemoved(Entity entity) const;
+    void OnComponentMemberChanged(U32 dirtyState, Entity entity) const;
 };
 }
 

@@ -16,11 +16,6 @@ InputSystemServer::InputSystemServer()
 }
 
 //----------------------------------------------------------------------------------------------------
-InputSystemServer::~InputSystemServer()
-{
-}
-
-//----------------------------------------------------------------------------------------------------
 bool InputSystemServer::Update()
 {
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();

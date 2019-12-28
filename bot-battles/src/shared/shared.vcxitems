@@ -56,7 +56,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)SpriteResource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TextComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TextResource.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)SDLDefs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)RendererComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)WindowComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SocketAddress.h" />

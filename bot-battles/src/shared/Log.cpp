@@ -1,6 +1,7 @@
 #include "Log.h"
 
 namespace sand {
+
 //----------------------------------------------------------------------------------------------------
 void Log(const char* file, int line, const char* function, LogTypes type, const char* format, ...)
 {

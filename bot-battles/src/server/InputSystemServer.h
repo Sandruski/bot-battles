@@ -15,7 +15,6 @@ public:
 
 public:
     InputSystemServer();
-    ~InputSystemServer() override;
 
     bool Update() override;
 };

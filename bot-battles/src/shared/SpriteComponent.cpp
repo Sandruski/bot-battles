@@ -4,11 +4,12 @@
 #include "Game.h"
 #include "MemoryStream.h"
 #include "ResourceManager.h"
+#include "SpriteResource.h"
 
 namespace sand {
 //----------------------------------------------------------------------------------------------------
 SpriteComponent::SpriteComponent()
-    : m_sprite(nullptr)
+    : m_sprite()
 {
 }
 
@@ -18,7 +19,7 @@ U32 SpriteComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) con
     U32 writtenState = 0;
 
     if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_FILE)) {
-        std::string file = m_sprite->GetFile();
+        std::string file = m_sprite.lock()->GetFile();
         outputStream.Write(file);
         writtenState |= static_cast<U32>(ComponentMemberType::SPRITE_FILE);
     }

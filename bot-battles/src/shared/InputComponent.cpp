@@ -14,8 +14,8 @@ InputComponent::InputComponent()
 //----------------------------------------------------------------------------------------------------
 void InputComponent::Copy(const InputComponent& other)
 {
-    this->m_acceleration = other.m_acceleration;
-    this->m_angularAcceleration = other.m_angularAcceleration;
+    m_acceleration = other.m_acceleration;
+    m_angularAcceleration = other.m_angularAcceleration;
 }
 
 //----------------------------------------------------------------------------------------------------

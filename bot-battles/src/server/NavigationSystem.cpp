@@ -16,11 +16,6 @@ NavigationSystem::NavigationSystem()
 }
 
 //----------------------------------------------------------------------------------------------------
-NavigationSystem::~NavigationSystem()
-{
-}
-
-//----------------------------------------------------------------------------------------------------
 bool NavigationSystem::Update()
 {
     for (auto& entity : m_entities) {

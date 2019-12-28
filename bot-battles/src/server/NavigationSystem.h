@@ -1,7 +1,6 @@
 #ifndef __NAVIGATION_SYSTEM_H__
 #define __NAVIGATION_SYSTEM_H__
 
-#include "Subject.h"
 #include "System.h"
 
 namespace sand {
@@ -19,7 +18,6 @@ public:
 
 public:
     NavigationSystem();
-    ~NavigationSystem() override;
 
     bool Update() override;
 

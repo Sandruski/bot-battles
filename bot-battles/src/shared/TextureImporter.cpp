@@ -1,20 +1,9 @@
 #include "TextureImporter.h"
 
 #include "Game.h"
-
 #include "RendererComponent.h"
 
 namespace sand {
-
-//----------------------------------------------------------------------------------------------------
-TextureImporter::TextureImporter()
-{
-}
-
-//----------------------------------------------------------------------------------------------------
-TextureImporter::~TextureImporter()
-{
-}
 
 //----------------------------------------------------------------------------------------------------
 bool TextureImporter::StartUp() const

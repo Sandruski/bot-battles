@@ -87,7 +87,7 @@ inline std::weak_ptr<T> SystemManager::GetSystem()
     assert(systemType < SystemType::COUNT);
     std::size_t systemIndex = static_cast<std::size_t>(systemType);
     std::shared_ptr<System> system = m_systems.at(systemIndex);
-    return std::static_pointer_cast<T>(system);
+    return std::weak_ptr<T>(std::static_pointer_cast<T>(system));
 }
 } // namespace sand
 

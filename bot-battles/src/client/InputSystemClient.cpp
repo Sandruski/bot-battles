@@ -15,11 +15,6 @@ InputSystemClient::InputSystemClient()
 }
 
 //----------------------------------------------------------------------------------------------------
-InputSystemClient::~InputSystemClient()
-{
-}
-
-//----------------------------------------------------------------------------------------------------
 bool InputSystemClient::Update()
 {
     for (auto& entity : m_entities) {

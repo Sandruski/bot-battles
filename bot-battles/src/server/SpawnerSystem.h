@@ -14,13 +14,13 @@ public:
     }
 
 public:
-    SpawnerSystem();
-    ~SpawnerSystem() override;
-
     void OnNotify(const Event& event) override;
 
 private:
     Entity SpawnPlayerEntity() const;
+
+    void OnPlayerAdded(PlayerID playerID) const;
+    void OnPlayerRemoved(Entity entity) const;
 };
 }
 

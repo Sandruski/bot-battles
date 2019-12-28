@@ -24,11 +24,6 @@ RendererSystem::RendererSystem()
 }
 
 //----------------------------------------------------------------------------------------------------
-RendererSystem::~RendererSystem()
-{
-}
-
-//----------------------------------------------------------------------------------------------------
 bool RendererSystem::StartUp()
 {
     RendererComponent& rendererComponent = g_game->GetRendererComponent();
@@ -40,9 +35,10 @@ bool RendererSystem::StartUp()
         return false;
     }
 
-    std::shared_ptr<FontResource> font = g_game->GetResourceManager().AddResource<FontResource>("Dosis-Regular.ttf", FONTS_DIR, true);
-    font->SetSize(30);
-    rendererComponent.m_font = font;
+    std::weak_ptr<FontResource> fontResource = g_game->GetResourceManager().AddResource<FontResource>("Dosis-Regular.ttf", FONTS_DIR, true);
+    fontResource.lock()->SetSize(30);
+    fontResource.lock()->ReLoad();
+    rendererComponent.m_font = fontResource;
 
     return true;
 }
@@ -81,15 +77,15 @@ bool RendererSystem::Render()
         std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
         std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
 
-        if (spriteComponent.lock()->m_sprite != nullptr) {
+        if (!spriteComponent.lock()->m_sprite.expired()) {
             SDL_Rect renderQuad = {
                 static_cast<I32>(transformComponent.lock()->m_position.x),
                 static_cast<I32>(transformComponent.lock()->m_position.y),
-                static_cast<I32>(spriteComponent.lock()->m_sprite->GetWidth()),
-                static_cast<I32>(spriteComponent.lock()->m_sprite->GetHeight())
+                static_cast<I32>(spriteComponent.lock()->m_sprite.lock()->GetWidth()),
+                static_cast<I32>(spriteComponent.lock()->m_sprite.lock()->GetHeight())
             };
 
-            SDL_RenderCopy(rendererComponent.m_renderer, spriteComponent.lock()->m_sprite->GetTexture(), nullptr, &renderQuad);
+            SDL_RenderCopy(rendererComponent.m_renderer, spriteComponent.lock()->m_sprite.lock()->GetTexture(), nullptr, &renderQuad);
         }
 
         if (rendererComponent.m_isDebugDraw) {

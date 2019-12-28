@@ -19,9 +19,6 @@ public:
     }
 
 public:
-    ClientSystem();
-    ~ClientSystem() override;
-
     bool StartUp() override;
     bool Update() override;
 

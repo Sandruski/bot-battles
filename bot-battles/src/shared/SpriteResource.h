@@ -5,37 +5,23 @@
 
 #include "Vec2I.h"
 
-namespace sand
-{
-	//----------------------------------------------------------------------------------------------------
-	class SpriteResource : public Resource
-	{
-	public:
-		SpriteResource(U32 id, const char* dir, const char* file);
-		~SpriteResource() override;
+namespace sand {
+//----------------------------------------------------------------------------------------------------
+class SpriteResource : public Resource {
+public:
+    SpriteResource(U32 id, const char* dir, const char* file);
 
-		bool Load() override;
-		bool UnLoad() override;
+    bool Load() override;
+    bool UnLoad() override;
 
-		SDL_Texture* GetTexture() const
-		{
-			return m_texture;
-		}
+    SDL_Texture* GetTexture() const;
+    U32 GetWidth() const;
+    U32 GetHeight() const;
 
-		U32 GetWidth() const
-		{
-			return m_size.x;
-		}
-
-		U32 GetHeight() const
-		{
-			return m_size.y;
-		}
-
-	private:
-		SDL_Texture* m_texture;
-		Vec2I m_size;
-	};
+private:
+    SDL_Texture* m_texture;
+    Vec2I m_size;
+};
 }
 
 #endif
