@@ -5,9 +5,9 @@
 #include "EntityManager.h"
 #include "GameServer.h"
 #include "LinkingContext.h"
+#include "RendererComponent.h"
 #include "ResourceManager.h"
-#include "SingletonRendererComponent.h"
-#include "SingletonServerComponent.h"
+#include "ServerComponent.h"
 #include "SpriteComponent.h"
 #include "TextComponent.h"
 #include "TextResource.h"
@@ -30,16 +30,16 @@ void SpawnerSystem::OnNotify(const Event& event)
 {
     switch (event.eventType) {
     case EventType::PLAYER_ADDED: {
-        std::shared_ptr<SingletonServerComponent> singletonServer = g_gameServer->GetSingletonServerComponent();
+        ServerComponent& serverComponent = g_gameServer->GetServerComponent();
         Entity entity = SpawnPlayerEntity();
-        singletonServer->AddEntity(entity, event.server.playerID);
+        serverComponent.AddEntity(entity, event.server.playerID);
         break;
     }
 
     case EventType::PLAYER_REMOVED: {
-        std::shared_ptr<SingletonServerComponent> singletonServer = g_gameServer->GetSingletonServerComponent();
+        ServerComponent& serverComponent = g_gameServer->GetServerComponent();
         g_game->GetEntityManager().RemoveEntity(event.server.entity);
-        singletonServer->RemoveEntity(event.server.entity);
+        serverComponent.RemoveEntity(event.server.entity);
         break;
     }
 
@@ -64,8 +64,8 @@ Entity SpawnerSystem::SpawnPlayerEntity() const
     spriteComponent.lock()->m_sprite = spriteResource;
 
     std::shared_ptr<TextResource> textResource = g_game->GetResourceManager().AddResource<TextResource>("", "", false);
-    std::shared_ptr<SingletonRendererComponent> singletonRenderer = g_game->GetSingletonRendererComponent();
-    textResource->SetFont(singletonRenderer->m_font);
+    RendererComponent& rendererComponent = g_game->GetRendererComponent();
+    textResource->SetFont(rendererComponent.m_font);
     textResource->SetText(spriteResource->GetFile());
     textResource->SetColor(Red);
     textResource->ReLoad();

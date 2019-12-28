@@ -1,14 +1,8 @@
 #include "GameClient.h"
 
-#include "DeliveryManagerClient.h"
-#include "ReplicationManagerClient.h"
-#include "SystemManager.h"
-
 #include "ClientSystem.h"
 #include "InputSystemClient.h"
-
-#include "SingletonClientComponent.h"
-#include "SingletonInputComponent.h"
+#include "SystemManager.h"
 
 namespace sand {
 
@@ -16,31 +10,24 @@ namespace sand {
 GameClient::GameClient(const GameConfiguration& configuration)
     : Game(configuration)
     , m_replicationManager()
-    , m_singletonInputComponent()
-    , m_singletonClientComponent()
-{
-    m_replicationManager = std::make_unique<ReplicationManagerClient>();
-    m_deliveryManager = std::make_unique<DeliveryManagerClient>();
-
-    m_singletonInputComponent = std::make_shared<SingletonInputComponent>();
-    m_singletonClientComponent = std::make_shared<SingletonClientComponent>();
-}
-
-//----------------------------------------------------------------------------------------------------
-GameClient::~GameClient()
+    , m_deliveryManager()
+    , m_moveComponent()
+    , m_clientComponent()
 {
 }
 
 //----------------------------------------------------------------------------------------------------
 bool GameClient::Init()
 {
-    bool ret = m_systemManager->RegisterSystem<InputSystemClient>();
+    bool ret = false;
+
+    ret = m_systemManager->RegisterSystem<InputSystemClient>();
     if (!ret) {
-        return false;
+        return ret;
     }
     ret = m_systemManager->RegisterSystem<ClientSystem>();
     if (!ret) {
-        return false;
+        return ret;
     }
 
     ret = Game::Init();

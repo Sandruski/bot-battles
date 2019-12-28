@@ -9,8 +9,7 @@ class OutputMemoryStream;
 class InputMemoryStream;
 class SocketAddress;
 class ClientProxy;
-
-struct SingletonServerComponent;
+struct ServerComponent;
 
 //----------------------------------------------------------------------------------------------------
 class ServerSystem : public System, public Subject, public Observer {
@@ -31,18 +30,18 @@ public:
     void OnNotify(const Event& event) override;
 
 private:
-    void SendOutgoingPackets(SingletonServerComponent& singletonServer);
-    void SendWelcomePacket(const SingletonServerComponent& singletonServer, PlayerID playerID, const SocketAddress& toSocketAddress) const;
-    void SendStatePacket(const SingletonServerComponent& singletonServer, std::shared_ptr<ClientProxy> clientProxy) const;
-    bool SendPacket(const SingletonServerComponent& singletonServer, const OutputMemoryStream& outputStream, const SocketAddress& toSocketAddress) const;
+    void SendOutgoingPackets(ServerComponent& serverComponent);
+    void SendWelcomePacket(const ServerComponent& serverComponent, PlayerID playerID, const SocketAddress& toSocketAddress) const;
+    void SendStatePacket(const ServerComponent& serverComponent, std::shared_ptr<ClientProxy> clientProxy) const;
+    bool SendPacket(const ServerComponent& serverComponent, const OutputMemoryStream& outputStream, const SocketAddress& toSocketAddress) const;
 
-    void ReceiveIncomingPackets(SingletonServerComponent& singletonServer);
-    void ReceivePacket(SingletonServerComponent& singletonServer, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress);
-    void ReceiveHelloPacket(SingletonServerComponent& singletonServer, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress, PlayerID& playerID);
-    void ReceiveInputPacket(SingletonServerComponent& singletonServer, InputMemoryStream& inputStream, PlayerID& playerID) const;
+    void ReceiveIncomingPackets(ServerComponent& serverComponent);
+    void ReceivePacket(ServerComponent& serverComponent, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress);
+    void ReceiveHelloPacket(ServerComponent& serverComponent, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress, PlayerID& playerID);
+    void ReceiveInputPacket(ServerComponent& serverComponent, InputMemoryStream& inputStream, PlayerID& playerID) const;
 
-    void ClientConnectionReset(SingletonServerComponent& singletonServer, const SocketAddress& socketAddress);
-    void DisconnectClient(SingletonServerComponent& singletonServer, PlayerID playerID, Entity entity);
+    void ClientConnectionReset(ServerComponent& serverComponent, const SocketAddress& socketAddress);
+    void DisconnectClient(ServerComponent& serverComponent, PlayerID playerID, Entity entity);
 };
 }
 

@@ -354,7 +354,7 @@
     <ClCompile Include="ReplicationResultManager.h" />
     <ClCompile Include="ReplicationManagerServer.cpp" />
     <ClCompile Include="ServerSystem.cpp" />
-    <ClCompile Include="SingletonServerComponent.cpp" />
+    <ClCompile Include="ServerComponent.cpp" />
     <ClCompile Include="SpawnerSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -367,7 +367,7 @@
     <ClInclude Include="NavigationSystem.h" />
     <ClInclude Include="ReplicationManagerServer.h" />
     <ClInclude Include="ServerSystem.h" />
-    <ClInclude Include="SingletonServerComponent.h" />
+    <ClInclude Include="ServerComponent.h" />
     <ClInclude Include="SpawnerSystem.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

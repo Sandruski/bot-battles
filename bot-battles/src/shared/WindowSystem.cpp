@@ -2,7 +2,7 @@
 
 #include "Game.h"
 
-#include "SingletonWindowComponent.h"
+#include "WindowComponent.h"
 
 namespace sand {
 
@@ -24,10 +24,10 @@ bool WindowSystem::StartUp()
         return false;
     }
 
-    std::shared_ptr<SingletonWindowComponent> singletonWindow = g_game->GetSingletonWindowComponent();
+    WindowComponent& windowComponent = g_game->GetWindowComponent();
 
-    singletonWindow->m_window = SDL_CreateWindow(g_game->GetName(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, singletonWindow->m_width, singletonWindow->m_height, SDL_WINDOW_SHOWN);
-    if (singletonWindow->m_window == nullptr) {
+    windowComponent.m_window = SDL_CreateWindow(g_game->GetName(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, windowComponent.m_width, windowComponent.m_height, SDL_WINDOW_SHOWN);
+    if (windowComponent.m_window == nullptr) {
         ELOG("Window could not be created! SDL Error: %s", SDL_GetError());
         return false;
     }
@@ -38,10 +38,10 @@ bool WindowSystem::StartUp()
 //----------------------------------------------------------------------------------------------------
 bool WindowSystem::ShutDown()
 {
-    std::shared_ptr<SingletonWindowComponent> singletonWindow = g_game->GetSingletonWindowComponent();
+    WindowComponent& windowComponent = g_game->GetWindowComponent();
 
-    SDL_DestroyWindow(singletonWindow->m_window);
-    singletonWindow->m_window = nullptr;
+    SDL_DestroyWindow(windowComponent.m_window);
+    windowComponent.m_window = nullptr;
 
     ILOG("Quitting SDL video subsystem");
     SDL_QuitSubSystem(SDL_INIT_VIDEO);

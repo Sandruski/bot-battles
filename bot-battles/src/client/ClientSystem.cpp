@@ -1,15 +1,15 @@
 #include "ClientSystem.h"
 
+#include "ClientComponent.h"
 #include "DeliveryManagerClient.h"
 #include "GameClient.h"
+#include "InputComponent.h"
 #include "LinkingContext.h"
 #include "MemoryStream.h"
 #include "MessageTypes.h"
 #include "Move.h"
 #include "ReceivedPacket.h"
 #include "ReplicationManagerClient.h"
-#include "SingletonClientComponent.h"
-#include "SingletonInputComponent.h"
 #include "SocketAddress.h"
 #include "UDPSocket.h"
 
@@ -36,12 +36,12 @@ bool ClientSystem::StartUp()
         return false;
     }
 
-    std::shared_ptr<SingletonClientComponent> singletonClient = g_gameClient->GetSingletonClientComponent();
-    singletonClient->m_socketAddress = SocketAddress::CreateIPv4("127.0.0.1", "9999");
-    assert(singletonClient->m_socketAddress != nullptr);
-    singletonClient->m_socket = UDPSocket::CreateIPv4();
-    assert(singletonClient->m_socket != nullptr);
-    singletonClient->m_socket->SetNonBlockingMode(true);
+    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    clientComponent.m_socketAddress = SocketAddress::CreateIPv4("127.0.0.1", "9999");
+    assert(clientComponent.m_socketAddress != nullptr);
+    clientComponent.m_socket = UDPSocket::CreateIPv4();
+    assert(clientComponent.m_socket != nullptr);
+    clientComponent.m_socket->SetNonBlockingMode(true);
 
     return true;
 }
@@ -49,65 +49,65 @@ bool ClientSystem::StartUp()
 //----------------------------------------------------------------------------------------------------
 bool ClientSystem::Update()
 {
-    std::shared_ptr<SingletonClientComponent> singletonClient = g_gameClient->GetSingletonClientComponent();
+    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
 
-    EnqueueIncomingPackets(*singletonClient);
-    ProcessIncomingPackets(*singletonClient);
+    EnqueueIncomingPackets(clientComponent);
+    ProcessIncomingPackets(clientComponent);
 
-    SendOutgoingPackets(*singletonClient);
+    SendOutgoingPackets(clientComponent);
 
     return true;
 }
 
 //----------------------------------------------------------------------------------------------------
-void ClientSystem::SendOutgoingPackets(SingletonClientComponent& singletonClient) const
+void ClientSystem::SendOutgoingPackets(ClientComponent& clientComponent) const
 {
-    const bool isConnected = singletonClient.IsConnected();
+    const bool isConnected = clientComponent.IsConnected();
     if (!isConnected) {
-        UpdateSendHelloPacket(singletonClient);
+        UpdateSendHelloPacket(clientComponent);
     } else {
-        UpdateSendInputPacket(singletonClient);
+        UpdateSendInputPacket(clientComponent);
     }
 }
 
 //----------------------------------------------------------------------------------------------------
-void ClientSystem::UpdateSendHelloPacket(SingletonClientComponent& singletonClient) const
+void ClientSystem::UpdateSendHelloPacket(ClientComponent& clientComponent) const
 {
     float time = Time::GetInstance().GetTime();
-    float nextHelloTime = singletonClient.GetNextHelloTime();
+    float nextHelloTime = clientComponent.GetNextHelloTime();
     if (time >= nextHelloTime) {
-        const bool result = SendHelloPacket(singletonClient);
+        const bool result = SendHelloPacket(clientComponent);
         if (result) {
-            singletonClient.m_lastTime = time;
+            clientComponent.m_lastTime = time;
         }
     }
 }
 
 //----------------------------------------------------------------------------------------------------
-void ClientSystem::UpdateSendInputPacket(SingletonClientComponent& singletonClient) const
+void ClientSystem::UpdateSendInputPacket(ClientComponent& clientComponent) const
 {
     float time = Time::GetInstance().GetTime();
-    float nextInputTime = singletonClient.GetNextInputTime();
+    float nextInputTime = clientComponent.GetNextInputTime();
     if (time >= nextInputTime) {
-        std::shared_ptr<SingletonInputComponent> singletonInput = g_gameClient->GetSingletonInputComponent();
-        const bool result = SendInputPacket(singletonClient, *singletonInput);
+        MoveComponent moveComponent = g_gameClient->GetMoveComponent();
+        const bool result = SendInputPacket(clientComponent, moveComponent);
         if (result) {
-            singletonClient.m_lastTime = time;
-            singletonInput->ClearMoves();
+            clientComponent.m_lastTime = time;
+            moveComponent.ClearMoves();
         }
     }
 }
 
 //----------------------------------------------------------------------------------------------------
-bool ClientSystem::SendHelloPacket(const SingletonClientComponent& singletonClient) const
+bool ClientSystem::SendHelloPacket(const ClientComponent& clientComponent) const
 {
     OutputMemoryStream helloPacket;
     helloPacket.Write(ClientMessageType::HELLO);
-    helloPacket.Write(singletonClient.m_name);
+    helloPacket.Write(clientComponent.m_name);
 
     ILOG("Sending hello packet to server...");
 
-    const bool result = SendPacket(singletonClient, helloPacket);
+    const bool result = SendPacket(clientComponent, helloPacket);
     if (result) {
         ILOG("Hello packet successfully sent to server");
     }
@@ -116,29 +116,29 @@ bool ClientSystem::SendHelloPacket(const SingletonClientComponent& singletonClie
 }
 
 //----------------------------------------------------------------------------------------------------
-bool ClientSystem::SendInputPacket(const SingletonClientComponent& singletonClient, const SingletonInputComponent& singletonInput) const
+bool ClientSystem::SendInputPacket(const ClientComponent& clientComponent, const MoveComponent& moveComponent) const
 {
-    if (!singletonInput.HasMoves()) {
+    if (!moveComponent.HasMoves()) {
         return false;
     }
 
     OutputMemoryStream inputPacket;
     inputPacket.Write(ClientMessageType::INPUT);
-    inputPacket.Write(singletonClient.m_playerID);
+    inputPacket.Write(clientComponent.m_playerID);
     g_gameClient->GetDeliveryManager().WriteState(inputPacket);
 
-    U32 totalMoveCount = singletonInput.GetMoveCount();
+    U32 totalMoveCount = moveComponent.GetMoveCount();
     U32 startIndex = totalMoveCount > MAX_MOVES_PER_PACKET ? totalMoveCount - MAX_MOVES_PER_PACKET : 0;
     U32 moveCount = totalMoveCount - startIndex;
     inputPacket.Write(moveCount, GetRequiredBits<MAX_MOVES_PER_PACKET>::value);
     for (U32 i = startIndex; i < totalMoveCount; ++i) {
-        const Move& move = singletonInput.GetMove(i);
+        const Move& move = moveComponent.GetMove(i);
         move.Write(inputPacket);
     }
 
     ILOG("Sending input packet to server...");
 
-    const bool result = SendPacket(singletonClient, inputPacket);
+    const bool result = SendPacket(clientComponent, inputPacket);
     if (result) {
         ILOG("Input packet successfully sent to server");
     }
@@ -147,13 +147,13 @@ bool ClientSystem::SendInputPacket(const SingletonClientComponent& singletonClie
 }
 
 //----------------------------------------------------------------------------------------------------
-bool ClientSystem::SendPacket(const SingletonClientComponent& singletonClient, const OutputMemoryStream& outputStream) const
+bool ClientSystem::SendPacket(const ClientComponent& clientComponent, const OutputMemoryStream& outputStream) const
 {
-    return singletonClient.m_socket->SendTo(outputStream.GetPtr(), outputStream.GetByteLength(), *singletonClient.m_socketAddress);
+    return clientComponent.m_socket->SendTo(outputStream.GetPtr(), outputStream.GetByteLength(), *clientComponent.m_socketAddress);
 }
 
 //----------------------------------------------------------------------------------------------------
-void ClientSystem::EnqueueIncomingPackets(SingletonClientComponent& singletonClient) const
+void ClientSystem::EnqueueIncomingPackets(ClientComponent& clientComponent) const
 {
     InputMemoryStream packet;
     SocketAddress fromSocketAddress;
@@ -163,14 +163,14 @@ void ClientSystem::EnqueueIncomingPackets(SingletonClientComponent& singletonCli
     F32 time = Time::GetInstance().GetTime();
 
     while (receivedPacketCount < MAX_PACKETS_PER_FRAME) {
-        I32 readByteCount = singletonClient.m_socket->ReceiveFrom(packet.GetPtr(), packet.GetByteCapacity(), fromSocketAddress);
+        I32 readByteCount = clientComponent.m_socket->ReceiveFrom(packet.GetPtr(), packet.GetByteCapacity(), fromSocketAddress);
         if (readByteCount > 0) {
             packet.SetCapacity(readByteCount);
             packet.ResetHead();
-            singletonClient.m_receivedPackets.emplace_back(packet, fromSocketAddress, time);
+            clientComponent.m_receivedPackets.emplace_back(packet, fromSocketAddress, time);
             ++receivedPacketCount;
         } else if (readByteCount == -WSAECONNRESET) {
-            OnConnectionReset(singletonClient);
+            OnConnectionReset(clientComponent);
         } else if (readByteCount == 0 || -WSAEWOULDBLOCK) {
             break;
         }
@@ -178,16 +178,16 @@ void ClientSystem::EnqueueIncomingPackets(SingletonClientComponent& singletonCli
 }
 
 //----------------------------------------------------------------------------------------------------
-void ClientSystem::ProcessIncomingPackets(SingletonClientComponent& singletonClient) const
+void ClientSystem::ProcessIncomingPackets(ClientComponent& clientComponent) const
 {
     F32 time = Time::GetInstance().GetTime();
 
-    while (!singletonClient.m_receivedPackets.empty()) {
-        ReceivedPacket& receivedPacket = singletonClient.m_receivedPackets.front();
+    while (!clientComponent.m_receivedPackets.empty()) {
+        ReceivedPacket& receivedPacket = clientComponent.m_receivedPackets.front();
         F32 timestamp = receivedPacket.GetTimestamp();
         if (time >= timestamp) {
-            ReceivePacket(singletonClient, receivedPacket.GetBuffer());
-            singletonClient.m_receivedPackets.pop_front();
+            ReceivePacket(clientComponent, receivedPacket.GetBuffer());
+            clientComponent.m_receivedPackets.pop_front();
         } else {
             break;
         }
@@ -195,18 +195,18 @@ void ClientSystem::ProcessIncomingPackets(SingletonClientComponent& singletonCli
 }
 
 //----------------------------------------------------------------------------------------------------
-void ClientSystem::ReceivePacket(SingletonClientComponent& singletonClient, InputMemoryStream& inputStream) const
+void ClientSystem::ReceivePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream) const
 {
     ServerMessageType type;
     inputStream.Read(type);
     switch (type) {
     case ServerMessageType::WELCOME: {
-        ReceiveWelcomePacket(singletonClient, inputStream);
+        ReceiveWelcomePacket(clientComponent, inputStream);
         break;
     }
 
     case ServerMessageType::STATE: {
-        ReceiveStatePacket(singletonClient, inputStream);
+        ReceiveStatePacket(clientComponent, inputStream);
         break;
     }
 
@@ -218,9 +218,9 @@ void ClientSystem::ReceivePacket(SingletonClientComponent& singletonClient, Inpu
 }
 
 //----------------------------------------------------------------------------------------------------
-void ClientSystem::ReceiveWelcomePacket(SingletonClientComponent& singletonClient, InputMemoryStream& inputStream) const
+void ClientSystem::ReceiveWelcomePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream) const
 {
-    const bool isConnected = singletonClient.IsConnected();
+    const bool isConnected = clientComponent.IsConnected();
     if (isConnected) {
         ILOG("Welcome packet received but skipped");
         return;
@@ -235,16 +235,16 @@ void ClientSystem::ReceiveWelcomePacket(SingletonClientComponent& singletonClien
         PlayerID playerID = INVALID_PLAYER_ID;
         inputStream.Read(playerID);
         if (playerID != INVALID_PLAYER_ID) {
-            singletonClient.m_playerID = playerID;
-            ILOG("Player %s %u has joined the game", singletonClient.m_name.c_str(), singletonClient.m_playerID);
+            clientComponent.m_playerID = playerID;
+            ILOG("Player %s %u has joined the game", clientComponent.m_name.c_str(), clientComponent.m_playerID);
         }
     }
 }
 
 //----------------------------------------------------------------------------------------------------
-void ClientSystem::ReceiveStatePacket(SingletonClientComponent& singletonClient, InputMemoryStream& inputStream) const
+void ClientSystem::ReceiveStatePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream) const
 {
-    const bool isConnected = singletonClient.IsConnected();
+    const bool isConnected = clientComponent.IsConnected();
     const bool isValid = g_gameClient->GetDeliveryManager().ReadState(inputStream);
     if (!isConnected || !isValid) {
         ILOG("State packet received but skipped");
@@ -258,15 +258,15 @@ void ClientSystem::ReceiveStatePacket(SingletonClientComponent& singletonClient,
 }
 
 //----------------------------------------------------------------------------------------------------
-void ClientSystem::OnConnectionReset(SingletonClientComponent& singletonClient) const
+void ClientSystem::OnConnectionReset(ClientComponent& clientComponent) const
 {
-    OnDisconnect(singletonClient);
+    OnDisconnect(clientComponent);
 }
 
 //----------------------------------------------------------------------------------------------------
-void ClientSystem::OnDisconnect(SingletonClientComponent& singletonClient) const
+void ClientSystem::OnDisconnect(ClientComponent& clientComponent) const
 {
-    singletonClient.m_playerID = INVALID_PLAYER_ID;
+    clientComponent.m_playerID = INVALID_PLAYER_ID;
     // Clear linkingContext
     // Clear networkGameObjects
 }

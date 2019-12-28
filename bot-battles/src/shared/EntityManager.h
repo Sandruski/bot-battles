@@ -4,10 +4,9 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class EntityManager : public Subject, public Observer {
+class EntityManager : public Subject, public Observer, public std::enable_shared_from_this<EntityManager> {
 public:
     EntityManager();
-    ~EntityManager() override = default;
 
     void OnNotify(const Event& event) override;
 

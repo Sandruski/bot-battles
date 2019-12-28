@@ -3,22 +3,21 @@
 
 #include "Game.h"
 
-namespace sand {
+#include "ServerComponent.h"
 
-struct SingletonServerComponent;
+namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 class GameServer : public Game {
 public:
     GameServer(const GameConfiguration& configuration);
-    ~GameServer() override;
 
     bool Init() override;
 
-    std::shared_ptr<SingletonServerComponent> GetSingletonServerComponent() const { return m_singletonServerComponent; }
+    ServerComponent& GetServerComponent() { return m_serverComponent; }
 
 private:
-    std::shared_ptr<SingletonServerComponent> m_singletonServerComponent;
+    ServerComponent m_serverComponent;
 };
 
 extern GameServer* g_gameServer;

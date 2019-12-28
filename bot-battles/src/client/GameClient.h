@@ -3,34 +3,33 @@
 
 #include "Game.h"
 
+#include "DeliveryManagerClient.h"
+#include "ReplicationManagerClient.h"
+
+#include "ClientComponent.h"
+#include "MoveComponent.h"
+
 namespace sand {
-
-class ReplicationManagerClient;
-class DeliveryManagerClient;
-
-struct SingletonInputComponent;
-struct SingletonClientComponent;
 
 //----------------------------------------------------------------------------------------------------
 class GameClient : public Game {
 public:
     GameClient(const GameConfiguration& configuration);
-    ~GameClient() override;
 
     bool Init() override;
 
-    ReplicationManagerClient& GetReplicationManager() const { return *m_replicationManager; }
-    DeliveryManagerClient& GetDeliveryManager() const { return *m_deliveryManager; }
+    ReplicationManagerClient& GetReplicationManager() { return m_replicationManager; }
+    DeliveryManagerClient& GetDeliveryManager() { return m_deliveryManager; }
 
-    std::shared_ptr<SingletonInputComponent> GetSingletonInputComponent() const { return m_singletonInputComponent; }
-    std::shared_ptr<SingletonClientComponent> GetSingletonClientComponent() const { return m_singletonClientComponent; }
+    MoveComponent& GetMoveComponent() { return m_moveComponent; }
+    ClientComponent& GetClientComponent() { return m_clientComponent; }
 
 private:
-    std::unique_ptr<ReplicationManagerClient> m_replicationManager;
-    std::unique_ptr<DeliveryManagerClient> m_deliveryManager;
+    ReplicationManagerClient m_replicationManager;
+    DeliveryManagerClient m_deliveryManager;
 
-    std::shared_ptr<SingletonInputComponent> m_singletonInputComponent;
-    std::shared_ptr<SingletonClientComponent> m_singletonClientComponent;
+    MoveComponent m_moveComponent;
+    ClientComponent m_clientComponent;
 };
 
 extern GameClient* g_gameClient;

@@ -4,9 +4,11 @@
 #include "DeliveryManagerServer.h"
 #include "GameServer.h"
 #include "LinkingContext.h"
+#include "ReplicationCommand.h"
 #include "ReplicationManagerServer.h"
 
 namespace sand {
+
 //----------------------------------------------------------------------------------------------------
 ReplicationResultManager::ReplicationResultManager(std::shared_ptr<ReplicationManagerServer> replicationManagerServer)
     : m_replicationManagerServer(std::move(replicationManagerServer)) // TODO: std move
@@ -85,6 +87,12 @@ void ReplicationResultManager::HandleDeliveryFailure(const DeliveryManagerServer
         }
         }
     }
+}
+
+//----------------------------------------------------------------------------------------------------
+const std::unordered_map<NetworkID, ReplicationCommand>& ReplicationResultManager::GetNetworkIDToReplicationCommandMap() const
+{
+    return m_networkIDToReplicationCommand;
 }
 
 //----------------------------------------------------------------------------------------------------

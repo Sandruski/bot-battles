@@ -1,12 +1,11 @@
 #ifndef __REPLICATION_RESULT_MANAGER_H__
 #define __REPLICATION_RESULT_MANAGER_H__
 
-#include "ReplicationCommand.h"
-
 namespace sand {
 
 class DeliveryManagerServer;
 class ReplicationManagerServer;
+class ReplicationCommand;
 
 //----------------------------------------------------------------------------------------------------
 class ReplicationResultManager {
@@ -19,10 +18,7 @@ public:
     void HandleDeliverySuccess(const DeliveryManagerServer& deliveryManagerServer) const;
     void HandleDeliveryFailure(const DeliveryManagerServer& deliveryManagerServer) const;
 
-    const std::unordered_map<NetworkID, ReplicationCommand>& GetNetworkIDToReplicationCommandMap() const
-    {
-        return m_networkIDToReplicationCommand;
-    }
+    const std::unordered_map<NetworkID, ReplicationCommand>& GetNetworkIDToReplicationCommandMap() const;
 
 private:
     void HandleCreateDeliverySuccess(NetworkID networkID) const;

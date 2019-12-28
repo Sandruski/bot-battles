@@ -9,7 +9,6 @@ class System;
 class SystemManager : public Observer {
 public:
     SystemManager();
-    ~SystemManager() = default;
 
     void OnNotify(const Event& event) override;
 

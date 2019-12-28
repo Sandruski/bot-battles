@@ -6,13 +6,13 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
+// Entity Component
 struct TransformComponent : public Component {
 
     static ComponentType GetType() { return ComponentType::TRANSFORM; }
     static std::shared_ptr<TransformComponent> Instantiate() { return std::make_shared<TransformComponent>(); }
 
     TransformComponent();
-    ~TransformComponent() override = default;
 
     U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override;
     void Read(InputMemoryStream& inputStream, U32 dirtyState) override;

@@ -9,8 +9,8 @@
 #include "SpriteResource.h"
 #include "TransformComponent.h"
 
-#include "SingletonRendererComponent.h"
-#include "SingletonWindowComponent.h"
+#include "RendererComponent.h"
+#include "WindowComponent.h"
 
 #include "Colors.h"
 
@@ -31,18 +31,18 @@ RendererSystem::~RendererSystem()
 //----------------------------------------------------------------------------------------------------
 bool RendererSystem::StartUp()
 {
-    std::shared_ptr<SingletonRendererComponent> singletonRenderer = g_game->GetSingletonRendererComponent();
-    std::shared_ptr<SingletonWindowComponent> singletonWindow = g_game->GetSingletonWindowComponent();
+    RendererComponent& rendererComponent = g_game->GetRendererComponent();
+    WindowComponent& windowComponent = g_game->GetWindowComponent();
 
-    singletonRenderer->m_renderer = SDL_CreateRenderer(singletonWindow->m_window, -1, SDL_RENDERER_ACCELERATED);
-    if (singletonRenderer->m_renderer == nullptr) {
+    rendererComponent.m_renderer = SDL_CreateRenderer(windowComponent.m_window, -1, SDL_RENDERER_ACCELERATED);
+    if (rendererComponent.m_renderer == nullptr) {
         ELOG("Renderer could not be created! SDL Error: %s", SDL_GetError());
         return false;
     }
 
     std::shared_ptr<FontResource> font = g_game->GetResourceManager().AddResource<FontResource>("Dosis-Regular.ttf", FONTS_DIR, true);
     font->SetSize(30);
-    singletonRenderer->m_font = font;
+    rendererComponent.m_font = font;
 
     return true;
 }
@@ -50,10 +50,10 @@ bool RendererSystem::StartUp()
 //----------------------------------------------------------------------------------------------------
 bool RendererSystem::PreRender()
 {
-    std::shared_ptr<SingletonRendererComponent> singletonRenderer = g_game->GetSingletonRendererComponent();
+    RendererComponent& rendererComponent = g_game->GetRendererComponent();
 
-    SDL_SetRenderDrawColor(singletonRenderer->m_renderer, singletonRenderer->m_backgroundColor.r, singletonRenderer->m_backgroundColor.g, singletonRenderer->m_backgroundColor.b, singletonRenderer->m_backgroundColor.a);
-    SDL_RenderClear(singletonRenderer->m_renderer);
+    SDL_SetRenderDrawColor(rendererComponent.m_renderer, rendererComponent.m_backgroundColor.r, rendererComponent.m_backgroundColor.g, rendererComponent.m_backgroundColor.b, rendererComponent.m_backgroundColor.a);
+    SDL_RenderClear(rendererComponent.m_renderer);
 
     return true;
 }
@@ -61,7 +61,7 @@ bool RendererSystem::PreRender()
 //----------------------------------------------------------------------------------------------------
 bool RendererSystem::Render()
 {
-    std::shared_ptr<SingletonRendererComponent> singletonRenderer = g_game->GetSingletonRendererComponent();
+    RendererComponent& rendererComponent = g_game->GetRendererComponent();
 
     /*
 		1. All level geometry
@@ -89,10 +89,10 @@ bool RendererSystem::Render()
                 static_cast<I32>(spriteComponent.lock()->m_sprite->GetHeight())
             };
 
-            SDL_RenderCopy(singletonRenderer->m_renderer, spriteComponent.lock()->m_sprite->GetTexture(), nullptr, &renderQuad);
+            SDL_RenderCopy(rendererComponent.m_renderer, spriteComponent.lock()->m_sprite->GetTexture(), nullptr, &renderQuad);
         }
 
-        if (singletonRenderer->m_isDebugDraw) {
+        if (rendererComponent.m_isDebugDraw) {
             /*
             DebugDrawer::DrawQuad(
                 {
@@ -136,9 +136,9 @@ bool RendererSystem::Render()
 //----------------------------------------------------------------------------------------------------
 bool RendererSystem::PostRender()
 {
-    std::shared_ptr<SingletonRendererComponent> singletonRenderer = g_game->GetSingletonRendererComponent();
+    RendererComponent& rendererComponent = g_game->GetRendererComponent();
 
-    SDL_RenderPresent(singletonRenderer->m_renderer);
+    SDL_RenderPresent(rendererComponent.m_renderer);
 
     return true;
 }
@@ -146,10 +146,10 @@ bool RendererSystem::PostRender()
 //----------------------------------------------------------------------------------------------------
 bool RendererSystem::ShutDown()
 {
-    std::shared_ptr<SingletonRendererComponent> singletonRenderer = g_game->GetSingletonRendererComponent();
+    RendererComponent& rendererComponent = g_game->GetRendererComponent();
 
-    SDL_DestroyRenderer(singletonRenderer->m_renderer);
-    singletonRenderer->m_renderer = nullptr;
+    SDL_DestroyRenderer(rendererComponent.m_renderer);
+    rendererComponent.m_renderer = nullptr;
 
     return true;
 }

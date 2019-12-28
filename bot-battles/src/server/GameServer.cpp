@@ -8,63 +8,57 @@
 #include "ServerSystem.h"
 #include "SpawnerSystem.h"
 
-#include "SingletonServerComponent.h"
+#include "ServerComponent.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 GameServer::GameServer(const GameConfiguration& configuration)
     : Game(configuration)
-{
-    m_singletonServerComponent = std::make_shared<SingletonServerComponent>();
-}
-
-//----------------------------------------------------------------------------------------------------
-GameServer::~GameServer()
+    , m_serverComponent()
 {
 }
 
 //----------------------------------------------------------------------------------------------------
 bool GameServer::Init()
 {
-    bool ret = m_systemManager->RegisterSystem<ServerSystem>();
+    bool ret = false;
+
+    ret = m_systemManager->RegisterSystem<ServerSystem>();
     if (!ret) {
-        return false;
+        return ret;
     }
     ret = m_systemManager->RegisterSystem<SpawnerSystem>();
     if (!ret) {
-        return false;
+        return ret;
     }
     ret = m_systemManager->RegisterSystem<InputSystemServer>();
     if (!ret) {
-        return false;
+        return ret;
     }
     ret = m_systemManager->RegisterSystem<NavigationSystem>();
     if (!ret) {
-        return false;
+        return ret;
     }
 
-    std::weak_ptr<ServerSystem> server = m_systemManager->GetSystem<ServerSystem>();
-    ret = m_entityManager->AddObserver(server);
+    std::weak_ptr<ServerSystem> serverSystem = m_systemManager->GetSystem<ServerSystem>();
+    ret = m_entityManager->AddObserver(serverSystem);
     if (!ret) {
-        return false;
+        return ret;
     }
-
-    ret = server.lock()->AddObserver(server);
+    std::weak_ptr<SpawnerSystem> spawnerSystem = m_systemManager->GetSystem<SpawnerSystem>();
+    ret = serverSystem.lock()->AddObserver(spawnerSystem);
     if (!ret) {
-        return false;
+        return ret;
     }
-
-    std::weak_ptr<SpawnerSystem> spawner = m_systemManager->GetSystem<SpawnerSystem>();
-    ret = server.lock()->AddObserver(spawner);
+    ret = serverSystem.lock()->AddObserver(serverSystem);
     if (!ret) {
-        return false;
+        return ret;
     }
-
-    std::weak_ptr<NavigationSystem> navigation = m_systemManager->GetSystem<NavigationSystem>();
-    ret = navigation.lock()->AddObserver(server);
+    std::weak_ptr<NavigationSystem> navigationSystem = m_systemManager->GetSystem<NavigationSystem>();
+    ret = navigationSystem.lock()->AddObserver(serverSystem);
     if (!ret) {
-        return false;
+        return ret;
     }
 
     ret = Game::Init();

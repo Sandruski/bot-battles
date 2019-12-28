@@ -3,14 +3,13 @@
 #include "ComponentMemberTypes.h"
 #include "Game.h"
 #include "MemoryStream.h"
+#include "RendererComponent.h"
 #include "ResourceManager.h"
-#include "SingletonRendererComponent.h"
 
 namespace sand {
 //----------------------------------------------------------------------------------------------------
 TextComponent::TextComponent()
-    : Component()
-    , m_text(nullptr)
+    : m_text(nullptr)
 {
 }
 
@@ -39,8 +38,8 @@ void TextComponent::Read(InputMemoryStream& inputStream, U32 dirtyState)
         SDL_Color color;
         inputStream.Read(color);
         m_text = g_game->GetResourceManager().AddResource<TextResource>("", "", false);
-        std::shared_ptr<SingletonRendererComponent> singletonRenderer = g_game->GetSingletonRendererComponent();
-        m_text->SetFont(singletonRenderer->m_font);
+        RendererComponent& rendererComponent = g_game->GetRendererComponent();
+        m_text->SetFont(rendererComponent.m_font);
         m_text->SetText(text.c_str());
         m_text->SetColor(color);
         m_text->ReLoad();

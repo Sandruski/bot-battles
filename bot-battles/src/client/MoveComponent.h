@@ -1,29 +1,26 @@
-#ifndef __SINGLETON_INPUT_COMPONENT_H__
-#define __SINGLETON_INPUT_COMPONENT_H__
+#ifndef __MOVE_COMPONENT_H__
+#define __MOVE_COMPONENT_H__
 
 #include "Move.h"
 
 namespace sand {
 
-//----------------------------------------------------------------------------------------------------
-struct SingletonInputComponent {
+struct InputComponent;
 
-    SingletonInputComponent()
+//----------------------------------------------------------------------------------------------------
+// System Component
+struct MoveComponent {
+
+    MoveComponent()
         : m_moves()
         , m_inputTime(0.03f)
         , m_lastTime(0.0f)
     {
     }
-    ~SingletonInputComponent()
-    {
-    }
 
     const Move& AddMove(const InputComponent& input, U32 dirtyState, F32 timestamp);
 
-    const Move& GetMove(U32 index) const
-    {
-        return m_moves.at(index);
-    }
+    const Move& GetMove(U32 index) const;
 
     U32 GetMoveCount() const
     {

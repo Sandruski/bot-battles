@@ -10,6 +10,8 @@ class IComponentArray {
     friend class ComponentManager;
 
 public:
+    virtual ~IComponentArray() = default;
+
     virtual std::weak_ptr<Component> AddBaseComponent(Entity entity) = 0;
     virtual std::weak_ptr<Component> GetBaseComponent(Entity entity) = 0;
 
@@ -24,7 +26,6 @@ template <class T>
 class ComponentArray : public IComponentArray {
 public:
     ComponentArray();
-    ~ComponentArray() = default;
 
     std::weak_ptr<Component> AddBaseComponent(Entity entity) override;
     std::weak_ptr<Component> GetBaseComponent(Entity entity) override;
@@ -71,7 +72,7 @@ inline std::weak_ptr<Component> ComponentArray<T>::GetBaseComponent(Entity entit
 
 //----------------------------------------------------------------------------------------------------
 template <class T>
-bool ComponentArray<T>::RemoveComponent(Entity entity)
+inline bool ComponentArray<T>::RemoveComponent(Entity entity)
 {
     auto entityToComponent = m_entitiesToComponents.find(entity);
     if (entityToComponent == m_entitiesToComponents.end()) {
@@ -105,7 +106,7 @@ inline std::weak_ptr<T> ComponentArray<T>::AddComponent(Entity entity)
 
 //----------------------------------------------------------------------------------------------------
 template <class T>
-std::weak_ptr<T> ComponentArray<T>::GetComponent(Entity entity)
+inline std::weak_ptr<T> ComponentArray<T>::GetComponent(Entity entity)
 {
     auto entityToComponent = m_entitiesToComponents.find(entity);
     if (entityToComponent == m_entitiesToComponents.end()) {
@@ -149,10 +150,9 @@ inline bool ComponentArray<T>::KillComponent(Entity entity)
 }
 
 //----------------------------------------------------------------------------------------------------
-class ComponentManager : public Subject, public Observer {
+class ComponentManager : public Subject, public Observer, public std::enable_shared_from_this<ComponentManager> {
 public:
     ComponentManager();
-    ~ComponentManager() override = default;
 
     void OnNotify(const Event& event) override;
 
@@ -223,7 +223,7 @@ inline bool ComponentManager::DeRegisterComponent()
 
 //----------------------------------------------------------------------------------------------------
 template <class T>
-std::weak_ptr<T> ComponentManager::AddComponent(Entity entity)
+inline std::weak_ptr<T> ComponentManager::AddComponent(Entity entity)
 {
     static_assert(std::is_base_of<Component, T>::value, "T is not derived from Component");
 
@@ -245,7 +245,7 @@ std::weak_ptr<T> ComponentManager::AddComponent(Entity entity)
 
 //----------------------------------------------------------------------------------------------------
 template <class T>
-std::weak_ptr<T> ComponentManager::GetComponent(Entity entity)
+inline std::weak_ptr<T> ComponentManager::GetComponent(Entity entity)
 {
     static_assert(std::is_base_of<Component, T>::value, "T is not derived from Component");
 
@@ -258,7 +258,7 @@ std::weak_ptr<T> ComponentManager::GetComponent(Entity entity)
 
 //----------------------------------------------------------------------------------------------------
 template <class T>
-bool ComponentManager::RemoveComponent(Entity entity)
+inline bool ComponentManager::RemoveComponent(Entity entity)
 {
     static_assert(std::is_base_of<Component, T>::value, "T is not derived from Component");
 

@@ -3,11 +3,11 @@
 #include "ComponentManager.h"
 #include "EntityManager.h"
 #include "Game.h"
+#include "RendererComponent.h"
 #include "ResourceManager.h"
-#include "SingletonRendererComponent.h"
-#include "SingletonWindowComponent.h"
 #include "TextComponent.h"
 #include "TransformComponent.h"
+#include "WindowComponent.h"
 
 namespace sand {
 
@@ -29,8 +29,8 @@ bool HUDSystem::StartUp()
     m_fps = g_game->GetEntityManager().AddEntity();
     g_game->GetComponentManager().AddComponent<TransformComponent>(m_fps);
     std::shared_ptr<TextResource> textResource = g_game->GetResourceManager().AddResource<TextResource>("", "", false);
-    std::shared_ptr<SingletonRendererComponent> singletonRenderer = g_game->GetSingletonRendererComponent();
-    textResource->SetFont(singletonRenderer->m_font);
+    RendererComponent& rendererComponent = g_game->GetRendererComponent();
+    textResource->SetFont(rendererComponent.m_font);
     textResource->SetColor(Green);
     std::weak_ptr<TextComponent> textComponent = g_game->GetComponentManager().AddComponent<TextComponent>(m_fps);
     textComponent.lock()->m_text = textResource;
@@ -47,8 +47,8 @@ bool HUDSystem::PreUpdate()
     textComponent.lock()->m_text->ReLoad();
 
     std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(m_fps);
-    std::shared_ptr<SingletonWindowComponent> singletonWindow = g_game->GetSingletonWindowComponent();
-    transformComponent.lock()->m_position.x = static_cast<F32>(singletonWindow->m_width - textComponent.lock()->m_text->GetWidth());
+    WindowComponent& windowComponent = g_game->GetWindowComponent();
+    transformComponent.lock()->m_position.x = static_cast<F32>(windowComponent.m_width - textComponent.lock()->m_text->GetWidth());
 
     return true;
 }
@@ -56,7 +56,7 @@ bool HUDSystem::PreUpdate()
 //----------------------------------------------------------------------------------------------------
 bool HUDSystem::Render()
 {
-    std::shared_ptr<SingletonRendererComponent> singletonRenderer = g_game->GetSingletonRendererComponent();
+    RendererComponent& rendererComponent = g_game->GetRendererComponent();
 
     for (auto& entity : m_entities) {
 
@@ -71,10 +71,10 @@ bool HUDSystem::Render()
                 static_cast<I32>(textComponent.lock()->m_text->GetHeight())
             };
 
-            SDL_RenderCopy(singletonRenderer->m_renderer, textComponent.lock()->m_text->GetTexture(), nullptr, &renderQuad);
+            SDL_RenderCopy(rendererComponent.m_renderer, textComponent.lock()->m_text->GetTexture(), nullptr, &renderQuad);
         }
 
-        if (singletonRenderer->m_isDebugDraw) {
+        if (rendererComponent.m_isDebugDraw) {
             // TODO
         }
     }

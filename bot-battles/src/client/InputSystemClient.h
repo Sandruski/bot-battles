@@ -5,18 +5,18 @@
 
 namespace sand {
 
-struct SingletonInputComponent;
+struct MoveComponent;
 
 //----------------------------------------------------------------------------------------------------
 class InputSystemClient : public System {
 public:
-	enum class KeyState {
-		IDLE,
-		DOWN,
-		REPEAT,
-		UP
-	};
-	KeyState m_keyboard[SDL_NUM_SCANCODES];
+    enum class KeyState {
+        IDLE,
+        DOWN,
+        REPEAT,
+        UP
+    };
+    KeyState m_keyboard[SDL_NUM_SCANCODES];
 
     static SystemType GetType()
     {
@@ -29,8 +29,8 @@ public:
 
     bool Update() override;
 
-    void UpdateSampleInput(SingletonInputComponent& singletonInput) const;
-    void SampleInput(SingletonInputComponent& singletonInput, F32 timestamp) const;
+    void UpdateSampleInput(MoveComponent& moveComponent) const;
+    void SampleInput(MoveComponent& moveComponent, F32 timestamp) const;
 };
 }
 

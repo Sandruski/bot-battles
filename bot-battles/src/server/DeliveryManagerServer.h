@@ -1,7 +1,6 @@
 #ifndef __DELIVERY_MANAGER_SERVER_H__
 #define __DELIVERY_MANAGER_SERVER_H__
 
-#include "AckRange.h"
 #include "Delivery.h"
 
 namespace sand {
@@ -13,17 +12,13 @@ class InputMemoryStream;
 class DeliveryManagerServer {
 public:
     DeliveryManagerServer();
-    ~DeliveryManagerServer();
 
     Delivery& WriteState(OutputMemoryStream& outputStream);
     bool ReadState(InputMemoryStream& inputStream);
 
     void ProcessTimedOutPackets();
 
-    const std::deque<Delivery>& GetDeliveries() const
-    {
-        return m_deliveries;
-    }
+    const std::deque<Delivery>& GetDeliveries() const;
 
 private:
     Delivery& WriteSequenceNumber(OutputMemoryStream& outputStream);

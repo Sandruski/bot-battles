@@ -2,28 +2,18 @@
 
 #include "ComponentManager.h"
 #include "EntityManager.h"
-#include "FSM.h"
-#include "LinkingContext.h"
+#include "EventSystem.h"
+#include "InputComponent.h"
 #include "SystemManager.h"
+#include "TransformComponent.h"
 #ifdef _DRAW
-#include "FontImporter.h"
-#include "ResourceManager.h"
-#include "TextureImporter.h"
-
 #include "HUDSystem.h"
 #include "RendererSystem.h"
 #include "WindowSystem.h"
-#endif
-#include "EventSystem.h"
 
-#ifdef _DRAW
-#include "SingletonRendererComponent.h"
-#include "SingletonWindowComponent.h"
 #include "SpriteComponent.h"
 #include "TextComponent.h"
 #endif
-#include "InputComponent.h"
-#include "TransformComponent.h"
 
 namespace sand {
 
@@ -34,120 +24,98 @@ Game::Game(const GameConfiguration& configuration)
     , m_componentManager()
     , m_systemManager()
     , m_linkingContext()
-    , m_resourceManager()
-    , m_textureImporter()
+    , m_fsm()
 #ifdef _DRAW
-    , m_singletonWindowComponent()
-    , m_singletonRendererComponent()
+    , m_fontImporter()
+    , m_textureImporter()
+    , m_resourceManager()
+    , m_windowComponent()
+    , m_rendererComponent()
 #endif
     , m_isRunning(false)
 {
     m_entityManager = std::make_shared<EntityManager>();
     m_componentManager = std::make_shared<ComponentManager>();
     m_systemManager = std::make_shared<SystemManager>();
-    m_linkingContext = std::make_unique<LinkingContext>();
-    m_fsm = std::make_shared<FSM>(); // TODO: remove this!
-#ifdef _DRAW
-	m_fontImporter = std::make_shared<FontImporter>();
-	m_textureImporter = std::make_shared<TextureImporter>();
-    m_resourceManager = std::make_shared<ResourceManager>();
-
-    m_singletonRendererComponent = std::make_shared<SingletonRendererComponent>();
-    m_singletonWindowComponent = std::make_shared<SingletonWindowComponent>();
-#endif
-}
-
-//----------------------------------------------------------------------------------------------------
-Game::~Game()
-{
 }
 
 //----------------------------------------------------------------------------------------------------
 bool Game::Init()
 {
-    // Systems
     bool ret = false;
 
 #ifdef _DRAW
     ret = m_systemManager->RegisterSystem<WindowSystem>();
     if (!ret) {
-        return false;
+        return ret;
     }
     ret = m_systemManager->RegisterSystem<RendererSystem>();
     if (!ret) {
-        return false;
+        return ret;
     }
-	ret = m_systemManager->RegisterSystem<HUDSystem>();
-	if (!ret) {
-		return false;
-	}
+    ret = m_systemManager->RegisterSystem<HUDSystem>();
+    if (!ret) {
+        return ret;
+    }
 #endif
-	ret = m_systemManager->RegisterSystem<EventSystem>();
-	if (!ret) {
-		return false;
-	}
+    ret = m_systemManager->RegisterSystem<EventSystem>();
+    if (!ret) {
+        return ret;
+    }
 
-    // Components
 #ifdef _DRAW
     ret = m_componentManager->RegisterComponent<SpriteComponent>();
     if (!ret) {
-        return false;
+        return ret;
     }
-	ret = m_componentManager->RegisterComponent<TextComponent>();
-	if (!ret) {
-		return false;
-	}
+    ret = m_componentManager->RegisterComponent<TextComponent>();
+    if (!ret) {
+        return ret;
+    }
 #endif
     ret = m_componentManager->RegisterComponent<TransformComponent>();
     if (!ret) {
-        return false;
+        return ret;
     }
-
     ret = m_componentManager->RegisterComponent<InputComponent>();
     if (!ret) {
-        return false;
+        return ret;
     }
 
-    // Observers (add own class last)
-    ret = m_entityManager->AddObserver(m_componentManager);
+    ret = m_entityManager->AddObserver(std::weak_ptr<Observer>(m_componentManager));
     if (!ret) {
-        return false;
+        return ret;
     }
-
-    ret = m_entityManager->AddObserver(m_systemManager);
+    ret = m_entityManager->AddObserver(std::weak_ptr<Observer>(m_systemManager));
     if (!ret) {
-        return false;
+        return ret;
     }
-
-    ret = m_entityManager->AddObserver(m_entityManager);
+    ret = m_entityManager->AddObserver(std::weak_ptr<Observer>(m_entityManager));
     if (!ret) {
-        return false;
+        return ret;
     }
-
-    ret = m_componentManager->AddObserver(m_entityManager);
+    ret = m_componentManager->AddObserver(std::weak_ptr<Observer>(m_entityManager));
     if (!ret) {
-        return false;
+        return ret;
     }
-
-    ret = m_componentManager->AddObserver(m_componentManager);
+    ret = m_componentManager->AddObserver(std::weak_ptr<Observer>(m_componentManager));
     if (!ret) {
-        return false;
+        return ret;
     }
 
 #ifdef _DRAW
-	ret = m_textureImporter->StartUp();
-	if (!ret) {
-		return false;
-	}
-	ret = m_fontImporter->StartUp();
-	if (!ret) {
-		return false;
-	}
+    ret = m_textureImporter.StartUp();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_fontImporter.StartUp();
+    if (!ret) {
+        return ret;
+    }
 #endif
-
     ret = m_systemManager->StartUp();
     if (!ret) {
-        return false;
+        return ret;
     }
 
     if (m_configuration.StatesSetup != nullptr) {
@@ -156,7 +124,7 @@ bool Game::Init()
 
     m_isRunning = true;
 
-    return true;
+    return ret;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -166,7 +134,6 @@ void Game::InitFrame()
 }
 
 //----------------------------------------------------------------------------------------------------
-// game loop
 bool Game::DoFrame()
 {
     InitFrame();
@@ -186,20 +153,20 @@ bool Game::DoFrame()
         return false;
     }
 
-	ret = PreRender();
-	if (!ret) {
-		return false;
-	}
+    ret = PreRender();
+    if (!ret) {
+        return false;
+    }
 
     ret = Render();
     if (!ret) {
         return false;
     }
 
-	ret = PostRender();
-	if (!ret) {
-		return false;
-	}
+    ret = PostRender();
+    if (!ret) {
+        return false;
+    }
 
     EndFrame();
 
@@ -215,27 +182,27 @@ void Game::EndFrame()
 //----------------------------------------------------------------------------------------------------
 bool Game::End()
 {
-    bool ret = m_systemManager->ShutDown();
+    bool ret = false;
+
+    ret = m_systemManager->ShutDown();
     if (!ret) {
         return false;
     }
-
 #ifdef _DRAW
-    ret = m_resourceManager->ShutDown();
+    ret = m_fontImporter.ShutDown();
     if (!ret) {
         return false;
     }
-	ret = m_textureImporter->ShutDown();
-	if (!ret) {
-		return false;
-	}
-	ret = m_fontImporter->ShutDown();
-	if (!ret) {
-		return false;
-	}
+    ret = m_textureImporter.ShutDown();
+    if (!ret) {
+        return false;
+    }
+    ret = m_resourceManager.ShutDown();
+    if (!ret) {
+        return false;
+    }
 #endif
-
-    ret = m_fsm->ShutDown();
+    ret = m_fsm.ShutDown();
     if (!ret) {
         return false;
     }
@@ -246,24 +213,23 @@ bool Game::End()
 //----------------------------------------------------------------------------------------------------
 bool Game::PreUpdate()
 {
-    bool ret = m_entityManager->PreUpdate();
-    if (!ret) {
-        return false;
-    }
+    bool ret = false;
 
+    ret = m_entityManager->PreUpdate();
+    if (!ret) {
+        return ret;
+    }
     ret = m_componentManager->PreUpdate();
     if (!ret) {
-        return false;
+        return ret;
     }
-
     ret = m_systemManager->PreUpdate();
     if (!ret) {
-        return false;
+        return ret;
     }
-
-    ret = m_fsm->PreUpdate();
+    ret = m_fsm.PreUpdate();
     if (!ret) {
-        return false;
+        return ret;
     }
 
     return ret;
@@ -272,14 +238,15 @@ bool Game::PreUpdate()
 //----------------------------------------------------------------------------------------------------
 bool Game::Update()
 {
-    bool ret = m_systemManager->Update();
-    if (!ret) {
-        return false;
-    }
+    bool ret = false;
 
-    ret = m_fsm->Update();
+    ret = m_systemManager->Update();
     if (!ret) {
-        return false;
+        return ret;
+    }
+    ret = m_fsm.Update();
+    if (!ret) {
+        return ret;
     }
 
     return ret;
@@ -288,14 +255,15 @@ bool Game::Update()
 //----------------------------------------------------------------------------------------------------
 bool Game::PostUpdate()
 {
-    bool ret = m_systemManager->PostUpdate();
-    if (!ret) {
-        return false;
-    }
+    bool ret = false;
 
-    ret = m_fsm->PostUpdate();
+    ret = m_systemManager->PostUpdate();
     if (!ret) {
-        return false;
+        return ret;
+    }
+    ret = m_fsm.PostUpdate();
+    if (!ret) {
+        return ret;
     }
 
     return ret;
@@ -304,20 +272,21 @@ bool Game::PostUpdate()
 //----------------------------------------------------------------------------------------------------
 bool Game::PreRender()
 {
-	return m_systemManager->PreRender();
+    return m_systemManager->PreRender();
 }
 
 //----------------------------------------------------------------------------------------------------
 bool Game::Render()
 {
-    bool ret = m_systemManager->Render();
-    if (!ret) {
-        return false;
-    }
+    bool ret = false;
 
-    ret = m_fsm->Render();
+    ret = m_systemManager->Render();
     if (!ret) {
-        return false;
+        return ret;
+    }
+    ret = m_fsm.Render();
+    if (!ret) {
+        return ret;
     }
 
     return ret;
@@ -326,7 +295,7 @@ bool Game::Render()
 //----------------------------------------------------------------------------------------------------
 bool Game::PostRender()
 {
-	return m_systemManager->PostRender();
+    return m_systemManager->PostRender();
 }
 
 //----------------------------------------------------------------------------------------------------

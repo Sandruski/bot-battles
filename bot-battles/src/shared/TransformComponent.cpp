@@ -6,8 +6,7 @@
 namespace sand {
 //----------------------------------------------------------------------------------------------------
 TransformComponent::TransformComponent()
-    : Component()
-    , m_position()
+    : m_position()
     , m_rotation(0.0f)
 {
 }

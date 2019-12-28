@@ -5,7 +5,7 @@
 #include "GameServer.h"
 #include "InputComponent.h"
 #include "Move.h"
-#include "SingletonServerComponent.h"
+#include "ServerComponent.h"
 
 namespace sand {
 
@@ -23,10 +23,10 @@ InputSystemServer::~InputSystemServer()
 //----------------------------------------------------------------------------------------------------
 bool InputSystemServer::Update()
 {
-    std::shared_ptr<SingletonServerComponent> singletonServer = g_gameServer->GetSingletonServerComponent();
+    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
 
     for (auto& entity : m_entities) {
-        std::shared_ptr<ClientProxy> clientProxy = singletonServer->GetClientProxyFromEntity(entity);
+        std::shared_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxyFromEntity(entity);
         if (clientProxy == nullptr) {
             continue;
         }

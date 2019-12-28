@@ -5,8 +5,8 @@
 
 namespace sand {
 
-struct SingletonClientComponent;
-struct SingletonInputComponent;
+struct ClientComponent;
+struct MoveComponent;
 class OutputMemoryStream;
 class InputMemoryStream;
 
@@ -26,23 +26,23 @@ public:
     bool Update() override;
 
 private:
-    void SendOutgoingPackets(SingletonClientComponent& singletonClient) const;
-    void UpdateSendHelloPacket(SingletonClientComponent& singletonClient) const;
-    void UpdateSendInputPacket(SingletonClientComponent& singletonClient) const;
+    void SendOutgoingPackets(ClientComponent& clientComponent) const;
+    void UpdateSendHelloPacket(ClientComponent& clientComponent) const;
+    void UpdateSendInputPacket(ClientComponent& clientComponent) const;
 
-    bool SendHelloPacket(const SingletonClientComponent& singletonClient) const;
-    bool SendInputPacket(const SingletonClientComponent& singletonClient, const SingletonInputComponent& singletonInput) const;
-    bool SendPacket(const SingletonClientComponent& singletonClient, const OutputMemoryStream& outputStream) const;
+    bool SendHelloPacket(const ClientComponent& clientComponent) const;
+    bool SendInputPacket(const ClientComponent& clientComponent, const MoveComponent& moveComponent) const;
+    bool SendPacket(const ClientComponent& clientComponent, const OutputMemoryStream& outputStream) const;
 
-    void EnqueueIncomingPackets(SingletonClientComponent& singletonClient) const;
-    void ProcessIncomingPackets(SingletonClientComponent& singletonClient) const;
+    void EnqueueIncomingPackets(ClientComponent& clientComponent) const;
+    void ProcessIncomingPackets(ClientComponent& clientComponent) const;
 
-    void ReceivePacket(SingletonClientComponent& singletonClient, InputMemoryStream& inputStream) const;
-    void ReceiveWelcomePacket(SingletonClientComponent& singletonClient, InputMemoryStream& inputStream) const;
-    void ReceiveStatePacket(SingletonClientComponent& singletonClient, InputMemoryStream& inputStream) const;
+    void ReceivePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream) const;
+    void ReceiveWelcomePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream) const;
+    void ReceiveStatePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream) const;
 
-    void OnConnectionReset(SingletonClientComponent& singletonClient) const;
-    void OnDisconnect(SingletonClientComponent& singletonClient) const;
+    void OnConnectionReset(ClientComponent& clientComponent) const;
+    void OnDisconnect(ClientComponent& clientComponent) const;
 };
 }
 

@@ -1,4 +1,4 @@
-#include "SingletonServerComponent.h"
+#include "ServerComponent.h"
 
 #include "ClientProxy.h"
 #include "SocketAddress.h"
@@ -6,7 +6,7 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-SingletonServerComponent::SingletonServerComponent()
+ServerComponent::ServerComponent()
     : m_socket(nullptr)
     , m_socketAddress(nullptr)
     , m_playerIDToClientProxy()
@@ -20,12 +20,7 @@ SingletonServerComponent::SingletonServerComponent()
 }
 
 //----------------------------------------------------------------------------------------------------
-SingletonServerComponent::~SingletonServerComponent()
-{
-}
-
-//----------------------------------------------------------------------------------------------------
-PlayerID SingletonServerComponent::AddPlayer(const SocketAddress& socketAddress, const char* name)
+PlayerID ServerComponent::AddPlayer(const SocketAddress& socketAddress, const char* name)
 {
     PlayerID playerID = GetPlayerID(socketAddress);
     if (playerID != INVALID_PLAYER_ID) {
@@ -52,7 +47,7 @@ PlayerID SingletonServerComponent::AddPlayer(const SocketAddress& socketAddress,
 }
 
 //----------------------------------------------------------------------------------------------------
-bool SingletonServerComponent::RemovePlayer(PlayerID playerID)
+bool ServerComponent::RemovePlayer(PlayerID playerID)
 {
     std::size_t ret = m_playerIDToClientProxy.erase(playerID);
     if (ret == 0) {
@@ -66,7 +61,7 @@ bool SingletonServerComponent::RemovePlayer(PlayerID playerID)
 }
 
 //----------------------------------------------------------------------------------------------------
-bool SingletonServerComponent::AddEntity(Entity entity, PlayerID playerID)
+bool ServerComponent::AddEntity(Entity entity, PlayerID playerID)
 {
     std::shared_ptr<ClientProxy> clientProxy = GetClientProxyFromPlayerID(playerID);
     if (clientProxy == nullptr) {
@@ -79,7 +74,7 @@ bool SingletonServerComponent::AddEntity(Entity entity, PlayerID playerID)
 }
 
 //----------------------------------------------------------------------------------------------------
-bool SingletonServerComponent::RemoveEntity(Entity entity)
+bool ServerComponent::RemoveEntity(Entity entity)
 {
     std::size_t ret = m_entityToClientProxy.erase(entity);
     if (ret == 0) {
@@ -91,7 +86,7 @@ bool SingletonServerComponent::RemoveEntity(Entity entity)
 }
 
 //----------------------------------------------------------------------------------------------------
-PlayerID SingletonServerComponent::GetPlayerID(const SocketAddress& socketAddress) const
+PlayerID ServerComponent::GetPlayerID(const SocketAddress& socketAddress) const
 {
     for (const auto& pair : m_playerIDToClientProxy) {
         std::shared_ptr<ClientProxy> clientProxy = pair.second;
@@ -104,7 +99,7 @@ PlayerID SingletonServerComponent::GetPlayerID(const SocketAddress& socketAddres
 }
 
 //----------------------------------------------------------------------------------------------------
-Entity SingletonServerComponent::GetEntity(const SocketAddress& socketAddress) const
+Entity ServerComponent::GetEntity(const SocketAddress& socketAddress) const
 {
     for (const auto& pair : m_entityToClientProxy) {
         std::shared_ptr<ClientProxy> clientProxy = pair.second;
@@ -117,7 +112,7 @@ Entity SingletonServerComponent::GetEntity(const SocketAddress& socketAddress) c
 }
 
 //----------------------------------------------------------------------------------------------------
-std::shared_ptr<ClientProxy> SingletonServerComponent::GetClientProxyFromPlayerID(PlayerID playerID) const
+std::shared_ptr<ClientProxy> ServerComponent::GetClientProxyFromPlayerID(PlayerID playerID) const
 {
     auto it = m_playerIDToClientProxy.find(playerID);
     if (it == m_playerIDToClientProxy.end()) {
@@ -129,7 +124,7 @@ std::shared_ptr<ClientProxy> SingletonServerComponent::GetClientProxyFromPlayerI
 }
 
 //----------------------------------------------------------------------------------------------------
-std::shared_ptr<ClientProxy> SingletonServerComponent::GetClientProxyFromEntity(Entity entity) const
+std::shared_ptr<ClientProxy> ServerComponent::GetClientProxyFromEntity(Entity entity) const
 {
     auto it = m_entityToClientProxy.find(entity);
     if (it == m_entityToClientProxy.end()) {
@@ -141,7 +136,7 @@ std::shared_ptr<ClientProxy> SingletonServerComponent::GetClientProxyFromEntity(
 }
 
 //----------------------------------------------------------------------------------------------------
-const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& SingletonServerComponent::GetPlayerIDToClientProxyMap()
+const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& ServerComponent::GetPlayerIDToClientProxyMap()
 {
     return m_playerIDToClientProxy;
 }

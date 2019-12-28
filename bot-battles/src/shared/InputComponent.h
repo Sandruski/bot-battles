@@ -6,13 +6,13 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
+// Entity Component
 struct InputComponent : public Component {
 
     static ComponentType GetType() { return ComponentType::INPUT; }
     static std::shared_ptr<InputComponent> Instantiate() { return std::make_shared<InputComponent>(); }
 
     InputComponent();
-    ~InputComponent() override = default;
 
     void Copy(const InputComponent& other);
 

@@ -1,5 +1,5 @@
-#ifndef __SINGLETON_SERVER_COMPONENT_H__
-#define __SINGLETON_SERVER_COMPONENT_H__
+#ifndef __SERVER_COMPONENT_H__
+#define __SERVER_COMPONENT_H__
 
 namespace sand {
 
@@ -8,10 +8,10 @@ class SocketAddress;
 class ClientProxy;
 
 //----------------------------------------------------------------------------------------------------
-struct SingletonServerComponent {
+// System Component
+struct ServerComponent {
 
-    SingletonServerComponent();
-    ~SingletonServerComponent();
+    ServerComponent();
 
     PlayerID AddPlayer(const SocketAddress& socketAddress, const char* name);
     bool RemovePlayer(PlayerID playerID);

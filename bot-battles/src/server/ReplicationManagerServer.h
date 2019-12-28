@@ -1,12 +1,11 @@
 #ifndef __REPLICATION_MANAGER_SERVER_H__
 #define __REPLICATION_MANAGER_SERVER_H__
 
-#include "ReplicationCommand.h"
-
 namespace sand {
 
 class OutputMemoryStream;
 class ReplicationResultManager;
+class ReplicationCommand;
 
 //----------------------------------------------------------------------------------------------------
 class ReplicationManagerServer {

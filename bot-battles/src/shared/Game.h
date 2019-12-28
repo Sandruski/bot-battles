@@ -1,24 +1,21 @@
 #ifndef __GAME_H__
 #define __GAME_H__
 
-// uncomment to disable assert()
-// #define NDEBUG
+#include "FSM.h"
+#include "FontImporter.h"
+#include "LinkingContext.h"
+#include "ResourceManager.h"
+#include "TextureImporter.h"
+#ifdef _DRAW
+#include "RendererComponent.h"
+#include "WindowComponent.h"
+#endif
 
 namespace sand {
 
 class EntityManager;
 class ComponentManager;
 class SystemManager;
-class LinkingContext;
-class FSM; // TODO: remove this!
-class FontImporter;
-class TextureImporter;
-class ResourceManager;
-
-#ifdef _DRAW
-struct SingletonWindowComponent;
-struct SingletonRendererComponent;
-#endif
 
 //----------------------------------------------------------------------------------------------------
 struct GameConfiguration {
@@ -31,11 +28,10 @@ struct GameConfiguration {
 };
 
 //----------------------------------------------------------------------------------------------------
-// single point of contact
 class Game {
 public:
     Game(const GameConfiguration& configuration);
-    virtual ~Game();
+    virtual ~Game() = default;
 
     virtual bool Init();
     void InitFrame();
@@ -43,24 +39,22 @@ public:
     void EndFrame();
     bool End();
 
-    EntityManager& GetEntityManager() const { return *m_entityManager; }
-    ComponentManager& GetComponentManager() const { return *m_componentManager; }
-    SystemManager& GetSystemManager() const { return *m_systemManager; }
-    LinkingContext& GetLinkingContext() const { return *m_linkingContext; }
-    FSM& GetFSM() const { return *m_fsm; } // TODO: remove this!
-#ifdef _DRAW
-	FontImporter& GetFontImporter() const { return *m_fontImporter; }
-	TextureImporter& GetTextureImporter() const { return *m_textureImporter; }
-    ResourceManager& GetResourceManager() const
-    {
-        return *m_resourceManager;
-    }
+    EntityManager& GetEntityManager() { return *m_entityManager; }
+    ComponentManager& GetComponentManager() { return *m_componentManager; }
+    SystemManager& GetSystemManager() { return *m_systemManager; }
 
-    std::shared_ptr<SingletonWindowComponent> GetSingletonWindowComponent() const
+    LinkingContext& GetLinkingContext() { return m_linkingContext; }
+    FSM& GetFSM() { return m_fsm; } // TODO: remove this!
+#ifdef _DRAW
+    FontImporter& GetFontImporter()
     {
-        return m_singletonWindowComponent;
+        return m_fontImporter;
     }
-    std::shared_ptr<SingletonRendererComponent> GetSingletonRendererComponent() const { return m_singletonRendererComponent; }
+    TextureImporter& GetTextureImporter() { return m_textureImporter; }
+    ResourceManager& GetResourceManager() { return m_resourceManager; }
+
+    WindowComponent& GetWindowComponent() { return m_windowComponent; }
+    RendererComponent& GetRendererComponent() { return m_rendererComponent; }
 #endif
 
     const char* GetName() const
@@ -72,9 +66,9 @@ private:
     bool PreUpdate();
     bool Update();
     bool PostUpdate();
-	bool PreRender();
+    bool PreRender();
     bool Render();
-	bool PostRender();
+    bool PostRender();
 
 protected:
     GameConfiguration m_configuration;
@@ -82,15 +76,16 @@ protected:
     std::shared_ptr<EntityManager> m_entityManager;
     std::shared_ptr<ComponentManager> m_componentManager;
     std::shared_ptr<SystemManager> m_systemManager;
-    std::unique_ptr<LinkingContext> m_linkingContext;
-    std::shared_ptr<FSM> m_fsm; // TODO: remove this!
-	std::shared_ptr<FontImporter> m_fontImporter;
-    std::shared_ptr<TextureImporter> m_textureImporter;
-	std::shared_ptr<ResourceManager> m_resourceManager;
 
+    LinkingContext m_linkingContext;
+    FSM m_fsm; // TODO: remove this!
 #ifdef _DRAW
-    std::shared_ptr<SingletonWindowComponent> m_singletonWindowComponent;
-    std::shared_ptr<SingletonRendererComponent> m_singletonRendererComponent;
+    FontImporter m_fontImporter;
+    TextureImporter m_textureImporter;
+    ResourceManager m_resourceManager;
+
+    WindowComponent m_windowComponent;
+    RendererComponent m_rendererComponent;
 #endif
 
     bool m_isRunning;

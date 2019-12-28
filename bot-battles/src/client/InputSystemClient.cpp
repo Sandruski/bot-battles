@@ -4,7 +4,7 @@
 #include "ComponentMemberTypes.h"
 #include "GameClient.h"
 #include "InputComponent.h"
-#include "SingletonInputComponent.h"
+#include "MoveComponent.h"
 
 namespace sand {
 
@@ -60,30 +60,30 @@ bool InputSystemClient::Update()
         }
     }
 
-    std::shared_ptr<SingletonInputComponent> singletonInput = g_gameClient->GetSingletonInputComponent();
+    MoveComponent& moveComponent = g_gameClient->GetMoveComponent();
 
-    UpdateSampleInput(*singletonInput);
+    UpdateSampleInput(moveComponent);
 
     return true;
 }
 
 //----------------------------------------------------------------------------------------------------
-void InputSystemClient::UpdateSampleInput(SingletonInputComponent& singletonInput) const
+void InputSystemClient::UpdateSampleInput(MoveComponent& moveComponent) const
 {
     float time = Time::GetInstance().GetTime();
-    float nextInputTime = singletonInput.GetNextInputTime();
+    float nextInputTime = moveComponent.GetNextInputTime();
     if (time >= nextInputTime) {
-        SampleInput(singletonInput, time);
+        SampleInput(moveComponent, time);
     }
 }
 
 //----------------------------------------------------------------------------------------------------
-void InputSystemClient::SampleInput(SingletonInputComponent& singletonInput, F32 timestamp) const
+void InputSystemClient::SampleInput(MoveComponent& moveComponent, F32 timestamp) const
 {
     for (auto& entity : m_entities) {
         std::weak_ptr<InputComponent> input = g_gameClient->GetComponentManager().GetComponent<InputComponent>(entity);
-        singletonInput.ClearMoves(); // TODO: remove to send multiple moves
-        singletonInput.AddMove(*input.lock(), static_cast<U32>(ComponentMemberType::INPUT_ACCELERATION), timestamp); // TODO: not only acceleration...
+        moveComponent.ClearMoves(); // TODO: remove to send multiple moves
+        moveComponent.AddMove(*input.lock(), static_cast<U32>(ComponentMemberType::INPUT_ACCELERATION), timestamp); // TODO: not only acceleration...
     }
 }
 }

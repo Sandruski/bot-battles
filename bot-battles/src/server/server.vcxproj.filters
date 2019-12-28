@@ -54,9 +54,6 @@
     <ClCompile Include="NavigationSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="SingletonServerComponent.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
     <ClCompile Include="SpawnerSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
@@ -81,6 +78,9 @@
     <ClCompile Include="ReplicationResultManager.cpp">
       <Filter>Source Files\Networking</Filter>
     </ClCompile>
+    <ClCompile Include="ServerComponent.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameplayState.h">
@@ -88,9 +88,6 @@
     </ClInclude>
     <ClInclude Include="ServerSystem.h">
       <Filter>Header Files\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="SingletonServerComponent.h">
-      <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="ClientProxy.h">
       <Filter>Header Files\Networking</Filter>
@@ -115,6 +112,9 @@
     </ClInclude>
     <ClInclude Include="Delivery.h">
       <Filter>Header Files\Networking</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerComponent.h">
+      <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,5 +1,6 @@
 #include "DeliveryManagerServer.h"
 
+#include "AckRange.h"
 #include "MemoryStream.h"
 #include "ReplicationResultManager.h"
 
@@ -13,11 +14,6 @@ DeliveryManagerServer::DeliveryManagerServer()
     , m_deliveriesCount(0)
     , m_successfulDeliveriesCount(0)
     , m_failedDeliveriesCount(0)
-{
-}
-
-//----------------------------------------------------------------------------------------------------
-DeliveryManagerServer::~DeliveryManagerServer()
 {
 }
 
@@ -51,6 +47,12 @@ void DeliveryManagerServer::ProcessTimedOutPackets()
             break;
         }
     }
+}
+
+//----------------------------------------------------------------------------------------------------
+const std::deque<Delivery>& DeliveryManagerServer::GetDeliveries() const
+{
+    return m_deliveries;
 }
 
 //----------------------------------------------------------------------------------------------------

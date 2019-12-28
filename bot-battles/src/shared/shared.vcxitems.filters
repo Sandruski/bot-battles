@@ -159,12 +159,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)InputComponent.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)SingletonRendererComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)SingletonWindowComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)SpriteComponent.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
@@ -258,6 +252,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)NetworkableObject.h">
       <Filter>Header Files\Networking</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)RendererComponent.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)WindowComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp">
@@ -380,5 +376,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Component.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)RendererComponent.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)WindowComponent.cpp" />
   </ItemGroup>
 </Project>

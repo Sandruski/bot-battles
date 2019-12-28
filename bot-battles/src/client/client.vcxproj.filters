@@ -48,9 +48,6 @@
     <ClCompile Include="ClientSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="SingletonInputComponent.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
     <ClCompile Include="ReplicationManagerClient.cpp">
       <Filter>Source Files\Networking</Filter>
     </ClCompile>
@@ -63,6 +60,12 @@
     <ClCompile Include="DeliveryManagerClient.cpp">
       <Filter>Source Files\Networking</Filter>
     </ClCompile>
+    <ClCompile Include="ClientComponent.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveComponent.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameplayState.h">
@@ -70,12 +73,6 @@
     </ClInclude>
     <ClInclude Include="ClientSystem.h">
       <Filter>Header Files\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="SingletonClientComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="SingletonInputComponent.h">
-      <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="ReplicationManagerClient.h">
       <Filter>Header Files\Networking</Filter>
@@ -88,6 +85,12 @@
     </ClInclude>
     <ClInclude Include="DeliveryManagerClient.h">
       <Filter>Header Files\Networking</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientComponent.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveComponent.h">
+      <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
