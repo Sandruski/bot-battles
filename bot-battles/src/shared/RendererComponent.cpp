@@ -10,6 +10,7 @@ namespace sand {
 RendererComponent::RendererComponent()
     : m_renderer(nullptr)
     , m_backgroundColor()
+    , m_isVsync(false)
     , m_isDebugDraw(false)
 {
 }
@@ -41,6 +42,10 @@ void RendererComponent::LoadFromConfig(const rapidjson::Value& value)
     m_backgroundColor.b = static_cast<U8>(value["backgroundColor"][2].GetUint());
     assert(value["backgroundColor"][3].IsUint());
     m_backgroundColor.a = static_cast<U8>(value["backgroundColor"][3].GetUint());
+
+    assert(value.HasMember("vsync"));
+    assert(value["vsync"].IsBool());
+    m_isVsync = value["vsync"].GetBool();
 
     assert(value.HasMember("debugDraw"));
     assert(value["debugDraw"].IsBool());

@@ -27,9 +27,12 @@ RendererSystem::RendererSystem()
 bool RendererSystem::StartUp()
 {
     RendererComponent& rendererComponent = g_game->GetRendererComponent();
+    U32 flags = SDL_RENDERER_ACCELERATED;
+    if (rendererComponent.m_isVsync) {
+        flags |= SDL_RENDERER_PRESENTVSYNC;
+    }
     WindowComponent& windowComponent = g_game->GetWindowComponent();
-
-    rendererComponent.m_renderer = SDL_CreateRenderer(windowComponent.m_window, -1, SDL_RENDERER_ACCELERATED);
+    rendererComponent.m_renderer = SDL_CreateRenderer(windowComponent.m_window, -1, flags);
     if (rendererComponent.m_renderer == nullptr) {
         ELOG("Renderer could not be created! SDL Error: %s", SDL_GetError());
         return false;

@@ -17,6 +17,7 @@ struct RendererComponent {
 
     std::weak_ptr<FontResource> m_defaultFont;
     SDL_Color m_backgroundColor;
+    bool m_isVsync;
     bool m_isDebugDraw;
 };
 }
