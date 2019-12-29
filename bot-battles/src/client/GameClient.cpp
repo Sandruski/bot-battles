@@ -2,7 +2,7 @@
 
 #include "ClientSystem.h"
 #include "ConfigClient.h"
-#include "InputSystemClient.h"
+#include "InputSystem.h"
 #include "SystemManager.h"
 
 namespace sand {
@@ -23,7 +23,7 @@ bool GameClient::Init()
 {
     bool ret = false;
 
-    ret = m_systemManager->RegisterSystem<InputSystemClient>();
+    ret = m_systemManager->RegisterSystem<InputSystem>();
     if (!ret) {
         return ret;
     }

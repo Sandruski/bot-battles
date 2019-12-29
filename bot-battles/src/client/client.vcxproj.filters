@@ -51,9 +51,6 @@
     <ClCompile Include="ReplicationManagerClient.cpp">
       <Filter>Source Files\Networking</Filter>
     </ClCompile>
-    <ClCompile Include="InputSystemClient.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
     <ClCompile Include="GameClient.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -69,6 +66,9 @@
     <ClCompile Include="ConfigClient.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="InputSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameplayState.h">
@@ -79,9 +79,6 @@
     </ClInclude>
     <ClInclude Include="ReplicationManagerClient.h">
       <Filter>Header Files\Networking</Filter>
-    </ClInclude>
-    <ClInclude Include="InputSystemClient.h">
-      <Filter>Header Files\Systems</Filter>
     </ClInclude>
     <ClInclude Include="GameClient.h">
       <Filter>Header Files</Filter>
@@ -97,6 +94,9 @@
     </ClInclude>
     <ClInclude Include="ConfigClient.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InputSystem.h">
+      <Filter>Header Files\Systems</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

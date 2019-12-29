@@ -102,7 +102,7 @@ bool ClientSystem::SendHelloPacket(const ClientComponent& clientComponent) const
 }
 
 //----------------------------------------------------------------------------------------------------
-bool ClientSystem::SendInputPacket(const ClientComponent& clientComponent, const MoveComponent& moveComponent) const
+bool ClientSystem::SendInputPacket(const ClientComponent& clientComponent, MoveComponent& moveComponent) const
 {
     if (!moveComponent.HasMoves()) {
         return false;
@@ -121,6 +121,8 @@ bool ClientSystem::SendInputPacket(const ClientComponent& clientComponent, const
         const Move& move = moveComponent.GetMove(i);
         move.Write(inputPacket);
     }
+
+    moveComponent.ClearMoves();
 
     ILOG("Sending input packet to server...");
 
@@ -167,7 +169,9 @@ void ClientSystem::ReceivePacket(ClientComponent& clientComponent, InputMemorySt
 {
     ServerMessageType type;
     inputStream.Read(type);
+
     switch (type) {
+
     case ServerMessageType::WELCOME: {
         ReceiveWelcomePacket(clientComponent, inputStream);
         break;

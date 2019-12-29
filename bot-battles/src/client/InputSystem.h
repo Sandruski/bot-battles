@@ -1,5 +1,5 @@
-#ifndef __INPUT_SYSTEM_CLIENT_H__
-#define __INPUT_SYSTEM_CLIENT_H__
+#ifndef __INPUT_SYSTEM_H__
+#define __INPUT_SYSTEM_H__
 
 #include "System.h"
 
@@ -8,7 +8,7 @@ namespace sand {
 struct MoveComponent;
 
 //----------------------------------------------------------------------------------------------------
-class InputSystemClient : public System {
+class InputSystem : public System {
 public:
     enum class KeyState {
         IDLE,
@@ -24,7 +24,7 @@ public:
     }
 
 public:
-    InputSystemClient();
+    InputSystem();
 
     bool Update() override;
 

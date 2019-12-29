@@ -2,7 +2,6 @@
 
 #include "ConfigServer.h"
 #include "EntityManager.h"
-#include "InputSystemServer.h"
 #include "NavigationSystem.h"
 #include "ServerComponent.h"
 #include "ServerSystem.h"
@@ -29,10 +28,6 @@ bool GameServer::Init()
         return ret;
     }
     ret = m_systemManager->RegisterSystem<SpawnerSystem>();
-    if (!ret) {
-        return ret;
-    }
-    ret = m_systemManager->RegisterSystem<InputSystemServer>();
     if (!ret) {
         return ret;
     }

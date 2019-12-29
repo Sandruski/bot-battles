@@ -35,9 +35,9 @@ PlayerID ServerComponent::AddPlayer(const SocketAddress& socketAddress, const ch
     if (playerID != INVALID_PLAYER_ID) {
         std::shared_ptr<ClientProxy> clientProxy = GetClientProxyFromPlayerID(playerID);
         if (COMPARE_STRINGS(clientProxy->GetName(), name)) {
-            WLOG("Player with the socket address %s is already registered", socketAddress.GetName());
+            WLOG("Player with socket address %s is already registered", socketAddress.GetName());
         } else {
-            WLOG("Player with the socket address %s is already registered with a different name", socketAddress.GetName());
+            WLOG("Player with socket address %s is already registered with a different name", socketAddress.GetName());
         }
         return playerID;
     }
@@ -47,7 +47,7 @@ PlayerID ServerComponent::AddPlayer(const SocketAddress& socketAddress, const ch
     std::shared_ptr<ClientProxy> clientProxy = std::make_shared<ClientProxy>(socketAddress, name);
     std::pair<std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>::iterator, bool> pair = m_playerIDToClientProxy.insert(std::make_pair(playerID, clientProxy));
     if (!pair.second) {
-        WLOG("Player with the socket address %s could not be registered", socketAddress.GetName());
+        WLOG("Player with socket address %s could not be registered", socketAddress.GetName());
         m_availablePlayerIDs.push(playerID);
         return INVALID_PLAYER_ID;
     }
@@ -74,6 +74,7 @@ bool ServerComponent::AddEntity(Entity entity, PlayerID playerID)
 {
     std::shared_ptr<ClientProxy> clientProxy = GetClientProxyFromPlayerID(playerID);
     if (clientProxy == nullptr) {
+        WLOG("Entity %u could not be added", entity);
         return false;
     }
 
@@ -125,7 +126,6 @@ std::shared_ptr<ClientProxy> ServerComponent::GetClientProxyFromPlayerID(PlayerI
 {
     auto it = m_playerIDToClientProxy.find(playerID);
     if (it == m_playerIDToClientProxy.end()) {
-        WLOG("Player %u is not registered", playerID);
         return nullptr;
     }
 
@@ -137,7 +137,6 @@ std::shared_ptr<ClientProxy> ServerComponent::GetClientProxyFromEntity(Entity en
 {
     auto it = m_entityToClientProxy.find(entity);
     if (it == m_entityToClientProxy.end()) {
-        WLOG("Entity %u is not registered", entity);
         return nullptr;
     }
 

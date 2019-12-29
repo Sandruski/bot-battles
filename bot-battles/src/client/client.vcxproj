@@ -307,7 +307,7 @@
     <ClCompile Include="DeliveryManagerClient.cpp" />
     <ClCompile Include="GameClient.cpp" />
     <ClCompile Include="GameplayState.cpp" />
-    <ClCompile Include="InputSystemClient.cpp" />
+    <ClCompile Include="InputSystem.cpp" />
     <ClCompile Include="ReplicationManagerClient.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MoveComponent.cpp" />
@@ -316,7 +316,7 @@
     <ClInclude Include="ClientSystem.h" />
     <ClInclude Include="ConfigClient.h" />
     <ClInclude Include="DeliveryManagerClient.h" />
-    <ClInclude Include="InputSystemClient.h" />
+    <ClInclude Include="InputSystem.h" />
     <ClInclude Include="ReplicationManagerClient.h" />
     <ClInclude Include="ClientComponent.h" />
     <ClInclude Include="MoveComponent.h" />

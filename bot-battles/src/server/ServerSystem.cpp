@@ -96,9 +96,9 @@ void ServerSystem::SendOutgoingPackets(ServerComponent& serverComponent)
 
         clientProxy->m_deliveryManager.ProcessTimedOutPackets();
 
-        //if (clientProxy->m_isLastMoveTimestampDirty) {
-        SendStatePacket(serverComponent, clientProxy);
-        //}
+        if (clientProxy->m_isLastMoveTimestampDirty) {
+            SendStatePacket(serverComponent, clientProxy);
+        }
     }
 }
 
@@ -175,7 +175,9 @@ void ServerSystem::ReceivePacket(ServerComponent& serverComponent, InputMemorySt
     ClientMessageType type;
     inputStream.Read(type);
     PlayerID playerID = INVALID_PLAYER_ID;
+
     switch (type) {
+
     case ClientMessageType::HELLO: {
         ReceiveHelloPacket(serverComponent, inputStream, fromSocketAddress, playerID);
         break;
@@ -244,17 +246,18 @@ void ServerSystem::ReceiveInputPacket(ServerComponent& serverComponent, InputMem
 
     ILOG("Input packet received from player %s", clientProxy->GetName());
 
+    clientProxy->ClearUnprocessedMoves();
+
     U32 moveCount = 0;
     inputStream.Read(moveCount, GetRequiredBits<MAX_MOVES_PER_PACKET>::value);
-    if (moveCount > 0) {
-        Move move;
-        while (moveCount > 0) {
-            move.Read(inputStream);
+    Move move;
+    while (moveCount > 0) {
+        move.Read(inputStream);
+        if (move.GetTimestamp() > clientProxy->GetLastMoveTimestamp()) {
             clientProxy->AddMove(move);
-            --moveCount;
+            clientProxy->m_isLastMoveTimestampDirty = true;
         }
-
-        clientProxy->m_isLastMoveTimestampDirty = true;
+        --moveCount;
     }
 }
 

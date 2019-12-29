@@ -57,9 +57,6 @@
     <ClCompile Include="SpawnerSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="InputSystemServer.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
     <ClCompile Include="ReplicationManagerServer.cpp">
       <Filter>Source Files\Networking</Filter>
     </ClCompile>
@@ -99,9 +96,6 @@
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
     <ClInclude Include="SpawnerSystem.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="InputSystemServer.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
     <ClInclude Include="ReplicationManagerServer.h">

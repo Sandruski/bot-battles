@@ -22,7 +22,7 @@ public:
     bool Update() override;
 
 private:
-    void UpdateMovement(Entity entity, InputComponent& input, TransformComponent& transform, F32 dt) const;
+    void UpdateMovement(Entity entity, const InputComponent& input, TransformComponent& transform, F32 dt) const;
 };
 }
 

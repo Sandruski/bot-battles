@@ -1,4 +1,4 @@
-#include "InputSystemClient.h"
+#include "InputSystem.h"
 
 #include "ComponentManager.h"
 #include "ComponentMemberTypes.h"
@@ -9,13 +9,13 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-InputSystemClient::InputSystemClient()
+InputSystem::InputSystem()
 {
     m_signature |= 1 << static_cast<U16>(ComponentType::INPUT);
 }
 
 //----------------------------------------------------------------------------------------------------
-bool InputSystemClient::Update()
+bool InputSystem::Update()
 {
     for (auto& entity : m_entities) {
 
@@ -63,7 +63,7 @@ bool InputSystemClient::Update()
 }
 
 //----------------------------------------------------------------------------------------------------
-void InputSystemClient::UpdateSampleInput(MoveComponent& moveComponent) const
+void InputSystem::UpdateSampleInput(MoveComponent& moveComponent) const
 {
     float time = Time::GetInstance().GetTime();
     float nextInputTime = moveComponent.GetNextInputTime();
@@ -73,11 +73,10 @@ void InputSystemClient::UpdateSampleInput(MoveComponent& moveComponent) const
 }
 
 //----------------------------------------------------------------------------------------------------
-void InputSystemClient::SampleInput(MoveComponent& moveComponent, F32 timestamp) const
+void InputSystem::SampleInput(MoveComponent& moveComponent, F32 timestamp) const
 {
     for (auto& entity : m_entities) {
         std::weak_ptr<InputComponent> input = g_gameClient->GetComponentManager().GetComponent<InputComponent>(entity);
-        moveComponent.ClearMoves(); // TODO: remove to send multiple moves
         moveComponent.AddMove(*input.lock(), static_cast<U32>(ComponentMemberType::INPUT_ACCELERATION), timestamp); // TODO: not only acceleration...
     }
 }

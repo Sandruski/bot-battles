@@ -19,8 +19,8 @@ struct MoveComponent {
     }
 
     const Move& AddMove(const InputComponent& input, U32 dirtyState, F32 timestamp);
-
     const Move& GetMove(U32 index) const;
+    F32 GetLastMoveTimestamp() const;
 
     U32 GetMoveCount() const
     {

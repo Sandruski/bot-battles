@@ -1,5 +1,6 @@
 #include "NavigationSystem.h"
 
+#include "ClientProxy.h"
 #include "ComponentManager.h"
 #include "ComponentMemberTypes.h"
 #include "GameServer.h"
@@ -18,17 +19,30 @@ NavigationSystem::NavigationSystem()
 //----------------------------------------------------------------------------------------------------
 bool NavigationSystem::Update()
 {
+    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
+
     for (auto& entity : m_entities) {
         std::weak_ptr<InputComponent> inputComponent = g_gameServer->GetComponentManager().GetComponent<InputComponent>(entity);
         std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
-        UpdateMovement(entity, *inputComponent.lock(), *transformComponent.lock(), Time::GetInstance().GetDt()); // TODO: use client dt
+
+        std::shared_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxyFromEntity(entity);
+        if (clientProxy != nullptr) {
+            const std::deque<Move>& unprocessedMoves = clientProxy->GetUnprocessedMoves();
+            for (const Move& unprocessedMove : unprocessedMoves) {
+                const InputComponent& unprocessedInput = unprocessedMove.GetInput();
+                UpdateMovement(entity, unprocessedInput, *transformComponent.lock(), unprocessedMove.GetDt());
+                inputComponent.lock()->Copy(unprocessedInput);
+            }
+        } else {
+            UpdateMovement(entity, *inputComponent.lock(), *transformComponent.lock(), Time::GetInstance().GetDt());
+        }
     }
 
     return true;
 }
 
 //----------------------------------------------------------------------------------------------------
-void NavigationSystem::UpdateMovement(Entity entity, InputComponent& input, TransformComponent& transform, F32 dt) const
+void NavigationSystem::UpdateMovement(Entity entity, const InputComponent& input, TransformComponent& transform, F32 dt) const
 {
     transform.m_position.x += input.m_acceleration.x * dt;
     transform.m_position.y += input.m_acceleration.y * dt;

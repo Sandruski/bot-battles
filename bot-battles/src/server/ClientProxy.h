@@ -18,6 +18,7 @@ public:
     const char* GetName() const;
 
     const Move& AddMove(const Move& move);
+    F32 GetLastMoveTimestamp() const;
     const std::deque<Move>& GetUnprocessedMoves();
     void ClearUnprocessedMoves();
 

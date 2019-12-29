@@ -153,9 +153,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)TransformComponent.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)InputComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)SpriteComponent.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
@@ -255,6 +252,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)OutputMemoryStream.h">
       <Filter>Header Files\Networking</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)InputComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)InputMemoryStream.h" />
   </ItemGroup>
   <ItemGroup>
@@ -354,9 +352,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)TransformComponent.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)InputComponent.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)FontResource.cpp">
       <Filter>Source Files\Resources</Filter>
     </ClCompile>
@@ -384,6 +379,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)OutputMemoryStream.cpp">
       <Filter>Source Files\Networking</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)InputComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)InputMemoryStream.cpp" />
   </ItemGroup>
 </Project>
