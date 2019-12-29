@@ -1,8 +1,6 @@
 #ifndef __SERVER_COMPONENT_H__
 #define __SERVER_COMPONENT_H__
 
-#include "ReceivedPacket.h"
-
 namespace sand {
 
 class UDPSocket;
@@ -29,8 +27,6 @@ struct ServerComponent {
 
     std::shared_ptr<UDPSocket> m_socket;
     std::shared_ptr<SocketAddress> m_socketAddress;
-
-    std::deque<ReceivedPacket> m_receivedPackets;
 
     std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>> m_playerIDToClientProxy;
     std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>> m_entityToClientProxy;

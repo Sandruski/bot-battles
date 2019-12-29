@@ -26,8 +26,8 @@ bool HUDSystem::StartUp()
     g_game->GetComponentManager().AddComponent<TransformComponent>(m_fps);
     std::weak_ptr<TextResource> textResource = g_game->GetResourceManager().AddResource<TextResource>("", "", false);
     RendererComponent& rendererComponent = g_game->GetRendererComponent();
-    textResource.lock()->SetFont(rendererComponent.m_font);
-    textResource.lock()->SetColor(Green);
+    textResource.lock()->m_font = rendererComponent.m_font;
+    textResource.lock()->m_color = Green;
     std::weak_ptr<TextComponent> textComponent = g_game->GetComponentManager().AddComponent<TextComponent>(m_fps);
     textComponent.lock()->m_text = textResource;
 
@@ -39,7 +39,7 @@ bool HUDSystem::PreUpdate()
 {
     std::weak_ptr<TextComponent> textComponent = g_game->GetComponentManager().GetComponent<TextComponent>(m_fps);
     std::string fps = std::to_string(static_cast<U32>(Time::GetInstance().GetFps()));
-    textComponent.lock()->m_text.lock()->SetText(fps.c_str());
+    textComponent.lock()->m_text.lock()->m_text = fps;
     textComponent.lock()->m_text.lock()->ReLoad();
 
     std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(m_fps);

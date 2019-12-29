@@ -4,11 +4,12 @@
 #include "Game.h"
 
 namespace sand {
+
 //----------------------------------------------------------------------------------------------------
 FontResource::FontResource(U32 id, const char* dir, const char* file)
     : Resource(id, dir, file)
-    , m_font(nullptr)
     , m_size(0)
+    , m_font(nullptr)
 {
 }
 
@@ -36,18 +37,6 @@ bool FontResource::UnLoad()
 TTF_Font* FontResource::GetFont() const
 {
     return m_font;
-}
-
-//----------------------------------------------------------------------------------------------------
-void FontResource::SetSize(U16 size)
-{
-    m_size = size;
-}
-
-//----------------------------------------------------------------------------------------------------
-U16 FontResource::GetSize() const
-{
-    return m_size;
 }
 
 //----------------------------------------------------------------------------------------------------

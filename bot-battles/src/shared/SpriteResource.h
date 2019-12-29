@@ -6,6 +6,7 @@
 #include "Vec2I.h"
 
 namespace sand {
+
 //----------------------------------------------------------------------------------------------------
 class SpriteResource : public Resource {
 public:

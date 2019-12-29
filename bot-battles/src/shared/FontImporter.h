@@ -2,6 +2,7 @@
 #define __FONT_IMPORTER_H__
 
 namespace sand {
+
 //----------------------------------------------------------------------------------------------------
 class FontImporter {
 public:

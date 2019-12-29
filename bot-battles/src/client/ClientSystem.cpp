@@ -8,7 +8,6 @@
 #include "MemoryStream.h"
 #include "MessageTypes.h"
 #include "Move.h"
-#include "ReceivedPacket.h"
 #include "ReplicationManagerClient.h"
 #include "SocketAddress.h"
 #include "UDPSocket.h"
@@ -41,9 +40,7 @@ bool ClientSystem::Update()
 {
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
 
-    EnqueueIncomingPackets(clientComponent);
-    ProcessIncomingPackets(clientComponent);
-
+    ReceiveIncomingPackets(clientComponent);
     SendOutgoingPackets(clientComponent);
 
     return true;
@@ -143,43 +140,24 @@ bool ClientSystem::SendPacket(const ClientComponent& clientComponent, const Outp
 }
 
 //----------------------------------------------------------------------------------------------------
-void ClientSystem::EnqueueIncomingPackets(ClientComponent& clientComponent) const
+void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent) const
 {
     InputMemoryStream packet;
     SocketAddress fromSocketAddress;
 
     U32 receivedPacketCount = 0;
 
-    F32 time = Time::GetInstance().GetTime();
-
     while (receivedPacketCount < MAX_PACKETS_PER_FRAME) {
         I32 readByteCount = clientComponent.m_socket->ReceiveFrom(packet.GetPtr(), packet.GetByteCapacity(), fromSocketAddress);
         if (readByteCount > 0) {
             packet.SetCapacity(readByteCount);
             packet.ResetHead();
-            clientComponent.m_receivedPackets.emplace_back(packet, fromSocketAddress, time);
+            ReceivePacket(clientComponent, packet);
             ++receivedPacketCount;
         } else if (readByteCount == -WSAECONNRESET) {
             OnConnectionReset(clientComponent);
         } else if (readByteCount == 0 || -WSAEWOULDBLOCK) {
             // TODO: graceful disconnection if readByteCount == 0?
-            break;
-        }
-    }
-}
-
-//----------------------------------------------------------------------------------------------------
-void ClientSystem::ProcessIncomingPackets(ClientComponent& clientComponent) const
-{
-    F32 time = Time::GetInstance().GetTime();
-
-    while (!clientComponent.m_receivedPackets.empty()) {
-        ReceivedPacket& receivedPacket = clientComponent.m_receivedPackets.front();
-        F32 timestamp = receivedPacket.GetTimestamp();
-        if (time >= timestamp) {
-            ReceivePacket(clientComponent, receivedPacket.GetBuffer());
-            clientComponent.m_receivedPackets.pop_front();
-        } else {
             break;
         }
     }

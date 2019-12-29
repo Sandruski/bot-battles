@@ -6,7 +6,6 @@ namespace sand {
 ClientComponent::ClientComponent()
     : m_socket(nullptr)
     , m_socketAddress(nullptr)
-    , m_receivedPackets()
     , m_name("ExamplePlayer")
     , m_playerID(INVALID_PLAYER_ID)
     , m_helloTime(1.0f)

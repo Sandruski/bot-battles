@@ -2,6 +2,7 @@
 #define __TEXTURE_IMPORTER_H__
 
 namespace sand {
+
 //----------------------------------------------------------------------------------------------------
 class TextureImporter {
 public:

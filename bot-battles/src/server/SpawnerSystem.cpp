@@ -53,9 +53,9 @@ Entity SpawnerSystem::SpawnPlayerEntity() const
 
     std::weak_ptr<TextResource> textResource = g_game->GetResourceManager().AddResource<TextResource>("", "", false);
     RendererComponent& rendererComponent = g_game->GetRendererComponent();
-    textResource.lock()->SetFont(rendererComponent.m_font);
-    textResource.lock()->SetText(spriteResource.lock()->GetFile());
-    textResource.lock()->SetColor(Red);
+    textResource.lock()->m_font = rendererComponent.m_font;
+    textResource.lock()->m_text = spriteResource.lock()->GetFile();
+    textResource.lock()->m_color = Red;
     textResource.lock()->ReLoad();
     std::weak_ptr<TextComponent> textComponent = g_gameServer->GetComponentManager().AddComponent<TextComponent>(character);
     textComponent.lock()->m_text = textResource;

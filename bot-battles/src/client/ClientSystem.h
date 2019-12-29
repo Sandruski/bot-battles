@@ -31,9 +31,7 @@ private:
     bool SendInputPacket(const ClientComponent& clientComponent, const MoveComponent& moveComponent) const;
     bool SendPacket(const ClientComponent& clientComponent, const OutputMemoryStream& outputStream) const;
 
-    void EnqueueIncomingPackets(ClientComponent& clientComponent) const;
-    void ProcessIncomingPackets(ClientComponent& clientComponent) const;
-
+    void ReceiveIncomingPackets(ClientComponent& clientComponent) const;
     void ReceivePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream) const;
     void ReceiveWelcomePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream) const;
     void ReceiveStatePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream) const;

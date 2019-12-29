@@ -8,16 +8,11 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 TextResource::TextResource(U32 id, const char* dir, const char* file)
     : Resource(id, dir, file)
-    , m_texture(nullptr)
     , m_font()
     , m_text()
     , m_color()
+    , m_texture(nullptr)
     , m_size()
-{
-}
-
-//----------------------------------------------------------------------------------------------------
-TextResource::~TextResource()
 {
 }
 
@@ -59,36 +54,6 @@ bool TextResource::ReLoad()
 SDL_Texture* TextResource::GetTexture() const
 {
     return m_texture;
-}
-
-//----------------------------------------------------------------------------------------------------
-void TextResource::SetFont(std::weak_ptr<FontResource> font)
-{
-    m_font = font;
-}
-
-//----------------------------------------------------------------------------------------------------
-void TextResource::SetText(const char* text)
-{
-    m_text = text;
-}
-
-//----------------------------------------------------------------------------------------------------
-const char* TextResource::GetText() const
-{
-    return m_text.c_str();
-}
-
-//----------------------------------------------------------------------------------------------------
-void TextResource::SetColor(const SDL_Color& color)
-{
-    m_color = color;
-}
-
-//----------------------------------------------------------------------------------------------------
-const SDL_Color& TextResource::GetColor() const
-{
-    return m_color;
 }
 
 //----------------------------------------------------------------------------------------------------

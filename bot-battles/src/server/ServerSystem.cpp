@@ -76,9 +76,7 @@ bool ServerSystem::Update()
 {
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
 
-    EnqueueIncomingPackets(serverComponent);
-    ProcessIncomingPackets(serverComponent);
-
+    ReceiveIncomingPackets(serverComponent);
     SendOutgoingPackets(serverComponent);
 
     return true;
@@ -149,7 +147,7 @@ bool ServerSystem::SendPacket(const ServerComponent& serverComponent, const Outp
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerSystem::EnqueueIncomingPackets(ServerComponent& serverComponent)
+void ServerSystem::ReceiveIncomingPackets(ServerComponent& serverComponent)
 {
     InputMemoryStream packet;
     SocketAddress fromSocketAddress;
@@ -163,29 +161,12 @@ void ServerSystem::EnqueueIncomingPackets(ServerComponent& serverComponent)
         if (readByteCount > 0) {
             packet.SetCapacity(readByteCount);
             packet.ResetHead();
-            serverComponent.m_receivedPackets.emplace_back(packet, fromSocketAddress, time);
+            ReceivePacket(serverComponent, packet, fromSocketAddress);
             ++receivedPacketCount;
         } else if (readByteCount == -WSAECONNRESET) {
             ClientConnectionReset(serverComponent, fromSocketAddress);
         } else if (readByteCount == 0 || -WSAEWOULDBLOCK) {
             // TODO: graceful disconnection if readByteCount == 0?
-            break;
-        }
-    }
-}
-
-//----------------------------------------------------------------------------------------------------
-void ServerSystem::ProcessIncomingPackets(ServerComponent& serverComponent)
-{
-    F32 time = Time::GetInstance().GetTime();
-
-    while (!serverComponent.m_receivedPackets.empty()) {
-        ReceivedPacket& receivedPacket = serverComponent.m_receivedPackets.front();
-        F32 timestamp = receivedPacket.GetTimestamp();
-        if (time >= timestamp) {
-            ReceivePacket(serverComponent, receivedPacket.GetBuffer(), receivedPacket.GetFromAddress());
-            serverComponent.m_receivedPackets.pop_front();
-        } else {
             break;
         }
     }
