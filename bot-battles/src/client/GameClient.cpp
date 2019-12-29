@@ -8,7 +8,7 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-GameClient::GameClient(const char* configPath)
+GameClient::GameClient(const std::string& configPath)
     : m_configClient(nullptr)
     , m_replicationManager()
     , m_deliveryManager()

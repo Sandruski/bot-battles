@@ -12,6 +12,7 @@ struct WindowComponent {
     void LoadFromConfig(const rapidjson::Value& value);
 
     SDL_Window* m_window;
+
     Vec2I m_resolution;
     bool m_isFullscreen;
 };

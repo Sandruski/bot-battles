@@ -35,11 +35,6 @@ bool RendererSystem::StartUp()
         return false;
     }
 
-    std::weak_ptr<FontResource> fontResource = g_game->GetResourceManager().AddResource<FontResource>("Dosis-Regular.ttf", FONTS_DIR, true);
-    fontResource.lock()->m_size = 30;
-    fontResource.lock()->ReLoad();
-    rendererComponent.m_font = fontResource;
-
     return true;
 }
 

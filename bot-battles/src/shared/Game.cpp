@@ -105,8 +105,6 @@ bool Game::Init()
         return ret;
     }
 
-    m_config->LoadFromJson();
-
 #ifdef _DRAW
     ret = m_textureImporter.StartUp();
     if (!ret) {
@@ -117,6 +115,9 @@ bool Game::Init()
         return ret;
     }
 #endif
+
+    m_config->LoadFromJson();
+
     ret = m_systemManager->StartUp();
     if (!ret) {
         return ret;

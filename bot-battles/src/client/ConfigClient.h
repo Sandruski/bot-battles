@@ -8,7 +8,7 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 struct ConfigClient : public Config {
 
-    ConfigClient(const char* m_configPath);
+    ConfigClient(const std::string& configPath);
 
     void ReadDocument(const rapidjson::Document& document) override;
 };

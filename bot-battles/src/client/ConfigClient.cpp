@@ -6,7 +6,7 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-ConfigClient::ConfigClient(const char* configPath)
+ConfigClient::ConfigClient(const std::string& configPath)
     : Config(configPath)
 {
 }

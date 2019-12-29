@@ -12,7 +12,7 @@ struct ConfigServer;
 //----------------------------------------------------------------------------------------------------
 class GameServer : public Game {
 public:
-    GameServer(const char* configPath);
+    GameServer(const std::string& configPath);
 
     bool Init() override;
 

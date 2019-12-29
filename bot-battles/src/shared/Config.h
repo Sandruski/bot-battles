@@ -6,7 +6,7 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 struct Config {
 
-    Config(const char* m_configPath);
+    Config(const std::string& configPath);
     virtual ~Config() = default;
 
     bool LoadFromJson();

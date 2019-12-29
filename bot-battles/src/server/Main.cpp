@@ -38,7 +38,9 @@ int main(int /*argc*/, char* /*args*/[])
         case MainState::CREATE: {
             ILOG("MainState::CREATE");
 
-            sand::g_game = sand::g_gameServer = new sand::GameServer("../../data/server.config");
+            std::string configPath(sand::CONFIG_DIR);
+            configPath.append("server.config");
+            sand::g_game = sand::g_gameServer = new sand::GameServer(configPath);
             if (sand::g_game != nullptr) {
                 mainState = MainState::INIT;
             } else {

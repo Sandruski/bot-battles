@@ -6,7 +6,7 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-ConfigServer::ConfigServer(const char* configPath)
+ConfigServer::ConfigServer(const std::string& configPath)
     : Config(configPath)
 {
 }

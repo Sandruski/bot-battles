@@ -11,8 +11,11 @@ struct RendererComponent {
 
     RendererComponent();
 
+    void LoadFromConfig(const rapidjson::Value& value);
+
     SDL_Renderer* m_renderer;
-    std::weak_ptr<FontResource> m_font;
+
+    std::weak_ptr<FontResource> m_defaultFont;
     SDL_Color m_backgroundColor;
     bool m_isDebugDraw;
 };

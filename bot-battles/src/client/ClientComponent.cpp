@@ -19,9 +19,11 @@ void ClientComponent::LoadFromConfig(const rapidjson::Value& value)
     assert(value.HasMember("name"));
     assert(value["name"].IsString());
     m_name = value["name"].GetString();
+
     assert(value.HasMember("ip"));
     assert(value["ip"].IsString());
     m_ip = value["ip"].GetString();
+
     assert(value.HasMember("port"));
     assert(value["port"].IsString());
     m_port = value["port"].GetString();

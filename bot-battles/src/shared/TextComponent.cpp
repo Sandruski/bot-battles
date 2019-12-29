@@ -37,7 +37,7 @@ void TextComponent::Read(InputMemoryStream& inputStream, U32 dirtyState)
         inputStream.Read(color);
         m_text = g_game->GetResourceManager().AddResource<TextResource>("", "", false);
         RendererComponent& rendererComponent = g_game->GetRendererComponent();
-        m_text.lock()->m_font = rendererComponent.m_font;
+        m_text.lock()->m_font = rendererComponent.m_defaultFont;
         m_text.lock()->m_text = text.c_str();
         m_text.lock()->m_color = color;
         m_text.lock()->ReLoad();

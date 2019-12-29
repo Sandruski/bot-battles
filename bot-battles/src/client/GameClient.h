@@ -14,7 +14,7 @@ struct ConfigClient;
 //----------------------------------------------------------------------------------------------------
 class GameClient : public Game {
 public:
-    GameClient(const char* configPath);
+    GameClient(const std::string& configPath);
 
     bool Init() override;
 

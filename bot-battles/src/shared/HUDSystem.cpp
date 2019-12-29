@@ -26,7 +26,7 @@ bool HUDSystem::StartUp()
     g_game->GetComponentManager().AddComponent<TransformComponent>(m_fps);
     std::weak_ptr<TextResource> textResource = g_game->GetResourceManager().AddResource<TextResource>("", "", false);
     RendererComponent& rendererComponent = g_game->GetRendererComponent();
-    textResource.lock()->m_font = rendererComponent.m_font;
+    textResource.lock()->m_font = rendererComponent.m_defaultFont;
     textResource.lock()->m_color = Green;
     std::weak_ptr<TextComponent> textComponent = g_game->GetComponentManager().AddComponent<TextComponent>(m_fps);
     textComponent.lock()->m_text = textResource;

@@ -12,7 +12,7 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-GameServer::GameServer(const char* configPath)
+GameServer::GameServer(const std::string& configPath)
     : m_configServer(nullptr)
     , m_serverComponent()
 {

@@ -1,12 +1,13 @@
 #include "Config.h"
 
 #include "Game.h"
+#include "RendererComponent.h"
 #include "WindowComponent.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-Config::Config(const char* configPath)
+Config::Config(const std::string& configPath)
     : m_configPath(configPath)
     , m_name()
 {
@@ -52,5 +53,10 @@ void Config::ReadDocument(const rapidjson::Document& document)
     assert(document["window"].IsObject());
     const rapidjson::Value& window = document["window"];
     g_game->GetWindowComponent().LoadFromConfig(window);
+
+    assert(document.HasMember("renderer"));
+    assert(document["renderer"].IsObject());
+    const rapidjson::Value& renderer = document["renderer"];
+    g_game->GetRendererComponent().LoadFromConfig(renderer);
 }
 }
