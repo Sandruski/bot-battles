@@ -95,7 +95,7 @@ void ServerSystem::SendOutgoingPackets(ServerComponent& serverComponent)
             DisconnectClient(serverComponent, playerID, entity);
         }
 
-        clientProxy->m_deliveryManager->ProcessTimedOutPackets();
+        clientProxy->m_deliveryManager.ProcessTimedOutPackets();
 
         //if (clientProxy->m_isLastMoveTimestampDirty) {
         SendStatePacket(serverComponent, clientProxy);
@@ -127,8 +127,8 @@ void ServerSystem::SendStatePacket(const ServerComponent& serverComponent, std::
 {
     OutputMemoryStream statePacket;
     statePacket.Write(ServerMessageType::STATE);
-    Delivery& delivery = clientProxy->m_deliveryManager->WriteState(statePacket);
-    delivery.m_replicationResultManager = std::make_shared<ReplicationResultManager>(clientProxy->m_replicationManager);
+    Delivery& delivery = clientProxy->m_deliveryManager.WriteState(statePacket);
+    delivery.m_replicationResultManager = std::make_shared<ReplicationResultManager>(std::weak_ptr<ReplicationManagerServer>(clientProxy->m_replicationManager));
     clientProxy->m_replicationManager->Write(statePacket, *delivery.m_replicationResultManager);
 
     const char* name = clientProxy->GetName();
@@ -153,8 +153,6 @@ void ServerSystem::ReceiveIncomingPackets(ServerComponent& serverComponent)
     SocketAddress fromSocketAddress;
 
     U32 receivedPacketCount = 0;
-
-    F32 time = Time::GetInstance().GetTime();
 
     while (receivedPacketCount < MAX_PACKETS_PER_FRAME) {
         I32 readByteCount = serverComponent.m_socket->ReceiveFrom(packet.GetPtr(), packet.GetByteCapacity(), fromSocketAddress);
@@ -238,7 +236,7 @@ void ServerSystem::ReceiveInputPacket(ServerComponent& serverComponent, InputMem
 {
     inputStream.Read(playerID);
     std::shared_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxyFromPlayerID(playerID);
-    const bool isValid = clientProxy->m_deliveryManager->ReadState(inputStream);
+    const bool isValid = clientProxy->m_deliveryManager.ReadState(inputStream);
     if (clientProxy == nullptr || !isValid) {
         ILOG("Input packet received from unknown player");
         playerID = INVALID_PLAYER_ID;

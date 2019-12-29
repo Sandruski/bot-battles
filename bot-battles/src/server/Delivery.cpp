@@ -11,7 +11,14 @@ Delivery::Delivery(SequenceNumber sequenceNumber)
 }
 
 //----------------------------------------------------------------------------------------------------
-Delivery::~Delivery()
+SequenceNumber Delivery::GetSequenceNumber() const
 {
+    return m_sequenceNumber;
+}
+
+//----------------------------------------------------------------------------------------------------
+F32 Delivery::GetTimestamp() const
+{
+    return m_timestamp;
 }
 }

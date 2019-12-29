@@ -14,11 +14,6 @@ DeliveryManagerClient::DeliveryManagerClient()
 }
 
 //----------------------------------------------------------------------------------------------------
-DeliveryManagerClient::~DeliveryManagerClient()
-{
-}
-
-//----------------------------------------------------------------------------------------------------
 void DeliveryManagerClient::WriteState(OutputMemoryStream& outputStream)
 {
     WriteSequenceNumber(outputStream);

@@ -15,16 +15,6 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-ReplicationManagerClient::ReplicationManagerClient()
-{
-}
-
-//----------------------------------------------------------------------------------------------------
-ReplicationManagerClient::~ReplicationManagerClient()
-{
-}
-
-//----------------------------------------------------------------------------------------------------
 void ReplicationManagerClient::Read(InputMemoryStream& inputStream) const
 {
     while (inputStream.GetRemainingBitCount() >= 8) {
@@ -32,7 +22,7 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream) const
         NetworkID networkID = INVALID_NETWORK_ID;
         inputStream.Read(networkID);
 
-        ReplicationActionType replicationActionType = ReplicationActionType::INVALID;
+        ReplicationActionType replicationActionType = ReplicationActionType::NONE;
         inputStream.Read(replicationActionType, 2);
 
         switch (replicationActionType) {

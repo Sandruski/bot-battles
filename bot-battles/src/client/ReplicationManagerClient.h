@@ -8,9 +8,6 @@ class InputMemoryStream;
 //----------------------------------------------------------------------------------------------------
 class ReplicationManagerClient {
 public:
-    ReplicationManagerClient();
-    ~ReplicationManagerClient();
-
     void Read(InputMemoryStream& inputStream) const;
     void ReadCreateAction(InputMemoryStream& inputStream, NetworkID networkID) const;
     void ReadUpdateAction(InputMemoryStream& inputStream, NetworkID networkID) const;

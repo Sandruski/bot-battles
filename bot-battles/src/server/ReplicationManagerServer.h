@@ -1,17 +1,17 @@
 #ifndef __REPLICATION_MANAGER_SERVER_H__
 #define __REPLICATION_MANAGER_SERVER_H__
 
+#include "ReplicationCommand.h"
+
 namespace sand {
 
 class OutputMemoryStream;
 class ReplicationResultManager;
-class ReplicationCommand;
 
 //----------------------------------------------------------------------------------------------------
 class ReplicationManagerServer {
 public:
     ReplicationManagerServer();
-    ~ReplicationManagerServer();
 
     bool AddCommand(NetworkID networkID, U32 dirtyState);
     bool RemoveCommand(NetworkID networkID);

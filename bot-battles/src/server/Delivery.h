@@ -9,17 +9,9 @@ class ReplicationResultManager;
 class Delivery {
 public:
     Delivery(SequenceNumber sequenceNumber);
-    ~Delivery();
 
-    SequenceNumber GetSequenceNumber() const
-    {
-        return m_sequenceNumber;
-    }
-
-    F32 GetTimestamp() const
-    {
-        return m_timestamp;
-    }
+    SequenceNumber GetSequenceNumber() const;
+    F32 GetTimestamp() const;
 
 public:
     std::shared_ptr<ReplicationResultManager> m_replicationResultManager;

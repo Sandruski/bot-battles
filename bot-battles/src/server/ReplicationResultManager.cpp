@@ -10,14 +10,9 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-ReplicationResultManager::ReplicationResultManager(std::shared_ptr<ReplicationManagerServer> replicationManagerServer)
-    : m_replicationManagerServer(std::move(replicationManagerServer)) // TODO: std move
+ReplicationResultManager::ReplicationResultManager(std::weak_ptr<ReplicationManagerServer> replicationManager)
+    : m_replicationManager(std::move(replicationManager)) // TODO: std move
     , m_networkIDToReplicationCommand()
-{
-}
-
-//----------------------------------------------------------------------------------------------------
-ReplicationResultManager::~ReplicationResultManager()
 {
 }
 
@@ -36,9 +31,10 @@ bool ReplicationResultManager::AddDelivery(NetworkID networkID, const Replicatio
 }
 
 //----------------------------------------------------------------------------------------------------
-void ReplicationResultManager::HandleDeliverySuccess(const DeliveryManagerServer& deliveryManagerServer) const
+void ReplicationResultManager::HandleDeliverySuccess(const DeliveryManagerServer& /*deliveryManagerServer*/) const
 {
     for (const auto& pair : m_networkIDToReplicationCommand) {
+
         NetworkID networkID = pair.first;
         ReplicationCommand replicationCommand = pair.second;
         switch (replicationCommand.m_replicationActionType) {
@@ -100,14 +96,14 @@ void ReplicationResultManager::HandleCreateDeliverySuccess(NetworkID networkID) 
 {
     Entity entity = g_game->GetLinkingContext().GetEntity(networkID);
     if (entity != INVALID_ENTITY) {
-        m_replicationManagerServer->SetUpdate(networkID);
+        m_replicationManager.lock()->SetUpdate(networkID);
     }
 }
 
 //----------------------------------------------------------------------------------------------------
 void ReplicationResultManager::HandleRemoveDeliverySuccess(NetworkID networkID) const
 {
-    m_replicationManagerServer->RemoveCommand(networkID);
+    m_replicationManager.lock()->RemoveCommand(networkID);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -115,7 +111,7 @@ void ReplicationResultManager::HandleCreateDeliveryFailure(NetworkID networkID) 
 {
     Entity entity = g_game->GetLinkingContext().GetEntity(networkID);
     if (entity != INVALID_ENTITY) {
-        m_replicationManagerServer->SetCreate(networkID, static_cast<U32>(ComponentMemberType::ALL));
+        m_replicationManager.lock()->SetCreate(networkID, static_cast<U32>(ComponentMemberType::ALL));
     }
 }
 
@@ -137,7 +133,7 @@ void ReplicationResultManager::HandleUpdateDeliveryFailure(NetworkID networkID, 
         }
 
         if (dirtyState > 0) {
-            m_replicationManagerServer->AddDirtyState(networkID, dirtyState);
+            m_replicationManager.lock()->AddDirtyState(networkID, dirtyState);
         }
     }
 }
@@ -145,6 +141,6 @@ void ReplicationResultManager::HandleUpdateDeliveryFailure(NetworkID networkID, 
 //----------------------------------------------------------------------------------------------------
 void ReplicationResultManager::HandleRemoveDeliveryFailure(NetworkID networkID) const
 {
-    m_replicationManagerServer->SetRemove(networkID);
+    m_replicationManager.lock()->SetRemove(networkID);
 }
 }

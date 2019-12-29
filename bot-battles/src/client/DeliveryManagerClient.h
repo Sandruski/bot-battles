@@ -12,7 +12,6 @@ class InputMemoryStream;
 class DeliveryManagerClient {
 public:
     DeliveryManagerClient();
-    ~DeliveryManagerClient();
 
     void WriteState(OutputMemoryStream& outputStream);
     bool ReadState(InputMemoryStream& inputStream);

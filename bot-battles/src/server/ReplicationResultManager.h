@@ -1,17 +1,17 @@
 #ifndef __REPLICATION_RESULT_MANAGER_H__
 #define __REPLICATION_RESULT_MANAGER_H__
 
+#include "ReplicationCommand.h"
+
 namespace sand {
 
 class DeliveryManagerServer;
 class ReplicationManagerServer;
-class ReplicationCommand;
 
 //----------------------------------------------------------------------------------------------------
 class ReplicationResultManager {
 public:
-    ReplicationResultManager(std::shared_ptr<ReplicationManagerServer> replicationManagerServer);
-    ~ReplicationResultManager();
+    ReplicationResultManager(std::weak_ptr<ReplicationManagerServer> replicationManager);
 
     bool AddDelivery(NetworkID networkID, const ReplicationCommand& replicationCommand);
 
@@ -29,7 +29,7 @@ private:
     void HandleRemoveDeliveryFailure(NetworkID networkID) const;
 
 private:
-    std::shared_ptr<ReplicationManagerServer> m_replicationManagerServer;
+    std::weak_ptr<ReplicationManagerServer> m_replicationManager;
     std::unordered_map<NetworkID, ReplicationCommand> m_networkIDToReplicationCommand;
 };
 }

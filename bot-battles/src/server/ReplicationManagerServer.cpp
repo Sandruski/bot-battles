@@ -22,11 +22,6 @@ ReplicationManagerServer::ReplicationManagerServer()
 }
 
 //----------------------------------------------------------------------------------------------------
-ReplicationManagerServer::~ReplicationManagerServer()
-{
-}
-
-//----------------------------------------------------------------------------------------------------
 bool ReplicationManagerServer::AddCommand(NetworkID networkID, U32 dirtyState)
 {
     auto it = m_networkIDToReplicationCommand.find(networkID);
