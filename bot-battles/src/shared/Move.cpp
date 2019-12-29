@@ -23,11 +23,6 @@ Move::Move(const InputComponent& input, U32 dirtyState, F32 timestamp, F32 dt)
 }
 
 //----------------------------------------------------------------------------------------------------
-Move::~Move()
-{
-}
-
-//----------------------------------------------------------------------------------------------------
 void Move::Write(OutputMemoryStream& outputStream) const
 {
     outputStream.Write(m_dirtyState); // TODO CHANGE! This dirty state is alone :c
@@ -41,5 +36,29 @@ void Move::Read(InputMemoryStream& inputStream)
     inputStream.Read(m_dirtyState); // TODO CHANGE! This dirty state is alone :c
     m_input.Read(inputStream, m_dirtyState);
     inputStream.Read(m_timestamp);
+}
+
+//----------------------------------------------------------------------------------------------------
+const InputComponent& Move::GetInput() const
+{
+    return m_input;
+}
+
+//----------------------------------------------------------------------------------------------------
+U32 Move::GetDirtyState() const
+{
+    return m_dirtyState;
+}
+
+//----------------------------------------------------------------------------------------------------
+F32 Move::GetTimestamp() const
+{
+    return m_timestamp;
+}
+
+//----------------------------------------------------------------------------------------------------
+F32 Move::GetDt() const
+{
+    return m_dt;
 }
 }

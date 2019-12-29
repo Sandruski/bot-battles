@@ -13,30 +13,14 @@ class Move {
 public:
     Move();
     Move(const InputComponent& input, U32 dirtyState, F32 timestamp, F32 dt);
-    ~Move();
-
-    const InputComponent& GetInput() const
-    {
-        return m_input;
-    }
-
-    U32 GetDirtyState() const
-    {
-        return m_dirtyState;
-    }
-
-    F32 GetTimestamp() const
-    {
-        return m_timestamp;
-    }
-
-    F32 GetDt() const
-    {
-        return m_dt;
-    }
 
     void Write(OutputMemoryStream& outputStream) const;
     void Read(InputMemoryStream& inputStream);
+
+    const InputComponent& GetInput() const;
+    U32 GetDirtyState() const;
+    F32 GetTimestamp() const;
+    F32 GetDt() const;
 
 private:
     InputComponent m_input;

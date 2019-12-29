@@ -13,12 +13,11 @@ class ReplicationCommand {
 public:
     ReplicationCommand();
     ReplicationCommand(ReplicationActionType replicationAction, U32 dirtyState);
-    ~ReplicationCommand();
 
     void AddDirtyState(U32 dirtyState);
     void RemoveDirtyState(U32 dirtyState);
-    U32 GetDirtyState() const;
     bool HasDirtyState() const;
+    U32 GetDirtyState() const;
 
 public:
     ReplicationActionType m_replicationActionType;

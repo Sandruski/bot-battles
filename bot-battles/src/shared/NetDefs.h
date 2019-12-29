@@ -4,6 +4,7 @@
 namespace sand {
 
 enum class Endianness {
+
     LITTLE_ENDIAN, // Intel's x86, Intel's x64, Apple's iOS
     BIG_ENDIAN // Xbox 360, PlayStation 3, IBM's PowerPC
 };

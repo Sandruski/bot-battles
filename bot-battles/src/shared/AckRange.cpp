@@ -19,23 +19,6 @@ AckRange::AckRange(SequenceNumber startSequenceNumber)
 }
 
 //----------------------------------------------------------------------------------------------------
-AckRange::~AckRange()
-{
-}
-
-//----------------------------------------------------------------------------------------------------
-bool AckRange::AddSequenceNumber(SequenceNumber sequenceNumber)
-{
-    SequenceNumber nextSequenceNumber = m_startSequenceNumber + static_cast<SequenceNumber>(m_count);
-    if (sequenceNumber == nextSequenceNumber) {
-        ++m_count;
-        return true;
-    }
-
-    return false;
-}
-
-//----------------------------------------------------------------------------------------------------
 void AckRange::Write(OutputMemoryStream& outputStream) const
 {
     outputStream.Write(m_startSequenceNumber);
@@ -57,5 +40,29 @@ void AckRange::Read(InputMemoryStream& inputStream)
     } else {
         m_count = 1;
     }
+}
+
+//----------------------------------------------------------------------------------------------------
+bool AckRange::AddSequenceNumber(SequenceNumber sequenceNumber)
+{
+    SequenceNumber nextSequenceNumber = m_startSequenceNumber + static_cast<SequenceNumber>(m_count);
+    if (sequenceNumber == nextSequenceNumber) {
+        ++m_count;
+        return true;
+    }
+
+    return false;
+}
+
+//----------------------------------------------------------------------------------------------------
+SequenceNumber AckRange::GetStartSequenceNumber() const
+{
+    return m_startSequenceNumber;
+}
+
+//----------------------------------------------------------------------------------------------------
+U8 AckRange::GetCount() const
+{
+    return m_count;
 }
 }

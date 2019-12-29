@@ -7,7 +7,6 @@ namespace sand {
 class LinkingContext {
 public:
     LinkingContext();
-    ~LinkingContext();
 
     NetworkID AddEntity(Entity entity, NetworkID networkID = INVALID_NETWORK_ID);
     bool RemoveEntity(Entity entity);

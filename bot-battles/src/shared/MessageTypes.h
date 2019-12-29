@@ -4,20 +4,20 @@
 namespace sand {
 
 enum class ClientMessageType : U16 {
+
     HELLO,
     INPUT,
     GOODBYE,
 
-    COUNT,
-    INVALID
+    COUNT
 };
 
 enum class ServerMessageType : U16 {
+
     WELCOME,
     STATE,
 
-    COUNT,
-    INVALID
+    COUNT
 };
 }
 

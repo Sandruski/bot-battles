@@ -15,10 +15,6 @@ public:
     SocketAddress();
     SocketAddress(U32 address, U16 port);
     SocketAddress(const sockaddr& sockaddr);
-    ~SocketAddress();
-
-    const sockaddr_in* GetSockAddrIn() const;
-    const char* GetName() const;
 
     bool operator==(const SocketAddress& other) const
     {
@@ -29,6 +25,9 @@ public:
             && sockAddrIn->sin_addr.S_un.S_addr == otherSockAddrIn->sin_addr.S_un.S_addr
             && sockAddrIn->sin_port == otherSockAddrIn->sin_port);
     }
+
+    const sockaddr_in* GetSockAddrIn() const;
+    const char* GetName() const;
 
 private:
     void CreateName();

@@ -20,11 +20,6 @@ public:
     bool SendTo(const void* data, int length, const SocketAddress& toSocketAddress);
     I32 ReceiveFrom(void* buffer, int length, SocketAddress& fromSocketAddress);
 
-    const SOCKET& GetSocket() const
-    {
-        return m_socket;
-    }
-
 private:
     SOCKET m_socket;
     bool m_isNonBlockingMode;

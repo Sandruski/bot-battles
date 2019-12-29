@@ -27,15 +27,8 @@ public:
     void Write(const SDL_Color& inColor);
     void WritePosition(const Vec2& inVec);
 
-    const char* GetPtr() const
-    {
-        return m_buffer;
-    }
-
-    U32 GetByteLength() const
-    {
-        return BITS_TO_BYTES(m_head + 7);
-    }
+    const char* GetPtr() const;
+    U32 GetByteLength() const;
 
 private:
     void Realloc(U32 bitCapacity);
@@ -107,20 +100,9 @@ public:
     void Read(SDL_Color& outColor);
     void ReadPosition(Vec2& outVec);
 
-    char* GetPtr() const
-    {
-        return m_buffer;
-    }
-
-    U32 GetByteCapacity() const
-    {
-        return BITS_TO_BYTES(m_capacity);
-    }
-
-    U32 GetRemainingBitCount() const
-    {
-        return m_capacity - m_head;
-    }
+    char* GetPtr() const;
+    U32 GetByteCapacity() const;
+    U32 GetRemainingBitCount() const;
 
     void SetCapacity(U32 byteCapacity);
     void AdvanceHead(U32 bitCount);

@@ -11,22 +11,14 @@ class AckRange {
 public:
     AckRange();
     AckRange(SequenceNumber startSequenceNumber);
-    ~AckRange();
-
-    bool AddSequenceNumber(SequenceNumber sequenceNumber);
 
     void Write(OutputMemoryStream& outputStream) const;
     void Read(InputMemoryStream& inputStream);
 
-    SequenceNumber GetStartSequenceNumber() const
-    {
-        return m_startSequenceNumber;
-    }
+    bool AddSequenceNumber(SequenceNumber sequenceNumber);
 
-    U8 GetCount() const
-    {
-        return m_count;
-    }
+    SequenceNumber GetStartSequenceNumber() const;
+    U8 GetCount() const;
 
 private:
     SequenceNumber m_startSequenceNumber;

@@ -75,11 +75,6 @@ SocketAddress::SocketAddress(const sockaddr& sockaddr)
 }
 
 //----------------------------------------------------------------------------------------------------
-SocketAddress::~SocketAddress()
-{
-}
-
-//----------------------------------------------------------------------------------------------------
 const sockaddr_in* SocketAddress::GetSockAddrIn() const
 {
     return reinterpret_cast<const sockaddr_in*>(&m_sockAddr);

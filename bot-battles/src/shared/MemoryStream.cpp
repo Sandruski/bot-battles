@@ -118,6 +118,18 @@ void OutputMemoryStream::WritePosition(const Vec2& inVec) // TODO: this should b
 }
 
 //----------------------------------------------------------------------------------------------------
+const char* OutputMemoryStream::GetPtr() const
+{
+    return m_buffer;
+}
+
+//----------------------------------------------------------------------------------------------------
+U32 OutputMemoryStream::GetByteLength() const
+{
+    return BITS_TO_BYTES(m_head + 7);
+}
+
+//----------------------------------------------------------------------------------------------------
 void OutputMemoryStream::Realloc(U32 bitCapacity)
 {
     U32 newByteCapacity = BITS_TO_BYTES(bitCapacity);
@@ -261,6 +273,24 @@ void InputMemoryStream::ReadPosition(Vec2& outVec) // TODO: this should be done 
     Read(y);
     outVec.x = FIXED_TO_FLOAT(x, -2000.0f, 0.1f);
     outVec.y = FIXED_TO_FLOAT(y, -2000.0f, 0.1f);
+}
+
+//----------------------------------------------------------------------------------------------------
+char* InputMemoryStream::GetPtr() const
+{
+    return m_buffer;
+}
+
+//----------------------------------------------------------------------------------------------------
+U32 InputMemoryStream::GetByteCapacity() const
+{
+    return BITS_TO_BYTES(m_capacity);
+}
+
+//----------------------------------------------------------------------------------------------------
+U32 InputMemoryStream::GetRemainingBitCount() const
+{
+    return m_capacity - m_head;
 }
 
 //----------------------------------------------------------------------------------------------------
