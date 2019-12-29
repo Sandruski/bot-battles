@@ -2,7 +2,6 @@
 
 #include "ComponentMemberTypes.h"
 #include "Game.h"
-#include "MemoryStream.h"
 #include "ResourceManager.h"
 #include "SpriteResource.h"
 

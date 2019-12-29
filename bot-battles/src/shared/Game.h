@@ -1,6 +1,7 @@
 #ifndef __GAME_H__
 #define __GAME_H__
 
+#include "Config.h"
 #include "FSM.h"
 #include "FontImporter.h"
 #include "LinkingContext.h"
@@ -30,7 +31,7 @@ struct GameConfiguration {
 //----------------------------------------------------------------------------------------------------
 class Game {
 public:
-    Game(const GameConfiguration& configuration);
+    Game(const char* configPath);
     virtual ~Game() = default;
 
     virtual bool Init();
@@ -71,6 +72,7 @@ private:
     bool PostRender();
 
 protected:
+    Config m_config;
     GameConfiguration m_configuration;
 
     std::shared_ptr<EntityManager> m_entityManager;

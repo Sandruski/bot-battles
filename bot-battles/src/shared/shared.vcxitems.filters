@@ -75,9 +75,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Memory.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)MemoryStream.h">
-      <Filter>Header Files\Networking</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)NetDefs.h">
       <Filter>Header Files\Networking</Filter>
     </ClInclude>
@@ -252,13 +249,19 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)RendererComponent.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)OutputMemoryStream.h">
+      <Filter>Header Files\Networking</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Projects\bot-battles\bot-battles\src\shared\InputMemoryStream.h">
+      <Filter>Header Files\Networking</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp">
       <Filter>Source Files\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)MemoryStream.cpp">
-      <Filter>Source Files\Networking</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)SocketAddress.cpp">
       <Filter>Source Files\Networking</Filter>
@@ -376,6 +379,15 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)WindowComponent.cpp">
       <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Config.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)OutputMemoryStream.cpp">
+      <Filter>Source Files\Networking</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Projects\bot-battles\bot-battles\src\shared\InputMemoryStream.cpp">
+      <Filter>Source Files\Networking</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,7 +1,6 @@
 #include "TransformComponent.h"
 
 #include "ComponentMemberTypes.h"
-#include "MemoryStream.h"
 
 namespace sand {
 //----------------------------------------------------------------------------------------------------

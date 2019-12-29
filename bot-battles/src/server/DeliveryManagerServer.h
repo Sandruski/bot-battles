@@ -5,9 +5,6 @@
 
 namespace sand {
 
-class OutputMemoryStream;
-class InputMemoryStream;
-
 //----------------------------------------------------------------------------------------------------
 class DeliveryManagerServer {
 public:

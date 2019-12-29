@@ -5,7 +5,6 @@
 
 namespace sand {
 
-class OutputMemoryStream;
 class ReplicationResultManager;
 
 //----------------------------------------------------------------------------------------------------

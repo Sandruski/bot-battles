@@ -13,8 +13,8 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-GameServer::GameServer(const GameConfiguration& configuration)
-    : Game(configuration)
+GameServer::GameServer(const char* configPath)
+    : Game(configPath)
     , m_serverComponent()
 {
 }

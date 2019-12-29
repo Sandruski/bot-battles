@@ -49,6 +49,10 @@
 #include "Observer.h"
 #include "Subject.h"
 
+// Networking
+#include "InputMemoryStream.h"
+#include "OutputMemoryStream.h"
+
 // Defs
 #include "ComponentDefs.h"
 #include "EntityDefs.h"

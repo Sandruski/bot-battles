@@ -7,8 +7,8 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-GameClient::GameClient(const GameConfiguration& configuration)
-    : Game(configuration)
+GameClient::GameClient(const char* configPath)
+    : Game(configPath)
     , m_replicationManager()
     , m_deliveryManager()
     , m_moveComponent()

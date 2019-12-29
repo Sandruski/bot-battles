@@ -38,10 +38,7 @@ int main(int /*argc*/, char* /*args*/[])
         case MainState::CREATE: {
             ILOG("MainState::CREATE");
 
-            sand::GameConfiguration gameConfiguration(
-                "Sand Client",
-                sand::StatesSetup);
-            sand::g_game = sand::g_gameClient = new sand::GameClient(gameConfiguration);
+            sand::g_game = sand::g_gameClient = new sand::GameClient("../../data/client.config");
             if (sand::g_game != nullptr) {
                 mainState = MainState::INIT;
             } else {

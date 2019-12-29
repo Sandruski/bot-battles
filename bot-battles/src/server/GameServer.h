@@ -10,7 +10,7 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 class GameServer : public Game {
 public:
-    GameServer(const GameConfiguration& configuration);
+    GameServer(const char* configPath);
 
     bool Init() override;
 

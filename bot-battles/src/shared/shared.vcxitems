@@ -22,6 +22,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)ComponentManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ComponentMemberTypes.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ComponentTypes.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Config.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)DebugDrawer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)EntityDefs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)EntityManager.h" />
@@ -36,13 +37,14 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)LinkingContext.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Log.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Memory.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)MemoryStream.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)InputMemoryStream.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MessageTypes.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Move.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)NetDefs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)NetUtils.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)NetworkableObject.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Observer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)OutputMemoryStream.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)pch.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)RandomNumberGenerator.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)RendererSystem.h" />
@@ -83,6 +85,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Colors.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Component.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ComponentManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Config.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)DebugDrawer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)EntityManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)EventSystem.cpp" />
@@ -93,8 +96,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)InputComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)LinkingContext.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)MemoryStream.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)InputMemoryStream.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Move.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)OutputMemoryStream.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugServer|Win32'">Create</PrecompiledHeader>

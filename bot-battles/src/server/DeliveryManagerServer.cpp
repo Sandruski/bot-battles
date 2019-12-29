@@ -1,7 +1,6 @@
 #include "DeliveryManagerServer.h"
 
 #include "AckRange.h"
-#include "MemoryStream.h"
 #include "ReplicationResultManager.h"
 
 namespace sand {
@@ -36,6 +35,7 @@ bool DeliveryManagerServer::ReadState(InputMemoryStream& inputStream)
 void DeliveryManagerServer::ProcessTimedOutPackets()
 {
     while (!m_deliveries.empty()) {
+
         const Delivery& delivery = m_deliveries.front();
         F32 timestamp = delivery.GetTimestamp();
         F32 time = Time::GetInstance().GetTime();

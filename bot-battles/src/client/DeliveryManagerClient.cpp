@@ -1,7 +1,5 @@
 #include "DeliveryManagerClient.h"
 
-#include "MemoryStream.h"
-
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------

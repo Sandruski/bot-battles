@@ -14,7 +14,7 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 class GameClient : public Game {
 public:
-    GameClient(const GameConfiguration& configuration);
+    GameClient(const char* configPath);
 
     bool Init() override;
 

@@ -3,8 +3,6 @@
 
 namespace sand {
 
-class InputMemoryStream;
-
 //----------------------------------------------------------------------------------------------------
 class ReplicationManagerClient {
 public:

@@ -3,9 +3,6 @@
 
 namespace sand {
 
-class OutputMemoryStream;
-class InputMemoryStream;
-
 //----------------------------------------------------------------------------------------------------
 class AckRange {
 public:

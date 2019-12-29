@@ -7,8 +7,6 @@ namespace sand {
 
 struct ClientComponent;
 struct MoveComponent;
-class OutputMemoryStream;
-class InputMemoryStream;
 
 //----------------------------------------------------------------------------------------------------
 class ClientSystem : public System {

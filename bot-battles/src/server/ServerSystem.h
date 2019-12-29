@@ -5,8 +5,6 @@
 
 namespace sand {
 
-class OutputMemoryStream;
-class InputMemoryStream;
 class SocketAddress;
 class ClientProxy;
 struct ServerComponent;

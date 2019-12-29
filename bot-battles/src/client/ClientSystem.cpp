@@ -5,7 +5,6 @@
 #include "GameClient.h"
 #include "InputComponent.h"
 #include "LinkingContext.h"
-#include "MemoryStream.h"
 #include "MessageTypes.h"
 #include "Move.h"
 #include "ReplicationManagerClient.h"

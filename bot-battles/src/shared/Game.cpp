@@ -18,8 +18,9 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-Game::Game(const GameConfiguration& configuration)
-    : m_configuration(configuration)
+Game::Game(const char* configPath)
+    : m_config(configPath)
+    , m_configuration()
     , m_entityManager()
     , m_componentManager()
     , m_systemManager()
@@ -43,6 +44,8 @@ Game::Game(const GameConfiguration& configuration)
 bool Game::Init()
 {
     bool ret = false;
+
+    m_config.LoadFromJson();
 
 #ifdef _DRAW
     ret = m_systemManager->RegisterSystem<WindowSystem>();
