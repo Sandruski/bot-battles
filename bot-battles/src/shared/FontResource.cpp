@@ -18,7 +18,7 @@ bool FontResource::Load()
 {
     assert(m_font == nullptr);
 
-    m_font = g_game->GetFontImporter().Load(GetPath(), m_size);
+    m_font = g_game->GetFontImporter().Load(GetPath().c_str(), m_size);
 
     return m_font != nullptr;
 }

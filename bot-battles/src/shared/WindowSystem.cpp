@@ -1,7 +1,7 @@
 #include "WindowSystem.h"
 
+#include "Config.h"
 #include "Game.h"
-
 #include "WindowComponent.h"
 
 namespace sand {
@@ -15,8 +15,11 @@ bool WindowSystem::StartUp()
     }
 
     WindowComponent& windowComponent = g_game->GetWindowComponent();
-
-    windowComponent.m_window = SDL_CreateWindow(g_game->GetName(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, windowComponent.m_width, windowComponent.m_height, SDL_WINDOW_SHOWN);
+    U32 flags = SDL_WINDOW_SHOWN;
+    if (windowComponent.m_isFullscreen) {
+        flags |= SDL_WINDOW_FULLSCREEN;
+    }
+    windowComponent.m_window = SDL_CreateWindow(g_game->GetConfig().m_name.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, windowComponent.m_resolution.x, windowComponent.m_resolution.y, flags);
     if (windowComponent.m_window == nullptr) {
         ELOG("Window could not be created! SDL Error: %s", SDL_GetError());
         return false;

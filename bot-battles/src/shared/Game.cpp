@@ -1,6 +1,7 @@
 #include "Game.h"
 
 #include "ComponentManager.h"
+#include "Config.h"
 #include "EntityManager.h"
 #include "EventSystem.h"
 #include "InputComponent.h"
@@ -18,8 +19,8 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-Game::Game(const char* configPath)
-    : m_config(configPath)
+Game::Game()
+    : m_config(nullptr)
     , m_configuration()
     , m_entityManager()
     , m_componentManager()
@@ -44,8 +45,6 @@ Game::Game(const char* configPath)
 bool Game::Init()
 {
     bool ret = false;
-
-    m_config.LoadFromJson();
 
 #ifdef _DRAW
     ret = m_systemManager->RegisterSystem<WindowSystem>();
@@ -105,6 +104,8 @@ bool Game::Init()
     if (!ret) {
         return ret;
     }
+
+    m_config->LoadFromJson();
 
 #ifdef _DRAW
     ret = m_textureImporter.StartUp();
@@ -303,22 +304,19 @@ bool Game::PostRender()
 
 //----------------------------------------------------------------------------------------------------
 GameConfiguration::GameConfiguration()
-    : m_name(nullptr)
-    , StatesSetup(nullptr)
+    : StatesSetup(nullptr)
 {
 }
 
 //----------------------------------------------------------------------------------------------------
-GameConfiguration::GameConfiguration(const char* name, std::function<void()> StatesSetup)
-    : m_name(name)
-    , StatesSetup(StatesSetup)
+GameConfiguration::GameConfiguration(std::function<void()> StatesSetup)
+    : StatesSetup(StatesSetup)
 {
 }
 
 //----------------------------------------------------------------------------------------------------
 GameConfiguration::GameConfiguration(const GameConfiguration& configuration)
-    : m_name(configuration.m_name)
-    , StatesSetup(configuration.StatesSetup)
+    : StatesSetup(configuration.StatesSetup)
 {
 }
 }

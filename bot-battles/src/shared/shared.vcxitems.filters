@@ -255,9 +255,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)OutputMemoryStream.h">
       <Filter>Header Files\Networking</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Projects\bot-battles\bot-battles\src\shared\InputMemoryStream.h">
-      <Filter>Header Files\Networking</Filter>
-    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)InputMemoryStream.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp">
@@ -386,8 +384,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)OutputMemoryStream.cpp">
       <Filter>Source Files\Networking</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Projects\bot-battles\bot-battles\src\shared\InputMemoryStream.cpp">
-      <Filter>Source Files\Networking</Filter>
-    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)InputMemoryStream.cpp" />
   </ItemGroup>
 </Project>

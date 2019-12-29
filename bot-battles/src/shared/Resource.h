@@ -1,39 +1,36 @@
 #ifndef __RESOURCE_H__
 #define __RESOURCE_H__
 
-namespace sand
-{
+namespace sand {
 
-	//----------------------------------------------------------------------------------------------------
-	class Resource
-	{
-	public:
-		Resource(U32 id, const char* file, const char* dir);
-		virtual ~Resource();
+//----------------------------------------------------------------------------------------------------
+class Resource {
+public:
+    Resource(U32 id, const char* file, const char* dir);
 
-		const char* GetFile() const;
-		const char* GetDir() const;
-		const char* GetPath() const;
+    const std::string& GetFile() const;
+    const std::string& GetDir() const;
+    const std::string& GetPath() const;
 
-		U32 GetID() const;
-		U32 GetReferences() const;
+    U32 GetID() const;
+    U32 GetReferences() const;
 
-		bool HasReferences() const;
+    bool HasReferences() const;
 
-		U32 IncreaseReferences();
-		U32 DecreaseReferences();
+    U32 IncreaseReferences();
+    U32 DecreaseReferences();
 
-		virtual bool Load() = 0;
-		virtual bool UnLoad() = 0;
+    virtual bool Load() = 0;
+    virtual bool UnLoad() = 0;
 
-	private:
-		char* m_file;
-		char* m_dir;
-		char* m_path;
+private:
+    std::string m_file;
+    std::string m_dir;
+    std::string m_path;
 
-		U32 m_id;
-		U32 m_references;
-	};
+    U32 m_id;
+    U32 m_references;
+};
 }
 
 #endif

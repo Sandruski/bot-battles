@@ -13,6 +13,8 @@ struct ServerComponent {
 
     ServerComponent();
 
+    void LoadFromConfig(const rapidjson::Value& value);
+
     PlayerID AddPlayer(const SocketAddress& socketAddress, const char* name);
     bool RemovePlayer(PlayerID playerID);
 
@@ -23,10 +25,12 @@ struct ServerComponent {
     Entity GetEntity(const SocketAddress& socketAddress) const;
     std::shared_ptr<ClientProxy> GetClientProxyFromPlayerID(PlayerID playerID) const;
     std::shared_ptr<ClientProxy> GetClientProxyFromEntity(Entity entity) const;
-    const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& GetPlayerIDToClientProxyMap();
+    const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& GetPlayerIDToClientProxyMap() const;
 
     std::shared_ptr<UDPSocket> m_socket;
     std::shared_ptr<SocketAddress> m_socketAddress;
+
+    std::string m_port;
 
     std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>> m_playerIDToClientProxy;
     std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>> m_entityToClientProxy;

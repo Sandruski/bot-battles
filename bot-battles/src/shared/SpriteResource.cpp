@@ -17,7 +17,7 @@ bool SpriteResource::Load()
 {
     assert(m_texture == nullptr);
 
-    m_texture = g_game->GetTextureImporter().LoadFromSprite(GetPath(), m_size.x, m_size.y);
+    m_texture = g_game->GetTextureImporter().LoadFromSprite(GetPath().c_str(), m_size.x, m_size.y);
 
     return m_texture != nullptr;
 }

@@ -6,12 +6,25 @@ namespace sand {
 ClientComponent::ClientComponent()
     : m_socket(nullptr)
     , m_socketAddress(nullptr)
-    , m_name("ExamplePlayer")
+    , m_name()
+    , m_ip()
+    , m_port()
     , m_playerID(INVALID_PLAYER_ID)
-    , m_helloTime(1.0f)
-    , m_inputTime(0.03f)
-    , m_lastTime(0.0f)
+    , m_lastDeliveryTimestamp(0.0f)
 {
+}
+
+void ClientComponent::LoadFromConfig(const rapidjson::Value& value)
+{
+    assert(value.HasMember("name"));
+    assert(value["name"].IsString());
+    m_name = value["name"].GetString();
+    assert(value.HasMember("ip"));
+    assert(value["ip"].IsString());
+    m_ip = value["ip"].GetString();
+    assert(value.HasMember("port"));
+    assert(value["port"].IsString());
+    m_port = value["port"].GetString();
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -23,12 +36,12 @@ bool ClientComponent::IsConnected() const
 //----------------------------------------------------------------------------------------------------
 F32 ClientComponent::GetNextHelloTime() const
 {
-    return m_lastTime + m_helloTime;
+    return m_lastDeliveryTimestamp + TIME_BETWEEN_HELLO;
 }
 
 //----------------------------------------------------------------------------------------------------
 F32 ClientComponent::GetNextInputTime() const
 {
-    return m_lastTime + m_inputTime;
+    return m_lastDeliveryTimestamp + TIME_BETWEEN_INPUT;
 }
 }

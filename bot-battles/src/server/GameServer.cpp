@@ -1,22 +1,22 @@
 #include "GameServer.h"
 
+#include "ConfigServer.h"
 #include "EntityManager.h"
-#include "SystemManager.h"
-
 #include "InputSystemServer.h"
 #include "NavigationSystem.h"
+#include "ServerComponent.h"
 #include "ServerSystem.h"
 #include "SpawnerSystem.h"
-
-#include "ServerComponent.h"
+#include "SystemManager.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 GameServer::GameServer(const char* configPath)
-    : Game(configPath)
+    : m_configServer(nullptr)
     , m_serverComponent()
 {
+    m_config = m_configServer = std::make_shared<ConfigServer>(configPath);
 }
 
 //----------------------------------------------------------------------------------------------------

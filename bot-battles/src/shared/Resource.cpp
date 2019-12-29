@@ -1,82 +1,65 @@
 #include "Resource.h"
 
-namespace sand
+namespace sand {
+//----------------------------------------------------------------------------------------------------
+Resource::Resource(U32 id, const char* file, const char* dir)
+    : m_id(id)
+    , m_references(0)
+    , m_file(file)
+    , m_dir(dir)
+    , m_path()
 {
-	//----------------------------------------------------------------------------------------------------
-	Resource::Resource(U32 id, const char* file, const char* dir) :
-		m_id(id),
-		m_references(0)
-	{
-		assert(file != nullptr && dir != nullptr);
+    m_path.append(dir);
+    m_path.append(file);
+}
 
-		size_t fileSize = strlen(file);
-		m_file = new char[fileSize + 1];
-		memcpy(m_file, file, (fileSize + 1) * sizeof(char));
+//----------------------------------------------------------------------------------------------------
+const std::string& Resource::GetFile() const
+{
+    return m_file;
+}
 
-		size_t dirSize = strlen(dir);
-		m_dir = new char[dirSize + 1];
-		memcpy(m_dir, dir, (dirSize + 1) * sizeof(char));
+//----------------------------------------------------------------------------------------------------
+const std::string& Resource::GetDir() const
+{
+    return m_dir;
+}
 
-		size_t pathSize = fileSize + dirSize;
-		m_path = new char[pathSize + 1];
-		sprintf_s(m_path, pathSize + 1, "%s%s", dir, file);
-	}
+//----------------------------------------------------------------------------------------------------
+const std::string& Resource::GetPath() const
+{
+    return m_path;
+}
 
-	//----------------------------------------------------------------------------------------------------
-	Resource::~Resource()
-	{
-		SAFE_DELETE_POINTER(m_file);
-		SAFE_DELETE_POINTER(m_dir);
-		SAFE_DELETE_POINTER(m_path);
-	}
+//----------------------------------------------------------------------------------------------------
+U32 Resource::GetID() const
+{
+    return m_id;
+}
 
-	//----------------------------------------------------------------------------------------------------
-	const char* Resource::GetFile() const
-	{
-		return m_file;
-	}
+//----------------------------------------------------------------------------------------------------
+U32 Resource::GetReferences() const
+{
+    return m_references;
+}
 
-	//----------------------------------------------------------------------------------------------------
-	const char* Resource::GetDir() const
-	{
-		return m_dir;
-	}
+//----------------------------------------------------------------------------------------------------
+bool Resource::HasReferences() const
+{
+    return m_references > 0;
+}
 
-	//----------------------------------------------------------------------------------------------------
-	const char* Resource::GetPath() const
-	{
-		return m_path;
-	}
+//----------------------------------------------------------------------------------------------------
+U32 Resource::IncreaseReferences()
+{
+    ++m_references;
+    return m_references;
+}
 
-	//----------------------------------------------------------------------------------------------------
-	U32 Resource::GetID() const
-	{
-		return m_id;
-	}
-
-	//----------------------------------------------------------------------------------------------------
-	U32 Resource::GetReferences() const
-	{
-		return m_references;
-	}
-
-	//----------------------------------------------------------------------------------------------------
-	bool Resource::HasReferences() const
-	{
-		return m_references > 0;
-	}
-
-	//----------------------------------------------------------------------------------------------------
-	U32 Resource::IncreaseReferences()
-	{
-		++m_references;
-		return m_references;
-	}
-
-	//----------------------------------------------------------------------------------------------------
-	U32 Resource::DecreaseReferences()
-	{
-		--m_references;
-		return m_references;
-	}
+//----------------------------------------------------------------------------------------------------
+U32 Resource::DecreaseReferences()
+{
+    --m_references;
+    return m_references;
+}
 }

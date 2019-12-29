@@ -25,7 +25,7 @@ bool ClientSystem::StartUp()
     }
 
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    clientComponent.m_socketAddress = SocketAddress::CreateIPv4("127.0.0.1", "9999");
+    clientComponent.m_socketAddress = SocketAddress::CreateIPv4(clientComponent.m_ip.c_str(), clientComponent.m_port.c_str());
     assert(clientComponent.m_socketAddress != nullptr);
     clientComponent.m_socket = UDPSocket::CreateIPv4();
     assert(clientComponent.m_socket != nullptr);
@@ -59,12 +59,12 @@ void ClientSystem::SendOutgoingPackets(ClientComponent& clientComponent) const
 //----------------------------------------------------------------------------------------------------
 void ClientSystem::UpdateSendHelloPacket(ClientComponent& clientComponent) const
 {
-    float time = Time::GetInstance().GetTime();
-    float nextHelloTime = clientComponent.GetNextHelloTime();
+    F32 time = Time::GetInstance().GetTime();
+    F32 nextHelloTime = clientComponent.GetNextHelloTime();
     if (time >= nextHelloTime) {
         const bool result = SendHelloPacket(clientComponent);
         if (result) {
-            clientComponent.m_lastTime = time;
+            clientComponent.m_lastDeliveryTimestamp = time;
         }
     }
 }
@@ -72,13 +72,13 @@ void ClientSystem::UpdateSendHelloPacket(ClientComponent& clientComponent) const
 //----------------------------------------------------------------------------------------------------
 void ClientSystem::UpdateSendInputPacket(ClientComponent& clientComponent) const
 {
-    float time = Time::GetInstance().GetTime();
-    float nextInputTime = clientComponent.GetNextInputTime();
+    F32 time = Time::GetInstance().GetTime();
+    F32 nextInputTime = clientComponent.GetNextInputTime();
     if (time >= nextInputTime) {
         MoveComponent moveComponent = g_gameClient->GetMoveComponent();
         const bool result = SendInputPacket(clientComponent, moveComponent);
         if (result) {
-            clientComponent.m_lastTime = time;
+            clientComponent.m_lastDeliveryTimestamp = time;
             moveComponent.ClearMoves();
         }
     }

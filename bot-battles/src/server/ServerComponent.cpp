@@ -9,6 +9,7 @@ namespace sand {
 ServerComponent::ServerComponent()
     : m_socket(nullptr)
     , m_socketAddress(nullptr)
+    , m_port()
     , m_playerIDToClientProxy()
     , m_availablePlayerIDs()
 {
@@ -17,6 +18,14 @@ ServerComponent::ServerComponent()
     for (PlayerID i = 0; i < MAX_PLAYER_IDS; ++i) {
         m_availablePlayerIDs.push(i);
     }
+}
+
+//----------------------------------------------------------------------------------------------------
+void ServerComponent::LoadFromConfig(const rapidjson::Value& value)
+{
+    assert(value.HasMember("port"));
+    assert(value["port"].IsString());
+    m_port = value["port"].GetString();
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -136,7 +145,7 @@ std::shared_ptr<ClientProxy> ServerComponent::GetClientProxyFromEntity(Entity en
 }
 
 //----------------------------------------------------------------------------------------------------
-const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& ServerComponent::GetPlayerIDToClientProxyMap()
+const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& ServerComponent::GetPlayerIDToClientProxyMap() const
 {
     return m_playerIDToClientProxy;
 }

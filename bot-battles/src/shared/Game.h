@@ -1,7 +1,6 @@
 #ifndef __GAME_H__
 #define __GAME_H__
 
-#include "Config.h"
 #include "FSM.h"
 #include "FontImporter.h"
 #include "LinkingContext.h"
@@ -14,6 +13,7 @@
 
 namespace sand {
 
+struct Config;
 class EntityManager;
 class ComponentManager;
 class SystemManager;
@@ -21,17 +21,16 @@ class SystemManager;
 //----------------------------------------------------------------------------------------------------
 struct GameConfiguration {
     GameConfiguration();
-    GameConfiguration(const char* name, std::function<void()> StatesSetup);
+    GameConfiguration(std::function<void()> StatesSetup);
     GameConfiguration(const GameConfiguration& configuration);
 
-    const char* m_name;
     std::function<void()> StatesSetup;
 };
 
 //----------------------------------------------------------------------------------------------------
 class Game {
 public:
-    Game(const char* configPath);
+    Game();
     virtual ~Game() = default;
 
     virtual bool Init();
@@ -40,10 +39,10 @@ public:
     void EndFrame();
     bool End();
 
+    Config& GetConfig() { return *m_config; }
     EntityManager& GetEntityManager() { return *m_entityManager; }
     ComponentManager& GetComponentManager() { return *m_componentManager; }
     SystemManager& GetSystemManager() { return *m_systemManager; }
-
     LinkingContext& GetLinkingContext() { return m_linkingContext; }
     FSM& GetFSM() { return m_fsm; } // TODO: remove this!
 #ifdef _DRAW
@@ -58,11 +57,6 @@ public:
     RendererComponent& GetRendererComponent() { return m_rendererComponent; }
 #endif
 
-    const char* GetName() const
-    {
-        return m_configuration.m_name;
-    }
-
 private:
     bool PreUpdate();
     bool Update();
@@ -72,7 +66,7 @@ private:
     bool PostRender();
 
 protected:
-    Config m_config;
+    std::shared_ptr<Config> m_config;
     GameConfiguration m_configuration;
 
     std::shared_ptr<EntityManager> m_entityManager;

@@ -30,6 +30,10 @@
 #include <SDL_timer.h>
 #include <SDL_ttf.h>
 
+// rapidjson
+#include "document.h"
+#include "filereadstream.h"
+
 //----------------------------------------------------------------------------------------------------
 // Utils
 #include "Log.h"

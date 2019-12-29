@@ -1,15 +1,15 @@
 #ifndef __GAME_CLIENT_H__
 #define __GAME_CLIENT_H__
 
-#include "Game.h"
-
+#include "ClientComponent.h"
 #include "DeliveryManagerClient.h"
+#include "Game.h"
+#include "MoveComponent.h"
 #include "ReplicationManagerClient.h"
 
-#include "ClientComponent.h"
-#include "MoveComponent.h"
-
 namespace sand {
+
+struct ConfigClient;
 
 //----------------------------------------------------------------------------------------------------
 class GameClient : public Game {
@@ -25,6 +25,8 @@ public:
     ClientComponent& GetClientComponent() { return m_clientComponent; }
 
 private:
+    std::shared_ptr<ConfigClient> m_configClient;
+
     ReplicationManagerClient m_replicationManager;
     DeliveryManagerClient m_deliveryManager;
 

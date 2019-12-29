@@ -1,24 +1,15 @@
 #include "Config.h"
 
-#include "document.h"
-#include "filereadstream.h"
+#include "Game.h"
+#include "WindowComponent.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-Config::Config(const char* path)
+Config::Config(const char* configPath)
+    : m_configPath(configPath)
+    , m_name()
 {
-    assert(path != nullptr);
-
-    size_t pathSize = strlen(path);
-    m_path = new char[pathSize + 1];
-    memcpy(m_path, path, (pathSize + 1) * sizeof(char));
-}
-
-//----------------------------------------------------------------------------------------------------
-Config::~Config()
-{
-    SAFE_DELETE_POINTER(m_path);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -26,9 +17,9 @@ bool Config::LoadFromJson()
 {
     errno_t err = 0;
     FILE* file = nullptr;
-    err = fopen_s(&file, m_path, "rb");
+    err = fopen_s(&file, m_configPath.c_str(), "rb");
     if (err != 0) {
-        ELOG("File %s could not be opened", m_path);
+        ELOG("File %s could not be opened", m_configPath.c_str());
         return false;
     }
 
@@ -40,6 +31,26 @@ bool Config::LoadFromJson()
 
     fclose(file);
 
+    ReadDocument(document);
+
     return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+void Config::ReadDocument(const rapidjson::Document& document)
+{
+    assert(document.IsObject());
+
+    assert(document.HasMember("game"));
+    assert(document["game"].IsObject());
+    const rapidjson::Value& game = document["game"];
+    assert(game.HasMember("name"));
+    assert(game["name"].IsString());
+    m_name = game["name"].GetString();
+
+    assert(document.HasMember("window"));
+    assert(document["window"].IsObject());
+    const rapidjson::Value& window = document["window"];
+    g_game->GetWindowComponent().LoadFromConfig(window);
 }
 }

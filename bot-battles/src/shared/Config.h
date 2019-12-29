@@ -4,15 +4,16 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class Config {
-public:
-    Config(const char* path);
-    ~Config();
+struct Config {
+
+    Config(const char* m_configPath);
+    virtual ~Config() = default;
 
     bool LoadFromJson();
+    virtual void ReadDocument(const rapidjson::Document& document);
 
-private:
-    char* m_path;
+    std::string m_configPath;
+    std::string m_name;
 };
 }
 

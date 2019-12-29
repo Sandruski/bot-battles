@@ -52,7 +52,7 @@ bool ServerSystem::StartUp()
     }
 
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
-    serverComponent.m_socketAddress = SocketAddress::CreateIPv4(INADDR_ANY, static_cast<U16>(atoi("9999")));
+    serverComponent.m_socketAddress = SocketAddress::CreateIPv4(INADDR_ANY, static_cast<U16>(atoi(serverComponent.m_port.c_str())));
     assert(serverComponent.m_socketAddress != nullptr);
     serverComponent.m_socket = UDPSocket::CreateIPv4();
     assert(serverComponent.m_socket != nullptr);

@@ -9,9 +9,11 @@ struct WindowComponent {
 
     WindowComponent();
 
+    void LoadFromConfig(const rapidjson::Value& value);
+
     SDL_Window* m_window;
-    U32 m_width;
-    U32 m_height;
+    Vec2I m_resolution;
+    bool m_isFullscreen;
 };
 }
 

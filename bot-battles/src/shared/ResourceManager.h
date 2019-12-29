@@ -112,7 +112,7 @@ inline std::weak_ptr<T> ResourceManager::GetResourceByFile(const char* file)
     assert(file != nullptr);
     for (const auto& pair : m_resources) {
         std::shared_ptr<Resource> resource = pair.second;
-        if (COMPARE_STRINGS(resource->GetFile(), file)) {
+        if (COMPARE_STRINGS(resource->GetFile().c_str(), file)) {
             return std::weak_ptr<T>(std::static_pointer_cast<T>(resource));
         }
     }

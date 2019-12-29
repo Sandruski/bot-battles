@@ -44,7 +44,7 @@ bool HUDSystem::PreUpdate()
 
     std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(m_fps);
     WindowComponent& windowComponent = g_game->GetWindowComponent();
-    transformComponent.lock()->m_position.x = static_cast<F32>(windowComponent.m_width - textComponent.lock()->m_text.lock()->GetWidth());
+    transformComponent.lock()->m_position.x = static_cast<F32>(windowComponent.m_resolution.x - textComponent.lock()->m_text.lock()->GetWidth());
 
     return true;
 }

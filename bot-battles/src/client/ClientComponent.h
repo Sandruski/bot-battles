@@ -12,6 +12,8 @@ struct ClientComponent {
 
     ClientComponent();
 
+    void LoadFromConfig(const rapidjson::Value& value);
+
     bool IsConnected() const;
 
     F32 GetNextHelloTime() const;
@@ -21,11 +23,12 @@ struct ClientComponent {
     std::shared_ptr<SocketAddress> m_socketAddress;
 
     std::string m_name;
+    std::string m_ip;
+    std::string m_port;
+
     PlayerID m_playerID;
 
-    F32 m_helloTime;
-    F32 m_inputTime;
-    F32 m_lastTime;
+    F32 m_lastDeliveryTimestamp;
 };
 }
 

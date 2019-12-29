@@ -1,6 +1,7 @@
 #include "GameClient.h"
 
 #include "ClientSystem.h"
+#include "ConfigClient.h"
 #include "InputSystemClient.h"
 #include "SystemManager.h"
 
@@ -8,12 +9,13 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 GameClient::GameClient(const char* configPath)
-    : Game(configPath)
+    : m_configClient(nullptr)
     , m_replicationManager()
     , m_deliveryManager()
     , m_moveComponent()
     , m_clientComponent()
 {
+    m_config = m_configClient = std::make_shared<ConfigClient>(configPath);
 }
 
 //----------------------------------------------------------------------------------------------------
