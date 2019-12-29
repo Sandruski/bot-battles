@@ -59,7 +59,6 @@ NetworkID LinkingContext::GetNetworkID(Entity entity) const
 
     auto it = m_entityToNetworkID.find(entity);
     if (it == m_entityToNetworkID.end()) {
-        WLOG("Entity %u has no associated networkID", entity);
         return INVALID_NETWORK_ID;
     }
 
@@ -73,7 +72,6 @@ Entity LinkingContext::GetEntity(NetworkID networkID) const
 
     auto it = m_networkIDToEntity.find(networkID);
     if (it == m_networkIDToEntity.end()) {
-        WLOG("networkID %u has no associated entity", networkID);
         return INVALID_ENTITY;
     }
 

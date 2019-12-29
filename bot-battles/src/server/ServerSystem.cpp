@@ -283,6 +283,10 @@ void ServerSystem::OnEntityAdded(Entity entity) const
     assert(entity < INVALID_ENTITY);
 
     NetworkID networkID = g_gameServer->GetLinkingContext().GetNetworkID(entity);
+    if (networkID == INVALID_NETWORK_ID) {
+        return;
+    }
+
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.GetPlayerIDToClientProxyMap();
     for (const auto& pair : playerIDToClientProxy) {
@@ -296,6 +300,10 @@ void ServerSystem::OnEntityRemoved(Entity entity) const
     assert(entity < INVALID_ENTITY);
 
     NetworkID networkID = g_gameServer->GetLinkingContext().GetNetworkID(entity);
+    if (networkID == INVALID_NETWORK_ID) {
+        return;
+    }
+
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.GetPlayerIDToClientProxyMap();
     for (const auto& pair : playerIDToClientProxy) {
@@ -309,6 +317,10 @@ void ServerSystem::OnComponentMemberChanged(U32 dirtyState, Entity entity) const
     assert(entity < INVALID_ENTITY);
 
     NetworkID networkID = g_gameServer->GetLinkingContext().GetNetworkID(entity);
+    if (networkID == INVALID_NETWORK_ID) {
+        return;
+    }
+
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.GetPlayerIDToClientProxyMap();
     for (const auto& pair : playerIDToClientProxy) {

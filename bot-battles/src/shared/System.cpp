@@ -15,8 +15,6 @@ bool System::RegisterEntity(Entity entity)
 {
     auto it = std::find(m_entities.begin(), m_entities.end(), entity);
     if (it != m_entities.end()) {
-
-        WLOG("Entity %u is already registered!", entity);
         return false;
     }
 
@@ -30,8 +28,6 @@ bool System::DeRegisterEntity(Entity entity)
 {
     auto it = std::find(m_entities.begin(), m_entities.end(), entity);
     if (it == m_entities.end()) {
-
-        WLOG("Entity %u is not registered!", entity);
         return false;
     }
 

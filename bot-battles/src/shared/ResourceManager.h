@@ -95,7 +95,6 @@ inline std::weak_ptr<T> ResourceManager::GetResourceByID(U32 id)
     assert(id < INVALID_RESOURCE);
     auto it = m_resources.find(id);
     if (it == m_resources.end()) {
-        WLOG("Resource %u does not exist!", id);
         return std::weak_ptr<T>();
     }
 
@@ -117,7 +116,6 @@ inline std::weak_ptr<T> ResourceManager::GetResourceByFile(const char* file)
         }
     }
 
-    WLOG("Resource %s does not exist!", file);
     return std::weak_ptr<T>();
 }
 }
