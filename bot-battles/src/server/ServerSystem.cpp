@@ -84,14 +84,17 @@ bool ServerSystem::Update()
 //----------------------------------------------------------------------------------------------------
 void ServerSystem::SendOutgoingPackets(ServerComponent& serverComponent)
 {
+    std::unordered_map<PlayerID, std::weak_ptr<ClientProxy>> playerIDToClientProxyDisconnections;
+
     const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.GetPlayerIDToClientProxyMap();
     for (const auto& pair : playerIDToClientProxy) {
+
         std::shared_ptr<ClientProxy> clientProxy = pair.second;
+
         F32 timeout = Time::GetInstance().GetTime() - clientProxy->GetLastPacketTime();
         if (timeout >= DISCONNECT_TIMEOUT) {
-            PlayerID playerID = pair.first;
-            Entity entity = serverComponent.GetEntity(clientProxy->GetSocketAddress());
-            DisconnectClient(serverComponent, playerID, entity);
+            playerIDToClientProxyDisconnections.insert(std::make_pair(pair.first, std::weak_ptr(pair.second)));
+            continue;
         }
 
         clientProxy->m_deliveryManager.ProcessTimedOutPackets();
@@ -99,6 +102,13 @@ void ServerSystem::SendOutgoingPackets(ServerComponent& serverComponent)
         if (clientProxy->m_isLastMoveTimestampDirty) {
             SendStatePacket(serverComponent, clientProxy);
         }
+    }
+
+    for (const auto& pair : playerIDToClientProxyDisconnections) {
+        PlayerID playerID = pair.first;
+        std::weak_ptr<ClientProxy> clientProxy = pair.second;
+        Entity entity = serverComponent.GetEntity(clientProxy.lock()->GetSocketAddress());
+        DisconnectClient(serverComponent, playerID, entity);
     }
 }
 
@@ -193,10 +203,11 @@ void ServerSystem::ReceivePacket(ServerComponent& serverComponent, InputMemorySt
         break;
     }
     }
-    assert(playerID != INVALID_PLAYER_ID);
 
-    std::shared_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxyFromPlayerID(playerID);
-    clientProxy->UpdateLastPacketTime();
+    if (playerID != INVALID_PLAYER_ID) {
+        std::shared_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxyFromPlayerID(playerID);
+        clientProxy->UpdateLastPacketTime();
+    }
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -237,10 +248,14 @@ void ServerSystem::ReceiveInputPacket(ServerComponent& serverComponent, InputMem
 {
     inputStream.Read(playerID);
     std::shared_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxyFromPlayerID(playerID);
-    const bool isValid = clientProxy->m_deliveryManager.ReadState(inputStream);
-    if (clientProxy == nullptr || !isValid) {
+    if (clientProxy == nullptr) {
         ILOG("Input packet received from unknown player");
         playerID = INVALID_PLAYER_ID;
+        return;
+    }
+
+    const bool isValid = clientProxy->m_deliveryManager.ReadState(inputStream);
+    if (!isValid) {
         return;
     }
 

@@ -75,7 +75,7 @@ void ClientSystem::UpdateSendInputPacket(ClientComponent& clientComponent) const
     F32 time = Time::GetInstance().GetTime();
     F32 nextInputTime = clientComponent.GetNextInputTime();
     if (time >= nextInputTime) {
-        MoveComponent moveComponent = g_gameClient->GetMoveComponent();
+        MoveComponent& moveComponent = g_gameClient->GetMoveComponent();
         const bool result = SendInputPacket(clientComponent, moveComponent);
         if (result) {
             clientComponent.m_lastDeliveryTimestamp = time;
