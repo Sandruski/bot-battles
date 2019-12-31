@@ -140,7 +140,7 @@ void ServerSystem::SendStatePacket(const ServerComponent& serverComponent, std::
 
     statePacket.Write(clientProxy->m_isLastMoveTimestampDirty);
     if (clientProxy->m_isLastMoveTimestampDirty) {
-        statePacket.Write(clientProxy->GetLastMoveTimestamp());
+        statePacket.Write(clientProxy->m_moves.GetLastMoveTimestamp());
         clientProxy->m_isLastMoveTimestampDirty = false;
     }
 
@@ -267,15 +267,15 @@ void ServerSystem::ReceiveInputPacket(ServerComponent& serverComponent, InputMem
 
     ILOG("Input packet received from player %s", clientProxy->GetName());
 
-    clientProxy->ClearUnprocessedMoves();
+    clientProxy->m_moves.ClearMoves();
 
     U32 moveCount = 0;
     inputStream.Read(moveCount, GetRequiredBits<MAX_MOVES_PER_PACKET>::value);
     Move move;
     while (moveCount > 0) {
         move.Read(inputStream);
-        if (move.GetTimestamp() > clientProxy->GetLastMoveTimestamp()) {
-            clientProxy->AddMove(move);
+        if (move.GetTimestamp() > clientProxy->m_moves.GetLastMoveTimestamp()) {
+            clientProxy->m_moves.AddMove(move);
             clientProxy->m_isLastMoveTimestampDirty = true;
         }
         --moveCount;

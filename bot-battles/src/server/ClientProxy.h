@@ -2,7 +2,7 @@
 #define __CLIENT_PROXY_H__
 
 #include "DeliveryManagerServer.h"
-#include "Move.h"
+#include "Moves.h"
 #include "SocketAddress.h"
 
 namespace sand {
@@ -17,11 +17,6 @@ public:
     const SocketAddress& GetSocketAddress() const;
     const char* GetName() const;
 
-    const Move& AddMove(const Move& move);
-    F32 GetLastMoveTimestamp() const;
-    const std::deque<Move>& GetUnprocessedMoves();
-    void ClearUnprocessedMoves();
-
     void UpdateLastPacketTime();
     F32 GetLastPacketTime() const;
 
@@ -29,13 +24,13 @@ public:
     std::shared_ptr<ReplicationManagerServer> m_replicationManager;
     DeliveryManagerServer m_deliveryManager;
 
+    Moves m_moves;
     bool m_isLastMoveTimestampDirty;
 
 private:
     SocketAddress m_socketAddress;
     std::string m_name;
 
-    std::deque<Move> m_unprocessedMoves;
     F32 m_lastPacketTime;
 };
 }

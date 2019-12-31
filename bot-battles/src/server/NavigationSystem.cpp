@@ -27,11 +27,12 @@ bool NavigationSystem::Update()
 
         std::shared_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxyFromEntity(entity);
         if (clientProxy != nullptr) {
-            const std::deque<Move>& unprocessedMoves = clientProxy->GetUnprocessedMoves();
-            for (const Move& unprocessedMove : unprocessedMoves) {
-                const InputComponent& unprocessedInput = unprocessedMove.GetInput();
-                UpdateMovement(entity, unprocessedInput, *transformComponent.lock(), unprocessedMove.GetDt());
-                inputComponent.lock()->Copy(unprocessedInput);
+            U32 moveCount = clientProxy->m_moves.GetMoveCount();
+            for (U32 i = 0; i < moveCount; ++i) {
+                const Move& move = clientProxy->m_moves.GetMove(i);
+                const InputComponent& moveInputComponent = move.GetInput();
+                UpdateMovement(entity, moveInputComponent, *transformComponent.lock(), move.GetDt());
+                inputComponent.lock()->Copy(moveInputComponent);
             }
         } else {
             UpdateMovement(entity, *inputComponent.lock(), *transformComponent.lock(), Time::GetInstance().GetDt());

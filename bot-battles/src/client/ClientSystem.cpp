@@ -104,7 +104,7 @@ bool ClientSystem::SendHelloPacket(const ClientComponent& clientComponent) const
 //----------------------------------------------------------------------------------------------------
 bool ClientSystem::SendInputPacket(const ClientComponent& clientComponent, MoveComponent& moveComponent) const
 {
-    if (!moveComponent.HasMoves()) {
+    if (!moveComponent.m_moves.HasMoves()) {
         return false;
     }
 
@@ -113,12 +113,12 @@ bool ClientSystem::SendInputPacket(const ClientComponent& clientComponent, MoveC
     inputPacket.Write(clientComponent.m_playerID);
     g_gameClient->GetDeliveryManager().WriteState(inputPacket);
 
-    U32 totalMoveCount = moveComponent.GetMoveCount();
+    U32 totalMoveCount = moveComponent.m_moves.GetMoveCount();
     U32 startIndex = totalMoveCount > MAX_MOVES_PER_PACKET ? totalMoveCount - MAX_MOVES_PER_PACKET : 0;
     U32 moveCount = totalMoveCount - startIndex;
     inputPacket.Write(moveCount, GetRequiredBits<MAX_MOVES_PER_PACKET>::value);
     for (U32 i = startIndex; i < totalMoveCount; ++i) {
-        const Move& move = moveComponent.GetMove(i);
+        const Move& move = moveComponent.m_moves.GetMove(i);
         move.Write(inputPacket);
     }
 
@@ -228,11 +228,10 @@ void ClientSystem::ReceiveStatePacket(ClientComponent& clientComponent, InputMem
     if (isLastMoveTimestampDirty) {
         F32 lastMoveTimestamp = 0.0f;
         inputStream.Read(lastMoveTimestamp);
-
-        // TODO: update RTT
+        clientComponent.m_RTT = Time::GetInstance().GetTime() - lastMoveTimestamp;
 
         MoveComponent& moveComponent = g_gameClient->GetMoveComponent();
-        moveComponent.RemoveProcessedMoves(lastMoveTimestamp);
+        moveComponent.m_moves.RemoveMoves(lastMoveTimestamp);
     }
 
     g_gameClient->GetReplicationManager().Read(inputStream);

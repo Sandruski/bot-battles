@@ -11,9 +11,11 @@ ClientComponent::ClientComponent()
     , m_port()
     , m_playerID(INVALID_PLAYER_ID)
     , m_lastDeliveryTimestamp(0.0f)
+    , m_RTT(0.0f)
 {
 }
 
+//----------------------------------------------------------------------------------------------------
 void ClientComponent::LoadFromConfig(const rapidjson::Value& value)
 {
     assert(value.HasMember("name"));

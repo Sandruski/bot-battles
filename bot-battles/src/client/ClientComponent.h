@@ -29,6 +29,8 @@ struct ClientComponent {
     PlayerID m_playerID;
 
     F32 m_lastDeliveryTimestamp;
+
+    F32 m_RTT;
 };
 }
 

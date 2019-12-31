@@ -33,10 +33,14 @@ const NetworkID INVALID_NETWORK_ID = MAX_NETWORK_IDS + 1;
 using SequenceNumber = U16;
 const SequenceNumber INVALID_SEQUENCE_NUMBER = UINT16_MAX;
 
+#ifdef _CLIENT
 const F32 TIME_BETWEEN_HELLO = 1.0f;
 const F32 TIME_BETWEEN_INPUT = 0.03f;
+const F32 TIME_BETWEEN_MOVE = TIME_BETWEEN_INPUT;
+#elif _SERVER
 const F32 ACK_TIMEOUT = 0.5f;
 const F32 DISCONNECT_TIMEOUT = 5.0f;
+#endif
 }
 
 #endif

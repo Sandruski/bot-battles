@@ -254,6 +254,9 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)InputComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)InputMemoryStream.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Moves.h">
+      <Filter>Header Files\Networking</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp">
@@ -381,5 +384,8 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)InputComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)InputMemoryStream.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Moves.cpp">
+      <Filter>Source Files\Networking</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

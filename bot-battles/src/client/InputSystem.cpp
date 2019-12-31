@@ -66,8 +66,8 @@ bool InputSystem::Update()
 void InputSystem::UpdateSampleInput(MoveComponent& moveComponent) const
 {
     float time = Time::GetInstance().GetTime();
-    float nextInputTime = moveComponent.GetNextInputTime();
-    if (time >= nextInputTime) {
+    float nextMovetTime = moveComponent.GetNextMoveTime();
+    if (time >= nextMovetTime) {
         SampleInput(moveComponent, time);
     }
 }
@@ -77,7 +77,7 @@ void InputSystem::SampleInput(MoveComponent& moveComponent, F32 timestamp) const
 {
     for (auto& entity : m_entities) {
         std::weak_ptr<InputComponent> input = g_gameClient->GetComponentManager().GetComponent<InputComponent>(entity);
-        moveComponent.AddMove(*input.lock(), static_cast<U32>(ComponentMemberType::INPUT_ACCELERATION), timestamp); // TODO: not only acceleration...
+        moveComponent.m_moves.AddMove(*input.lock(), static_cast<U32>(ComponentMemberType::INPUT_ACCELERATION), timestamp); // TODO: not only acceleration...
     }
 }
 }
