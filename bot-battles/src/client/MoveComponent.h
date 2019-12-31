@@ -20,6 +20,7 @@ struct MoveComponent {
 
     const Move& AddMove(const InputComponent& input, U32 dirtyState, F32 timestamp);
     const Move& GetMove(U32 index) const;
+    void RemoveProcessedMoves(F32 lastMoveTimestamp);
     F32 GetLastMoveTimestamp() const;
 
     U32 GetMoveCount() const
@@ -30,11 +31,6 @@ struct MoveComponent {
     bool HasMoves() const
     {
         return !m_moves.empty();
-    }
-
-    void ClearMoves()
-    {
-        m_moves.clear();
     }
 
     F32 GetNextInputTime() const

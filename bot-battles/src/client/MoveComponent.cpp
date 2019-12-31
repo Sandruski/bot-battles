@@ -20,6 +20,14 @@ const Move& MoveComponent::GetMove(U32 index) const
 }
 
 //----------------------------------------------------------------------------------------------------
+void MoveComponent::RemoveProcessedMoves(F32 lastMoveTimestamp)
+{
+    while (!m_moves.empty() && m_moves.front().GetTimestamp() <= lastMoveTimestamp) {
+        m_moves.pop_front();
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
 F32 MoveComponent::GetLastMoveTimestamp() const
 {
     return !m_moves.empty() ? m_moves.back().GetTimestamp() : 0.0f;

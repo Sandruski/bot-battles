@@ -7,6 +7,7 @@
 #include "LinkingContext.h"
 #include "MessageTypes.h"
 #include "Move.h"
+#include "MoveComponent.h"
 #include "ReplicationManagerClient.h"
 #include "SocketAddress.h"
 #include "UDPSocket.h"
@@ -79,7 +80,6 @@ void ClientSystem::UpdateSendInputPacket(ClientComponent& clientComponent) const
         const bool result = SendInputPacket(clientComponent, moveComponent);
         if (result) {
             clientComponent.m_lastDeliveryTimestamp = time;
-            moveComponent.ClearMoves();
         }
     }
 }
@@ -121,8 +121,6 @@ bool ClientSystem::SendInputPacket(const ClientComponent& clientComponent, MoveC
         const Move& move = moveComponent.GetMove(i);
         move.Write(inputPacket);
     }
-
-    moveComponent.ClearMoves();
 
     ILOG("Sending input packet to server...");
 
@@ -225,7 +223,18 @@ void ClientSystem::ReceiveStatePacket(ClientComponent& clientComponent, InputMem
 
     ILOG("State packet received");
 
-    // TODO
+    bool isLastMoveTimestampDirty = false;
+    inputStream.Read(isLastMoveTimestampDirty);
+    if (isLastMoveTimestampDirty) {
+        F32 lastMoveTimestamp = 0.0f;
+        inputStream.Read(lastMoveTimestamp);
+
+        // TODO: update RTT
+
+        MoveComponent& moveComponent = g_gameClient->GetMoveComponent();
+        moveComponent.RemoveProcessedMoves(lastMoveTimestamp);
+    }
+
     g_gameClient->GetReplicationManager().Read(inputStream);
 }
 

@@ -99,9 +99,7 @@ void ServerSystem::SendOutgoingPackets(ServerComponent& serverComponent)
 
         clientProxy->m_deliveryManager.ProcessTimedOutPackets();
 
-        if (clientProxy->m_isLastMoveTimestampDirty) {
-            SendStatePacket(serverComponent, clientProxy);
-        }
+        SendStatePacket(serverComponent, clientProxy);
     }
 
     for (const auto& pair : playerIDToClientProxyDisconnections) {
@@ -136,8 +134,16 @@ void ServerSystem::SendStatePacket(const ServerComponent& serverComponent, std::
 {
     OutputMemoryStream statePacket;
     statePacket.Write(ServerMessageType::STATE);
+
     Delivery& delivery = clientProxy->m_deliveryManager.WriteState(statePacket);
     delivery.m_replicationResultManager = std::make_shared<ReplicationResultManager>(std::weak_ptr<ReplicationManagerServer>(clientProxy->m_replicationManager));
+
+    statePacket.Write(clientProxy->m_isLastMoveTimestampDirty);
+    if (clientProxy->m_isLastMoveTimestampDirty) {
+        statePacket.Write(clientProxy->GetLastMoveTimestamp());
+        clientProxy->m_isLastMoveTimestampDirty = false;
+    }
+
     clientProxy->m_replicationManager->Write(statePacket, *delivery.m_replicationResultManager);
 
     const char* name = clientProxy->GetName();

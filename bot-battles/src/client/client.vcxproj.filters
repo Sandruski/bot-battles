@@ -14,9 +14,6 @@
     <Filter Include="Header Files\States">
       <UniqueIdentifier>{a37ce05d-0495-4604-b6df-aa67e52ceb80}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Networking">
-      <UniqueIdentifier>{61016cfe-7022-4fe0-a644-5f35b6152c39}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
@@ -36,6 +33,9 @@
     </Filter>
     <Filter Include="Source Files\Components">
       <UniqueIdentifier>{c6c5bf1a-ae10-4d05-ad4c-d930110ddd8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Components\Networking">
+      <UniqueIdentifier>{61016cfe-7022-4fe0-a644-5f35b6152c39}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -78,13 +78,13 @@
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
     <ClInclude Include="ReplicationManagerClient.h">
-      <Filter>Header Files\Networking</Filter>
+      <Filter>Header Files\Components\Networking</Filter>
     </ClInclude>
     <ClInclude Include="GameClient.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DeliveryManagerClient.h">
-      <Filter>Header Files\Networking</Filter>
+      <Filter>Header Files\Components\Networking</Filter>
     </ClInclude>
     <ClInclude Include="ClientComponent.h">
       <Filter>Header Files\Components</Filter>
