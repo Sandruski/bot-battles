@@ -15,7 +15,7 @@ TextComponent::TextComponent()
 
 #ifdef _CLIENT
 //----------------------------------------------------------------------------------------------------
-void TextComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, bool /*isLocalPlayer*/)
+void TextComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, ReplicationActionType /*replicationActionType*/, Entity /*entity*/)
 {
     if (dirtyState & static_cast<U32>(ComponentMemberType::TEXT_STUFF)) {
         std::string text;

@@ -258,12 +258,10 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)InputMemoryStream.h">
       <Filter>Header Files\Networking</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Projects\bot-battles\bot-battles\src\shared\NetworkableReadObject.h">
-      <Filter>Header Files\Networking</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)NetworkableWriteObject.h">
       <Filter>Header Files\Networking</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)NetworkableReadObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp">

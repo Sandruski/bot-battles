@@ -32,26 +32,25 @@ bool NavigationSystem::Update()
             for (U32 i = 0; i < moveCount; ++i) {
                 const Move& move = clientProxy->m_moves.GetMove(i);
                 const InputComponent& moveInputComponent = move.GetInput();
-                UpdateMovement(entity, moveInputComponent, *transformComponent.lock(), move.GetDt());
+                F32 dt = move.GetDt();
+                transformComponent.lock()->UpdatePosition(moveInputComponent.m_acceleration, dt);
+                transformComponent.lock()->UpdateRotation(moveInputComponent.m_angularAcceleration, dt);
+
                 inputComponent.lock()->Copy(moveInputComponent);
+
+                Event newEvent;
+                newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
+                newEvent.component.entity = entity;
+                newEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::TRANSFORM_ALL);
+                NotifyEvent(newEvent);
             }
         } else {
-            UpdateMovement(entity, *inputComponent.lock(), *transformComponent.lock(), Time::GetInstance().GetDt());
+            F32 dt = Time::GetInstance().GetDt();
+            transformComponent.lock()->UpdatePosition(inputComponent.lock()->m_acceleration, dt);
+            transformComponent.lock()->UpdateRotation(inputComponent.lock()->m_angularAcceleration, dt);
         }
     }
 
     return true;
-}
-
-//----------------------------------------------------------------------------------------------------
-void NavigationSystem::UpdateMovement(Entity entity, const InputComponent& input, TransformComponent& transform, F32 dt) const
-{
-    transform.Move(input, dt);
-
-    Event newEvent;
-    newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
-    newEvent.component.entity = entity;
-    newEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::TRANSFORM_ALL);
-    NotifyEvent(newEvent);
 }
 }

@@ -31,10 +31,15 @@ U32 TransformComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) 
 #endif
 
 //----------------------------------------------------------------------------------------------------
-void TransformComponent::Move(const InputComponent& inputComponent, F32 dt)
+void TransformComponent::UpdatePosition(const Vec2& acceleration, F32 dt)
 {
-    m_position.x += inputComponent.m_acceleration.x * dt;
-    m_position.y += inputComponent.m_acceleration.y * dt;
-    m_rotation += inputComponent.m_angularAcceleration * dt;
+    m_position.x += acceleration.x * dt;
+    m_position.y += acceleration.y * dt;
+}
+
+//----------------------------------------------------------------------------------------------------
+void TransformComponent::UpdateRotation(F32 angularAcceleration, F32 dt)
+{
+    m_rotation += angularAcceleration * dt;
 }
 }

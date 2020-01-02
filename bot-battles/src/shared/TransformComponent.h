@@ -26,14 +26,15 @@ struct TransformComponent : public Component,
     TransformComponent();
 
 #ifdef _CLIENT
-    void Read(InputMemoryStream& inputStream, U32 dirtyState, bool isLocalPlayer) override;
-    void ClientPredictionForLocalPlayer();
-    void ClientPredictionForRemotePlayer();
+    void Read(InputMemoryStream& inputStream, U32 dirtyState, ReplicationActionType replicationActionType, Entity entity) override;
+    void ClientPredictionForLocalPlayer(bool updatePosition, bool updateRotation);
+    void ClientPredictionForRemotePlayer(Entity entity);
 #elif _SERVER
     U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override;
 #endif
 
-    void Move(const InputComponent& inputComponent, F32 dt);
+    void UpdatePosition(const Vec2& acceleration, F32 dt);
+    void UpdateRotation(F32 angularAcceleration, F32 dt);
 
     Vec3 m_position;
     F32 m_rotation;
