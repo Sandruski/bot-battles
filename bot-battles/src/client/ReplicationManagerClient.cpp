@@ -81,6 +81,7 @@ void ReplicationManagerClient::ReadUpdateAction(InputMemoryStream& inputStream, 
     inputStream.Read(dirtyState, GetRequiredBits<static_cast<U32>(ComponentMemberType::COUNT)>::value);
 
     for (U16 i = 0; i < MAX_COMPONENTS; ++i) {
+
         U16 hasComponent = 1 << i;
         const bool hasSignatureComponent = signature & hasComponent;
         const bool hasNewSignatureComponent = newSignature & hasComponent;

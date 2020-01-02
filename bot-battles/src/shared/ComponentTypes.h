@@ -4,6 +4,7 @@
 namespace sand {
 
 enum class ComponentType : U16 {
+
     TRANSFORM,
     INPUT,
 
