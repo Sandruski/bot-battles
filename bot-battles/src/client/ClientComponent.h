@@ -15,6 +15,7 @@ struct ClientComponent {
     void LoadFromConfig(const rapidjson::Value& value);
 
     bool IsConnected() const;
+    bool IsLocalPlayer(Entity entity) const;
 
     F32 GetNextHelloTime() const;
     F32 GetNextInputTime() const;

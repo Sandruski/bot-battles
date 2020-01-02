@@ -38,6 +38,12 @@ bool ClientComponent::IsConnected() const
 }
 
 //----------------------------------------------------------------------------------------------------
+bool ClientComponent::IsLocalPlayer(Entity entity) const
+{
+    return entity == m_entity;
+}
+
+//----------------------------------------------------------------------------------------------------
 F32 ClientComponent::GetNextHelloTime() const
 {
     return m_lastDeliveryTimestamp + TIME_BETWEEN_HELLO;
