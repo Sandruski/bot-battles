@@ -11,8 +11,11 @@ public:
     Move();
     Move(const InputComponent& input, U32 dirtyState, F32 timestamp, F32 dt);
 
+#ifdef _CLIENT
     void Write(OutputMemoryStream& outputStream) const;
+#elif _SERVER
     void Read(InputMemoryStream& inputStream);
+#endif
 
     const InputComponent& GetInput() const;
     U32 GetDirtyState() const;

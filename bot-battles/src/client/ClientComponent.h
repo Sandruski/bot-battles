@@ -1,6 +1,8 @@
 #ifndef __CLIENT_COMPONENT_H__
 #define __CLIENT_COMPONENT_H__
 
+#include "Component.h"
+
 namespace sand {
 
 class SocketAddress;
@@ -8,7 +10,7 @@ class UDPSocket;
 
 //----------------------------------------------------------------------------------------------------
 // System Component
-struct ClientComponent {
+struct ClientComponent : public Component {
 
     ClientComponent();
 

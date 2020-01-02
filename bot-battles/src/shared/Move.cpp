@@ -20,6 +20,7 @@ Move::Move(const InputComponent& input, U32 dirtyState, F32 timestamp, F32 dt)
 {
 }
 
+#ifdef _CLIENT
 //----------------------------------------------------------------------------------------------------
 void Move::Write(OutputMemoryStream& outputStream) const
 {
@@ -27,14 +28,15 @@ void Move::Write(OutputMemoryStream& outputStream) const
     m_input.Write(outputStream, m_dirtyState);
     outputStream.Write(m_timestamp);
 }
-
+#elif _SERVER
 //----------------------------------------------------------------------------------------------------
 void Move::Read(InputMemoryStream& inputStream)
 {
     inputStream.Read(m_dirtyState); // TODO CHANGE! This dirty state is alone :c
-    m_input.Read(inputStream, m_dirtyState);
+    m_input.Read(inputStream, m_dirtyState, false);
     inputStream.Read(m_timestamp);
 }
+#endif
 
 //----------------------------------------------------------------------------------------------------
 const InputComponent& Move::GetInput() const

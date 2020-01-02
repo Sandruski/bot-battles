@@ -1,13 +1,14 @@
 #ifndef __MOVE_COMPONENT_H__
 #define __MOVE_COMPONENT_H__
 
+#include "Component.h"
 #include "Moves.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 // System Component
-struct MoveComponent {
+struct MoveComponent : public Component {
 
     MoveComponent();
 

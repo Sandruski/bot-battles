@@ -11,6 +11,7 @@ TransformComponent::TransformComponent()
 {
 }
 
+#ifdef _SERVER
 //----------------------------------------------------------------------------------------------------
 U32 TransformComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) const
 {
@@ -27,20 +28,7 @@ U32 TransformComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) 
 
     return writtenState;
 }
-
-//----------------------------------------------------------------------------------------------------
-void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState)
-{
-    //Vec3 oldPosition = m_position;
-    //F32 oldRotation = m_rotation;
-
-    if (dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION)) {
-        inputStream.Read(m_position);
-    }
-    if (dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_ROTATION)) {
-        inputStream.Read(m_rotation);
-    }
-}
+#endif
 
 //----------------------------------------------------------------------------------------------------
 void TransformComponent::Move(const InputComponent& inputComponent, F32 dt)

@@ -1,13 +1,10 @@
 #ifndef __COMPONENT_H__
 #define __COMPONENT_H__
 
-#include "NetworkableObject.h"
-
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-struct Component : public NetworkableObject {
-
+struct Component {
     Component();
     virtual ~Component() = default;
 

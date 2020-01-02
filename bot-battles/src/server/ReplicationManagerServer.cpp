@@ -4,13 +4,10 @@
 #include "ComponentMemberTypes.h"
 #include "EntityManager.h"
 #include "GameServer.h"
-#include "InputComponent.h"
 #include "LinkingContext.h"
+#include "NetworkableWriteObject.h"
 #include "ReplicationCommand.h"
 #include "ReplicationResultManager.h"
-#include "SpriteComponent.h"
-#include "TextComponent.h"
-#include "TransformComponent.h"
 
 namespace sand {
 
@@ -153,7 +150,7 @@ U32 ReplicationManagerServer::WriteUpdateAction(OutputMemoryStream& outputStream
         const bool hasSignatureComponent = signature & hasComponent;
         if (hasSignatureComponent) {
             std::weak_ptr<Component> component = g_gameServer->GetComponentManager().GetBaseComponent(static_cast<ComponentType>(i), entity);
-            writtenState |= component.lock()->Write(outputStream, dirtyState);
+            writtenState |= std::dynamic_pointer_cast<NetworkableWriteObject>(component.lock())->Write(outputStream, dirtyState);
         }
     }
 

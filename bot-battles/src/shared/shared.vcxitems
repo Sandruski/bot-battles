@@ -43,7 +43,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Moves.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)NetDefs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)NetUtils.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)NetworkableObject.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)NetworkableReadObject.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)NetworkableWriteObject.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Observer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)OutputMemoryStream.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)pch.h" />

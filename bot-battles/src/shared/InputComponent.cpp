@@ -17,6 +17,7 @@ void InputComponent::Copy(const InputComponent& other)
     m_angularAcceleration = other.m_angularAcceleration;
 }
 
+#ifdef _CLIENT
 //----------------------------------------------------------------------------------------------------
 U32 InputComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) const
 {
@@ -33,9 +34,9 @@ U32 InputComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) cons
 
     return writtenState;
 }
-
+#elif _SERVER
 //----------------------------------------------------------------------------------------------------
-void InputComponent::Read(InputMemoryStream& inputStream, U32 dirtyState)
+void InputComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, bool /*isLocalPlayer*/)
 {
     if (dirtyState & static_cast<U32>(ComponentMemberType::INPUT_ACCELERATION)) {
         inputStream.Read(m_acceleration);
@@ -44,4 +45,5 @@ void InputComponent::Read(InputMemoryStream& inputStream, U32 dirtyState)
         inputStream.Read(m_angularAcceleration);
     }
 }
+#endif
 }

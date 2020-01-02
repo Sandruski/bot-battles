@@ -12,6 +12,17 @@ SpriteComponent::SpriteComponent()
 {
 }
 
+#ifdef _CLIENT
+//----------------------------------------------------------------------------------------------------
+void SpriteComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, bool /*isLocalPlayer*/)
+{
+    if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_FILE)) {
+        std::string file;
+        inputStream.Read(file);
+        m_sprite = g_game->GetResourceManager().AddResource<SpriteResource>(file.c_str(), TEXTURES_DIR, true);
+    }
+}
+#elif _SERVER
 //----------------------------------------------------------------------------------------------------
 U32 SpriteComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) const
 {
@@ -25,14 +36,5 @@ U32 SpriteComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) con
 
     return writtenState;
 }
-
-//----------------------------------------------------------------------------------------------------
-void SpriteComponent::Read(InputMemoryStream& inputStream, U32 dirtyState)
-{
-    if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_FILE)) {
-        std::string file;
-        inputStream.Read(file);
-        m_sprite = g_game->GetResourceManager().AddResource<SpriteResource>(file.c_str(), TEXTURES_DIR, true);
-    }
-}
+#endif
 }

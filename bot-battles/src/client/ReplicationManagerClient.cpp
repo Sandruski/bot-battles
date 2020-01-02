@@ -5,12 +5,9 @@
 #include "ComponentMemberTypes.h"
 #include "EntityManager.h"
 #include "GameClient.h"
-#include "InputComponent.h"
 #include "LinkingContext.h"
+#include "NetworkableReadObject.h"
 #include "ReplicationCommand.h"
-#include "SpriteComponent.h"
-#include "TextComponent.h"
-#include "TransformComponent.h"
 
 namespace sand {
 
@@ -87,12 +84,16 @@ void ReplicationManagerClient::ReadUpdateAction(InputMemoryStream& inputStream, 
         const bool hasNewSignatureComponent = newSignature & hasComponent;
         if (hasSignatureComponent && hasNewSignatureComponent) {
             std::weak_ptr<Component> component = g_gameClient->GetComponentManager().GetBaseComponent(static_cast<ComponentType>(i), entity);
-            component.lock()->Read(inputStream, dirtyState);
+            ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+            const bool isLocalPlayer = clientComponent.IsLocalPlayer(entity);
+            std::dynamic_pointer_cast<NetworkableReadObject>(component.lock())->Read(inputStream, dirtyState, isLocalPlayer);
         } else if (hasSignatureComponent) {
             g_gameClient->GetComponentManager().RemoveBaseComponent(static_cast<ComponentType>(i), entity);
         } else if (hasNewSignatureComponent) {
             std::weak_ptr<Component> component = g_gameClient->GetComponentManager().AddBaseComponent(static_cast<ComponentType>(i), entity);
-            component.lock()->Read(inputStream, dirtyState);
+            ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+            const bool isLocalPlayer = clientComponent.IsLocalPlayer(entity);
+            std::dynamic_pointer_cast<NetworkableReadObject>(component.lock())->Read(inputStream, dirtyState, isLocalPlayer);
         }
     }
 }

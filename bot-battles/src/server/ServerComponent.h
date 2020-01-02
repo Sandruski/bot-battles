@@ -1,6 +1,8 @@
 #ifndef __SERVER_COMPONENT_H__
 #define __SERVER_COMPONENT_H__
 
+#include "Component.h"
+
 namespace sand {
 
 class UDPSocket;
@@ -9,7 +11,7 @@ class ClientProxy;
 
 //----------------------------------------------------------------------------------------------------
 // System Component
-struct ServerComponent {
+struct ServerComponent : public Component {
 
     ServerComponent();
 
