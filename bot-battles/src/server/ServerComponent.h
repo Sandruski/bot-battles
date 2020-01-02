@@ -22,9 +22,10 @@ struct ServerComponent {
     bool RemoveEntity(Entity entity);
 
     PlayerID GetPlayerID(const SocketAddress& socketAddress) const;
-    Entity GetEntity(const SocketAddress& socketAddress) const;
-    std::shared_ptr<ClientProxy> GetClientProxyFromPlayerID(PlayerID playerID) const;
-    std::shared_ptr<ClientProxy> GetClientProxyFromEntity(Entity entity) const;
+    std::shared_ptr<ClientProxy> GetClientProxy(PlayerID playerID) const;
+    PlayerID GetPlayerID(Entity entity) const;
+    Entity GetEntity(PlayerID playerID) const;
+
     const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& GetPlayerIDToClientProxyMap() const;
 
     std::shared_ptr<UDPSocket> m_socket;
@@ -33,7 +34,7 @@ struct ServerComponent {
     std::string m_port;
 
     std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>> m_playerIDToClientProxy;
-    std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>> m_entityToClientProxy;
+    std::unordered_map<Entity, PlayerID> m_entityToPlayerID;
     std::queue<Entity> m_availablePlayerIDs;
 };
 }

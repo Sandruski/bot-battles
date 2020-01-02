@@ -201,13 +201,9 @@ void ClientSystem::ReceiveWelcomePacket(ClientComponent& clientComponent, InputM
     bool isSuccessful = false;
     inputStream.Read(isSuccessful);
     if (isSuccessful) {
-
-        PlayerID playerID = INVALID_PLAYER_ID;
-        inputStream.Read(playerID);
-        if (playerID != INVALID_PLAYER_ID) {
-            clientComponent.m_playerID = playerID;
-            ILOG("Player %s %u has joined the game", clientComponent.m_name.c_str(), clientComponent.m_playerID);
-        }
+        inputStream.Read(clientComponent.m_playerID);
+        assert(clientComponent.m_playerID < INVALID_PLAYER_ID);
+        ILOG("Player %s %u has joined the game", clientComponent.m_name.c_str(), clientComponent.m_playerID);
     }
 }
 
@@ -229,7 +225,6 @@ void ClientSystem::ReceiveStatePacket(ClientComponent& clientComponent, InputMem
         F32 lastMoveTimestamp = 0.0f;
         inputStream.Read(lastMoveTimestamp);
         clientComponent.m_RTT = Time::GetInstance().GetTime() - lastMoveTimestamp;
-
         MoveComponent& moveComponent = g_gameClient->GetMoveComponent();
         moveComponent.m_moves.RemoveMoves(lastMoveTimestamp);
     }
@@ -247,6 +242,7 @@ void ClientSystem::OnConnectionReset(ClientComponent& clientComponent) const
 void ClientSystem::OnDisconnect(ClientComponent& clientComponent) const
 {
     clientComponent.m_playerID = INVALID_PLAYER_ID;
+    clientComponent.m_entity = INVALID_ENTITY;
     // Clear linkingContext
     // Clear networkGameObjects
 }

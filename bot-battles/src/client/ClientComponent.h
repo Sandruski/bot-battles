@@ -27,6 +27,7 @@ struct ClientComponent {
     std::string m_port;
 
     PlayerID m_playerID;
+    Entity m_entity;
 
     F32 m_lastDeliveryTimestamp;
 

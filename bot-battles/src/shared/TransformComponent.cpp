@@ -1,6 +1,7 @@
 #include "TransformComponent.h"
 
 #include "ComponentMemberTypes.h"
+#include "InputComponent.h"
 
 namespace sand {
 //----------------------------------------------------------------------------------------------------
@@ -30,11 +31,22 @@ U32 TransformComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) 
 //----------------------------------------------------------------------------------------------------
 void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState)
 {
+    //Vec3 oldPosition = m_position;
+    //F32 oldRotation = m_rotation;
+
     if (dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION)) {
         inputStream.Read(m_position);
     }
     if (dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_ROTATION)) {
         inputStream.Read(m_rotation);
     }
+}
+
+//----------------------------------------------------------------------------------------------------
+void TransformComponent::Move(const InputComponent& inputComponent, F32 dt)
+{
+    m_position.x += inputComponent.m_acceleration.x * dt;
+    m_position.y += inputComponent.m_acceleration.y * dt;
+    m_rotation += inputComponent.m_angularAcceleration * dt;
 }
 }

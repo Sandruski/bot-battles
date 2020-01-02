@@ -5,6 +5,8 @@
 
 namespace sand {
 
+struct InputComponent;
+
 //----------------------------------------------------------------------------------------------------
 // Entity Component
 struct TransformComponent : public Component {
@@ -16,8 +18,10 @@ struct TransformComponent : public Component {
     U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override;
     void Read(InputMemoryStream& inputStream, U32 dirtyState) override;
 
+    void Move(const InputComponent& inputComponent, F32 dt);
+
     Vec3 m_position;
-    float m_rotation;
+    F32 m_rotation;
 };
 }
 

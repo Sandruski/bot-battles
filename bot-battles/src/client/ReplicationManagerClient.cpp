@@ -1,5 +1,6 @@
 #include "ReplicationManagerClient.h"
 
+#include "ClientComponent.h"
 #include "ComponentManager.h"
 #include "ComponentMemberTypes.h"
 #include "EntityManager.h"
@@ -56,6 +57,13 @@ void ReplicationManagerClient::ReadCreateAction(InputMemoryStream& inputStream, 
     if (entity == INVALID_ENTITY) {
         entity = g_gameClient->GetEntityManager().AddEntity();
         g_gameClient->GetLinkingContext().AddEntity(entity, networkID);
+    }
+
+    PlayerID playerID = INVALID_PLAYER_ID;
+    inputStream.Read(playerID);
+    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    if (playerID == clientComponent.m_playerID) {
+        clientComponent.m_entity = entity;
     }
 
     ReadUpdateAction(inputStream, networkID);

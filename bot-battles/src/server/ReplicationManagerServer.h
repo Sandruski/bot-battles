@@ -21,7 +21,8 @@ public:
     void AddDirtyState(NetworkID networkID, U32 dirtyState);
 
     void Write(OutputMemoryStream& outputStream, ReplicationResultManager& replicationResultManager);
-    U32 WriteCreateOrUpdateAction(OutputMemoryStream& outputStream, NetworkID networkID, U32 dirtyState) const;
+    U32 WriteCreateAction(OutputMemoryStream& outputStream, NetworkID networkID, U32 dirtyState) const;
+    U32 WriteUpdateAction(OutputMemoryStream& outputStream, NetworkID networkID, U32 dirtyState) const;
 
 private:
     std::unordered_map<NetworkID, ReplicationCommand> m_networkIDToReplicationCommand;

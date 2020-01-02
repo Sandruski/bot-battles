@@ -25,7 +25,8 @@ bool NavigationSystem::Update()
         std::weak_ptr<InputComponent> inputComponent = g_gameServer->GetComponentManager().GetComponent<InputComponent>(entity);
         std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
 
-        std::shared_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxyFromEntity(entity);
+        PlayerID playerID = serverComponent.GetPlayerID(entity);
+        std::shared_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
         if (clientProxy != nullptr) {
             U32 moveCount = clientProxy->m_moves.GetMoveCount();
             for (U32 i = 0; i < moveCount; ++i) {
@@ -45,9 +46,7 @@ bool NavigationSystem::Update()
 //----------------------------------------------------------------------------------------------------
 void NavigationSystem::UpdateMovement(Entity entity, const InputComponent& input, TransformComponent& transform, F32 dt) const
 {
-    transform.m_position.x += input.m_acceleration.x * dt;
-    transform.m_position.y += input.m_acceleration.y * dt;
-    transform.m_rotation += input.m_angularAcceleration * dt;
+    transform.Move(input, dt);
 
     Event newEvent;
     newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;

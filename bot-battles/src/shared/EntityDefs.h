@@ -6,7 +6,7 @@ namespace sand {
 using Entity = U32;
 
 const U32 MAX_ENTITIES = 1024;
-const Entity INVALID_ENTITY = MAX_ENTITIES + 1;
+const Entity INVALID_ENTITY = MAX_ENTITIES;
 }
 
 #endif

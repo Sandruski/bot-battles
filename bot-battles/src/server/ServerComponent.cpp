@@ -11,9 +11,11 @@ ServerComponent::ServerComponent()
     , m_socketAddress(nullptr)
     , m_port()
     , m_playerIDToClientProxy()
+    , m_entityToPlayerID()
     , m_availablePlayerIDs()
 {
     m_playerIDToClientProxy.reserve(MAX_PLAYER_IDS);
+    m_entityToPlayerID.reserve(MAX_PLAYER_IDS);
 
     for (PlayerID i = 0; i < MAX_PLAYER_IDS; ++i) {
         m_availablePlayerIDs.push(i);
@@ -32,25 +34,16 @@ void ServerComponent::LoadFromConfig(const rapidjson::Value& value)
 PlayerID ServerComponent::AddPlayer(const SocketAddress& socketAddress, const char* name)
 {
     PlayerID playerID = GetPlayerID(socketAddress);
-    if (playerID != INVALID_PLAYER_ID) {
-        std::shared_ptr<ClientProxy> clientProxy = GetClientProxyFromPlayerID(playerID);
-        if (COMPARE_STRINGS(clientProxy->GetName(), name)) {
-            WLOG("Player with socket address %s is already registered", socketAddress.GetName());
-        } else {
-            WLOG("Player with socket address %s is already registered with a different name", socketAddress.GetName());
-        }
+    if (playerID < INVALID_PLAYER_ID) {
+        WLOG("Player with socket address %s could not be added", socketAddress.GetName());
         return playerID;
     }
 
     playerID = m_availablePlayerIDs.front();
     m_availablePlayerIDs.pop();
+
     std::shared_ptr<ClientProxy> clientProxy = std::make_shared<ClientProxy>(socketAddress, name);
-    std::pair<std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>::iterator, bool> pair = m_playerIDToClientProxy.insert(std::make_pair(playerID, clientProxy));
-    if (!pair.second) {
-        WLOG("Player with socket address %s could not be registered", socketAddress.GetName());
-        m_availablePlayerIDs.push(playerID);
-        return INVALID_PLAYER_ID;
-    }
+    m_playerIDToClientProxy.insert(std::make_pair(playerID, clientProxy));
 
     return playerID;
 }
@@ -58,11 +51,12 @@ PlayerID ServerComponent::AddPlayer(const SocketAddress& socketAddress, const ch
 //----------------------------------------------------------------------------------------------------
 bool ServerComponent::RemovePlayer(PlayerID playerID)
 {
-    std::size_t ret = m_playerIDToClientProxy.erase(playerID);
-    if (ret == 0) {
+    if (GetClientProxy(playerID) == nullptr) {
         WLOG("Player %u could not be removed", playerID);
         return false;
     }
+
+    m_playerIDToClientProxy.erase(playerID);
 
     m_availablePlayerIDs.push(playerID);
 
@@ -72,13 +66,12 @@ bool ServerComponent::RemovePlayer(PlayerID playerID)
 //----------------------------------------------------------------------------------------------------
 bool ServerComponent::AddEntity(Entity entity, PlayerID playerID)
 {
-    std::shared_ptr<ClientProxy> clientProxy = GetClientProxyFromPlayerID(playerID);
-    if (clientProxy == nullptr) {
+    if (GetPlayerID(entity) < INVALID_PLAYER_ID) {
         WLOG("Entity %u could not be added", entity);
         return false;
     }
 
-    m_entityToClientProxy.insert(std::make_pair(entity, clientProxy));
+    m_entityToPlayerID.insert(std::make_pair(entity, playerID));
 
     return true;
 }
@@ -86,11 +79,12 @@ bool ServerComponent::AddEntity(Entity entity, PlayerID playerID)
 //----------------------------------------------------------------------------------------------------
 bool ServerComponent::RemoveEntity(Entity entity)
 {
-    std::size_t ret = m_entityToClientProxy.erase(entity);
-    if (ret == 0) {
+    if (GetPlayerID(entity) == INVALID_PLAYER_ID) {
         WLOG("Entity %u could not be removed", entity);
         return false;
     }
+
+    m_entityToPlayerID.erase(entity);
 
     return true;
 }
@@ -109,20 +103,7 @@ PlayerID ServerComponent::GetPlayerID(const SocketAddress& socketAddress) const
 }
 
 //----------------------------------------------------------------------------------------------------
-Entity ServerComponent::GetEntity(const SocketAddress& socketAddress) const
-{
-    for (const auto& pair : m_entityToClientProxy) {
-        std::shared_ptr<ClientProxy> clientProxy = pair.second;
-        if (clientProxy->GetSocketAddress() == socketAddress) {
-            return pair.first;
-        }
-    }
-
-    return INVALID_ENTITY;
-}
-
-//----------------------------------------------------------------------------------------------------
-std::shared_ptr<ClientProxy> ServerComponent::GetClientProxyFromPlayerID(PlayerID playerID) const
+std::shared_ptr<ClientProxy> ServerComponent::GetClientProxy(PlayerID playerID) const
 {
     auto it = m_playerIDToClientProxy.find(playerID);
     if (it == m_playerIDToClientProxy.end()) {
@@ -133,14 +114,26 @@ std::shared_ptr<ClientProxy> ServerComponent::GetClientProxyFromPlayerID(PlayerI
 }
 
 //----------------------------------------------------------------------------------------------------
-std::shared_ptr<ClientProxy> ServerComponent::GetClientProxyFromEntity(Entity entity) const
+PlayerID ServerComponent::GetPlayerID(Entity entity) const
 {
-    auto it = m_entityToClientProxy.find(entity);
-    if (it == m_entityToClientProxy.end()) {
-        return nullptr;
+    auto it = m_entityToPlayerID.find(entity);
+    if (it == m_entityToPlayerID.end()) {
+        return INVALID_PLAYER_ID;
     }
 
     return it->second;
+}
+
+//----------------------------------------------------------------------------------------------------
+Entity ServerComponent::GetEntity(PlayerID playerID) const
+{
+    for (const auto& pair : m_entityToPlayerID) {
+        if (pair.second == playerID) {
+            return pair.first;
+        }
+    }
+
+    return INVALID_ENTITY;
 }
 
 //----------------------------------------------------------------------------------------------------

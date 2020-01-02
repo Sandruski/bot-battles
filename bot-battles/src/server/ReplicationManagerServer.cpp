@@ -83,10 +83,13 @@ void ReplicationManagerServer::AddDirtyState(NetworkID networkID, U32 dirtyState
 void ReplicationManagerServer::Write(OutputMemoryStream& outputStream, ReplicationResultManager& replicationResultManager)
 {
     for (auto& pair : m_networkIDToReplicationCommand) {
+
         ReplicationCommand& replicationCommand = pair.second;
         const bool hasDirtyState = replicationCommand.HasDirtyState();
         const bool hasReplicationAction = replicationCommand.m_replicationActionType != ReplicationActionType::NONE;
+
         if (hasDirtyState && hasReplicationAction) {
+
             NetworkID networkID = pair.first;
             outputStream.Write(networkID);
             outputStream.Write(replicationCommand.m_replicationActionType, 2);
@@ -94,9 +97,14 @@ void ReplicationManagerServer::Write(OutputMemoryStream& outputStream, Replicati
             U32 writtenState = 0;
 
             switch (replicationCommand.m_replicationActionType) {
-            case ReplicationActionType::CREATE:
+
+            case ReplicationActionType::CREATE: {
+                writtenState = WriteCreateAction(outputStream, networkID, replicationCommand.GetDirtyState());
+                break;
+            }
+
             case ReplicationActionType::UPDATE: {
-                writtenState = WriteCreateOrUpdateAction(outputStream, networkID, replicationCommand.GetDirtyState());
+                writtenState = WriteUpdateAction(outputStream, networkID, replicationCommand.GetDirtyState());
                 break;
             }
 
@@ -119,7 +127,18 @@ void ReplicationManagerServer::Write(OutputMemoryStream& outputStream, Replicati
 }
 
 //----------------------------------------------------------------------------------------------------
-U32 ReplicationManagerServer::WriteCreateOrUpdateAction(OutputMemoryStream& outputStream, NetworkID networkID, U32 dirtyState) const
+U32 ReplicationManagerServer::WriteCreateAction(OutputMemoryStream& outputStream, NetworkID networkID, U32 dirtyState) const
+{
+    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
+    Entity entity = g_gameServer->GetLinkingContext().GetEntity(networkID);
+    PlayerID playerID = serverComponent.GetPlayerID(entity);
+    outputStream.Write(playerID);
+
+    return WriteUpdateAction(outputStream, networkID, dirtyState);
+}
+
+//----------------------------------------------------------------------------------------------------
+U32 ReplicationManagerServer::WriteUpdateAction(OutputMemoryStream& outputStream, NetworkID networkID, U32 dirtyState) const
 {
     U32 writtenState = 0;
 
