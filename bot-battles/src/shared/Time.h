@@ -16,16 +16,17 @@ public:
     void StartUpdate();
     void FinishUpdate();
 
+    F32 GetTime() const;
+    F32 GetStartFrameTime() const;
     F32 GetDt() const;
     F32 GetFps() const;
-    F32 GetTime() const;
 
 private:
     Timer m_timer;
     Timer m_dtTimer;
 
+    F32 m_startFrameTime;
     F64 m_lastFrameMs;
-    F64 m_desiredFramerate;
     F64 m_fps;
     F64 m_dt;
 };

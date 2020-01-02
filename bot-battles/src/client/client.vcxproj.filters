@@ -34,7 +34,7 @@
     <Filter Include="Source Files\Components">
       <UniqueIdentifier>{c6c5bf1a-ae10-4d05-ad4c-d930110ddd8b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Components\Networking">
+    <Filter Include="Header Files\Networking">
       <UniqueIdentifier>{61016cfe-7022-4fe0-a644-5f35b6152c39}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -72,6 +72,9 @@
     <ClCompile Include="TransformComponentClient.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
+    <ClCompile Include="NavigationSystemClient.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameplayState.h">
@@ -81,13 +84,13 @@
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
     <ClInclude Include="ReplicationManagerClient.h">
-      <Filter>Header Files\Components\Networking</Filter>
+      <Filter>Header Files\Networking</Filter>
     </ClInclude>
     <ClInclude Include="GameClient.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DeliveryManagerClient.h">
-      <Filter>Header Files\Components\Networking</Filter>
+      <Filter>Header Files\Networking</Filter>
     </ClInclude>
     <ClInclude Include="ClientComponent.h">
       <Filter>Header Files\Components</Filter>
@@ -99,6 +102,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="InputSystem.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="NavigationSystemClient.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
   </ItemGroup>

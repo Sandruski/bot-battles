@@ -12,12 +12,13 @@ enum class SystemType : U16 {
     HUD,
 #endif
 
+    NAVIGATION,
+
 #ifdef _CLIENT
     CLIENT,
     INPUT,
 #elif _SERVER
     SERVER,
-    NAVIGATION,
     SPAWNER,
 #endif
 

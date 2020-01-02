@@ -33,6 +33,12 @@ const Move& Moves::GetMove(U32 index) const
 }
 
 //----------------------------------------------------------------------------------------------------
+const Move& Moves::GetLastMove() const
+{
+    return m_moves.back();
+}
+
+//----------------------------------------------------------------------------------------------------
 bool Moves::HasMoves() const
 {
     return !m_moves.empty();

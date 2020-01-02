@@ -17,7 +17,7 @@ public:
         y += vec.y;
     }
 
-    Vec2 operator+(const Vec2& vec)
+    Vec2 operator+(const Vec2& vec) const
     {
         Vec2 newVec(x, y);
         newVec.x += vec.x;
@@ -31,7 +31,7 @@ public:
         y -= vec.y;
     }
 
-    Vec2 operator-(const Vec2& vec)
+    Vec2 operator-(const Vec2& vec) const
     {
         Vec2 newVec(x, y);
         newVec.x -= vec.x;
@@ -45,7 +45,7 @@ public:
         y *= val;
     }
 
-    Vec2 operator*(F32 val)
+    Vec2 operator*(F32 val) const
     {
         Vec2 newVec(x, y);
         newVec.x *= val;
@@ -61,7 +61,7 @@ public:
         }
     }
 
-    Vec2 operator/(F32 val)
+    Vec2 operator/(F32 val) const
     {
         Vec2 newVec(x, y);
         if (val != 0.0f) {
@@ -69,6 +69,16 @@ public:
             newVec.y /= val;
         }
         return newVec;
+    }
+
+    bool operator==(const Vec2& vec) const
+    {
+        return (x == vec.x && y == vec.y);
+    }
+
+    bool operator!=(const Vec2& vec) const
+    {
+        return !(x == vec.x && y == vec.y);
     }
 
 public:

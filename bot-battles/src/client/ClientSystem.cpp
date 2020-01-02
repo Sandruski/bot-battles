@@ -223,7 +223,7 @@ void ClientSystem::ReceiveStatePacket(ClientComponent& clientComponent, InputMem
     if (isLastMoveTimestampDirty) {
         F32 lastMoveTimestamp = 0.0f;
         inputStream.Read(lastMoveTimestamp);
-        clientComponent.m_RTT = Time::GetInstance().GetTime() - lastMoveTimestamp;
+        clientComponent.m_RTT = Time::GetInstance().GetStartFrameTime() - lastMoveTimestamp;
         MoveComponent& moveComponent = g_gameClient->GetMoveComponent();
         moveComponent.m_moves.RemoveMoves(lastMoveTimestamp);
     }

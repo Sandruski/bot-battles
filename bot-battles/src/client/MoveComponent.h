@@ -20,6 +20,7 @@ struct MoveComponent : public Component {
     Moves m_moves;
 
     F32 m_lastMoveTimestamp;
+    bool m_isLastMovePending;
 };
 }
 

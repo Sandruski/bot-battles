@@ -8,6 +8,9 @@ namespace sand {
 TransformComponent::TransformComponent()
     : m_position()
     , m_rotation(0.0f)
+#ifdef _CLIENT
+    , m_outOfSyncTimestamp(0.0f)
+#endif
 {
 }
 

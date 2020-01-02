@@ -68,7 +68,8 @@ void InputSystem::UpdateSampleInput(MoveComponent& moveComponent) const
     float time = Time::GetInstance().GetTime();
     float nextMoveTime = moveComponent.GetNextMoveTime();
     if (time >= nextMoveTime) {
-        SampleInput(moveComponent, time);
+        SampleInput(moveComponent, Time::GetInstance().GetStartFrameTime());
+        moveComponent.m_lastMoveTimestamp = time;
     }
 }
 
@@ -78,6 +79,7 @@ void InputSystem::SampleInput(MoveComponent& moveComponent, F32 timestamp) const
     for (auto& entity : m_entities) {
         std::weak_ptr<InputComponent> input = g_gameClient->GetComponentManager().GetComponent<InputComponent>(entity);
         moveComponent.m_moves.AddMove(*input.lock(), static_cast<U32>(ComponentMemberType::INPUT_ACCELERATION), timestamp); // TODO: not only acceleration...
+        moveComponent.m_isLastMovePending = true;
     }
 }
 }

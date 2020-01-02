@@ -33,7 +33,7 @@ void Move::Write(OutputMemoryStream& outputStream) const
 void Move::Read(InputMemoryStream& inputStream)
 {
     inputStream.Read(m_dirtyState); // TODO CHANGE! This dirty state is alone :c
-    m_input.Read(inputStream, m_dirtyState, false);
+    m_input.Read(inputStream, m_dirtyState, ReplicationActionType::NONE, INVALID_ENTITY);
     inputStream.Read(m_timestamp);
 }
 #endif

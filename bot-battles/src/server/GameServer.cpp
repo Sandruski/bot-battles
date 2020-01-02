@@ -2,7 +2,7 @@
 
 #include "ConfigServer.h"
 #include "EntityManager.h"
-#include "NavigationSystem.h"
+#include "NavigationSystemServer.h"
 #include "ServerComponent.h"
 #include "ServerSystem.h"
 #include "SpawnerSystem.h"
@@ -31,7 +31,7 @@ bool GameServer::Init()
     if (!ret) {
         return ret;
     }
-    ret = m_systemManager->RegisterSystem<NavigationSystem>();
+    ret = m_systemManager->RegisterSystem<NavigationSystemServer>();
     if (!ret) {
         return ret;
     }
@@ -50,8 +50,8 @@ bool GameServer::Init()
     if (!ret) {
         return ret;
     }
-    std::weak_ptr<NavigationSystem> navigationSystem = m_systemManager->GetSystem<NavigationSystem>();
-    ret = navigationSystem.lock()->AddObserver(serverSystem);
+    std::weak_ptr<NavigationSystemServer> navigationSystemServer = m_systemManager->GetSystem<NavigationSystemServer>();
+    ret = navigationSystemServer.lock()->AddObserver(serverSystem);
     if (!ret) {
         return ret;
     }

@@ -27,8 +27,9 @@ struct TransformComponent : public Component,
 
 #ifdef _CLIENT
     void Read(InputMemoryStream& inputStream, U32 dirtyState, ReplicationActionType replicationActionType, Entity entity) override;
-    void ClientPredictionForLocalPlayer(bool updatePosition, bool updateRotation);
-    void ClientPredictionForRemotePlayer(Entity entity);
+    void ClientSidePredictionForLocalPlayer(bool updatePosition, bool updateRotation);
+    void ClientSidePredictionForRemotePlayer(Entity entity);
+    void ClientSideInterpolation(const Vec3& oldPosition, F32 oldRotation);
 #elif _SERVER
     U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override;
 #endif
@@ -38,6 +39,9 @@ struct TransformComponent : public Component,
 
     Vec3 m_position;
     F32 m_rotation;
+#ifdef _CLIENT
+    F32 m_outOfSyncTimestamp;
+#endif
 };
 }
 

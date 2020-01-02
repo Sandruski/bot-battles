@@ -16,6 +16,7 @@ public:
     void ClearMoves();
 
     const Move& GetMove(U32 index) const;
+    const Move& GetLastMove() const;
     bool HasMoves() const;
     U32 GetMoveCount() const;
 

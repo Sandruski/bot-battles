@@ -6,6 +6,7 @@ namespace sand {
 MoveComponent::MoveComponent()
     : m_moves()
     , m_lastMoveTimestamp(0.0f)
+    , m_isLastMovePending(false)
 {
 }
 }
