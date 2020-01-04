@@ -19,12 +19,10 @@ public:
     const Move& GetLastMove() const;
     bool HasMoves() const;
     U32 GetMoveCount() const;
-
     F32 GetLastMoveTimestamp() const;
 
 private:
     std::deque<Move> m_moves;
-    F32 m_lastMoveTimestamp;
 };
 }
 

@@ -35,6 +35,11 @@ struct ClientComponent : public Component {
     F32 m_lastDeliveryTimestamp;
 
     F32 m_RTT;
+
+    bool m_isClientSidePrediction;
+    bool m_isServerReconciliation;
+    bool m_isEntityInterpolation;
+    bool m_isLagCompensation;
 };
 }
 

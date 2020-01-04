@@ -34,6 +34,13 @@ U32 TransformComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) 
 #endif
 
 //----------------------------------------------------------------------------------------------------
+void TransformComponent::UpdateTransform(const Vec2& acceleration, F32 angularAcceleration, F32 dt)
+{
+    UpdatePosition(acceleration, dt);
+    UpdateRotation(angularAcceleration, dt);
+}
+
+//----------------------------------------------------------------------------------------------------
 void TransformComponent::UpdatePosition(const Vec2& acceleration, F32 dt)
 {
     m_position.x += acceleration.x * dt;

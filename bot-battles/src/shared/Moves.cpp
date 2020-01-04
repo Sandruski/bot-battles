@@ -5,24 +5,23 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 Moves::Moves()
     : m_moves()
-    , m_lastMoveTimestamp(0.0f)
 {
 }
 
 //----------------------------------------------------------------------------------------------------
 const Move& Moves::AddMove(const InputComponent& input, U32 dirtyState, F32 timestamp)
 {
-    float dt = m_lastMoveTimestamp > 0.0f ? timestamp - m_lastMoveTimestamp : 0.0f;
-    m_lastMoveTimestamp = timestamp;
+    F32 lastMoveTimestamp = GetLastMoveTimestamp();
+    F32 dt = lastMoveTimestamp > 0.0f ? timestamp - lastMoveTimestamp : 0.0f;
     return m_moves.emplace_back(input, dirtyState, timestamp, dt);
 }
 
 //----------------------------------------------------------------------------------------------------
 const Move& Moves::AddMove(const Move& move)
 {
-    float timestamp = move.GetTimestamp();
-    float dt = m_lastMoveTimestamp > 0.0f ? timestamp - m_lastMoveTimestamp : 0.0f;
-    m_lastMoveTimestamp = timestamp;
+    F32 lastMoveTimestamp = GetLastMoveTimestamp();
+    F32 timestamp = move.GetTimestamp();
+    F32 dt = lastMoveTimestamp > 0.0f ? timestamp - lastMoveTimestamp : 0.0f;
     return m_moves.emplace_back(move.GetInput(), move.GetDirtyState(), timestamp, dt);
 }
 
@@ -53,7 +52,7 @@ U32 Moves::GetMoveCount() const
 //----------------------------------------------------------------------------------------------------
 F32 Moves::GetLastMoveTimestamp() const
 {
-    return m_lastMoveTimestamp;
+    return HasMoves() ? m_moves.back().GetTimestamp() : 0.0f;
 }
 
 //----------------------------------------------------------------------------------------------------

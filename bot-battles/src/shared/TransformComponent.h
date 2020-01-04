@@ -34,6 +34,7 @@ struct TransformComponent : public Component,
     U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override;
 #endif
 
+    void UpdateTransform(const Vec2& acceleration, F32 angularAcceleration, F32 dt);
     void UpdatePosition(const Vec2& acceleration, F32 dt);
     void UpdateRotation(F32 angularAcceleration, F32 dt);
 
