@@ -1,7 +1,6 @@
 #ifndef __GAME_H__
 #define __GAME_H__
 
-#include "FSM.h"
 #include "FontImporter.h"
 #include "LinkingContext.h"
 #include "ResourceManager.h"
@@ -17,6 +16,7 @@ struct Config;
 class EntityManager;
 class ComponentManager;
 class SystemManager;
+class FSM;
 
 //----------------------------------------------------------------------------------------------------
 class Game {
@@ -34,8 +34,8 @@ public:
     EntityManager& GetEntityManager() { return *m_entityManager; }
     ComponentManager& GetComponentManager() { return *m_componentManager; }
     SystemManager& GetSystemManager() { return *m_systemManager; }
+    FSM& GetFSM() { return *m_fsm; }
     LinkingContext& GetLinkingContext() { return m_linkingContext; }
-    FSM& GetFSM() { return m_fsm; } // TODO: remove this!
 #ifdef _DRAW
     FontImporter& GetFontImporter()
     {
@@ -62,9 +62,9 @@ protected:
     std::shared_ptr<EntityManager> m_entityManager;
     std::shared_ptr<ComponentManager> m_componentManager;
     std::shared_ptr<SystemManager> m_systemManager;
+    std::shared_ptr<FSM> m_fsm;
 
     LinkingContext m_linkingContext;
-    FSM m_fsm;
 #ifdef _DRAW
     FontImporter m_fontImporter;
     TextureImporter m_textureImporter;

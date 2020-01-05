@@ -35,8 +35,8 @@ private:
     void ReceiveHelloPacket(ServerComponent& serverComponent, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress, PlayerID& playerID);
     void ReceiveInputPacket(ServerComponent& serverComponent, InputMemoryStream& inputStream, PlayerID& playerID) const;
 
-    void ClientConnectionReset(ServerComponent& serverComponent, const SocketAddress& socketAddress);
-    void DisconnectClient(ServerComponent& serverComponent, PlayerID playerID, Entity entity);
+    void ConnectionReset(ServerComponent& serverComponent, const SocketAddress& socketAddress);
+    void Disconnect(ServerComponent& serverComponent, PlayerID playerID, Entity entity);
 
     void OnEntityAdded(Entity entity) const;
     void OnEntityRemoved(Entity entity) const;

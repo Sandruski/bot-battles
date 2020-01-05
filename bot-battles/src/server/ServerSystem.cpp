@@ -105,7 +105,7 @@ void ServerSystem::SendOutgoingPackets(ServerComponent& serverComponent)
     for (const auto& pair : playerIDToClientProxyDisconnections) {
         PlayerID playerID = pair.first;
         Entity entity = serverComponent.GetEntity(playerID);
-        DisconnectClient(serverComponent, playerID, entity);
+        Disconnect(serverComponent, playerID, entity);
     }
 }
 
@@ -176,7 +176,7 @@ void ServerSystem::ReceiveIncomingPackets(ServerComponent& serverComponent)
             ReceivePacket(serverComponent, packet, fromSocketAddress);
             ++receivedPacketCount;
         } else if (readByteCount == -WSAECONNRESET) {
-            ClientConnectionReset(serverComponent, fromSocketAddress);
+            ConnectionReset(serverComponent, fromSocketAddress);
         } else if (readByteCount == 0 || -WSAEWOULDBLOCK) {
             // TODO: graceful disconnection if readByteCount == 0?
             break;
@@ -235,7 +235,7 @@ void ServerSystem::ReceiveHelloPacket(ServerComponent& serverComponent, InputMem
 
             Event newEvent;
             newEvent.eventType = EventType::PLAYER_ADDED;
-            newEvent.server.playerID = playerID;
+            newEvent.networking.playerID = playerID;
             PushEvent(newEvent);
 
             ILOG("New player %s %u has joined the game", name.c_str(), playerID);
@@ -282,21 +282,21 @@ void ServerSystem::ReceiveInputPacket(ServerComponent& serverComponent, InputMem
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerSystem::ClientConnectionReset(ServerComponent& serverComponent, const SocketAddress& socketAddress)
+void ServerSystem::ConnectionReset(ServerComponent& serverComponent, const SocketAddress& socketAddress)
 {
     PlayerID playerID = serverComponent.GetPlayerID(socketAddress);
     Entity entity = serverComponent.GetEntity(playerID);
-    DisconnectClient(serverComponent, playerID, entity);
+    Disconnect(serverComponent, playerID, entity);
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerSystem::DisconnectClient(ServerComponent& serverComponent, PlayerID playerID, Entity entity)
+void ServerSystem::Disconnect(ServerComponent& serverComponent, PlayerID playerID, Entity entity)
 {
     serverComponent.RemovePlayer(playerID);
 
     Event newEvent;
     newEvent.eventType = EventType::PLAYER_REMOVED;
-    newEvent.server.entity = entity;
+    newEvent.networking.entity = entity;
     PushEvent(newEvent);
 }
 

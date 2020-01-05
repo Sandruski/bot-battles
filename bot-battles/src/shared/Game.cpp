@@ -40,6 +40,7 @@ Game::Game()
     m_entityManager = std::make_shared<EntityManager>();
     m_componentManager = std::make_shared<ComponentManager>();
     m_systemManager = std::make_shared<SystemManager>();
+    m_fsm = std::make_shared<FSM>();
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -88,7 +89,7 @@ bool Game::Init()
     }
 
     // States
-    ret = m_fsm.RegisterState<GameplayState>();
+    ret = m_fsm->RegisterState<GameplayState>();
     if (!ret) {
         return ret;
     }
@@ -131,7 +132,7 @@ bool Game::Init()
     if (!ret) {
         return ret;
     }
-    ret = m_fsm.StartUp();
+    ret = m_fsm->StartUp();
     if (!ret) {
         return ret;
     }
@@ -198,7 +199,7 @@ bool Game::End()
 {
     bool ret = false;
 
-    ret = m_fsm.ShutDown();
+    ret = m_fsm->ShutDown();
     if (!ret) {
         return ret;
     }
@@ -241,7 +242,7 @@ bool Game::PreUpdate()
     if (!ret) {
         return ret;
     }
-    ret = m_fsm.PreUpdate();
+    ret = m_fsm->PreUpdate();
     if (!ret) {
         return ret;
     }
@@ -258,7 +259,7 @@ bool Game::Update()
     if (!ret) {
         return ret;
     }
-    ret = m_fsm.Update();
+    ret = m_fsm->Update();
     if (!ret) {
         return ret;
     }
@@ -275,7 +276,7 @@ bool Game::PostUpdate()
     if (!ret) {
         return ret;
     }
-    ret = m_fsm.PostUpdate();
+    ret = m_fsm->PostUpdate();
     if (!ret) {
         return ret;
     }

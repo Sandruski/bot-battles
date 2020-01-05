@@ -15,9 +15,30 @@ FSM::FSM()
 }
 
 //----------------------------------------------------------------------------------------------------
+void FSM::OnNotify(const Event& event)
+{
+    switch (event.eventType) {
+
+    case EventType::PLAYER_ADDED: {
+        OnPlayerAdded();
+        break;
+    }
+
+    case EventType::PLAYER_REMOVED: {
+        OnPlayerRemoved();
+        break;
+    }
+
+    default: {
+        break;
+    }
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
 bool FSM::StartUp()
 {
-    return ChangeState(g_game->GetConfig().m_initialSceneName.c_str());
+    return ChangeState(g_game->GetConfig().m_offlineSceneName.c_str());
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -76,9 +97,9 @@ bool FSM::ChangeState(const char* name)
 }
 
 //----------------------------------------------------------------------------------------------------
-void FSM::ChangeState(std::weak_ptr<State> state)
+bool FSM::ChangeState(std::weak_ptr<State> state)
 {
-    if (!m_currentState.expired()) {
+    if (!m_currentState.expired() && (state.expired() || m_currentState.lock() != state.lock())) {
         m_currentState.lock()->Exit();
     }
 
@@ -87,5 +108,19 @@ void FSM::ChangeState(std::weak_ptr<State> state)
     if (!m_currentState.expired()) {
         m_currentState.lock()->Enter();
     }
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+void FSM::OnPlayerAdded()
+{
+    g_game->GetFSM().ChangeState(g_game->GetConfig().m_onlineSceneName.c_str());
+}
+
+//----------------------------------------------------------------------------------------------------
+void FSM::OnPlayerRemoved()
+{
+    g_game->GetFSM().ChangeState(g_game->GetConfig().m_offlineSceneName.c_str());
 }
 }

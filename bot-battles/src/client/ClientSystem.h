@@ -9,7 +9,7 @@ struct ClientComponent;
 struct MoveComponent;
 
 //----------------------------------------------------------------------------------------------------
-class ClientSystem : public System {
+class ClientSystem : public System, public Subject {
 public:
     static SystemType GetType()
     {
@@ -18,6 +18,7 @@ public:
 
 public:
     bool StartUp() override;
+    bool PreUpdate() override;
     bool Update() override;
 
 private:
@@ -29,13 +30,13 @@ private:
     bool SendInputPacket(const ClientComponent& clientComponent, MoveComponent& moveComponent) const;
     bool SendPacket(const ClientComponent& clientComponent, const OutputMemoryStream& outputStream) const;
 
-    void ReceiveIncomingPackets(ClientComponent& clientComponent) const;
-    void ReceivePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream) const;
-    void ReceiveWelcomePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream) const;
+    void ReceiveIncomingPackets(ClientComponent& clientComponent);
+    void ReceivePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream);
+    void ReceiveWelcomePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream);
     void ReceiveStatePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream) const;
 
-    void OnConnectionReset(ClientComponent& clientComponent) const;
-    void OnDisconnect(ClientComponent& clientComponent) const;
+    void ConnectionReset(ClientComponent& clientComponent);
+    void Disconnect(ClientComponent& clientComponent);
 };
 }
 

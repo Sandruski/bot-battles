@@ -22,12 +22,12 @@ void SpawnerSystem::OnNotify(const Event& event)
     switch (event.eventType) {
 
     case EventType::PLAYER_ADDED: {
-        OnPlayerAdded(event.server.playerID);
+        OnPlayerAdded(event.networking.playerID);
         break;
     }
 
     case EventType::PLAYER_REMOVED: {
-        OnPlayerRemoved(event.server.entity);
+        OnPlayerRemoved(event.networking.entity);
         break;
     }
 
@@ -77,6 +77,7 @@ void SpawnerSystem::OnPlayerAdded(PlayerID playerID) const
 void SpawnerSystem::OnPlayerRemoved(Entity entity) const
 {
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
+    g_gameServer->GetLinkingContext().RemoveEntity(entity);
     g_game->GetEntityManager().RemoveEntity(entity);
     serverComponent.RemoveEntity(entity);
 }

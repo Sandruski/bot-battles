@@ -6,9 +6,11 @@ namespace sand {
 class State;
 
 //----------------------------------------------------------------------------------------------------
-class FSM {
+class FSM : public Observer {
 public:
     FSM();
+
+    void OnNotify(const Event& event) override;
 
     bool StartUp();
     bool PreUpdate();
@@ -26,7 +28,10 @@ public:
     bool ChangeState(const char* name);
 
 private:
-    void ChangeState(std::weak_ptr<State> state);
+    bool ChangeState(std::weak_ptr<State> state);
+
+    void OnPlayerAdded();
+    void OnPlayerRemoved();
 
 private:
     std::array<std::shared_ptr<State>, MAX_STATES> m_states;

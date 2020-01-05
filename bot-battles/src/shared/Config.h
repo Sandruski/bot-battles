@@ -14,10 +14,7 @@ struct Config {
 
     std::string m_configPath;
     std::string m_name;
-    std::string m_initialSceneName;
-#ifdef _CLIENT
     std::string m_offlineSceneName;
-#endif
     std::string m_onlineSceneName;
 };
 }

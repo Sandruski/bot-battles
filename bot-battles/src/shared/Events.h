@@ -21,7 +21,7 @@ struct ComponentEvent {
     Entity entity;
 };
 
-struct ServerEvent {
+struct NetworkingEvent {
     EventType eventType;
     PlayerID playerID;
     Entity entity;
@@ -32,7 +32,7 @@ union Event {
     EventType eventType;
     EntityEvent entity;
     ComponentEvent component;
-    ServerEvent server;
+    NetworkingEvent networking;
 };
 }
 

@@ -23,6 +23,9 @@ public:
     bool Update() override;
     bool PostUpdate() override;
     bool Exit() override;
+
+private:
+    Entity m_background;
 };
 }
 

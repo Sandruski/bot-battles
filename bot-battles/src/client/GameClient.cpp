@@ -2,6 +2,7 @@
 
 #include "ClientSystem.h"
 #include "ConfigClient.h"
+#include "FSM.h"
 #include "InputSystem.h"
 #include "MainMenuState.h"
 #include "NavigationSystemClient.h"
@@ -40,7 +41,13 @@ bool GameClient::Init()
     }
 
     // States
-    ret = m_fsm.RegisterState<MainMenuState>();
+    ret = m_fsm->RegisterState<MainMenuState>();
+    if (!ret) {
+        return ret;
+    }
+
+    std::weak_ptr<ClientSystem> clientSystem = m_systemManager->GetSystem<ClientSystem>();
+    ret = clientSystem.lock()->AddObserver(std::weak_ptr<Observer>(m_fsm));
     if (!ret) {
         return ret;
     }

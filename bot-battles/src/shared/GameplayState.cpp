@@ -12,6 +12,7 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 GameplayState::GameplayState()
+    : m_background(INVALID_ENTITY)
 {
 }
 
@@ -24,12 +25,12 @@ const char* GameplayState::GetName()
 //----------------------------------------------------------------------------------------------------
 bool GameplayState::Enter()
 {
-    Entity background = g_game->GetEntityManager().AddEntity();
+    m_background = g_game->GetEntityManager().AddEntity();
 
-    std::weak_ptr<TransformComponent> transform = g_game->GetComponentManager().AddComponent<TransformComponent>(background);
+    std::weak_ptr<TransformComponent> transform = g_game->GetComponentManager().AddComponent<TransformComponent>(m_background);
 
     std::weak_ptr<SpriteResource> spriteResource = g_game->GetResourceManager().AddResource<SpriteResource>("gameplayBackground.png", TEXTURES_DIR, true);
-    std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().AddComponent<SpriteComponent>(background);
+    std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().AddComponent<SpriteComponent>(m_background);
     spriteComponent.lock()->m_sprite = spriteResource;
 
     return true;
@@ -56,6 +57,8 @@ bool GameplayState::PostUpdate()
 //----------------------------------------------------------------------------------------------------
 bool GameplayState::Exit()
 {
+    g_game->GetEntityManager().RemoveEntity(m_background);
+
     return true;
 }
 }

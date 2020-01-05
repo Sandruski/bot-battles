@@ -2,6 +2,7 @@
 
 #include "ConfigServer.h"
 #include "EntityManager.h"
+#include "FSM.h"
 #include "NavigationSystemServer.h"
 #include "ServerComponent.h"
 #include "ServerSystem.h"
@@ -48,6 +49,10 @@ bool GameServer::Init()
         return ret;
     }
     ret = serverSystem.lock()->AddObserver(serverSystem);
+    if (!ret) {
+        return ret;
+    }
+    ret = serverSystem.lock()->AddObserver(std::weak_ptr<Observer>(m_fsm));
     if (!ret) {
         return ret;
     }

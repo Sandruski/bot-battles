@@ -13,10 +13,8 @@ enum class EventType {
     COMPONENT_REMOVED,
     COMPONENT_MEMBER_CHANGED,
 
-#ifdef _SERVER
     PLAYER_ADDED,
     PLAYER_REMOVED,
-#endif
 
     COUNT
 };

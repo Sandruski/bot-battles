@@ -35,6 +35,14 @@ bool ClientSystem::StartUp()
 }
 
 //----------------------------------------------------------------------------------------------------
+bool ClientSystem::PreUpdate()
+{
+    NotifyEvents();
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
 bool ClientSystem::Update()
 {
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
@@ -138,7 +146,7 @@ bool ClientSystem::SendPacket(const ClientComponent& clientComponent, const Outp
 }
 
 //----------------------------------------------------------------------------------------------------
-void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent) const
+void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent)
 {
     InputMemoryStream packet;
     SocketAddress fromSocketAddress;
@@ -153,7 +161,7 @@ void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent) cons
             ReceivePacket(clientComponent, packet);
             ++receivedPacketCount;
         } else if (readByteCount == -WSAECONNRESET) {
-            OnConnectionReset(clientComponent);
+            ConnectionReset(clientComponent);
         } else if (readByteCount == 0 || -WSAEWOULDBLOCK) {
             // TODO: graceful disconnection if readByteCount == 0?
             break;
@@ -162,7 +170,7 @@ void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent) cons
 }
 
 //----------------------------------------------------------------------------------------------------
-void ClientSystem::ReceivePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream) const
+void ClientSystem::ReceivePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream)
 {
     ServerMessageType type;
     inputStream.Read(type);
@@ -187,7 +195,7 @@ void ClientSystem::ReceivePacket(ClientComponent& clientComponent, InputMemorySt
 }
 
 //----------------------------------------------------------------------------------------------------
-void ClientSystem::ReceiveWelcomePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream) const
+void ClientSystem::ReceiveWelcomePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream)
 {
     const bool isConnected = clientComponent.IsConnected();
     if (isConnected) {
@@ -202,6 +210,12 @@ void ClientSystem::ReceiveWelcomePacket(ClientComponent& clientComponent, InputM
     if (isSuccessful) {
         inputStream.Read(clientComponent.m_playerID);
         assert(clientComponent.m_playerID < INVALID_PLAYER_ID);
+
+        Event newEvent;
+        newEvent.eventType = EventType::PLAYER_ADDED;
+        newEvent.networking.playerID = clientComponent.m_playerID;
+        PushEvent(newEvent);
+
         ILOG("Player %s %u has joined the game", clientComponent.m_name.c_str(), clientComponent.m_playerID);
     }
 }
@@ -232,15 +246,22 @@ void ClientSystem::ReceiveStatePacket(ClientComponent& clientComponent, InputMem
 }
 
 //----------------------------------------------------------------------------------------------------
-void ClientSystem::OnConnectionReset(ClientComponent& clientComponent) const
+void ClientSystem::ConnectionReset(ClientComponent& clientComponent)
 {
-    OnDisconnect(clientComponent);
+    Disconnect(clientComponent);
 }
 
 //----------------------------------------------------------------------------------------------------
-void ClientSystem::OnDisconnect(ClientComponent& clientComponent) const
+void ClientSystem::Disconnect(ClientComponent& clientComponent)
 {
     clientComponent.m_playerID = INVALID_PLAYER_ID;
+
+    Event newEvent;
+    newEvent.eventType = EventType::PLAYER_REMOVED;
+    newEvent.networking.entity = clientComponent.m_entity;
+    PushEvent(newEvent);
+
+    // TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     clientComponent.m_entity = INVALID_ENTITY;
     // Clear linkingContext
     // Clear networkGameObjects

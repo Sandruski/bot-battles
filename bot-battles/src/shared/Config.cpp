@@ -10,10 +10,7 @@ namespace sand {
 Config::Config(const std::string& configPath)
     : m_configPath(configPath)
     , m_name()
-    , m_initialSceneName()
-#ifdef _CLIENT
     , m_offlineSceneName()
-#endif
     , m_onlineSceneName()
 {
 }
@@ -55,15 +52,9 @@ void Config::ReadDocument(const rapidjson::Document& document)
     assert(game["name"].IsString());
     m_name = game["name"].GetString();
 
-    assert(game.HasMember("initialScene"));
-    assert(game["initialScene"].IsString());
-    m_initialSceneName = game["initialScene"].GetString();
-
-#ifdef _CLIENT
     assert(game.HasMember("offlineScene"));
     assert(game["offlineScene"].IsString());
     m_offlineSceneName = game["offlineScene"].GetString();
-#endif
 
     assert(game.HasMember("onlineScene"));
     assert(game["onlineScene"].IsString());
