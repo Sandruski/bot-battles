@@ -10,6 +10,7 @@ class FSM {
 public:
     FSM();
 
+    bool StartUp();
     bool PreUpdate();
     bool Update();
     bool PostUpdate();
@@ -24,7 +25,7 @@ public:
     bool ChangeState(const char* name);
 
 private:
-    //void ChangeState(std::weak_ptr<State> state);
+    void ChangeState(std::weak_ptr<State> state);
 
 private:
     std::array<std::shared_ptr<State>, MAX_STATES> m_states;
@@ -86,12 +87,7 @@ inline bool FSM::ChangeState()
         return false;
     }
 
-    if (!m_currentState.expired()) {
-        m_currentState.lock()->Exit();
-    }
-
-    m_currentState = std::weak_ptr(state);
-    m_currentState.lock()->Enter();
+    ChangeState(std::weak_ptr<State>(state));
 
     return true;
 }

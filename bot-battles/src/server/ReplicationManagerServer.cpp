@@ -149,7 +149,7 @@ U32 ReplicationManagerServer::WriteUpdateAction(OutputMemoryStream& outputStream
         U16 hasComponent = 1 << i;
         const bool hasSignatureComponent = signature & hasComponent;
         if (hasSignatureComponent) {
-            std::weak_ptr<Component> component = g_gameServer->GetComponentManager().GetBaseComponent(static_cast<ComponentType>(i), entity);
+            std::weak_ptr<Component> component = g_gameServer->GetComponentManager().GetComponent(static_cast<ComponentType>(i), entity);
             writtenState |= std::dynamic_pointer_cast<NetworkableWriteObject>(component.lock())->Write(outputStream, dirtyState);
         }
     }

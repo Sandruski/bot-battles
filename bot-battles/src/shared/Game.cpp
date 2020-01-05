@@ -131,6 +131,10 @@ bool Game::Init()
     if (!ret) {
         return ret;
     }
+    ret = m_fsm.StartUp();
+    if (!ret) {
+        return ret;
+    }
 
     m_isRunning = true;
 
