@@ -12,9 +12,8 @@ class IComponentArray {
 public:
     virtual ~IComponentArray() = default;
 
-    virtual std::weak_ptr<Component> AddBaseComponent(Entity entity) = 0;
-    virtual std::weak_ptr<Component> GetBaseComponent(Entity entity) = 0;
-
+    virtual std::weak_ptr<Component> AddComponent(Entity entity) = 0;
+    virtual std::weak_ptr<Component> GetComponent(Entity entity) = 0;
     virtual bool RemoveComponent(Entity entity) = 0;
 
 private:
@@ -27,13 +26,9 @@ class ComponentArray : public IComponentArray {
 public:
     ComponentArray();
 
-    std::weak_ptr<Component> AddBaseComponent(Entity entity) override;
-    std::weak_ptr<Component> GetBaseComponent(Entity entity) override;
-
+    std::weak_ptr<Component> AddComponent(Entity entity) override;
+    std::weak_ptr<Component> GetComponent(Entity entity) override;
     bool RemoveComponent(Entity entity) override;
-
-    std::weak_ptr<T> AddComponent(Entity entity);
-    std::weak_ptr<T> GetComponent(Entity entity);
 
 private:
     bool KillComponent(Entity entity) override;
@@ -56,22 +51,6 @@ inline ComponentArray<T>::ComponentArray()
 
 //----------------------------------------------------------------------------------------------------
 template <class T>
-inline std::weak_ptr<Component> ComponentArray<T>::AddBaseComponent(Entity entity)
-{
-    std::weak_ptr<Component> component = AddComponent(entity);
-    return std::weak_ptr<Component>(std::static_pointer_cast<Component>(component.lock()));
-}
-
-//----------------------------------------------------------------------------------------------------
-template <class T>
-inline std::weak_ptr<Component> ComponentArray<T>::GetBaseComponent(Entity entity)
-{
-    std::weak_ptr<Component> component = GetComponent(entity);
-    return std::weak_ptr<Component>(std::static_pointer_cast<Component>(component.lock()));
-}
-
-//----------------------------------------------------------------------------------------------------
-template <class T>
 inline bool ComponentArray<T>::RemoveComponent(Entity entity)
 {
     auto entityToComponent = m_entitiesToComponents.find(entity);
@@ -85,12 +64,13 @@ inline bool ComponentArray<T>::RemoveComponent(Entity entity)
 
 //----------------------------------------------------------------------------------------------------
 template <class T>
-inline std::weak_ptr<T> ComponentArray<T>::AddComponent(Entity entity)
+inline std::weak_ptr<Component> ComponentArray<T>::AddComponent(Entity entity)
 {
     auto entityToComponent = m_entitiesToComponents.find(entity);
     if (entityToComponent != m_entitiesToComponents.end()) {
         WLOG("Entity %u already has the component!", entity);
-        return m_components.at(entityToComponent->second);
+        std::shared_ptr<T> component = m_components.at(entityToComponent->second);
+        return std::weak_ptr<Component>(component);
     }
 
     U32 componentIndex = m_componentsSize;
@@ -101,22 +81,21 @@ inline std::weak_ptr<T> ComponentArray<T>::AddComponent(Entity entity)
 
     ++m_componentsSize;
 
-    return std::weak_ptr<T>(component);
+    return std::weak_ptr<Component>(component);
 }
 
 //----------------------------------------------------------------------------------------------------
 template <class T>
-inline std::weak_ptr<T> ComponentArray<T>::GetComponent(Entity entity)
+inline std::weak_ptr<Component> ComponentArray<T>::GetComponent(Entity entity)
 {
     auto entityToComponent = m_entitiesToComponents.find(entity);
     if (entityToComponent == m_entitiesToComponents.end()) {
         WLOG("Entity %u does not have the component!", entity);
-        return std::weak_ptr<T>();
+        return std::weak_ptr<Component>();
     }
 
-    std::shared_ptr component = m_components.at(entityToComponent->second);
-
-    return std::weak_ptr(component);
+    std::shared_ptr<T> component = m_components.at(entityToComponent->second);
+    return std::weak_ptr<Component>(component);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -231,8 +210,9 @@ inline std::weak_ptr<T> ComponentManager::AddComponent(Entity entity)
     ComponentType componentType = T::GetType();
     assert(componentType < ComponentType::COUNT);
     std::size_t componentIndex = static_cast<std::size_t>(componentType);
-    std::weak_ptr<T> component = std::static_pointer_cast<ComponentArray<T>>(m_componentArrays.at(componentIndex))->AddComponent(entity);
-    if (!component.expired()) {
+    std::weak_ptr<Component> baseComponent = m_componentArrays.at(componentIndex)->AddComponent(entity);
+    std::weak_ptr<T> derivedComponent = std::weak_ptr<T>(std::static_pointer_cast<T>(baseComponent.lock()));
+    if (!derivedComponent.expired()) {
         Event newEvent;
         newEvent.eventType = EventType::COMPONENT_ADDED;
         newEvent.component.componentType = T::GetType();
@@ -240,7 +220,7 @@ inline std::weak_ptr<T> ComponentManager::AddComponent(Entity entity)
         PushEvent(newEvent);
     }
 
-    return component;
+    return derivedComponent;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -253,7 +233,9 @@ inline std::weak_ptr<T> ComponentManager::GetComponent(Entity entity)
     ComponentType componentType = T::GetType();
     assert(componentType < ComponentType::COUNT);
     std::size_t componentIndex = static_cast<std::size_t>(componentType);
-    return std::static_pointer_cast<ComponentArray<T>>(m_componentArrays.at(componentIndex))->GetComponent(entity);
+    std::weak_ptr<Component> baseComponent = m_componentArrays.at(componentIndex)->GetComponent(entity);
+    std::weak_ptr<T> derivedComponent = std::weak_ptr<T>(std::static_pointer_cast<T>(baseComponent.lock()));
+    return derivedComponent;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -266,7 +248,7 @@ inline bool ComponentManager::RemoveComponent(Entity entity)
     ComponentType componentType = T::GetType();
     assert(componentType < ComponentType::COUNT);
     std::size_t componentIndex = static_cast<std::size_t>(componentType);
-    bool ret = std::static_pointer_cast<ComponentArray<T>>(m_componentArrays.at(componentIndex))->RemoveComponent(entity);
+    bool ret = m_componentArrays.at(componentIndex)->RemoveComponent(entity);
     if (ret) {
         Event newEvent;
         newEvent.eventType = EventType::COMPONENT_REMOVED;

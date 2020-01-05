@@ -44,7 +44,7 @@ std::weak_ptr<Component> ComponentManager::AddComponent(ComponentType componentT
     assert(componentType < ComponentType::COUNT && entity < INVALID_ENTITY);
 
     std::size_t componentIndex = static_cast<std::size_t>(componentType);
-    std::weak_ptr<Component> component = m_componentArrays.at(componentIndex)->AddBaseComponent(entity);
+    std::weak_ptr<Component> component = m_componentArrays.at(componentIndex)->AddComponent(entity);
     if (!component.expired()) {
         Event newEvent;
         newEvent.eventType = EventType::COMPONENT_ADDED;
@@ -62,7 +62,7 @@ std::weak_ptr<Component> ComponentManager::GetComponent(ComponentType componentT
     assert(componentType < ComponentType::COUNT && entity < INVALID_ENTITY);
 
     std::size_t componentIndex = static_cast<std::size_t>(componentType);
-    return m_componentArrays.at(componentIndex)->GetBaseComponent(entity);
+    return m_componentArrays.at(componentIndex)->GetComponent(entity);
 }
 
 //----------------------------------------------------------------------------------------------------
