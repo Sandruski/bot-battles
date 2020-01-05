@@ -106,11 +106,10 @@ bool EntityManager::KillEntity(Entity entity)
 
     auto entityToSignature = m_entitiesToSignatures.find(entity);
     if (entityToSignature == m_entitiesToSignatures.end()) {
-        WLOG("Entity %u does not exist!", entity);
         return false;
     }
 
-    U32 signatureIndex = m_entitiesToSignatures.at(entity);
+    U32 signatureIndex = entityToSignature->second;
     U32 lastSignatureIndex = m_signaturesSize - 1;
     m_signatures.at(signatureIndex) = m_signatures.at(lastSignatureIndex);
     m_signatures.at(lastSignatureIndex) = NULL;
@@ -122,7 +121,7 @@ bool EntityManager::KillEntity(Entity entity)
         });
     assert(lastEntityToSignature != m_entitiesToSignatures.end());
 
-    m_entitiesToSignatures.insert(std::make_pair(lastEntityToSignature->first, signatureIndex));
+    m_entitiesToSignatures.at(lastEntityToSignature->first) = signatureIndex;
     m_entitiesToSignatures.erase(entity);
 
     m_availableEntities.push(entity);

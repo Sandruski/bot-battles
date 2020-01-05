@@ -108,7 +108,7 @@ inline bool ComponentArray<T>::KillComponent(Entity entity)
         return false;
     }
 
-    U32 componentIndex = m_entitiesToComponents.at(entity);
+    U32 componentIndex = entityToComponent->second;
     U32 lastComponentIndex = m_componentsSize - 1;
     m_components.at(componentIndex) = m_components.at(lastComponentIndex);
     m_components.at(lastComponentIndex) = nullptr;
@@ -120,7 +120,7 @@ inline bool ComponentArray<T>::KillComponent(Entity entity)
         });
     assert(lastEntityToComponent != m_entitiesToComponents.end());
 
-    m_entitiesToComponents.insert(std::make_pair(lastEntityToComponent->first, componentIndex));
+    m_entitiesToComponents.at(lastEntityToComponent->first) = componentIndex;
     m_entitiesToComponents.erase(entity);
 
     --m_componentsSize;
