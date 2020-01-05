@@ -12,7 +12,7 @@ Subject::Subject()
 //----------------------------------------------------------------------------------------------------
 bool Subject::AddObserver(std::weak_ptr<Observer> observer)
 {
-    auto it = std::find_if(m_observers.begin(), m_observers.end(), [&observer](const auto& value) {
+    auto it = std::find_if(m_observers.begin(), m_observers.end(), [observer](const auto& value) {
         return observer.lock() == value.lock();
     });
     if (it != m_observers.end()) {
@@ -20,7 +20,7 @@ bool Subject::AddObserver(std::weak_ptr<Observer> observer)
         return false;
     }
 
-    m_observers.push_back(observer);
+    m_observers.emplace_back(observer);
 
     return true;
 }
@@ -28,7 +28,7 @@ bool Subject::AddObserver(std::weak_ptr<Observer> observer)
 //----------------------------------------------------------------------------------------------------
 bool Subject::RemoveObserver(std::weak_ptr<Observer> observer)
 {
-    auto it = std::find_if(m_observers.begin(), m_observers.end(), [&observer](const auto& value) {
+    auto it = std::find_if(m_observers.begin(), m_observers.end(), [observer](const auto& value) {
         return observer.lock() == value.lock();
     });
     if (it == m_observers.end()) {

@@ -18,7 +18,7 @@ bool System::RegisterEntity(Entity entity)
         return false;
     }
 
-    m_entities.push_back(entity);
+    m_entities.emplace_back(entity);
 
     return true;
 }
