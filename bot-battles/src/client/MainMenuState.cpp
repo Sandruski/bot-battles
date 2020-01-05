@@ -58,7 +58,7 @@ bool MainMenuState::PostUpdate()
 //----------------------------------------------------------------------------------------------------
 bool MainMenuState::Exit()
 {
-    //g_gameClient->GetEntityManager().RemoveEntity(m_background);
+    g_gameClient->GetEntityManager().RemoveEntity(m_background);
 
     return true;
 }

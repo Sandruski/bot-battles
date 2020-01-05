@@ -99,7 +99,11 @@ bool FSM::ChangeState(const char* name)
 //----------------------------------------------------------------------------------------------------
 bool FSM::ChangeState(std::weak_ptr<State> state)
 {
-    if (!m_currentState.expired() && (state.expired() || m_currentState.lock() != state.lock())) {
+    if (!state.expired() && !m_currentState.expired() && m_currentState.lock() == state.lock()) {
+        return false;
+    }
+
+    if (!m_currentState.expired()) {
         m_currentState.lock()->Exit();
     }
 
