@@ -47,6 +47,7 @@ inline ComponentArray<T>::ComponentArray()
     , m_componentsSize(0)
 {
     m_components.fill(nullptr);
+    m_entitiesToComponents.reserve(MAX_ENTITIES);
 }
 
 //----------------------------------------------------------------------------------------------------

@@ -9,7 +9,8 @@ EntityManager::EntityManager()
     , m_availableEntities()
     , m_signaturesSize(0)
 {
-    memset(&m_signatures, NULL, MAX_ENTITIES);
+    m_signatures.fill(NULL);
+    m_entitiesToSignatures.reserve(MAX_ENTITIES);
 
     for (Entity i = 0; i < MAX_ENTITIES; ++i) {
         m_availableEntities.push(i);

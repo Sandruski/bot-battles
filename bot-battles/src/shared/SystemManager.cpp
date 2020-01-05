@@ -127,6 +127,8 @@ bool SystemManager::ShutDown()
         ret = m_systems[i]->ShutDown();
     }
 
+    m_systems.fill(nullptr);
+
     return ret;
 }
 

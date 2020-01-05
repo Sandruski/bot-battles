@@ -51,6 +51,14 @@ bool FSM::PostUpdate()
 }
 
 //----------------------------------------------------------------------------------------------------
+bool FSM::ShutDown()
+{
+    ChangeState(std::weak_ptr<State>());
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
 bool FSM::ChangeState(const char* name)
 {
     for (const auto& state : m_states) {
@@ -75,6 +83,9 @@ void FSM::ChangeState(std::weak_ptr<State> state)
     }
 
     m_currentState = state;
-    m_currentState.lock()->Enter();
+
+    if (!m_currentState.expired()) {
+        m_currentState.lock()->Enter();
+    }
 }
 }

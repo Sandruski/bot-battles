@@ -14,6 +14,7 @@ public:
     bool PreUpdate();
     bool Update();
     bool PostUpdate();
+    bool ShutDown();
 
     template <class T>
     bool RegisterState();

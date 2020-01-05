@@ -154,32 +154,32 @@ bool Game::DoFrame()
 
     bool ret = PreUpdate();
     if (!ret) {
-        return false;
+        return ret;
     }
 
     ret = Update();
     if (!ret) {
-        return false;
+        return ret;
     }
 
     ret = PostUpdate();
     if (!ret) {
-        return false;
+        return ret;
     }
 
     ret = PreRender();
     if (!ret) {
-        return false;
+        return ret;
     }
 
     ret = Render();
     if (!ret) {
-        return false;
+        return ret;
     }
 
     ret = PostRender();
     if (!ret) {
-        return false;
+        return ret;
     }
 
     EndFrame();
@@ -198,22 +198,26 @@ bool Game::End()
 {
     bool ret = false;
 
+    ret = m_fsm.ShutDown();
+    if (!ret) {
+        return ret;
+    }
     ret = m_systemManager->ShutDown();
     if (!ret) {
-        return false;
+        return ret;
     }
 #ifdef _DRAW
     ret = m_fontImporter.ShutDown();
     if (!ret) {
-        return false;
+        return ret;
     }
     ret = m_textureImporter.ShutDown();
     if (!ret) {
-        return false;
+        return ret;
     }
     ret = m_resourceManager.ShutDown();
     if (!ret) {
-        return false;
+        return ret;
     }
 #endif
 
