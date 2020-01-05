@@ -32,6 +32,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)FontImporter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)FSM.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Game.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameplayState.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)HUDSystem.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)InputComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)LinkingContext.h" />
@@ -57,6 +58,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)FontResource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ResourceManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SpriteResource.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)StateTypes.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TextComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TextResource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)RendererComponent.h" />
@@ -94,6 +96,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)FontImporter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)FSM.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Game.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)GameplayState.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)HUDSystem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)InputComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)LinkingContext.cpp" />

@@ -9,44 +9,91 @@ class State;
 class FSM {
 public:
     FSM();
-    ~FSM();
-
-    bool ShutDown();
 
     bool PreUpdate();
     bool Update();
     bool PostUpdate();
-    bool Render();
 
     template <class T>
-    U32 AddState();
-    bool RemoveState(U32 id);
-    void RemoveAllStates();
-    bool ChangeState(U32 id);
+    bool RegisterState();
+    template <class T>
+    bool DeRegisterState();
+
+    template <class T>
+    bool ChangeState();
+    bool ChangeState(const char* name);
 
 private:
-    std::unordered_map<U32, std::shared_ptr<State>> m_states;
-    std::queue<U32> m_availableStates;
-    std::shared_ptr<State> m_currentState;
+    //void ChangeState(std::weak_ptr<State> state);
+
+private:
+    std::array<std::shared_ptr<State>, MAX_STATES> m_states;
+    std::weak_ptr<State> m_currentState;
 };
 
 //----------------------------------------------------------------------------------------------------
 template <class T>
-inline U32 FSM::AddState()
+inline bool FSM::RegisterState()
 {
     static_assert(std::is_base_of<State, T>::value, "T is not derived from State");
 
-    U32 id = m_availableStates.front();
-    m_availableStates.pop();
-
-    auto inserted = m_states.insert(std::make_pair(id, std::make_shared<T>()));
-    if (inserted.second) {
-        inserted.first->second->Create();
-    } else {
-        ELOG("State could not be inserted");
+    StateType stateType = T::GetType();
+    assert(stateType < StateType::COUNT);
+    std::size_t stateIndex = static_cast<std::size_t>(stateType);
+    std::shared_ptr<State> state = m_states.at(stateIndex);
+    if (state != nullptr) {
+        WLOG("State %u is already registered!", stateIndex);
+        return false;
     }
 
-    return inserted.first->first;
+    m_states.at(stateIndex) = std::make_shared<T>();
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+template <class T>
+inline bool FSM::DeRegisterState()
+{
+    static_assert(std::is_base_of<State, T>::value, "T is not derived from State");
+
+    StateType stateType = T::GetType();
+    assert(stateType < StateType::COUNT);
+    std::size_t stateIndex = static_cast<std::size_t>(stateType);
+    std::shared_ptr<State> state = m_states.at(stateIndex);
+    if (state == nullptr) {
+        WLOG("State %u is not registered!", stateIndex);
+        return false;
+    }
+
+    m_states.at(stateIndex) = nullptr;
+
+    return false;
+}
+
+//----------------------------------------------------------------------------------------------------
+template <class T>
+inline bool FSM::ChangeState()
+{
+    static_assert(std::is_base_of<State, T>::value, "T is not derived from State");
+
+    StateType stateType = T::GetType();
+    assert(stateType < StateType::COUNT);
+    std::size_t stateIndex = static_cast<std::size_t>(stateType);
+    std::shared_ptr<State> state = m_states.at(stateIndex);
+    if (state == nullptr) {
+        WLOG("State could not be changed to %u!", stateIndex);
+        return false;
+    }
+
+    if (!m_currentState.expired()) {
+        m_currentState.lock()->Exit();
+    }
+
+    m_currentState = std::weak_ptr(state);
+    m_currentState.lock()->Enter();
+
+    return true;
 }
 }
 

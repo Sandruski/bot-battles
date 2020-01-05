@@ -17,13 +17,6 @@ enum MainState {
 namespace sand {
 Game* g_game;
 GameServer* g_gameServer;
-
-//----------------------------------------------------------------------------------------------------
-void StatesSetup()
-{
-    U32 id = g_game->GetFSM().AddState<GameplayState>();
-    g_game->GetFSM().ChangeState(id);
-}
 }
 
 //----------------------------------------------------------------------------------------------------

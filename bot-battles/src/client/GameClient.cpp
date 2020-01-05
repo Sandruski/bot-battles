@@ -3,6 +3,7 @@
 #include "ClientSystem.h"
 #include "ConfigClient.h"
 #include "InputSystem.h"
+#include "MainMenuState.h"
 #include "NavigationSystemClient.h"
 #include "SystemManager.h"
 
@@ -24,6 +25,7 @@ bool GameClient::Init()
 {
     bool ret = false;
 
+    // Systems
     ret = m_systemManager->RegisterSystem<InputSystem>();
     if (!ret) {
         return ret;
@@ -33,6 +35,12 @@ bool GameClient::Init()
         return ret;
     }
     ret = m_systemManager->RegisterSystem<NavigationSystemClient>();
+    if (!ret) {
+        return ret;
+    }
+
+    // States
+    ret = m_fsm.RegisterState<MainMenuState>();
     if (!ret) {
         return ret;
     }

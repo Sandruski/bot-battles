@@ -19,15 +19,6 @@ class ComponentManager;
 class SystemManager;
 
 //----------------------------------------------------------------------------------------------------
-struct GameConfiguration {
-    GameConfiguration();
-    GameConfiguration(std::function<void()> StatesSetup);
-    GameConfiguration(const GameConfiguration& configuration);
-
-    std::function<void()> StatesSetup;
-};
-
-//----------------------------------------------------------------------------------------------------
 class Game {
 public:
     Game();
@@ -67,14 +58,13 @@ private:
 
 protected:
     std::shared_ptr<Config> m_config;
-    GameConfiguration m_configuration;
 
     std::shared_ptr<EntityManager> m_entityManager;
     std::shared_ptr<ComponentManager> m_componentManager;
     std::shared_ptr<SystemManager> m_systemManager;
 
     LinkingContext m_linkingContext;
-    FSM m_fsm; // TODO: remove this!
+    FSM m_fsm;
 #ifdef _DRAW
     FontImporter m_fontImporter;
     TextureImporter m_textureImporter;

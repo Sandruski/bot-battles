@@ -12,14 +12,6 @@ public:
 
     void OnNotify(const Event& event) override;
 
-    template <class T>
-    bool RegisterSystem();
-    template <class T>
-    bool DeRegisterSystem();
-
-    template <class T>
-    std::weak_ptr<T> GetSystem();
-
     bool StartUp();
     bool PreUpdate();
     bool Update();
@@ -28,6 +20,14 @@ public:
     bool Render();
     bool PostRender();
     bool ShutDown();
+
+    template <class T>
+    bool RegisterSystem();
+    template <class T>
+    bool DeRegisterSystem();
+
+    template <class T>
+    std::weak_ptr<T> GetSystem();
 
 private:
     void OnEntityRemoved(Entity entity);
@@ -74,7 +74,7 @@ inline bool SystemManager::DeRegisterSystem()
 
     m_systems.at(systemIndex) = nullptr;
 
-    return false;
+    return true;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -89,6 +89,6 @@ inline std::weak_ptr<T> SystemManager::GetSystem()
     std::shared_ptr<System> system = m_systems.at(systemIndex);
     return std::weak_ptr<T>(std::static_pointer_cast<T>(system));
 }
-} // namespace sand
+}
 
 #endif

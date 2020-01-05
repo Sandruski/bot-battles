@@ -4,6 +4,8 @@
 #include "Config.h"
 #include "EntityManager.h"
 #include "EventSystem.h"
+#include "FSM.h"
+#include "GameplayState.h"
 #include "InputComponent.h"
 #include "SystemManager.h"
 #include "TransformComponent.h"
@@ -21,7 +23,6 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 Game::Game()
     : m_config(nullptr)
-    , m_configuration()
     , m_entityManager()
     , m_componentManager()
     , m_systemManager()
@@ -46,6 +47,7 @@ bool Game::Init()
 {
     bool ret = false;
 
+    // Systems
 #ifdef _DRAW
     ret = m_systemManager->RegisterSystem<WindowSystem>();
     if (!ret) {
@@ -65,6 +67,7 @@ bool Game::Init()
         return ret;
     }
 
+    // Components
 #ifdef _DRAW
     ret = m_componentManager->RegisterComponent<SpriteComponent>();
     if (!ret) {
@@ -80,6 +83,12 @@ bool Game::Init()
         return ret;
     }
     ret = m_componentManager->RegisterComponent<InputComponent>();
+    if (!ret) {
+        return ret;
+    }
+
+    // States
+    ret = m_fsm.RegisterState<GameplayState>();
     if (!ret) {
         return ret;
     }
@@ -121,10 +130,6 @@ bool Game::Init()
     ret = m_systemManager->StartUp();
     if (!ret) {
         return ret;
-    }
-
-    if (m_configuration.StatesSetup != nullptr) {
-        m_configuration.StatesSetup();
     }
 
     m_isRunning = true;
@@ -207,10 +212,6 @@ bool Game::End()
         return false;
     }
 #endif
-    ret = m_fsm.ShutDown();
-    if (!ret) {
-        return false;
-    }
 
     return ret;
 }
@@ -289,10 +290,6 @@ bool Game::Render()
     if (!ret) {
         return ret;
     }
-    ret = m_fsm.Render();
-    if (!ret) {
-        return ret;
-    }
 
     return ret;
 }
@@ -301,23 +298,5 @@ bool Game::Render()
 bool Game::PostRender()
 {
     return m_systemManager->PostRender();
-}
-
-//----------------------------------------------------------------------------------------------------
-GameConfiguration::GameConfiguration()
-    : StatesSetup(nullptr)
-{
-}
-
-//----------------------------------------------------------------------------------------------------
-GameConfiguration::GameConfiguration(std::function<void()> StatesSetup)
-    : StatesSetup(StatesSetup)
-{
-}
-
-//----------------------------------------------------------------------------------------------------
-GameConfiguration::GameConfiguration(const GameConfiguration& configuration)
-    : StatesSetup(configuration.StatesSetup)
-{
 }
 }

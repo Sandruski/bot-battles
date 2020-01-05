@@ -345,7 +345,6 @@
     <ClCompile Include="Delivery.cpp" />
     <ClCompile Include="DeliveryManagerServer.cpp" />
     <ClCompile Include="GameServer.cpp" />
-    <ClCompile Include="GameplayState.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="NavigationSystemServer.cpp" />
     <ClCompile Include="ReplicationResultManager.cpp" />
@@ -361,7 +360,6 @@
     <ClInclude Include="Delivery.h" />
     <ClInclude Include="DeliveryManagerServer.h" />
     <ClInclude Include="GameServer.h" />
-    <ClInclude Include="GameplayState.h" />
     <ClInclude Include="NavigationSystemServer.h" />
     <ClInclude Include="ReplicationManagerServer.h" />
     <ClInclude Include="ServerSystem.h" />

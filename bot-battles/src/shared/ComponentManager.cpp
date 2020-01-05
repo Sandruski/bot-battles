@@ -39,7 +39,7 @@ bool ComponentManager::PreUpdate()
 }
 
 //----------------------------------------------------------------------------------------------------
-std::weak_ptr<Component> ComponentManager::AddBaseComponent(ComponentType componentType, Entity entity)
+std::weak_ptr<Component> ComponentManager::AddComponent(ComponentType componentType, Entity entity)
 {
     assert(componentType < ComponentType::COUNT && entity < INVALID_ENTITY);
 
@@ -57,7 +57,7 @@ std::weak_ptr<Component> ComponentManager::AddBaseComponent(ComponentType compon
 }
 
 //----------------------------------------------------------------------------------------------------
-std::weak_ptr<Component> ComponentManager::GetBaseComponent(ComponentType componentType, Entity entity)
+std::weak_ptr<Component> ComponentManager::GetComponent(ComponentType componentType, Entity entity)
 {
     assert(componentType < ComponentType::COUNT && entity < INVALID_ENTITY);
 
@@ -66,7 +66,7 @@ std::weak_ptr<Component> ComponentManager::GetBaseComponent(ComponentType compon
 }
 
 //----------------------------------------------------------------------------------------------------
-bool ComponentManager::RemoveBaseComponent(ComponentType componentType, Entity entity)
+bool ComponentManager::RemoveComponent(ComponentType componentType, Entity entity)
 {
     assert(componentType < ComponentType::COUNT && entity < INVALID_ENTITY);
 

@@ -83,12 +83,12 @@ void ReplicationManagerClient::ReadUpdateAction(InputMemoryStream& inputStream, 
         const bool hasSignatureComponent = signature & hasComponent;
         const bool hasNewSignatureComponent = newSignature & hasComponent;
         if (hasSignatureComponent && hasNewSignatureComponent) {
-            std::weak_ptr<Component> component = g_gameClient->GetComponentManager().GetBaseComponent(static_cast<ComponentType>(i), entity);
+            std::weak_ptr<Component> component = g_gameClient->GetComponentManager().GetComponent(static_cast<ComponentType>(i), entity);
             std::dynamic_pointer_cast<NetworkableReadObject>(component.lock())->Read(inputStream, dirtyState, ReplicationActionType::UPDATE, entity);
         } else if (hasSignatureComponent) {
-            g_gameClient->GetComponentManager().RemoveBaseComponent(static_cast<ComponentType>(i), entity);
+            g_gameClient->GetComponentManager().RemoveComponent(static_cast<ComponentType>(i), entity);
         } else if (hasNewSignatureComponent) {
-            std::weak_ptr<Component> component = g_gameClient->GetComponentManager().AddBaseComponent(static_cast<ComponentType>(i), entity);
+            std::weak_ptr<Component> component = g_gameClient->GetComponentManager().AddComponent(static_cast<ComponentType>(i), entity);
             std::dynamic_pointer_cast<NetworkableReadObject>(component.lock())->Read(inputStream, dirtyState, ReplicationActionType::CREATE, entity);
         }
     }

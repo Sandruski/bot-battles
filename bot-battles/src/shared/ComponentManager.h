@@ -165,13 +165,13 @@ public:
 
     template <class T>
     std::weak_ptr<T> AddComponent(Entity entity);
-    std::weak_ptr<Component> AddBaseComponent(ComponentType componentType, Entity entity);
+    std::weak_ptr<Component> AddComponent(ComponentType componentType, Entity entity);
     template <class T>
     std::weak_ptr<T> GetComponent(Entity entity);
-    std::weak_ptr<Component> GetBaseComponent(ComponentType componentType, Entity entity);
+    std::weak_ptr<Component> GetComponent(ComponentType componentType, Entity entity);
     template <class T>
     bool RemoveComponent(Entity entity);
-    bool RemoveBaseComponent(ComponentType componentType, Entity entity);
+    bool RemoveComponent(ComponentType componentType, Entity entity);
 
 private:
     void OnEntityRemoved(Entity entity);

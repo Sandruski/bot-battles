@@ -11,9 +11,6 @@
     <Filter Include="Header Files\Systems">
       <UniqueIdentifier>{001e997d-c46d-467d-ab16-20b2712994e6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\States">
-      <UniqueIdentifier>{a37ce05d-0495-4604-b6df-aa67e52ceb80}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
@@ -37,13 +34,13 @@
     <Filter Include="Header Files\Networking">
       <UniqueIdentifier>{61016cfe-7022-4fe0-a644-5f35b6152c39}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\States">
+      <UniqueIdentifier>{b92f7876-f766-4c6c-a4e3-e8b59cd1352d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameplayState.cpp">
-      <Filter>Source Files\States</Filter>
     </ClCompile>
     <ClCompile Include="ClientSystem.cpp">
       <Filter>Source Files\Systems</Filter>
@@ -75,11 +72,11 @@
     <ClCompile Include="NavigationSystemClient.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="MainMenuState.cpp">
+      <Filter>Source Files\States</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GameplayState.h">
-      <Filter>Header Files\States</Filter>
-    </ClInclude>
     <ClInclude Include="ClientSystem.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
@@ -106,6 +103,9 @@
     </ClInclude>
     <ClInclude Include="NavigationSystemClient.h">
       <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="MainMenuState.h">
+      <Filter>Header Files\States</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -19,17 +19,11 @@
     <Filter Include="Header Files\Networking">
       <UniqueIdentifier>{e9e55fa4-e1ac-42c3-affe-dcb5ca043115}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\States">
-      <UniqueIdentifier>{6392ca4e-1abf-4064-9f4b-bbd168c66fa4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Systems">
       <UniqueIdentifier>{090d2354-aad2-458e-ab40-592246d8c08f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Systems">
       <UniqueIdentifier>{0d2855d0-e2bd-417a-837c-af5952598185}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\States">
-      <UniqueIdentifier>{c9570b17-ce6b-47f9-93d2-8fb2ad93443e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Networking">
       <UniqueIdentifier>{23ffd94e-7ed8-4ea2-ba2e-9d6ef0a7c599}</UniqueIdentifier>
@@ -41,9 +35,6 @@
   <ItemGroup>
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameplayState.cpp">
-      <Filter>Source Files\States</Filter>
     </ClCompile>
     <ClCompile Include="ServerSystem.cpp">
       <Filter>Source Files\Systems</Filter>
@@ -83,9 +74,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GameplayState.h">
-      <Filter>Header Files\States</Filter>
-    </ClInclude>
     <ClInclude Include="ServerSystem.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>

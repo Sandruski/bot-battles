@@ -6,18 +6,34 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 class State {
 public:
-    State() { }
-    virtual ~State() { }
+    virtual ~State() = default;
 
-    virtual bool Create() = 0;
-    virtual bool Destroy() = 0;
+    virtual const char* GetName() = 0;
 
-    virtual bool Enter() { return true; }
-    virtual bool PreUpdate() { return true; }
-    virtual bool Update() { return true; }
-    virtual bool PostUpdate() { return true; }
-    virtual bool Render() { return true; }
-    virtual bool Exit() { return true; }
+    virtual bool Enter()
+    {
+        return true;
+    }
+
+    virtual bool PreUpdate()
+    {
+        return true;
+    }
+
+    virtual bool Update()
+    {
+        return true;
+    }
+
+    virtual bool PostUpdate()
+    {
+        return true;
+    }
+
+    virtual bool Exit()
+    {
+        return true;
+    }
 };
 }
 

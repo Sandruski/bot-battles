@@ -8,34 +8,16 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 FSM::FSM()
     : m_states()
-    , m_availableStates()
-    , m_currentState(nullptr)
+    , m_currentState()
 {
-    m_states.reserve(MAX_STATES);
-
-    for (U32 i = 0; i < MAX_STATES; ++i) {
-        m_availableStates.push(i);
-    }
-}
-
-//----------------------------------------------------------------------------------------------------
-FSM::~FSM()
-{
-}
-
-//----------------------------------------------------------------------------------------------------
-bool FSM::ShutDown()
-{
-    m_states.clear();
-
-    return true;
+    m_states.fill(nullptr);
 }
 
 //----------------------------------------------------------------------------------------------------
 bool FSM::PreUpdate()
 {
-    if (m_currentState != nullptr) {
-        return m_currentState->PreUpdate();
+    if (!m_currentState.expired()) {
+        return m_currentState.lock()->PreUpdate();
     }
 
     return true;
@@ -44,8 +26,8 @@ bool FSM::PreUpdate()
 //----------------------------------------------------------------------------------------------------
 bool FSM::Update()
 {
-    if (m_currentState != nullptr) {
-        return m_currentState->Update();
+    if (!m_currentState.expired()) {
+        return m_currentState.lock()->Update();
     }
 
     return true;
@@ -54,75 +36,29 @@ bool FSM::Update()
 //----------------------------------------------------------------------------------------------------
 bool FSM::PostUpdate()
 {
-    if (m_currentState != nullptr) {
-        return m_currentState->PostUpdate();
+    if (!m_currentState.expired()) {
+        return m_currentState.lock()->PostUpdate();
     }
 
     return true;
 }
 
 //----------------------------------------------------------------------------------------------------
-bool FSM::Render()
+bool FSM::ChangeState(const char* name)
 {
-    if (m_currentState != nullptr) {
-        return m_currentState->Render();
+    for (const auto& state : m_states) {
+        if (COMPARE_STRINGS(state->GetName(), name)) {
+            if (!m_currentState.expired()) {
+                m_currentState.lock()->Exit();
+            }
+
+            m_currentState = std::weak_ptr(state);
+            m_currentState.lock()->Enter();
+            return true;
+        }
     }
 
-    return true;
-}
-
-//----------------------------------------------------------------------------------------------------
-bool FSM::RemoveState(U32 id)
-{
-    auto it = m_states.find(id);
-    if (it == m_states.end()) {
-        ELOG("State could not be removed");
-        return false;
-    }
-
-    if ((*it).second == m_currentState) {
-        m_currentState->Exit();
-    }
-
-    (*it).second->Destroy();
-
-    m_states.erase(id);
-
-    return true;
-}
-
-//----------------------------------------------------------------------------------------------------
-void FSM::RemoveAllStates()
-{
-    if (m_currentState != nullptr) {
-        m_currentState->Exit();
-    }
-
-    for (auto& state : m_states) {
-        state.second->Destroy();
-    }
-
-    m_states.clear();
-}
-
-//----------------------------------------------------------------------------------------------------
-bool FSM::ChangeState(U32 id)
-{
-    auto it = m_states.find(id);
-    if (it == m_states.end()) {
-        ELOG("State could not be changed");
-        return false;
-    }
-
-    if (m_currentState != nullptr) {
-        m_currentState->Exit();
-    }
-
-    m_currentState = (*it).second;
-    m_currentState->Enter();
-
-    return true;
-
-    // TODO: send event ("the state has been changed to blablabla")
+    WLOG("State could not be changed to %u!", stateIndex);
+    return false;
 }
 }

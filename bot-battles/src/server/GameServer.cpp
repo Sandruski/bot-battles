@@ -23,6 +23,7 @@ bool GameServer::Init()
 {
     bool ret = false;
 
+    // Systems
     ret = m_systemManager->RegisterSystem<ServerSystem>();
     if (!ret) {
         return ret;

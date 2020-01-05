@@ -261,7 +261,15 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)NetworkableWriteObject.h">
       <Filter>Header Files\Networking</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)NetworkableReadObject.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameplayState.h">
+      <Filter>Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)StateTypes.h">
+      <Filter>Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)NetworkableReadObject.h">
+      <Filter>Header Files\Networking</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp">
@@ -395,6 +403,9 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)InputMemoryStream.cpp">
       <Filter>Source Files\Networking</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)GameplayState.cpp">
+      <Filter>Source Files\States</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
