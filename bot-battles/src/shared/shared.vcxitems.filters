@@ -350,9 +350,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)WindowSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)pch.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)AckRange.cpp">
       <Filter>Source Files\Networking</Filter>
     </ClCompile>

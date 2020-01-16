@@ -22,7 +22,7 @@ void SpriteComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, Repli
         m_sprite = g_game->GetResourceManager().AddResource<SpriteResource>(file.c_str(), TEXTURES_DIR, true);
     }
 }
-#elif _SERVER
+#elif defined(_SERVER)
 //----------------------------------------------------------------------------------------------------
 U32 SpriteComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) const
 {

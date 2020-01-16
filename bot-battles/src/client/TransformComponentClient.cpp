@@ -27,6 +27,8 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, Re
         inputStream.Read(m_rotation);
     }
 
+    // TODO: read velocity and angular velocity
+
     if (hasPosition || hasRotation) {
         ClientComponent& clientComponent = g_gameClient->GetClientComponent();
         const bool isLocalPlayer = clientComponent.IsLocalPlayer(entity);
@@ -75,8 +77,7 @@ void TransformComponent::ClientSidePredictionForRemotePlayer(Entity entity)
 
     while (rtt >= dt) {
 
-        UpdatePosition(inputComponent.lock()->m_acceleration, dt);
-        UpdateRotation(inputComponent.lock()->m_angularAcceleration, dt);
+        UpdateTransform(inputComponent.lock()->m_acceleration, inputComponent.lock()->m_angularAcceleration, dt);
         // TODO: should rotation also be here?
 
         rtt -= dt;

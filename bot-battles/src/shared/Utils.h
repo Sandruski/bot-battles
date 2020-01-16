@@ -33,6 +33,10 @@ inline bool COMPARE_STRINGS(const char* str1, const char* str2)
 #define SDL_ERROR -1
 #define SDL_KEY_PRESSED 1
 
+#ifdef _CLIENT
 #define FPS 60.0f
+#elif defined(_SERVER)
+#define FPS 20.0f
+#endif
 
 #endif

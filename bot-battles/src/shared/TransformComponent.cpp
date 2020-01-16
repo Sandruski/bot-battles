@@ -8,6 +8,8 @@ namespace sand {
 TransformComponent::TransformComponent()
     : m_position()
     , m_rotation(0.0f)
+    , m_velocity()
+    , m_angularVelocity(0.0f)
 #ifdef _CLIENT
     , m_outOfSyncTimestamp(0.0f)
 #endif
@@ -27,6 +29,14 @@ U32 TransformComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) 
     if (dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_ROTATION)) {
         outputStream.Write(m_rotation);
         writtenState |= static_cast<U32>(ComponentMemberType::TRANSFORM_ROTATION);
+    }
+    if (dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_VELOCITY)) {
+        outputStream.Write(m_velocity);
+        writtenState |= static_cast<U32>(ComponentMemberType::TRANSFORM_VELOCITY);
+    }
+    if (dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_ANGULAR_VELOCITY)) {
+        outputStream.Write(m_angularVelocity);
+        writtenState |= static_cast<U32>(ComponentMemberType::TRANSFORM_ANGULAR_VELOCITY);
     }
 
     return writtenState;

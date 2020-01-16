@@ -32,14 +32,14 @@ bool NavigationSystemServer::Update()
 
         std::shared_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
         assert(clientProxy != nullptr);
+
         U32 moveCount = clientProxy->m_moves.GetMoveCount();
         for (U32 i = 0; i < moveCount; ++i) {
 
             const Move& move = clientProxy->m_moves.GetMove(i);
             const InputComponent& moveInputComponent = move.GetInput();
             F32 dt = move.GetDt();
-            transformComponent.lock()->UpdatePosition(moveInputComponent.m_acceleration, dt);
-            transformComponent.lock()->UpdateRotation(moveInputComponent.m_angularAcceleration, dt);
+            transformComponent.lock()->UpdateTransform(moveInputComponent.m_acceleration, moveInputComponent.m_angularAcceleration, dt);
 
             inputComponent.lock()->Copy(moveInputComponent);
 

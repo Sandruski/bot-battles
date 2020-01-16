@@ -30,7 +30,7 @@ void TextComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, Replica
         m_text.lock()->ReLoad();
     }
 }
-#elif _SERVER
+#elif defined(_SERVER)
 //----------------------------------------------------------------------------------------------------
 U32 TextComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) const
 {

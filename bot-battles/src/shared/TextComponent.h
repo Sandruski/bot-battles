@@ -4,7 +4,7 @@
 #include "Component.h"
 #ifdef _CLIENT
 #include "NetworkableReadObject.h"
-#elif _SERVER
+#elif defined(_SERVER)
 #include "NetworkableWriteObject.h"
 #endif
 
@@ -14,10 +14,12 @@ class TextResource;
 
 //----------------------------------------------------------------------------------------------------
 // Entity Component
-struct TextComponent : public Component,
+struct TextComponent : public Component
 #ifdef _CLIENT
+    ,
                        public NetworkableReadObject
-#elif _SERVER
+#elif defined(_SERVER)
+    ,
                        public NetworkableWriteObject
 #endif
 {
@@ -27,7 +29,7 @@ struct TextComponent : public Component,
 
 #ifdef _CLIENT
     void Read(InputMemoryStream& inputStream, U32 dirtyState, ReplicationActionType replicationActionType, Entity entity) override;
-#elif _SERVER
+#elif defined(_SERVER)
     U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override;
 #endif
 

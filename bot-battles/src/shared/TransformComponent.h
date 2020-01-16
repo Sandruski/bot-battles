@@ -4,7 +4,7 @@
 #include "Component.h"
 #ifdef _CLIENT
 #include "NetworkableReadObject.h"
-#elif _SERVER
+#elif defined(_SERVER)
 #include "NetworkableWriteObject.h"
 #endif
 
@@ -14,10 +14,12 @@ struct InputComponent;
 
 //----------------------------------------------------------------------------------------------------
 // Entity Component
-struct TransformComponent : public Component,
+struct TransformComponent : public Component
 #ifdef _CLIENT
+    ,
                             public NetworkableReadObject
-#elif _SERVER
+#elif defined(_SERVER)
+    ,
                             public NetworkableWriteObject
 #endif
 {
@@ -30,7 +32,7 @@ struct TransformComponent : public Component,
     void ClientSidePredictionForLocalPlayer(bool updatePosition, bool updateRotation);
     void ClientSidePredictionForRemotePlayer(Entity entity);
     void ClientSideInterpolation(const Vec3& oldPosition, F32 oldRotation);
-#elif _SERVER
+#elif defined(_SERVER)
     U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override;
 #endif
 
@@ -40,6 +42,8 @@ struct TransformComponent : public Component,
 
     Vec3 m_position;
     F32 m_rotation;
+    Vec2 m_velocity;
+    F32 m_angularVelocity;
 #ifdef _CLIENT
     F32 m_outOfSyncTimestamp;
 #endif

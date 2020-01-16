@@ -28,7 +28,7 @@ void Move::Write(OutputMemoryStream& outputStream) const
     m_input.Write(outputStream, m_dirtyState);
     outputStream.Write(m_timestamp);
 }
-#elif _SERVER
+#elif defined(_SERVER)
 //----------------------------------------------------------------------------------------------------
 void Move::Read(InputMemoryStream& inputStream)
 {

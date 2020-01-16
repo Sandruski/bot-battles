@@ -23,6 +23,7 @@ public:
 
 private:
     std::deque<Move> m_moves;
+    F32 m_lastMoveTimestamp;
 };
 }
 

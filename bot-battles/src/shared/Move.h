@@ -13,7 +13,7 @@ public:
 
 #ifdef _CLIENT
     void Write(OutputMemoryStream& outputStream) const;
-#elif _SERVER
+#elif defined(_SERVER)
     void Read(InputMemoryStream& inputStream);
 #endif
 

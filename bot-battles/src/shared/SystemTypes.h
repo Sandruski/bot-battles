@@ -17,7 +17,7 @@ enum class SystemType : U16 {
 #ifdef _CLIENT
     CLIENT,
     INPUT,
-#elif _SERVER
+#elif defined(_SERVER)
     SERVER,
     SPAWNER,
 #endif

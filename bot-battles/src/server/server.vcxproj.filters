@@ -72,6 +72,9 @@
     <ClCompile Include="NavigationSystemServer.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="pchServer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ServerSystem.h">
@@ -103,6 +106,9 @@
     </ClInclude>
     <ClInclude Include="NavigationSystemServer.h">
       <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="pchServer.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
