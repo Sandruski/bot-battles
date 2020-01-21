@@ -8,15 +8,11 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-// Entity Component
+// System Component
 struct InputComponent : public Component,
                         public NetworkableWriteObject,
                         public NetworkableReadObject {
-    static ComponentType GetType() { return ComponentType::INPUT; }
-
     InputComponent();
-
-    void Copy(const InputComponent& other);
 
     U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override;
     void Read(InputMemoryStream& inputStream, U32 dirtyState, ReplicationActionType replicationActionType, Entity entity) override;

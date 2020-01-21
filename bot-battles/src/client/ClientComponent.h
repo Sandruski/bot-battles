@@ -2,6 +2,9 @@
 #define __CLIENT_COMPONENT_H__
 
 #include "Component.h"
+#include "DeliveryManagerClient.h"
+#include "Moves.h"
+#include "ReplicationManagerClient.h"
 
 namespace sand {
 
@@ -29,12 +32,18 @@ struct ClientComponent : public Component {
     PlayerID m_playerID;
     Entity m_entity;
 
+    Moves m_moves;
+    bool m_isLastMovePending;
+
     F32 m_RTT;
 
     bool m_isClientSidePrediction;
     bool m_isServerReconciliation;
     bool m_isEntityInterpolation;
     bool m_isLagCompensation;
+
+    ReplicationManagerClient m_replicationManager;
+    DeliveryManagerClient m_deliveryManager;
 };
 }
 

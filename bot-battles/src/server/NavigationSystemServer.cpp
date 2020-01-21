@@ -13,7 +13,6 @@ namespace sand {
 NavigationSystemServer::NavigationSystemServer()
 {
     m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
-    m_signature |= 1 << static_cast<U16>(ComponentType::INPUT);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -22,7 +21,6 @@ bool NavigationSystemServer::Update()
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
 
     for (auto& entity : m_entities) {
-        std::weak_ptr<InputComponent> inputComponent = g_gameServer->GetComponentManager().GetComponent<InputComponent>(entity);
         std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
 
         PlayerID playerID = serverComponent.GetPlayerID(entity);
@@ -40,8 +38,6 @@ bool NavigationSystemServer::Update()
             const InputComponent& moveInputComponent = move.GetInput();
             F32 dt = move.GetDt();
             transformComponent.lock()->UpdateTransform(moveInputComponent.m_acceleration, moveInputComponent.m_angularAcceleration, dt);
-
-            inputComponent.lock()->Copy(moveInputComponent);
 
             Event newEvent;
             newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;

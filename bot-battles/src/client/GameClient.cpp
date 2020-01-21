@@ -13,10 +13,8 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 GameClient::GameClient(const std::string& configPath)
     : m_configClient(nullptr)
-    , m_replicationManager()
-    , m_deliveryManager()
-    , m_moveComponent()
     , m_clientComponent()
+    , m_inputComponent()
 {
     m_config = m_configClient = std::make_shared<ConfigClient>(configPath);
 }

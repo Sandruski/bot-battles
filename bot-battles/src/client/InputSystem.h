@@ -24,12 +24,7 @@ public:
     }
 
 public:
-    InputSystem();
-
     bool Update() override;
-
-    void UpdateSampleInput(MoveComponent& moveComponent) const;
-    void SampleInput(MoveComponent& moveComponent, F32 timestamp) const;
 };
 }
 

@@ -11,13 +11,6 @@ InputComponent::InputComponent()
 }
 
 //----------------------------------------------------------------------------------------------------
-void InputComponent::Copy(const InputComponent& other)
-{
-    m_acceleration = other.m_acceleration;
-    m_angularAcceleration = other.m_angularAcceleration;
-}
-
-//----------------------------------------------------------------------------------------------------
 U32 InputComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) const
 {
     U32 writtenState = 0;

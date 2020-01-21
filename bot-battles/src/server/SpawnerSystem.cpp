@@ -59,8 +59,6 @@ Entity SpawnerSystem::SpawnPlayerEntity() const
     std::weak_ptr<TextComponent> textComponent = g_gameServer->GetComponentManager().AddComponent<TextComponent>(character);
     textComponent.lock()->m_text = textResource;
 
-    g_gameServer->GetComponentManager().AddComponent<InputComponent>(character);
-
     return character;
 }
 

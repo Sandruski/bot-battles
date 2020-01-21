@@ -6,7 +6,6 @@
 namespace sand {
 
 struct ClientComponent;
-struct MoveComponent;
 
 //----------------------------------------------------------------------------------------------------
 class ClientSystem : public System, public Subject {
@@ -23,11 +22,9 @@ public:
 
 private:
     void SendOutgoingPackets(ClientComponent& clientComponent) const;
-    void UpdateSendHelloPacket(ClientComponent& clientComponent) const;
-    void UpdateSendInputPacket(ClientComponent& clientComponent) const;
 
     bool SendHelloPacket(const ClientComponent& clientComponent) const;
-    bool SendInputPacket(const ClientComponent& clientComponent, MoveComponent& moveComponent) const;
+    bool SendInputPacket(ClientComponent& clientComponent) const;
     bool SendPacket(const ClientComponent& clientComponent, const OutputMemoryStream& outputStream) const;
 
     void ReceiveIncomingPackets(ClientComponent& clientComponent);

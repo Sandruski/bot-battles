@@ -5,17 +5,16 @@
 #include "ComponentMemberTypes.h"
 #include "GameClient.h"
 #include "InputComponent.h"
-#include "MoveComponent.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, ReplicationActionType replicationActionType, Entity entity)
+void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, ReplicationActionType replicationActionType, Entity /*entity*/)
 {
     assert(replicationActionType == ReplicationActionType::CREATE || replicationActionType == ReplicationActionType::UPDATE);
 
-    Vec3 oldPosition = m_position;
-    F32 oldRotation = m_rotation;
+    //Vec3 oldPosition = m_position;
+    //F32 oldRotation = m_rotation;
 
     const bool hasPosition = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION);
     if (hasPosition) {
@@ -27,7 +26,7 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, Re
     }
 
     // TODO: read velocity and angular velocity
-
+    /*
     if (hasPosition || hasRotation) {
         ClientComponent& clientComponent = g_gameClient->GetClientComponent();
         const bool isLocalPlayer = clientComponent.IsLocalPlayer(entity);
@@ -42,18 +41,18 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, Re
                 ClientSideInterpolation(oldPosition, oldRotation);
             }
         }
-    }
+    }*/
 }
 
 //----------------------------------------------------------------------------------------------------
 // Move replay
 void TransformComponent::ClientSidePredictionForLocalPlayer(bool updatePosition, bool updateRotation)
 {
-    MoveComponent& moveComponent = g_gameClient->GetMoveComponent();
-    U32 moveCount = moveComponent.m_moves.GetMoveCount();
+    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    U32 moveCount = clientComponent.m_moves.GetMoveCount();
     for (U32 i = 0; i < moveCount; ++i) {
 
-        const Move& move = moveComponent.m_moves.GetMove(i);
+        const Move& move = clientComponent.m_moves.GetMove(i);
         const InputComponent& moveInputComponent = move.GetInput();
         F32 dt = move.GetDt();
         if (updatePosition) {
@@ -67,16 +66,16 @@ void TransformComponent::ClientSidePredictionForLocalPlayer(bool updatePosition,
 
 //----------------------------------------------------------------------------------------------------
 // Dead reckoning
-void TransformComponent::ClientSidePredictionForRemotePlayer(Entity entity)
+void TransformComponent::ClientSidePredictionForRemotePlayer(Entity /*entity*/)
 {
     F32 dt = Time::GetInstance().GetDt();
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     F32 rtt = clientComponent.m_RTT;
-    std::weak_ptr<InputComponent> inputComponent = g_gameClient->GetComponentManager().GetComponent<InputComponent>(entity);
+    //std::weak_ptr<InputComponent> inputComponent = g_gameClient->GetComponentManager().GetComponent<InputComponent>(entity);
 
     while (rtt >= dt) {
 
-        UpdateTransform(inputComponent.lock()->m_acceleration, inputComponent.lock()->m_angularAcceleration, dt);
+        //UpdateTransform(inputComponent.lock()->m_acceleration, inputComponent.lock()->m_angularAcceleration, dt);
         // TODO: should rotation also be here?
 
         rtt -= dt;

@@ -6,7 +6,6 @@
 #include "InputComponent.h"
 #include "LinkingContext.h"
 #include "MessageTypes.h"
-#include "MoveComponent.h"
 #include "ReplicationManagerClient.h"
 #include "SocketAddress.h"
 #include "UDPSocket.h"
@@ -60,8 +59,7 @@ void ClientSystem::SendOutgoingPackets(ClientComponent& clientComponent) const
     if (!isConnected) {
         SendHelloPacket(clientComponent);
     } else {
-        MoveComponent& moveComponent = g_gameClient->GetMoveComponent();
-        const bool result = SendInputPacket(clientComponent, moveComponent);
+        SendInputPacket(clientComponent);
     }
 }
 
@@ -83,23 +81,23 @@ bool ClientSystem::SendHelloPacket(const ClientComponent& clientComponent) const
 }
 
 //----------------------------------------------------------------------------------------------------
-bool ClientSystem::SendInputPacket(const ClientComponent& clientComponent, MoveComponent& moveComponent) const
+bool ClientSystem::SendInputPacket(ClientComponent& clientComponent) const
 {
-    if (!moveComponent.m_moves.HasMoves()) {
+    if (!clientComponent.m_moves.HasMoves()) {
         return false;
     }
 
     OutputMemoryStream inputPacket;
     inputPacket.Write(ClientMessageType::INPUT);
     inputPacket.Write(clientComponent.m_playerID);
-    g_gameClient->GetDeliveryManager().WriteState(inputPacket);
+    clientComponent.m_deliveryManager.WriteState(inputPacket);
 
-    U32 totalMoveCount = moveComponent.m_moves.GetMoveCount();
+    U32 totalMoveCount = clientComponent.m_moves.GetMoveCount();
     U32 startIndex = totalMoveCount > MAX_MOVES_PER_PACKET ? totalMoveCount - MAX_MOVES_PER_PACKET : 0;
     U32 moveCount = totalMoveCount - startIndex;
     inputPacket.Write(moveCount, GetRequiredBits<MAX_MOVES_PER_PACKET>::value);
     for (U32 i = startIndex; i < totalMoveCount; ++i) {
-        const Move& move = moveComponent.m_moves.GetMove(i);
+        const Move& move = clientComponent.m_moves.GetMove(i);
         move.Write(inputPacket);
     }
 
@@ -198,7 +196,7 @@ void ClientSystem::ReceiveWelcomePacket(ClientComponent& clientComponent, InputM
 void ClientSystem::ReceiveStatePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream) const
 {
     const bool isConnected = clientComponent.IsConnected();
-    const bool isValid = g_gameClient->GetDeliveryManager().ReadState(inputStream);
+    const bool isValid = clientComponent.m_deliveryManager.ReadState(inputStream);
     if (!isConnected || !isValid) {
         ILOG("State packet received but skipped");
         return;
@@ -212,11 +210,10 @@ void ClientSystem::ReceiveStatePacket(ClientComponent& clientComponent, InputMem
         F32 lastMoveTimestamp = 0.0f;
         inputStream.Read(lastMoveTimestamp);
         clientComponent.m_RTT = Time::GetInstance().GetStartFrameTime() - lastMoveTimestamp;
-        MoveComponent& moveComponent = g_gameClient->GetMoveComponent();
-        moveComponent.m_moves.RemoveMoves(lastMoveTimestamp);
+        clientComponent.m_moves.RemoveMoves(lastMoveTimestamp);
     }
 
-    g_gameClient->GetReplicationManager().Read(inputStream);
+    clientComponent.m_replicationManager.Read(inputStream);
 }
 
 //----------------------------------------------------------------------------------------------------

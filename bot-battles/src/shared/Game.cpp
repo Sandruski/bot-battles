@@ -83,10 +83,6 @@ bool Game::Init()
     if (!ret) {
         return ret;
     }
-    ret = m_componentManager->RegisterComponent<InputComponent>();
-    if (!ret) {
-        return ret;
-    }
 
     // States
     ret = m_fsm->RegisterState<GameplayState>();
