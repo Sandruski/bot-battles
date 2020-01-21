@@ -75,7 +75,7 @@ void ReplicationManagerClient::ReadUpdateAction(InputMemoryStream& inputStream, 
     Signature newSignature = 0;
     inputStream.Read(newSignature);
     U32 dirtyState = 0;
-    inputStream.Read(dirtyState, GetRequiredBits<static_cast<U32>(ComponentMemberType::COUNT)>::value);
+    inputStream.Read(dirtyState);
 
     for (U16 i = 0; i < MAX_COMPONENTS; ++i) {
 

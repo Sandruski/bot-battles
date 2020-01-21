@@ -142,7 +142,7 @@ U32 ReplicationManagerServer::WriteUpdateAction(OutputMemoryStream& outputStream
     Entity entity = g_gameServer->GetLinkingContext().GetEntity(networkID);
     Signature signature = g_gameServer->GetEntityManager().GetSignature(entity);
     outputStream.Write(signature);
-    outputStream.Write(dirtyState, GetRequiredBits<static_cast<U32>(ComponentMemberType::COUNT)>::value);
+    outputStream.Write(dirtyState);
 
     for (U16 i = 0; i < MAX_COMPONENTS; ++i) {
 

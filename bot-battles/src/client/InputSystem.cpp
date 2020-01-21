@@ -65,8 +65,8 @@ bool InputSystem::Update()
 //----------------------------------------------------------------------------------------------------
 void InputSystem::UpdateSampleInput(MoveComponent& moveComponent) const
 {
-    float time = Time::GetInstance().GetTime();
-    float nextMoveTime = moveComponent.GetNextMoveTime();
+    F32 time = Time::GetInstance().GetTime();
+    F32 nextMoveTime = moveComponent.GetNextMoveTime();
     if (time >= nextMoveTime) {
         SampleInput(moveComponent, Time::GetInstance().GetStartFrameTime());
         moveComponent.m_lastMoveTimestamp = time;

@@ -185,12 +185,10 @@ void ClientSystem::ReceiveWelcomePacket(ClientComponent& clientComponent, InputM
         inputStream.Read(clientComponent.m_playerID);
         assert(clientComponent.m_playerID < INVALID_PLAYER_ID);
 
-        /*
         Event newEvent;
         newEvent.eventType = EventType::PLAYER_ADDED;
         newEvent.networking.playerID = clientComponent.m_playerID;
         PushEvent(newEvent);
-        */
 
         ILOG("Player %s %u has joined the game", clientComponent.m_name.c_str(), clientComponent.m_playerID);
     }

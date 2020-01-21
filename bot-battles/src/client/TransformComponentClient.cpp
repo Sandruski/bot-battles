@@ -1,4 +1,3 @@
-#include "..\shared\TransformComponent.h"
 #include "TransformComponent.h"
 
 #include "ClientComponent.h"
