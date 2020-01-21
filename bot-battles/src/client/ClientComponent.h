@@ -19,9 +19,6 @@ struct ClientComponent : public Component {
     bool IsConnected() const;
     bool IsLocalPlayer(Entity entity) const;
 
-    F32 GetNextHelloTime() const;
-    F32 GetNextInputTime() const;
-
     std::shared_ptr<UDPSocket> m_socket;
     std::shared_ptr<SocketAddress> m_socketAddress;
 
@@ -31,8 +28,6 @@ struct ClientComponent : public Component {
 
     PlayerID m_playerID;
     Entity m_entity;
-
-    F32 m_lastDeliveryTimestamp;
 
     F32 m_RTT;
 

@@ -11,7 +11,6 @@ ClientComponent::ClientComponent()
     , m_port()
     , m_playerID(INVALID_PLAYER_ID)
     , m_entity(INVALID_ENTITY)
-    , m_lastDeliveryTimestamp(0.0f)
     , m_RTT(0.0f)
     , m_isClientSidePrediction(false)
     , m_isServerReconciliation(false)
@@ -62,17 +61,5 @@ bool ClientComponent::IsConnected() const
 bool ClientComponent::IsLocalPlayer(Entity entity) const
 {
     return entity == m_entity;
-}
-
-//----------------------------------------------------------------------------------------------------
-F32 ClientComponent::GetNextHelloTime() const
-{
-    return m_lastDeliveryTimestamp + TIME_BETWEEN_HELLO;
-}
-
-//----------------------------------------------------------------------------------------------------
-F32 ClientComponent::GetNextInputTime() const
-{
-    return m_lastDeliveryTimestamp + TIME_BETWEEN_INPUT;
 }
 }

@@ -58,36 +58,10 @@ void ClientSystem::SendOutgoingPackets(ClientComponent& clientComponent) const
 {
     const bool isConnected = clientComponent.IsConnected();
     if (!isConnected) {
-        UpdateSendHelloPacket(clientComponent);
+        SendHelloPacket(clientComponent);
     } else {
-        UpdateSendInputPacket(clientComponent);
-    }
-}
-
-//----------------------------------------------------------------------------------------------------
-void ClientSystem::UpdateSendHelloPacket(ClientComponent& clientComponent) const
-{
-    F32 time = Time::GetInstance().GetTime();
-    F32 nextHelloTime = clientComponent.GetNextHelloTime();
-    if (time >= nextHelloTime) {
-        const bool result = SendHelloPacket(clientComponent);
-        if (result) {
-            clientComponent.m_lastDeliveryTimestamp = time;
-        }
-    }
-}
-
-//----------------------------------------------------------------------------------------------------
-void ClientSystem::UpdateSendInputPacket(ClientComponent& clientComponent) const
-{
-    F32 time = Time::GetInstance().GetTime();
-    F32 nextInputTime = clientComponent.GetNextInputTime();
-    if (time >= nextInputTime) {
         MoveComponent& moveComponent = g_gameClient->GetMoveComponent();
         const bool result = SendInputPacket(clientComponent, moveComponent);
-        if (result) {
-            clientComponent.m_lastDeliveryTimestamp = time;
-        }
     }
 }
 
@@ -211,10 +185,12 @@ void ClientSystem::ReceiveWelcomePacket(ClientComponent& clientComponent, InputM
         inputStream.Read(clientComponent.m_playerID);
         assert(clientComponent.m_playerID < INVALID_PLAYER_ID);
 
+        /*
         Event newEvent;
         newEvent.eventType = EventType::PLAYER_ADDED;
         newEvent.networking.playerID = clientComponent.m_playerID;
         PushEvent(newEvent);
+        */
 
         ILOG("Player %s %u has joined the game", clientComponent.m_name.c_str(), clientComponent.m_playerID);
     }
