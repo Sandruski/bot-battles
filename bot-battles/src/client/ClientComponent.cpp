@@ -2,9 +2,13 @@
 
 namespace sand {
 
+// No inputs left sent by a client to the server. What should the server do, freeze the game?
+
 //----------------------------------------------------------------------------------------------------
 ClientComponent::ClientComponent()
-    : m_socket(nullptr)
+    : m_replicationManager(),
+    m_deliveryManager(),
+    m_socket(nullptr)
     , m_socketAddress(nullptr)
     , m_name()
     , m_ip()

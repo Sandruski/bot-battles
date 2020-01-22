@@ -22,6 +22,9 @@ struct ClientComponent : public Component {
     bool IsConnected() const;
     bool IsLocalPlayer(Entity entity) const;
 
+    ReplicationManagerClient m_replicationManager;
+    DeliveryManagerClient m_deliveryManager;
+
     std::shared_ptr<UDPSocket> m_socket;
     std::shared_ptr<SocketAddress> m_socketAddress;
 
@@ -41,9 +44,6 @@ struct ClientComponent : public Component {
     bool m_isServerReconciliation;
     bool m_isEntityInterpolation;
     bool m_isLagCompensation;
-
-    ReplicationManagerClient m_replicationManager;
-    DeliveryManagerClient m_deliveryManager;
 };
 }
 
