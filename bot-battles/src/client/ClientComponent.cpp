@@ -2,7 +2,13 @@
 
 namespace sand {
 
-// No inputs left sent by a client to the server. What should the server do, freeze the game?
+/* 
+- Send all inputs to the server until they are ackd.
+- No inputs left sent by a client to the server. What should the server do, freeze the game?
+
+- Client Prediction + Rollback if there is a misprediction (causes a divergence).
+- Buffer with states + Simulate forward + Blend.
+*/
 
 //----------------------------------------------------------------------------------------------------
 ClientComponent::ClientComponent()
