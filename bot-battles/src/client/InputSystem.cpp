@@ -45,7 +45,7 @@ bool InputSystem::Update()
     }
 
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    clientComponent.m_moves.AddMove(inputComponent, static_cast<U32>(ComponentMemberType::INPUT_ACCELERATION), Time::GetInstance().GetTime()); // TODO: not only acceleration...
+    clientComponent.m_moves.AddMove(inputComponent, static_cast<U32>(InputComponentMemberType::INPUT_ACCELERATION)); // TODO: not only acceleration...
     clientComponent.m_isLastMovePending = true;
 
     return true;

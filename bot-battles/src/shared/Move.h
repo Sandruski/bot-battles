@@ -9,7 +9,7 @@ namespace sand {
 class Move {
 public:
     Move();
-    Move(const InputComponent& input, U32 dirtyState, F32 timestamp, F32 dt);
+    Move(const InputComponent& inputComponent, U32 dirtyState, F32 dt, U32 frame);
 
 #ifdef _CLIENT
     void Write(OutputMemoryStream& outputStream) const;
@@ -17,16 +17,16 @@ public:
     void Read(InputMemoryStream& inputStream);
 #endif
 
-    const InputComponent& GetInput() const;
+    const InputComponent& GetInputComponent() const;
     U32 GetDirtyState() const;
-    F32 GetTimestamp() const;
     F32 GetDt() const;
+    U32 GetFrame() const;
 
 private:
-    InputComponent m_input;
+    InputComponent m_inputComponent;
     U32 m_dirtyState;
-    F32 m_timestamp;
     F32 m_dt;
+    U32 m_frame;
 };
 }
 

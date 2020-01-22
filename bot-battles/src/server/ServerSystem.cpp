@@ -137,10 +137,16 @@ void ServerSystem::SendStatePacket(const ServerComponent& serverComponent, std::
     Delivery& delivery = clientProxy->m_deliveryManager.WriteState(statePacket);
     delivery.m_replicationResultManager = std::make_shared<ReplicationResultManager>(std::weak_ptr<ReplicationManagerServer>(clientProxy->m_replicationManager));
 
-    statePacket.Write(clientProxy->m_isLastMoveTimestampDirty);
-    if (clientProxy->m_isLastMoveTimestampDirty) {
-        statePacket.Write(clientProxy->m_moves.GetLastMoveTimestamp());
-        clientProxy->m_isLastMoveTimestampDirty = false;
+    statePacket.Write(clientProxy->m_isTimestampDirty);
+    if (clientProxy->m_isTimestampDirty) {
+        statePacket.Write(clientProxy->m_timestamp);
+        clientProxy->m_isTimestampDirty = false;
+    }
+
+    statePacket.Write(clientProxy->m_isFrameDirty);
+    if (clientProxy->m_isFrameDirty) {
+        statePacket.Write(clientProxy->m_frame);
+        clientProxy->m_isFrameDirty = false;
     }
 
     clientProxy->m_replicationManager->Write(statePacket, *delivery.m_replicationResultManager);
@@ -266,18 +272,27 @@ void ServerSystem::ReceiveInputPacket(ServerComponent& serverComponent, InputMem
 
     ILOG("Input packet received from player %s", clientProxy->GetName());
 
-    clientProxy->m_moves.ClearMoves();
+    inputStream.Read(clientProxy->m_timestamp);
+    clientProxy->m_isTimestampDirty = true;
 
-    U32 moveCount = 0;
-    inputStream.Read(moveCount, GetRequiredBits<MAX_MOVES_PER_PACKET>::value);
-    Move move;
-    while (moveCount > 0) {
-        move.Read(inputStream);
-        if (move.GetTimestamp() > clientProxy->m_moves.GetLastMoveTimestamp()) {
-            clientProxy->m_moves.AddMove(move);
-            clientProxy->m_isLastMoveTimestampDirty = true;
+    clientProxy->m_moves.ClearMoves(); // TODO: ideally we should not do this because there is a buffer of moves (Overwatch talk)
+    bool hasMoves = false;
+    inputStream.Read(hasMoves);
+    if (hasMoves) {
+        U32 moveCount = 0;
+        inputStream.Read(moveCount);
+        assert(moveCount > 0);
+        clientProxy->m_isFrameDirty = true;
+        Move move;
+        while (moveCount > 0) {
+            move.Read(inputStream);
+            if (move.GetFrame() > clientProxy->m_frame) { // TODO: be careful if new frame is 15 and last frame is 13 and frame 14 contains a shoot for example
+                clientProxy->m_moves.AddMove(move);
+                clientProxy->m_frame = move.GetFrame();
+                ILOG("FRAME %u", clientProxy->m_frame);
+            }
+            --moveCount;
         }
-        --moveCount;
     }
 }
 

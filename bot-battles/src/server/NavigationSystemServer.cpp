@@ -35,7 +35,7 @@ bool NavigationSystemServer::Update()
         for (U32 i = 0; i < moveCount; ++i) {
 
             const Move& move = clientProxy->m_moves.GetMove(i);
-            const InputComponent& moveInputComponent = move.GetInput();
+            const InputComponent& moveInputComponent = move.GetInputComponent();
             F32 dt = move.GetDt();
             transformComponent.lock()->UpdateTransform(moveInputComponent.m_acceleration, moveInputComponent.m_angularAcceleration, dt);
 

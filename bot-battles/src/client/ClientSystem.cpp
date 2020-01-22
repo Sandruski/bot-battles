@@ -83,22 +83,24 @@ bool ClientSystem::SendHelloPacket(const ClientComponent& clientComponent) const
 //----------------------------------------------------------------------------------------------------
 bool ClientSystem::SendInputPacket(ClientComponent& clientComponent) const
 {
-    if (!clientComponent.m_moves.HasMoves()) {
-        return false;
-    }
-
     OutputMemoryStream inputPacket;
     inputPacket.Write(ClientMessageType::INPUT);
     inputPacket.Write(clientComponent.m_playerID);
     clientComponent.m_deliveryManager.WriteState(inputPacket);
 
-    U32 totalMoveCount = clientComponent.m_moves.GetMoveCount();
-    U32 startIndex = totalMoveCount > MAX_MOVES_PER_PACKET ? totalMoveCount - MAX_MOVES_PER_PACKET : 0;
-    U32 moveCount = totalMoveCount - startIndex;
-    inputPacket.Write(moveCount, GetRequiredBits<MAX_MOVES_PER_PACKET>::value);
-    for (U32 i = startIndex; i < totalMoveCount; ++i) {
-        const Move& move = clientComponent.m_moves.GetMove(i);
-        move.Write(inputPacket);
+    F32 timestamp = Time::GetInstance().GetTime();
+    inputPacket.Write(timestamp);
+
+    const bool hasMoves = clientComponent.m_moves.HasMoves();
+    inputPacket.Write(hasMoves);
+    if (hasMoves) {
+        U32 moveCount = clientComponent.m_moves.GetMoveCount();
+        inputPacket.Write(moveCount);
+        for (U32 i = 0; i < moveCount; ++i) {
+            const Move& move = clientComponent.m_moves.GetMove(i);
+            move.Write(inputPacket);
+            ILOG("LAST SENT FRAME %u", move.GetFrame());
+        }
     }
 
     ILOG("Sending input packet to server...");
@@ -204,13 +206,21 @@ void ClientSystem::ReceiveStatePacket(ClientComponent& clientComponent, InputMem
 
     ILOG("State packet received");
 
-    bool isLastMoveTimestampDirty = false;
-    inputStream.Read(isLastMoveTimestampDirty);
-    if (isLastMoveTimestampDirty) {
-        F32 lastMoveTimestamp = 0.0f;
-        inputStream.Read(lastMoveTimestamp);
-        clientComponent.m_RTT = Time::GetInstance().GetStartFrameTime() - lastMoveTimestamp;
-        clientComponent.m_moves.RemoveMoves(lastMoveTimestamp);
+    bool isTimestampDirty = false;
+    inputStream.Read(isTimestampDirty);
+    if (isTimestampDirty) {
+        F32 timestamp = 0.0f;
+        inputStream.Read(timestamp);
+        clientComponent.m_RTT = Time::GetInstance().GetTime() - timestamp;
+    }
+
+    bool isFrameDirty = false;
+    inputStream.Read(isFrameDirty);
+    if (isFrameDirty) {
+        U32 frame = 0;
+        inputStream.Read(frame);
+        ILOG("LAST ACKD FRAME %u", frame);
+        clientComponent.m_moves.RemoveMoves(frame);
     }
 
     clientComponent.m_replicationManager.Read(inputStream);

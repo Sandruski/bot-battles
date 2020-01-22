@@ -29,7 +29,7 @@ bool NavigationSystemClient::Update()
         if (isLocalPlayer) {
 
             const Move& move = clientComponent.m_moves.GetLastMove();
-            const InputComponent& inputComponent = move.GetInput();
+            const InputComponent& inputComponent = move.GetInputComponent();
             F32 dt = move.GetDt();
 
             std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);

@@ -25,7 +25,12 @@ public:
     DeliveryManagerServer m_deliveryManager;
 
     Moves m_moves;
-    bool m_isLastMoveTimestampDirty;
+
+    bool m_isTimestampDirty;
+    F32 m_timestamp;
+
+    bool m_isFrameDirty;
+    U32 m_frame;
 
 private:
     SocketAddress m_socketAddress;

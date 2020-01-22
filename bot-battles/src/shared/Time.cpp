@@ -13,10 +13,10 @@ Time& Time::GetInstance()
 Time::Time()
     : m_timer()
     , m_dtTimer()
-    , m_startFrameTime(0.0f)
     , m_lastFrameMs(0.0f)
     , m_fps(0.0f)
     , m_dt(0.0f)
+    , m_frame(0)
 {
     m_timer.Start();
 }
@@ -26,7 +26,7 @@ void Time::StartUpdate()
 {
     m_dtTimer.Start();
 
-    m_startFrameTime = GetTime();
+    ++m_frame;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -50,12 +50,6 @@ F32 Time::GetTime() const
 }
 
 //----------------------------------------------------------------------------------------------------
-F32 Time::GetStartFrameTime() const
-{
-    return m_startFrameTime;
-}
-
-//----------------------------------------------------------------------------------------------------
 F32 Time::GetDt() const
 {
     return static_cast<F32>(m_dt);
@@ -65,5 +59,11 @@ F32 Time::GetDt() const
 F32 Time::GetFps() const
 {
     return static_cast<F32>(m_fps);
+}
+
+//----------------------------------------------------------------------------------------------------
+U32 Time::GetFrame() const
+{
+    return m_frame;
 }
 }

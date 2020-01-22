@@ -5,27 +5,20 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 Moves::Moves()
     : m_moves()
-    , m_lastMoveTimestamp(0.0f)
 {
 }
 
 //----------------------------------------------------------------------------------------------------
-const Move& Moves::AddMove(const InputComponent& input, U32 dirtyState, F32 timestamp)
+const Move& Moves::AddMove(const InputComponent& input, U32 dirtyState)
 {
-    F32 lastMoveTimestamp = m_lastMoveTimestamp;
-    F32 dt = lastMoveTimestamp > 0.0f ? timestamp - lastMoveTimestamp : 0.0f;
-    m_lastMoveTimestamp = timestamp;
-    return m_moves.emplace_back(input, dirtyState, timestamp, dt);
+    // TODO: frame or internal counter which can also be used to retrieve the last move frame?
+    return m_moves.emplace_back(input, dirtyState, Time::GetInstance().GetDt(), Time::GetInstance().GetFrame());
 }
 
 //----------------------------------------------------------------------------------------------------
 const Move& Moves::AddMove(const Move& move)
 {
-    F32 lastMoveTimestamp = m_lastMoveTimestamp;
-    F32 timestamp = move.GetTimestamp();
-    m_lastMoveTimestamp = timestamp;
-    F32 dt = lastMoveTimestamp > 0.0f ? timestamp - lastMoveTimestamp : 0.0f;
-    return m_moves.emplace_back(move.GetInput(), move.GetDirtyState(), timestamp, dt);
+    return m_moves.emplace_back(move);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -53,15 +46,9 @@ U32 Moves::GetMoveCount() const
 }
 
 //----------------------------------------------------------------------------------------------------
-F32 Moves::GetLastMoveTimestamp() const
+void Moves::RemoveMoves(U32 lastMoveFrame)
 {
-    return /*HasMoves() ? m_moves.back().GetTimestamp() : 0.0f*/ m_lastMoveTimestamp;
-}
-
-//----------------------------------------------------------------------------------------------------
-void Moves::RemoveMoves(F32 lastMoveTimestamp)
-{
-    while (!m_moves.empty() && m_moves.front().GetTimestamp() <= lastMoveTimestamp) {
+    while (!m_moves.empty() && m_moves.front().GetFrame() <= lastMoveFrame) {
         m_moves.pop_front();
     }
 }

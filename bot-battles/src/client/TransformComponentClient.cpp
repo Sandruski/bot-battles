@@ -9,12 +9,12 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, ReplicationActionType replicationActionType, Entity /*entity*/)
+void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, ReplicationActionType replicationActionType, Entity entity)
 {
     assert(replicationActionType == ReplicationActionType::CREATE || replicationActionType == ReplicationActionType::UPDATE);
 
-    //Vec3 oldPosition = m_position;
-    //F32 oldRotation = m_rotation;
+    Vec3 oldPosition = m_position;
+    F32 oldRotation = m_rotation;
 
     const bool hasPosition = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION);
     if (hasPosition) {
@@ -26,22 +26,26 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, Re
     }
 
     // TODO: read velocity and angular velocity
-    /*
+
     if (hasPosition || hasRotation) {
         ClientComponent& clientComponent = g_gameClient->GetClientComponent();
         const bool isLocalPlayer = clientComponent.IsLocalPlayer(entity);
         if (isLocalPlayer) {
             ClientSidePredictionForLocalPlayer(hasPosition, hasRotation);
             if (replicationActionType != ReplicationActionType::CREATE) {
-                ClientSideInterpolation(oldPosition, oldRotation);
+                //ClientSideInterpolation(oldPosition, oldRotation);
             }
-        } else {
+        } /*else {
             ClientSidePredictionForRemotePlayer(entity);
             if (replicationActionType != ReplicationActionType::CREATE) {
                 ClientSideInterpolation(oldPosition, oldRotation);
             }
-        }
-    }*/
+        }*/
+    }
+    if (replicationActionType != ReplicationActionType::CREATE) {
+        assert(oldPosition == m_position);
+        assert(oldRotation == m_rotation);
+    }
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -50,10 +54,11 @@ void TransformComponent::ClientSidePredictionForLocalPlayer(bool updatePosition,
 {
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     U32 moveCount = clientComponent.m_moves.GetMoveCount();
+    ILOG("CLIENT SIDE PREDICTION FOR %u MOVES", moveCount);
     for (U32 i = 0; i < moveCount; ++i) {
 
         const Move& move = clientComponent.m_moves.GetMove(i);
-        const InputComponent& moveInputComponent = move.GetInput();
+        const InputComponent& moveInputComponent = move.GetInputComponent();
         F32 dt = move.GetDt();
         if (updatePosition) {
             UpdatePosition(moveInputComponent.m_acceleration, dt);
@@ -61,6 +66,7 @@ void TransformComponent::ClientSidePredictionForLocalPlayer(bool updatePosition,
         if (updateRotation) {
             UpdateRotation(moveInputComponent.m_angularAcceleration, dt);
         }
+        ILOG("REPLAY MOVE %u", move.GetFrame());
     }
 }
 
@@ -87,7 +93,7 @@ void TransformComponent::ClientSideInterpolation(const Vec3& oldPosition, F32 ol
 {
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     F32 rtt = clientComponent.m_RTT;
-    F32 startFrameTime = Time::GetInstance().GetStartFrameTime();
+    F32 startFrameTime = Time::GetInstance().GetTime(); // Start frame time?
 
     if (oldPosition != m_position) {
         if (m_outOfSyncTimestamp == 0.0f) {
