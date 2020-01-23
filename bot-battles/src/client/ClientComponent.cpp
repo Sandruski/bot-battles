@@ -8,6 +8,11 @@ namespace sand {
 
 - Client Prediction + Rollback if there is a misprediction (causes a divergence).
 - Buffer with states + Simulate forward + Blend.
+
+- Player's perspective, authority's perspective, enemy's perspective.
+
+// Interpolation (linear) for trajectory, for animation, and for life bars
+// Teleportation: if the divergence is huge (or very fast interpolation)
 */
 
 //----------------------------------------------------------------------------------------------------
