@@ -99,7 +99,7 @@ bool ClientSystem::SendInputPacket(ClientComponent& clientComponent) const
         for (U32 i = 0; i < moveCount; ++i) {
             const Move& move = clientComponent.m_moves.GetMove(i);
             move.Write(inputPacket);
-            ILOG("LAST SENT FRAME %u", move.GetFrame());
+            ILOG("CLIENT SENT FRAME %u", move.GetFrame());
         }
     }
 
@@ -219,7 +219,7 @@ void ClientSystem::ReceiveStatePacket(ClientComponent& clientComponent, InputMem
     if (isFrameDirty) {
         U32 frame = 0;
         inputStream.Read(frame);
-        ILOG("LAST ACKD FRAME %u", frame);
+        ILOG("CLIENT RECEIVED ACKD FRAME %u", frame);
         clientComponent.m_moves.RemoveMoves(frame);
     }
 

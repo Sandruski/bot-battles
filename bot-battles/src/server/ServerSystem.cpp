@@ -145,6 +145,7 @@ void ServerSystem::SendStatePacket(const ServerComponent& serverComponent, std::
 
     statePacket.Write(clientProxy->m_isFrameDirty);
     if (clientProxy->m_isFrameDirty) {
+        ILOG("SERVER SENT ACKD FRAME %u", clientProxy->m_frame);
         statePacket.Write(clientProxy->m_frame);
         clientProxy->m_isFrameDirty = false;
     }
@@ -289,7 +290,7 @@ void ServerSystem::ReceiveInputPacket(ServerComponent& serverComponent, InputMem
             if (move.GetFrame() > clientProxy->m_frame) { // TODO: be careful if new frame is 15 and last frame is 13 and frame 14 contains a shoot for example
                 clientProxy->m_moves.AddMove(move);
                 clientProxy->m_frame = move.GetFrame();
-                ILOG("FRAME %u", clientProxy->m_frame);
+                ILOG("SERVER RECEIVED FRAME %u", clientProxy->m_frame);
             }
             --moveCount;
         }
