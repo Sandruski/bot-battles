@@ -14,6 +14,7 @@ public:
     GameClient(const std::string& configPath);
 
     bool Init() override;
+    bool Update() override;
 
     ClientComponent& GetClientComponent() { return m_clientComponent; }
     InputComponent& GetInputComponent() { return m_inputComponent; }

@@ -48,9 +48,11 @@ public:
     RendererComponent& GetRendererComponent() { return m_rendererComponent; }
 #endif
 
+protected:
+    virtual bool Update();
+
 private:
     bool PreUpdate();
-    bool Update();
     bool PostUpdate();
     bool PreRender();
     bool Render();

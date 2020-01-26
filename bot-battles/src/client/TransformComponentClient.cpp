@@ -13,8 +13,10 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, Re
 {
     assert(replicationActionType == ReplicationActionType::CREATE || replicationActionType == ReplicationActionType::UPDATE);
 
-    Vec3 oldPosition = m_position;
-    F32 oldRotation = m_rotation;
+    //Vec3 oldPosition = m_position;
+    //F32 oldRotation = m_rotation;
+
+    ILOG("POS BEFORE %f %f", m_position.x, m_position.y);
 
     const bool hasPosition = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION);
     if (hasPosition) {
@@ -24,6 +26,8 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, Re
     if (hasRotation) {
         inputStream.Read(m_rotation);
     }
+
+    ILOG("POS READ %f %f", m_position.x, m_position.y);
 
     // TODO: read velocity and angular velocity
 
@@ -42,10 +46,8 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, Re
             }
         }*/
     }
-    if (replicationActionType != ReplicationActionType::CREATE) {
-        assert(oldPosition == m_position);
-        assert(oldRotation == m_rotation);
-    }
+
+    ILOG("POS AFTER %f %f", m_position.x, m_position.y);
 }
 
 //----------------------------------------------------------------------------------------------------

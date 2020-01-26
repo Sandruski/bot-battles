@@ -18,19 +18,18 @@ public:
 public:
     bool StartUp() override;
     bool PreUpdate() override;
-    bool Update() override;
+
+    void ReceiveIncomingPackets(ClientComponent& clientComponent);
+    void SendOutgoingPackets(ClientComponent& clientComponent) const;
 
 private:
-    void SendOutgoingPackets(ClientComponent& clientComponent) const;
+    void ReceivePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream);
+    void ReceiveWelcomePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream);
+    void ReceiveStatePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream) const;
 
     bool SendHelloPacket(const ClientComponent& clientComponent) const;
     bool SendInputPacket(ClientComponent& clientComponent) const;
     bool SendPacket(const ClientComponent& clientComponent, const OutputMemoryStream& outputStream) const;
-
-    void ReceiveIncomingPackets(ClientComponent& clientComponent);
-    void ReceivePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream);
-    void ReceiveWelcomePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream);
-    void ReceiveStatePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream) const;
 
     void ConnectionReset(ClientComponent& clientComponent);
     void Disconnect(ClientComponent& clientComponent);

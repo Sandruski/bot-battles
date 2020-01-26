@@ -42,84 +42,6 @@ bool ClientSystem::PreUpdate()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool ClientSystem::Update()
-{
-    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-
-    ReceiveIncomingPackets(clientComponent);
-    SendOutgoingPackets(clientComponent);
-
-    return true;
-}
-
-//----------------------------------------------------------------------------------------------------
-void ClientSystem::SendOutgoingPackets(ClientComponent& clientComponent) const
-{
-    const bool isConnected = clientComponent.IsConnected();
-    if (!isConnected) {
-        SendHelloPacket(clientComponent);
-    } else {
-        SendInputPacket(clientComponent);
-    }
-}
-
-//----------------------------------------------------------------------------------------------------
-bool ClientSystem::SendHelloPacket(const ClientComponent& clientComponent) const
-{
-    OutputMemoryStream helloPacket;
-    helloPacket.Write(ClientMessageType::HELLO);
-    helloPacket.Write(clientComponent.m_name);
-
-    ILOG("Sending hello packet to server...");
-
-    const bool result = SendPacket(clientComponent, helloPacket);
-    if (result) {
-        ILOG("Hello packet successfully sent to server");
-    }
-
-    return result;
-}
-
-//----------------------------------------------------------------------------------------------------
-bool ClientSystem::SendInputPacket(ClientComponent& clientComponent) const
-{
-    OutputMemoryStream inputPacket;
-    inputPacket.Write(ClientMessageType::INPUT);
-    inputPacket.Write(clientComponent.m_playerID);
-    clientComponent.m_deliveryManager.WriteState(inputPacket);
-
-    F32 timestamp = Time::GetInstance().GetTime();
-    inputPacket.Write(timestamp);
-
-    const bool hasMoves = clientComponent.m_moves.HasMoves();
-    inputPacket.Write(hasMoves);
-    if (hasMoves) {
-        U32 moveCount = clientComponent.m_moves.GetMoveCount();
-        inputPacket.Write(moveCount);
-        for (U32 i = 0; i < moveCount; ++i) {
-            const Move& move = clientComponent.m_moves.GetMove(i);
-            move.Write(inputPacket);
-            ILOG("CLIENT SENT FRAME %u", move.GetFrame());
-        }
-    }
-
-    ILOG("Sending input packet to server...");
-
-    const bool result = SendPacket(clientComponent, inputPacket);
-    if (result) {
-        ILOG("Input packet successfully sent to server");
-    }
-
-    return true;
-}
-
-//----------------------------------------------------------------------------------------------------
-bool ClientSystem::SendPacket(const ClientComponent& clientComponent, const OutputMemoryStream& outputStream) const
-{
-    return clientComponent.m_socket->SendTo(outputStream.GetPtr(), outputStream.GetByteLength(), *clientComponent.m_socketAddress);
-}
-
-//----------------------------------------------------------------------------------------------------
 void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent)
 {
     InputMemoryStream packet;
@@ -140,6 +62,17 @@ void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent)
             // TODO: graceful disconnection if readByteCount == 0?
             break;
         }
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
+void ClientSystem::SendOutgoingPackets(ClientComponent& clientComponent) const
+{
+    const bool isConnected = clientComponent.IsConnected();
+    if (!isConnected) {
+        SendHelloPacket(clientComponent);
+    } else {
+        SendInputPacket(clientComponent);
     }
 }
 
@@ -224,6 +157,62 @@ void ClientSystem::ReceiveStatePacket(ClientComponent& clientComponent, InputMem
     }
 
     clientComponent.m_replicationManager.Read(inputStream);
+}
+
+//----------------------------------------------------------------------------------------------------
+bool ClientSystem::SendHelloPacket(const ClientComponent& clientComponent) const
+{
+    OutputMemoryStream helloPacket;
+    helloPacket.Write(ClientMessageType::HELLO);
+    helloPacket.Write(clientComponent.m_name);
+
+    ILOG("Sending hello packet to server...");
+
+    const bool result = SendPacket(clientComponent, helloPacket);
+    if (result) {
+        ILOG("Hello packet successfully sent to server");
+    }
+
+    return result;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool ClientSystem::SendInputPacket(ClientComponent& clientComponent) const
+{
+    OutputMemoryStream inputPacket;
+    inputPacket.Write(ClientMessageType::INPUT);
+    inputPacket.Write(clientComponent.m_playerID);
+    clientComponent.m_deliveryManager.WriteState(inputPacket);
+
+    F32 timestamp = Time::GetInstance().GetTime();
+    inputPacket.Write(timestamp);
+
+    const bool hasMoves = clientComponent.m_moves.HasMoves();
+    inputPacket.Write(hasMoves);
+    if (hasMoves) {
+        U32 moveCount = clientComponent.m_moves.GetMoveCount();
+        inputPacket.Write(moveCount);
+        for (U32 i = 0; i < moveCount; ++i) {
+            const Move& move = clientComponent.m_moves.GetMove(i);
+            move.Write(inputPacket);
+            ILOG("CLIENT SENT FRAME %u", move.GetFrame());
+        }
+    }
+
+    ILOG("Sending input packet to server...");
+
+    const bool result = SendPacket(clientComponent, inputPacket);
+    if (result) {
+        ILOG("Input packet successfully sent to server");
+    }
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool ClientSystem::SendPacket(const ClientComponent& clientComponent, const OutputMemoryStream& outputStream) const
+{
+    return clientComponent.m_socket->SendTo(outputStream.GetPtr(), outputStream.GetByteLength(), *clientComponent.m_socketAddress);
 }
 
 //----------------------------------------------------------------------------------------------------

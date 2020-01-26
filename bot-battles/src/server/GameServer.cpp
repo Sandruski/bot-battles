@@ -66,4 +66,18 @@ bool GameServer::Init()
 
     return ret;
 }
+
+//----------------------------------------------------------------------------------------------------
+bool GameServer::Update()
+{
+    std::weak_ptr<ServerSystem> serverSystem = m_systemManager->GetSystem<ServerSystem>();
+
+    serverSystem.lock()->ReceiveIncomingPackets(m_serverComponent);
+
+    Game::Update();
+
+    serverSystem.lock()->SendOutgoingPackets(m_serverComponent);
+
+    return true;
+}
 }

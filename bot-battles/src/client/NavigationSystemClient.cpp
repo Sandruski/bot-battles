@@ -26,7 +26,7 @@ bool NavigationSystemClient::Update()
     for (auto& entity : m_entities) {
 
         const bool isLocalPlayer = clientComponent.IsLocalPlayer(entity);
-        if (isLocalPlayer) {
+        if (isLocalPlayer && clientComponent.m_isLastMovePending) {
 
             const Move& move = clientComponent.m_moves.GetLastMove();
             const InputComponent& inputComponent = move.GetInputComponent();
@@ -36,6 +36,8 @@ bool NavigationSystemClient::Update()
             transformComponent.lock()->UpdateTransform(inputComponent.m_acceleration, inputComponent.m_angularAcceleration, dt);
 
             clientComponent.m_isLastMovePending = false;
+
+            ILOG("CLIENTTT POSITION END: %f %f", transformComponent.lock()->m_position.x, transformComponent.lock()->m_position.y);
 
             break;
         }

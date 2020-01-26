@@ -71,14 +71,27 @@ bool ServerSystem::PreUpdate()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool ServerSystem::Update()
+void ServerSystem::ReceiveIncomingPackets(ServerComponent& serverComponent)
 {
-    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
+    InputMemoryStream packet;
+    SocketAddress fromSocketAddress;
 
-    ReceiveIncomingPackets(serverComponent);
-    SendOutgoingPackets(serverComponent);
+    U32 receivedPacketCount = 0;
 
-    return true;
+    while (receivedPacketCount < MAX_PACKETS_PER_FRAME) {
+        I32 readByteCount = serverComponent.m_socket->ReceiveFrom(packet.GetPtr(), packet.GetByteCapacity(), fromSocketAddress);
+        if (readByteCount > 0) {
+            packet.SetCapacity(readByteCount);
+            packet.ResetHead();
+            ReceivePacket(serverComponent, packet, fromSocketAddress);
+            ++receivedPacketCount;
+        } else if (readByteCount == -WSAECONNRESET) {
+            ConnectionReset(serverComponent, fromSocketAddress);
+        } else if (readByteCount == 0 || -WSAEWOULDBLOCK) {
+            // TODO: graceful disconnection if readByteCount == 0?
+            break;
+        }
+    }
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -106,88 +119,6 @@ void ServerSystem::SendOutgoingPackets(ServerComponent& serverComponent)
         PlayerID playerID = pair.first;
         Entity entity = serverComponent.GetEntity(playerID);
         Disconnect(serverComponent, playerID, entity);
-    }
-}
-
-//----------------------------------------------------------------------------------------------------
-void ServerSystem::SendWelcomePacket(const ServerComponent& serverComponent, PlayerID playerID, const SocketAddress& toSocketAddress) const
-{
-    OutputMemoryStream welcomePacket;
-    welcomePacket.Write(ServerMessageType::WELCOME);
-    const bool isSuccessful = playerID != INVALID_PLAYER_ID;
-    welcomePacket.Write(isSuccessful);
-    if (isSuccessful) {
-        welcomePacket.Write(playerID);
-    }
-
-    ILOG("Sending welcome packet to player %u...", playerID);
-
-    const bool result = SendPacket(serverComponent, welcomePacket, toSocketAddress);
-    if (result) {
-        ILOG("Welcome packet successfully sent to player %u", playerID);
-    }
-}
-
-//----------------------------------------------------------------------------------------------------
-void ServerSystem::SendStatePacket(const ServerComponent& serverComponent, std::shared_ptr<ClientProxy> clientProxy) const
-{
-    OutputMemoryStream statePacket;
-    statePacket.Write(ServerMessageType::STATE);
-
-    Delivery& delivery = clientProxy->m_deliveryManager.WriteState(statePacket);
-    delivery.m_replicationResultManager = std::make_shared<ReplicationResultManager>(std::weak_ptr<ReplicationManagerServer>(clientProxy->m_replicationManager));
-
-    statePacket.Write(clientProxy->m_isTimestampDirty);
-    if (clientProxy->m_isTimestampDirty) {
-        statePacket.Write(clientProxy->m_timestamp);
-        clientProxy->m_isTimestampDirty = false;
-    }
-
-    statePacket.Write(clientProxy->m_isFrameDirty);
-    if (clientProxy->m_isFrameDirty) {
-        ILOG("SERVER SENT ACKD FRAME %u", clientProxy->m_frame);
-        statePacket.Write(clientProxy->m_frame);
-        clientProxy->m_isFrameDirty = false;
-    }
-
-    clientProxy->m_replicationManager->Write(statePacket, *delivery.m_replicationResultManager);
-
-    const char* name = clientProxy->GetName();
-    ILOG("Sending state packet to player %s...", name);
-
-    const bool result = SendPacket(serverComponent, statePacket, clientProxy->GetSocketAddress());
-    if (result) {
-        ILOG("State packet successfully sent to player %s", name);
-    }
-}
-
-//----------------------------------------------------------------------------------------------------
-bool ServerSystem::SendPacket(const ServerComponent& serverComponent, const OutputMemoryStream& outputStream, const SocketAddress& toSocketAddress) const
-{
-    return serverComponent.m_socket->SendTo(outputStream.GetPtr(), outputStream.GetByteLength(), toSocketAddress);
-}
-
-//----------------------------------------------------------------------------------------------------
-void ServerSystem::ReceiveIncomingPackets(ServerComponent& serverComponent)
-{
-    InputMemoryStream packet;
-    SocketAddress fromSocketAddress;
-
-    U32 receivedPacketCount = 0;
-
-    while (receivedPacketCount < MAX_PACKETS_PER_FRAME) {
-        I32 readByteCount = serverComponent.m_socket->ReceiveFrom(packet.GetPtr(), packet.GetByteCapacity(), fromSocketAddress);
-        if (readByteCount > 0) {
-            packet.SetCapacity(readByteCount);
-            packet.ResetHead();
-            ReceivePacket(serverComponent, packet, fromSocketAddress);
-            ++receivedPacketCount;
-        } else if (readByteCount == -WSAECONNRESET) {
-            ConnectionReset(serverComponent, fromSocketAddress);
-        } else if (readByteCount == 0 || -WSAEWOULDBLOCK) {
-            // TODO: graceful disconnection if readByteCount == 0?
-            break;
-        }
     }
 }
 
@@ -276,7 +207,6 @@ void ServerSystem::ReceiveInputPacket(ServerComponent& serverComponent, InputMem
     inputStream.Read(clientProxy->m_timestamp);
     clientProxy->m_isTimestampDirty = true;
 
-    clientProxy->m_moves.ClearMoves(); // TODO: ideally we should not do this because there is a buffer of moves (Overwatch talk)
     bool hasMoves = false;
     inputStream.Read(hasMoves);
     if (hasMoves) {
@@ -295,6 +225,66 @@ void ServerSystem::ReceiveInputPacket(ServerComponent& serverComponent, InputMem
             --moveCount;
         }
     }
+}
+
+//----------------------------------------------------------------------------------------------------
+void ServerSystem::SendWelcomePacket(const ServerComponent& serverComponent, PlayerID playerID, const SocketAddress& toSocketAddress) const
+{
+    OutputMemoryStream welcomePacket;
+    welcomePacket.Write(ServerMessageType::WELCOME);
+    const bool isSuccessful = playerID != INVALID_PLAYER_ID;
+    welcomePacket.Write(isSuccessful);
+    if (isSuccessful) {
+        welcomePacket.Write(playerID);
+    }
+
+    ILOG("Sending welcome packet to player %u...", playerID);
+
+    const bool result = SendPacket(serverComponent, welcomePacket, toSocketAddress);
+    if (result) {
+        ILOG("Welcome packet successfully sent to player %u", playerID);
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
+void ServerSystem::SendStatePacket(const ServerComponent& serverComponent, std::shared_ptr<ClientProxy> clientProxy) const
+{
+    OutputMemoryStream statePacket;
+    statePacket.Write(ServerMessageType::STATE);
+
+    Delivery& delivery = clientProxy->m_deliveryManager.WriteState(statePacket);
+    delivery.m_replicationResultManager = std::make_shared<ReplicationResultManager>(std::weak_ptr<ReplicationManagerServer>(clientProxy->m_replicationManager));
+
+    statePacket.Write(clientProxy->m_isTimestampDirty);
+    if (clientProxy->m_isTimestampDirty) {
+        statePacket.Write(clientProxy->m_timestamp);
+        clientProxy->m_isTimestampDirty = false;
+    }
+
+    clientProxy->m_moves.ClearMoves();
+
+    statePacket.Write(clientProxy->m_isFrameDirty);
+    if (clientProxy->m_isFrameDirty) {
+        ILOG("SERVER SENT ACKD FRAME %u", clientProxy->m_frame);
+        statePacket.Write(clientProxy->m_frame);
+        clientProxy->m_isFrameDirty = false;
+    }
+
+    clientProxy->m_replicationManager->Write(statePacket, *delivery.m_replicationResultManager);
+
+    const char* name = clientProxy->GetName();
+    ILOG("Sending state packet to player %s...", name);
+
+    const bool result = SendPacket(serverComponent, statePacket, clientProxy->GetSocketAddress());
+    if (result) {
+        ILOG("State packet successfully sent to player %s", name);
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
+bool ServerSystem::SendPacket(const ServerComponent& serverComponent, const OutputMemoryStream& outputStream, const SocketAddress& toSocketAddress) const
+{
+    return serverComponent.m_socket->SendTo(outputStream.GetPtr(), outputStream.GetByteLength(), toSocketAddress);
 }
 
 //----------------------------------------------------------------------------------------------------

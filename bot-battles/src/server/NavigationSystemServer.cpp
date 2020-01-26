@@ -45,6 +45,8 @@ bool NavigationSystemServer::Update()
             newEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::TRANSFORM_ALL);
             NotifyEvent(newEvent);
         }
+
+        ILOG("SERVERRR POSITION END: %f %f", transformComponent.lock()->m_position.x, transformComponent.lock()->m_position.y);
     }
 
     return true;

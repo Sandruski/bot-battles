@@ -15,6 +15,7 @@ public:
     GameServer(const std::string& configPath);
 
     bool Init() override;
+    bool Update() override;
 
     ServerComponent& GetServerComponent() { return m_serverComponent; }
 

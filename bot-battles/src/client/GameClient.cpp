@@ -25,11 +25,11 @@ bool GameClient::Init()
     bool ret = false;
 
     // Systems
-    ret = m_systemManager->RegisterSystem<InputSystem>();
+    ret = m_systemManager->RegisterSystem<ClientSystem>();
     if (!ret) {
         return ret;
     }
-    ret = m_systemManager->RegisterSystem<ClientSystem>();
+    ret = m_systemManager->RegisterSystem<InputSystem>();
     if (!ret) {
         return ret;
     }
@@ -53,5 +53,19 @@ bool GameClient::Init()
     ret = Game::Init();
 
     return ret;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool GameClient::Update()
+{
+    std::weak_ptr<ClientSystem> clientSystem = m_systemManager->GetSystem<ClientSystem>();
+
+    clientSystem.lock()->ReceiveIncomingPackets(m_clientComponent);
+
+    Game::Update();
+
+    clientSystem.lock()->SendOutgoingPackets(m_clientComponent);
+
+    return true;
 }
 }
