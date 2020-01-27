@@ -20,7 +20,7 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, Re
 
     const bool hasPosition = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION);
     if (hasPosition) {
-        inputStream.Read(m_position);
+        inputStream.Read(m_lastPosition);
     }
     const bool hasRotation = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_ROTATION);
     if (hasRotation) {
@@ -35,16 +35,36 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, Re
         ClientComponent& clientComponent = g_gameClient->GetClientComponent();
         const bool isLocalPlayer = clientComponent.IsLocalPlayer(entity);
         if (isLocalPlayer) {
-            ClientSidePredictionForLocalPlayer(hasPosition, hasRotation);
-            if (replicationActionType != ReplicationActionType::CREATE) {
-                //ClientSideInterpolation(oldPosition, oldRotation);
+            if (clientComponent.m_isServerReconciliation) {
+                ClientSidePrediction(hasPosition, hasRotation);
+                /*
+                if (replicationActionType != ReplicationActionType::CREATE) {
+                    ClientSideInterpolation(oldPosition, oldRotation);
+                }*/
             }
-        } /*else {
+            else {
+                m_position = m_lastPosition;
+            }
+        } else {
+            if (clientComponent.m_isEntityInterpolation) {
+                if (m_position != m_lastPosition) {
+                    if (m_outOfSyncTimestamp == 0.0f) {
+                        m_outOfSyncTimestamp = Time::GetInstance().GetTime();
+                    }
+                }
+                else {
+                    m_outOfSyncTimestamp = 0.0f;
+                }
+            }
+            else {
+                m_position = m_lastPosition;
+            }
+            /*
             ClientSidePredictionForRemotePlayer(entity);
             if (replicationActionType != ReplicationActionType::CREATE) {
                 ClientSideInterpolation(oldPosition, oldRotation);
-            }
-        }*/
+            }*/
+        }
     }
 
     ILOG("POS AFTER %f %f", m_position.x, m_position.y);
@@ -52,7 +72,7 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, Re
 
 //----------------------------------------------------------------------------------------------------
 // Move replay
-void TransformComponent::ClientSidePredictionForLocalPlayer(bool updatePosition, bool updateRotation)
+void TransformComponent::ClientSidePrediction(bool updatePosition, bool updateRotation)
 {
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     U32 moveCount = clientComponent.m_moves.GetMoveCount();
@@ -73,46 +93,28 @@ void TransformComponent::ClientSidePredictionForLocalPlayer(bool updatePosition,
 }
 
 //----------------------------------------------------------------------------------------------------
-// Dead reckoning
-void TransformComponent::ClientSidePredictionForRemotePlayer(Entity /*entity*/)
-{
-    F32 dt = Time::GetInstance().GetDt();
-    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    F32 rtt = clientComponent.m_RTT;
-    //std::weak_ptr<InputComponent> inputComponent = g_gameClient->GetComponentManager().GetComponent<InputComponent>(entity);
-
-    while (rtt >= dt) {
-
-        //UpdateTransform(inputComponent.lock()->m_acceleration, inputComponent.lock()->m_angularAcceleration, dt);
-        // TODO: should rotation also be here?
-
-        rtt -= dt;
-    }
-}
-
-//----------------------------------------------------------------------------------------------------
 void TransformComponent::ClientSideInterpolation(const Vec3& oldPosition, F32 oldRotation)
 {
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     F32 rtt = clientComponent.m_RTT;
-    F32 startFrameTime = Time::GetInstance().GetTime(); // Start frame time?
+    F32 time = Time::GetInstance().GetTime();
 
     if (oldPosition != m_position) {
         if (m_outOfSyncTimestamp == 0.0f) {
-            m_outOfSyncTimestamp = startFrameTime;
+            m_outOfSyncTimestamp = time;
         }
 
-        F32 outOfSyncTime = startFrameTime - m_outOfSyncTimestamp;
+        F32 outOfSyncTime = time - m_outOfSyncTimestamp;
         if (outOfSyncTime < rtt) {
             F32 t = outOfSyncTime / rtt;
-            Vec3 newPosition = Lerp(oldPosition, m_position, t);
-            m_position = newPosition;
+            m_position = Lerp(oldPosition, m_position, t);
         }
     } else {
         m_outOfSyncTimestamp = 0.0f;
     }
 
     if (oldRotation != m_rotation) {
+        // TODO
     }
 }
 }
