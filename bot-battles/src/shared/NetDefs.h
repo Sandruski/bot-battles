@@ -32,6 +32,8 @@ const NetworkID INVALID_NETWORK_ID = MAX_NETWORK_IDS;
 using SequenceNumber = U16;
 const SequenceNumber INVALID_SEQUENCE_NUMBER = UINT16_MAX;
 
+const F32 ENTITY_INTERPOLATION_PERIOD = 1.0f / FPS_SERVER; // TODO: *2? https://developer.valvesoftware.com/wiki/Source_Multiplayer_Networking#Entity_interpolation
+
 #ifdef _CLIENT
 const F32 TIME_BETWEEN_MOVE = 0.0f;
 #elif defined(_SERVER)

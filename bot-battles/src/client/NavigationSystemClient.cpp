@@ -48,9 +48,11 @@ bool NavigationSystemClient::Update()
             if (clientComponent.m_isEntityInterpolation) {
                 std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
 
+                //https://antriel.com/post/online-platformer-5/
+
                 if (transformComponent.lock()->m_position != transformComponent.lock()->m_endPosition) {
                     F32 outOfSyncTime = time - transformComponent.lock()->m_outOfSyncTimestamp; // TODO: pick frame start time
-                    F32 t = outOfSyncTime / rtt;
+                    F32 t = outOfSyncTime / ENTITY_INTERPOLATION_PERIOD;
                     ILOG("OUTOFSYNCTIME %f RTT %f T %f", outOfSyncTime, rtt, t);
                     //if (outOfSyncTime < rtt) {
                     transformComponent.lock()->m_position = Lerp(transformComponent.lock()->m_startPosition, transformComponent.lock()->m_endPosition, t <= 1.0f ? t : 1.0f);

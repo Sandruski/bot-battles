@@ -31,10 +31,13 @@ inline bool COMPARE_STRINGS(const char* str1, const char* str2)
 static const int SDL_ERROR = -1;
 static const int SDL_KEY_PRESSED = 1;
 
+static const F32 FPS_CLIENT = 60.0f;
+static const F32 FPS_SERVER = 5.0f;
+
 #ifdef _CLIENT
-static const F32 FPS = 60.0f;
+static const F32 FPS = FPS_CLIENT;
 #elif defined(_SERVER)
-static const F32 FPS = 5.0f;
+static const F32 FPS = FPS_SERVER;
 #endif
 
 #endif
