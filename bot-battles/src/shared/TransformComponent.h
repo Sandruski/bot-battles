@@ -39,7 +39,8 @@ struct TransformComponent : public Component
     void UpdatePosition(const Vec2& acceleration, F32 dt);
     void UpdateRotation(F32 angularAcceleration, F32 dt);
 
-    Vec3 m_lastPosition;
+    Vec3 m_startPosition;
+    Vec3 m_endPosition;
     Vec3 m_position;
     F32 m_rotation;
     Vec2 m_velocity;

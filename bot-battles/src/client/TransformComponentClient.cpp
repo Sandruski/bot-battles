@@ -20,7 +20,7 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, Re
 
     const bool hasPosition = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION);
     if (hasPosition) {
-        inputStream.Read(m_lastPosition);
+        inputStream.Read(m_endPosition);
     }
     const bool hasRotation = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_ROTATION);
     if (hasRotation) {
@@ -35,7 +35,7 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, Re
         ClientComponent& clientComponent = g_gameClient->GetClientComponent();
         const bool isLocalPlayer = clientComponent.IsLocalPlayer(entity);
         if (isLocalPlayer) {
-            m_position = m_lastPosition;
+            m_position = m_endPosition;
             if (clientComponent.m_isServerReconciliation) {
                 ClientSidePrediction(hasPosition, hasRotation);
                 /*
@@ -46,18 +46,18 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, Re
         } else {
             if (clientComponent.m_isEntityInterpolation) {
                 if (replicationActionType == ReplicationActionType::CREATE) {
-                    m_position = m_lastPosition;
+                    m_position = m_endPosition;
                 } else {
-                    if (m_position != m_lastPosition) {
-                        if (m_outOfSyncTimestamp == 0.0f) {
-                            m_outOfSyncTimestamp = Time::GetInstance().GetTime();
-                        }
+                    if (m_position != m_endPosition) {
+                        m_startPosition = m_position;
+                        m_outOfSyncTimestamp = Time::GetInstance().GetTime();
+                        ILOG("BECAME OUT OF SYNC %f", m_outOfSyncTimestamp);
                     } else {
                         m_outOfSyncTimestamp = 0.0f;
                     }
                 }
             } else {
-                m_position = m_lastPosition;
+                m_position = m_endPosition;
             }
             /*
             ClientSidePredictionForRemotePlayer(entity);

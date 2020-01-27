@@ -48,15 +48,20 @@ bool NavigationSystemClient::Update()
             if (clientComponent.m_isEntityInterpolation) {
                 std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
 
-                if (transformComponent.lock()->m_position != transformComponent.lock()->m_lastPosition) {
-
-                    F32 outOfSyncTime = time - transformComponent.lock()->m_outOfSyncTimestamp;
-                    if (outOfSyncTime < rtt) {
-                        F32 t = outOfSyncTime / rtt;
-                        transformComponent.lock()->m_position = Lerp(transformComponent.lock()->m_position, transformComponent.lock()->m_lastPosition, t);
-                    }
+                if (transformComponent.lock()->m_position != transformComponent.lock()->m_endPosition) {
+                    F32 outOfSyncTime = time - transformComponent.lock()->m_outOfSyncTimestamp; // TODO: pick frame start time
+                    F32 t = outOfSyncTime / rtt;
+                    ILOG("OUTOFSYNCTIME %f RTT %f T %f", outOfSyncTime, rtt, t);
+                    //if (outOfSyncTime < rtt) {
+                    transformComponent.lock()->m_position = Lerp(transformComponent.lock()->m_startPosition, transformComponent.lock()->m_endPosition, t <= 1.0f ? t : 1.0f);
+                    //}
+                    ILOG("DIFF POSITION. INITIAL: %f %f FINAL: %f %f CURRENT: %f %f",
+                        transformComponent.lock()->m_startPosition.x, transformComponent.lock()->m_startPosition.y,
+                        transformComponent.lock()->m_endPosition.x, transformComponent.lock()->m_endPosition.y,
+                        transformComponent.lock()->m_position.x, transformComponent.lock()->m_position.y);
                 } else {
                     transformComponent.lock()->m_outOfSyncTimestamp = 0.0f;
+                    ILOG("SAME POSITION");
                 }
             }
         }
