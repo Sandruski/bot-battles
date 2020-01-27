@@ -34,7 +34,7 @@ static const int SDL_KEY_PRESSED = 1;
 #ifdef _CLIENT
 static const F32 FPS = 60.0f;
 #elif defined(_SERVER)
-static const F32 FPS = 20.0f;
+static const F32 FPS = 10.0f;
 #endif
 
 #endif

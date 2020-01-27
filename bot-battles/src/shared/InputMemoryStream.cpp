@@ -176,7 +176,6 @@ void InputMemoryStream::Alloc(U32 bitCapacity)
     U32 newByteCapacity = BITS_TO_BYTES(bitCapacity);
     m_buffer = static_cast<char*>(std::malloc(newByteCapacity));
     assert(m_buffer != nullptr);
-
     std::memset(m_buffer, 0, newByteCapacity);
 
     m_capacity = bitCapacity;

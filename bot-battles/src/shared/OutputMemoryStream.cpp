@@ -142,7 +142,9 @@ void OutputMemoryStream::Realloc(U32 bitCapacity)
         m_buffer = static_cast<char*>(std::realloc(m_buffer, newByteCapacity));
         assert(m_buffer != nullptr);
         U32 oldByteCapacity = BITS_TO_BYTES(m_capacity);
-        std::memset(m_buffer + oldByteCapacity, 0, newByteCapacity);
+        char* newBuffer = m_buffer + oldByteCapacity;
+        U32 newBufferCapacity = newByteCapacity - oldByteCapacity;
+        std::memset(newBuffer, 0, newBufferCapacity);
     }
 
     m_capacity = bitCapacity;
