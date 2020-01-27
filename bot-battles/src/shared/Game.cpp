@@ -7,6 +7,7 @@
 #include "FSM.h"
 #include "GameplayState.h"
 #include "InputComponent.h"
+#include "LinkingContext.h"
 #include "SystemManager.h"
 #include "TransformComponent.h"
 #ifdef _DRAW
@@ -41,6 +42,7 @@ Game::Game()
     m_componentManager = std::make_shared<ComponentManager>();
     m_systemManager = std::make_shared<SystemManager>();
     m_fsm = std::make_shared<FSM>();
+    m_linkingContext = std::make_shared<LinkingContext>();
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -239,6 +241,10 @@ bool Game::PreUpdate()
         return ret;
     }
     ret = m_fsm->PreUpdate();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_linkingContext->PreUpdate();
     if (!ret) {
         return ret;
     }

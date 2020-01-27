@@ -38,8 +38,8 @@ private:
     void ConnectionReset(ServerComponent& serverComponent, const SocketAddress& socketAddress);
     void Disconnect(ServerComponent& serverComponent, PlayerID playerID, Entity entity);
 
-    void OnEntityAdded(Entity entity) const;
-    void OnEntityRemoved(Entity entity) const;
+    void OnNetworkEntityAdded(NetworkID networkID) const;
+    void OnNetworkEntityRemoved(NetworkID networkID) const;
     void OnComponentMemberChanged(U32 dirtyState, Entity entity) const;
 };
 }

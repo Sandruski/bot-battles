@@ -3,6 +3,7 @@
 #include "ConfigServer.h"
 #include "EntityManager.h"
 #include "FSM.h"
+#include "LinkingContext.h"
 #include "NavigationSystemServer.h"
 #include "ServerComponent.h"
 #include "ServerSystem.h"
@@ -39,7 +40,7 @@ bool GameServer::Init()
     }
 
     std::weak_ptr<ServerSystem> serverSystem = m_systemManager->GetSystem<ServerSystem>();
-    ret = m_entityManager->AddObserver(serverSystem);
+    ret = m_linkingContext->AddObserver(serverSystem);
     if (!ret) {
         return ret;
     }

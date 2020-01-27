@@ -45,12 +45,13 @@ bool ClientSystem::PreUpdate()
 void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent)
 {
     InputMemoryStream packet;
+    U32 byteCapacity = packet.GetByteCapacity();
     SocketAddress fromSocketAddress;
 
     U32 receivedPacketCount = 0;
 
     while (receivedPacketCount < MAX_PACKETS_PER_FRAME) {
-        I32 readByteCount = clientComponent.m_socket->ReceiveFrom(packet.GetPtr(), packet.GetByteCapacity(), fromSocketAddress);
+        I32 readByteCount = clientComponent.m_socket->ReceiveFrom(packet.GetPtr(), byteCapacity, fromSocketAddress);
         if (readByteCount > 0) {
             packet.SetCapacity(readByteCount);
             packet.ResetHead();
@@ -182,6 +183,7 @@ bool ClientSystem::SendInputPacket(ClientComponent& clientComponent) const
     OutputMemoryStream inputPacket;
     inputPacket.Write(ClientMessageType::INPUT);
     inputPacket.Write(clientComponent.m_playerID);
+    ILOG("CLIENT %u SENT A PACKET", clientComponent.m_playerID);
     clientComponent.m_deliveryManager.WriteState(inputPacket);
 
     F32 timestamp = Time::GetInstance().GetTime();

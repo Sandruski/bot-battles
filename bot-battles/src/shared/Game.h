@@ -2,7 +2,6 @@
 #define __GAME_H__
 
 #include "FontImporter.h"
-#include "LinkingContext.h"
 #include "ResourceManager.h"
 #include "TextureImporter.h"
 #ifdef _DRAW
@@ -17,6 +16,7 @@ class EntityManager;
 class ComponentManager;
 class SystemManager;
 class FSM;
+class LinkingContext;
 
 //----------------------------------------------------------------------------------------------------
 class Game {
@@ -35,7 +35,7 @@ public:
     ComponentManager& GetComponentManager() { return *m_componentManager; }
     SystemManager& GetSystemManager() { return *m_systemManager; }
     FSM& GetFSM() { return *m_fsm; }
-    LinkingContext& GetLinkingContext() { return m_linkingContext; }
+    LinkingContext& GetLinkingContext() { return *m_linkingContext; }
 #ifdef _DRAW
     FontImporter& GetFontImporter()
     {
@@ -66,7 +66,7 @@ protected:
     std::shared_ptr<SystemManager> m_systemManager;
     std::shared_ptr<FSM> m_fsm;
 
-    LinkingContext m_linkingContext;
+    std::shared_ptr<LinkingContext> m_linkingContext;
 #ifdef _DRAW
     FontImporter m_fontImporter;
     TextureImporter m_textureImporter;

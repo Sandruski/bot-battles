@@ -11,6 +11,14 @@ LinkingContext::LinkingContext()
 }
 
 //----------------------------------------------------------------------------------------------------
+bool LinkingContext::PreUpdate()
+{
+    NotifyEvents();
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
 NetworkID LinkingContext::AddEntity(Entity entity, NetworkID networkID)
 {
     NetworkID existingNetworkID = GetNetworkID(entity);
@@ -28,6 +36,11 @@ NetworkID LinkingContext::AddEntity(Entity entity, NetworkID networkID)
     m_networkIDToEntity.insert(std::make_pair(newNetworkID, entity));
     m_entityToNetworkID.insert(std::make_pair(entity, newNetworkID));
 
+    Event newEvent;
+    newEvent.eventType = EventType::NETWORK_ENTITY_ADDED;
+    newEvent.networking.networkID = newNetworkID;
+    PushEvent(newEvent);
+
     return newNetworkID;
 }
 
@@ -44,6 +57,11 @@ bool LinkingContext::RemoveEntity(Entity entity)
     m_entityToNetworkID.erase(entity);
 
     m_availableNetworkIDs.push(networkID);
+
+    Event newEvent;
+    newEvent.eventType = EventType::NETWORK_ENTITY_REMOVED;
+    newEvent.networking.networkID = networkID;
+    PushEvent(newEvent);
 
     return true;
 }

@@ -19,13 +19,13 @@ void ServerSystem::OnNotify(const Event& event)
 {
     switch (event.eventType) {
 
-    case EventType::ENTITY_ADDED: {
-        OnEntityAdded(event.entity.entity);
+    case EventType::NETWORK_ENTITY_ADDED: {
+        OnNetworkEntityAdded(event.networking.networkID);
         break;
     }
 
-    case EventType::ENTITY_REMOVED: {
-        OnEntityRemoved(event.entity.entity);
+    case EventType::NETWORK_ENTITY_REMOVED: {
+        OnNetworkEntityRemoved(event.networking.networkID);
         break;
     }
 
@@ -74,12 +74,13 @@ bool ServerSystem::PreUpdate()
 void ServerSystem::ReceiveIncomingPackets(ServerComponent& serverComponent)
 {
     InputMemoryStream packet;
+    U32 byteCapacity = packet.GetByteCapacity();
     SocketAddress fromSocketAddress;
 
     U32 receivedPacketCount = 0;
 
     while (receivedPacketCount < MAX_PACKETS_PER_FRAME) {
-        I32 readByteCount = serverComponent.m_socket->ReceiveFrom(packet.GetPtr(), packet.GetByteCapacity(), fromSocketAddress);
+        I32 readByteCount = serverComponent.m_socket->ReceiveFrom(packet.GetPtr(), byteCapacity, fromSocketAddress);
         if (readByteCount > 0) {
             packet.SetCapacity(readByteCount);
             packet.ResetHead();
@@ -150,6 +151,7 @@ void ServerSystem::ReceivePacket(ServerComponent& serverComponent, InputMemorySt
     if (playerID != INVALID_PLAYER_ID) {
         std::shared_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
         clientProxy->UpdateLastPacketTime();
+        ILOG("RECEIVED PACKET FROM PLAYER %u", playerID);
     }
 }
 
@@ -307,14 +309,9 @@ void ServerSystem::Disconnect(ServerComponent& serverComponent, PlayerID playerI
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerSystem::OnEntityAdded(Entity entity) const
+void ServerSystem::OnNetworkEntityAdded(NetworkID networkID) const
 {
-    assert(entity < INVALID_ENTITY);
-
-    NetworkID networkID = g_gameServer->GetLinkingContext().GetNetworkID(entity);
-    if (networkID == INVALID_NETWORK_ID) {
-        return;
-    }
+    assert(networkID < INVALID_NETWORK_ID);
 
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.GetPlayerIDToClientProxyMap();
@@ -324,14 +321,9 @@ void ServerSystem::OnEntityAdded(Entity entity) const
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerSystem::OnEntityRemoved(Entity entity) const
+void ServerSystem::OnNetworkEntityRemoved(NetworkID networkID) const
 {
-    assert(entity < INVALID_ENTITY);
-
-    NetworkID networkID = g_gameServer->GetLinkingContext().GetNetworkID(entity);
-    if (networkID == INVALID_NETWORK_ID) {
-        return;
-    }
+    assert(networkID < INVALID_NETWORK_ID);
 
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.GetPlayerIDToClientProxyMap();

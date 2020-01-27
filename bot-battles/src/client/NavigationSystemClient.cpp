@@ -5,6 +5,7 @@
 #include "ComponentMemberTypes.h"
 #include "GameClient.h"
 #include "InputComponent.h"
+#include "LinkingContext.h"
 #include "TransformComponent.h"
 
 namespace sand {
@@ -25,10 +26,13 @@ bool NavigationSystemClient::Update()
 
     for (auto& entity : m_entities) {
 
+        if (g_gameClient->GetLinkingContext().GetNetworkID(entity) == INVALID_NETWORK_ID) {
+            continue;
+        }
+
         const bool isLocalPlayer = clientComponent.IsLocalPlayer(entity);
         if (isLocalPlayer) {
-            if (clientComponent.m_isClientSidePrediction && clientComponent.m_isLastMovePending)
-            {
+            if (clientComponent.m_isClientSidePrediction && clientComponent.m_isLastMovePending) {
                 const Move& move = clientComponent.m_moves.GetLastMove();
                 const InputComponent& inputComponent = move.GetInputComponent();
                 F32 dt = move.GetDt();
@@ -40,10 +44,8 @@ bool NavigationSystemClient::Update()
 
                 ILOG("CLIENTTT POSITION END: %f %f", transformComponent.lock()->m_position.x, transformComponent.lock()->m_position.y);
             }
-        }
-        else {
-            if (clientComponent.m_isEntityInterpolation) 
-            {
+        } else {
+            if (clientComponent.m_isEntityInterpolation) {
                 std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
 
                 if (transformComponent.lock()->m_position != transformComponent.lock()->m_lastPosition) {
@@ -53,9 +55,7 @@ bool NavigationSystemClient::Update()
                         F32 t = outOfSyncTime / rtt;
                         transformComponent.lock()->m_position = Lerp(transformComponent.lock()->m_position, transformComponent.lock()->m_lastPosition, t);
                     }
-                }
-                else
-                {
+                } else {
                     transformComponent.lock()->m_outOfSyncTimestamp = 0.0f;
                 }
             }

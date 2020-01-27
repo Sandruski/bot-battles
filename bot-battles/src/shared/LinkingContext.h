@@ -4,9 +4,11 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class LinkingContext {
+class LinkingContext : public Subject {
 public:
     LinkingContext();
+
+    bool PreUpdate();
 
     NetworkID AddEntity(Entity entity, NetworkID networkID = INVALID_NETWORK_ID);
     bool RemoveEntity(Entity entity);

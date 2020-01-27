@@ -74,8 +74,6 @@ Entity EntityManager::AddEntity()
 //----------------------------------------------------------------------------------------------------
 Signature EntityManager::GetSignature(Entity entity)
 {
-    assert(entity < INVALID_ENTITY);
-
     U32 signatureIndex = m_entitiesToSignatures.at(entity);
     return m_signatures.at(signatureIndex);
 }

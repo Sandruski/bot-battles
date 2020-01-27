@@ -25,6 +25,7 @@ struct NetworkingEvent {
     EventType eventType;
     PlayerID playerID;
     Entity entity;
+    NetworkID networkID;
 };
 
 //----------------------------------------------------------------------------------------------------

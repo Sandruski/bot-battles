@@ -35,6 +35,7 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, Re
         ClientComponent& clientComponent = g_gameClient->GetClientComponent();
         const bool isLocalPlayer = clientComponent.IsLocalPlayer(entity);
         if (isLocalPlayer) {
+            m_position = m_lastPosition;
             if (clientComponent.m_isServerReconciliation) {
                 ClientSidePrediction(hasPosition, hasRotation);
                 /*
@@ -42,21 +43,20 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, Re
                     ClientSideInterpolation(oldPosition, oldRotation);
                 }*/
             }
-            else {
-                m_position = m_lastPosition;
-            }
         } else {
             if (clientComponent.m_isEntityInterpolation) {
-                if (m_position != m_lastPosition) {
-                    if (m_outOfSyncTimestamp == 0.0f) {
-                        m_outOfSyncTimestamp = Time::GetInstance().GetTime();
+                if (replicationActionType == ReplicationActionType::CREATE) {
+                    m_position = m_lastPosition;
+                } else {
+                    if (m_position != m_lastPosition) {
+                        if (m_outOfSyncTimestamp == 0.0f) {
+                            m_outOfSyncTimestamp = Time::GetInstance().GetTime();
+                        }
+                    } else {
+                        m_outOfSyncTimestamp = 0.0f;
                     }
                 }
-                else {
-                    m_outOfSyncTimestamp = 0.0f;
-                }
-            }
-            else {
+            } else {
                 m_position = m_lastPosition;
             }
             /*
