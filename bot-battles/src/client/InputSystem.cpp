@@ -48,11 +48,8 @@ bool InputSystem::Update()
     if (m_keyboard[SDL_SCANCODE_S] == KeyState::REPEAT) {
         inputComponent.m_acceleration.y = 1.0f * multiplier;
     }
-    if (m_keyboard[SDL_SCANCODE_D] == KeyState::UP) {
-        ILOG("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-    }
 
-    if (inputComponent.m_acceleration.x != 0.0f) {
+    if (inputComponent.m_acceleration.x != 0.0f || inputComponent.m_acceleration.y != 0.0f) {
         ILOG("CLIENT NEW FRAME!!!");
         clientComponent.m_moves.AddMove(inputComponent, static_cast<U32>(InputComponentMemberType::INPUT_ACCELERATION)); // TODO: not only acceleration...
         clientComponent.m_isLastMovePending = true;
