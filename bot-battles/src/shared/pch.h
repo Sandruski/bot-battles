@@ -60,6 +60,7 @@
 #include "InputBuffer.h"
 #include "InputMemoryStream.h"
 #include "OutputMemoryStream.h"
+#include "TransformBuffer.h"
 
 // Defs
 #include "ComponentDefs.h"

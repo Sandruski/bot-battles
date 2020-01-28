@@ -12,8 +12,8 @@ Input::Input()
 }
 
 //----------------------------------------------------------------------------------------------------
-Input::Input(const InputComponent& input, U32 dirtyState, F32 dt, U32 frame)
-    : m_inputComponent(input)
+Input::Input(const InputComponent& inputComponent, U32 dirtyState, F32 dt, U32 frame)
+    : m_inputComponent(inputComponent)
     , m_dirtyState(dirtyState)
     , m_dt(dt)
     , m_frame(frame)

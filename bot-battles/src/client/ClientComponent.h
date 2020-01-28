@@ -34,9 +34,9 @@ struct ClientComponent : public Component {
     PlayerID m_playerID;
     Entity m_entity;
 
-    //std::deque<TransformComponent> m_moves;
     InputBuffer m_inputBuffer;
     bool m_isLastMovePending;
+    TransformBuffer m_transformBuffer;
 
     F32 m_RTT;
 
