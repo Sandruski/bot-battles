@@ -9,22 +9,15 @@ TransformBuffer::TransformBuffer()
 }
 
 //----------------------------------------------------------------------------------------------------
-const Transform& TransformBuffer::Add(const TransformComponent& transformComponent)
+void TransformBuffer::Add(const TransformComponent& transformComponent)
 {
-    // TODO: frame or internal counter which can also be used to retrieve the last move frame?
-    return m_transforms.emplace_back(transformComponent, Time::GetInstance().GetFrame()); // TODO: USE DT! OMG
+    m_transforms.emplace_back(std::make_pair(Time::GetInstance().GetFrame(), transformComponent));
 }
 
 //----------------------------------------------------------------------------------------------------
-const Transform& TransformBuffer::Add(const Transform& input)
+void TransformBuffer::RemoveUntilFrame(U32 frame)
 {
-    return m_transforms.emplace_back(input);
-}
-
-//----------------------------------------------------------------------------------------------------
-void TransformBuffer::Remove(U32 frame)
-{
-    while (!m_transforms.empty() && m_transforms.front().GetFrame() <= frame) {
+    while (!m_transforms.empty() && m_transforms.front().first <= frame) {
         m_transforms.pop_front();
     }
 }
@@ -36,26 +29,27 @@ void TransformBuffer::Clear()
 }
 
 //----------------------------------------------------------------------------------------------------
-const Transform& TransformBuffer::Get(U32 index) const
+TransformComponent& TransformBuffer::GetTransformComponentAtFrame(U32 frame)
 {
-    return m_transforms.at(index);
-}
+    for (auto& pair : m_transforms) {
+        if (pair.first == frame) {
+            return pair.second;
+        }
+    }
 
-//----------------------------------------------------------------------------------------------------
-const Transform& TransformBuffer::GetLast() const
-{
-    return m_transforms.back();
-}
-
-//----------------------------------------------------------------------------------------------------
-bool TransformBuffer::HasTransforms() const
-{
-    return !m_transforms.empty();
+    assert(false);
+    return m_transforms.back().second;
 }
 
 //----------------------------------------------------------------------------------------------------
 U32 TransformBuffer::GetCount() const
 {
     return m_transforms.size();
+}
+
+//----------------------------------------------------------------------------------------------------
+TransformComponent& TransformBuffer::Get(U32 index)
+{
+    return m_transforms.at(index).second;
 }
 }

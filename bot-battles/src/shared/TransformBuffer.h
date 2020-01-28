@@ -1,7 +1,7 @@
 #ifndef __TRANSFORM_BUFFER_H__
 #define __TRANSFORM_BUFFER_H__
 
-#include "Transform.h"
+#include "TransformComponent.h"
 
 namespace sand {
 
@@ -10,18 +10,16 @@ class TransformBuffer {
 public:
     TransformBuffer();
 
-    const Transform& Add(const TransformComponent& transformComponent, U32 frame);
-    const Transform& Add(const Transform& transform);
-    void Remove(U32 frame);
+    void Add(const TransformComponent& transformComponent);
+    void RemoveUntilFrame(U32 frame);
     void Clear();
+    TransformComponent& GetTransformComponentAtFrame(U32 frame);
 
-    const Transform& Get(U32 index) const;
-    const Transform& GetLast() const;
-    bool HasTransforms() const;
     U32 GetCount() const;
+    TransformComponent& Get(U32 index);
 
 private:
-    std::deque<Transform> m_transforms;
+    std::deque<std::pair<U32, TransformComponent>> m_transforms;
 };
 }
 

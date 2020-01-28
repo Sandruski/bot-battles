@@ -16,7 +16,7 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, Re
     //Vec3 oldPosition = m_position;
     //F32 oldRotation = m_rotation;
 
-    ILOG("POS BEFORE %f %f", m_position.x, m_position.y);
+    ILOG("POS BEFORE %f %f", m_position.x);
 
     const bool hasPosition = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION);
     if (hasPosition) {
@@ -27,7 +27,7 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, Re
         inputStream.Read(m_rotation);
     }
 
-    ILOG("POS READ %f %f", m_position.x, m_position.y);
+    ILOG("POS READ %f %f", m_endPosition.x);
 
     // TODO: read velocity and angular velocity
 
@@ -35,14 +35,49 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, Re
         ClientComponent& clientComponent = g_gameClient->GetClientComponent();
         const bool isLocalPlayer = clientComponent.IsLocalPlayer(entity);
         if (isLocalPlayer) {
-            m_position = m_endPosition;
-            if (clientComponent.m_isServerReconciliation) {
-                ClientSidePrediction(hasPosition, hasRotation);
-                /*
+
+            if (replicationActionType == ReplicationActionType::CREATE) {
+                m_position = m_endPosition;
+            } else if (clientComponent.m_isFrameDirty) { // TODO: remove this?
+                TransformComponent& transformComponent = clientComponent.m_transformBuffer.GetTransformComponentAtFrame(clientComponent.m_frame);
+                clientComponent.m_transformBuffer.RemoveUntilFrame(clientComponent.m_frame);
+                clientComponent.m_isFrameDirty = false;
+
+                if (transformComponent.m_position != m_endPosition) {
+                    transformComponent.m_position = m_endPosition;
+                    //Replay(hasPosition, hasRotation);
+
+                    U32 inputCount = clientComponent.m_inputBuffer.GetCount();
+                    U32 transformCount = clientComponent.m_transformBuffer.GetCount();
+                    assert(inputCount == transformCount);
+                    ILOG("CLIENT SIDE PREDICTION FOR %u INPUTS", inputCount);
+                    ILOG("Client Side Misprediction! Replaying inputs...");
+                    for (U32 i = 0; i < inputCount; ++i) {
+
+                        transformComponent = clientComponent.m_transformBuffer.Get(i);
+
+                        const Input& input = clientComponent.m_inputBuffer.Get(i);
+                        const InputComponent& inputComponent = input.GetInputComponent();
+                        F32 dt = input.GetDt();
+
+                        if (hasPosition) {
+                            transformComponent.UpdatePosition(inputComponent.m_acceleration, dt);
+                        }
+                        if (hasRotation) {
+                            transformComponent.UpdateRotation(inputComponent.m_angularAcceleration, dt);
+                        }
+                        ILOG("REPLAY MOVE %u", input.GetFrame());
+                    }
+                    m_position = transformComponent.m_position;
+                }
+            }
+            //if (clientComponent.m_isServerReconciliation) {
+            //ClientSidePrediction(hasPosition, hasRotation);
+            /*
                 if (replicationActionType != ReplicationActionType::CREATE) {
                     ClientSideInterpolation(oldPosition, oldRotation);
                 }*/
-            }
+            //}
         } else {
             if (clientComponent.m_isEntityInterpolation) {
                 if (replicationActionType == ReplicationActionType::CREATE) {
@@ -67,12 +102,12 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, Re
         }
     }
 
-    ILOG("POS AFTER %f %f", m_position.x, m_position.y);
+    ILOG("POS AFTER %f %f", m_position.x);
 }
 
 //----------------------------------------------------------------------------------------------------
 // Move replay
-void TransformComponent::ClientSidePrediction(bool updatePosition, bool updateRotation)
+void TransformComponent::Replay(bool updatePosition, bool updateRotation)
 {
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     U32 moveCount = clientComponent.m_inputBuffer.GetCount();

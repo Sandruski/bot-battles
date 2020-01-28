@@ -148,13 +148,13 @@ void ClientSystem::ReceiveStatePacket(ClientComponent& clientComponent, InputMem
         clientComponent.m_RTT = Time::GetInstance().GetTime() - timestamp;
     }
 
-    bool isFrameDirty = false;
-    inputStream.Read(isFrameDirty);
-    if (isFrameDirty) {
-        U32 frame = 0;
-        inputStream.Read(frame);
-        ILOG("CLIENT RECEIVED ACKD FRAME %u", frame);
-        clientComponent.m_inputBuffer.Remove(frame);
+    //bool isFrameDirty = false;
+    inputStream.Read(clientComponent.m_isFrameDirty);
+    if (clientComponent.m_isFrameDirty) {
+        //U32 frame = 0;
+        inputStream.Read(clientComponent.m_frame); // TODO: THIS SHOULD BE THE LAST FRAME THAT HAS BEEN PROCESSED BY THIS REPLICATION, NOT THE ACKD!!!
+        ILOG("CLIENT RECEIVED ACKD FRAME %u", clientComponent.m_frame);
+        clientComponent.m_inputBuffer.Remove(clientComponent.m_frame);
     }
 
     clientComponent.m_replicationManager.Read(inputStream);

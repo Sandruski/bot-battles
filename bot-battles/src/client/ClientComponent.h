@@ -38,6 +38,9 @@ struct ClientComponent : public Component {
     bool m_isLastMovePending;
     TransformBuffer m_transformBuffer;
 
+    bool m_isFrameDirty;
+    U32 m_frame;
+
     F32 m_RTT;
 
     bool m_isClientSidePrediction;
