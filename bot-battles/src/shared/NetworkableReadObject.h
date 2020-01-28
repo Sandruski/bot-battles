@@ -5,6 +5,8 @@
 
 namespace sand {
 
+class InputMemoryStream;
+
 //----------------------------------------------------------------------------------------------------
 struct NetworkableReadObject {
 

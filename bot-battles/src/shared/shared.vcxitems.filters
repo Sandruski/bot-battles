@@ -147,9 +147,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)LinkingContext.h">
       <Filter>Header Files\Networking</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Move.h">
-      <Filter>Header Files\Networking</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)TransformComponent.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
@@ -249,9 +246,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)OutputMemoryStream.h">
       <Filter>Header Files\Networking</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Moves.h">
-      <Filter>Header Files\Networking</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)InputComponent.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
@@ -268,6 +262,12 @@
       <Filter>Header Files\States</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)NetworkableReadObject.h">
+      <Filter>Header Files\Networking</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Projects\bot-battles\bot-battles\src\shared\Input.h">
+      <Filter>Header Files\Networking</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Projects\bot-battles\bot-battles\src\shared\InputBuffer.h">
       <Filter>Header Files\Networking</Filter>
     </ClInclude>
   </ItemGroup>
@@ -315,9 +315,6 @@
       <Filter>Source Files\Networking</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)LinkingContext.cpp">
-      <Filter>Source Files\Networking</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Move.cpp">
       <Filter>Source Files\Networking</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Resource.cpp">
@@ -392,9 +389,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)OutputMemoryStream.cpp">
       <Filter>Source Files\Networking</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Moves.cpp">
-      <Filter>Source Files\Networking</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)InputComponent.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
@@ -403,6 +397,12 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)GameplayState.cpp">
       <Filter>Source Files\States</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Projects\bot-battles\bot-battles\src\shared\Input.cpp">
+      <Filter>Source Files\Networking</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Projects\bot-battles\bot-battles\src\shared\InputBuffer.cpp">
+      <Filter>Source Files\Networking</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

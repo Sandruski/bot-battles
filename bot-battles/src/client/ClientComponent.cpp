@@ -17,16 +17,16 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 ClientComponent::ClientComponent()
-    : m_replicationManager(),
-    m_deliveryManager(),
-    m_socket(nullptr)
+    : m_replicationManager()
+    , m_deliveryManager()
+    , m_socket(nullptr)
     , m_socketAddress(nullptr)
     , m_name()
     , m_ip()
     , m_port()
     , m_playerID(INVALID_PLAYER_ID)
     , m_entity(INVALID_ENTITY)
-    , m_moves()
+    , m_inputBuffer()
     , m_isLastMovePending(false)
     , m_RTT(0.0f)
     , m_isClientSidePrediction(false)

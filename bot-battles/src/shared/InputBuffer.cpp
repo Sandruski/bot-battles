@@ -1,61 +1,61 @@
-#include "Moves.h"
+#include "InputBuffer.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-Moves::Moves()
-    : m_moves()
+InputBuffer::InputBuffer()
+    : m_inputs()
 {
 }
 
 //----------------------------------------------------------------------------------------------------
-const Move& Moves::AddMove(const InputComponent& input, U32 dirtyState)
+const Input& InputBuffer::Add(const InputComponent& inputComponent, U32 dirtyState)
 {
     // TODO: frame or internal counter which can also be used to retrieve the last move frame?
-    return m_moves.emplace_back(input, dirtyState, 1.0f, Time::GetInstance().GetFrame()); // TODO: USE DT! OMG
+    return m_inputs.emplace_back(inputComponent, dirtyState, 1.0f, Time::GetInstance().GetFrame()); // TODO: USE DT! OMG
 }
 
 //----------------------------------------------------------------------------------------------------
-const Move& Moves::AddMove(const Move& move)
+const Input& InputBuffer::Add(const Input& input)
 {
-    return m_moves.emplace_back(move);
+    return m_inputs.emplace_back(input);
 }
 
 //----------------------------------------------------------------------------------------------------
-const Move& Moves::GetMove(U32 index) const
+void InputBuffer::Remove(U32 frame)
 {
-    return m_moves.at(index);
-}
-
-//----------------------------------------------------------------------------------------------------
-const Move& Moves::GetLastMove() const
-{
-    return m_moves.back();
-}
-
-//----------------------------------------------------------------------------------------------------
-bool Moves::HasMoves() const
-{
-    return !m_moves.empty();
-}
-
-//----------------------------------------------------------------------------------------------------
-U32 Moves::GetMoveCount() const
-{
-    return m_moves.size();
-}
-
-//----------------------------------------------------------------------------------------------------
-void Moves::RemoveMoves(U32 lastMoveFrame)
-{
-    while (!m_moves.empty() && m_moves.front().GetFrame() <= lastMoveFrame) {
-        m_moves.pop_front();
+    while (!m_inputs.empty() && m_inputs.front().GetFrame() <= frame) {
+        m_inputs.pop_front();
     }
 }
 
 //----------------------------------------------------------------------------------------------------
-void Moves::ClearMoves()
+void InputBuffer::Clear()
 {
-    m_moves.clear();
+    m_inputs.clear();
+}
+
+//----------------------------------------------------------------------------------------------------
+const Input& InputBuffer::Get(U32 index) const
+{
+    return m_inputs.at(index);
+}
+
+//----------------------------------------------------------------------------------------------------
+const Input& InputBuffer::GetLast() const
+{
+    return m_inputs.back();
+}
+
+//----------------------------------------------------------------------------------------------------
+bool InputBuffer::HasInputs() const
+{
+    return !m_inputs.empty();
+}
+
+//----------------------------------------------------------------------------------------------------
+U32 InputBuffer::GetCount() const
+{
+    return m_inputs.size();
 }
 }

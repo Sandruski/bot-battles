@@ -75,20 +75,20 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, Re
 void TransformComponent::ClientSidePrediction(bool updatePosition, bool updateRotation)
 {
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    U32 moveCount = clientComponent.m_moves.GetMoveCount();
+    U32 moveCount = clientComponent.m_inputBuffer.GetCount();
     ILOG("CLIENT SIDE PREDICTION FOR %u MOVES", moveCount);
     for (U32 i = 0; i < moveCount; ++i) {
 
-        const Move& move = clientComponent.m_moves.GetMove(i);
-        const InputComponent& moveInputComponent = move.GetInputComponent();
-        F32 dt = move.GetDt();
+        const Input& input = clientComponent.m_inputBuffer.Get(i);
+        const InputComponent& moveInputComponent = input.GetInputComponent();
+        F32 dt = input.GetDt();
         if (updatePosition) {
             UpdatePosition(moveInputComponent.m_acceleration, dt);
         }
         if (updateRotation) {
             UpdateRotation(moveInputComponent.m_angularAcceleration, dt);
         }
-        ILOG("REPLAY MOVE %u", move.GetFrame());
+        ILOG("REPLAY MOVE %u", input.GetFrame());
     }
 }
 

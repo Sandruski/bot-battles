@@ -33,9 +33,9 @@ bool NavigationSystemClient::Update()
         const bool isLocalPlayer = clientComponent.IsLocalPlayer(entity);
         if (isLocalPlayer) {
             if (clientComponent.m_isClientSidePrediction && clientComponent.m_isLastMovePending) {
-                const Move& move = clientComponent.m_moves.GetLastMove();
-                const InputComponent& inputComponent = move.GetInputComponent();
-                F32 dt = move.GetDt();
+                const Input& input = clientComponent.m_inputBuffer.GetLast();
+                const InputComponent& inputComponent = input.GetInputComponent();
+                F32 dt = input.GetDt();
 
                 std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
                 transformComponent.lock()->UpdateTransform(inputComponent.m_acceleration, inputComponent.m_angularAcceleration, dt);
@@ -47,8 +47,6 @@ bool NavigationSystemClient::Update()
         } else {
             if (clientComponent.m_isEntityInterpolation) {
                 std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
-
-                //https://antriel.com/post/online-platformer-5/
 
                 if (transformComponent.lock()->m_position != transformComponent.lock()->m_endPosition) {
                     F32 outOfSyncTime = time - transformComponent.lock()->m_outOfSyncTimestamp; // TODO: pick frame start time

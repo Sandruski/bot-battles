@@ -3,7 +3,6 @@
 
 #include "Component.h"
 #include "DeliveryManagerClient.h"
-#include "Moves.h"
 #include "ReplicationManagerClient.h"
 
 namespace sand {
@@ -36,7 +35,7 @@ struct ClientComponent : public Component {
     Entity m_entity;
 
     //std::deque<TransformComponent> m_moves;
-    Moves m_moves;
+    InputBuffer m_inputBuffer;
     bool m_isLastMovePending;
 
     F32 m_RTT;

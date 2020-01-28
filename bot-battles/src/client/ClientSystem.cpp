@@ -154,7 +154,7 @@ void ClientSystem::ReceiveStatePacket(ClientComponent& clientComponent, InputMem
         U32 frame = 0;
         inputStream.Read(frame);
         ILOG("CLIENT RECEIVED ACKD FRAME %u", frame);
-        clientComponent.m_moves.RemoveMoves(frame);
+        clientComponent.m_inputBuffer.Remove(frame);
     }
 
     clientComponent.m_replicationManager.Read(inputStream);
@@ -189,15 +189,15 @@ bool ClientSystem::SendInputPacket(ClientComponent& clientComponent) const
     F32 timestamp = Time::GetInstance().GetTime();
     inputPacket.Write(timestamp);
 
-    const bool hasMoves = clientComponent.m_moves.HasMoves();
-    inputPacket.Write(hasMoves);
-    if (hasMoves) {
-        U32 moveCount = clientComponent.m_moves.GetMoveCount();
-        inputPacket.Write(moveCount);
-        for (U32 i = 0; i < moveCount; ++i) {
-            const Move& move = clientComponent.m_moves.GetMove(i);
-            move.Write(inputPacket);
-            ILOG("CLIENT SENT FRAME %u", move.GetFrame());
+    const bool hasInputs = clientComponent.m_inputBuffer.HasInputs();
+    inputPacket.Write(hasInputs);
+    if (hasInputs) {
+        U32 inputCount = clientComponent.m_inputBuffer.GetCount();
+        inputPacket.Write(inputCount);
+        for (U32 i = 0; i < inputCount; ++i) {
+            const Input& input = clientComponent.m_inputBuffer.Get(i);
+            input.Write(inputPacket);
+            ILOG("CLIENT SENT FRAME %u", input.GetFrame());
         }
     }
 

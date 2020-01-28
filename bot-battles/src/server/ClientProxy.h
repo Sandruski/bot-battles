@@ -2,7 +2,6 @@
 #define __CLIENT_PROXY_H__
 
 #include "DeliveryManagerServer.h"
-#include "Moves.h"
 #include "SocketAddress.h"
 
 namespace sand {
@@ -24,7 +23,7 @@ public:
     std::shared_ptr<ReplicationManagerServer> m_replicationManager;
     DeliveryManagerServer m_deliveryManager;
 
-    Moves m_moves;
+    InputBuffer m_inputBuffer;
 
     bool m_isTimestampDirty;
     F32 m_timestamp;

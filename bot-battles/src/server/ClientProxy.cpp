@@ -8,7 +8,7 @@ namespace sand {
 ClientProxy::ClientProxy(const SocketAddress& socketAddress, const char* name)
     : m_replicationManager(nullptr)
     , m_deliveryManager()
-    , m_moves()
+    , m_inputBuffer()
     , m_isTimestampDirty(false)
     , m_timestamp(0.0f)
     , m_isFrameDirty(false)

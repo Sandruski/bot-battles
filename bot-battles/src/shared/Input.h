@@ -1,15 +1,15 @@
-#ifndef __MOVE_H__
-#define __MOVE_H__
+#ifndef __INPUT_H__
+#define __INPUT_H__
 
 #include "InputComponent.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class Move {
+class Input {
 public:
-    Move();
-    Move(const InputComponent& inputComponent, U32 dirtyState, F32 dt, U32 frame);
+    Input();
+    Input(const InputComponent& inputComponent, U32 dirtyState, F32 dt, U32 frame);
 
 #ifdef _CLIENT
     void Write(OutputMemoryStream& outputStream) const;

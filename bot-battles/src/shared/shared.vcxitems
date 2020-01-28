@@ -40,8 +40,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Memory.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)InputMemoryStream.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MessageTypes.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Move.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Moves.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Input.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)InputBuffer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)NetDefs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)NetUtils.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)NetworkableReadObject.h" />
@@ -102,8 +102,8 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)LinkingContext.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)InputMemoryStream.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Move.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Moves.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Input.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)InputBuffer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)OutputMemoryStream.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)RendererSystem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ReplicationCommand.cpp" />

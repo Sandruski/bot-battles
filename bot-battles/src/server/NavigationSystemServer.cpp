@@ -31,13 +31,13 @@ bool NavigationSystemServer::Update()
         std::shared_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
         assert(clientProxy != nullptr);
 
-        U32 moveCount = clientProxy->m_moves.GetMoveCount();
-        for (U32 i = 0; i < moveCount; ++i) {
+        U32 inputCount = clientProxy->m_inputBuffer.GetCount();
+        for (U32 i = 0; i < inputCount; ++i) {
 
-            const Move& move = clientProxy->m_moves.GetMove(i);
-            const InputComponent& moveInputComponent = move.GetInputComponent();
-            F32 dt = move.GetDt();
-            transformComponent.lock()->UpdateTransform(moveInputComponent.m_acceleration, moveInputComponent.m_angularAcceleration, dt);
+            const Input& input = clientProxy->m_inputBuffer.Get(i);
+            const InputComponent& inputComponent = input.GetInputComponent();
+            F32 dt = input.GetDt();
+            transformComponent.lock()->UpdateTransform(inputComponent.m_acceleration, inputComponent.m_angularAcceleration, dt);
 
             Event newEvent;
             newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;

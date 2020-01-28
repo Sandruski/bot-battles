@@ -3,6 +3,8 @@
 
 namespace sand {
 
+class OutputMemoryStream;
+
 //----------------------------------------------------------------------------------------------------
 struct NetworkableWriteObject {
 

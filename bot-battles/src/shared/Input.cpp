@@ -1,9 +1,9 @@
-#include "Move.h"
+#include "Input.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-Move::Move()
+Input::Input()
     : m_inputComponent()
     , m_dirtyState(0)
     , m_dt(0.0f)
@@ -12,7 +12,7 @@ Move::Move()
 }
 
 //----------------------------------------------------------------------------------------------------
-Move::Move(const InputComponent& input, U32 dirtyState, F32 dt, U32 frame)
+Input::Input(const InputComponent& input, U32 dirtyState, F32 dt, U32 frame)
     : m_inputComponent(input)
     , m_dirtyState(dirtyState)
     , m_dt(dt)
@@ -22,7 +22,7 @@ Move::Move(const InputComponent& input, U32 dirtyState, F32 dt, U32 frame)
 
 #ifdef _CLIENT
 //----------------------------------------------------------------------------------------------------
-void Move::Write(OutputMemoryStream& outputStream) const
+void Input::Write(OutputMemoryStream& outputStream) const
 {
     outputStream.Write(m_dirtyState);
     m_inputComponent.Write(outputStream, m_dirtyState);
@@ -31,7 +31,7 @@ void Move::Write(OutputMemoryStream& outputStream) const
 }
 #elif defined(_SERVER)
 //----------------------------------------------------------------------------------------------------
-void Move::Read(InputMemoryStream& inputStream)
+void Input::Read(InputMemoryStream& inputStream)
 {
     inputStream.Read(m_dirtyState);
     m_inputComponent.Read(inputStream, m_dirtyState, ReplicationActionType::NONE, INVALID_ENTITY);
@@ -41,25 +41,25 @@ void Move::Read(InputMemoryStream& inputStream)
 #endif
 
 //----------------------------------------------------------------------------------------------------
-const InputComponent& Move::GetInputComponent() const
+const InputComponent& Input::GetInputComponent() const
 {
     return m_inputComponent;
 }
 
 //----------------------------------------------------------------------------------------------------
-U32 Move::GetDirtyState() const
+U32 Input::GetDirtyState() const
 {
     return m_dirtyState;
 }
 
 //----------------------------------------------------------------------------------------------------
-F32 Move::GetDt() const
+F32 Input::GetDt() const
 {
     return m_dt;
 }
 
 //----------------------------------------------------------------------------------------------------
-U32 Move::GetFrame() const
+U32 Input::GetFrame() const
 {
     return m_frame;
 }

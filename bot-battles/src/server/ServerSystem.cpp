@@ -209,22 +209,22 @@ void ServerSystem::ReceiveInputPacket(ServerComponent& serverComponent, InputMem
     inputStream.Read(clientProxy->m_timestamp);
     clientProxy->m_isTimestampDirty = true;
 
-    bool hasMoves = false;
-    inputStream.Read(hasMoves);
-    if (hasMoves) {
-        U32 moveCount = 0;
-        inputStream.Read(moveCount);
-        assert(moveCount > 0);
+    bool hasInputs = false;
+    inputStream.Read(hasInputs);
+    if (hasInputs) {
+        U32 inputCount = 0;
+        inputStream.Read(inputCount);
+        assert(inputCount > 0);
         clientProxy->m_isFrameDirty = true;
-        Move move;
-        while (moveCount > 0) {
-            move.Read(inputStream);
-            if (move.GetFrame() > clientProxy->m_frame) { // TODO: be careful if new frame is 15 and last frame is 13 and frame 14 contains a shoot for example
-                clientProxy->m_moves.AddMove(move);
-                clientProxy->m_frame = move.GetFrame();
+        Input input;
+        while (inputCount > 0) {
+            input.Read(inputStream);
+            if (input.GetFrame() > clientProxy->m_frame) { // TODO: be careful if new frame is 15 and last frame is 13 and frame 14 contains a shoot for example
+                clientProxy->m_inputBuffer.Add(input);
+                clientProxy->m_frame = input.GetFrame();
                 ILOG("SERVER RECEIVED FRAME %u", clientProxy->m_frame);
             }
-            --moveCount;
+            --inputCount;
         }
     }
 }
@@ -263,7 +263,7 @@ void ServerSystem::SendStatePacket(const ServerComponent& serverComponent, std::
         clientProxy->m_isTimestampDirty = false;
     }
 
-    clientProxy->m_moves.ClearMoves();
+    clientProxy->m_inputBuffer.Clear();
 
     statePacket.Write(clientProxy->m_isFrameDirty);
     if (clientProxy->m_isFrameDirty) {
