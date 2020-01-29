@@ -16,6 +16,7 @@
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)AckRange.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ByteSwap.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)CircularBuffer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Colors.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Component.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ComponentDefs.h" />

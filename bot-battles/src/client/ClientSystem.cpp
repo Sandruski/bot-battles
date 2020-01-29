@@ -192,11 +192,10 @@ bool ClientSystem::SendInputPacket(ClientComponent& clientComponent) const
     const bool hasInputs = !clientComponent.m_inputBuffer.IsEmpty();
     inputPacket.Write(hasInputs);
     if (hasInputs) {
-        U32 inputCount = clientComponent.m_inputBuffer.GetCount();
+        U32 inputCount = clientComponent.m_inputBuffer.Count();
         inputPacket.Write(inputCount);
         for (U32 i = clientComponent.m_inputBuffer.m_front; i < clientComponent.m_inputBuffer.m_back; ++i) {
-            U32 index = clientComponent.m_inputBuffer.GetIndex(i);
-            const Input& input = clientComponent.m_inputBuffer.GetInput(index);
+            const Input& input = clientComponent.m_inputBuffer.Get(i);
             input.Write(inputPacket);
             ILOG("CLIENT SENT FRAME %u", input.GetFrame());
         }

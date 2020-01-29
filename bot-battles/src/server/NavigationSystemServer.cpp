@@ -32,8 +32,7 @@ bool NavigationSystemServer::Update()
         assert(clientProxy != nullptr);
 
         for (U32 i = clientProxy->m_inputBuffer.m_front; i < clientProxy->m_inputBuffer.m_back; ++i) {
-            U32 index = clientProxy->m_inputBuffer.GetIndex(i);
-            const Input& input = clientProxy->m_inputBuffer.GetInput(index);
+            const Input& input = clientProxy->m_inputBuffer.Get(i);
             const InputComponent& inputComponent = input.GetInputComponent();
             F32 dt = input.GetDt();
             transformComponent.lock()->UpdateTransform(inputComponent.m_acceleration, inputComponent.m_angularAcceleration, dt);

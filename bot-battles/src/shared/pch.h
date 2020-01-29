@@ -57,6 +57,7 @@
 #include "Subject.h"
 
 // Networking
+#include "CircularBuffer.h"
 #include "InputBuffer.h"
 #include "InputMemoryStream.h"
 #include "OutputMemoryStream.h"

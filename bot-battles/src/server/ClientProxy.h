@@ -23,7 +23,7 @@ public:
     std::shared_ptr<ReplicationManagerServer> m_replicationManager;
     DeliveryManagerServer m_deliveryManager;
 
-    InputBuffer m_inputBuffer;
+    CircularBuffer<Input, MAX_INPUTS> m_inputBuffer;
 
     bool m_isTimestampDirty;
     F32 m_timestamp;

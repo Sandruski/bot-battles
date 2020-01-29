@@ -50,11 +50,11 @@ bool InputSystem::Update()
     }
 
     if (inputComponent.m_acceleration.x != 0.0f || inputComponent.m_acceleration.y != 0.0f) {
-        if (!clientComponent.m_inputBuffer.IsFull())
-        {
+        if (!clientComponent.m_inputBuffer.IsFull()) {
             ILOG("CLIENT NEW FRAME!!!");
             U32 dirtyState = static_cast<U32>(InputComponentMemberType::INPUT_ACCELERATION); // TODO: not only acceleration...
-            clientComponent.m_inputBuffer.Add(inputComponent, dirtyState);
+            Input input = Input(inputComponent, dirtyState, 1.0f, clientComponent.m_inputBuffer.m_back);
+            clientComponent.m_inputBuffer.Add(input);
             clientComponent.m_isLastMovePending = true;
         }
     }

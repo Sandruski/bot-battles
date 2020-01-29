@@ -39,8 +39,8 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, Re
             if (replicationActionType == ReplicationActionType::CREATE) {
                 m_position = m_endPosition;
             } else if (clientComponent.m_isFrameDirty) { // TODO: remove this?
-                U32 index = clientComponent.m_transformBuffer.GetIndex(clientComponent.m_frame);
-                TransformComponent& transformComponent = clientComponent.m_transformBuffer.GetTransform(index);
+
+                TransformComponent& transformComponent = clientComponent.m_transformBuffer.Get(clientComponent.m_frame);
                 clientComponent.m_transformBuffer.Remove(clientComponent.m_frame);
                 clientComponent.m_isFrameDirty = false;
 
@@ -48,18 +48,15 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, Re
                     transformComponent.m_position = m_endPosition;
                     //Replay(hasPosition, hasRotation);
 
-                    U32 inputCount = clientComponent.m_inputBuffer.GetCount();
-                    U32 transformCount = clientComponent.m_transformBuffer.GetCount();
+                    U32 inputCount = clientComponent.m_inputBuffer.Count();
+                    U32 transformCount = clientComponent.m_transformBuffer.Count();
                     assert(inputCount == transformCount);
                     ILOG("CLIENT SIDE PREDICTION FOR %u INPUTS", inputCount);
                     ILOG("Client Side Misprediction! Replaying inputs...");
                     for (U32 i = clientComponent.m_inputBuffer.m_front; i < clientComponent.m_inputBuffer.m_back; ++i) {
 
-                        U32 index1 = clientComponent.m_transformBuffer.GetIndex(i);
-                        transformComponent = clientComponent.m_transformBuffer.GetTransform(index1);
-
-                        U32 index2 = clientComponent.m_inputBuffer.GetIndex(i);
-                        const Input& input = clientComponent.m_inputBuffer.GetInput(index2);
+                        transformComponent = clientComponent.m_transformBuffer.Get(i);
+                        const Input& input = clientComponent.m_inputBuffer.Get(i);
                         const InputComponent& inputComponent = input.GetInputComponent();
                         F32 dt = input.GetDt();
 
@@ -71,7 +68,7 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, Re
                         }
                         ILOG("REPLAY MOVE %u", input.GetFrame());
                     }
-                    m_position = clientComponent.m_transformBuffer.GetLastTransform().m_position;
+                    m_position = clientComponent.m_transformBuffer.GetLast().m_position;
                 }
             }
             //if (clientComponent.m_isServerReconciliation) {
