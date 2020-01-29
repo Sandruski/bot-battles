@@ -10,18 +10,24 @@ class InputBuffer {
 public:
     InputBuffer();
 
-    const Input& Add(const InputComponent& inputComponent, U32 dirtyState);
-    const Input& Add(const Input& input);
-    void Remove(U32 frame);
+    void Add(const InputComponent& inputComponent, U32 dirtyState);
+    void Add(const Input& input);
     void Clear();
 
-    const Input& Get(U32 index) const;
-    const Input& GetLast() const;
-    bool HasInputs() const;
+    U32 GetIndex(U32 frame) const;
+    const Input& GetInput(U32 index) const;
+    const Input& GetLastInput() const;
+
+    bool IsEmpty() const;
+    bool IsFull() const;
     U32 GetCount() const;
 
+public:
+    U32 m_front;
+    U32 m_back;
+
 private:
-    std::deque<Input> m_inputs;
+    std::array<Input, MAX_INPUTS> m_inputs;
 };
 }
 

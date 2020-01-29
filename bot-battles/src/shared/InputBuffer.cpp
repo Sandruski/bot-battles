@@ -4,58 +4,77 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 InputBuffer::InputBuffer()
-    : m_inputs()
+    : m_front(0)
+    , m_back(0)
+    , m_inputs()
 {
 }
 
 //----------------------------------------------------------------------------------------------------
-const Input& InputBuffer::Add(const InputComponent& inputComponent, U32 dirtyState)
+void InputBuffer::Add(const InputComponent& inputComponent, U32 dirtyState)
 {
-    // TODO: frame or internal counter which can also be used to retrieve the last move frame?
-    return m_inputs.emplace_back(inputComponent, dirtyState, 1.0f, Time::GetInstance().GetFrame()); // TODO: USE DT! OMG
+    assert(!IsFull());
+
+    U32 frame = m_back;
+    U32 index = GetIndex(frame);
+    m_inputs[index] = Input(inputComponent, dirtyState, 1.0f, frame); // TODO: DT SHOULD BE DT AND NOT 1!!!
+    ++m_back;
 }
 
 //----------------------------------------------------------------------------------------------------
-const Input& InputBuffer::Add(const Input& input)
+void InputBuffer::Add(const Input& input)
 {
-    return m_inputs.emplace_back(input);
-}
+    assert(!IsFull());
 
-//----------------------------------------------------------------------------------------------------
-void InputBuffer::Remove(U32 frame)
-{
-    while (!m_inputs.empty() && m_inputs.front().GetFrame() <= frame) {
-        m_inputs.pop_front();
-    }
+    U32 frame = input.GetFrame();
+    assert(frame == m_back);
+
+    U32 index = GetIndex(frame);
+    m_inputs[index] = input;
+    ++m_back;
 }
 
 //----------------------------------------------------------------------------------------------------
 void InputBuffer::Clear()
 {
-    m_inputs.clear();
+    m_front = m_back;
 }
 
 //----------------------------------------------------------------------------------------------------
-const Input& InputBuffer::Get(U32 index) const
+U32 InputBuffer::GetIndex(U32 frame) const
+{
+    return frame % m_inputs.size();
+}
+
+//----------------------------------------------------------------------------------------------------
+const Input& InputBuffer::GetInput(U32 index) const
 {
     return m_inputs.at(index);
 }
 
 //----------------------------------------------------------------------------------------------------
-const Input& InputBuffer::GetLast() const
+const Input& InputBuffer::GetLastInput() const
 {
-    return m_inputs.back();
+    U32 frame = m_back;
+    U32 index = GetIndex(frame);
+    return GetInput(index);
 }
 
 //----------------------------------------------------------------------------------------------------
-bool InputBuffer::HasInputs() const
+bool InputBuffer::IsEmpty() const
 {
-    return !m_inputs.empty();
+    return GetCount() == 0;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool InputBuffer::IsFull() const
+{
+    return GetCount() == m_inputs.size();
 }
 
 //----------------------------------------------------------------------------------------------------
 U32 InputBuffer::GetCount() const
 {
-    return m_inputs.size();
+    return m_back - m_front;
 }
 }

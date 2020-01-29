@@ -152,9 +152,9 @@ void ClientSystem::ReceiveStatePacket(ClientComponent& clientComponent, InputMem
     inputStream.Read(clientComponent.m_isFrameDirty);
     if (clientComponent.m_isFrameDirty) {
         //U32 frame = 0;
-        inputStream.Read(clientComponent.m_frame); // TODO: THIS SHOULD BE THE LAST FRAME THAT HAS BEEN PROCESSED BY THIS REPLICATION, NOT THE ACKD!!!
+        inputStream.Read(clientComponent.m_frame); // TODO: CLIENT COMPONENT M_FRAME SHOULD BE THE LAST FRAME THAT HAS BEEN PROCESSED BY THIS REPLICATION, NOT THE ACKD!!!
+        clientComponent.m_inputBuffer.m_front = clientComponent.m_frame + 1;
         ILOG("CLIENT RECEIVED ACKD FRAME %u", clientComponent.m_frame);
-        clientComponent.m_inputBuffer.Remove(clientComponent.m_frame);
     }
 
     clientComponent.m_replicationManager.Read(inputStream);
@@ -189,13 +189,14 @@ bool ClientSystem::SendInputPacket(ClientComponent& clientComponent) const
     F32 timestamp = Time::GetInstance().GetTime();
     inputPacket.Write(timestamp);
 
-    const bool hasInputs = clientComponent.m_inputBuffer.HasInputs();
+    const bool hasInputs = !clientComponent.m_inputBuffer.IsEmpty();
     inputPacket.Write(hasInputs);
     if (hasInputs) {
         U32 inputCount = clientComponent.m_inputBuffer.GetCount();
-        inputPacket.Write(inputCount);
-        for (U32 i = 0; i < inputCount; ++i) {
-            const Input& input = clientComponent.m_inputBuffer.Get(i);
+        inputPacket.Write(inputCount);        
+        for (U32 i = clientComponent.m_inputBuffer.m_front; i < clientComponent.m_inputBuffer.m_back; ++i) {
+            U32 index = clientComponent.m_inputBuffer.GetIndex(i);
+            const Input& input = clientComponent.m_inputBuffer.GetInput(index);
             input.Write(inputPacket);
             ILOG("CLIENT SENT FRAME %u", input.GetFrame());
         }

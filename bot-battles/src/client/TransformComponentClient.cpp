@@ -107,8 +107,9 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, Re
 
 //----------------------------------------------------------------------------------------------------
 // Move replay
-void TransformComponent::Replay(bool updatePosition, bool updateRotation)
+void TransformComponent::Replay(bool /*updatePosition*/, bool /*updateRotation*/)
 {
+    /*
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     U32 moveCount = clientComponent.m_inputBuffer.GetCount();
     ILOG("CLIENT SIDE PREDICTION FOR %u MOVES", moveCount);
@@ -125,6 +126,7 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation)
         }
         ILOG("REPLAY MOVE %u", input.GetFrame());
     }
+    */
 }
 
 //----------------------------------------------------------------------------------------------------

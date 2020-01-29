@@ -267,8 +267,12 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)TransformBuffer.h">
       <Filter>Header Files\Networking</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Input.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)InputBuffer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Input.h">
+      <Filter>Header Files\Networking</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)InputBuffer.h">
+      <Filter>Header Files\Networking</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp">
@@ -400,7 +404,11 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)TransformBuffer.cpp">
       <Filter>Source Files\Networking</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Input.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)InputBuffer.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Input.cpp">
+      <Filter>Source Files\Networking</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)InputBuffer.cpp">
+      <Filter>Source Files\Networking</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

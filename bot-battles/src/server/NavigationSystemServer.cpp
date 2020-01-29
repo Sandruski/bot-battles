@@ -31,10 +31,9 @@ bool NavigationSystemServer::Update()
         std::shared_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
         assert(clientProxy != nullptr);
 
-        U32 inputCount = clientProxy->m_inputBuffer.GetCount();
-        for (U32 i = 0; i < inputCount; ++i) {
-
-            const Input& input = clientProxy->m_inputBuffer.Get(i);
+        for (U32 i = clientProxy->m_inputBuffer.m_front; i < clientProxy->m_inputBuffer.m_back; ++i) {
+            U32 index = clientProxy->m_inputBuffer.GetIndex(i);
+            const Input& input = clientProxy->m_inputBuffer.GetInput(index);
             const InputComponent& inputComponent = input.GetInputComponent();
             F32 dt = input.GetDt();
             transformComponent.lock()->UpdateTransform(inputComponent.m_acceleration, inputComponent.m_angularAcceleration, dt);
