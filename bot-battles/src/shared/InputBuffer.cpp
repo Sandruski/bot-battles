@@ -4,8 +4,8 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 InputBuffer::InputBuffer()
-    : m_front(0)
-    , m_back(0)
+    : m_front(1)
+    , m_back(1)
     , m_inputs()
 {
 }
@@ -35,6 +35,13 @@ void InputBuffer::Add(const Input& input)
 }
 
 //----------------------------------------------------------------------------------------------------
+void InputBuffer::Remove(U32 frame)
+{
+    assert(frame < m_back);
+    m_front = frame + 1;
+}
+
+//----------------------------------------------------------------------------------------------------
 void InputBuffer::Clear()
 {
     m_front = m_back;
@@ -55,7 +62,8 @@ const Input& InputBuffer::GetInput(U32 index) const
 //----------------------------------------------------------------------------------------------------
 const Input& InputBuffer::GetLastInput() const
 {
-    U32 frame = m_back;
+    assert(m_back > m_front);
+    U32 frame = m_back - 1;
     U32 index = GetIndex(frame);
     return GetInput(index);
 }

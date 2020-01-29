@@ -4,52 +4,66 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 TransformBuffer::TransformBuffer()
-    : m_transforms()
+    : m_front(1)
+    , m_back(1)
+    , m_transforms()
 {
 }
 
 //----------------------------------------------------------------------------------------------------
 void TransformBuffer::Add(const TransformComponent& transformComponent)
 {
-    m_transforms.emplace_back(std::make_pair(Time::GetInstance().GetFrame(), transformComponent));
+    assert(!IsFull());
+
+    U32 frame = m_back;
+    U32 index = GetIndex(frame);
+    m_transforms[index] = transformComponent;
+    ++m_back;
 }
 
 //----------------------------------------------------------------------------------------------------
-void TransformBuffer::RemoveUntilFrame(U32 frame)
+void TransformBuffer::Remove(U32 frame)
 {
-    while (!m_transforms.empty() && m_transforms.front().first <= frame) {
-        m_transforms.pop_front();
-    }
+    assert(frame < m_back);
+    m_front = frame + 1;
 }
 
 //----------------------------------------------------------------------------------------------------
 void TransformBuffer::Clear()
 {
-    m_transforms.clear();
+    m_front = m_back;
 }
 
 //----------------------------------------------------------------------------------------------------
-TransformComponent& TransformBuffer::GetTransformComponentAtFrame(U32 frame)
+U32 TransformBuffer::GetIndex(U32 frame) const
 {
-    for (auto& pair : m_transforms) {
-        if (pair.first == frame) {
-            return pair.second;
-        }
-    }
+    return frame % m_transforms.size();
+}
 
-    assert(false);
-    return m_transforms.back().second;
+//----------------------------------------------------------------------------------------------------
+TransformComponent& TransformBuffer::GetTransform(U32 index)
+{
+    return m_transforms.at(index);
+}
+
+//----------------------------------------------------------------------------------------------------
+TransformComponent& TransformBuffer::GetLastTransform()
+{
+    assert(m_back > m_front);
+    U32 frame = m_back - 1;
+    U32 index = GetIndex(frame);
+    return GetTransform(index);
+}
+
+//----------------------------------------------------------------------------------------------------
+bool TransformBuffer::IsFull() const
+{
+    return GetCount() == m_transforms.size();
 }
 
 //----------------------------------------------------------------------------------------------------
 U32 TransformBuffer::GetCount() const
 {
-    return m_transforms.size();
-}
-
-//----------------------------------------------------------------------------------------------------
-TransformComponent& TransformBuffer::Get(U32 index)
-{
-    return m_transforms.at(index).second;
+    return m_back - m_front;
 }
 }

@@ -12,6 +12,7 @@ public:
 
     void Add(const InputComponent& inputComponent, U32 dirtyState);
     void Add(const Input& input);
+    void Remove(U32 frame);
     void Clear();
 
     U32 GetIndex(U32 frame) const;

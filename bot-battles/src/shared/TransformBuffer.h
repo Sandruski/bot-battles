@@ -11,15 +11,22 @@ public:
     TransformBuffer();
 
     void Add(const TransformComponent& transformComponent);
-    void RemoveUntilFrame(U32 frame);
+    void Remove(U32 frame);
     void Clear();
-    TransformComponent& GetTransformComponentAtFrame(U32 frame);
 
+    U32 GetIndex(U32 frame) const;
+    TransformComponent& GetTransform(U32 index);
+    TransformComponent& GetLastTransform();
+
+    bool IsFull() const;
     U32 GetCount() const;
-    TransformComponent& Get(U32 index);
+
+public:
+    U32 m_front;
+    U32 m_back;
 
 private:
-    std::deque<std::pair<U32, TransformComponent>> m_transforms;
+    std::array<TransformComponent, MAX_TRANSFORMS> m_transforms;
 };
 }
 
