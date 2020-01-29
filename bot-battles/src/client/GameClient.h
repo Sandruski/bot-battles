@@ -3,6 +3,7 @@
 
 #include "ClientComponent.h"
 #include "Game.h"
+#include "InputComponent.h"
 
 namespace sand {
 

@@ -4,6 +4,7 @@
 #include "ComponentManager.h"
 #include "ComponentMemberTypes.h"
 #include "GameClient.h"
+#include "Input.h"
 #include "InputComponent.h"
 
 namespace sand {

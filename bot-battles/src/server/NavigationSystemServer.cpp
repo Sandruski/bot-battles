@@ -4,6 +4,7 @@
 #include "ComponentManager.h"
 #include "ComponentMemberTypes.h"
 #include "GameServer.h"
+#include "Input.h"
 #include "InputComponent.h"
 #include "TransformComponent.h"
 
@@ -36,6 +37,7 @@ bool NavigationSystemServer::Update()
             const InputComponent& inputComponent = input.GetInputComponent();
             F32 dt = input.GetDt();
             transformComponent.lock()->UpdateTransform(inputComponent.m_acceleration, inputComponent.m_angularAcceleration, dt);
+            //clientProxy->m_transformBuffer.Add(*transformComponent.lock()); // TODO: also remove at some point
 
             Event newEvent;
             newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;

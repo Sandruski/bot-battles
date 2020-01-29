@@ -3,7 +3,9 @@
 
 #include "Component.h"
 #include "DeliveryManagerClient.h"
+#include "Input.h"
 #include "ReplicationManagerClient.h"
+#include "TransformComponent.h"
 
 namespace sand {
 

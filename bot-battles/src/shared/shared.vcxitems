@@ -42,7 +42,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)InputMemoryStream.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MessageTypes.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Input.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)InputBuffer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)NetDefs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)NetUtils.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)NetworkableReadObject.h" />
@@ -63,7 +62,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)TextComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TextResource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)RendererComponent.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)TransformBuffer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)WindowComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SocketAddress.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SpriteComponent.h" />
@@ -105,7 +103,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)InputMemoryStream.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Input.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)InputBuffer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)OutputMemoryStream.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)RendererSystem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ReplicationCommand.cpp" />
@@ -113,7 +110,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)FontResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ResourceManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)RendererComponent.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)TransformBuffer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)WindowComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SpriteComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SpriteResource.cpp" />
