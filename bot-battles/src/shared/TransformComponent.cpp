@@ -6,14 +6,15 @@
 namespace sand {
 //----------------------------------------------------------------------------------------------------
 TransformComponent::TransformComponent()
-    : m_startPosition()
-    , m_endPosition()
-    , m_position()
+    : m_position()
     , m_rotation(0.0f)
-    , m_velocity()
-    , m_angularVelocity(0.0f)
 #ifdef _CLIENT
-    , m_outOfSyncTimestamp(0.0f)
+    , m_fromPosition()
+    , m_toPosition()
+    , m_positionOutOfSyncTimestamp(0.0f)
+    , m_fromRotation(0.0f)
+    , m_toRotation(0.0f)
+    , m_rotationOutOfSyncTimestamp(0.0f)
 #endif
 {
 }
