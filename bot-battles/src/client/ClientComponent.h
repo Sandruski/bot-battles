@@ -40,9 +40,6 @@ struct ClientComponent : public Component {
     bool m_isLastMovePending;
     CircularBuffer<TransformComponent, MAX_TRANSFORMS> m_transformBuffer;
 
-    bool m_isFrameDirty;
-    U32 m_frame;
-
     F32 m_RTT;
 
     bool m_isClientSidePrediction;

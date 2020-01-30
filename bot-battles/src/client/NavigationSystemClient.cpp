@@ -20,8 +20,6 @@ NavigationSystemClient::NavigationSystemClient()
 bool NavigationSystemClient::Update()
 {
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-
-    F32 rtt = clientComponent.m_RTT;
     F32 time = Time::GetInstance().GetTime();
 
     for (auto& entity : m_entities) {
@@ -32,37 +30,35 @@ bool NavigationSystemClient::Update()
 
         const bool isLocalPlayer = clientComponent.IsLocalPlayer(entity);
         if (isLocalPlayer) {
-            if (clientComponent.m_isClientSidePrediction && clientComponent.m_isLastMovePending) {
-                const Input& input = clientComponent.m_inputBuffer.GetLast();
-                const InputComponent& inputComponent = input.GetInputComponent();
-                F32 dt = input.GetDt();
+            if (clientComponent.m_isClientSidePrediction) {
+                if (clientComponent.m_isLastMovePending) {
+                    const Input& input = clientComponent.m_inputBuffer.GetLast();
+                    const InputComponent& inputComponent = input.GetInputComponent();
+                    F32 dt = input.GetDt();
 
-                std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
-                transformComponent.lock()->UpdateTransform(inputComponent.m_acceleration, inputComponent.m_angularAcceleration, dt);
+                    std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
+                    transformComponent.lock()->UpdateTransform(inputComponent.m_acceleration, inputComponent.m_angularAcceleration, dt);
+                    clientComponent.m_transformBuffer.Add(*transformComponent.lock());
 
-                clientComponent.m_transformBuffer.Add(*transformComponent.lock());
-                clientComponent.m_isLastMovePending = false;
-
-                ILOG("CLIENTTT POSITION END: %f %f", transformComponent.lock()->m_position.x, transformComponent.lock()->m_position.y);
+                    clientComponent.m_isLastMovePending = false;
+                }
             }
         } else {
             if (clientComponent.m_isEntityInterpolation) {
                 std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
-
-                if (transformComponent.lock()->m_position != transformComponent.lock()->m_endPosition) {
-                    F32 outOfSyncTime = time - transformComponent.lock()->m_outOfSyncTimestamp; // TODO: pick frame start time
+                if (transformComponent.lock()->m_position != transformComponent.lock()->m_toPosition) {
+                    F32 outOfSyncTime = time - transformComponent.lock()->m_positionOutOfSyncTimestamp; // TODO: pick frame start time
                     F32 t = outOfSyncTime / ENTITY_INTERPOLATION_PERIOD;
-                    ILOG("OUTOFSYNCTIME %f RTT %f T %f", outOfSyncTime, rtt, t);
-                    //if (outOfSyncTime < rtt) {
-                    transformComponent.lock()->m_position = Lerp(transformComponent.lock()->m_startPosition, transformComponent.lock()->m_endPosition, t <= 1.0f ? t : 1.0f);
-                    //}
-                    ILOG("DIFF POSITION. INITIAL: %f %f FINAL: %f %f CURRENT: %f %f",
-                        transformComponent.lock()->m_startPosition.x, transformComponent.lock()->m_startPosition.y,
-                        transformComponent.lock()->m_endPosition.x, transformComponent.lock()->m_endPosition.y,
-                        transformComponent.lock()->m_position.x, transformComponent.lock()->m_position.y);
+                    transformComponent.lock()->m_position = Lerp(transformComponent.lock()->m_fromPosition, transformComponent.lock()->m_toPosition, t <= 1.0f ? t : 1.0f);
                 } else {
-                    transformComponent.lock()->m_outOfSyncTimestamp = 0.0f;
-                    ILOG("SAME POSITION");
+                    transformComponent.lock()->m_positionOutOfSyncTimestamp = 0.0f;
+                }
+                if (transformComponent.lock()->m_rotation != transformComponent.lock()->m_toRotation) {
+                    F32 outOfSyncTime = time - transformComponent.lock()->m_rotationOutOfSyncTimestamp; // TODO: pick frame start time
+                    F32 t = outOfSyncTime / ENTITY_INTERPOLATION_PERIOD;
+                    transformComponent.lock()->m_rotation = Lerp(transformComponent.lock()->m_fromRotation, transformComponent.lock()->m_toRotation, t <= 1.0f ? t : 1.0f);
+                } else {
+                    transformComponent.lock()->m_rotationOutOfSyncTimestamp = 0.0f;
                 }
             }
         }

@@ -89,11 +89,6 @@ public:
         return !(x == vec.x && y == vec.y && z == vec.z);
     }
 
-    friend Vec3 Lerp(const Vec3& vecA, const Vec3& vecB, F32 t)
-    {
-        return Vec3(vecA + (vecB - vecA) * t);
-    }
-
 public:
     static const Vec3 zero;
     static const Vec3 one;

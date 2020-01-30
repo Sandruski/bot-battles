@@ -36,6 +36,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)GameplayState.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)HUDSystem.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)InputComponent.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Interpolation.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)LinkingContext.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Log.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Memory.h" />

@@ -11,10 +11,14 @@ public:
 
     void Add(const T& element);
     void Remove(U32 position);
+    void RemoveFirst();
+    void RemoveLast();
     void Clear();
 
     const T& Get(U32 position) const;
     T& Get(U32 position);
+    const T& GetFirst() const;
+    T& GetFirst();
     const T& GetLast() const;
     T& GetLast();
 
@@ -64,6 +68,20 @@ inline void CircularBuffer<T, size>::Remove(U32 position)
 
 //----------------------------------------------------------------------------------------------------
 template <class T, U32 size>
+inline void CircularBuffer<T, size>::RemoveFirst()
+{
+    Remove(m_front);
+}
+
+//----------------------------------------------------------------------------------------------------
+template <class T, U32 size>
+inline void CircularBuffer<T, size>::RemoveLast()
+{
+    Remove(m_back - 1);
+}
+
+//----------------------------------------------------------------------------------------------------
+template <class T, U32 size>
 inline void CircularBuffer<T, size>::Clear()
 {
     m_front = m_back;
@@ -82,6 +100,23 @@ inline T& CircularBuffer<T, size>::Get(U32 position)
 {
     U32 index = IndexFromPosition(position);
     return m_buffer.at(index);
+}
+
+//----------------------------------------------------------------------------------------------------
+template <class T, U32 size>
+inline const T& CircularBuffer<T, size>::GetFirst() const
+{
+    return GetFirst();
+}
+
+//----------------------------------------------------------------------------------------------------
+template <class T, U32 size>
+inline T& CircularBuffer<T, size>::GetFirst()
+{
+    assert(m_back > m_front);
+    U32 position = m_front;
+    U32 index = IndexFromPosition(position);
+    return Get(index);
 }
 
 //----------------------------------------------------------------------------------------------------

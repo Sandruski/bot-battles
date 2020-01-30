@@ -29,8 +29,8 @@ struct TransformComponent : public Component
 
 #ifdef _CLIENT
     void Read(InputMemoryStream& inputStream, U32 dirtyState, ReplicationActionType replicationActionType, Entity entity) override;
-    void Replay(ClientComponent& clientComponent, bool updatePosition, bool updateRotation);
-    void Interpolate(ClientComponent& clientComponent, const Vec3& oldPosition, F32 oldRotation);
+    void Replay(bool updatePosition, bool updateRotation);
+    void Interpolate(bool updatePosition, bool updateRotation);
 #elif defined(_SERVER)
     U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override;
 #endif
