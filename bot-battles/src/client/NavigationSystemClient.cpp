@@ -38,7 +38,8 @@ bool NavigationSystemClient::Update()
 
                     std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
                     transformComponent.lock()->UpdateTransform(inputComponent.m_acceleration, inputComponent.m_angularAcceleration, dt);
-                    clientComponent.m_transformBuffer.Add(*transformComponent.lock());
+                    Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, 0);
+                    transformComponent.lock()->m_transformBuffer.Add(transform);
 
                     clientComponent.m_isLastMovePending = false;
                 }

@@ -151,11 +151,9 @@ void ClientSystem::ReceiveStatePacket(ClientComponent& clientComponent, InputMem
     bool isFrameDirty = false;
     inputStream.Read(isFrameDirty);
     if (isFrameDirty) {
-        U32 frame = 0;
-        inputStream.Read(frame);
-        clientComponent.m_inputBuffer.Remove(frame);
-        clientComponent.m_transformBuffer.Remove(frame - 1);
-        ILOG("CLIENT RECEIVED ACKD FRAME %u", frame);
+        inputStream.Read(clientComponent.m_lastAckdFrame);
+        clientComponent.m_inputBuffer.Remove(clientComponent.m_lastAckdFrame);
+        ILOG("CLIENT RECEIVED ACKD FRAME %u", clientComponent.m_lastAckdFrame);
     }
 
     clientComponent.m_replicationManager.Read(inputStream);

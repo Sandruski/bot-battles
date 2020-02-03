@@ -36,9 +36,10 @@ struct ClientComponent : public Component {
     PlayerID m_playerID;
     Entity m_entity;
 
+    U32 m_lastAckdFrame;
+
     CircularBuffer<Input, MAX_INPUTS> m_inputBuffer;
     bool m_isLastMovePending;
-    CircularBuffer<TransformComponent, MAX_TRANSFORMS> m_transformBuffer;
 
     F32 m_RTT;
 

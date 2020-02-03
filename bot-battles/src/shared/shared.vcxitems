@@ -63,6 +63,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)TextComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TextResource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)RendererComponent.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Transform.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)WindowComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SocketAddress.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SpriteComponent.h" />
@@ -111,6 +112,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)FontResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ResourceManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)RendererComponent.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Transform.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)WindowComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SpriteComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SpriteResource.cpp" />

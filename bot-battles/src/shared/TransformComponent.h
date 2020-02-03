@@ -7,6 +7,7 @@
 #elif defined(_SERVER)
 #include "NetworkableWriteObject.h"
 #endif
+#include "Transform.h"
 
 namespace sand {
 
@@ -43,10 +44,13 @@ struct TransformComponent : public Component
     F32 m_rotation;
     //Vec2 m_velocity;
     //F32 m_angularVelocity;
+    CircularBuffer<Transform, MAX_TRANSFORMS> m_transformBuffer;
 #ifdef _CLIENT
     Vec3 m_fromPosition;
     Vec3 m_toPosition;
     F32 m_positionOutOfSyncTimestamp;
+    U32 m_fromPositionFrame;
+    U32 m_toPositionFrame;
     F32 m_fromRotation;
     F32 m_toRotation;
     F32 m_rotationOutOfSyncTimestamp;

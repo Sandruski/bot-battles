@@ -8,10 +8,13 @@ namespace sand {
 TransformComponent::TransformComponent()
     : m_position()
     , m_rotation(0.0f)
+    , m_transformBuffer()
 #ifdef _CLIENT
     , m_fromPosition()
     , m_toPosition()
     , m_positionOutOfSyncTimestamp(0.0f)
+    , m_fromPositionFrame(0)
+    , m_toPositionFrame(0)
     , m_fromRotation(0.0f)
     , m_toRotation(0.0f)
     , m_rotationOutOfSyncTimestamp(0.0f)

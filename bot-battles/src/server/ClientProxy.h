@@ -4,7 +4,6 @@
 #include "DeliveryManagerServer.h"
 #include "Input.h"
 #include "SocketAddress.h"
-#include "TransformComponent.h"
 
 namespace sand {
 
@@ -26,7 +25,6 @@ public:
     DeliveryManagerServer m_deliveryManager;
 
     CircularBuffer<Input, MAX_INPUTS> m_inputBuffer;
-    CircularBuffer<TransformComponent, MAX_TRANSFORMS> m_transformBuffer;
 
     bool m_isTimestampDirty;
     F32 m_timestamp;
