@@ -38,7 +38,7 @@ bool NavigationSystemClient::Update()
 
                     std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
                     transformComponent.lock()->UpdateTransform(inputComponent.m_acceleration, inputComponent.m_angularAcceleration, dt);
-                    Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, 0);
+                    Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation);
                     transformComponent.lock()->m_transformBuffer.Add(transform);
 
                     clientComponent.m_isLastMovePending = false;
@@ -47,6 +47,14 @@ bool NavigationSystemClient::Update()
         } else {
             if (clientComponent.m_isEntityInterpolation) {
                 std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
+
+                const bool isInSync = transformComponent.lock()->m_positionOutOfSyncTimestamp == 0.0f && transformComponent.lock()->m_rotationOutOfSyncTimestamp == 0.0f;
+                if (isInSync && !transformComponent.lock()->m_transformBuffer.IsEmpty()) {
+                    const Transform& transform = transformComponent.lock()->m_transformBuffer.GetFirst();
+                    transformComponent.lock()->Interpolate(transform);
+                    transformComponent.lock()->m_transformBuffer.RemoveFirst();
+                }
+
                 if (transformComponent.lock()->m_position != transformComponent.lock()->m_toPosition) {
                     F32 outOfSyncTime = time - transformComponent.lock()->m_positionOutOfSyncTimestamp; // TODO: pick frame start time
                     F32 t = outOfSyncTime / ENTITY_INTERPOLATION_PERIOD;
