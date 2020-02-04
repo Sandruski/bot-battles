@@ -37,6 +37,9 @@ struct ClientComponent : public Component {
     Entity m_entity;
 
     U32 m_lastAckdFrame;
+    U32 m_interpolationFromFrame;
+    U32 m_interpolationToFrame;
+    F32 m_interpolationPercentage;
 
     CircularBuffer<Input, MAX_INPUTS> m_inputBuffer;
     bool m_isLastMovePending;

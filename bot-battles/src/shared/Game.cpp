@@ -1,5 +1,6 @@
 #include "Game.h"
 
+#include "ColliderComponent.h"
 #include "ComponentManager.h"
 #include "Config.h"
 #include "EntityManager.h"
@@ -10,6 +11,7 @@
 #include "LinkingContext.h"
 #include "SystemManager.h"
 #include "TransformComponent.h"
+#include "WeaponComponent.h"
 #ifdef _DRAW
 #include "HUDSystem.h"
 #include "RendererSystem.h"
@@ -82,6 +84,14 @@ bool Game::Init()
     }
 #endif
     ret = m_componentManager->RegisterComponent<TransformComponent>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_componentManager->RegisterComponent<ColliderComponent>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_componentManager->RegisterComponent<WeaponComponent>();
     if (!ret) {
         return ret;
     }

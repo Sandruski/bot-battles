@@ -20,7 +20,7 @@ NavigationSystemClient::NavigationSystemClient()
 bool NavigationSystemClient::Update()
 {
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    F32 time = Time::GetInstance().GetTime();
+    F32 frameStartTime = Time::GetInstance().GetStartFrameTime();
 
     for (auto& entity : m_entities) {
 
@@ -47,27 +47,33 @@ bool NavigationSystemClient::Update()
         } else {
             if (clientComponent.m_isEntityInterpolation) {
                 std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
+                if (transformComponent.lock()->m_transformBuffer.Count() < 2) {
+                    continue;
+                }
 
-                const bool isInSync = transformComponent.lock()->m_positionOutOfSyncTimestamp == 0.0f && transformComponent.lock()->m_rotationOutOfSyncTimestamp == 0.0f;
-                if (isInSync && !transformComponent.lock()->m_transformBuffer.IsEmpty()) {
-                    const Transform& transform = transformComponent.lock()->m_transformBuffer.GetFirst();
-                    transformComponent.lock()->Interpolate(transform);
+                clientComponent.m_interpolationFromFrame = transformComponent.lock()->m_transformBuffer.GetFirst().GetFrame();
+                clientComponent.m_interpolationToFrame = transformComponent.lock()->m_transformBuffer.GetSecond().GetFrame();
+                F32 outOfSyncTime = frameStartTime - transformComponent.lock()->m_transformBuffer.GetSecond().GetTimestamp();
+                clientComponent.m_interpolationPercentage = outOfSyncTime / ENTITY_INTERPOLATION_PERIOD;
+                if (clientComponent.m_interpolationPercentage > 1.0f) {
+                    clientComponent.m_interpolationPercentage = 1.0f;
+                }
+
+                const Transform& fromTransform = transformComponent.lock()->m_transformBuffer.GetFirst();
+                const Transform& toTransform = transformComponent.lock()->m_transformBuffer.GetSecond();
+                const bool isPositionOutOfSync = transformComponent.lock()->m_position != toTransform.m_position;
+                const bool isRotationOutOfSync = transformComponent.lock()->m_rotation != toTransform.m_rotation;
+                if (isPositionOutOfSync || isRotationOutOfSync) {
+                    if (isPositionOutOfSync) {
+                        transformComponent.lock()->m_position = Lerp(fromTransform.m_position, toTransform.m_position, clientComponent.m_interpolationPercentage);
+                    }
+                    if (isRotationOutOfSync) {
+                        transformComponent.lock()->m_rotation = Lerp(fromTransform.m_rotation, toTransform.m_rotation, clientComponent.m_interpolationPercentage);
+                    }
+                }
+
+                if (clientComponent.m_interpolationPercentage == 1.0f) {
                     transformComponent.lock()->m_transformBuffer.RemoveFirst();
-                }
-
-                if (transformComponent.lock()->m_position != transformComponent.lock()->m_toPosition) {
-                    F32 outOfSyncTime = time - transformComponent.lock()->m_positionOutOfSyncTimestamp; // TODO: pick frame start time
-                    F32 t = outOfSyncTime / ENTITY_INTERPOLATION_PERIOD;
-                    transformComponent.lock()->m_position = Lerp(transformComponent.lock()->m_fromPosition, transformComponent.lock()->m_toPosition, t <= 1.0f ? t : 1.0f);
-                } else {
-                    transformComponent.lock()->m_positionOutOfSyncTimestamp = 0.0f;
-                }
-                if (transformComponent.lock()->m_rotation != transformComponent.lock()->m_toRotation) {
-                    F32 outOfSyncTime = time - transformComponent.lock()->m_rotationOutOfSyncTimestamp; // TODO: pick frame start time
-                    F32 t = outOfSyncTime / ENTITY_INTERPOLATION_PERIOD;
-                    transformComponent.lock()->m_rotation = Lerp(transformComponent.lock()->m_fromRotation, transformComponent.lock()->m_toRotation, t <= 1.0f ? t : 1.0f);
-                } else {
-                    transformComponent.lock()->m_rotationOutOfSyncTimestamp = 0.0f;
                 }
             }
         }

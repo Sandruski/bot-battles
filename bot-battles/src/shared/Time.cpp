@@ -16,6 +16,7 @@ Time::Time()
     , m_lastFrameMs(0.0f)
     , m_fps(0.0f)
     , m_dt(0.0f)
+    , m_startFrameTime(0.0f)
     , m_frame(0)
 {
     m_timer.Start();
@@ -26,6 +27,7 @@ void Time::StartUpdate()
 {
     m_dtTimer.Start();
 
+    m_startFrameTime = GetTime();
     ++m_frame;
 }
 
@@ -47,6 +49,12 @@ void Time::FinishUpdate()
 F32 Time::GetTime() const
 {
     return static_cast<F32>(m_timer.ReadSec());
+}
+
+//----------------------------------------------------------------------------------------------------
+F32 Time::GetStartFrameTime() const
+{
+    return m_startFrameTime;
 }
 
 //----------------------------------------------------------------------------------------------------

@@ -19,6 +19,8 @@ public:
     T& Get(U32 position);
     const T& GetFirst() const;
     T& GetFirst();
+    const T& GetSecond() const;
+    T& GetSecond();
     const T& GetLast() const;
     T& GetLast();
 
@@ -115,6 +117,23 @@ inline T& CircularBuffer<T, size>::GetFirst()
 {
     assert(m_back > m_front);
     U32 position = m_front;
+    U32 index = IndexFromPosition(position);
+    return Get(index);
+}
+
+//----------------------------------------------------------------------------------------------------
+template <class T, U32 size>
+inline const T& CircularBuffer<T, size>::GetSecond() const
+{
+    GetSecond();
+}
+
+//----------------------------------------------------------------------------------------------------
+template <class T, U32 size>
+inline T& CircularBuffer<T, size>::GetSecond()
+{
+    assert(m_back > m_front + 1);
+    U32 position = m_front + 1;
     U32 index = IndexFromPosition(position);
     return Get(index);
 }

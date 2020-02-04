@@ -9,6 +9,7 @@
 #include "ServerSystem.h"
 #include "SpawnerSystem.h"
 #include "SystemManager.h"
+#include "WeaponSystem.h"
 
 namespace sand {
 
@@ -35,6 +36,10 @@ bool GameServer::Init()
         return ret;
     }
     ret = m_systemManager->RegisterSystem<NavigationSystemServer>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_systemManager->RegisterSystem<WeaponSystem>();
     if (!ret) {
         return ret;
     }

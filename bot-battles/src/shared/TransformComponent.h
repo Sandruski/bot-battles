@@ -45,16 +45,6 @@ struct TransformComponent : public Component
     //Vec2 m_velocity;
     //F32 m_angularVelocity;
     CircularBuffer<Transform, MAX_TRANSFORMS> m_transformBuffer;
-#ifdef _CLIENT
-    Vec3 m_fromPosition;
-    Vec3 m_toPosition;
-    F32 m_positionOutOfSyncTimestamp;
-    U32 m_fromPositionFrame; // TODO: THIS SHOULD BE GENERIC NOT ONLY POSITION
-    U32 m_toPositionFrame; // TODO: THIS SHOULD BE GENERIC NOT ONLY POSITION
-    F32 m_fromRotation;
-    F32 m_toRotation;
-    F32 m_rotationOutOfSyncTimestamp;
-#endif
 };
 }
 

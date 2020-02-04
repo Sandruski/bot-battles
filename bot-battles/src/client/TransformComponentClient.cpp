@@ -14,8 +14,8 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, Re
 {
     assert(replicationActionType == ReplicationActionType::CREATE || replicationActionType == ReplicationActionType::UPDATE);
 
-    Vec3 newPosition = Vec3::zero;
-    F32 newRotation = 0.0f;
+    Vec3 newPosition = m_position;
+    F32 newRotation = m_rotation;
     const bool hasPosition = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION);
     if (hasPosition) {
         inputStream.Read(newPosition);
@@ -25,40 +25,38 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, Re
         inputStream.Read(newRotation);
     }
 
-    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    if (hasPosition || hasRotation) {
-        if (replicationActionType == ReplicationActionType::CREATE) {
-            if (hasPosition) {
-                m_position = m_toPosition = newPosition;
-                m_toPositionFrame = clientComponent.m_lastAckdFrame;
-            }
-            if (hasRotation) {
-                m_rotation = newRotation;
+    if (replicationActionType == ReplicationActionType::CREATE) {
+        if (hasPosition) {
+            m_position = newPosition;
+        }
+        if (hasRotation) {
+            m_rotation = newRotation;
+        }
+    } else {
+        ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+        const bool isLocalPlayer = clientComponent.IsLocalPlayer(entity);
+        if (isLocalPlayer) {
+            if (clientComponent.m_isServerReconciliation) {
+                Replay(hasPosition, hasRotation, newPosition, newRotation);
+            } else {
+                if (hasPosition) {
+                    m_position = newPosition;
+                }
+                if (hasRotation) {
+                    m_rotation = newRotation;
+                }
             }
         } else {
-            const bool isLocalPlayer = clientComponent.IsLocalPlayer(entity);
-            if (isLocalPlayer) {
-                if (clientComponent.m_isServerReconciliation) {
-                    Replay(hasPosition, hasRotation, newPosition, newRotation);
-                } else {
-                    if (hasPosition) {
-                        m_position = newPosition;
-                    }
-                    if (hasRotation) {
-                        m_rotation = newRotation;
-                    }
-                }
+            if (clientComponent.m_isEntityInterpolation) {
+                F32 startFrameTime = Time::GetInstance().GetStartFrameTime();
+                Transform transform = Transform(newPosition, newRotation, startFrameTime, clientComponent.m_lastAckdFrame);
+                m_transformBuffer.Add(transform);
             } else {
-                if (clientComponent.m_isEntityInterpolation) {
-                    Transform transform = Transform(hasPosition, hasRotation, newPosition, newRotation, clientComponent.m_lastAckdFrame);
-                    m_transformBuffer.Add(transform);
-                } else {
-                    if (hasPosition) {
-                        m_position = newPosition;
-                    }
-                    if (hasRotation) {
-                        m_rotation = newRotation;
-                    }
+                if (hasPosition) {
+                    m_position = newPosition;
+                }
+                if (hasRotation) {
+                    m_rotation = newRotation;
                 }
             }
         }
@@ -78,10 +76,10 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, Vec3 n
 
     if (replayPosition || replayRotation) {
         if (replayPosition) {
-            position = m_toPosition;
+            position = newPosition;
         }
         if (replayRotation) {
-            rotation = m_toRotation;
+            rotation = newRotation;
         }
 
         U32 front = clientComponent.m_inputBuffer.m_front;
@@ -117,8 +115,9 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, Vec3 n
 }
 
 //----------------------------------------------------------------------------------------------------
-void TransformComponent::Interpolate(const Transform& transform)
+void TransformComponent::Interpolate(const Transform& /*transform*/)
 {
+    /*
     const bool interpolatePosition = transform.m_hasPosition ? m_position != transform.m_position : false;
     const bool interpolateRotation = transform.m_hasRotation ? m_rotation != transform.m_rotation : false;
 
@@ -142,5 +141,6 @@ void TransformComponent::Interpolate(const Transform& transform)
             m_rotationOutOfSyncTimestamp = 0.0f;
         }
     }
+    */
 }
 }
