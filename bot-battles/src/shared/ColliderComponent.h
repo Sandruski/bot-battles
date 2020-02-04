@@ -10,29 +10,32 @@
 
 namespace sand {
 
-    //----------------------------------------------------------------------------------------------------
-    // Entity Component
-    struct ColliderComponent : public Component
+//----------------------------------------------------------------------------------------------------
+// Entity Component
+struct ColliderComponent : public Component
 #ifdef _CLIENT
-        ,
-        public NetworkableReadObject
+    ,
+                           public NetworkableReadObject
 #elif defined(_SERVER)
-        ,
-        public NetworkableWriteObject
+    ,
+                           public NetworkableWriteObject
 #endif
-    {
-        static ComponentType GetType() { return ComponentType::COLLIDER; }
+{
+    static ComponentType GetType() { return ComponentType::COLLIDER; }
 
-        ColliderComponent();
+    ColliderComponent();
 
 #ifdef _CLIENT
-        void Read(InputMemoryStream& inputStream, U32 dirtyState, ReplicationActionType replicationActionType, Entity entity) override;
+    void Read(InputMemoryStream& inputStream, U32 dirtyState, ReplicationActionType replicationActionType, Entity entity) override;
 #elif defined(_SERVER)
-        U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override;
+    U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override;
 #endif
 
-        Vec2 m_size;
-    };
+    bool IsColliding(const ColliderComponent& colliderComponent) const;
+
+    Vec2 m_center;
+    Vec2 m_size;
+};
 }
 
 #endif
