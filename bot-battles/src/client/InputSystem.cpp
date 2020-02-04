@@ -48,12 +48,24 @@ bool InputSystem::Update()
     if (m_keyboard[SDL_SCANCODE_S] == KeyState::REPEAT) {
         inputComponent.m_acceleration.y = 1.0f * multiplier;
     }
+    if (m_keyboard[SDL_SCANCODE_S] == KeyState::DOWN) {
+        inputComponent.m_isShooting = true;
+    }
 
-    if (inputComponent.m_acceleration.x != 0.0f || inputComponent.m_acceleration.y != 0.0f) {
-        if (!clientComponent.m_inputBuffer.IsFull()) {
-            ILOG("CLIENT NEW FRAME!!!");
-            U32 dirtyState = static_cast<U32>(InputComponentMemberType::INPUT_ACCELERATION); // TODO: not only acceleration...
-            Input input = Input(inputComponent, dirtyState, 1.0f, clientComponent.m_inputBuffer.m_back);
+    if (!clientComponent.m_inputBuffer.IsFull()) {
+        U32 dirtyState = 0;
+
+        if (inputComponent.m_acceleration.x != 0.0f || inputComponent.m_acceleration.y != 0.0f) {
+            dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_ACCELERATION);
+        }
+
+        if (inputComponent.m_isShooting) {
+            dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_SHOOTING);
+            inputComponent.m_isShooting = false;
+        }
+
+        if (dirtyState != 0) {
+            Input input = Input(inputComponent, dirtyState, 1.0f, clientComponent.m_inputBuffer.m_back, );
             clientComponent.m_inputBuffer.Add(input);
             clientComponent.m_isLastMovePending = true;
         }

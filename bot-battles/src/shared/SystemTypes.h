@@ -28,6 +28,7 @@ enum class SystemType : U16 {
     SERVER,
     SPAWNER,
     NAVIGATION,
+    WEAPON,
 #ifdef _DRAW
     HUD,
 #endif

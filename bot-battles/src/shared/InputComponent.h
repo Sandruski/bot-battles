@@ -19,6 +19,7 @@ struct InputComponent : public Component,
 
     Vec2 m_acceleration;
     F32 m_angularAcceleration;
+    bool m_isShooting;
 };
 }
 

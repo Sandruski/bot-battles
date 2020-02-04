@@ -49,8 +49,8 @@ struct TransformComponent : public Component
     Vec3 m_fromPosition;
     Vec3 m_toPosition;
     F32 m_positionOutOfSyncTimestamp;
-    U32 m_fromPositionFrame;
-    U32 m_toPositionFrame;
+    U32 m_fromPositionFrame; // TODO: THIS SHOULD BE GENERIC NOT ONLY POSITION
+    U32 m_toPositionFrame; // TODO: THIS SHOULD BE GENERIC NOT ONLY POSITION
     F32 m_fromRotation;
     F32 m_toRotation;
     F32 m_rotationOutOfSyncTimestamp;

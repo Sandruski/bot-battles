@@ -6,6 +6,8 @@ namespace sand {
 enum class ComponentType : U16 {
 
     TRANSFORM,
+    WEAPON,
+    COLLIDER,
 
 #ifdef _DRAW
     SPRITE,

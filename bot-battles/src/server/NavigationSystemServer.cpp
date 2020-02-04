@@ -22,8 +22,6 @@ bool NavigationSystemServer::Update()
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
 
     for (auto& entity : m_entities) {
-        std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
-
         PlayerID playerID = serverComponent.GetPlayerID(entity);
         if (playerID == INVALID_PLAYER_ID) {
             continue;
@@ -31,13 +29,15 @@ bool NavigationSystemServer::Update()
 
         std::shared_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
         assert(clientProxy != nullptr);
+        std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
 
         for (U32 i = clientProxy->m_inputBuffer.m_front; i < clientProxy->m_inputBuffer.m_back; ++i) {
             const Input& input = clientProxy->m_inputBuffer.Get(i);
             const InputComponent& inputComponent = input.GetInputComponent();
             F32 dt = input.GetDt();
             transformComponent.lock()->UpdateTransform(inputComponent.m_acceleration, inputComponent.m_angularAcceleration, dt);
-            //clientProxy->m_transformBuffer.Add(*transformComponent.lock()); // TODO: also remove at some point
+            Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation);
+            transformComponent.lock()->m_transformBuffer.Add(transform); // TODO: also remove this transform buffer at some point
 
             Event newEvent;
             newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
@@ -45,8 +45,6 @@ bool NavigationSystemServer::Update()
             newEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::TRANSFORM_ALL);
             NotifyEvent(newEvent);
         }
-
-        ILOG("SERVERRR POSITION END: %f %f", transformComponent.lock()->m_position.x, transformComponent.lock()->m_position.y);
     }
 
     return true;

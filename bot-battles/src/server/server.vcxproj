@@ -210,6 +210,7 @@
     <ClCompile Include="ServerSystem.cpp" />
     <ClCompile Include="ServerComponent.cpp" />
     <ClCompile Include="SpawnerSystem.cpp" />
+    <ClCompile Include="WeaponSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientProxy.h" />
@@ -223,6 +224,7 @@
     <ClInclude Include="ServerSystem.h" />
     <ClInclude Include="ServerComponent.h" />
     <ClInclude Include="SpawnerSystem.h" />
+    <ClInclude Include="WeaponSystem.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

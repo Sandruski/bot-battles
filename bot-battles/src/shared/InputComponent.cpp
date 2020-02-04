@@ -7,6 +7,7 @@ namespace sand {
 InputComponent::InputComponent()
     : m_acceleration()
     , m_angularAcceleration(0.0f)
+    , m_isShooting(false)
 {
 }
 
@@ -23,6 +24,10 @@ U32 InputComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) cons
         outputStream.Write(m_angularAcceleration);
         writtenState |= static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_ACCELERATION);
     }
+    if (dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_SHOOTING)) {
+        outputStream.Write(m_isShooting);
+        writtenState |= static_cast<U32>(InputComponentMemberType::INPUT_SHOOTING);
+    }
 
     return writtenState;
 }
@@ -35,6 +40,9 @@ void InputComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, Replic
     }
     if (dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_ACCELERATION)) {
         inputStream.Read(m_angularAcceleration);
+    }
+    if (dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_SHOOTING)) {
+        inputStream.Read(m_isShooting);
     }
 }
 }
