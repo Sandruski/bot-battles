@@ -36,7 +36,6 @@ bool NavigationSystemServer::Update()
             const InputComponent& inputComponent = input.GetInputComponent();
             F32 dt = input.GetDt();
             transformComponent.lock()->UpdateTransform(inputComponent.m_acceleration, inputComponent.m_angularAcceleration, dt);
-            transformComponent.lock()->m_realPosition = transformComponent.lock()->m_position; // TODO!
             Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation);
             transformComponent.lock()->m_transformBuffer.Add(transform); // TODO: also remove this transform buffer at some point
 

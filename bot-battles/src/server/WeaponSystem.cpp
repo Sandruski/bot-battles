@@ -57,11 +57,17 @@ bool WeaponSystem::Update()
                     std::weak_ptr<TransformComponent> remoteTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(remoteEntity);
                     Transform fromTransform = remoteTransformComponent.lock()->m_transformBuffer.Get(interpolationFromFrame);
                     Transform toTransform = remoteTransformComponent.lock()->m_transformBuffer.Get(interpolationToFrame);
+                    remoteTransformComponent.lock()->m_realPosition = remoteTransformComponent.lock()->m_position;
                     remoteTransformComponent.lock()->m_position = Lerp(fromTransform.m_position, toTransform.m_position, interpolationPercentage);
                 }
 
                 ILOG("HIT");
-                line = { 0, 0, 200, 200 };
+                line = {
+                    (I32)transformComponent.lock()->m_position.x,
+                    (I32)transformComponent.lock()->m_position.y,
+                    200,
+                    200
+                };
                 shoot = true;
 
                 ILOG("SERVER SIDE RE-REWIND");
