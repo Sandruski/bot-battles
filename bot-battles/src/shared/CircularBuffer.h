@@ -52,8 +52,6 @@ inline CircularBuffer<T, size>::CircularBuffer()
 template <class T, U32 size>
 inline void CircularBuffer<T, size>::Add(const T& element)
 {
-    assert(!IsFull());
-
     U32 position = m_back;
     U32 index = IndexFromPosition(position);
     m_buffer[index] = element;

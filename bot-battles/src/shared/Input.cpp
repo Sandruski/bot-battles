@@ -8,21 +8,21 @@ Input::Input()
     , m_dirtyState(0)
     , m_dt(0.0f)
     , m_frame(0)
-    , m_fromPositionFrame(0)
-    , m_toPositionFrame(0)
-    , m_interpolation(0.0f)
+    , m_interpolationFromFrame(0)
+    , m_interpolationToFrame(0)
+    , m_interpolationPercentage(0.0f)
 {
 }
 
 //----------------------------------------------------------------------------------------------------
-Input::Input(const InputComponent& inputComponent, U32 dirtyState, F32 dt, U32 frame, U32 fromPositionFrame, U32 toPositionFrame, F32 interpolation)
+Input::Input(const InputComponent& inputComponent, U32 dirtyState, F32 dt, U32 frame, U32 interpolationFromFrame, U32 interpolationToFrame, F32 interpolationPercentage)
     : m_inputComponent(inputComponent)
     , m_dirtyState(dirtyState)
     , m_dt(dt)
     , m_frame(frame)
-    , m_fromPositionFrame(fromPositionFrame)
-    , m_toPositionFrame(toPositionFrame)
-    , m_interpolation(interpolation)
+    , m_interpolationFromFrame(interpolationFromFrame)
+    , m_interpolationToFrame(interpolationToFrame)
+    , m_interpolationPercentage(interpolationPercentage)
 {
 }
 
@@ -34,9 +34,9 @@ void Input::Write(OutputMemoryStream& outputStream) const
     m_inputComponent.Write(outputStream, m_dirtyState);
     outputStream.Write(m_dt);
     outputStream.Write(m_frame);
-    outputStream.Write(m_fromPositionFrame);
-    outputStream.Write(m_toPositionFrame);
-    outputStream.Write(m_interpolation);
+    outputStream.Write(m_interpolationFromFrame);
+    outputStream.Write(m_interpolationToFrame);
+    outputStream.Write(m_interpolationPercentage);
 }
 #elif defined(_SERVER)
 //----------------------------------------------------------------------------------------------------
@@ -46,9 +46,9 @@ void Input::Read(InputMemoryStream& inputStream)
     m_inputComponent.Read(inputStream, m_dirtyState, ReplicationActionType::NONE, INVALID_ENTITY);
     inputStream.Read(m_dt);
     inputStream.Read(m_frame);
-    inputStream.Read(m_fromPositionFrame);
-    inputStream.Read(m_toPositionFrame);
-    inputStream.Read(m_interpolation);
+    inputStream.Read(m_interpolationFromFrame);
+    inputStream.Read(m_interpolationToFrame);
+    inputStream.Read(m_interpolationPercentage);
 }
 #endif
 
@@ -77,20 +77,20 @@ U32 Input::GetFrame() const
 }
 
 //----------------------------------------------------------------------------------------------------
-U32 Input::GetFromPositionFrame() const
+U32 Input::GetInterpolationFromFrame() const
 {
-    return m_fromPositionFrame;
+    return m_interpolationFromFrame;
 }
 
 //----------------------------------------------------------------------------------------------------
-U32 Input::GetToPositionFrame() const
+U32 Input::GetInterpolationToFrame() const
 {
-    return m_toPositionFrame;
+    return m_interpolationToFrame;
 }
 
 //----------------------------------------------------------------------------------------------------
-F32 Input::GetInterpolation() const
+F32 Input::GetInterpolationPercentage() const
 {
-    return m_interpolation;
+    return m_interpolationPercentage;
 }
 }

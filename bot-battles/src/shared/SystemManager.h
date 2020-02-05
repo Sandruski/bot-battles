@@ -18,6 +18,7 @@ public:
     bool PostUpdate();
     bool PreRender();
     bool Render();
+    bool DebugRender();
     bool PostRender();
     bool ShutDown();
 

@@ -1,5 +1,5 @@
-#ifndef __COLLIDER_COMPONENT_H__
-#define __COLLIDER_COMPONENT_H__
+#ifndef __HEALTH_COMPONENT_H__
+#define __HEALTH_COMPONENT_H__
 
 #include "Component.h"
 #ifdef _CLIENT
@@ -10,22 +10,20 @@
 
 namespace sand {
 
-struct TransformComponent;
-
 //----------------------------------------------------------------------------------------------------
 // Entity Component
-struct ColliderComponent : public Component
+struct HealthComponent : public Component
 #ifdef _CLIENT
     ,
-                           public NetworkableReadObject
+                         public NetworkableReadObject
 #elif defined(_SERVER)
     ,
-                           public NetworkableWriteObject
+                         public NetworkableWriteObject
 #endif
 {
-    static ComponentType GetType() { return ComponentType::COLLIDER; }
+    static ComponentType GetType() { return ComponentType::HEALTH; }
 
-    ColliderComponent();
+    HealthComponent();
 
 #ifdef _CLIENT
     void Read(InputMemoryStream& inputStream, U32 dirtyState, ReplicationActionType replicationActionType, Entity entity) override;
@@ -33,8 +31,7 @@ struct ColliderComponent : public Component
     U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override;
 #endif
 
-    Vec2 m_center;
-    Vec2 m_size;
+    U32 m_health;
 };
 }
 

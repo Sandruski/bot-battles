@@ -5,19 +5,24 @@
 
 namespace sand {
 
-    //----------------------------------------------------------------------------------------------------
-    class WeaponSystem : public System {
-    public:
-        static SystemType GetType()
-        {
-            return SystemType::WEAPON;
-        }
+//----------------------------------------------------------------------------------------------------
+class WeaponSystem : public System {
+public:
+    static SystemType GetType()
+    {
+        return SystemType::WEAPON;
+    }
 
-    public:
-        WeaponSystem();
+public:
+    WeaponSystem();
 
-        bool Update() override;
-    };
+    bool Update() override;
+    bool DebugRender() override;
+
+private: // TODO: remove this private variables
+    SDL_Rect line;
+    bool shoot = false;
+};
 }
 
 #endif

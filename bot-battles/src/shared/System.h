@@ -39,6 +39,11 @@ public:
         return true;
     }
 
+    virtual bool DebugRender()
+    {
+        return true;
+    }
+
     virtual bool PostRender()
     {
         return true;

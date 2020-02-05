@@ -9,6 +9,9 @@ TransformComponent::TransformComponent()
     : m_position()
     , m_rotation(0.0f)
     , m_transformBuffer()
+#ifdef _SERVER
+    , m_realPosition()
+#endif
 {
 }
 

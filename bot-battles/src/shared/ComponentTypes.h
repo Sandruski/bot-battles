@@ -8,6 +8,7 @@ enum class ComponentType : U16 {
     TRANSFORM,
     WEAPON,
     COLLIDER,
+    HEALTH,
 
 #ifdef _DRAW
     SPRITE,

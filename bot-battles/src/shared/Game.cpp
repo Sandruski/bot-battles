@@ -7,6 +7,7 @@
 #include "EventSystem.h"
 #include "FSM.h"
 #include "GameplayState.h"
+#include "HealthComponent.h"
 #include "InputComponent.h"
 #include "LinkingContext.h"
 #include "SystemManager.h"
@@ -92,6 +93,10 @@ bool Game::Init()
         return ret;
     }
     ret = m_componentManager->RegisterComponent<WeaponComponent>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_componentManager->RegisterComponent<HealthComponent>();
     if (!ret) {
         return ret;
     }
@@ -182,6 +187,11 @@ bool Game::DoFrame()
     }
 
     ret = Render();
+    if (!ret) {
+        return ret;
+    }
+
+    ret = DebugRender();
     if (!ret) {
         return ret;
     }
@@ -305,14 +315,13 @@ bool Game::PreRender()
 //----------------------------------------------------------------------------------------------------
 bool Game::Render()
 {
-    bool ret = false;
+    return m_systemManager->Render();
+}
 
-    ret = m_systemManager->Render();
-    if (!ret) {
-        return ret;
-    }
-
-    return ret;
+//----------------------------------------------------------------------------------------------------
+bool Game::DebugRender()
+{
+    return m_systemManager->DebugRender();
 }
 
 //----------------------------------------------------------------------------------------------------
