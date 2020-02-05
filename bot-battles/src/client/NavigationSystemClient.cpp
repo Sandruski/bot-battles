@@ -42,6 +42,7 @@ bool NavigationSystemClient::Update()
                     transformComponent.lock()->m_transformBuffer.Add(transform);
 
                     clientComponent.m_isLastMovePending = false;
+                    ILOG("MY POS: %f", transformComponent.lock()->m_position.x);
                 }
             }
         } else {
@@ -71,6 +72,9 @@ bool NavigationSystemClient::Update()
                         transformComponent.lock()->m_rotation = Lerp(fromTransform.m_rotation, toTransform.m_rotation, clientComponent.m_interpolationPercentage);
                     }
                 }
+
+                ILOG("Position x %f", clientComponent.m_interpolationPercentage);
+                ILOG("Position x %f", transformComponent.lock()->m_position.x);
 
                 if (clientComponent.m_interpolationPercentage == 1.0f) {
                     transformComponent.lock()->m_transformBuffer.RemoveFirst();

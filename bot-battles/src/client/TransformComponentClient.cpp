@@ -24,6 +24,7 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, Re
     if (hasRotation) {
         inputStream.Read(newRotation);
     }
+    ILOG("MY POS FROM SERVER: %f", newPosition.x);
 
     if (replicationActionType == ReplicationActionType::CREATE) {
         if (hasPosition) {

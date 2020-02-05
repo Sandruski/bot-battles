@@ -34,6 +34,7 @@ bool InputSystem::Update()
     }
 
     InputComponent& inputComponent = g_gameClient->GetInputComponent();
+    inputComponent.m_acceleration = Vec2::zero;
     const F32 multiplier = 5.0f;
     if (m_keyboard[SDL_SCANCODE_A] == KeyState::REPEAT) {
         inputComponent.m_acceleration.x = -1.0f * multiplier;
@@ -67,10 +68,9 @@ bool InputSystem::Update()
             clientComponent.m_inputBuffer.Add(input);
             clientComponent.m_isLastMovePending = true;
         }
-    }
 
-    inputComponent.m_acceleration = Vec2::zero;
-    inputComponent.m_isShooting = false;
+        inputComponent.m_isShooting = false; // TODO: this should be put FALSE in the WeaponSystem for ClientPrediction
+    }
 
     return true;
 }

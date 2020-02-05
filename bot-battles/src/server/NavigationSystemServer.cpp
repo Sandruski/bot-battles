@@ -6,6 +6,7 @@
 #include "GameServer.h"
 #include "Input.h"
 #include "InputComponent.h"
+#include "LinkingContext.h"
 #include "TransformComponent.h"
 
 namespace sand {
@@ -36,6 +37,7 @@ bool NavigationSystemServer::Update()
             const InputComponent& inputComponent = input.GetInputComponent();
             F32 dt = input.GetDt();
             transformComponent.lock()->UpdateTransform(inputComponent.m_acceleration, inputComponent.m_angularAcceleration, dt);
+
             Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation);
             transformComponent.lock()->m_transformBuffer.Add(transform); // TODO: also remove this transform buffer at some point
 
@@ -44,6 +46,11 @@ bool NavigationSystemServer::Update()
             newEvent.component.entity = entity;
             newEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::TRANSFORM_ALL);
             NotifyEvent(newEvent);
+        }
+
+        ILOG("POSITIONNNNN %f", transformComponent.lock()->m_position.x);
+
+        if (g_gameServer->GetLinkingContext().GetNetworkID(entity) != INVALID_NETWORK_ID) {
         }
     }
 

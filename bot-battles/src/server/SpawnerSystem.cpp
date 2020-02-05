@@ -45,7 +45,7 @@ Entity SpawnerSystem::SpawnPlayerEntity() const
     g_gameServer->GetLinkingContext().AddEntity(character);
 
     std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().AddComponent<TransformComponent>(character);
-    transformComponent.lock()->m_position = Vec3(225.3f, 150.3f, 1.0f);
+    transformComponent.lock()->m_position = Vec3(225.0f, 150.0f, 1.0f);
 
     std::weak_ptr<SpriteResource> spriteResource = g_game->GetResourceManager().AddResource<SpriteResource>("character.png", TEXTURES_DIR, true);
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().AddComponent<SpriteComponent>(character);

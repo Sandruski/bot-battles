@@ -23,6 +23,7 @@ WeaponSystem::WeaponSystem()
 //----------------------------------------------------------------------------------------------------
 bool WeaponSystem::Update()
 {
+    /*
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
 
     for (auto& entity : m_entities) {
@@ -88,7 +89,7 @@ bool WeaponSystem::Update()
             // TODO: calculate
         }
     }
-
+    */
     return true;
 }
 
