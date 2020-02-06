@@ -13,20 +13,20 @@ Transform::Transform()
 
 //----------------------------------------------------------------------------------------------------
 Transform::Transform(const Vec3& position, F32 rotation)
-    : m_timestamp(0.0f)
+    : m_position(position)
+    , m_rotation(rotation)
+    , m_timestamp(0.0f)
     , m_frame(0)
 {
-    this->m_position = position;
-    this->m_rotation = rotation;
 }
 
 //----------------------------------------------------------------------------------------------------
 Transform::Transform(const Vec3& position, F32 rotation, F32 timestamp, U32 frame)
+    : m_position(position)
+    , m_rotation(rotation)
+    , m_timestamp(timestamp)
+    , m_frame(frame)
 {
-    this->m_position = position;
-    this->m_rotation = rotation;
-    this->m_timestamp = timestamp;
-    this->m_frame = frame;
 }
 
 //----------------------------------------------------------------------------------------------------

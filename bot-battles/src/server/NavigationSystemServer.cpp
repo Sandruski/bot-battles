@@ -48,8 +48,6 @@ bool NavigationSystemServer::Update()
             NotifyEvent(newEvent);
         }
 
-        ILOG("POSITIONNNNN %f", transformComponent.lock()->m_position.x);
-
         if (g_gameServer->GetLinkingContext().GetNetworkID(entity) != INVALID_NETWORK_ID) {
         }
     }

@@ -14,8 +14,8 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, Re
 {
     assert(replicationActionType == ReplicationActionType::CREATE || replicationActionType == ReplicationActionType::UPDATE);
 
-    Vec3 newPosition = m_position;
-    F32 newRotation = m_rotation;
+    Vec3 newPosition;
+    F32 newRotation = 0.0f;
     const bool hasPosition = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION);
     if (hasPosition) {
         inputStream.Read(newPosition);
@@ -24,7 +24,6 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, Re
     if (hasRotation) {
         inputStream.Read(newRotation);
     }
-    ILOG("MY POS FROM SERVER: %f", newPosition.x);
 
     if (replicationActionType == ReplicationActionType::CREATE) {
         if (hasPosition) {
@@ -49,6 +48,20 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, Re
             }
         } else {
             if (clientComponent.m_isEntityInterpolation) {
+                if (!hasPosition) {
+                    if (!m_transformBuffer.IsEmpty()) {
+                        newPosition = m_transformBuffer.GetLast().m_position;
+                    } else {
+                        newPosition = m_position;
+                    }
+                }
+                if (!hasRotation) {
+                    if (!m_transformBuffer.IsEmpty()) {
+                        newRotation = m_transformBuffer.GetLast().m_rotation;
+                    } else {
+                        newRotation = m_rotation;
+                    }
+                }
                 F32 startFrameTime = Time::GetInstance().GetStartFrameTime();
                 Transform transform = Transform(newPosition, newRotation, startFrameTime, clientComponent.m_lastAckdFrame);
                 m_transformBuffer.Add(transform);

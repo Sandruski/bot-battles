@@ -42,7 +42,6 @@ bool NavigationSystemClient::Update()
                     transformComponent.lock()->m_transformBuffer.Add(transform);
 
                     clientComponent.m_isLastMovePending = false;
-                    ILOG("MY POS: %f", transformComponent.lock()->m_position.x);
                 }
             }
         } else {
@@ -62,19 +61,8 @@ bool NavigationSystemClient::Update()
 
                 const Transform& fromTransform = transformComponent.lock()->m_transformBuffer.GetFirst();
                 const Transform& toTransform = transformComponent.lock()->m_transformBuffer.GetSecond();
-                const bool isPositionOutOfSync = transformComponent.lock()->m_position != toTransform.m_position;
-                const bool isRotationOutOfSync = transformComponent.lock()->m_rotation != toTransform.m_rotation;
-                if (isPositionOutOfSync || isRotationOutOfSync) {
-                    if (isPositionOutOfSync) {
-                        transformComponent.lock()->m_position = Lerp(fromTransform.m_position, toTransform.m_position, clientComponent.m_interpolationPercentage);
-                    }
-                    if (isRotationOutOfSync) {
-                        transformComponent.lock()->m_rotation = Lerp(fromTransform.m_rotation, toTransform.m_rotation, clientComponent.m_interpolationPercentage);
-                    }
-                }
-
-                ILOG("Position x %f", clientComponent.m_interpolationPercentage);
-                ILOG("Position x %f", transformComponent.lock()->m_position.x);
+                transformComponent.lock()->m_position = Lerp(fromTransform.m_position, toTransform.m_position, clientComponent.m_interpolationPercentage);
+                transformComponent.lock()->m_rotation = Lerp(fromTransform.m_rotation, toTransform.m_rotation, clientComponent.m_interpolationPercentage);
 
                 if (clientComponent.m_interpolationPercentage == 1.0f) {
                     transformComponent.lock()->m_transformBuffer.RemoveFirst();
