@@ -47,9 +47,6 @@ bool NavigationSystemServer::Update()
             newEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::TRANSFORM_ALL);
             NotifyEvent(newEvent);
         }
-
-        if (g_gameServer->GetLinkingContext().GetNetworkID(entity) != INVALID_NETWORK_ID) {
-        }
     }
 
     return true;

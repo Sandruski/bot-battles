@@ -30,7 +30,7 @@ bool NavigationSystemClient::Update()
 
         const bool isLocalPlayer = clientComponent.IsLocalPlayer(entity);
         if (isLocalPlayer) {
-            if (clientComponent.m_isClientSidePrediction) {
+            if (clientComponent.m_isClientPrediction) {
                 if (clientComponent.m_isLastMovePending) {
                     const Input& input = clientComponent.m_inputBuffer.GetLast();
                     const InputComponent& inputComponent = input.GetInputComponent();

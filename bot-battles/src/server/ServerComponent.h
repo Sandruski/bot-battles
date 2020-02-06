@@ -38,6 +38,8 @@ struct ServerComponent : public Component {
     std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>> m_playerIDToClientProxy;
     std::unordered_map<Entity, PlayerID> m_entityToPlayerID;
     std::queue<Entity> m_availablePlayerIDs;
+
+    bool m_isServerRewind;
 };
 }
 

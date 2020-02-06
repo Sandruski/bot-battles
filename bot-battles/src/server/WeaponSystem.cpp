@@ -23,7 +23,6 @@ WeaponSystem::WeaponSystem()
 //----------------------------------------------------------------------------------------------------
 bool WeaponSystem::Update()
 {
-    /*
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
 
     for (auto& entity : m_entities) {
@@ -42,24 +41,27 @@ bool WeaponSystem::Update()
             const Input& input = clientProxy->m_inputBuffer.Get(i);
             const InputComponent& inputComponent = input.GetInputComponent();
             if (inputComponent.m_isShooting) {
-                U32 interpolationFromFrame = input.GetInterpolationFromFrame();
-                U32 interpolationToFrame = input.GetInterpolationToFrame();
-                F32 interpolationPercentage = input.GetInterpolationPercentage();
-
-                ILOG("SERVER SIDE REWIND");
                 LinkingContext& linkingContext = g_gameServer->GetLinkingContext();
                 const std::unordered_map<NetworkID, Entity>& newtorkIDToEntity = linkingContext.GetNetworkIDToEntityMap();
-                for (const auto& pair : newtorkIDToEntity) {
-                    Entity remoteEntity = pair.second;
-                    if (entity == remoteEntity) {
-                        continue;
-                    }
 
-                    std::weak_ptr<TransformComponent> remoteTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(remoteEntity);
-                    Transform fromTransform = remoteTransformComponent.lock()->m_transformBuffer.Get(interpolationFromFrame);
-                    Transform toTransform = remoteTransformComponent.lock()->m_transformBuffer.Get(interpolationToFrame);
-                    remoteTransformComponent.lock()->m_realPosition = remoteTransformComponent.lock()->m_position;
-                    remoteTransformComponent.lock()->m_position = Lerp(fromTransform.m_position, toTransform.m_position, interpolationPercentage);
+                if (serverComponent.m_isServerRewind) {
+                    ILOG("SERVER SIDE REWIND");
+                    U32 interpolationFromFrame = input.GetInterpolationFromFrame();
+                    U32 interpolationToFrame = input.GetInterpolationToFrame();
+                    F32 interpolationPercentage = input.GetInterpolationPercentage();
+
+                    for (const auto& pair : newtorkIDToEntity) {
+                        Entity remoteEntity = pair.second;
+                        if (entity == remoteEntity) {
+                            continue;
+                        }
+
+                        std::weak_ptr<TransformComponent> remoteTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(remoteEntity);
+                        Transform fromTransform = remoteTransformComponent.lock()->m_transformBuffer.Get(interpolationFromFrame);
+                        Transform toTransform = remoteTransformComponent.lock()->m_transformBuffer.Get(interpolationToFrame);
+                        remoteTransformComponent.lock()->m_realPosition = remoteTransformComponent.lock()->m_position;
+                        remoteTransformComponent.lock()->m_position = Lerp(fromTransform.m_position, toTransform.m_position, interpolationPercentage);
+                    }
                 }
 
                 ILOG("HIT");
@@ -71,25 +73,22 @@ bool WeaponSystem::Update()
                 };
                 shoot = true;
 
-                ILOG("SERVER SIDE RE-REWIND");
-                for (const auto& pair : newtorkIDToEntity) {
-                    Entity remoteEntity = pair.second;
-                    if (entity == remoteEntity) {
-                        continue;
+                if (serverComponent.m_isServerRewind) {
+                    ILOG("SERVER SIDE RE-REWIND");
+                    for (const auto& pair : newtorkIDToEntity) {
+                        Entity remoteEntity = pair.second;
+                        if (entity == remoteEntity) {
+                            continue;
+                        }
+
+                        std::weak_ptr<TransformComponent> remoteTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(remoteEntity);
+                        remoteTransformComponent.lock()->m_position = remoteTransformComponent.lock()->m_realPosition;
                     }
-
-                    std::weak_ptr<TransformComponent> remoteTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(remoteEntity);
-                    remoteTransformComponent.lock()->m_position = remoteTransformComponent.lock()->m_realPosition;
                 }
-
-                //F32 dt = input.GetDt();
             }
-
-            // TODO: server side rewind
-            // TODO: calculate
         }
     }
-    */
+
     return true;
 }
 
