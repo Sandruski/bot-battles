@@ -154,6 +154,8 @@ void ClientSystem::ReceiveStatePacket(ClientComponent& clientComponent, InputMem
         inputStream.Read(clientComponent.m_lastAckdFrame);
         clientComponent.m_inputBuffer.Remove(clientComponent.m_lastAckdFrame);
         ILOG("CLIENT RECEIVED ACKD FRAME %u", clientComponent.m_lastAckdFrame);
+    } else {
+        ILOG("CLIENT DID NOT RECEIVE ACKD FRAME");
     }
 
     clientComponent.m_replicationManager.Read(inputStream);

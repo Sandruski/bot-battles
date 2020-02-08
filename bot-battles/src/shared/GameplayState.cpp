@@ -7,6 +7,7 @@
 #include "SpriteComponent.h"
 #include "SpriteResource.h"
 #include "TransformComponent.h"
+#include "WindowComponent.h"
 
 namespace sand {
 
@@ -28,6 +29,8 @@ bool GameplayState::Enter()
     m_background = g_game->GetEntityManager().AddEntity();
 
     std::weak_ptr<TransformComponent> transform = g_game->GetComponentManager().AddComponent<TransformComponent>(m_background);
+    WindowComponent& windowComponent = g_game->GetWindowComponent();
+    transform.lock()->m_position = { static_cast<F32>(windowComponent.m_resolution.x / 2), static_cast<F32>(windowComponent.m_resolution.y / 2), 0.0f };
 
     std::weak_ptr<SpriteResource> spriteResource = g_game->GetResourceManager().AddResource<SpriteResource>("gameplayBackground.png", TEXTURES_DIR, true);
     std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().AddComponent<SpriteComponent>(m_background);

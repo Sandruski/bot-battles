@@ -35,6 +35,7 @@ bool InputSystem::Update()
 
     InputComponent& inputComponent = g_gameClient->GetInputComponent();
     inputComponent.m_acceleration = Vec2::zero;
+    inputComponent.m_angularAcceleration = 0.0f;
     const F32 multiplier = 5.0f;
     if (m_keyboard[SDL_SCANCODE_A] == KeyState::REPEAT) {
         inputComponent.m_acceleration.x = -1.0f * multiplier;
@@ -48,6 +49,15 @@ bool InputSystem::Update()
     if (m_keyboard[SDL_SCANCODE_S] == KeyState::REPEAT) {
         inputComponent.m_acceleration.y = 1.0f * multiplier;
     }
+    if (m_keyboard[SDL_SCANCODE_LEFT] == KeyState::REPEAT) {
+        inputComponent.m_angularAcceleration = -1.0f * multiplier;
+    }
+    if (m_keyboard[SDL_SCANCODE_RIGHT] == KeyState::REPEAT) {
+        inputComponent.m_angularAcceleration = 1.0f * multiplier;
+    }
+    if (m_keyboard[SDL_SCANCODE_S] == KeyState::REPEAT) {
+        inputComponent.m_acceleration.y = 1.0f * multiplier;
+    }
     if (m_keyboard[SDL_SCANCODE_SPACE] == KeyState::DOWN) {
         inputComponent.m_isShooting = true;
     }
@@ -57,6 +67,10 @@ bool InputSystem::Update()
 
         if (inputComponent.m_acceleration.x != 0.0f || inputComponent.m_acceleration.y != 0.0f) {
             dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_ACCELERATION);
+        }
+
+        if (inputComponent.m_angularAcceleration != 0.0f) {
+            dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_ACCELERATION);
         }
 
         if (inputComponent.m_isShooting) {

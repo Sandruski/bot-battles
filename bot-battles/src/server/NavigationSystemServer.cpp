@@ -43,7 +43,7 @@ bool NavigationSystemServer::Update()
             Event newEvent;
             newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
             newEvent.component.entity = entity;
-            newEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::TRANSFORM_ALL);
+            newEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::TRANSFORM_ALL); // TODO: not all...
             NotifyEvent(newEvent);
         }
     }

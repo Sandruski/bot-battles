@@ -77,16 +77,18 @@ bool RendererSystem::Render()
 
         if (!spriteComponent.lock()->m_spriteResource.expired()) {
             const SDL_Rect* srcRect = spriteComponent.lock()->HasCurrentSprite() ? &spriteComponent.lock()->GetCurrentSprite() : nullptr;
-            I32 x = static_cast<I32>(transformComponent.lock()->m_position.x);
-            I32 y = static_cast<I32>(transformComponent.lock()->m_position.y);
             I32 w = spriteComponent.lock()->HasCurrentSprite() ? spriteComponent.lock()->GetCurrentSprite().w : static_cast<I32>(spriteComponent.lock()->m_spriteResource.lock()->GetWidth());
             I32 h = spriteComponent.lock()->HasCurrentSprite() ? spriteComponent.lock()->GetCurrentSprite().h : static_cast<I32>(spriteComponent.lock()->m_spriteResource.lock()->GetHeight());
+            I32 x = static_cast<I32>(transformComponent.lock()->m_position.x) - w / 2;
+            I32 y = static_cast<I32>(transformComponent.lock()->m_position.y) - h / 2;
             const SDL_Rect dstRect = { x, y, w, h };
-
-            SDL_RenderCopy(rendererComponent.m_renderer,
+            SDL_RenderCopyEx(rendererComponent.m_renderer,
                 spriteComponent.lock()->m_spriteResource.lock()->GetTexture(),
                 srcRect,
-                &dstRect);
+                &dstRect,
+                transformComponent.lock()->m_rotation,
+                nullptr,
+                SDL_FLIP_NONE);
         }
 
         if (rendererComponent.m_isDebugDraw) {
