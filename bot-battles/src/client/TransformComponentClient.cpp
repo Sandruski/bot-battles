@@ -89,6 +89,7 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, Vec3 n
     const bool replayRotation = updateRotation ? rotation != newRotation : false;
 
     if (replayPosition || replayRotation) {
+        ILOG("REPLAY");
         if (replayPosition) {
             position = newPosition;
         }
@@ -97,9 +98,10 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, Vec3 n
         }
 
         U32 front = clientComponent.m_inputBuffer.m_front;
-        assert(front == clientComponent.m_lastAckdFrame);
+        assert(front == m_transformBuffer.m_front);
         U32 back = clientComponent.m_inputBuffer.m_back;
-        assert(front == m_transformBuffer.m_back);
+        assert(back == m_transformBuffer.m_back);
+
         for (U32 i = clientComponent.m_lastAckdFrame; i < back; ++i) {
             Transform& transform = m_transformBuffer.Get(i);
             const Input& input = clientComponent.m_inputBuffer.Get(i);
@@ -126,5 +128,6 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, Vec3 n
     }
 
     m_transformBuffer.Remove(clientComponent.m_lastAckdFrame);
+    clientComponent.m_inputBuffer.Remove(clientComponent.m_lastAckdFrame);
 }
 }
