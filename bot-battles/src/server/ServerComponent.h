@@ -24,7 +24,7 @@ struct ServerComponent : public Component {
     bool RemoveEntity(Entity entity);
 
     PlayerID GetPlayerID(const SocketAddress& socketAddress) const;
-    std::shared_ptr<ClientProxy> GetClientProxy(PlayerID playerID) const;
+    std::weak_ptr<ClientProxy> GetClientProxy(PlayerID playerID) const;
     PlayerID GetPlayerID(Entity entity) const;
     Entity GetEntity(PlayerID playerID) const;
 
@@ -37,7 +37,7 @@ struct ServerComponent : public Component {
 
     std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>> m_playerIDToClientProxy;
     std::unordered_map<Entity, PlayerID> m_entityToPlayerID;
-    std::queue<Entity> m_availablePlayerIDs;
+    std::queue<PlayerID> m_availablePlayerIDs;
 
     bool m_isServerRewind;
 };

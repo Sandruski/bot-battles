@@ -32,7 +32,7 @@ bool MainMenuState::Enter()
 
     std::weak_ptr<SpriteResource> spriteResource = g_gameClient->GetResourceManager().AddResource<SpriteResource>("mainMenuBackground.png", TEXTURES_DIR, true);
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameClient->GetComponentManager().AddComponent<SpriteComponent>(m_background);
-    spriteComponent.lock()->m_sprite = spriteResource;
+    spriteComponent.lock()->m_spriteResource = spriteResource;
 
     return true;
 }

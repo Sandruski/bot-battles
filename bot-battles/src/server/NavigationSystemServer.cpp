@@ -28,12 +28,11 @@ bool NavigationSystemServer::Update()
             continue;
         }
 
-        std::shared_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
-        assert(clientProxy != nullptr);
+        std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
         std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
 
-        for (U32 i = clientProxy->m_inputBuffer.m_front; i < clientProxy->m_inputBuffer.m_back; ++i) {
-            const Input& input = clientProxy->m_inputBuffer.Get(i);
+        for (U32 i = clientProxy.lock()->m_inputBuffer.m_front; i < clientProxy.lock()->m_inputBuffer.m_back; ++i) {
+            const Input& input = clientProxy.lock()->m_inputBuffer.Get(i);
             const InputComponent& inputComponent = input.GetInputComponent();
             F32 dt = input.GetDt();
             transformComponent.lock()->UpdateTransform(inputComponent.m_acceleration, inputComponent.m_angularAcceleration, dt);

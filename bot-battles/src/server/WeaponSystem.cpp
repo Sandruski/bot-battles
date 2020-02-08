@@ -31,14 +31,13 @@ bool WeaponSystem::Update()
             continue;
         }
 
-        std::shared_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
-        assert(clientProxy != nullptr);
+        std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
         std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
         std::weak_ptr<ColliderComponent> colliderComponent = g_gameServer->GetComponentManager().GetComponent<ColliderComponent>(entity);
         std::weak_ptr<WeaponComponent> weaponComponent = g_gameServer->GetComponentManager().GetComponent<WeaponComponent>(entity);
 
-        for (U32 i = clientProxy->m_inputBuffer.m_front; i < clientProxy->m_inputBuffer.m_back; ++i) {
-            const Input& input = clientProxy->m_inputBuffer.Get(i);
+        for (U32 i = clientProxy.lock()->m_inputBuffer.m_front; i < clientProxy.lock()->m_inputBuffer.m_back; ++i) {
+            const Input& input = clientProxy.lock()->m_inputBuffer.Get(i);
             const InputComponent& inputComponent = input.GetInputComponent();
             if (inputComponent.m_isShooting) {
                 LinkingContext& linkingContext = g_gameServer->GetLinkingContext();

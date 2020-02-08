@@ -39,7 +39,7 @@ void SpawnerSystem::OnNotify(const Event& event)
 }
 
 //----------------------------------------------------------------------------------------------------
-Entity SpawnerSystem::SpawnPlayerEntity() const
+Entity SpawnerSystem::SpawnPlayerEntity(U32 number, const std::string& name) const
 {
     Entity character = g_gameServer->GetEntityManager().AddEntity();
     g_gameServer->GetLinkingContext().AddEntity(character);
@@ -47,15 +47,46 @@ Entity SpawnerSystem::SpawnPlayerEntity() const
     std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().AddComponent<TransformComponent>(character);
     transformComponent.lock()->m_position = Vec3(225.0f, 150.0f, 1.0f);
 
-    std::weak_ptr<SpriteResource> spriteResource = g_game->GetResourceManager().AddResource<SpriteResource>("character.png", TEXTURES_DIR, true);
+    std::weak_ptr<SpriteResource> charactersSpriteResource = g_game->GetResourceManager().AddResource<SpriteResource>("characters.png", TEXTURES_DIR, true);
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().AddComponent<SpriteComponent>(character);
-    spriteComponent.lock()->m_sprite = spriteResource;
+    spriteComponent.lock()->m_spriteResource = charactersSpriteResource;
+    switch (number) {
+    case 1: {
+        SDL_Rect standRect = { 1, 1, 36, 43 };
+        SDL_Rect holdRect = { 38, 1, 38, 43 };
+        SDL_Rect shootRect = { 77, 1, 52, 43 };
+        SDL_Rect reloadRect = { 130, 1, 42, 43 };
+        spriteComponent.lock()->AddSprite("stand", standRect);
+        spriteComponent.lock()->AddSprite("hold", holdRect);
+        spriteComponent.lock()->AddSprite("shoot", shootRect);
+        spriteComponent.lock()->AddSprite("reload", reloadRect);
+        spriteComponent.lock()->m_currentSprite = "stand";
+        break;
+    }
+
+    case 2: {
+        SDL_Rect standRect = { 1, 45, 35, 43 };
+        SDL_Rect holdRect = { 37, 45, 37, 43 };
+        SDL_Rect shootRect = { 75, 45, 51, 43 };
+        SDL_Rect reloadRect = { 127, 45, 41, 43 };
+        spriteComponent.lock()->AddSprite("stand", standRect);
+        spriteComponent.lock()->AddSprite("hold", holdRect);
+        spriteComponent.lock()->AddSprite("shoot", shootRect);
+        spriteComponent.lock()->AddSprite("reload", reloadRect);
+        spriteComponent.lock()->m_currentSprite = "stand";
+        break;
+    }
+
+    default: {
+        break;
+    }
+    }
 
     std::weak_ptr<TextResource> textResource = g_game->GetResourceManager().AddResource<TextResource>("", "", false);
     RendererComponent& rendererComponent = g_game->GetRendererComponent();
     textResource.lock()->m_font = rendererComponent.m_defaultFont;
-    textResource.lock()->m_text = spriteResource.lock()->GetFile();
-    textResource.lock()->m_color = Red;
+    textResource.lock()->m_text = name;
+    textResource.lock()->m_color = Black;
     textResource.lock()->ReLoad();
     std::weak_ptr<TextComponent> textComponent = g_gameServer->GetComponentManager().AddComponent<TextComponent>(character);
     textComponent.lock()->m_text = textResource;
@@ -67,7 +98,10 @@ Entity SpawnerSystem::SpawnPlayerEntity() const
 void SpawnerSystem::OnPlayerAdded(PlayerID playerID) const
 {
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
-    Entity entity = SpawnPlayerEntity();
+    std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
+    U32 playerNumber = playerID + 1;
+    const std::string playerName = clientProxy.lock()->GetName();
+    Entity entity = SpawnPlayerEntity(playerNumber, playerName);
     serverComponent.AddEntity(entity, playerID);
 }
 

@@ -56,7 +56,8 @@ PlayerID ServerComponent::AddPlayer(const SocketAddress& socketAddress, const ch
 //----------------------------------------------------------------------------------------------------
 bool ServerComponent::RemovePlayer(PlayerID playerID)
 {
-    if (GetClientProxy(playerID) == nullptr) {
+    std::weak_ptr<ClientProxy> clientProxy = GetClientProxy(playerID);
+    if (clientProxy.expired()) {
         WLOG("Player %u could not be removed", playerID);
         return false;
     }
@@ -76,9 +77,7 @@ bool ServerComponent::AddEntity(Entity entity, PlayerID playerID)
         return false;
     }
 
-    m_entityToPlayerID.insert(std::make_pair(entity, playerID));
-
-    return true;
+    return m_entityToPlayerID.insert(std::make_pair(entity, playerID)).second;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -108,14 +107,14 @@ PlayerID ServerComponent::GetPlayerID(const SocketAddress& socketAddress) const
 }
 
 //----------------------------------------------------------------------------------------------------
-std::shared_ptr<ClientProxy> ServerComponent::GetClientProxy(PlayerID playerID) const
+std::weak_ptr<ClientProxy> ServerComponent::GetClientProxy(PlayerID playerID) const
 {
     auto it = m_playerIDToClientProxy.find(playerID);
     if (it == m_playerIDToClientProxy.end()) {
-        return nullptr;
+        return std::weak_ptr<ClientProxy>();
     }
 
-    return it->second;
+    return std::weak_ptr<ClientProxy>(it->second);
 }
 
 //----------------------------------------------------------------------------------------------------

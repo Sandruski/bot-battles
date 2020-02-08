@@ -119,6 +119,15 @@ void InputMemoryStream::Read(SDL_Color& outColor)
 }
 
 //----------------------------------------------------------------------------------------------------
+void InputMemoryStream::Read(SDL_Rect& outRect)
+{
+    Read(outRect.x);
+    Read(outRect.y);
+    Read(outRect.w);
+    Read(outRect.h);
+}
+
+//----------------------------------------------------------------------------------------------------
 void InputMemoryStream::ReadPosition(Vec2& outVec) // TODO: this should be done properly and without hard-coded values
 {
     U32 x = 0;

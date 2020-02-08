@@ -32,10 +32,13 @@ public:
     void Read(bool& outData);
     template <typename T>
     void Read(std::vector<T>& outVector);
+    template <typename T, typename U>
+    void Read(std::unordered_map<T, U>& outUnorderedMap);
     void Read(std::string& outString);
     void Read(Vec2& outVec);
     void Read(Vec3& outVec);
     void Read(SDL_Color& outColor);
+    void Read(SDL_Rect& outRect);
     void ReadPosition(Vec2& outVec);
 
     char* GetPtr() const;
@@ -74,14 +77,28 @@ inline void InputMemoryStream::Read(T& outData, U32 bitCount)
 template <typename T>
 inline void InputMemoryStream::Read(std::vector<T>& outVector)
 {
-    static_assert(std::is_arithmetic<T>::value || std::is_enum<T>::value, "Data is a non-primitive type");
-
     std::size_t size;
     Read(size);
-    outVector.resize(size);
-
-    for (const T& element : outVector) {
+    T element;
+    while (size > 0) {
         Read(element);
+        outVector.emplace_back(element);
+        --size;
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
+template <typename T, typename U>
+inline void InputMemoryStream::Read(std::unordered_map<T, U>& outUnorderedMap)
+{
+    std::size_t size;
+    Read(size);
+    std::pair<T, U> pair;
+    while (size > 0) {
+        Read(pair.first);
+        Read(pair.second);
+        outUnorderedMap.insert(pair);
+        --size;
     }
 }
 }

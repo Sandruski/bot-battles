@@ -17,7 +17,7 @@ public:
     void OnNotify(const Event& event) override;
 
 private:
-    Entity SpawnPlayerEntity() const;
+    Entity SpawnPlayerEntity(U32 number, const std::string& name) const;
 
     void OnPlayerAdded(PlayerID playerID) const;
     void OnPlayerRemoved(Entity entity) const;

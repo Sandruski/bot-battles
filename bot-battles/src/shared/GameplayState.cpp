@@ -31,7 +31,7 @@ bool GameplayState::Enter()
 
     std::weak_ptr<SpriteResource> spriteResource = g_game->GetResourceManager().AddResource<SpriteResource>("gameplayBackground.png", TEXTURES_DIR, true);
     std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().AddComponent<SpriteComponent>(m_background);
-    spriteComponent.lock()->m_sprite = spriteResource;
+    spriteComponent.lock()->m_spriteResource = spriteResource;
 
     return true;
 }

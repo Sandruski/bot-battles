@@ -20,10 +20,13 @@ public:
     void Write(bool inData);
     template <typename T>
     void Write(const std::vector<T>& inVector);
+    template <typename T, typename U>
+    void Write(const std::unordered_map<T, U>& inUnorderedMap);
     void Write(const std::string& inString);
     void Write(const Vec2& inVec);
     void Write(const Vec3& inVec);
     void Write(const SDL_Color& inColor);
+    void Write(const SDL_Rect& inRect);
     void WritePosition(const Vec2& inVec);
 
     const char* GetPtr() const;
@@ -56,13 +59,24 @@ inline void OutputMemoryStream::Write(T inData, U32 bitCount)
 template <typename T>
 inline void OutputMemoryStream::Write(const std::vector<T>& inVector)
 {
-    static_assert(std::is_arithmetic<T>::value || std::is_enum<T>::value, "Data is a non-primitive type");
-
     std::size_t size = inVector.size();
     Write(size);
 
     for (const T& element : inVector) {
         Write(element);
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
+template <typename T, typename U>
+inline void OutputMemoryStream::Write(const std::unordered_map<T, U>& inUnorderedMap)
+{
+    std::size_t size = inUnorderedMap.size();
+    Write(size);
+
+    for (const auto& pair : inUnorderedMap) {
+        Write(pair.first);
+        Write(pair.second);
     }
 }
 }

@@ -149,8 +149,8 @@ void ServerSystem::ReceivePacket(ServerComponent& serverComponent, InputMemorySt
     }
 
     if (playerID != INVALID_PLAYER_ID) {
-        std::shared_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
-        clientProxy->UpdateLastPacketTime();
+        std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
+        clientProxy.lock()->UpdateLastPacketTime();
         ILOG("RECEIVED PACKET FROM PLAYER %u", playerID);
     }
 }
@@ -167,10 +167,10 @@ void ServerSystem::ReceiveHelloPacket(ServerComponent& serverComponent, InputMem
         playerID = serverComponent.AddPlayer(fromSocketAddress, name.c_str());
         if (playerID != INVALID_PLAYER_ID) {
 
-            std::shared_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
+            std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
             const std::unordered_map<NetworkID, Entity>& networkIDToEntity = g_gameServer->GetLinkingContext().GetNetworkIDToEntityMap();
             for (const auto& pair : networkIDToEntity) {
-                clientProxy->m_replicationManager->AddCommand(pair.first, static_cast<U32>(ComponentMemberType::ALL));
+                clientProxy.lock()->m_replicationManager->AddCommand(pair.first, static_cast<U32>(ComponentMemberType::ALL));
             }
 
             Event newEvent;
@@ -181,8 +181,8 @@ void ServerSystem::ReceiveHelloPacket(ServerComponent& serverComponent, InputMem
             ILOG("New player %s %u has joined the game", name.c_str(), playerID);
         }
     } else {
-        std::shared_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
-        ILOG("Hello packet received from existing player %s", clientProxy->GetName());
+        std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
+        ILOG("Hello packet received from existing player %s", clientProxy.lock()->GetName());
     }
 
     SendWelcomePacket(serverComponent, playerID, fromSocketAddress);
@@ -192,22 +192,22 @@ void ServerSystem::ReceiveHelloPacket(ServerComponent& serverComponent, InputMem
 void ServerSystem::ReceiveInputPacket(ServerComponent& serverComponent, InputMemoryStream& inputStream, PlayerID& playerID) const
 {
     inputStream.Read(playerID);
-    std::shared_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
-    if (clientProxy == nullptr) {
+    std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
+    if (clientProxy.expired()) {
         ILOG("Input packet received from unknown player");
         playerID = INVALID_PLAYER_ID;
         return;
     }
 
-    const bool isValid = clientProxy->m_deliveryManager.ReadState(inputStream);
+    const bool isValid = clientProxy.lock()->m_deliveryManager.ReadState(inputStream);
     if (!isValid) {
         return;
     }
 
-    ILOG("Input packet received from player %s", clientProxy->GetName());
+    ILOG("Input packet received from player %s", clientProxy.lock()->GetName());
 
-    inputStream.Read(clientProxy->m_timestamp);
-    clientProxy->m_isTimestampDirty = true;
+    inputStream.Read(clientProxy.lock()->m_timestamp);
+    clientProxy.lock()->m_isTimestampDirty = true;
 
     // TODO: should we have individual frames for Input packets or just send a single frame for the last Input sent?
 
@@ -219,11 +219,11 @@ void ServerSystem::ReceiveInputPacket(ServerComponent& serverComponent, InputMem
         Input input;
         while (inputCount > 0) {
             input.Read(inputStream);
-            if (input.GetFrame() > clientProxy->m_frame) { // TODO: be careful if new frame is 15 and last frame is 13 and frame 14 contains a shoot for example
-                clientProxy->m_inputBuffer.Add(input);
-                clientProxy->m_frame = input.GetFrame();
-                clientProxy->m_isFrameDirty = true;
-                ILOG("SERVER RECEIVED FRAME %u", clientProxy->m_frame);
+            if (input.GetFrame() > clientProxy.lock()->m_frame) { // TODO: be careful if new frame is 15 and last frame is 13 and frame 14 contains a shoot for example
+                clientProxy.lock()->m_inputBuffer.Add(input);
+                clientProxy.lock()->m_frame = input.GetFrame();
+                clientProxy.lock()->m_isFrameDirty = true;
+                ILOG("SERVER RECEIVED FRAME %u", clientProxy.lock()->m_frame);
             }
             --inputCount;
         }

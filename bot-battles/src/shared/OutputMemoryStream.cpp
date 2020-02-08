@@ -109,6 +109,15 @@ void OutputMemoryStream::Write(const SDL_Color& inColor)
 }
 
 //----------------------------------------------------------------------------------------------------
+void OutputMemoryStream::Write(const SDL_Rect& inRect)
+{
+    Write(inRect.x);
+    Write(inRect.y);
+    Write(inRect.w);
+    Write(inRect.h);
+}
+
+//----------------------------------------------------------------------------------------------------
 void OutputMemoryStream::WritePosition(const Vec2& inVec) // TODO: this should be done properly and without hard-coded values
 {
     U32 x = FLOAT_TO_FIXED(inVec.x, -2000.0f, 0.1f);

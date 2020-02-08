@@ -75,15 +75,18 @@ bool RendererSystem::Render()
         std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
         std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
 
-        if (!spriteComponent.lock()->m_sprite.expired()) {
-            SDL_Rect renderQuad = {
-                static_cast<I32>(transformComponent.lock()->m_position.x),
-                static_cast<I32>(transformComponent.lock()->m_position.y),
-                static_cast<I32>(spriteComponent.lock()->m_sprite.lock()->GetWidth()),
-                static_cast<I32>(spriteComponent.lock()->m_sprite.lock()->GetHeight())
-            };
+        if (!spriteComponent.lock()->m_spriteResource.expired()) {
+            const SDL_Rect* srcRect = spriteComponent.lock()->HasCurrentSprite() ? &spriteComponent.lock()->GetCurrentSprite() : nullptr;
+            I32 x = static_cast<I32>(transformComponent.lock()->m_position.x);
+            I32 y = static_cast<I32>(transformComponent.lock()->m_position.y);
+            I32 w = spriteComponent.lock()->HasCurrentSprite() ? spriteComponent.lock()->GetCurrentSprite().w : static_cast<I32>(spriteComponent.lock()->m_spriteResource.lock()->GetWidth());
+            I32 h = spriteComponent.lock()->HasCurrentSprite() ? spriteComponent.lock()->GetCurrentSprite().h : static_cast<I32>(spriteComponent.lock()->m_spriteResource.lock()->GetHeight());
+            const SDL_Rect dstRect = { x, y, w, h };
 
-            SDL_RenderCopy(rendererComponent.m_renderer, spriteComponent.lock()->m_sprite.lock()->GetTexture(), nullptr, &renderQuad);
+            SDL_RenderCopy(rendererComponent.m_renderer,
+                spriteComponent.lock()->m_spriteResource.lock()->GetTexture(),
+                srcRect,
+                &dstRect);
         }
 
         if (rendererComponent.m_isDebugDraw) {
