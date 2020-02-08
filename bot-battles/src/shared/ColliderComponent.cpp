@@ -1,28 +1,44 @@
 #include "ColliderComponent.h"
 
+#include "ComponentMemberTypes.h"
 #include "TransformComponent.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 ColliderComponent::ColliderComponent()
-    : m_center()
+    : m_position()
     , m_size()
 {
 }
 
 #ifdef _CLIENT
 //----------------------------------------------------------------------------------------------------
-void ColliderComponent::Read(InputMemoryStream& /*inputStream*/, U32 /*dirtyState*/, ReplicationActionType /*replicationActionType*/, Entity /*entity*/)
+void ColliderComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, ReplicationActionType /*replicationActionType*/, Entity /*entity*/)
 {
-    // TODO
+    if (dirtyState & static_cast<U32>(ComponentMemberType::COLLIDER_POSITION)) {
+        inputStream.Read(m_position);
+    }
+    if (dirtyState & static_cast<U32>(ComponentMemberType::COLLIDER_SIZE)) {
+        inputStream.Read(m_size);
+    }
 }
 #elif defined(_SERVER)
 //----------------------------------------------------------------------------------------------------
-U32 ColliderComponent::Write(OutputMemoryStream& /*outputStream*/, U32 /*dirtyState*/) const
+U32 ColliderComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) const
 {
-    // TODO
-    return 0;
+    U32 writtenState = 0;
+
+    if (dirtyState & static_cast<U32>(ComponentMemberType::COLLIDER_POSITION)) {
+        outputStream.Write(m_position);
+        writtenState |= static_cast<U32>(ComponentMemberType::COLLIDER_POSITION);
+    }
+    if (dirtyState & static_cast<U32>(ComponentMemberType::COLLIDER_SIZE)) {
+        outputStream.Write(m_size);
+        writtenState |= static_cast<U32>(ComponentMemberType::COLLIDER_SIZE);
+    }
+
+    return writtenState;
 }
 #endif
 

@@ -1,5 +1,6 @@
 #include "GameServer.h"
 
+#include "CollisionSystem.h"
 #include "ConfigServer.h"
 #include "EntityManager.h"
 #include "FSM.h"
@@ -39,6 +40,10 @@ bool GameServer::Init()
     if (!ret) {
         return ret;
     }
+    ret = m_systemManager->RegisterSystem<CollisionSystem>();
+    if (!ret) {
+        return ret;
+    }
     ret = m_systemManager->RegisterSystem<WeaponSystem>();
     if (!ret) {
         return ret;
@@ -64,6 +69,11 @@ bool GameServer::Init()
     }
     std::weak_ptr<NavigationSystemServer> navigationSystemServer = m_systemManager->GetSystem<NavigationSystemServer>();
     ret = navigationSystemServer.lock()->AddObserver(serverSystem);
+    if (!ret) {
+        return ret;
+    }
+    std::weak_ptr<CollisionSystem> collisionSystem = m_systemManager->GetSystem<CollisionSystem>();
+    ret = collisionSystem.lock()->AddObserver(serverSystem);
     if (!ret) {
         return ret;
     }

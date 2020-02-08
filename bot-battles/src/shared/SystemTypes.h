@@ -29,6 +29,7 @@ enum class SystemType : U16 {
     SPAWNER,
     NAVIGATION,
     WEAPON,
+    COLLISION,
 #ifdef _DRAW
     HUD,
 #endif

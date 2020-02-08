@@ -14,6 +14,7 @@
 #include "TextComponent.h"
 #include "TextResource.h"
 #include "TransformComponent.h"
+#include "WeaponComponent.h"
 
 namespace sand {
 
@@ -90,6 +91,12 @@ Entity SpawnerSystem::SpawnPlayerEntity(U32 number, const std::string& name) con
     textResource.lock()->ReLoad();
     std::weak_ptr<TextComponent> textComponent = g_gameServer->GetComponentManager().AddComponent<TextComponent>(character);
     textComponent.lock()->m_text = textResource;
+
+    std::weak_ptr<ColliderComponent> colliderComponent = g_gameServer->GetComponentManager().AddComponent<ColliderComponent>(character);
+    const SDL_Rect& currentSprite = spriteComponent.lock()->GetCurrentSprite();
+    colliderComponent.lock()->m_size.x = static_cast<F32>(currentSprite.w);
+    colliderComponent.lock()->m_size.y = static_cast<F32>(currentSprite.h);
+    std::weak_ptr<WeaponComponent> weaponComponent = g_gameServer->GetComponentManager().AddComponent<WeaponComponent>(character);
 
     return character;
 }

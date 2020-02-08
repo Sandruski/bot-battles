@@ -185,6 +185,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ClientProxy.cpp" />
+    <ClCompile Include="CollisionSystem.cpp" />
     <ClCompile Include="ConfigServer.cpp" />
     <ClCompile Include="Delivery.cpp" />
     <ClCompile Include="DeliveryManagerServer.cpp" />
@@ -214,6 +215,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientProxy.h" />
+    <ClInclude Include="CollisionSystem.h" />
     <ClInclude Include="ConfigServer.h" />
     <ClInclude Include="Delivery.h" />
     <ClInclude Include="DeliveryManagerServer.h" />
