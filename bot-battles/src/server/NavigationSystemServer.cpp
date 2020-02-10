@@ -45,15 +45,15 @@ bool NavigationSystemServer::Update()
                 transformComponent.lock()->UpdateRotation(inputComponent.m_angularAcceleration, dt);
             }
 
+            Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, Time::GetInstance().GetStartFrameTime(), input.GetFrame());
+            transformComponent.lock()->m_transformBuffer.Add(transform); // TODO: also remove this transform buffer at some point
+
             Event newEvent;
             newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
             newEvent.component.entity = entity;
             newEvent.component.dirtyState = dirtyState;
             NotifyEvent(newEvent);
         }
-
-        Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation);
-        transformComponent.lock()->m_transformBuffer.Add(transform); // TODO: also remove this transform buffer at some point
     }
 
     return true;

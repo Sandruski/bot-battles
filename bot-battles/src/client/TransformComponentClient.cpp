@@ -65,6 +65,8 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, Re
                 F32 startFrameTime = Time::GetInstance().GetStartFrameTime();
                 Transform transform = Transform(newPosition, newRotation, startFrameTime, clientComponent.m_lastAckdFrame);
                 m_transformBuffer.Add(transform);
+                ILOG("LAST %u %u", clientComponent.m_lastAckdFrame, m_transformBuffer.m_back - 1);
+                // TODO!
             } else {
                 if (hasPosition) {
                     m_position = newPosition;
