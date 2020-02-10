@@ -39,8 +39,10 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)HUDSystem.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)InputComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Interpolation.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Intersection.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)LinkingContext.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Log.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Math.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Memory.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)InputMemoryStream.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MessageTypes.h" />
@@ -52,7 +54,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Observer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)OutputMemoryStream.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)pch.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)RandomNumberGenerator.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Random.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)RendererSystem.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ReplicationActionTypes.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ReplicationCommand.h" />

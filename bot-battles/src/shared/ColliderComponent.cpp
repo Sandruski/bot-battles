@@ -42,22 +42,16 @@ U32 ColliderComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) c
 }
 #endif
 
-// TODO: OnCollisionEnter, etc.
-/*
 //----------------------------------------------------------------------------------------------------
-bool ColliderComponent::IsColliding(const TransformComponent& transformComponent, const ColliderComponent& colliderComponent) const
+SDL_Rect ColliderComponent::GetRect() const
 {
-    F32 x1A = transformComponent.m_position. + m_center.x - m_size.x * 0.5f;
-    F32 x2A = transformComponent.m_position. + m_center.x + m_size.x * 0.5f;
-    F32 y1A = transformComponent.m_position. + m_center.y - m_size.y * 0.5f;
-    F32 y2A = transformComponent.m_position. + m_center.y + m_size.y * 0.5f;
+    F32 x1 = m_position.x - m_size.x;
+    F32 y1 = m_position.y - m_size.y;
+    F32 x2 = m_position.x + m_size.x;
+    F32 y2 = m_position.y + m_size.y;
 
-    F32 x1B = colliderComponent.m_center.x - colliderComponent.m_size.x * 0.5f;
-    F32 x2B = colliderComponent.m_center.x + colliderComponent.m_size.x * 0.5f;
-    F32 y1B = colliderComponent.m_center.y - colliderComponent.m_size.y * 0.5f;
-    F32 y2B = colliderComponent.m_center.y + colliderComponent.m_size.y * 0.5f;
+    SDL_Rect rect = { x1, y1, x2, y2 };
 
-    return (x1A <= x2B && x2A >= x1B && y1A <= y2B && y2A >= y1B);
+    return rect;
 }
-*/
 }

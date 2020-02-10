@@ -228,9 +228,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)HUDSystem.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)RandomNumberGenerator.h">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Component.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
@@ -284,6 +281,15 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)HealthComponent.h">
       <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Intersection.h">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Projects\bot-battles\bot-battles\src\shared\Random.h">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Math.h">
+      <Filter>Header Files\Math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

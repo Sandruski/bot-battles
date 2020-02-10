@@ -7,6 +7,7 @@
 #include "InputComponent.h"
 #include "LinkingContext.h"
 #include "TransformComponent.h"
+#include "Interpolation.h"
 
 namespace sand {
 

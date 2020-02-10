@@ -81,9 +81,78 @@ public:
         return !(x == vec.x && y == vec.y);
     }
 
+    /*
+    bool operator<(const Vec2& vec) const
+    {
+        return (x < vec.x && y < vec.y);
+    }
+
+    bool operator<=(const Vec2& vec) const
+    {
+        return (x <= vec.x && y <= vec.y);
+    }
+
+    bool operator>(const Vec2& vec) const
+    {
+        return (x > vec.x && y > vec.y);
+    }
+
+    bool operator>=(const Vec2& vec) const
+    {
+        return (x >= vec.x && y >= vec.y);
+    }*/
+
+    inline Vec2 GetNormalized()
+    {
+        return Vec2::Normalize(*this);
+    }
+
+    static Vec2 GetNormalized(Vec2 vec)
+    {
+        return Vec2::Normalize(vec);
+    }
+
+    inline void Normalize()
+    {
+        F32 mag = GetMagnitude();
+        if (mag > 0.0f) // TODO: epsilon
+        {
+            //*this /= mag;
+        }
+        else
+        {
+            //*this = Vec2::zero;
+        }
+    }
+
+    static Vec2 Normalize(Vec2 vec)
+    {
+        F32 mag = GetMagnitude(vec);
+        if (mag > 0.0f) // TODO: epsilon
+        {
+            //return vec / mag;
+        }
+        else
+        {
+            //return Vec2::zero;
+        }
+    }
+
+    inline F32 GetMagnitude()
+    { 
+        return 0.0f;//sqrt(x * x + y * y);
+    }
+
+    static F32 GetMagnitude(Vec2 vec)
+    {
+        return 0.0f;//sqrt(vec.x * vec.x + vec.y * vec.y);
+    }
+
 public:
     static const Vec2 zero;
     static const Vec2 one;
+    static const Vec2 positiveInfinity;
+    static const Vec2 negativeInfinity;
 
 public:
 #pragma warning(disable : 4201)

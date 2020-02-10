@@ -33,6 +33,8 @@ struct ColliderComponent : public Component
     U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override;
 #endif
 
+    SDL_Rect GetRect() const;
+
     Vec2 m_position;
     Vec2 m_size;
 };

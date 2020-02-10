@@ -46,8 +46,8 @@
 #include "Utils.h"
 
 // Math
-#include "Interpolation.h"
-#include "RandomNumberGenerator.h"
+#include "Math.h"
+#include "Random.h"
 #include "Vec2.h"
 #include "Vec2I.h"
 #include "Vec3.h"

@@ -10,13 +10,15 @@
 #include "SystemManager.h"
 #include "TransformComponent.h"
 #include "WeaponComponent.h"
+#include "Intersection.h"
+#include "Interpolation.h"
 
 namespace sand {
 //----------------------------------------------------------------------------------------------------
 WeaponSystem::WeaponSystem()
 {
     m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
-    //m_signature |= 1 << static_cast<U16>(ComponentType::COLLIDER);
+    //m_signature |= 1 << static_cast<U16>(ComponentType::COLLIDER); // TODO: uncomment
     //m_signature |= 1 << static_cast<U16>(ComponentType::WEAPON);
 }
 
@@ -62,14 +64,12 @@ bool WeaponSystem::Update()
                         remoteTransformComponent.lock()->m_position = Lerp(fromTransform.m_position, toTransform.m_position, interpolationPercentage);
                     }
                 }
-
-                ILOG("HIT");
-                line = {
-                    (I32)transformComponent.lock()->m_position.x,
-                    (I32)transformComponent.lock()->m_position.y,
-                    200,
-                    200
-                };
+                
+                /*
+                if (Raycast(transformComponent.lock()->m_position, ))
+                {
+                    ILOG("HIT");
+                }*/
                 shoot = true;
 
                 if (serverComponent.m_isServerRewind) {
