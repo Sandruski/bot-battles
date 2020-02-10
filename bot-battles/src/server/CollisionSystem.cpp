@@ -41,13 +41,7 @@ bool CollisionSystem::DebugRender()
 {
     for (auto& entity : m_entities) {
         std::weak_ptr<ColliderComponent> colliderComponent = g_gameServer->GetComponentManager().GetComponent<ColliderComponent>(entity);
-        SDL_Rect colliderQuad = {
-            static_cast<I32>(colliderComponent.lock()->m_position.x - colliderComponent.lock()->m_size.x / 2),
-            static_cast<I32>(colliderComponent.lock()->m_position.y - colliderComponent.lock()->m_size.y / 2),
-            static_cast<I32>(colliderComponent.lock()->m_size.x),
-            static_cast<I32>(colliderComponent.lock()->m_size.y),
-        };
-        DebugDrawer::DrawQuad(colliderQuad, Green, false);
+        DebugDrawer::DrawQuad(colliderComponent.lock()->GetRect(), Green, false);
     }
 
     return true;

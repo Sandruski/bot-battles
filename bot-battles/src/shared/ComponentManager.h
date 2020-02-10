@@ -163,7 +163,7 @@ public:
     std::weak_ptr<T> GetComponent(Entity entity);
     std::weak_ptr<Component> GetComponent(ComponentType componentType, Entity entity);
     template <class T>
-    std::vector<std::weak_ptr<Component>> GetComponents();
+    std::vector<std::weak_ptr<T>> GetComponents();
     template <class T>
     bool RemoveComponent(Entity entity);
     bool RemoveComponent(ComponentType componentType, Entity entity);
@@ -256,7 +256,7 @@ inline std::weak_ptr<T> ComponentManager::GetComponent(Entity entity)
 
 //----------------------------------------------------------------------------------------------------
 template<class T>
-inline std::vector<std::weak_ptr<Component>> ComponentManager::GetComponents()
+inline std::vector<std::weak_ptr<T>> ComponentManager::GetComponents()
 {
     static_assert(std::is_base_of<Component, T>::value, "T is not derived from Component");
 

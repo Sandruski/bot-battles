@@ -81,7 +81,6 @@ public:
         return !(x == vec.x && y == vec.y);
     }
 
-    /*
     bool operator<(const Vec2& vec) const
     {
         return (x < vec.x && y < vec.y);
@@ -100,7 +99,7 @@ public:
     bool operator>=(const Vec2& vec) const
     {
         return (x >= vec.x && y >= vec.y);
-    }*/
+    }
 
     inline Vec2 GetNormalized()
     {
@@ -115,37 +114,37 @@ public:
     inline void Normalize()
     {
         F32 mag = GetMagnitude();
-        if (mag > 0.0f) // TODO: epsilon
+        if (mag > EPSILON)
         {
-            //*this /= mag;
+            *this /= mag;
         }
         else
         {
-            //*this = Vec2::zero;
+            *this = Vec2::zero;
         }
     }
 
     static Vec2 Normalize(Vec2 vec)
     {
         F32 mag = GetMagnitude(vec);
-        if (mag > 0.0f) // TODO: epsilon
+        if (mag > EPSILON)
         {
-            //return vec / mag;
+            return vec / mag;
         }
         else
         {
-            //return Vec2::zero;
+            return Vec2::zero;
         }
     }
 
     inline F32 GetMagnitude()
     { 
-        return 0.0f;//sqrt(x * x + y * y);
+        return sqrt(x * x + y * y);
     }
 
     static F32 GetMagnitude(Vec2 vec)
     {
-        return 0.0f;//sqrt(vec.x * vec.x + vec.y * vec.y);
+        return sqrt(vec.x * vec.x + vec.y * vec.y);
     }
 
 public:

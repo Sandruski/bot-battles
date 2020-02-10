@@ -12,14 +12,15 @@
 #include "WeaponComponent.h"
 #include "Intersection.h"
 #include "Interpolation.h"
+#include "WindowComponent.h"
 
 namespace sand {
 //----------------------------------------------------------------------------------------------------
 WeaponSystem::WeaponSystem()
 {
     m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
-    //m_signature |= 1 << static_cast<U16>(ComponentType::COLLIDER); // TODO: uncomment
-    //m_signature |= 1 << static_cast<U16>(ComponentType::WEAPON);
+    m_signature |= 1 << static_cast<U16>(ComponentType::COLLIDER);
+    m_signature |= 1 << static_cast<U16>(ComponentType::WEAPON);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -41,7 +42,7 @@ bool WeaponSystem::Update()
         for (U32 i = clientProxy.lock()->m_inputBuffer.m_front; i < clientProxy.lock()->m_inputBuffer.m_back; ++i) {
             const Input& input = clientProxy.lock()->m_inputBuffer.Get(i);
             const InputComponent& inputComponent = input.GetInputComponent();
-            if (inputComponent.m_isShooting) {
+            if (inputComponent.m_isShooting) {                /*
                 LinkingContext& linkingContext = g_gameServer->GetLinkingContext();
                 const std::unordered_map<NetworkID, Entity>& newtorkIDToEntity = linkingContext.GetNetworkIDToEntityMap();
 
@@ -63,15 +64,27 @@ bool WeaponSystem::Update()
                         remoteTransformComponent.lock()->m_realPosition = remoteTransformComponent.lock()->m_position;
                         remoteTransformComponent.lock()->m_position = Lerp(fromTransform.m_position, toTransform.m_position, interpolationPercentage);
                     }
-                }
+                }*/
                 
-                /*
-                if (Raycast(transformComponent.lock()->m_position, ))
+                Vec2 position = transformComponent.lock()->GetPosition();
+                Vec2 rotation = transformComponent.lock()->GetRotation();
+                WindowComponent& windowComponent = g_gameServer->GetWindowComponent();
+                F32 maxLength = static_cast<F32>(std::max(windowComponent.m_resolution.x, windowComponent.m_resolution.y));
+                I32 x1 = static_cast<I32>(position.x);
+                I32 y1 = static_cast<I32>(position.y);
+                I32 x2 = static_cast<I32>(position.x + rotation.x * maxLength);
+                I32 y2 = static_cast<I32>(position.y + rotation.y * maxLength);
+                line = { x1, y1, x2, y2 };
+                shoot = true;
+                color = Blue;
+                Vec2 intersection;
+                if (Raycast(position, rotation, maxLength, intersection))
                 {
                     ILOG("HIT");
-                }*/
-                shoot = true;
+                    color = Red;
+                }
 
+                /*
                 if (serverComponent.m_isServerRewind) {
                     ILOG("SERVER SIDE RE-REWIND");
                     for (const auto& pair : newtorkIDToEntity) {
@@ -83,7 +96,7 @@ bool WeaponSystem::Update()
                         std::weak_ptr<TransformComponent> remoteTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(remoteEntity);
                         remoteTransformComponent.lock()->m_position = remoteTransformComponent.lock()->m_realPosition;
                     }
-                }
+                }*/
             }
         }
     }
@@ -95,7 +108,7 @@ bool WeaponSystem::Update()
 bool WeaponSystem::DebugRender()
 {
     if (shoot) {
-        DebugDrawer::DrawLine(line, Blue);
+        DebugDrawer::DrawLine(line, color);
         shoot = false;
     }
 

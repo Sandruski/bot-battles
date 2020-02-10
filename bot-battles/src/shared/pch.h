@@ -46,7 +46,6 @@
 #include "Utils.h"
 
 // Math
-#include "Math.h"
 #include "Random.h"
 #include "Vec2.h"
 #include "Vec2I.h"

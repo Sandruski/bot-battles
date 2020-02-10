@@ -21,6 +21,7 @@ public:
 
 private: // TODO: remove this private variables
     SDL_Rect line;
+    SDL_Color color;
     bool shoot = false;
 };
 }

@@ -45,10 +45,10 @@ U32 ColliderComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) c
 //----------------------------------------------------------------------------------------------------
 SDL_Rect ColliderComponent::GetRect() const
 {
-    F32 x1 = m_position.x - m_size.x;
-    F32 y1 = m_position.y - m_size.y;
-    F32 x2 = m_position.x + m_size.x;
-    F32 y2 = m_position.y + m_size.y;
+    I32 x1 = static_cast<I32>(m_position.x - m_size.x / 2.0f);
+    I32 y1 = static_cast<I32>(m_position.y - m_size.y / 2.0f);
+    I32 x2 = static_cast<I32>(m_size.x);
+    I32 y2 = static_cast<I32>(m_size.y);
 
     SDL_Rect rect = { x1, y1, x2, y2 };
 
