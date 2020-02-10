@@ -20,9 +20,14 @@ public:
     bool DebugRender() override;
 
 private: // TODO: remove this private variables
+    // Debug raycast
     SDL_Rect line;
     SDL_Color color;
     bool shoot = false;
+
+    // Debug server rewind
+    SDL_Rect befColl;
+    SDL_Rect aftColl;
 };
 }
 

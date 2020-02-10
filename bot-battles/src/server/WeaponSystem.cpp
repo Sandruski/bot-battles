@@ -42,7 +42,7 @@ bool WeaponSystem::Update()
         for (U32 i = clientProxy.lock()->m_inputBuffer.m_front; i < clientProxy.lock()->m_inputBuffer.m_back; ++i) {
             const Input& input = clientProxy.lock()->m_inputBuffer.Get(i);
             const InputComponent& inputComponent = input.GetInputComponent();
-            if (inputComponent.m_isShooting) {                /*
+            if (inputComponent.m_isShooting) {
                 LinkingContext& linkingContext = g_gameServer->GetLinkingContext();
                 const std::unordered_map<NetworkID, Entity>& newtorkIDToEntity = linkingContext.GetNetworkIDToEntityMap();
 
@@ -63,8 +63,23 @@ bool WeaponSystem::Update()
                         Transform toTransform = remoteTransformComponent.lock()->m_transformBuffer.Get(interpolationToFrame);
                         remoteTransformComponent.lock()->m_realPosition = remoteTransformComponent.lock()->m_position;
                         remoteTransformComponent.lock()->m_position = Lerp(fromTransform.m_position, toTransform.m_position, interpolationPercentage);
+                        ILOG("Before pos is %f %f (i %u) and after pos is %f %f (i %u)", 
+                            remoteTransformComponent.lock()->m_realPosition.x, 
+                            remoteTransformComponent.lock()->m_realPosition.y, 
+                            interpolationFromFrame,
+                            remoteTransformComponent.lock()->m_position.x, 
+                            remoteTransformComponent.lock()->m_position.y,
+                            interpolationToFrame);
+                        std::weak_ptr<ColliderComponent> remoteColliderComponent = g_gameServer->GetComponentManager().GetComponent<ColliderComponent>(remoteEntity);
+
+                        befColl = remoteColliderComponent.lock()->GetRect();
+
+                        remoteColliderComponent.lock()->m_position.x = remoteTransformComponent.lock()->m_position.x;
+                        remoteColliderComponent.lock()->m_position.y = remoteTransformComponent.lock()->m_position.y;
+                    
+                        aftColl = remoteColliderComponent.lock()->GetRect();
                     }
-                }*/
+                }
                 
                 Vec2 position = transformComponent.lock()->GetPosition();
                 Vec2 rotation = transformComponent.lock()->GetRotation();
@@ -84,7 +99,6 @@ bool WeaponSystem::Update()
                     color = Red;
                 }
 
-                /*
                 if (serverComponent.m_isServerRewind) {
                     ILOG("SERVER SIDE RE-REWIND");
                     for (const auto& pair : newtorkIDToEntity) {
@@ -95,8 +109,11 @@ bool WeaponSystem::Update()
 
                         std::weak_ptr<TransformComponent> remoteTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(remoteEntity);
                         remoteTransformComponent.lock()->m_position = remoteTransformComponent.lock()->m_realPosition;
+                        std::weak_ptr<ColliderComponent> remoteColliderComponent = g_gameServer->GetComponentManager().GetComponent<ColliderComponent>(remoteEntity);
+                        remoteColliderComponent.lock()->m_position.x = remoteTransformComponent.lock()->m_position.x;
+                        remoteColliderComponent.lock()->m_position.y = remoteTransformComponent.lock()->m_position.y;
                     }
-                }*/
+                }
             }
         }
     }
@@ -107,10 +124,13 @@ bool WeaponSystem::Update()
 //----------------------------------------------------------------------------------------------------
 bool WeaponSystem::DebugRender()
 {
-    if (shoot) {
+    //if (shoot) {
         DebugDrawer::DrawLine(line, color);
-        shoot = false;
-    }
+        //shoot = false;
+    //}
+
+    DebugDrawer::DrawQuad(befColl, Yellow);
+    DebugDrawer::DrawQuad(aftColl, Orange);
 
     return true;
 }
