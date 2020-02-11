@@ -31,9 +31,6 @@ inline bool COMPARE_STRINGS(const char* str1, const char* str2)
 static const I32 SDL_ERROR = -1;
 static const I32 SDL_KEY_PRESSED = 1;
 
-static const F32 FPS_CLIENT = 60.0f;
-static const F32 FPS_SERVER = 20.0f;
-
 static const F32 EPSILON = 0.00001f;
 static const F32 PI = 3.14159265f;
 
@@ -47,6 +44,8 @@ inline F32 RADIANS_TO_DEGREES(F32 radians)
     return radians * 180.0f / PI;
 }
 
+static const F32 FPS_CLIENT = 60.0f;
+static const F32 FPS_SERVER = 10.0f;
 #ifdef _CLIENT
 static const F32 FPS = FPS_CLIENT;
 #elif defined(_SERVER)

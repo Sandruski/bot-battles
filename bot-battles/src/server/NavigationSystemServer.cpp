@@ -30,7 +30,7 @@ bool NavigationSystemServer::Update()
 
         std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
         std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
-
+        bool hasChanged = false;
         for (U32 i = clientProxy.lock()->m_inputBuffer.m_front; i < clientProxy.lock()->m_inputBuffer.m_back; ++i) {
             const Input& input = clientProxy.lock()->m_inputBuffer.Get(i);
             const InputComponent& inputComponent = input.GetInputComponent();
@@ -39,20 +39,28 @@ bool NavigationSystemServer::Update()
             const bool hasPosition = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION);
             if (hasPosition) {
                 transformComponent.lock()->UpdatePosition(inputComponent.m_acceleration, dt);
+                hasChanged = true;
             }
             const bool hasRotation = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_ROTATION);
             if (hasRotation) {
                 transformComponent.lock()->UpdateRotation(inputComponent.m_angularAcceleration, dt);
+                hasChanged = true;
             }
 
-            Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, Time::GetInstance().GetStartFrameTime(), input.GetFrame());
-            transformComponent.lock()->m_transformBuffer.Add(transform); // TODO: also remove this transform buffer at some point
+            if (hasPosition || hasRotation) {
+                Event newEvent;
+                newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
+                newEvent.component.entity = entity;
+                newEvent.component.dirtyState = dirtyState;
+                NotifyEvent(newEvent);
+            }
+        }
 
-            Event newEvent;
-            newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
-            newEvent.component.entity = entity;
-            newEvent.component.dirtyState = dirtyState;
-            NotifyEvent(newEvent);
+        if (hasChanged) {
+            Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation);
+            transformComponent.lock()->m_transformBuffer.Add(transform); // TODO: also remove this transform buffer at some point
+            ILOG("Server has changed. Now pos x is: %f", transformComponent.lock()->m_position.x);
+            ILOG("SERVER INSERT NUMBER %u", transformComponent.lock()->m_transformBuffer.m_back - 1);
         }
     }
 

@@ -52,8 +52,8 @@ bool NavigationSystemClient::Update()
                     continue;
                 }
 
-                clientComponent.m_interpolationFromFrame = transformComponent.lock()->m_transformBuffer.GetFirst().GetFrame();
-                clientComponent.m_interpolationToFrame = transformComponent.lock()->m_transformBuffer.GetSecond().GetFrame();
+                clientComponent.m_interpolationFromFrame = transformComponent.lock()->m_transformBuffer.m_front;
+                clientComponent.m_interpolationToFrame = transformComponent.lock()->m_transformBuffer.m_front + 1;
                 F32 outOfSyncTime = frameStartTime - transformComponent.lock()->m_transformBuffer.GetSecond().GetTimestamp();
                 clientComponent.m_interpolationPercentage = outOfSyncTime / ENTITY_INTERPOLATION_PERIOD;
                 if (clientComponent.m_interpolationPercentage > 1.0f) {

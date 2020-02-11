@@ -204,7 +204,7 @@ void ServerSystem::ReceiveInputPacket(ServerComponent& serverComponent, InputMem
         return;
     }
 
-    ILOG("Input packet received from player %s", clientProxy.lock()->GetName());
+    ILOG("Input packet received from player %u %s", playerID, clientProxy.lock()->GetName());
 
     inputStream.Read(clientProxy.lock()->m_timestamp);
     clientProxy.lock()->m_isTimestampDirty = true;
@@ -214,6 +214,7 @@ void ServerSystem::ReceiveInputPacket(ServerComponent& serverComponent, InputMem
     bool hasInputs = false;
     inputStream.Read(hasInputs);
     if (hasInputs) {
+        ILOG("Input packet has inputs");
         U32 inputCount = 0;
         inputStream.Read(inputCount);
         Input input;

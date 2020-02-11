@@ -60,30 +60,19 @@ bool WeaponSystem::Update()
 
                         std::weak_ptr<TransformComponent> remoteTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(remoteEntity);
                         Transform fromTransform = remoteTransformComponent.lock()->m_transformBuffer.Get(interpolationFromFrame);
-                        if (fromTransform.GetFrame() == 0 && !remoteTransformComponent.lock()->m_transformBuffer.IsEmpty())
-                        {
-                            fromTransform = remoteTransformComponent.lock()->m_transformBuffer.GetLast();
-                        }
                         Transform toTransform = remoteTransformComponent.lock()->m_transformBuffer.Get(interpolationToFrame);
-                        if (toTransform.GetFrame() == 0 && !remoteTransformComponent.lock()->m_transformBuffer.IsEmpty())
-                        {
-                            toTransform = remoteTransformComponent.lock()->m_transformBuffer.GetLast();
-                        }
                         remoteTransformComponent.lock()->m_realPosition = remoteTransformComponent.lock()->m_position;
                         if (!remoteTransformComponent.lock()->m_transformBuffer.IsEmpty())
                         {
                             remoteTransformComponent.lock()->m_position = Lerp(fromTransform.m_position, toTransform.m_position, interpolationPercentage);
                         }
-                        ILOG("Before pos is %f %f (i %u) and after pos is %f %f (i %u)", 
-                            remoteTransformComponent.lock()->m_realPosition.x, 
-                            remoteTransformComponent.lock()->m_realPosition.y, 
-                            interpolationFromFrame,
-                            remoteTransformComponent.lock()->m_position.x, 
-                            remoteTransformComponent.lock()->m_position.y,
-                            interpolationToFrame);
                         std::weak_ptr<ColliderComponent> remoteColliderComponent = g_gameServer->GetComponentManager().GetComponent<ColliderComponent>(remoteEntity);
 
                         befColl = remoteColliderComponent.lock()->GetRect();
+                        befColl.x -= 1;
+                        befColl.y -= 1;
+                        befColl.w += 2;
+                        befColl.h += 2;
 
                         remoteColliderComponent.lock()->m_position.x = remoteTransformComponent.lock()->m_position.x;
                         remoteColliderComponent.lock()->m_position.y = remoteTransformComponent.lock()->m_position.y;

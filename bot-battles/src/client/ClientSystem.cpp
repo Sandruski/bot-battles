@@ -201,7 +201,7 @@ bool ClientSystem::SendInputPacket(ClientComponent& clientComponent) const
         }
     }
 
-    ILOG("Sending input packet to server...");
+    ILOG("Sending input packet to server of length %u...", inputPacket.GetByteLength());
 
     const bool result = SendPacket(clientComponent, inputPacket);
     if (result) {

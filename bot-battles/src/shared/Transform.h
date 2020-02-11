@@ -8,10 +8,9 @@ class Transform {
 public:
     Transform();
     Transform(const Vec3& position, F32 rotation);
-    Transform(const Vec3& position, F32 rotation, F32 timestamp, U32 frame);
+    Transform(const Vec3& position, F32 rotation, F32 timestamp);
 
     F32 GetTimestamp() const;
-    U32 GetFrame() const;
 
 public:
     Vec3 m_position;
@@ -19,7 +18,6 @@ public:
 
 private:
     F32 m_timestamp;
-    U32 m_frame;
 };
 }
 
