@@ -193,11 +193,17 @@ bool ClientSystem::SendInputPacket(ClientComponent& clientComponent) const
     inputPacket.Write(hasInputs);
     if (hasInputs) {
         U32 inputCount = clientComponent.m_inputBuffer.Count();
+        U32 back = clientComponent.m_inputBuffer.m_back;
+        if (inputCount > MAX_INPUTS_PER_PACKET)
+        {
+            back -= (inputCount - MAX_INPUTS_PER_PACKET);
+            inputCount = MAX_INPUTS_PER_PACKET;
+        }
         inputPacket.Write(inputCount);
-        for (U32 i = clientComponent.m_inputBuffer.m_front; i < clientComponent.m_inputBuffer.m_back; ++i) {
+        for (U32 i = clientComponent.m_inputBuffer.m_front; i < back; ++i) {
             const Input& input = clientComponent.m_inputBuffer.Get(i);
             input.Write(inputPacket);
-            ILOG("CLIENT SENT FRAME %u", input.GetFrame());
+            ILOG("CLIENT SENT FRAME %u and input has length of %u", input.GetFrame(), inputPacket.GetByteLength());
         }
     }
 
