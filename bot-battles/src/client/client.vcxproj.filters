@@ -75,6 +75,9 @@
     <ClCompile Include="pchClient.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="WeaponSystemClient.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientSystem.h">
@@ -106,6 +109,9 @@
     </ClInclude>
     <ClInclude Include="pchClient.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponSystemClient.h">
+      <Filter>Header Files\Systems</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,12 +1,12 @@
-#ifndef __WEAPON_SYSTEM_H__
-#define __WEAPON_SYSTEM_H__
+#ifndef __WEAPON_SYSTEM_SERVER_H__
+#define __WEAPON_SYSTEM_SERVER_H__
 
 #include "System.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class WeaponSystem : public System {
+class WeaponSystemServer : public System {
 public:
     static SystemType GetType()
     {
@@ -14,7 +14,7 @@ public:
     }
 
 public:
-    WeaponSystem();
+    WeaponSystemServer();
 
     bool Update() override;
     bool DebugRender() override;

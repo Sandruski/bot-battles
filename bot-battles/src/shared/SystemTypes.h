@@ -13,6 +13,7 @@ enum class SystemType : U16 {
     CLIENT,
     INPUT,
     NAVIGATION,
+    WEAPON,
 #ifdef _DRAW
     HUD,
 #endif

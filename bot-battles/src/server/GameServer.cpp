@@ -10,7 +10,7 @@
 #include "ServerSystem.h"
 #include "SpawnerSystem.h"
 #include "SystemManager.h"
-#include "WeaponSystem.h"
+#include "WeaponSystemServer.h"
 
 namespace sand {
 
@@ -44,7 +44,7 @@ bool GameServer::Init()
     if (!ret) {
         return ret;
     }
-    ret = m_systemManager->RegisterSystem<WeaponSystem>();
+    ret = m_systemManager->RegisterSystem<WeaponSystemServer>();
     if (!ret) {
         return ret;
     }

@@ -75,10 +75,10 @@
     <ClCompile Include="pchServer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WeaponSystem.cpp">
+    <ClCompile Include="CollisionSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="CollisionSystem.cpp">
+    <ClCompile Include="WeaponSystemServer.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
   </ItemGroup>
@@ -116,10 +116,10 @@
     <ClInclude Include="pchServer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WeaponSystem.h">
+    <ClInclude Include="CollisionSystem.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="CollisionSystem.h">
+    <ClInclude Include="WeaponSystemServer.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
   </ItemGroup>

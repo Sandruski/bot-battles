@@ -41,8 +41,6 @@ bool NavigationSystemClient::Update()
                     transformComponent.lock()->UpdateTransform(inputComponent.m_acceleration, inputComponent.m_angularAcceleration, dt);
                     Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation);
                     transformComponent.lock()->m_transformBuffer.Add(transform);
-
-                    clientComponent.m_isLastMovePending = false;
                 }
             }
         } else {

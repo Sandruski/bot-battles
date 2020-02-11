@@ -7,6 +7,7 @@
 #include "MainMenuState.h"
 #include "NavigationSystemClient.h"
 #include "SystemManager.h"
+#include "WeaponSystemClient.h"
 
 namespace sand {
 
@@ -34,6 +35,10 @@ bool GameClient::Init()
         return ret;
     }
     ret = m_systemManager->RegisterSystem<NavigationSystemClient>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_systemManager->RegisterSystem<WeaponSystemClient>();
     if (!ret) {
         return ret;
     }

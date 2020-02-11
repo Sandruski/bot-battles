@@ -1,4 +1,4 @@
-#include "WeaponSystem.h"
+#include "WeaponSystemServer.h"
 
 #include "ClientProxy.h"
 #include "ColliderComponent.h"
@@ -16,7 +16,7 @@
 
 namespace sand {
 //----------------------------------------------------------------------------------------------------
-WeaponSystem::WeaponSystem()
+    WeaponSystemServer::WeaponSystemServer()
 {
     m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
     m_signature |= 1 << static_cast<U16>(ComponentType::COLLIDER);
@@ -24,7 +24,7 @@ WeaponSystem::WeaponSystem()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool WeaponSystem::Update()
+bool WeaponSystemServer::Update()
 {
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
 
@@ -122,7 +122,7 @@ bool WeaponSystem::Update()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool WeaponSystem::DebugRender()
+bool WeaponSystemServer::DebugRender()
 {
     //if (shoot) {
         DebugDrawer::DrawLine(line, color);

@@ -62,6 +62,7 @@ bool InputSystem::Update()
         inputComponent.m_isShooting = true;
     }
 
+    clientComponent.m_isLastMovePending = false; // TODO: do this elsewhere
     if (!clientComponent.m_inputBuffer.IsFull()) {
         U32 dirtyState = 0;
 
