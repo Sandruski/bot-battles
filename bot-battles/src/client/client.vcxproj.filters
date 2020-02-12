@@ -78,6 +78,9 @@
     <ClCompile Include="WeaponSystemClient.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="CollisionSystemClient.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientSystem.h">
@@ -111,6 +114,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WeaponSystemClient.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionSystemClient.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
   </ItemGroup>

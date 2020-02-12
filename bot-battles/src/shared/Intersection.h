@@ -8,9 +8,9 @@
 namespace sand {
 
     //----------------------------------------------------------------------------------------------------
-    inline bool Raycast(Vec2 origin, Vec2 direction, F32 maxLength, Vec2& intersection)
+    inline std::weak_ptr<ColliderComponent> Raycast(Vec2 origin, Vec2 direction, F32 maxLength, Vec2& intersection)
     {
-        bool ret = false;
+        std::weak_ptr<ColliderComponent> ret;
         intersection = Vec2::positiveInfinity;
 
         Vec2 directionNormalized = direction.GetNormalized();
@@ -30,7 +30,7 @@ namespace sand {
             I32 y2 = static_cast<I32>(origin.y + directionNormalized.y * maxLength);
             if (SDL_IntersectRectAndLine(&colliderRect, &x1, &y1, &x2, &y2))
             {
-                ret = true;
+                ret = colliderComponent;
                 ILOG("Has intersected");
 
                 Vec2 newIntersection = Vec2(static_cast<F32>(x1), static_cast<F32>(y1));

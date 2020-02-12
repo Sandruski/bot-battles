@@ -8,6 +8,7 @@
 #include "NavigationSystemClient.h"
 #include "SystemManager.h"
 #include "WeaponSystemClient.h"
+#include "CollisionSystemClient.h"
 
 namespace sand {
 
@@ -35,6 +36,10 @@ bool GameClient::Init()
         return ret;
     }
     ret = m_systemManager->RegisterSystem<NavigationSystemClient>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_systemManager->RegisterSystem<CollisionSystemClient>();
     if (!ret) {
         return ret;
     }

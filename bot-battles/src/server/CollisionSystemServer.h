@@ -1,12 +1,12 @@
-#ifndef __COLLISION_SYSTEM_H__
-#define __COLLISION_SYSTEM_H__
+#ifndef __COLLISION_SYSTEM_SERVER_H__
+#define __COLLISION_SYSTEM_SERVER_H__
 
 #include "System.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class CollisionSystem : public System, public Subject {
+class CollisionSystemServer : public System {
 public:
     static SystemType GetType()
     {
@@ -14,7 +14,7 @@ public:
     }
 
 public:
-    CollisionSystem();
+    CollisionSystemServer();
 
     bool Update() override;
 

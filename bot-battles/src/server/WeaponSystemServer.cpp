@@ -93,7 +93,8 @@ bool WeaponSystemServer::Update()
                 shoot = true;
                 color = Blue;
                 Vec2 intersection;
-                if (Raycast(position, rotation, maxLength, intersection))
+                std::weak_ptr<ColliderComponent> raycastColliderComponent = Raycast(position, rotation, maxLength, intersection);
+                if (!raycastColliderComponent.expired())
                 {
                     ILOG("HIT");
                     color = Red;

@@ -51,8 +51,10 @@ bool WeaponSystemClient::Update()
                     line = { x1, y1, x2, y2 };
                     shoot = true;
                     color = Blue;
+
                     Vec2 intersection;
-                    if (Raycast(position, rotation, maxLength, intersection))
+                    std::weak_ptr<ColliderComponent> raycastColliderComponent = Raycast(position, rotation, maxLength, intersection);
+                    if (!raycastColliderComponent.expired())
                     {
                         ILOG("HIT");
                         color = Red;

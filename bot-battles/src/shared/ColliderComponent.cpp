@@ -16,9 +16,6 @@ ColliderComponent::ColliderComponent()
 //----------------------------------------------------------------------------------------------------
 void ColliderComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, ReplicationActionType /*replicationActionType*/, Entity /*entity*/)
 {
-    if (dirtyState & static_cast<U32>(ComponentMemberType::COLLIDER_POSITION)) {
-        inputStream.Read(m_position);
-    }
     if (dirtyState & static_cast<U32>(ComponentMemberType::COLLIDER_SIZE)) {
         inputStream.Read(m_size);
     }
@@ -29,10 +26,6 @@ U32 ColliderComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) c
 {
     U32 writtenState = 0;
 
-    if (dirtyState & static_cast<U32>(ComponentMemberType::COLLIDER_POSITION)) {
-        outputStream.Write(m_position);
-        writtenState |= static_cast<U32>(ComponentMemberType::COLLIDER_POSITION);
-    }
     if (dirtyState & static_cast<U32>(ComponentMemberType::COLLIDER_SIZE)) {
         outputStream.Write(m_size);
         writtenState |= static_cast<U32>(ComponentMemberType::COLLIDER_SIZE);

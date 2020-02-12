@@ -13,6 +13,7 @@ enum class SystemType : U16 {
     CLIENT,
     INPUT,
     NAVIGATION,
+    COLLISION,
     WEAPON,
 #ifdef _DRAW
     HUD,
@@ -29,8 +30,8 @@ enum class SystemType : U16 {
     SERVER,
     SPAWNER,
     NAVIGATION,
-    WEAPON,
     COLLISION,
+    WEAPON,
 #ifdef _DRAW
     HUD,
 #endif

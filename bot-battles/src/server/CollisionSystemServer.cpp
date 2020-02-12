@@ -1,4 +1,4 @@
-#include "CollisionSystem.h"
+#include "CollisionSystemServer.h"
 
 #include "ColliderComponent.h"
 #include "ComponentManager.h"
@@ -10,14 +10,14 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-CollisionSystem::CollisionSystem()
-{
-    m_signature |= 1 << static_cast<U16>(ComponentType::COLLIDER);
-    m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
-}
+    CollisionSystemServer::CollisionSystemServer()
+    {
+        m_signature |= 1 << static_cast<U16>(ComponentType::COLLIDER);
+        m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
+    }
 
 //----------------------------------------------------------------------------------------------------
-bool CollisionSystem::Update()
+bool CollisionSystemServer::Update()
 {
     for (auto& entity : m_entities) {
         std::weak_ptr<ColliderComponent> colliderComponent = g_gameServer->GetComponentManager().GetComponent<ColliderComponent>(entity);
@@ -25,19 +25,13 @@ bool CollisionSystem::Update()
 
         colliderComponent.lock()->m_position.x = transformComponent.lock()->m_position.x;
         colliderComponent.lock()->m_position.y = transformComponent.lock()->m_position.y;
-
-        Event newEvent;
-        newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
-        newEvent.component.entity = entity;
-        newEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::COLLIDER_POSITION);
-        NotifyEvent(newEvent);
     }
 
     return true;
 }
 
 //----------------------------------------------------------------------------------------------------
-bool CollisionSystem::DebugRender()
+bool CollisionSystemServer::DebugRender()
 {
     for (auto& entity : m_entities) {
         std::weak_ptr<ColliderComponent> colliderComponent = g_gameServer->GetComponentManager().GetComponent<ColliderComponent>(entity);
