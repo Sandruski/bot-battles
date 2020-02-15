@@ -5,6 +5,7 @@
 #include "ComponentManager.h"
 #include "DebugDrawer.h"
 #include "GameServer.h"
+#include "HealthComponent.h"
 #include "Interpolation.h"
 #include "Intersection.h"
 #include "LinkingContext.h"
@@ -59,6 +60,9 @@ bool WeaponSystemServer::Update()
                 const bool hasIntersected = Raycast(position, rotation, maxLength, intersection);
                 if (hasIntersected) {
                     weaponComponent.lock()->m_hasHit = true;
+                    std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(entity);
+                    healthComponent.lock()->m_health -= 10;
+                    ILOG("Health is %u", healthComponent.lock()->m_health);
                 } else {
                     weaponComponent.lock()->m_hasHit = false;
                 }

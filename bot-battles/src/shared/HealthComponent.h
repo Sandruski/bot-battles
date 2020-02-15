@@ -31,7 +31,7 @@ struct HealthComponent : public Component
     U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override;
 #endif
 
-    U32 m_health;
+    I32 m_health;
 };
 }
 

@@ -5,6 +5,7 @@
 #include "ComponentManager.h"
 #include "DebugDrawer.h"
 #include "GameClient.h"
+#include "HealthComponent.h"
 #include "Interpolation.h"
 #include "Intersection.h"
 #include "LinkingContext.h"
@@ -18,8 +19,8 @@ namespace sand {
 WeaponSystemClient::WeaponSystemClient()
 {
     m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
-    m_signature |= 1 << static_cast<U16>(ComponentType::COLLIDER);
     m_signature |= 1 << static_cast<U16>(ComponentType::WEAPON);
+    m_signature |= 1 << static_cast<U16>(ComponentType::HEALTH);
 }
 
 //----------------------------------------------------------------------------------------------------

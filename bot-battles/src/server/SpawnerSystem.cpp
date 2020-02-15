@@ -5,6 +5,7 @@
 #include "ComponentManager.h"
 #include "EntityManager.h"
 #include "GameServer.h"
+#include "HealthComponent.h"
 #include "LinkingContext.h"
 #include "RendererComponent.h"
 #include "ResourceManager.h"
@@ -96,7 +97,11 @@ Entity SpawnerSystem::SpawnPlayerEntity(U32 number, const std::string& name) con
     const SDL_Rect& currentSprite = spriteComponent.lock()->GetCurrentSprite();
     colliderComponent.lock()->m_size.x = static_cast<F32>(currentSprite.w);
     colliderComponent.lock()->m_size.y = static_cast<F32>(currentSprite.h);
+
     std::weak_ptr<WeaponComponent> weaponComponent = g_gameServer->GetComponentManager().AddComponent<WeaponComponent>(character);
+
+    std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().AddComponent<HealthComponent>(character);
+    healthComponent.lock()->m_health = 100;
 
     return character;
 }
