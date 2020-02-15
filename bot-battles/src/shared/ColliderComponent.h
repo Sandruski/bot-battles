@@ -34,9 +34,13 @@ struct ColliderComponent : public Component
 #endif
 
     SDL_Rect GetRect() const;
+    SDL_Rect GetShotRect() const;
 
     Vec2 m_position;
     Vec2 m_size;
+
+    // Debug
+    Vec2 m_shotPosition;
 };
 }
 

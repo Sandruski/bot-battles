@@ -19,15 +19,9 @@ public:
     bool Update() override;
     bool DebugRender() override;
 
-private: // TODO: remove this private variables
-    // Debug raycast
-    SDL_Rect line;
-    SDL_Color color;
-    bool shoot = false;
-
-    // Debug server rewind
-    SDL_Rect befColl;
-    SDL_Rect aftColl;
+private:
+    void Rewind(Entity localEntity, U32 from, U32 to, F32 percentage);
+    void Revert(Entity localEntity);
 };
 }
 

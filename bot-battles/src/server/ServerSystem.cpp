@@ -214,17 +214,15 @@ void ServerSystem::ReceiveInputPacket(ServerComponent& serverComponent, InputMem
     bool hasInputs = false;
     inputStream.Read(hasInputs);
     if (hasInputs) {
-        ILOG("Input packet has inputs");
         U32 inputCount = 0;
         inputStream.Read(inputCount);
-        Input input;
         while (inputCount > 0) {
+            Input input;
             input.Read(inputStream);
             if (input.GetFrame() > clientProxy.lock()->m_frame) { // TODO: be careful if new frame is 15 and last frame is 13 and frame 14 contains a shoot for example
                 clientProxy.lock()->m_inputBuffer.Add(input);
                 clientProxy.lock()->m_frame = input.GetFrame();
                 clientProxy.lock()->m_isFrameDirty = true;
-                ILOG("SERVER RECEIVED FRAME %u", clientProxy.lock()->m_frame);
             }
             --inputCount;
         }
@@ -267,7 +265,6 @@ void ServerSystem::SendStatePacket(const ServerComponent& serverComponent, std::
 
     statePacket.Write(clientProxy->m_isFrameDirty);
     if (clientProxy->m_isFrameDirty) {
-        clientProxy->m_inputBuffer.Clear();
         ILOG("SERVER SENT ACKD FRAME %u", clientProxy->m_frame);
         statePacket.Write(clientProxy->m_frame);
         clientProxy->m_isFrameDirty = false;

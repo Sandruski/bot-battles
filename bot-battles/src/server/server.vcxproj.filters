@@ -81,6 +81,9 @@
     <ClCompile Include="CollisionSystemServer.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="InputSystemServer.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ServerSystem.h">
@@ -120,6 +123,9 @@
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
     <ClInclude Include="CollisionSystemServer.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="InputSystemServer.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
   </ItemGroup>

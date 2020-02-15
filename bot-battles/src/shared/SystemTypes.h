@@ -10,11 +10,13 @@ enum class SystemType : U16 {
     RENDERER,
     EVENT,
 #endif
-    CLIENT,
     INPUT,
+
+    WEAPON,
     NAVIGATION,
     COLLISION,
-    WEAPON,
+
+    CLIENT,
 #ifdef _DRAW
     HUD,
 #endif
@@ -28,10 +30,13 @@ enum class SystemType : U16 {
     EVENT,
 #endif
     SERVER,
+
     SPAWNER,
+    WEAPON,
     NAVIGATION,
     COLLISION,
-    WEAPON,
+
+    INPUT,
 #ifdef _DRAW
     HUD,
 #endif

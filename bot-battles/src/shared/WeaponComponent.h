@@ -10,29 +10,36 @@
 
 namespace sand {
 
-    //----------------------------------------------------------------------------------------------------
-    // Entity Component
-    struct WeaponComponent : public Component
+//----------------------------------------------------------------------------------------------------
+// Entity Component
+struct WeaponComponent : public Component
 #ifdef _CLIENT
-        ,
-        public NetworkableReadObject
+    ,
+                         public NetworkableReadObject
 #elif defined(_SERVER)
-        ,
-        public NetworkableWriteObject
+    ,
+                         public NetworkableWriteObject
 #endif
-    {
-        static ComponentType GetType() { return ComponentType::WEAPON; }
+{
+    static ComponentType GetType() { return ComponentType::WEAPON; }
 
-        WeaponComponent();
+    WeaponComponent();
 
 #ifdef _CLIENT
-        void Read(InputMemoryStream& inputStream, U32 dirtyState, ReplicationActionType replicationActionType, Entity entity) override;
+    void Read(InputMemoryStream& inputStream, U32 dirtyState, ReplicationActionType replicationActionType, Entity entity) override;
 #elif defined(_SERVER)
-        U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override;
+    U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override;
 #endif
 
-        // TODO: dps?
-    };
+    SDL_Rect GetShotRect() const;
+
+    // TODO: dps?
+
+    // Debug
+    Vec2 m_origin;
+    Vec2 m_destination;
+    bool m_hasHit;
+};
 }
 
 #endif

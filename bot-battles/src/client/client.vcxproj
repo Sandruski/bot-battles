@@ -185,7 +185,7 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <ClCompile Include="TransformComponentClient.cpp" />
-    <ClCompile Include="InputSystem.cpp" />
+    <ClCompile Include="InputSystemClient.cpp" />
     <ClCompile Include="ReplicationManagerClient.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="WeaponSystemClient.cpp" />
@@ -195,7 +195,7 @@
     <ClInclude Include="CollisionSystemClient.h" />
     <ClInclude Include="ConfigClient.h" />
     <ClInclude Include="DeliveryManagerClient.h" />
-    <ClInclude Include="InputSystem.h" />
+    <ClInclude Include="InputSystemClient.h" />
     <ClInclude Include="MainMenuState.h" />
     <ClInclude Include="NavigationSystemClient.h" />
     <ClInclude Include="pchClient.h" />

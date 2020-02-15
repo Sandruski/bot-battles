@@ -4,6 +4,7 @@
 #include "ConfigServer.h"
 #include "EntityManager.h"
 #include "FSM.h"
+#include "InputSystemServer.h"
 #include "LinkingContext.h"
 #include "NavigationSystemServer.h"
 #include "ServerComponent.h"
@@ -36,6 +37,10 @@ bool GameServer::Init()
     if (!ret) {
         return ret;
     }
+    ret = m_systemManager->RegisterSystem<WeaponSystemServer>();
+    if (!ret) {
+        return ret;
+    }
     ret = m_systemManager->RegisterSystem<NavigationSystemServer>();
     if (!ret) {
         return ret;
@@ -44,7 +49,7 @@ bool GameServer::Init()
     if (!ret) {
         return ret;
     }
-    ret = m_systemManager->RegisterSystem<WeaponSystemServer>();
+    ret = m_systemManager->RegisterSystem<InputSystemServer>();
     if (!ret) {
         return ret;
     }

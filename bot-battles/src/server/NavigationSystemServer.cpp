@@ -59,8 +59,6 @@ bool NavigationSystemServer::Update()
         if (hasChanged) {
             Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation);
             transformComponent.lock()->m_transformBuffer.Add(transform); // TODO: also remove this transform buffer at some point
-            ILOG("Server has changed. Now pos x is: %f", transformComponent.lock()->m_position.x);
-            ILOG("SERVER INSERT NUMBER %u", transformComponent.lock()->m_transformBuffer.m_back - 1);
         }
     }
 

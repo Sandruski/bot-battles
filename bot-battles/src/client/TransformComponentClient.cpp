@@ -48,29 +48,24 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, Re
             }
         } else {
             if (clientComponent.m_isEntityInterpolation) {
-                if (hasPosition || hasRotation)
-                {
+                if (hasPosition || hasRotation) {
                     if (!hasPosition) {
                         if (!m_transformBuffer.IsEmpty()) {
                             newPosition = m_transformBuffer.GetLast().m_position;
-                        }
-                        else {
+                        } else {
                             newPosition = m_position;
                         }
                     }
                     if (!hasRotation) {
                         if (!m_transformBuffer.IsEmpty()) {
                             newRotation = m_transformBuffer.GetLast().m_rotation;
-                        }
-                        else {
+                        } else {
                             newRotation = m_rotation;
                         }
                     }
                     F32 startFrameTime = Time::GetInstance().GetStartFrameTime();
                     Transform transform = Transform(newPosition, newRotation, startFrameTime);
                     m_transformBuffer.Add(transform);
-                    ILOG("CLIENT Has changed. Now pos x is: %f", newPosition.x);
-                    ILOG("CLIENT INSERT NUMBER %u", m_transformBuffer.m_back - 1);
                 }
             } else {
                 if (hasPosition) {

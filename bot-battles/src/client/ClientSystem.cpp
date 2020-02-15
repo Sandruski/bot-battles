@@ -152,9 +152,6 @@ void ClientSystem::ReceiveStatePacket(ClientComponent& clientComponent, InputMem
     inputStream.Read(isFrameDirty);
     if (isFrameDirty) {
         inputStream.Read(clientComponent.m_lastAckdFrame);
-        ILOG("CLIENT RECEIVED ACKD FRAME %u", clientComponent.m_lastAckdFrame);
-    } else {
-        ILOG("CLIENT DID NOT RECEIVE ACKD FRAME");
     }
 
     clientComponent.m_replicationManager.Read(inputStream);
@@ -194,8 +191,7 @@ bool ClientSystem::SendInputPacket(ClientComponent& clientComponent) const
     if (hasInputs) {
         U32 inputCount = clientComponent.m_inputBuffer.Count();
         U32 back = clientComponent.m_inputBuffer.m_back;
-        if (inputCount > MAX_INPUTS_PER_PACKET)
-        {
+        if (inputCount > MAX_INPUTS_PER_PACKET) {
             back -= (inputCount - MAX_INPUTS_PER_PACKET);
             inputCount = MAX_INPUTS_PER_PACKET;
         }
@@ -203,7 +199,6 @@ bool ClientSystem::SendInputPacket(ClientComponent& clientComponent) const
         for (U32 i = clientComponent.m_inputBuffer.m_front; i < back; ++i) {
             const Input& input = clientComponent.m_inputBuffer.Get(i);
             input.Write(inputPacket);
-            ILOG("CLIENT SENT FRAME %u and input has length of %u", input.GetFrame(), inputPacket.GetByteLength());
         }
     }
 

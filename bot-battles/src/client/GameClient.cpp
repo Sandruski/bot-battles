@@ -1,14 +1,14 @@
 #include "GameClient.h"
 
 #include "ClientSystem.h"
+#include "CollisionSystemClient.h"
 #include "ConfigClient.h"
 #include "FSM.h"
-#include "InputSystem.h"
+#include "InputSystemClient.h"
 #include "MainMenuState.h"
 #include "NavigationSystemClient.h"
 #include "SystemManager.h"
 #include "WeaponSystemClient.h"
-#include "CollisionSystemClient.h"
 
 namespace sand {
 
@@ -31,7 +31,11 @@ bool GameClient::Init()
     if (!ret) {
         return ret;
     }
-    ret = m_systemManager->RegisterSystem<InputSystem>();
+    ret = m_systemManager->RegisterSystem<InputSystemClient>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_systemManager->RegisterSystem<WeaponSystemClient>();
     if (!ret) {
         return ret;
     }
@@ -40,10 +44,6 @@ bool GameClient::Init()
         return ret;
     }
     ret = m_systemManager->RegisterSystem<CollisionSystemClient>();
-    if (!ret) {
-        return ret;
-    }
-    ret = m_systemManager->RegisterSystem<WeaponSystemClient>();
     if (!ret) {
         return ret;
     }

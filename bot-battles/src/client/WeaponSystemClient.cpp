@@ -1,21 +1,21 @@
 #include "WeaponSystemClient.h"
 
+#include "ClientComponent.h"
 #include "ColliderComponent.h"
 #include "ComponentManager.h"
 #include "DebugDrawer.h"
+#include "GameClient.h"
+#include "Interpolation.h"
+#include "Intersection.h"
 #include "LinkingContext.h"
 #include "SystemManager.h"
 #include "TransformComponent.h"
 #include "WeaponComponent.h"
-#include "Intersection.h"
-#include "Interpolation.h"
 #include "WindowComponent.h"
-#include "GameClient.h"
-#include "ClientComponent.h"
 
 namespace sand {
 //----------------------------------------------------------------------------------------------------
-    WeaponSystemClient::WeaponSystemClient()
+WeaponSystemClient::WeaponSystemClient()
 {
     m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
     m_signature |= 1 << static_cast<U16>(ComponentType::COLLIDER);
@@ -39,33 +39,41 @@ bool WeaponSystemClient::Update()
                 const InputComponent& inputComponent = input.GetInputComponent();
 
                 if (inputComponent.m_isShooting) {
+
+                    LinkingContext& linkingContext = g_gameClient->GetLinkingContext();
+                    const std::unordered_map<NetworkID, Entity>& newtorkIDToEntity = linkingContext.GetNetworkIDToEntityMap();
+
+                    for (const auto& pair : newtorkIDToEntity) {
+                        Entity remoteEntity = pair.second;
+                        if (entity == remoteEntity) {
+                            continue;
+                        }
+
+                        std::weak_ptr<ColliderComponent> colliderComponent = g_gameClient->GetComponentManager().GetComponent<ColliderComponent>(remoteEntity);
+                        colliderComponent.lock()->m_shotPosition = colliderComponent.lock()->m_position;
+                        ILOG("CLIENT collision is %f %f", colliderComponent.lock()->m_shotPosition.x, colliderComponent.lock()->m_shotPosition.y);
+                    }
+
                     std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
+                    std::weak_ptr<WeaponComponent> weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(entity);
+
                     Vec2 position = transformComponent.lock()->GetPosition();
                     Vec2 rotation = transformComponent.lock()->GetRotation();
+                    weaponComponent.lock()->m_origin = position;
                     WindowComponent& windowComponent = g_gameClient->GetWindowComponent();
                     F32 maxLength = static_cast<F32>(std::max(windowComponent.m_resolution.x, windowComponent.m_resolution.y));
-                    I32 x1 = static_cast<I32>(position.x);
-                    I32 y1 = static_cast<I32>(position.y);
-                    I32 x2 = static_cast<I32>(position.x + rotation.x * maxLength);
-                    I32 y2 = static_cast<I32>(position.y + rotation.y * maxLength);
-                    line = { x1, y1, x2, y2 };
-                    shoot = true;
-                    color = Blue;
-
-                    Vec2 intersection;
-                    std::weak_ptr<ColliderComponent> raycastColliderComponent = Raycast(position, rotation, maxLength, intersection);
-                    if (!raycastColliderComponent.expired())
-                    {
-                        ILOG("HIT");
-                        color = Red;
+                    weaponComponent.lock()->m_destination = position + rotation * maxLength;
+                    std::weak_ptr<ColliderComponent> intersection;
+                    const bool hasIntersected = Raycast(position, rotation, maxLength, intersection);
+                    if (hasIntersected) {
+                        weaponComponent.lock()->m_hasHit = true;
+                    } else {
+                        weaponComponent.lock()->m_hasHit = false;
                     }
                 }
             }
-        }
-        else 
-        {
-            std::weak_ptr<ColliderComponent> colliderComponent = g_gameClient->GetComponentManager().GetComponent<ColliderComponent>(entity);
-            coll = colliderComponent.lock()->GetRect();
+
+            break;
         }
     }
 
@@ -75,12 +83,22 @@ bool WeaponSystemClient::Update()
 //----------------------------------------------------------------------------------------------------
 bool WeaponSystemClient::DebugRender()
 {
-    //if (shoot) {
-        DebugDrawer::DrawLine(line, color);
-        //shoot = false;
-    //}
+    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
 
-    DebugDrawer::DrawQuad(coll, Orange);
+    for (auto& entity : m_entities) {
+        if (g_gameClient->GetLinkingContext().GetNetworkID(entity) == INVALID_NETWORK_ID) {
+            continue;
+        }
+
+        const bool isLocalPlayer = clientComponent.IsLocalPlayer(entity);
+        if (isLocalPlayer) {
+
+            std::weak_ptr<WeaponComponent> weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(entity);
+            DebugDrawer::DrawLine(weaponComponent.lock()->GetShotRect(), weaponComponent.lock()->m_hasHit ? Red : Black);
+
+            break;
+        }
+    }
 
     return true;
 }

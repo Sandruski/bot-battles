@@ -1,4 +1,4 @@
-#include "InputSystem.h"
+#include "InputSystemClient.h"
 
 #include "ComponentManager.h"
 #include "ComponentMemberTypes.h"
@@ -8,7 +8,7 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-bool InputSystem::Update()
+bool InputSystemClient::Update()
 {
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     if (!clientComponent.IsConnected()) {
@@ -36,6 +36,8 @@ bool InputSystem::Update()
     InputComponent& inputComponent = g_gameClient->GetInputComponent();
     inputComponent.m_acceleration = Vec2::zero;
     inputComponent.m_angularAcceleration = 0.0f;
+    inputComponent.m_isShooting = false;
+
     const F32 multiplier = 5.0f;
     if (m_keyboard[SDL_SCANCODE_A] == KeyState::REPEAT) {
         inputComponent.m_acceleration.x = -1.0f * multiplier;
@@ -83,8 +85,6 @@ bool InputSystem::Update()
             clientComponent.m_inputBuffer.Add(input);
             clientComponent.m_isLastMovePending = true;
         }
-
-        inputComponent.m_isShooting = false; // TODO: this should be put FALSE in the WeaponSystem for ClientPrediction
     }
 
     return true;

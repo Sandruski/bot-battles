@@ -10,11 +10,11 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-    CollisionSystemServer::CollisionSystemServer()
-    {
-        m_signature |= 1 << static_cast<U16>(ComponentType::COLLIDER);
-        m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
-    }
+CollisionSystemServer::CollisionSystemServer()
+{
+    m_signature |= 1 << static_cast<U16>(ComponentType::COLLIDER);
+    m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
+}
 
 //----------------------------------------------------------------------------------------------------
 bool CollisionSystemServer::Update()
@@ -33,9 +33,18 @@ bool CollisionSystemServer::Update()
 //----------------------------------------------------------------------------------------------------
 bool CollisionSystemServer::DebugRender()
 {
+    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
+
     for (auto& entity : m_entities) {
         std::weak_ptr<ColliderComponent> colliderComponent = g_gameServer->GetComponentManager().GetComponent<ColliderComponent>(entity);
         DebugDrawer::DrawQuad(colliderComponent.lock()->GetRect(), Green, false);
+
+        PlayerID playerID = serverComponent.GetPlayerID(entity);
+        if (playerID == INVALID_PLAYER_ID) {
+            continue;
+        }
+
+        DebugDrawer::DrawQuad(colliderComponent.lock()->GetShotRect(), Orange, false);
     }
 
     return true;
