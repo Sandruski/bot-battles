@@ -5,9 +5,9 @@
 #include "ComponentMemberTypes.h"
 #include "GameClient.h"
 #include "InputComponent.h"
+#include "Interpolation.h"
 #include "LinkingContext.h"
 #include "TransformComponent.h"
-#include "Interpolation.h"
 
 namespace sand {
 
@@ -67,6 +67,25 @@ bool NavigationSystemClient::Update()
                     transformComponent.lock()->m_transformBuffer.RemoveFirst();
                 }
             }
+        }
+    }
+
+    for (auto& entity : m_entities) {
+
+        if (g_gameClient->GetLinkingContext().GetNetworkID(entity) == INVALID_NETWORK_ID) {
+            continue;
+        }
+
+        const bool isLocalPlayer = clientComponent.IsLocalPlayer(entity);
+        if (isLocalPlayer) {
+            if (clientComponent.m_isLastMovePending) {
+                Input& input = clientComponent.m_inputBuffer.GetLast();
+                input.m_interpolationFromFrame = clientComponent.m_interpolationFromFrame;
+                input.m_interpolationToFrame = clientComponent.m_interpolationToFrame;
+                input.m_interpolationPercentage = clientComponent.m_interpolationPercentage;
+            }
+
+            break;
         }
     }
 

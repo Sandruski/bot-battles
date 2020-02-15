@@ -25,14 +25,16 @@ public:
     U32 GetInterpolationToFrame() const;
     F32 GetInterpolationPercentage() const;
 
+public:
+    U32 m_interpolationFromFrame;
+    U32 m_interpolationToFrame;
+    F32 m_interpolationPercentage;
+
 private:
     InputComponent m_inputComponent;
     U32 m_dirtyState;
     F32 m_dt;
     U32 m_frame;
-    U32 m_interpolationFromFrame;
-    U32 m_interpolationToFrame;
-    F32 m_interpolationPercentage;
 };
 }
 

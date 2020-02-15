@@ -9,6 +9,9 @@ TransformComponent::TransformComponent()
     : m_position()
     , m_rotation(0.0f)
     , m_transformBuffer()
+#ifdef _SERVER
+    , m_remoteTransformBuffer()
+#endif
 {
 }
 
@@ -72,6 +75,6 @@ Vec2 TransformComponent::GetRotation() const
     F32 x = std::cos(DEGREES_TO_RADIANS(m_rotation));
     F32 y = std::sin(DEGREES_TO_RADIANS(m_rotation));
 
-	return Vec2(x, y);
+    return Vec2(x, y);
 }
 }

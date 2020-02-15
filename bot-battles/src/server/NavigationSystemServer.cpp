@@ -47,7 +47,10 @@ bool NavigationSystemServer::Update()
                 hasChanged = true;
             }
 
-            if (hasPosition || hasRotation) {
+            if (hasChanged) {
+                Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation);
+                transformComponent.lock()->m_transformBuffer.Add(transform); // TODO: also remove this transform buffer at some point
+
                 Event newEvent;
                 newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
                 newEvent.component.entity = entity;
@@ -58,7 +61,7 @@ bool NavigationSystemServer::Update()
 
         if (hasChanged) {
             Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation);
-            transformComponent.lock()->m_transformBuffer.Add(transform); // TODO: also remove this transform buffer at some point
+            transformComponent.lock()->m_remoteTransformBuffer.Add(transform); // TODO: also remove this transform buffer at some point
         }
     }
 

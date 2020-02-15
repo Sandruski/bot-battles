@@ -47,6 +47,9 @@ struct TransformComponent : public Component
     //Vec2 m_velocity;
     //F32 m_angularVelocity;
     CircularBuffer<Transform, MAX_TRANSFORMS> m_transformBuffer;
+#ifdef _SERVER
+    CircularBuffer<Transform, MAX_TRANSFORMS> m_remoteTransformBuffer;
+#endif
 };
 }
 

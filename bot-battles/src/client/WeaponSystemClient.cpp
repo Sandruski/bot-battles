@@ -52,14 +52,17 @@ bool WeaponSystemClient::Update()
 
                         std::weak_ptr<ColliderComponent> colliderComponent = g_gameClient->GetComponentManager().GetComponent<ColliderComponent>(remoteEntity);
                         colliderComponent.lock()->m_shotPosition = colliderComponent.lock()->m_position;
-                        ILOG("CLIENT collision is %f %f", colliderComponent.lock()->m_shotPosition.x, colliderComponent.lock()->m_shotPosition.y);
+                        ILOG("CLIENT Collision is %f %f", colliderComponent.lock()->m_shotPosition.x, colliderComponent.lock()->m_shotPosition.y);
                     }
 
                     std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
                     std::weak_ptr<WeaponComponent> weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(entity);
 
+                    // TODO: CHECK RAYS BETWEEN SERVER AND CLIENT
                     Vec2 position = transformComponent.lock()->GetPosition();
                     Vec2 rotation = transformComponent.lock()->GetRotation();
+                    ILOG("CLIENT Pos is: %f %f", position.x, position.y);
+
                     weaponComponent.lock()->m_origin = position;
                     WindowComponent& windowComponent = g_gameClient->GetWindowComponent();
                     F32 maxLength = static_cast<F32>(std::max(windowComponent.m_resolution.x, windowComponent.m_resolution.y));

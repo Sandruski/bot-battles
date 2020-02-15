@@ -82,6 +82,7 @@ bool InputSystemClient::Update()
 
         if (dirtyState != 0) {
             Input input = Input(inputComponent, dirtyState, 1.0f, clientComponent.m_inputBuffer.m_back, clientComponent.m_interpolationFromFrame, clientComponent.m_interpolationToFrame, clientComponent.m_interpolationPercentage);
+            ILOG("NEW FRAME %u", clientComponent.m_inputBuffer.m_back);
             clientComponent.m_inputBuffer.Add(input);
             clientComponent.m_isLastMovePending = true;
         }
