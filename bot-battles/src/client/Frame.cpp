@@ -1,26 +1,30 @@
-#include "Transform.h"
+#include "Frame.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-Transform::Transform()
-    : m_position()
-    , m_rotation(0)
-    , m_frame(0)
+Frame::Frame()
+    : m_frame(0)
+    , m_timestamp(0.0f)
 {
 }
 
 //----------------------------------------------------------------------------------------------------
-Transform::Transform(const Vec3& position, F32 rotation, U32 frame)
-    : m_position(position)
-    , m_rotation(rotation)
-    , m_frame(frame)
+Frame::Frame(U32 frame, F32 timestamp)
+    : m_frame(frame)
+    , m_timestamp(timestamp)
 {
 }
 
 //----------------------------------------------------------------------------------------------------
-U32 Transform::GetFrame() const
+U32 Frame::GetFrame() const
 {
     return m_frame;
+}
+
+//----------------------------------------------------------------------------------------------------
+F32 Frame::GetTimestamp() const
+{
+    return m_timestamp;
 }
 }

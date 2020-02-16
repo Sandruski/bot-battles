@@ -16,7 +16,7 @@ SpriteComponent::SpriteComponent()
 
 #ifdef _CLIENT
 //----------------------------------------------------------------------------------------------------
-void SpriteComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, ReplicationActionType /*replicationActionType*/, Entity /*entity*/)
+void SpriteComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U32 /*frame*/, ReplicationActionType /*replicationActionType*/, Entity /*entity*/)
 {
     if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_FILE)) {
         std::string file;

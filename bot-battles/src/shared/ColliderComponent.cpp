@@ -15,7 +15,7 @@ ColliderComponent::ColliderComponent()
 
 #ifdef _CLIENT
 //----------------------------------------------------------------------------------------------------
-void ColliderComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, ReplicationActionType /*replicationActionType*/, Entity /*entity*/)
+void ColliderComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U32 /*frame*/, ReplicationActionType /*replicationActionType*/, Entity /*entity*/)
 {
     if (dirtyState & static_cast<U32>(ComponentMemberType::COLLIDER_SIZE)) {
         inputStream.Read(m_size);

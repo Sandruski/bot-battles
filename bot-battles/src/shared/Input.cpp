@@ -43,7 +43,7 @@ void Input::Write(OutputMemoryStream& outputStream) const
 void Input::Read(InputMemoryStream& inputStream)
 {
     inputStream.Read(m_dirtyState);
-    m_inputComponent.Read(inputStream, m_dirtyState, ReplicationActionType::NONE, INVALID_ENTITY);
+    m_inputComponent.Read(inputStream, m_dirtyState, 0, ReplicationActionType::NONE, INVALID_ENTITY);
     inputStream.Read(m_dt);
     inputStream.Read(m_frame);
     inputStream.Read(m_interpolationFromFrame);

@@ -1,22 +1,20 @@
-#ifndef __TRANSFORM_H__
-#define __TRANSFORM_H__
+#ifndef __FRAME_H__
+#define __FRAME_H__
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class Transform {
+class Frame {
 public:
-    Transform();
-    Transform(const Vec3& position, F32 rotation, U32 frame);
+    Frame();
+    Frame(U32 frame, F32 timestamp);
 
     U32 GetFrame() const;
-
-public:
-    Vec3 m_position;
-    F32 m_rotation;
+    F32 GetTimestamp() const;
 
 private:
     U32 m_frame;
+    F32 m_timestamp;
 };
 }
 

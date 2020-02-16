@@ -172,6 +172,7 @@
     <ClCompile Include="CollisionSystemClient.cpp" />
     <ClCompile Include="ConfigClient.cpp" />
     <ClCompile Include="DeliveryManagerClient.cpp" />
+    <ClCompile Include="Frame.cpp" />
     <ClCompile Include="GameClient.cpp" />
     <ClCompile Include="MainMenuState.cpp" />
     <ClCompile Include="NavigationSystemClient.cpp" />
@@ -195,6 +196,7 @@
     <ClInclude Include="CollisionSystemClient.h" />
     <ClInclude Include="ConfigClient.h" />
     <ClInclude Include="DeliveryManagerClient.h" />
+    <ClInclude Include="Frame.h" />
     <ClInclude Include="InputSystemClient.h" />
     <ClInclude Include="MainMenuState.h" />
     <ClInclude Include="NavigationSystemClient.h" />

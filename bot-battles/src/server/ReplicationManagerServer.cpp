@@ -79,6 +79,9 @@ void ReplicationManagerServer::AddDirtyState(NetworkID networkID, U32 dirtyState
 //----------------------------------------------------------------------------------------------------
 void ReplicationManagerServer::Write(OutputMemoryStream& outputStream, ReplicationResultManager& replicationResultManager)
 {
+    U32 frame = Time::GetInstance().GetFrame();
+    outputStream.Write(frame);
+
     for (auto& pair : m_networkIDToReplicationCommand) {
 
         ReplicationCommand& replicationCommand = pair.second;

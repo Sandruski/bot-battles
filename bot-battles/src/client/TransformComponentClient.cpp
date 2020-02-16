@@ -10,7 +10,7 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, ReplicationActionType replicationActionType, Entity entity)
+void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U32 frame, ReplicationActionType replicationActionType, Entity entity)
 {
     assert(replicationActionType == ReplicationActionType::CREATE || replicationActionType == ReplicationActionType::UPDATE);
 
@@ -25,55 +25,54 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, Re
         inputStream.Read(newRotation);
     }
 
-    if (replicationActionType == ReplicationActionType::CREATE) {
-        if (hasPosition) {
-            m_position = newPosition;
-        }
-        if (hasRotation) {
-            m_rotation = newRotation;
-        }
-    } else {
-        ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-        const bool isLocalPlayer = clientComponent.IsLocalPlayer(entity);
-        if (isLocalPlayer) {
-            if (clientComponent.m_isServerReconciliation) {
-                Replay(hasPosition, hasRotation, newPosition, newRotation);
-            } else {
-                if (hasPosition) {
-                    m_position = newPosition;
-                }
-                if (hasRotation) {
-                    m_rotation = newRotation;
-                }
+    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    const bool isLocalPlayer = clientComponent.IsLocalPlayer(entity);
+    if (isLocalPlayer) {
+        if (replicationActionType == ReplicationActionType::CREATE
+            || !clientComponent.m_isServerReconciliation) {
+            if (hasPosition) {
+                m_position = newPosition;
+            }
+            if (hasRotation) {
+                m_rotation = newRotation;
             }
         } else {
-            if (clientComponent.m_isEntityInterpolation) {
-                if (hasPosition || hasRotation) {
-                    if (!hasPosition) {
-                        if (!m_transformBuffer.IsEmpty()) {
-                            newPosition = m_transformBuffer.GetLast().m_position;
-                        } else {
-                            newPosition = m_position;
-                        }
-                    }
-                    if (!hasRotation) {
-                        if (!m_transformBuffer.IsEmpty()) {
-                            newRotation = m_transformBuffer.GetLast().m_rotation;
-                        } else {
-                            newRotation = m_rotation;
-                        }
-                    }
-                    F32 startFrameTime = Time::GetInstance().GetStartFrameTime();
-                    Transform transform = Transform(newPosition, newRotation, startFrameTime);
-                    m_transformBuffer.Add(transform);
-                }
-            } else {
+            Replay(hasPosition, hasRotation, newPosition, newRotation);
+        }
+    } else {
+        if (clientComponent.m_isEntityInterpolation) {
+            if (replicationActionType == ReplicationActionType::CREATE) {
                 if (hasPosition) {
                     m_position = newPosition;
                 }
                 if (hasRotation) {
                     m_rotation = newRotation;
                 }
+            } else {
+                if (!hasPosition) {
+                    if (!m_transformBuffer.IsEmpty()) {
+                        newPosition = m_transformBuffer.GetLast().m_position;
+                    } else {
+                        newPosition = m_position;
+                    }
+                }
+                if (!hasRotation) {
+                    if (!m_transformBuffer.IsEmpty()) {
+                        newRotation = m_transformBuffer.GetLast().m_rotation;
+                    } else {
+                        newRotation = m_rotation;
+                    }
+                }
+            }
+
+            Transform transform = Transform(newPosition, newRotation, frame);
+            m_transformBuffer.Add(transform);
+        } else {
+            if (hasPosition) {
+                m_position = newPosition;
+            }
+            if (hasRotation) {
+                m_rotation = newRotation;
             }
         }
     }
@@ -83,7 +82,7 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, Re
 void TransformComponent::Replay(bool updatePosition, bool updateRotation, Vec3 newPosition, F32 newRotation)
 {
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    Transform& firstTransform = m_transformBuffer.Get(clientComponent.m_lastAckdFrame);
+    Transform& firstTransform = m_inputTransformBuffer.Get(clientComponent.m_lastAckdFrame);
     Vec3& position = firstTransform.m_position;
     F32& rotation = firstTransform.m_rotation;
 
@@ -100,12 +99,12 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, Vec3 n
         }
 
         U32 front = clientComponent.m_inputBuffer.m_front;
-        assert(front == m_transformBuffer.m_front);
+        assert(front == m_inputTransformBuffer.m_front);
         U32 back = clientComponent.m_inputBuffer.m_back;
-        assert(back == m_transformBuffer.m_back);
+        assert(back == m_inputTransformBuffer.m_back);
 
         for (U32 i = clientComponent.m_lastAckdFrame; i < back; ++i) {
-            Transform& transform = m_transformBuffer.Get(i);
+            Transform& transform = m_inputTransformBuffer.Get(i);
             const Input& input = clientComponent.m_inputBuffer.Get(i);
             const InputComponent& inputComponent = input.GetInputComponent();
             F32 dt = input.GetDt();
@@ -120,7 +119,7 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, Vec3 n
             }
         }
 
-        Transform& lastTransform = m_transformBuffer.GetLast();
+        Transform& lastTransform = m_inputTransformBuffer.GetLast();
         if (replayPosition) {
             m_position = lastTransform.m_position;
         }
@@ -129,7 +128,7 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, Vec3 n
         }
     }
 
-    m_transformBuffer.Remove(clientComponent.m_lastAckdFrame);
+    m_inputTransformBuffer.Remove(clientComponent.m_lastAckdFrame);
     clientComponent.m_inputBuffer.Remove(clientComponent.m_lastAckdFrame);
 }
 }

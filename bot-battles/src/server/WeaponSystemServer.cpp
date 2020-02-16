@@ -51,7 +51,15 @@ bool WeaponSystemServer::Update()
                     Rewind(entity, interpolationFromFrame, interpolationToFrame, interpolationPercentage);
                 }
 
-                Transform transform = transformComponent.lock()->m_transformBuffer.Get(input.GetFrame());
+                Transform transform;
+                for (U32 j = transformComponent.lock()->m_inputTransformBuffer.m_front; j < transformComponent.lock()->m_inputTransformBuffer.m_back; ++j) {
+                    Transform& t = transformComponent.lock()->m_inputTransformBuffer.Get(j);
+                    if (t.GetFrame() == input.GetFrame()) {
+                        transform = t;
+                        break;
+                    }
+                }
+
                 Vec2 position = { transform.m_position.x, transform.m_position.y };
                 ILOG("SERVER Pos is: %f %f", position.x, position.y);
 
@@ -114,9 +122,25 @@ void WeaponSystemServer::Rewind(Entity localEntity, U32 from, U32 to, F32 percen
         }
 
         std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(remoteEntity);
-        if (!transformComponent.lock()->m_remoteTransformBuffer.IsEmpty()) {
-            Transform fromTransform = transformComponent.lock()->m_remoteTransformBuffer.Get(from);
-            Transform toTransform = transformComponent.lock()->m_remoteTransformBuffer.Get(to);
+        if (!transformComponent.lock()->m_transformBuffer.IsEmpty()) {
+            Transform fromTransform;
+            for (U32 i = transformComponent.lock()->m_transformBuffer.m_front; i < transformComponent.lock()->m_transformBuffer.m_back; ++i) {
+                Transform& t = transformComponent.lock()->m_transformBuffer.Get(i);
+                if (t.GetFrame() == from) {
+                    fromTransform = t;
+                    break;
+                }
+            }
+
+            Transform toTransform;
+            for (U32 i = transformComponent.lock()->m_transformBuffer.m_front; i < transformComponent.lock()->m_transformBuffer.m_back; ++i) {
+                Transform& t = transformComponent.lock()->m_transformBuffer.Get(i);
+                if (t.GetFrame() == to) {
+                    toTransform = t;
+                    break;
+                }
+            }
+
             Vec3 position = Lerp(fromTransform.m_position, toTransform.m_position, percentage);
             std::weak_ptr<ColliderComponent> colliderComponent = g_gameServer->GetComponentManager().GetComponent<ColliderComponent>(remoteEntity);
             colliderComponent.lock()->m_position = { position.x, position.y };

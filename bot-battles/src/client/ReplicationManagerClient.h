@@ -7,8 +7,8 @@ namespace sand {
 class ReplicationManagerClient {
 public:
     void Read(InputMemoryStream& inputStream) const;
-    void ReadCreateAction(InputMemoryStream& inputStream, NetworkID networkID) const;
-    void ReadUpdateAction(InputMemoryStream& inputStream, NetworkID networkID) const;
+    void ReadCreateAction(InputMemoryStream& inputStream, NetworkID networkID, U32 frame) const;
+    void ReadUpdateAction(InputMemoryStream& inputStream, NetworkID networkID, U32 frame) const;
     void ReadRemoveAction(NetworkID networkID) const;
 };
 }

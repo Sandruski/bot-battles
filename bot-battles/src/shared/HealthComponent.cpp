@@ -12,7 +12,7 @@ HealthComponent::HealthComponent()
 
 #ifdef _CLIENT
 //----------------------------------------------------------------------------------------------------
-void HealthComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, ReplicationActionType /*replicationActionType*/, Entity /*entity*/)
+void HealthComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U32 /*frame*/, ReplicationActionType /*replicationActionType*/, Entity /*entity*/)
 {
     if (dirtyState & static_cast<U32>(ComponentMemberType::HEALTH_HEALTH)) {
         inputStream.Read(m_health);

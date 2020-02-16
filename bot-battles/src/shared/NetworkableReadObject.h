@@ -12,7 +12,7 @@ struct NetworkableReadObject {
 
     virtual ~NetworkableReadObject() = default;
 
-    virtual void Read(InputMemoryStream& inputStream, U32 dirtyState, ReplicationActionType replicationActionType, Entity entity) = 0;
+    virtual void Read(InputMemoryStream& inputStream, U32 dirtyState, U32 frame, ReplicationActionType replicationActionType, Entity entity) = 0;
 };
 }
 

@@ -29,7 +29,7 @@ struct TransformComponent : public Component
     TransformComponent();
 
 #ifdef _CLIENT
-    void Read(InputMemoryStream& inputStream, U32 dirtyState, ReplicationActionType replicationActionType, Entity entity) override;
+    void Read(InputMemoryStream& inputStream, U32 dirtyState, U32 frame, ReplicationActionType replicationActionType, Entity entity) override;
     void Replay(bool updatePosition, bool updateRotation, Vec3 newPosition, F32 newRotation);
 #elif defined(_SERVER)
     U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override;
@@ -46,10 +46,8 @@ struct TransformComponent : public Component
     F32 m_rotation;
     //Vec2 m_velocity;
     //F32 m_angularVelocity;
-    CircularBuffer<Transform, MAX_TRANSFORMS> m_transformBuffer;
-#ifdef _SERVER
-    CircularBuffer<Transform, MAX_TRANSFORMS> m_remoteTransformBuffer;
-#endif
+    CircularBuffer<Transform, MAX_FRAMES> m_transformBuffer;
+    CircularBuffer<Transform, MAX_FRAMES> m_inputTransformBuffer;
 };
 }
 

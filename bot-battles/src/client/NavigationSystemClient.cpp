@@ -23,8 +23,23 @@ bool NavigationSystemClient::Update()
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     F32 frameStartTime = Time::GetInstance().GetStartFrameTime();
 
-    for (auto& entity : m_entities) {
+    if (clientComponent.m_isEntityInterpolation) {
+        if (clientComponent.m_frameBuffer.Count() >= 2) {
+            clientComponent.m_interpolationFromFrame = clientComponent.m_frameBuffer.GetFirst().GetFrame();
+            clientComponent.m_interpolationToFrame = clientComponent.m_frameBuffer.GetSecond().GetFrame();
+            F32 outOfSyncTime = frameStartTime - clientComponent.m_frameBuffer.GetSecond().GetTimestamp();
+            clientComponent.m_interpolationPercentage = outOfSyncTime / ENTITY_INTERPOLATION_PERIOD;
+            if (clientComponent.m_interpolationPercentage > 1.0f) {
+                clientComponent.m_interpolationPercentage = 1.0f;
+            }
 
+            if (clientComponent.m_interpolationPercentage == 1.0f) {
+                clientComponent.m_frameBuffer.RemoveFirst();
+            }
+        }
+    }
+
+    for (auto& entity : m_entities) {
         if (g_gameClient->GetLinkingContext().GetNetworkID(entity) == INVALID_NETWORK_ID) {
             continue;
         }
@@ -39,39 +54,28 @@ bool NavigationSystemClient::Update()
 
                     std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
                     transformComponent.lock()->UpdateTransform(inputComponent.m_acceleration, inputComponent.m_angularAcceleration, dt);
-                    Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation);
-                    transformComponent.lock()->m_transformBuffer.Add(transform);
+                    Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, input.GetFrame());
+                    transformComponent.lock()->m_inputTransformBuffer.Add(transform);
                 }
             }
         } else {
             if (clientComponent.m_isEntityInterpolation) {
                 std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
-                if (transformComponent.lock()->m_transformBuffer.Count() < 2) {
-                    continue;
-                }
+                if (transformComponent.lock()->m_transformBuffer.Count() >= 2) {
+                    const Transform& fromTransform = transformComponent.lock()->m_transformBuffer.GetFirst();
+                    const Transform& toTransform = transformComponent.lock()->m_transformBuffer.GetSecond();
+                    transformComponent.lock()->m_position = Lerp(fromTransform.m_position, toTransform.m_position, clientComponent.m_interpolationPercentage);
+                    transformComponent.lock()->m_rotation = Lerp(fromTransform.m_rotation, toTransform.m_rotation, clientComponent.m_interpolationPercentage);
 
-                clientComponent.m_interpolationFromFrame = transformComponent.lock()->m_transformBuffer.m_front;
-                clientComponent.m_interpolationToFrame = transformComponent.lock()->m_transformBuffer.m_front + 1;
-                F32 outOfSyncTime = frameStartTime - transformComponent.lock()->m_transformBuffer.GetSecond().GetTimestamp();
-                clientComponent.m_interpolationPercentage = outOfSyncTime / ENTITY_INTERPOLATION_PERIOD;
-                if (clientComponent.m_interpolationPercentage > 1.0f) {
-                    clientComponent.m_interpolationPercentage = 1.0f;
-                }
-
-                const Transform& fromTransform = transformComponent.lock()->m_transformBuffer.GetFirst();
-                const Transform& toTransform = transformComponent.lock()->m_transformBuffer.GetSecond();
-                transformComponent.lock()->m_position = Lerp(fromTransform.m_position, toTransform.m_position, clientComponent.m_interpolationPercentage);
-                transformComponent.lock()->m_rotation = Lerp(fromTransform.m_rotation, toTransform.m_rotation, clientComponent.m_interpolationPercentage);
-
-                if (clientComponent.m_interpolationPercentage == 1.0f) {
-                    transformComponent.lock()->m_transformBuffer.RemoveFirst();
+                    if (clientComponent.m_interpolationPercentage == 1.0f) {
+                        transformComponent.lock()->m_transformBuffer.RemoveFirst();
+                    }
                 }
             }
         }
     }
 
     for (auto& entity : m_entities) {
-
         if (g_gameClient->GetLinkingContext().GetNetworkID(entity) == INVALID_NETWORK_ID) {
             continue;
         }

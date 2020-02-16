@@ -11,7 +11,7 @@ WeaponComponent::WeaponComponent()
 
 #ifdef _CLIENT
 //----------------------------------------------------------------------------------------------------
-void WeaponComponent::Read(InputMemoryStream& /*inputStream*/, U32 /*dirtyState*/, ReplicationActionType /*replicationActionType*/, Entity /*entity*/)
+void WeaponComponent::Read(InputMemoryStream& /*inputStream*/, U32 /*dirtyState*/, U32 /*frame*/, ReplicationActionType /*replicationActionType*/, Entity /*entity*/)
 {
     // TODO
 }

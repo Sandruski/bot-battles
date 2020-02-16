@@ -33,7 +33,7 @@ U32 InputComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) cons
 }
 
 //----------------------------------------------------------------------------------------------------
-void InputComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, ReplicationActionType /*replicationActionType*/, Entity /*entity*/)
+void InputComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U32 /*frame*/, ReplicationActionType /*replicationActionType*/, Entity /*entity*/)
 {
     if (dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_ACCELERATION)) {
         inputStream.Read(m_acceleration);

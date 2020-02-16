@@ -21,6 +21,7 @@ NavigationSystemServer::NavigationSystemServer()
 bool NavigationSystemServer::Update()
 {
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
+    U32 frame = Time::GetInstance().GetFrame();
 
     for (auto& entity : m_entities) {
         PlayerID playerID = serverComponent.GetPlayerID(entity);
@@ -48,21 +49,19 @@ bool NavigationSystemServer::Update()
             }
 
             if (hasChanged) {
-                Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation);
-                transformComponent.lock()->m_transformBuffer.Add(transform); // TODO: also remove this transform buffer at some point
+                Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, input.GetFrame());
+                transformComponent.lock()->m_inputTransformBuffer.Add(transform); // TODO: also remove this transform buffer at some point
 
                 Event newEvent;
                 newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
                 newEvent.component.entity = entity;
-                newEvent.component.dirtyState = dirtyState;
+                newEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::TRANSFORM_ALL);
                 NotifyEvent(newEvent);
             }
         }
 
-        if (hasChanged) {
-            Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation);
-            transformComponent.lock()->m_remoteTransformBuffer.Add(transform); // TODO: also remove this transform buffer at some point
-        }
+        Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, frame);
+        transformComponent.lock()->m_transformBuffer.Add(transform); // TODO: also remove this transform buffer at some point
     }
 
     return true;

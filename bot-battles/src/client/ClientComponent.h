@@ -3,6 +3,7 @@
 
 #include "Component.h"
 #include "DeliveryManagerClient.h"
+#include "Frame.h"
 #include "Input.h"
 #include "ReplicationManagerClient.h"
 #include "TransformComponent.h"
@@ -41,7 +42,9 @@ struct ClientComponent : public Component {
     U32 m_interpolationToFrame;
     F32 m_interpolationPercentage;
 
-    CircularBuffer<Input, MAX_INPUTS> m_inputBuffer;
+    CircularBuffer<Frame, MAX_FRAMES> m_frameBuffer;
+
+    CircularBuffer<Input, MAX_FRAMES> m_inputBuffer;
     bool m_isLastMovePending;
 
     F32 m_RTT;
