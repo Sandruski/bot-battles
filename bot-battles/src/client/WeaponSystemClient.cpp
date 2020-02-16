@@ -52,7 +52,7 @@ bool WeaponSystemClient::Update()
 
                         std::weak_ptr<ColliderComponent> colliderComponent = g_gameClient->GetComponentManager().GetComponent<ColliderComponent>(remoteEntity);
                         colliderComponent.lock()->m_shotPosition = colliderComponent.lock()->m_position;
-                        ILOG("CLIENT Collision is %f %f", colliderComponent.lock()->m_shotPosition.x, colliderComponent.lock()->m_shotPosition.y);
+                        ILOG("CLIENT Rewind is %f %f", colliderComponent.lock()->m_shotPosition.x, colliderComponent.lock()->m_shotPosition.y);
                     }
 
                     std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
@@ -62,6 +62,7 @@ bool WeaponSystemClient::Update()
                     Vec2 position = transformComponent.lock()->GetPosition();
                     Vec2 rotation = transformComponent.lock()->GetRotation();
                     ILOG("CLIENT Pos is: %f %f", position.x, position.y);
+                    ILOG("From frame %u to frame %u percentage %f", input.m_interpolationFromFrame, input.m_interpolationToFrame, input.m_interpolationPercentage);
 
                     weaponComponent.lock()->m_origin = position;
                     WindowComponent& windowComponent = g_gameClient->GetWindowComponent();

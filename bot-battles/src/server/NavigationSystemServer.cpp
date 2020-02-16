@@ -62,6 +62,7 @@ bool NavigationSystemServer::Update()
 
         Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, frame);
         transformComponent.lock()->m_transformBuffer.Add(transform); // TODO: also remove this transform buffer at some point
+        ILOG("Server pos for frame %u is %f %f", frame, transformComponent.lock()->m_position.x, transformComponent.lock()->m_position.y);
     }
 
     return true;

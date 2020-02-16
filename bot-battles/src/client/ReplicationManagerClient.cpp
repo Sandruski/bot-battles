@@ -20,6 +20,7 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream) const
     F32 startFrameTime = Time::GetInstance().GetStartFrameTime();
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     clientComponent.m_frameBuffer.Add(Frame(frame, startFrameTime));
+    ILOG("Frame received %u", frame);
 
     while (inputStream.GetRemainingBitCount() >= 8) {
 
@@ -50,6 +51,32 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream) const
             WLOG("Unknown replication action received from networkID %u", networkID);
             break;
         }
+        }
+    }
+
+    LinkingContext& linkingContext = g_gameClient->GetLinkingContext();
+    const std::unordered_map<NetworkID, Entity>& networkIDToEntity = linkingContext.GetNetworkIDToEntityMap();
+    for (const auto& pair : networkIDToEntity) {
+        Entity entity = pair.second;
+        const bool isLocalPlayer = clientComponent.IsLocalPlayer(entity);
+        if (!isLocalPlayer) {
+            std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
+            if (transformComponent.expired()) {
+                continue;
+            }
+            bool is = false;
+            for (U32 i = transformComponent.lock()->m_transformBuffer.m_front; i < transformComponent.lock()->m_transformBuffer.m_back; ++i) {
+                Transform& t = transformComponent.lock()->m_transformBuffer.Get(i);
+                if (t.GetFrame() == frame) {
+                    is = true;
+                    break;
+                }
+            }
+            if (!is) {
+                Transform transform = Transform(transformComponent.lock()->m_transformBuffer.GetLast().m_position, transformComponent.lock()->m_transformBuffer.GetLast().m_rotation, frame);
+                transformComponent.lock()->m_transformBuffer.Add(transform);
+                ILOG("Client pos for frame %u is %f %f", frame, transformComponent.lock()->m_transformBuffer.GetLast().m_position.x, transformComponent.lock()->m_transformBuffer.GetLast().m_position.y);
+            }
         }
     }
 }

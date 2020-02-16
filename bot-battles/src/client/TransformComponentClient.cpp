@@ -13,7 +13,7 @@ namespace sand {
 void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U32 frame, ReplicationActionType replicationActionType, Entity entity)
 {
     assert(replicationActionType == ReplicationActionType::CREATE || replicationActionType == ReplicationActionType::UPDATE);
-    ILOG("Frame %u", frame);
+
     Vec3 newPosition;
     F32 newRotation = 0.0f;
     const bool hasPosition = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION);
@@ -80,8 +80,11 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U3
                 }
             }
 
-            Transform transform = Transform(newPosition, newRotation, frame);
-            m_transformBuffer.Add(transform);
+            if (hasPosition || hasRotation) {
+                Transform transform = Transform(newPosition, newRotation, frame);
+                m_transformBuffer.Add(transform);
+                ILOG("Client pos for frame %u is %f %f", frame, newPosition.x, newPosition.y);
+            }
         } else {
             if (hasPosition) {
                 m_position = newPosition;
@@ -109,7 +112,7 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, Vec3 n
     const bool replayRotation = updateRotation ? rotation != newRotation : false;
 
     if (replayPosition || replayRotation) {
-        ILOG("REPLAY");
+        ILOG("REPLAY MOVES");
         if (replayPosition) {
             position = newPosition;
         }

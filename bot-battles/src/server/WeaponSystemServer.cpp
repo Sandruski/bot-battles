@@ -58,6 +58,7 @@ bool WeaponSystemServer::Update()
 
                 Vec2 position = { transform.m_position.x, transform.m_position.y };
                 ILOG("SERVER Pos is: %f %f", position.x, position.y);
+                ILOG("From frame %u to frame %u percentage %f", input.m_interpolationFromFrame, input.m_interpolationToFrame, input.m_interpolationPercentage);
 
                 F32 x = std::cos(DEGREES_TO_RADIANS(transform.m_rotation));
                 F32 y = std::sin(DEGREES_TO_RADIANS(transform.m_rotation));
@@ -141,7 +142,9 @@ void WeaponSystemServer::Rewind(Entity localEntity, U32 from, U32 to, F32 percen
             std::weak_ptr<ColliderComponent> colliderComponent = g_gameServer->GetComponentManager().GetComponent<ColliderComponent>(remoteEntity);
             colliderComponent.lock()->m_position = { position.x, position.y };
             colliderComponent.lock()->m_shotPosition = colliderComponent.lock()->m_position;
-            ILOG("SERVER Collision is %f %f", colliderComponent.lock()->m_shotPosition.x, colliderComponent.lock()->m_shotPosition.y);
+            ILOG("SERVER Rewind is %f %f", colliderComponent.lock()->m_shotPosition.x, colliderComponent.lock()->m_shotPosition.y);
+            ILOG("From trans %u position %f %f, to trans %u position %f %f", from, fromTransform.m_position.x, fromTransform.m_position.y,
+                to, toTransform.m_position.x, toTransform.m_position.y);
         }
     }
 }
