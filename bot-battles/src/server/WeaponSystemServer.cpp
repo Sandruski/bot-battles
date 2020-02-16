@@ -44,11 +44,7 @@ bool WeaponSystemServer::Update()
             if (inputComponent.m_isShooting) {
                 ILOG("Frame %u of playerID %u is shooting", i, playerID);
                 if (serverComponent.m_isServerRewind) {
-                    U32 interpolationFromFrame = input.GetInterpolationFromFrame();
-                    U32 interpolationToFrame = input.GetInterpolationToFrame();
-                    F32 interpolationPercentage = input.GetInterpolationPercentage();
-                    ILOG("REWIND %u %u %f", interpolationFromFrame, interpolationToFrame, interpolationPercentage);
-                    Rewind(entity, interpolationFromFrame, interpolationToFrame, interpolationPercentage);
+                    Rewind(entity, input.m_interpolationFromFrame, input.m_interpolationToFrame, input.m_interpolationPercentage);
                 }
 
                 Transform transform;

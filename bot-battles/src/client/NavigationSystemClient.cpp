@@ -48,7 +48,11 @@ bool NavigationSystemClient::Update()
         if (isLocalPlayer) {
             if (clientComponent.m_isClientPrediction) {
                 if (clientComponent.m_isLastMovePending) {
-                    const Input& input = clientComponent.m_inputBuffer.GetLast();
+                    Input& input = clientComponent.m_inputBuffer.GetLast();
+                    input.m_interpolationFromFrame = clientComponent.m_interpolationFromFrame;
+                    input.m_interpolationToFrame = clientComponent.m_interpolationToFrame;
+                    input.m_interpolationPercentage = clientComponent.m_interpolationPercentage;
+
                     const InputComponent& inputComponent = input.GetInputComponent();
                     F32 dt = input.GetDt();
 
@@ -72,24 +76,6 @@ bool NavigationSystemClient::Update()
                     }
                 }
             }
-        }
-    }
-
-    for (auto& entity : m_entities) {
-        if (g_gameClient->GetLinkingContext().GetNetworkID(entity) == INVALID_NETWORK_ID) {
-            continue;
-        }
-
-        const bool isLocalPlayer = clientComponent.IsLocalPlayer(entity);
-        if (isLocalPlayer) {
-            if (clientComponent.m_isLastMovePending) {
-                Input& input = clientComponent.m_inputBuffer.GetLast();
-                input.m_interpolationFromFrame = clientComponent.m_interpolationFromFrame;
-                input.m_interpolationToFrame = clientComponent.m_interpolationToFrame;
-                input.m_interpolationPercentage = clientComponent.m_interpolationPercentage;
-            }
-
-            break;
         }
     }
 

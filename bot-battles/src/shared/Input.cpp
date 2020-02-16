@@ -15,14 +15,14 @@ Input::Input()
 }
 
 //----------------------------------------------------------------------------------------------------
-Input::Input(const InputComponent& inputComponent, U32 dirtyState, F32 dt, U32 frame, U32 interpolationFromFrame, U32 interpolationToFrame, F32 interpolationPercentage)
+Input::Input(const InputComponent& inputComponent, U32 dirtyState, F32 dt, U32 frame)
     : m_inputComponent(inputComponent)
     , m_dirtyState(dirtyState)
     , m_dt(dt)
     , m_frame(frame)
-    , m_interpolationFromFrame(interpolationFromFrame)
-    , m_interpolationToFrame(interpolationToFrame)
-    , m_interpolationPercentage(interpolationPercentage)
+    , m_interpolationFromFrame(0)
+    , m_interpolationToFrame(0)
+    , m_interpolationPercentage(0.0f)
 {
 }
 
@@ -74,23 +74,5 @@ F32 Input::GetDt() const
 U32 Input::GetFrame() const
 {
     return m_frame;
-}
-
-//----------------------------------------------------------------------------------------------------
-U32 Input::GetInterpolationFromFrame() const
-{
-    return m_interpolationFromFrame;
-}
-
-//----------------------------------------------------------------------------------------------------
-U32 Input::GetInterpolationToFrame() const
-{
-    return m_interpolationToFrame;
-}
-
-//----------------------------------------------------------------------------------------------------
-F32 Input::GetInterpolationPercentage() const
-{
-    return m_interpolationPercentage;
 }
 }
