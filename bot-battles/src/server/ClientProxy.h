@@ -26,11 +26,8 @@ public:
 
     CircularBuffer<Input, MAX_FRAMES> m_inputBuffer;
 
-    bool m_isTimestampDirty;
+    U32 m_lastAckdFrame;
     F32 m_timestamp;
-
-    bool m_isFrameDirty;
-    U32 m_frame;
 
 private:
     SocketAddress m_socketAddress;

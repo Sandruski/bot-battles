@@ -286,7 +286,6 @@
       <Filter>Header Files\Math</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Random.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)NetworkComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp">
@@ -430,6 +429,5 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)HealthComponent.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)NetworkComponent.cpp" />
   </ItemGroup>
 </Project>

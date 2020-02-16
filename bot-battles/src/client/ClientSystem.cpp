@@ -140,19 +140,11 @@ void ClientSystem::ReceiveStatePacket(ClientComponent& clientComponent, InputMem
 
     ILOG("State packet received");
 
-    bool isTimestampDirty = false;
-    inputStream.Read(isTimestampDirty);
-    if (isTimestampDirty) {
-        F32 timestamp = 0.0f;
-        inputStream.Read(timestamp);
-        clientComponent.m_RTT = Time::GetInstance().GetTime() - timestamp;
-    }
+    F32 timestamp = 0.0f;
+    inputStream.Read(timestamp);
+    clientComponent.m_RTT = Time::GetInstance().GetTime() - timestamp;
 
-    bool isFrameDirty = false;
-    inputStream.Read(isFrameDirty);
-    if (isFrameDirty) {
-        inputStream.Read(clientComponent.m_lastAckdFrame);
-    }
+    inputStream.Read(clientComponent.m_lastAckdFrame);
 
     clientComponent.m_replicationManager.Read(inputStream);
 }
@@ -199,6 +191,7 @@ bool ClientSystem::SendInputPacket(ClientComponent& clientComponent) const
         for (U32 i = clientComponent.m_inputBuffer.m_front; i < back; ++i) {
             const Input& input = clientComponent.m_inputBuffer.Get(i);
             input.Write(inputPacket);
+            ILOG("SEND INPUT OF FRAME %u", input.GetFrame());
         }
     }
 

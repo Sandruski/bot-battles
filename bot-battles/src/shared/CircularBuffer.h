@@ -98,6 +98,7 @@ inline const T& CircularBuffer<T, size>::Get(U32 position) const
 template <class T, U32 size>
 inline T& CircularBuffer<T, size>::Get(U32 position)
 {
+    assert(!IsEmpty());
     U32 index = IndexFromPosition(position);
     return m_buffer.at(index);
 }
@@ -113,7 +114,7 @@ inline const T& CircularBuffer<T, size>::GetFirst() const
 template <class T, U32 size>
 inline T& CircularBuffer<T, size>::GetFirst()
 {
-    assert(m_back > m_front);
+    assert(!IsEmpty());
     U32 position = m_front;
     U32 index = IndexFromPosition(position);
     return Get(index);
@@ -130,7 +131,7 @@ inline const T& CircularBuffer<T, size>::GetSecond() const
 template <class T, U32 size>
 inline T& CircularBuffer<T, size>::GetSecond()
 {
-    assert(m_back > m_front + 1);
+    assert(Count() > 1);
     U32 position = m_front + 1;
     U32 index = IndexFromPosition(position);
     return Get(index);
@@ -147,7 +148,7 @@ inline const T& CircularBuffer<T, size>::GetLast() const
 template <class T, U32 size>
 inline T& CircularBuffer<T, size>::GetLast()
 {
-    assert(m_back > m_front);
+    assert(!IsEmpty());
     U32 position = m_back - 1;
     U32 index = IndexFromPosition(position);
     return Get(index);

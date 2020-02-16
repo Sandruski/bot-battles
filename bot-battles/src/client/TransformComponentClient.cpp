@@ -13,7 +13,7 @@ namespace sand {
 void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U32 frame, ReplicationActionType replicationActionType, Entity entity)
 {
     assert(replicationActionType == ReplicationActionType::CREATE || replicationActionType == ReplicationActionType::UPDATE);
-
+    ILOG("Frame %u", frame);
     Vec3 newPosition;
     F32 newRotation = 0.0f;
     const bool hasPosition = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION);
@@ -37,6 +37,21 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U3
                 m_rotation = newRotation;
             }
         } else {
+            if (!hasPosition) {
+                if (!m_inputTransformBuffer.IsEmpty()) {
+                    newPosition = m_inputTransformBuffer.GetLast().m_position;
+                } else {
+                    newPosition = m_position;
+                }
+            }
+            if (!hasRotation) {
+                if (!m_inputTransformBuffer.IsEmpty()) {
+                    newRotation = m_inputTransformBuffer.GetLast().m_rotation;
+                } else {
+                    newRotation = m_rotation;
+                }
+            }
+
             Replay(hasPosition, hasRotation, newPosition, newRotation);
         }
     } else {
@@ -81,6 +96,10 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U3
 //----------------------------------------------------------------------------------------------------
 void TransformComponent::Replay(bool updatePosition, bool updateRotation, Vec3 newPosition, F32 newRotation)
 {
+    if (m_inputTransformBuffer.IsEmpty()) {
+        return;
+    }
+
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     Transform& firstTransform = m_inputTransformBuffer.Get(clientComponent.m_lastAckdFrame);
     Vec3& position = firstTransform.m_position;
@@ -98,12 +117,7 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, Vec3 n
             rotation = newRotation;
         }
 
-        U32 front = clientComponent.m_inputBuffer.m_front;
-        assert(front == m_inputTransformBuffer.m_front);
-        U32 back = clientComponent.m_inputBuffer.m_back;
-        assert(back == m_inputTransformBuffer.m_back);
-
-        for (U32 i = clientComponent.m_lastAckdFrame; i < back; ++i) {
+        for (U32 i = clientComponent.m_inputBuffer.m_front; i < clientComponent.m_inputBuffer.m_back; ++i) {
             Transform& transform = m_inputTransformBuffer.Get(i);
             const Input& input = clientComponent.m_inputBuffer.Get(i);
             const InputComponent& inputComponent = input.GetInputComponent();
@@ -128,6 +142,7 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, Vec3 n
         }
     }
 
+    ILOG("Remove until %u", clientComponent.m_lastAckdFrame);
     m_inputTransformBuffer.Remove(clientComponent.m_lastAckdFrame);
     clientComponent.m_inputBuffer.Remove(clientComponent.m_lastAckdFrame);
 }

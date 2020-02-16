@@ -109,6 +109,7 @@ void ReplicationResultManager::HandleRemoveDeliverySuccess(NetworkID networkID) 
 //----------------------------------------------------------------------------------------------------
 void ReplicationResultManager::HandleCreateDeliveryFailure(NetworkID networkID) const
 {
+    ILOG("RESENDING PACKET CREATE");
     Entity entity = g_game->GetLinkingContext().GetEntity(networkID);
     if (entity != INVALID_ENTITY) {
         m_replicationManager.lock()->SetCreate(networkID, static_cast<U32>(ComponentMemberType::ALL));
@@ -118,6 +119,7 @@ void ReplicationResultManager::HandleCreateDeliveryFailure(NetworkID networkID) 
 //----------------------------------------------------------------------------------------------------
 void ReplicationResultManager::HandleUpdateDeliveryFailure(NetworkID networkID, U32 dirtyState, const DeliveryManagerServer& deliveryManagerServer) const
 {
+    ILOG("RESENDING PACKET UPDATE");
     Entity entity = g_game->GetLinkingContext().GetEntity(networkID);
     if (entity != INVALID_ENTITY) {
         const std::deque<Delivery>& deliveries = deliveryManagerServer.GetDeliveries();
@@ -141,6 +143,7 @@ void ReplicationResultManager::HandleUpdateDeliveryFailure(NetworkID networkID, 
 //----------------------------------------------------------------------------------------------------
 void ReplicationResultManager::HandleRemoveDeliveryFailure(NetworkID networkID) const
 {
+    ILOG("RESENDING PACKET REMOVE");
     m_replicationManager.lock()->SetRemove(networkID);
 }
 }

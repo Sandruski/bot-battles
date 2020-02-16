@@ -207,7 +207,6 @@ void ServerSystem::ReceiveInputPacket(ServerComponent& serverComponent, InputMem
     ILOG("Input packet received from player %u %s", playerID, clientProxy.lock()->GetName());
 
     inputStream.Read(clientProxy.lock()->m_timestamp);
-    clientProxy.lock()->m_isTimestampDirty = true;
 
     // TODO: should we have individual frames for Input packets or just send a single frame for the last Input sent?
 
@@ -219,14 +218,15 @@ void ServerSystem::ReceiveInputPacket(ServerComponent& serverComponent, InputMem
         while (inputCount > 0) {
             Input input;
             input.Read(inputStream);
-            if (input.GetFrame() > clientProxy.lock()->m_frame) { // TODO: be careful if new frame is 15 and last frame is 13 and frame 14 contains a shoot for example
+            if (input.GetFrame() > clientProxy.lock()->m_lastAckdFrame) { // TODO: be careful if new frame is 15 and last frame is 13 and frame 14 contains a shoot for example
                 clientProxy.lock()->m_inputBuffer.Add(input);
-                clientProxy.lock()->m_frame = input.GetFrame();
-                clientProxy.lock()->m_isFrameDirty = true;
+                clientProxy.lock()->m_lastAckdFrame = input.GetFrame();
             }
             --inputCount;
         }
     }
+
+    ILOG("Server received ackd frame %u", clientProxy.lock()->m_lastAckdFrame);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -257,18 +257,10 @@ void ServerSystem::SendStatePacket(const ServerComponent& serverComponent, std::
     Delivery& delivery = clientProxy->m_deliveryManager.WriteState(statePacket);
     delivery.m_replicationResultManager = std::make_shared<ReplicationResultManager>(std::weak_ptr<ReplicationManagerServer>(clientProxy->m_replicationManager));
 
-    statePacket.Write(clientProxy->m_isTimestampDirty);
-    if (clientProxy->m_isTimestampDirty) {
-        statePacket.Write(clientProxy->m_timestamp);
-        clientProxy->m_isTimestampDirty = false;
-    }
+    statePacket.Write(clientProxy->m_timestamp);
 
-    statePacket.Write(clientProxy->m_isFrameDirty);
-    if (clientProxy->m_isFrameDirty) {
-        ILOG("SERVER SENT ACKD FRAME %u", clientProxy->m_frame);
-        statePacket.Write(clientProxy->m_frame);
-        clientProxy->m_isFrameDirty = false;
-    }
+    ILOG("SERVER SENT ACKD FRAME %u", clientProxy->m_lastAckdFrame);
+    statePacket.Write(clientProxy->m_lastAckdFrame);
 
     clientProxy->m_replicationManager->Write(statePacket, *delivery.m_replicationResultManager);
 

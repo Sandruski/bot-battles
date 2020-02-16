@@ -45,7 +45,7 @@ inline F32 RADIANS_TO_DEGREES(F32 radians)
 }
 
 static const F32 FPS_CLIENT = 60.0f;
-static const F32 FPS_SERVER = 10.0f;
+static const F32 FPS_SERVER = 20.0f;
 #ifdef _CLIENT
 static const F32 FPS = FPS_CLIENT;
 #elif defined(_SERVER)
