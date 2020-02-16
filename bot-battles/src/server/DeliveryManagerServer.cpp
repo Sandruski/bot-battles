@@ -41,8 +41,9 @@ void DeliveryManagerServer::ProcessTimedOutPackets()
         F32 time = Time::GetInstance().GetTime();
         F32 timeout = time - timestamp;
         if (timeout >= ACK_TIMEOUT) {
-            HandleDeliveryFailure(delivery);
+            Delivery deliveryCopy = delivery;
             m_deliveries.pop_front();
+            HandleDeliveryFailure(deliveryCopy);
         } else {
             break;
         }
