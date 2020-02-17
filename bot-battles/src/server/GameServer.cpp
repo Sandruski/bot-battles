@@ -12,6 +12,7 @@
 #include "SpawnerSystem.h"
 #include "SystemManager.h"
 #include "WeaponSystemServer.h"
+#include "HealthSystem.h"
 
 namespace sand {
 
@@ -50,6 +51,10 @@ bool GameServer::Init()
         return ret;
     }
     ret = m_systemManager->RegisterSystem<InputSystemServer>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_systemManager->RegisterSystem<HealthSystem>();
     if (!ret) {
         return ret;
     }

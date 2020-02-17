@@ -23,8 +23,7 @@ bool CollisionSystemServer::Update()
         std::weak_ptr<ColliderComponent> colliderComponent = g_gameServer->GetComponentManager().GetComponent<ColliderComponent>(entity);
         std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
 
-        colliderComponent.lock()->m_position.x = transformComponent.lock()->m_position.x;
-        colliderComponent.lock()->m_position.y = transformComponent.lock()->m_position.y;
+        colliderComponent.lock()->m_position = transformComponent.lock()->GetPosition();
     }
 
     return true;

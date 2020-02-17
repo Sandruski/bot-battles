@@ -48,12 +48,17 @@ bool WeaponSystemServer::Update()
                 }
 
                 Transform transform;
+                bool has = false;
                 for (U32 j = transformComponent.lock()->m_inputTransformBuffer.m_front; j < transformComponent.lock()->m_inputTransformBuffer.m_back; ++j) {
                     Transform& t = transformComponent.lock()->m_inputTransformBuffer.Get(j);
                     if (t.GetFrame() == input.GetFrame()) {
                         transform = t;
+                        has = true;
                         break;
                     }
+                }
+                if (!has) {
+                    transform = transformComponent.lock()->m_inputTransformBuffer.GetLast();
                 }
 
                 Vec2 position = { transform.m_position.x, transform.m_position.y };
@@ -71,9 +76,10 @@ bool WeaponSystemServer::Update()
                 const bool hasIntersected = Raycast(position, rotation, maxLength, intersection);
                 if (hasIntersected) {
                     weaponComponent.lock()->m_hasHit = true;
-                    std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(entity);
-                    healthComponent.lock()->m_health -= 10;
-                    ILOG("Health is %u", healthComponent.lock()->m_health);
+                    //std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(entity);
+                    //healthComponent.lock()->m_health -= 10;
+                    //ILOG("Health is %u", healthComponent.lock()->m_health);
+                    // TODO: find the health component of the entity hit returned by the raycast
                 } else {
                     weaponComponent.lock()->m_hasHit = false;
                 }

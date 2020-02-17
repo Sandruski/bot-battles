@@ -74,6 +74,10 @@ bool RendererSystem::Render()
 
         std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
         std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
+        if (!transformComponent.lock()->m_isEnabled || !spriteComponent.lock()->m_isEnabled)
+        {
+            continue;
+        }
 
         if (!spriteComponent.lock()->m_spriteResource.expired()) {
             const SDL_Rect* srcRect = spriteComponent.lock()->HasCurrentSprite() ? &spriteComponent.lock()->GetCurrentSprite() : nullptr;

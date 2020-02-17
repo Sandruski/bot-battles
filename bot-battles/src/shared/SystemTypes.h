@@ -35,6 +35,7 @@ enum class SystemType : U16 {
     NAVIGATION,
     COLLISION,
     WEAPON,
+    HEALTH,
 
     INPUT,
 #ifdef _DRAW
