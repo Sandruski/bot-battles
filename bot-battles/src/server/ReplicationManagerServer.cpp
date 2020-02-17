@@ -100,11 +100,13 @@ void ReplicationManagerServer::Write(OutputMemoryStream& outputStream, Replicati
 
             case ReplicationActionType::CREATE: {
                 writtenState = WriteCreateAction(outputStream, networkID, replicationCommand.GetDirtyState());
+                ILOG("SEND CREATE");
                 break;
             }
 
             case ReplicationActionType::UPDATE: {
                 writtenState = WriteUpdateAction(outputStream, networkID, replicationCommand.GetDirtyState());
+                ILOG("SEND UPDATE");
                 break;
             }
 

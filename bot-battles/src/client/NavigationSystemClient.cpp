@@ -93,6 +93,10 @@ bool NavigationSystemClient::Update()
                         ILOG("From trans %u position %f %f, to trans %u position %f %f", clientComponent.m_interpolationFromFrame, fromTransform.m_position.x, fromTransform.m_position.y,
                             clientComponent.m_interpolationToFrame, toTransform.m_position.x, toTransform.m_position.y);
                     }
+
+                    if (clientComponent.m_interpolationPercentage == 1.0f) {
+                        transformComponent.lock()->m_transformBuffer.RemoveFirst();
+                    }
                 }
             }
         }

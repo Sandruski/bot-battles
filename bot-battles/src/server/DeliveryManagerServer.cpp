@@ -43,6 +43,7 @@ void DeliveryManagerServer::ProcessTimedOutPackets()
         if (timeout >= ACK_TIMEOUT) {
             Delivery deliveryCopy = delivery;
             m_deliveries.pop_front();
+            ILOG("Timeout failure");
             HandleDeliveryFailure(deliveryCopy);
         } else {
             break;
@@ -102,6 +103,7 @@ void DeliveryManagerServer::ReadPendingAcks(InputMemoryStream& inputStream)
                 Delivery deliveryCopy = delivery;
                 m_deliveries.pop_front();
                 HandleDeliveryFailure(deliveryCopy);
+                ILOG("Normal failure. Sequence number %u < %u", sequenceNumber, nextAckdSequenceNumber);
             } else {
                 ++nextAckdSequenceNumber;
             }
