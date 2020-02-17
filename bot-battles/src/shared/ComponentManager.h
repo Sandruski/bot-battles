@@ -14,7 +14,7 @@ public:
 
     virtual std::weak_ptr<Component> AddComponent(Entity entity) = 0;
     virtual std::weak_ptr<Component> GetComponent(Entity entity) = 0;
-    virtual std::vector<std::weak_ptr<Component>> GetComponents() = 0;
+    virtual std::vector<std::pair<Entity, std::weak_ptr<Component>>> GetComponents() = 0;
     virtual bool RemoveComponent(Entity entity) = 0;
 
 private:
@@ -29,7 +29,7 @@ public:
 
     std::weak_ptr<Component> AddComponent(Entity entity) override;
     std::weak_ptr<Component> GetComponent(Entity entity) override;
-    std::vector<std::weak_ptr<Component>> GetComponents() override;
+    std::vector<std::pair<Entity, std::weak_ptr<Component>>> GetComponents() override;
     bool RemoveComponent(Entity entity) override;
 
 private:
@@ -102,13 +102,14 @@ inline std::weak_ptr<Component> ComponentArray<T>::GetComponent(Entity entity)
 }
 
 //----------------------------------------------------------------------------------------------------
-template<class T>
-inline std::vector<std::weak_ptr<Component>> ComponentArray<T>::GetComponents()
+template <class T>
+inline std::vector<std::pair<Entity, std::weak_ptr<Component>>> ComponentArray<T>::GetComponents()
 {
-    std::vector<std::weak_ptr<Component>> components;
-    for (U32 i = 0; i < m_componentsSize; ++i)
-    {
-        components.emplace_back(std::weak_ptr<Component>(m_components.at(i)));
+    std::vector<std::pair<Entity, std::weak_ptr<Component>>> components;
+    for (const auto& pair : m_entitiesToComponents) {
+        Entity entity = pair.first;
+        std::shared_ptr<T> component = m_components.at(pair.second);
+        components.emplace_back(std::make_pair(entity, std::weak_ptr<Component>(component)));
     }
     return components;
 }
@@ -163,7 +164,7 @@ public:
     std::weak_ptr<T> GetComponent(Entity entity);
     std::weak_ptr<Component> GetComponent(ComponentType componentType, Entity entity);
     template <class T>
-    std::vector<std::weak_ptr<T>> GetComponents();
+    std::vector<std::pair<Entity, std::weak_ptr<T>>> GetComponents();
     template <class T>
     bool RemoveComponent(Entity entity);
     bool RemoveComponent(ComponentType componentType, Entity entity);
@@ -251,25 +252,27 @@ inline std::weak_ptr<T> ComponentManager::GetComponent(Entity entity)
     std::size_t componentIndex = static_cast<std::size_t>(componentType);
     std::weak_ptr<Component> baseComponent = m_componentArrays.at(componentIndex)->GetComponent(entity);
     std::weak_ptr<T> derivedComponent = std::weak_ptr<T>(std::static_pointer_cast<T>(baseComponent.lock()));
+
     return derivedComponent;
 }
 
 //----------------------------------------------------------------------------------------------------
-template<class T>
-inline std::vector<std::weak_ptr<T>> ComponentManager::GetComponents()
+template <class T>
+inline std::vector<std::pair<Entity, std::weak_ptr<T>>> ComponentManager::GetComponents()
 {
     static_assert(std::is_base_of<Component, T>::value, "T is not derived from Component");
 
     ComponentType componentType = T::GetType();
     assert(componentType < ComponentType::COUNT);
     std::size_t componentIndex = static_cast<std::size_t>(componentType);
-    std::vector<std::weak_ptr<Component>> baseComponents = m_componentArrays.at(componentIndex)->GetComponents();
-    std::vector<std::weak_ptr<T>> derivedComponents;
-    for (const auto& baseComponent : baseComponents)
-    {
-        std::weak_ptr<T> derivedComponent = std::weak_ptr<T>(std::static_pointer_cast<T>(baseComponent.lock()));
-        derivedComponents.emplace_back(derivedComponent);
+    std::vector<std::pair<Entity, std::weak_ptr<Component>>> baseComponents = m_componentArrays.at(componentIndex)->GetComponents();
+    std::vector<std::pair<Entity, std::weak_ptr<T>>> derivedComponents;
+    for (const auto& pair : baseComponents) {
+        Entity entity = pair.first;
+        std::weak_ptr<T> derivedComponent = std::weak_ptr<T>(std::static_pointer_cast<T>(pair.second.lock()));
+        derivedComponents.emplace_back(std::make_pair(entity, derivedComponent));
     }
+
     return derivedComponents;
 }
 

@@ -5,19 +5,19 @@
 
 namespace sand {
 
-    //----------------------------------------------------------------------------------------------------
-    class HealthSystem : public System {
-    public:
-        static SystemType GetType()
-        {
-            return SystemType::HEALTH;
-        }
+//----------------------------------------------------------------------------------------------------
+class HealthSystem : public System, public Subject {
+public:
+    static SystemType GetType()
+    {
+        return SystemType::HEALTH;
+    }
 
-    public:
-        HealthSystem();
+public:
+    HealthSystem();
 
-        bool Update() override;
-    };
+    bool Update() override;
+};
 }
 
 #endif

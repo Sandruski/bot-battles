@@ -68,7 +68,7 @@ bool WeaponSystemClient::Update()
                     WindowComponent& windowComponent = g_gameClient->GetWindowComponent();
                     F32 maxLength = static_cast<F32>(std::max(windowComponent.m_resolution.x, windowComponent.m_resolution.y));
                     weaponComponent.lock()->m_destination = position + rotation * maxLength;
-                    std::weak_ptr<ColliderComponent> intersection;
+                    std::pair<Entity, std::weak_ptr<ColliderComponent>> intersection;
                     const bool hasIntersected = Raycast(position, rotation, maxLength, intersection);
                     if (hasIntersected) {
                         weaponComponent.lock()->m_hasHit = true;

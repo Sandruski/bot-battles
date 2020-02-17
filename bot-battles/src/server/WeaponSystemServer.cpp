@@ -3,6 +3,7 @@
 #include "ClientProxy.h"
 #include "ColliderComponent.h"
 #include "ComponentManager.h"
+#include "ComponentMemberTypes.h"
 #include "DebugDrawer.h"
 #include "GameServer.h"
 #include "HealthComponent.h"
@@ -72,14 +73,20 @@ bool WeaponSystemServer::Update()
                 WindowComponent& windowComponent = g_gameServer->GetWindowComponent();
                 F32 maxLength = static_cast<F32>(std::max(windowComponent.m_resolution.x, windowComponent.m_resolution.y));
                 weaponComponent.lock()->m_destination = position + rotation * maxLength;
-                std::weak_ptr<ColliderComponent> intersection;
+                std::pair<Entity, std::weak_ptr<ColliderComponent>> intersection;
                 const bool hasIntersected = Raycast(position, rotation, maxLength, intersection);
                 if (hasIntersected) {
                     weaponComponent.lock()->m_hasHit = true;
-                    //std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(entity);
-                    //healthComponent.lock()->m_health -= 10;
-                    //ILOG("Health is %u", healthComponent.lock()->m_health);
-                    // TODO: find the health component of the entity hit returned by the raycast
+                    Entity hitEntity = intersection.first;
+                    std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(hitEntity);
+                    healthComponent.lock()->m_health -= 100;
+                    ILOG("Health is %u", healthComponent.lock()->m_health);
+
+                    Event newEvent;
+                    newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
+                    newEvent.component.entity = entity;
+                    newEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::HEALTH_HEALTH);
+                    NotifyEvent(newEvent);
                 } else {
                     weaponComponent.lock()->m_hasHit = false;
                 }

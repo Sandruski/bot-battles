@@ -4,6 +4,7 @@
 #include "ConfigServer.h"
 #include "EntityManager.h"
 #include "FSM.h"
+#include "HealthSystem.h"
 #include "InputSystemServer.h"
 #include "LinkingContext.h"
 #include "NavigationSystemServer.h"
@@ -12,7 +13,6 @@
 #include "SpawnerSystem.h"
 #include "SystemManager.h"
 #include "WeaponSystemServer.h"
-#include "HealthSystem.h"
 
 namespace sand {
 
@@ -79,6 +79,16 @@ bool GameServer::Init()
     }
     std::weak_ptr<NavigationSystemServer> navigationSystemServer = m_systemManager->GetSystem<NavigationSystemServer>();
     ret = navigationSystemServer.lock()->AddObserver(serverSystem);
+    if (!ret) {
+        return ret;
+    }
+    std::weak_ptr<WeaponSystemServer> weaponSystemServer = m_systemManager->GetSystem<WeaponSystemServer>();
+    ret = weaponSystemServer.lock()->AddObserver(serverSystem);
+    if (!ret) {
+        return ret;
+    }
+    std::weak_ptr<HealthSystem> healthSystem = m_systemManager->GetSystem<HealthSystem>();
+    ret = healthSystem.lock()->AddObserver(serverSystem);
     if (!ret) {
         return ret;
     }

@@ -26,10 +26,12 @@ enum class ComponentMemberType : U32 {
     HEALTH_HEALTH = 1 << 5,
 
 #ifdef _DRAW
-    SPRITE_FILE = 1 << 6,
-    SPRITE_SPRITES = 1 << 7,
-    SPRITE_CURRENT_SPRITE = 1 << 8,
-    TEXT_STUFF = 1 << 9,
+    SPRITE_ENABLED = 1 << 6,
+    SPRITE_FILE = 1 << 7,
+    SPRITE_SPRITES = 1 << 8,
+    SPRITE_CURRENT_SPRITE = 1 << 9,
+
+    TEXT_STUFF = 1 << 10,
 #endif
 
     COUNT,

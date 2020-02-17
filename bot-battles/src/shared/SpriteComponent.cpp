@@ -18,6 +18,9 @@ SpriteComponent::SpriteComponent()
 //----------------------------------------------------------------------------------------------------
 void SpriteComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U32 /*frame*/, ReplicationActionType /*replicationActionType*/, Entity /*entity*/)
 {
+    if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_ENABLED)) {
+        inputStream.Read(m_isEnabled);
+    }
     if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_FILE)) {
         std::string file;
         inputStream.Read(file);
@@ -36,6 +39,10 @@ U32 SpriteComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) con
 {
     U32 writtenState = 0;
 
+    if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_ENABLED)) {
+        outputStream.Write(m_isEnabled);
+        writtenState |= static_cast<U32>(ComponentMemberType::SPRITE_ENABLED);
+    }
     if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_FILE)) {
         std::string file = m_spriteResource.lock()->GetFile();
         outputStream.Write(file);
