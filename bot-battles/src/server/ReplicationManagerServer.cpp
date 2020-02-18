@@ -145,10 +145,14 @@ U32 ReplicationManagerServer::WriteUpdateAction(OutputMemoryStream& outputStream
 {
     U32 writtenState = 0;
 
+    ILOG("NetworkID is %u", networkID);
     Entity entity = g_gameServer->GetLinkingContext().GetEntity(networkID);
+    ILOG("Entity is %u", entity);
     Signature signature = g_gameServer->GetEntityManager().GetSignature(entity);
     outputStream.Write(signature);
+    ILOG("Sent signature is %u", signature);
     outputStream.Write(dirtyState);
+    ILOG("Sent dirty state is %u", dirtyState);
 
     for (U16 i = 0; i < MAX_COMPONENTS; ++i) {
 

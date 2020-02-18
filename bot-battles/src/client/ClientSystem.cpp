@@ -107,7 +107,7 @@ void ClientSystem::ReceiveWelcomePacket(ClientComponent& clientComponent, InputM
 {
     const bool isConnected = clientComponent.IsConnected();
     if (isConnected) {
-        ILOG("Welcome packet received but skipped");
+        ILOG("Welcome packet received but skipped because Player is already connected");
         return;
     }
 
@@ -132,9 +132,14 @@ void ClientSystem::ReceiveWelcomePacket(ClientComponent& clientComponent, InputM
 void ClientSystem::ReceiveStatePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream) const
 {
     const bool isConnected = clientComponent.IsConnected();
+    if (!isConnected) {
+        ILOG("State packet received but skipped because Player is not connected");
+        return;
+    }
+
     const bool isValid = clientComponent.m_deliveryManager.ReadState(inputStream);
-    if (!isConnected || !isValid) {
-        ILOG("State packet received but skipped");
+    if (!isValid) {
+        ILOG("State packet received but skipped because it is not valid");
         return;
     }
 
@@ -169,6 +174,12 @@ bool ClientSystem::SendHelloPacket(const ClientComponent& clientComponent) const
 //----------------------------------------------------------------------------------------------------
 bool ClientSystem::SendInputPacket(ClientComponent& clientComponent) const
 {
+    const bool hasEntity = clientComponent.m_entity < INVALID_ENTITY;
+    if (!hasEntity) {
+        ILOG("Input packet not sent because entity is not created");
+        return false;
+    }
+
     OutputMemoryStream inputPacket;
     inputPacket.Write(ClientMessageType::INPUT);
     inputPacket.Write(clientComponent.m_playerID);

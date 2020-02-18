@@ -113,6 +113,7 @@ void ReplicationManagerClient::ReadUpdateAction(InputMemoryStream& inputStream, 
 
     Signature newSignature = 0;
     inputStream.Read(newSignature);
+    ILOG("New signature is %u", newSignature);
     U32 dirtyState = 0;
     inputStream.Read(dirtyState);
     ILOG("Dirty state received %u", dirtyState);
@@ -133,8 +134,7 @@ void ReplicationManagerClient::ReadUpdateAction(InputMemoryStream& inputStream, 
             std::weak_ptr<Component> component = g_gameClient->GetComponentManager().AddComponent(static_cast<ComponentType>(i), entity);
             std::dynamic_pointer_cast<NetworkableReadObject>(component.lock())->Read(inputStream, dirtyState, frame, ReplicationActionType::CREATE, entity);
             ILOG("New component %u created", i);
-        }
-        else {
+        } else {
             ILOG("Fucked component %u", i);
         }
     }

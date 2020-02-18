@@ -201,6 +201,7 @@ void ServerSystem::ReceiveInputPacket(ServerComponent& serverComponent, InputMem
 
     const bool isValid = clientProxy.lock()->m_deliveryManager.ReadState(inputStream);
     if (!isValid) {
+        ILOG("Input packet received but skipped because it is not valid");
         return;
     }
 

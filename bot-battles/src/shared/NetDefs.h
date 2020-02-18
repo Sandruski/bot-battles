@@ -41,7 +41,7 @@ const F32 ENTITY_INTERPOLATION_PERIOD = 1.0f / FPS_SERVER; // TODO: *2? https://
 const F32 TIME_BETWEEN_MOVE = 0.0f;
 #elif defined(_SERVER)
 const F32 ACK_TIMEOUT = 5.0f; // 0.5f
-const F32 DISCONNECT_TIMEOUT = 10.0f; //5.0f
+const F32 DISCONNECT_TIMEOUT = 25.0f; //5.0f
 #endif
 }
 

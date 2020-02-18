@@ -63,6 +63,7 @@ void ReplicationResultManager::HandleDeliveryFailure(const DeliveryManagerServer
         ReplicationCommand replicationCommand = pair.second;
         switch (replicationCommand.m_replicationActionType) {
         case ReplicationActionType::CREATE: {
+            ILOG("Create delivery failure for networkID %u", networkID);
             HandleCreateDeliveryFailure(networkID);
             break;
         }
