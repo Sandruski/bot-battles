@@ -109,11 +109,13 @@ void ReplicationManagerClient::ReadUpdateAction(InputMemoryStream& inputStream, 
 {
     Entity entity = g_gameClient->GetLinkingContext().GetEntity(networkID);
     Signature signature = g_gameClient->GetEntityManager().GetSignature(entity);
+    ILOG("Signature is %u", signature);
 
     Signature newSignature = 0;
     inputStream.Read(newSignature);
     U32 dirtyState = 0;
     inputStream.Read(dirtyState);
+    ILOG("Dirty state received %u", dirtyState);
 
     for (U16 i = 0; i < MAX_COMPONENTS; ++i) {
 
@@ -123,11 +125,17 @@ void ReplicationManagerClient::ReadUpdateAction(InputMemoryStream& inputStream, 
         if (hasSignatureComponent && hasNewSignatureComponent) {
             std::weak_ptr<Component> component = g_gameClient->GetComponentManager().GetComponent(static_cast<ComponentType>(i), entity);
             std::dynamic_pointer_cast<NetworkableReadObject>(component.lock())->Read(inputStream, dirtyState, frame, ReplicationActionType::UPDATE, entity);
+            ILOG("Update component %u", i);
         } else if (hasSignatureComponent) {
             g_gameClient->GetComponentManager().RemoveComponent(static_cast<ComponentType>(i), entity);
+            ILOG("Remove component %u", i);
         } else if (hasNewSignatureComponent) {
             std::weak_ptr<Component> component = g_gameClient->GetComponentManager().AddComponent(static_cast<ComponentType>(i), entity);
             std::dynamic_pointer_cast<NetworkableReadObject>(component.lock())->Read(inputStream, dirtyState, frame, ReplicationActionType::CREATE, entity);
+            ILOG("New component %u created", i);
+        }
+        else {
+            ILOG("Fucked component %u", i);
         }
     }
 }

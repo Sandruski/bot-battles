@@ -98,6 +98,7 @@ void ReplicationResultManager::HandleCreateDeliverySuccess(NetworkID networkID) 
     if (entity != INVALID_ENTITY) {
         m_replicationManager.lock()->SetUpdate(networkID);
     }
+    ILOG("Create delivery success for networkID %u", networkID);
 }
 
 //----------------------------------------------------------------------------------------------------

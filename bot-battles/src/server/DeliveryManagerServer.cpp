@@ -91,13 +91,17 @@ void DeliveryManagerServer::ReadPendingAcks(InputMemoryStream& inputStream)
         ackRange.Read(inputStream);
 
         SequenceNumber nextAckdSequenceNumber = ackRange.GetStartSequenceNumber();
+        ILOG("Next ackd sequence number is %u", nextAckdSequenceNumber);
         SequenceNumber lastAckdSequenceNumber = nextAckdSequenceNumber + static_cast<SequenceNumber>(ackRange.GetCount()) - 1;
+        ILOG("Count is %u", ackRange.GetCount());
+        ILOG("Last ackd sequence number is %u", lastAckdSequenceNumber);
         while (nextAckdSequenceNumber <= lastAckdSequenceNumber && !m_deliveries.empty()) {
             const Delivery& delivery = m_deliveries.front();
             SequenceNumber sequenceNumber = delivery.GetSequenceNumber();
             if (sequenceNumber == nextAckdSequenceNumber) {
                 HandleDeliverySuccess(delivery);
                 m_deliveries.pop_front();
+                ILOG("Delivery success because sequenceNumber %u == %u nextAckdSequenceNumber", sequenceNumber, nextAckdSequenceNumber);
                 ++nextAckdSequenceNumber;
             } else if (sequenceNumber < nextAckdSequenceNumber) {
                 Delivery deliveryCopy = delivery;

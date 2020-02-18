@@ -61,6 +61,7 @@ void ReplicationManagerServer::SetUpdate(NetworkID networkID)
     ReplicationCommand& replicationCommand = m_networkIDToReplicationCommand.at(networkID);
     if (replicationCommand.m_replicationActionType != ReplicationActionType::REMOVE) {
         replicationCommand.m_replicationActionType = ReplicationActionType::UPDATE;
+        ILOG("UPDATE SET");
     }
 }
 
@@ -100,7 +101,7 @@ void ReplicationManagerServer::Write(OutputMemoryStream& outputStream, Replicati
 
             case ReplicationActionType::CREATE: {
                 writtenState = WriteCreateAction(outputStream, networkID, replicationCommand.GetDirtyState());
-                ILOG("SEND CREATE");
+                ILOG("SEND CREATE of %u dirty state", replicationCommand.GetDirtyState());
                 break;
             }
 
