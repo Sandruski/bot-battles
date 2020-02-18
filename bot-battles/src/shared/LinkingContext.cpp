@@ -39,7 +39,7 @@ NetworkID LinkingContext::AddEntity(Entity entity, NetworkID networkID)
     Event newEvent;
     newEvent.eventType = EventType::NETWORK_ENTITY_ADDED;
     newEvent.networking.networkID = newNetworkID;
-    PushEvent(newEvent);
+    NotifyEvent(newEvent);
 
     return newNetworkID;
 }
@@ -61,7 +61,7 @@ bool LinkingContext::RemoveEntity(Entity entity)
     Event newEvent;
     newEvent.eventType = EventType::NETWORK_ENTITY_REMOVED;
     newEvent.networking.networkID = networkID;
-    PushEvent(newEvent);
+    NotifyEvent(newEvent);
 
     return true;
 }

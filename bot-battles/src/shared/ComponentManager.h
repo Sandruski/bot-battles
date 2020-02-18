@@ -234,7 +234,7 @@ inline std::weak_ptr<T> ComponentManager::AddComponent(Entity entity)
         newEvent.eventType = EventType::COMPONENT_ADDED;
         newEvent.component.componentType = T::GetType();
         newEvent.component.entity = entity;
-        PushEvent(newEvent);
+        NotifyEvent(newEvent);
     }
 
     return derivedComponent;

@@ -66,7 +66,7 @@ Entity EntityManager::AddEntity()
     Event newEvent;
     newEvent.eventType = EventType::ENTITY_ADDED;
     newEvent.entity.entity = entity;
-    PushEvent(newEvent);
+    NotifyEvent(newEvent);
 
     return entity;
 }
@@ -150,7 +150,7 @@ void EntityManager::OnComponentAdded(ComponentType componentType, Entity entity)
     newEvent.eventType = EventType::ENTITY_SIGNATURE_CHANGED;
     newEvent.entity.entity = entity;
     newEvent.entity.signature = signature;
-    PushEvent(newEvent);
+    NotifyEvent(newEvent);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -166,6 +166,6 @@ void EntityManager::OnComponentRemoved(ComponentType componentType, Entity entit
     newEvent.eventType = EventType::ENTITY_SIGNATURE_CHANGED;
     newEvent.entity.entity = entity;
     newEvent.entity.signature = signature;
-    PushEvent(newEvent);
+    NotifyEvent(newEvent);
 }
 }

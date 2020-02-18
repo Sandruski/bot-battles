@@ -136,6 +136,7 @@ void ReplicationManagerClient::ReadUpdateAction(InputMemoryStream& inputStream, 
             ILOG("New component %u created", i);
         } else {
             ILOG("Fucked component %u", i);
+            assert(false);
         }
     }
 }

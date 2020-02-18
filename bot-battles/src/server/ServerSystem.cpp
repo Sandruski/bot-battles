@@ -104,7 +104,6 @@ void ServerSystem::SendOutgoingPackets(ServerComponent& serverComponent)
     for (const auto& pair : playerIDToClientProxy) {
 
         std::shared_ptr<ClientProxy> clientProxy = pair.second;
-
         F32 timeout = Time::GetInstance().GetTime() - clientProxy->GetLastPacketTime();
         if (timeout >= DISCONNECT_TIMEOUT) {
             playerIDToClientProxyDisconnections.insert(std::make_pair(pair.first, std::weak_ptr(pair.second)));
@@ -113,7 +112,8 @@ void ServerSystem::SendOutgoingPackets(ServerComponent& serverComponent)
 
         clientProxy->m_deliveryManager.ProcessTimedOutPackets();
 
-        SendStatePacket(serverComponent, clientProxy);
+        PlayerID playerID = pair.first;
+        SendStatePacket(serverComponent, playerID, clientProxy);
     }
 
     for (const auto& pair : playerIDToClientProxyDisconnections) {
@@ -176,7 +176,7 @@ void ServerSystem::ReceiveHelloPacket(ServerComponent& serverComponent, InputMem
             Event newEvent;
             newEvent.eventType = EventType::PLAYER_ADDED;
             newEvent.networking.playerID = playerID;
-            PushEvent(newEvent);
+            NotifyEvent(newEvent);
 
             ILOG("New player %s %u has joined the game", name.c_str(), playerID);
         }
@@ -250,8 +250,14 @@ void ServerSystem::SendWelcomePacket(const ServerComponent& serverComponent, Pla
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerSystem::SendStatePacket(const ServerComponent& serverComponent, std::shared_ptr<ClientProxy> clientProxy) const
+void ServerSystem::SendStatePacket(const ServerComponent& serverComponent, PlayerID playerID, std::shared_ptr<ClientProxy> clientProxy) const
 {
+    const bool hasEntity = serverComponent.GetEntity(playerID) < INVALID_ENTITY;
+    if (!hasEntity) {
+        ILOG("State packet not sent because entity is not created");
+        return;
+    }
+
     OutputMemoryStream statePacket;
     statePacket.Write(ServerMessageType::STATE);
 
@@ -296,7 +302,7 @@ void ServerSystem::Disconnect(ServerComponent& serverComponent, PlayerID playerI
     Event newEvent;
     newEvent.eventType = EventType::PLAYER_REMOVED;
     newEvent.networking.entity = entity;
-    PushEvent(newEvent);
+    NotifyEvent(newEvent);
 }
 
 //----------------------------------------------------------------------------------------------------

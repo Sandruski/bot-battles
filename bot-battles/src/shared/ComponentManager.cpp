@@ -50,7 +50,7 @@ std::weak_ptr<Component> ComponentManager::AddComponent(ComponentType componentT
         newEvent.eventType = EventType::COMPONENT_ADDED;
         newEvent.component.componentType = componentType;
         newEvent.component.entity = entity;
-        PushEvent(newEvent);
+        NotifyEvent(newEvent);
     }
 
     return component;

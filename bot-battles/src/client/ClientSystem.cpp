@@ -122,7 +122,7 @@ void ClientSystem::ReceiveWelcomePacket(ClientComponent& clientComponent, InputM
         Event newEvent;
         newEvent.eventType = EventType::PLAYER_ADDED;
         newEvent.networking.playerID = clientComponent.m_playerID;
-        PushEvent(newEvent);
+        NotifyEvent(newEvent);
 
         ILOG("Player %s %u has joined the game", clientComponent.m_name.c_str(), clientComponent.m_playerID);
     }
@@ -236,7 +236,7 @@ void ClientSystem::Disconnect(ClientComponent& clientComponent)
     Event newEvent;
     newEvent.eventType = EventType::PLAYER_REMOVED;
     newEvent.networking.entity = clientComponent.m_entity;
-    PushEvent(newEvent);
+    NotifyEvent(newEvent);
 
     // TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     clientComponent.m_entity = INVALID_ENTITY;
