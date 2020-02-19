@@ -35,7 +35,7 @@ bool WeaponSystemClient::Update()
 
         const bool isLocalPlayer = clientComponent.IsLocalPlayer(entity);
         if (isLocalPlayer) {
-            if (clientComponent.m_isLastMovePending) {
+            if (clientComponent.m_isLastInputWeaponPending) {
                 const Input& input = clientComponent.m_inputBuffer.GetLast();
                 const InputComponent& inputComponent = input.GetInputComponent();
 
@@ -76,6 +76,8 @@ bool WeaponSystemClient::Update()
                         weaponComponent.lock()->m_hasHit = false;
                     }
                 }
+
+                clientComponent.m_isLastInputWeaponPending = false;
             }
 
             break;

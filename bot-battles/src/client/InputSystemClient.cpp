@@ -20,14 +20,17 @@ bool InputSystemClient::Update()
         if (keyboardState[i] == SDL_KEY_PRESSED) {
             if (m_keyboard[i] == KeyState::IDLE) {
                 m_keyboard[i] = KeyState::DOWN;
-            } else {
+            }
+            else {
                 m_keyboard[i] = KeyState::REPEAT;
             }
-        } else {
+        }
+        else {
             if (m_keyboard[i] == KeyState::DOWN
                 || m_keyboard[i] == KeyState::REPEAT) {
                 m_keyboard[i] = KeyState::UP;
-            } else {
+            }
+            else {
                 m_keyboard[i] = KeyState::IDLE;
             }
         }
@@ -64,27 +67,31 @@ bool InputSystemClient::Update()
         inputComponent.m_isShooting = true;
     }
 
-    clientComponent.m_isLastMovePending = false; // TODO: do this elsewhere
     if (!clientComponent.m_inputBuffer.IsFull()) {
         U32 dirtyState = 0;
 
-        if (inputComponent.m_acceleration.x != 0.0f || inputComponent.m_acceleration.y != 0.0f) {
-            dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_ACCELERATION);
-        }
+        if (!clientComponent.m_isLastInputTransformPending && !clientComponent.m_isLastInputWeaponPending)
+        {
+            if (inputComponent.m_acceleration.x != 0.0f || inputComponent.m_acceleration.y != 0.0f) {
+                dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_ACCELERATION);
+                clientComponent.m_isLastInputTransformPending = true;
+            }
 
-        if (inputComponent.m_angularAcceleration != 0.0f) {
-            dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_ACCELERATION);
-        }
+            if (inputComponent.m_angularAcceleration != 0.0f) {
+                dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_ACCELERATION);
+                clientComponent.m_isLastInputTransformPending = true;
+            }
 
-        if (inputComponent.m_isShooting) {
-            dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_SHOOTING);
+            if (inputComponent.m_isShooting) {
+                dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_SHOOTING);
+                clientComponent.m_isLastInputWeaponPending = true;
+            }
         }
 
         if (dirtyState != 0) {
             Input input = Input(inputComponent, dirtyState, 1.0f, clientComponent.m_inputBuffer.m_back);
             ILOG("NEW FRAME %u", clientComponent.m_inputBuffer.m_back);
             clientComponent.m_inputBuffer.Add(input);
-            clientComponent.m_isLastMovePending = true;
         }
     }
 

@@ -45,7 +45,8 @@ struct ClientComponent : public Component {
     CircularBuffer<Frame, MAX_FRAMES> m_frameBuffer;
 
     CircularBuffer<Input, MAX_FRAMES> m_inputBuffer;
-    bool m_isLastMovePending;
+    bool m_isLastInputTransformPending;
+    bool m_isLastInputWeaponPending;
 
     F32 m_RTT;
 

@@ -47,7 +47,7 @@ bool NavigationSystemClient::Update()
         const bool isLocalPlayer = clientComponent.IsLocalPlayer(entity);
         if (isLocalPlayer) {
             if (clientComponent.m_isClientPrediction) {
-                if (clientComponent.m_isLastMovePending) {
+                if (clientComponent.m_isLastInputTransformPending) {
                     Input& input = clientComponent.m_inputBuffer.GetLast();
                     input.m_interpolationFromFrame = clientComponent.m_interpolationFromFrame;
                     input.m_interpolationToFrame = clientComponent.m_interpolationToFrame;
@@ -60,6 +60,8 @@ bool NavigationSystemClient::Update()
                     transformComponent.lock()->UpdateTransform(inputComponent.m_acceleration, inputComponent.m_angularAcceleration, dt);
                     Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, input.GetFrame());
                     transformComponent.lock()->m_inputTransformBuffer.Add(transform);
+
+                    clientComponent.m_isLastInputTransformPending = false;
                 }
             }
         } else {
