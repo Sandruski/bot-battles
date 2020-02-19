@@ -19,6 +19,11 @@ void ServerSystem::OnNotify(const Event& event)
 {
     switch (event.eventType) {
 
+    case EventType::PLAYER_ADDED: {
+        OnPlayerAdded(event.networking.playerID);
+        break;
+    }
+
     case EventType::NETWORK_ENTITY_ADDED: {
         OnNetworkEntityAdded(event.networking.networkID);
         break;
@@ -162,29 +167,25 @@ void ServerSystem::ReceivePacket(ServerComponent& serverComponent, InputMemorySt
 void ServerSystem::ReceiveHelloPacket(ServerComponent& serverComponent, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress, PlayerID& playerID)
 {
     playerID = serverComponent.GetPlayerID(fromSocketAddress);
-    if (playerID >= INVALID_PLAYER_ID) {
-        std::string name;
-        inputStream.Read(name);
-        ILOG("Hello packet received from new player %s", name.c_str());
-
-        playerID = serverComponent.AddPlayer(fromSocketAddress, name.c_str());
-        if (playerID < INVALID_PLAYER_ID) {
-            std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
-            const std::unordered_map<NetworkID, Entity>& networkIDToEntity = g_gameServer->GetLinkingContext().GetNetworkIDToEntityMap();
-            for (const auto& pair : networkIDToEntity) {
-                clientProxy.lock()->m_replicationManager->AddCommand(pair.first, static_cast<U32>(ComponentMemberType::ALL));
-            }
-
-            Event newEvent;
-            newEvent.eventType = EventType::PLAYER_ADDED;
-            newEvent.networking.playerID = playerID;
-            NotifyEvent(newEvent);
-
-            ILOG("New player %s %u has joined the game", name.c_str(), playerID);
-        }
-    } else {
+    if (playerID < INVALID_PLAYER_ID) {
         std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
-        ILOG("Hello packet received from existing player %s", clientProxy.lock()->GetName());
+        ILOG("Hello packet received from existing player %u %s", playerID, clientProxy.lock()->GetName());
+        return;
+    }
+
+    std::string name;
+    inputStream.Read(name);
+
+    ILOG("Hello packet received from new player %s", name.c_str());
+
+    playerID = serverComponent.AddPlayer(fromSocketAddress, name.c_str());
+    if (playerID < INVALID_PLAYER_ID) {
+        Event newEvent;
+        newEvent.eventType = EventType::PLAYER_ADDED;
+        newEvent.networking.playerID = playerID;
+        NotifyEvent(newEvent);
+
+        ILOG("New player %u %s has joined the game", playerID, name.c_str());
     }
 }
 
@@ -192,13 +193,12 @@ void ServerSystem::ReceiveHelloPacket(ServerComponent& serverComponent, InputMem
 void ServerSystem::ReceiveInputPacket(ServerComponent& serverComponent, InputMemoryStream& inputStream, PlayerID& playerID) const
 {
     inputStream.Read(playerID);
-    std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
-    if (clientProxy.expired()) {
+    if (playerID >= INVALID_PLAYER_ID) {
         ILOG("Input packet received from unknown player");
-        playerID = INVALID_PLAYER_ID;
         return;
     }
 
+    std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
     const bool isValid = clientProxy.lock()->m_deliveryManager.ReadState(inputStream);
     if (!isValid) {
         ILOG("Input packet received but skipped because it is not valid");
@@ -208,8 +208,6 @@ void ServerSystem::ReceiveInputPacket(ServerComponent& serverComponent, InputMem
     ILOG("Input packet received from player %u %s", playerID, clientProxy.lock()->GetName());
 
     inputStream.Read(clientProxy.lock()->m_timestamp);
-
-    // TODO: should we have individual frames for Input packets or just send a single frame for the last Input sent?
 
     bool hasInputs = false;
     inputStream.Read(hasInputs);
@@ -222,12 +220,11 @@ void ServerSystem::ReceiveInputPacket(ServerComponent& serverComponent, InputMem
             if (input.GetFrame() > clientProxy.lock()->m_lastAckdFrame) { // TODO: be careful if new frame is 15 and last frame is 13 and frame 14 contains a shoot for example
                 clientProxy.lock()->m_inputBuffer.Add(input);
                 clientProxy.lock()->m_lastAckdFrame = input.GetFrame();
+                ILOG("Server received ackd frame %u", clientProxy.lock()->m_lastAckdFrame);
             }
             --inputCount;
         }
     }
-
-    ILOG("Server received ackd frame %u", clientProxy.lock()->m_lastAckdFrame);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -303,6 +300,19 @@ void ServerSystem::Disconnect(ServerComponent& serverComponent, PlayerID playerI
     newEvent.eventType = EventType::PLAYER_REMOVED;
     newEvent.networking.entity = entity;
     NotifyEvent(newEvent);
+}
+
+//----------------------------------------------------------------------------------------------------
+void ServerSystem::OnPlayerAdded(PlayerID playerID) const
+{
+    assert(playerID < INVALID_PLAYER_ID);
+
+    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
+    std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
+    const std::unordered_map<NetworkID, Entity>& networkIDToEntity = g_gameServer->GetLinkingContext().GetNetworkIDToEntityMap();
+    for (const auto& pair : networkIDToEntity) {
+        clientProxy.lock()->m_replicationManager->AddCommand(pair.first, static_cast<U32>(ComponentMemberType::ALL));
+    }
 }
 
 //----------------------------------------------------------------------------------------------------
