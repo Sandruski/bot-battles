@@ -38,7 +38,7 @@ bool CollisionSystemClient::DebugRender()
         std::weak_ptr<ColliderComponent> colliderComponent = g_gameClient->GetComponentManager().GetComponent<ColliderComponent>(entity);
         DebugDrawer::DrawQuad(colliderComponent.lock()->GetRect(), Green, false);
 
-        if (g_gameClient->GetLinkingContext().GetNetworkID(entity) == INVALID_NETWORK_ID) {
+        if (g_gameClient->GetLinkingContext().GetNetworkID(entity) >= INVALID_NETWORK_ID) {
             continue;
         }
 

@@ -90,7 +90,7 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream) const
 void ReplicationManagerClient::ReadCreateAction(InputMemoryStream& inputStream, NetworkID networkID, U32 frame) const
 {
     Entity entity = g_gameClient->GetLinkingContext().GetEntity(networkID);
-    if (entity == INVALID_ENTITY) {
+    if (entity >= INVALID_ENTITY) {
         entity = g_gameClient->GetEntityManager().AddEntity();
         g_gameClient->GetLinkingContext().AddEntity(entity, networkID);
     }
@@ -146,7 +146,7 @@ void ReplicationManagerClient::ReadUpdateAction(InputMemoryStream& inputStream, 
 void ReplicationManagerClient::ReadRemoveAction(NetworkID networkID) const
 {
     Entity entity = g_gameClient->GetLinkingContext().GetEntity(networkID);
-    if (entity == INVALID_ENTITY) {
+    if (entity >= INVALID_ENTITY) {
         return;
     }
 

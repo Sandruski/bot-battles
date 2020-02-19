@@ -28,7 +28,7 @@ NetworkID LinkingContext::AddEntity(Entity entity, NetworkID networkID)
     }
 
     NetworkID newNetworkID = networkID;
-    if (newNetworkID == INVALID_NETWORK_ID) {
+    if (newNetworkID >= INVALID_NETWORK_ID) {
         newNetworkID = m_availableNetworkIDs.front();
         m_availableNetworkIDs.pop();
     }
@@ -48,7 +48,7 @@ NetworkID LinkingContext::AddEntity(Entity entity, NetworkID networkID)
 bool LinkingContext::RemoveEntity(Entity entity)
 {
     NetworkID networkID = GetNetworkID(entity);
-    if (networkID == INVALID_NETWORK_ID) {
+    if (networkID >= INVALID_NETWORK_ID) {
         WLOG("Entity %u does not exist", entity);
         return false;
     }

@@ -162,7 +162,7 @@ void ServerSystem::ReceivePacket(ServerComponent& serverComponent, InputMemorySt
 void ServerSystem::ReceiveHelloPacket(ServerComponent& serverComponent, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress, PlayerID& playerID)
 {
     playerID = serverComponent.GetPlayerID(fromSocketAddress);
-    if (playerID == INVALID_PLAYER_ID) {
+    if (playerID >= INVALID_PLAYER_ID) {
         std::string name;
         inputStream.Read(name);
         ILOG("Hello packet received from new player %s", name.c_str());
@@ -335,7 +335,7 @@ void ServerSystem::OnComponentMemberChanged(U32 dirtyState, Entity entity) const
     assert(entity < INVALID_ENTITY);
 
     NetworkID networkID = g_gameServer->GetLinkingContext().GetNetworkID(entity);
-    if (networkID == INVALID_NETWORK_ID) {
+    if (networkID >= INVALID_NETWORK_ID) {
         return;
     }
 

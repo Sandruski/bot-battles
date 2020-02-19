@@ -39,7 +39,7 @@ bool CollisionSystemServer::DebugRender()
         DebugDrawer::DrawQuad(colliderComponent.lock()->GetRect(), Green, false);
 
         PlayerID playerID = serverComponent.GetPlayerID(entity);
-        if (playerID == INVALID_PLAYER_ID) {
+        if (playerID >= INVALID_PLAYER_ID) {
             continue;
         }
 

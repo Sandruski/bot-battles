@@ -25,7 +25,7 @@ bool NavigationSystemServer::Update()
 
     for (auto& entity : m_entities) {
         PlayerID playerID = serverComponent.GetPlayerID(entity);
-        if (playerID == INVALID_PLAYER_ID) {
+        if (playerID >= INVALID_PLAYER_ID) {
             continue;
         }
 

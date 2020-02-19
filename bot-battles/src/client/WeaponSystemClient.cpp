@@ -29,7 +29,7 @@ bool WeaponSystemClient::Update()
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
 
     for (auto& entity : m_entities) {
-        if (g_gameClient->GetLinkingContext().GetNetworkID(entity) == INVALID_NETWORK_ID) {
+        if (g_gameClient->GetLinkingContext().GetNetworkID(entity) >= INVALID_NETWORK_ID) {
             continue;
         }
 
@@ -93,7 +93,7 @@ bool WeaponSystemClient::DebugRender()
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
 
     for (auto& entity : m_entities) {
-        if (g_gameClient->GetLinkingContext().GetNetworkID(entity) == INVALID_NETWORK_ID) {
+        if (g_gameClient->GetLinkingContext().GetNetworkID(entity) >= INVALID_NETWORK_ID) {
             continue;
         }
 

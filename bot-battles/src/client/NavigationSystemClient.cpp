@@ -40,7 +40,7 @@ bool NavigationSystemClient::Update()
     }
 
     for (auto& entity : m_entities) {
-        if (g_gameClient->GetLinkingContext().GetNetworkID(entity) == INVALID_NETWORK_ID) {
+        if (g_gameClient->GetLinkingContext().GetNetworkID(entity) >= INVALID_NETWORK_ID) {
             continue;
         }
 

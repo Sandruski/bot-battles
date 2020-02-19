@@ -83,7 +83,7 @@ bool ServerComponent::AddEntity(Entity entity, PlayerID playerID)
 //----------------------------------------------------------------------------------------------------
 bool ServerComponent::RemoveEntity(Entity entity)
 {
-    if (GetPlayerID(entity) == INVALID_PLAYER_ID) {
+    if (GetPlayerID(entity) >= INVALID_PLAYER_ID) {
         WLOG("Entity %u could not be removed", entity);
         return false;
     }
