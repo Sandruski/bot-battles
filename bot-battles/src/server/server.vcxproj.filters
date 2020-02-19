@@ -42,9 +42,6 @@
     <ClCompile Include="ClientProxy.cpp">
       <Filter>Source Files\Networking</Filter>
     </ClCompile>
-    <ClCompile Include="SpawnerSystem.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
     <ClCompile Include="ReplicationManagerServer.cpp">
       <Filter>Source Files\Networking</Filter>
     </ClCompile>
@@ -90,16 +87,13 @@
     <ClCompile Include="TransformComponentServer.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
+    <ClCompile Include="SpawnerSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ServerSystem.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
     <ClInclude Include="ClientProxy.h">
       <Filter>Header Files\Networking</Filter>
-    </ClInclude>
-    <ClInclude Include="SpawnerSystem.h">
-      <Filter>Header Files\Systems</Filter>
     </ClInclude>
     <ClInclude Include="ReplicationManagerServer.h">
       <Filter>Header Files\Networking</Filter>
@@ -135,6 +129,12 @@
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
     <ClInclude Include="HealthSystem.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerSystem.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="SpawnerSystem.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
   </ItemGroup>

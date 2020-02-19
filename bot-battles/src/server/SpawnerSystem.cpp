@@ -41,7 +41,7 @@ void SpawnerSystem::OnNotify(const Event& event)
 }
 
 //----------------------------------------------------------------------------------------------------
-Entity SpawnerSystem::SpawnPlayerEntity(U32 number, const std::string& name) const
+Entity SpawnerSystem::Spawn(U32 number, const std::string& name) const
 {
     Entity character = g_gameServer->GetEntityManager().AddEntity();
     g_gameServer->GetLinkingContext().AddEntity(character);
@@ -107,22 +107,28 @@ Entity SpawnerSystem::SpawnPlayerEntity(U32 number, const std::string& name) con
 }
 
 //----------------------------------------------------------------------------------------------------
+void SpawnerSystem::Despawn(Entity entity) const
+{
+    g_gameServer->GetLinkingContext().RemoveEntity(entity);
+    g_gameServer->GetEntityManager().RemoveEntity(entity);
+}
+
+//----------------------------------------------------------------------------------------------------
 void SpawnerSystem::OnPlayerAdded(PlayerID playerID) const
 {
+    U32 playerNumber = playerID + 1;
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
-    U32 playerNumber = playerID + 1;
     const std::string playerName = clientProxy.lock()->GetName();
-    Entity entity = SpawnPlayerEntity(playerNumber, playerName);
+    Entity entity = Spawn(playerNumber, playerName);
     serverComponent.AddEntity(entity, playerID);
 }
 
 //----------------------------------------------------------------------------------------------------
 void SpawnerSystem::OnPlayerRemoved(Entity entity) const
 {
+    Despawn(entity);
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
-    g_gameServer->GetLinkingContext().RemoveEntity(entity);
-    g_game->GetEntityManager().RemoveEntity(entity);
     serverComponent.RemoveEntity(entity);
 }
 }

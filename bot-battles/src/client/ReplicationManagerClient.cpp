@@ -46,6 +46,7 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream) const
 
         case ReplicationActionType::REMOVE: {
             ReadRemoveAction(networkID);
+            ILOG("REMOVE RECEIVED");
             break;
         }
 
@@ -151,5 +152,7 @@ void ReplicationManagerClient::ReadRemoveAction(NetworkID networkID) const
 
     g_gameClient->GetLinkingContext().RemoveEntity(entity);
     g_gameClient->GetEntityManager().RemoveEntity(entity);
+    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    clientComponent.m_entity = INVALID_ENTITY;
 }
 }

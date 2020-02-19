@@ -17,6 +17,7 @@ enum class SystemType : U16 {
     NAVIGATION,
     COLLISION,
     WEAPON,
+
 #ifdef _DRAW
     HUD,
 #endif

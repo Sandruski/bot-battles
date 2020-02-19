@@ -241,10 +241,5 @@ void ClientSystem::Disconnect(ClientComponent& clientComponent)
     newEvent.eventType = EventType::PLAYER_REMOVED;
     newEvent.networking.entity = clientComponent.m_entity;
     NotifyEvent(newEvent);
-
-    // TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    clientComponent.m_entity = INVALID_ENTITY;
-    // Clear linkingContext
-    // Clear networkGameObjects
 }
 }
