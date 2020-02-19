@@ -20,7 +20,7 @@ public:
     bool PreUpdate() override;
 
     void ReceiveIncomingPackets(ClientComponent& clientComponent);
-    void SendOutgoingPackets(ClientComponent& clientComponent) const;
+    void SendOutgoingPackets(ClientComponent& clientComponent);
 
 private:
     void ReceivePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream);

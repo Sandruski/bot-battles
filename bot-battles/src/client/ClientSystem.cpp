@@ -67,13 +67,19 @@ void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent)
 }
 
 //----------------------------------------------------------------------------------------------------
-void ClientSystem::SendOutgoingPackets(ClientComponent& clientComponent) const
+void ClientSystem::SendOutgoingPackets(ClientComponent& clientComponent)
 {
+    F32 timeout = Time::GetInstance().GetTime() - clientComponent.m_lastPacketTime;
+    if (timeout >= DISCONNECT_TIMEOUT) {
+        Disconnect(clientComponent);
+        return;
+    }
+
     const bool isConnected = clientComponent.IsConnected();
-    if (!isConnected) {
-        SendHelloPacket(clientComponent);
-    } else {
+    if (isConnected) {
         SendInputPacket(clientComponent);
+    } else {
+        SendHelloPacket(clientComponent);
     }
 }
 
@@ -99,6 +105,10 @@ void ClientSystem::ReceivePacket(ClientComponent& clientComponent, InputMemorySt
         WLOG("Unknown packet received");
         break;
     }
+    }
+
+    if (type < ServerMessageType::COUNT) {
+        clientComponent.m_lastPacketTime = Time::GetInstance().GetStartFrameTime();
     }
 }
 
@@ -174,12 +184,6 @@ bool ClientSystem::SendHelloPacket(const ClientComponent& clientComponent) const
 //----------------------------------------------------------------------------------------------------
 bool ClientSystem::SendInputPacket(ClientComponent& clientComponent) const
 {
-    const bool hasEntity = clientComponent.m_entity < INVALID_ENTITY;
-    if (!hasEntity) {
-        ILOG("Input packet not sent because entity is not created");
-        return false;
-    }
-
     OutputMemoryStream inputPacket;
     inputPacket.Write(ClientMessageType::INPUT);
     inputPacket.Write(clientComponent.m_playerID);

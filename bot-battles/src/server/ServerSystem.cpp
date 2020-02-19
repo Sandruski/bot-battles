@@ -102,18 +102,22 @@ void ServerSystem::SendOutgoingPackets(ServerComponent& serverComponent)
 
     const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.GetPlayerIDToClientProxyMap();
     for (const auto& pair : playerIDToClientProxy) {
-
+        PlayerID playerID = pair.first;
         std::shared_ptr<ClientProxy> clientProxy = pair.second;
+
         F32 timeout = Time::GetInstance().GetTime() - clientProxy->GetLastPacketTime();
         if (timeout >= DISCONNECT_TIMEOUT) {
             playerIDToClientProxyDisconnections.insert(std::make_pair(pair.first, std::weak_ptr(pair.second)));
             continue;
         }
 
-        clientProxy->m_deliveryManager.ProcessTimedOutPackets();
-
-        PlayerID playerID = pair.first;
-        SendStatePacket(serverComponent, playerID, clientProxy);
+        const bool isConnected = clientProxy->m_deliveryManager.GetNextExpectedSequenceNumber() > 0;
+        if (isConnected) {
+            clientProxy->m_deliveryManager.ProcessTimedOutPackets();
+            SendStatePacket(serverComponent, playerID, clientProxy);
+        } else {
+            SendWelcomePacket(serverComponent, playerID, clientProxy);
+        }
     }
 
     for (const auto& pair : playerIDToClientProxyDisconnections) {
@@ -148,10 +152,9 @@ void ServerSystem::ReceivePacket(ServerComponent& serverComponent, InputMemorySt
     }
     }
 
-    if (playerID != INVALID_PLAYER_ID) {
+    if (playerID < INVALID_PLAYER_ID && type < ClientMessageType::COUNT) {
         std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
         clientProxy.lock()->UpdateLastPacketTime();
-        ILOG("RECEIVED PACKET FROM PLAYER %u", playerID);
     }
 }
 
@@ -165,8 +168,7 @@ void ServerSystem::ReceiveHelloPacket(ServerComponent& serverComponent, InputMem
         ILOG("Hello packet received from new player %s", name.c_str());
 
         playerID = serverComponent.AddPlayer(fromSocketAddress, name.c_str());
-        if (playerID != INVALID_PLAYER_ID) {
-
+        if (playerID < INVALID_PLAYER_ID) {
             std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
             const std::unordered_map<NetworkID, Entity>& networkIDToEntity = g_gameServer->GetLinkingContext().GetNetworkIDToEntityMap();
             for (const auto& pair : networkIDToEntity) {
@@ -184,8 +186,6 @@ void ServerSystem::ReceiveHelloPacket(ServerComponent& serverComponent, InputMem
         std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
         ILOG("Hello packet received from existing player %s", clientProxy.lock()->GetName());
     }
-
-    SendWelcomePacket(serverComponent, playerID, fromSocketAddress);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -231,7 +231,7 @@ void ServerSystem::ReceiveInputPacket(ServerComponent& serverComponent, InputMem
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerSystem::SendWelcomePacket(const ServerComponent& serverComponent, PlayerID playerID, const SocketAddress& toSocketAddress) const
+void ServerSystem::SendWelcomePacket(const ServerComponent& serverComponent, PlayerID playerID, std::shared_ptr<ClientProxy> clientProxy) const
 {
     OutputMemoryStream welcomePacket;
     welcomePacket.Write(ServerMessageType::WELCOME);
@@ -243,7 +243,7 @@ void ServerSystem::SendWelcomePacket(const ServerComponent& serverComponent, Pla
 
     ILOG("Sending welcome packet to player %u...", playerID);
 
-    const bool result = SendPacket(serverComponent, welcomePacket, toSocketAddress);
+    const bool result = SendPacket(serverComponent, welcomePacket, clientProxy->GetSocketAddress());
     if (result) {
         ILOG("Welcome packet successfully sent to player %u", playerID);
     }

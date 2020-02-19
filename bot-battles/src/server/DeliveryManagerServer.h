@@ -16,6 +16,7 @@ public:
     void ProcessTimedOutPackets();
 
     const std::deque<Delivery>& GetDeliveries() const;
+    U32 GetNextExpectedSequenceNumber() const;
 
 private:
     Delivery& WriteSequenceNumber(OutputMemoryStream& outputStream);

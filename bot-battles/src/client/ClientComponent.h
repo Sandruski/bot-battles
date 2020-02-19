@@ -37,6 +37,8 @@ struct ClientComponent : public Component {
     PlayerID m_playerID;
     Entity m_entity;
 
+    F32 m_lastPacketTime;
+
     U32 m_lastAckdFrame;
     U32 m_interpolationFromFrame;
     U32 m_interpolationToFrame;

@@ -7,7 +7,6 @@ enum class ClientMessageType : U16 {
 
     HELLO,
     INPUT,
-    GOODBYE,
 
     COUNT
 };

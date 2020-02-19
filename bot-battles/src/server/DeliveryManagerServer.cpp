@@ -58,6 +58,12 @@ const std::deque<Delivery>& DeliveryManagerServer::GetDeliveries() const
 }
 
 //----------------------------------------------------------------------------------------------------
+U32 DeliveryManagerServer::GetNextExpectedSequenceNumber() const
+{
+    return m_nextExpectedSequenceNumber;
+}
+
+//----------------------------------------------------------------------------------------------------
 Delivery& DeliveryManagerServer::WriteSequenceNumber(OutputMemoryStream& outputStream)
 {
     SequenceNumber sequenceNumber = m_nextOutgoingSequenceNumber++;

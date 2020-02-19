@@ -33,7 +33,7 @@ const char* ClientProxy::GetName() const
 //----------------------------------------------------------------------------------------------------
 void ClientProxy::UpdateLastPacketTime()
 {
-    m_lastPacketTime = Time::GetInstance().GetTime();
+    m_lastPacketTime = Time::GetInstance().GetStartFrameTime();
 }
 
 //----------------------------------------------------------------------------------------------------

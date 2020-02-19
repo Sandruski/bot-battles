@@ -11,7 +11,9 @@ namespace sand {
 bool InputSystemClient::Update()
 {
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    if (!clientComponent.IsConnected()) {
+    const bool isConnected = clientComponent.IsConnected();
+    const bool hasEntity = clientComponent.m_entity < INVALID_ENTITY;
+    if (!isConnected || !hasEntity) {
         return true;
     }
 
@@ -20,17 +22,14 @@ bool InputSystemClient::Update()
         if (keyboardState[i] == SDL_KEY_PRESSED) {
             if (m_keyboard[i] == KeyState::IDLE) {
                 m_keyboard[i] = KeyState::DOWN;
-            }
-            else {
+            } else {
                 m_keyboard[i] = KeyState::REPEAT;
             }
-        }
-        else {
+        } else {
             if (m_keyboard[i] == KeyState::DOWN
                 || m_keyboard[i] == KeyState::REPEAT) {
                 m_keyboard[i] = KeyState::UP;
-            }
-            else {
+            } else {
                 m_keyboard[i] = KeyState::IDLE;
             }
         }
@@ -70,8 +69,7 @@ bool InputSystemClient::Update()
     if (!clientComponent.m_inputBuffer.IsFull()) {
         U32 dirtyState = 0;
 
-        if (!clientComponent.m_isLastInputTransformPending && !clientComponent.m_isLastInputWeaponPending)
-        {
+        if (!clientComponent.m_isLastInputTransformPending && !clientComponent.m_isLastInputWeaponPending) {
             if (inputComponent.m_acceleration.x != 0.0f || inputComponent.m_acceleration.y != 0.0f) {
                 dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_ACCELERATION);
                 clientComponent.m_isLastInputTransformPending = true;
