@@ -13,7 +13,6 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 GameplayState::GameplayState()
-    : m_background(INVALID_ENTITY)
 {
 }
 
@@ -26,14 +25,14 @@ const char* GameplayState::GetName()
 //----------------------------------------------------------------------------------------------------
 bool GameplayState::Enter()
 {
-    m_background = g_game->GetEntityManager().AddEntity();
+    Entity background = g_game->GetEntityManager().AddEntity();
 
-    std::weak_ptr<TransformComponent> transform = g_game->GetComponentManager().AddComponent<TransformComponent>(m_background);
+    std::weak_ptr<TransformComponent> transform = g_game->GetComponentManager().AddComponent<TransformComponent>(background);
     WindowComponent& windowComponent = g_game->GetWindowComponent();
     transform.lock()->m_position = { static_cast<F32>(windowComponent.m_resolution.x / 2), static_cast<F32>(windowComponent.m_resolution.y / 2), 0.0f };
 
     std::weak_ptr<SpriteResource> spriteResource = g_game->GetResourceManager().AddResource<SpriteResource>("gameplayBackground.png", TEXTURES_DIR, true);
-    std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().AddComponent<SpriteComponent>(m_background);
+    std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().AddComponent<SpriteComponent>(background);
     spriteComponent.lock()->m_spriteResource = spriteResource;
 
     return true;
@@ -60,7 +59,8 @@ bool GameplayState::PostUpdate()
 //----------------------------------------------------------------------------------------------------
 bool GameplayState::Exit()
 {
-    g_game->GetEntityManager().RemoveEntity(m_background);
+    g_game->GetEntityManager().ClearEntities();
+    ILOG("Exit GameplayState");
 
     return true;
 }

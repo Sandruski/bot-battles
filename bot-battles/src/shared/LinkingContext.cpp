@@ -22,7 +22,7 @@ bool LinkingContext::PreUpdate()
 NetworkID LinkingContext::AddEntity(Entity entity, NetworkID networkID)
 {
     NetworkID existingNetworkID = GetNetworkID(entity);
-    if (existingNetworkID != INVALID_NETWORK_ID) {
+    if (existingNetworkID < INVALID_NETWORK_ID) {
         WLOG("Entity %u already exists with the networkID %u", entity, existingNetworkID);
         return INVALID_NETWORK_ID;
     }

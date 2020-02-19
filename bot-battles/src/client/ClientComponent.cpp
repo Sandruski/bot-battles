@@ -73,7 +73,7 @@ void ClientComponent::LoadFromConfig(const rapidjson::Value& value)
 //----------------------------------------------------------------------------------------------------
 bool ClientComponent::IsConnected() const
 {
-    return m_playerID != INVALID_PLAYER_ID;
+    return m_playerID < INVALID_PLAYER_ID;
 }
 
 //----------------------------------------------------------------------------------------------------

@@ -15,6 +15,7 @@ public:
     Entity AddEntity();
     Signature GetSignature(Entity entity);
     bool RemoveEntity(Entity entity);
+    void ClearEntities();
 
 private:
     bool KillEntity(Entity entity);

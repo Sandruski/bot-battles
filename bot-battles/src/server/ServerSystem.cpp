@@ -235,7 +235,7 @@ void ServerSystem::SendWelcomePacket(const ServerComponent& serverComponent, Pla
 {
     OutputMemoryStream welcomePacket;
     welcomePacket.Write(ServerMessageType::WELCOME);
-    const bool isSuccessful = playerID != INVALID_PLAYER_ID;
+    const bool isSuccessful = playerID < INVALID_PLAYER_ID;
     welcomePacket.Write(isSuccessful);
     if (isSuccessful) {
         welcomePacket.Write(playerID);

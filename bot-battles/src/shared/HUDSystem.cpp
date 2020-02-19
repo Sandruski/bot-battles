@@ -22,6 +22,7 @@ HUDSystem::HUDSystem()
 //----------------------------------------------------------------------------------------------------
 bool HUDSystem::StartUp()
 {
+    /*
     m_fps = g_game->GetEntityManager().AddEntity();
     g_game->GetComponentManager().AddComponent<TransformComponent>(m_fps);
     std::weak_ptr<TextResource> textResource = g_game->GetResourceManager().AddResource<TextResource>("", "", false);
@@ -30,6 +31,7 @@ bool HUDSystem::StartUp()
     textResource.lock()->m_color = Green;
     std::weak_ptr<TextComponent> textComponent = g_game->GetComponentManager().AddComponent<TextComponent>(m_fps);
     textComponent.lock()->m_text = textResource;
+    */
 
     return true;
 }
@@ -37,6 +39,7 @@ bool HUDSystem::StartUp()
 //----------------------------------------------------------------------------------------------------
 bool HUDSystem::PreUpdate()
 {
+    /*
     std::weak_ptr<TextComponent> textComponent = g_game->GetComponentManager().GetComponent<TextComponent>(m_fps);
     std::string fps = std::to_string(static_cast<U32>(Time::GetInstance().GetFps()));
     textComponent.lock()->m_text.lock()->m_text = fps;
@@ -45,6 +48,7 @@ bool HUDSystem::PreUpdate()
     std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(m_fps);
     WindowComponent& windowComponent = g_game->GetWindowComponent();
     transformComponent.lock()->m_position.x = static_cast<F32>(windowComponent.m_resolution.x - textComponent.lock()->m_text.lock()->GetWidth());
+    */
 
     return true;
 }

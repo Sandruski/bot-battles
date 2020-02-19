@@ -96,7 +96,7 @@ const std::unordered_map<NetworkID, ReplicationCommand>& ReplicationResultManage
 void ReplicationResultManager::HandleCreateDeliverySuccess(NetworkID networkID) const
 {
     Entity entity = g_game->GetLinkingContext().GetEntity(networkID);
-    if (entity != INVALID_ENTITY) {
+    if (entity < INVALID_ENTITY) {
         m_replicationManager.lock()->SetUpdate(networkID);
     }
     ILOG("Create delivery success for networkID %u", networkID);
@@ -113,7 +113,7 @@ void ReplicationResultManager::HandleCreateDeliveryFailure(NetworkID networkID) 
 {
     ILOG("RESENDING PACKET CREATE");
     Entity entity = g_game->GetLinkingContext().GetEntity(networkID);
-    if (entity != INVALID_ENTITY) {
+    if (entity < INVALID_ENTITY) {
         m_replicationManager.lock()->SetCreate(networkID, static_cast<U32>(ComponentMemberType::ALL));
     }
 }
@@ -123,7 +123,7 @@ void ReplicationResultManager::HandleUpdateDeliveryFailure(NetworkID networkID, 
 {
     ILOG("RESENDING PACKET UPDATE");
     Entity entity = g_game->GetLinkingContext().GetEntity(networkID);
-    if (entity != INVALID_ENTITY) {
+    if (entity < INVALID_ENTITY) {
         const std::deque<Delivery>& deliveries = deliveryManagerServer.GetDeliveries();
         for (const Delivery& delivery : deliveries) {
             const std::unordered_map<NetworkID, ReplicationCommand>& networkIDToReplicationCommand = delivery.m_replicationResultManager->GetNetworkIDToReplicationCommandMap();

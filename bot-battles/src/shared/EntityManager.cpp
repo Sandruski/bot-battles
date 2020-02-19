@@ -98,6 +98,15 @@ bool EntityManager::RemoveEntity(Entity entity)
 }
 
 //----------------------------------------------------------------------------------------------------
+void EntityManager::ClearEntities()
+{
+    for (const auto& pair : m_entitiesToSignatures) {
+        Entity entity = pair.first;
+        RemoveEntity(entity);
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
 bool EntityManager::KillEntity(Entity entity)
 {
     assert(entity < INVALID_ENTITY);
