@@ -61,7 +61,6 @@ void ReplicationManagerServer::SetUpdate(NetworkID networkID)
     ReplicationCommand& replicationCommand = m_networkIDToReplicationCommand.at(networkID);
     if (replicationCommand.m_replicationActionType != ReplicationActionType::REMOVE) {
         replicationCommand.m_replicationActionType = ReplicationActionType::UPDATE;
-        ILOG("UPDATE SET");
     }
 }
 
@@ -81,6 +80,7 @@ void ReplicationManagerServer::AddDirtyState(NetworkID networkID, U32 dirtyState
 void ReplicationManagerServer::Write(OutputMemoryStream& outputStream, ReplicationResultManager& replicationResultManager)
 {
     U32 frame = Time::GetInstance().GetFrame();
+    ILOG("Frame sent %u", frame);
     outputStream.Write(frame);
 
     for (auto& pair : m_networkIDToReplicationCommand) {
@@ -100,14 +100,19 @@ void ReplicationManagerServer::Write(OutputMemoryStream& outputStream, Replicati
             switch (replicationCommand.m_replicationActionType) {
 
             case ReplicationActionType::CREATE: {
+                ILOG("CREATE SENT");
                 writtenState = WriteCreateAction(outputStream, networkID, replicationCommand.GetDirtyState());
-                ILOG("SEND CREATE of %u dirty state", replicationCommand.GetDirtyState());
                 break;
             }
 
             case ReplicationActionType::UPDATE: {
+                ILOG("UPDATE SENT");
                 writtenState = WriteUpdateAction(outputStream, networkID, replicationCommand.GetDirtyState());
-                ILOG("SEND UPDATE");
+                break;
+            }
+
+            case ReplicationActionType::REMOVE: {
+                ILOG("REMOVE SENT");
                 break;
             }
 
@@ -145,16 +150,12 @@ U32 ReplicationManagerServer::WriteUpdateAction(OutputMemoryStream& outputStream
 {
     U32 writtenState = 0;
 
-    ILOG("NetworkID is %u", networkID);
     Entity entity = g_gameServer->GetLinkingContext().GetEntity(networkID);
-    ILOG("Entity is %u", entity);
     Signature signature = g_gameServer->GetEntityManager().GetSignature(entity);
     outputStream.Write(signature);
-    ILOG("Sent signature is %u", signature);
     outputStream.Write(dirtyState);
-    ILOG("Sent dirty state is %u", dirtyState);
 
-    for (U16 i = 0; i < MAX_COMPONENTS; ++i) {
+    for (U16 i = 0; i < MAX_NETWORK_COMPONENTS; ++i) {
 
         U16 hasComponent = 1 << i;
         const bool hasSignatureComponent = signature & hasComponent;

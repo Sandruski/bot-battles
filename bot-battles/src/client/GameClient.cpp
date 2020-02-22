@@ -2,11 +2,15 @@
 
 #include "ClientSystem.h"
 #include "CollisionSystemClient.h"
+#include "ComponentManager.h"
 #include "ConfigClient.h"
 #include "FSM.h"
 #include "InputSystemClient.h"
+#include "LocalPlayerComponent.h"
 #include "MainMenuState.h"
-#include "NavigationSystemClient.h"
+#include "MovementSystemClient.h"
+#include "RemotePlayerComponent.h"
+#include "RemotePlayerMovementSystem.h"
 #include "SystemManager.h"
 #include "WeaponSystemClient.h"
 
@@ -31,7 +35,19 @@ bool GameClient::Init()
     if (!ret) {
         return ret;
     }
+    ret = m_systemManager->RegisterSystem<RemotePlayerMovementSystem>();
+    if (!ret) {
+        return ret;
+    }
     ret = m_systemManager->RegisterSystem<InputSystemClient>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_systemManager->RegisterSystem<MovementSystemClient>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_systemManager->RegisterSystem<CollisionSystemClient>();
     if (!ret) {
         return ret;
     }
@@ -39,11 +55,13 @@ bool GameClient::Init()
     if (!ret) {
         return ret;
     }
-    ret = m_systemManager->RegisterSystem<NavigationSystemClient>();
+
+    // Components
+    ret = m_componentManager->RegisterComponent<LocalPlayerComponent>();
     if (!ret) {
         return ret;
     }
-    ret = m_systemManager->RegisterSystem<CollisionSystemClient>();
+    ret = m_componentManager->RegisterComponent<RemotePlayerComponent>();
     if (!ret) {
         return ret;
     }

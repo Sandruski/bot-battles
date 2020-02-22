@@ -69,6 +69,8 @@ void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent)
 //----------------------------------------------------------------------------------------------------
 void ClientSystem::SendOutgoingPackets(ClientComponent& clientComponent)
 {
+    clientComponent.m_inputBuffer.Remove(clientComponent.m_lastAckdFrame);
+
     F32 timeout = Time::GetInstance().GetTime() - clientComponent.m_lastPacketTime;
     if (timeout >= DISCONNECT_TIMEOUT) {
         Disconnect(clientComponent);

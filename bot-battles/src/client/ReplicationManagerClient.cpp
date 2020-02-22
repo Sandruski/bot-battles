@@ -7,7 +7,9 @@
 #include "Frame.h"
 #include "GameClient.h"
 #include "LinkingContext.h"
+#include "LocalPlayerComponent.h"
 #include "NetworkableReadObject.h"
+#include "RemotePlayerComponent.h"
 #include "ReplicationCommand.h"
 
 namespace sand {
@@ -17,10 +19,10 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream) const
 {
     U32 frame = 0;
     inputStream.Read(frame);
+    ILOG("Frame received %u", frame);
     F32 startFrameTime = Time::GetInstance().GetStartFrameTime();
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     clientComponent.m_frameBuffer.Add(Frame(frame, startFrameTime));
-    ILOG("Frame received %u", frame);
 
     while (inputStream.GetRemainingBitCount() >= 8) {
 
@@ -56,30 +58,27 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream) const
         }
         }
 
-        if (replicationActionType != ReplicationActionType::REMOVE) {
+        if (replicationActionType == ReplicationActionType::UPDATE) {
             LinkingContext& linkingContext = g_gameClient->GetLinkingContext();
-            const std::unordered_map<NetworkID, Entity>& networkIDToEntity = linkingContext.GetNetworkIDToEntityMap();
-            for (const auto& pair : networkIDToEntity) {
-                Entity entity = pair.second;
-                const bool isLocalPlayer = clientComponent.IsLocalPlayer(entity);
-                if (!isLocalPlayer) {
-                    std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
-                    if (transformComponent.expired()) {
-                        continue;
+            Entity entity = linkingContext.GetEntity(networkID);
+            Signature signature = g_gameClient->GetEntityManager().GetSignature(entity);
+            const bool hasRemotePlayer = signature & static_cast<U16>(ComponentType::REMOTE_PLAYER);
+            if (hasRemotePlayer) {
+                std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
+                bool hasTransform = false;
+                for (U32 i = transformComponent.lock()->m_transformBuffer.m_front; i < transformComponent.lock()->m_transformBuffer.m_back; ++i) {
+                    Transform& t = transformComponent.lock()->m_transformBuffer.Get(i);
+                    if (t.GetFrame() == frame) {
+                        hasTransform = true;
+                        break;
                     }
-                    bool is = false;
-                    for (U32 i = transformComponent.lock()->m_transformBuffer.m_front; i < transformComponent.lock()->m_transformBuffer.m_back; ++i) {
-                        Transform& t = transformComponent.lock()->m_transformBuffer.Get(i);
-                        if (t.GetFrame() == frame) {
-                            is = true;
-                            break;
-                        }
-                    }
-                    if (!is) {
-                        Transform transform = Transform(transformComponent.lock()->m_transformBuffer.GetLast().m_position, transformComponent.lock()->m_transformBuffer.GetLast().m_rotation, frame);
-                        transformComponent.lock()->m_transformBuffer.Add(transform);
-                        ILOG("Client pos for frame %u is %f %f", frame, transformComponent.lock()->m_transformBuffer.GetLast().m_position.x, transformComponent.lock()->m_transformBuffer.GetLast().m_position.y);
-                    }
+                }
+
+                if (!hasTransform) {
+                    Vec3 position = !transformComponent.lock()->m_transformBuffer.IsEmpty() ? transformComponent.lock()->m_transformBuffer.GetLast().m_position : transformComponent.lock()->m_position;
+                    F32 rotation = !transformComponent.lock()->m_transformBuffer.IsEmpty() ? transformComponent.lock()->m_transformBuffer.GetLast().m_rotation : transformComponent.lock()->m_rotation;
+                    Transform transform = Transform(position, rotation, frame);
+                    transformComponent.lock()->m_transformBuffer.Add(transform);
                 }
             }
         }
@@ -97,9 +96,19 @@ void ReplicationManagerClient::ReadCreateAction(InputMemoryStream& inputStream, 
 
     PlayerID playerID = INVALID_PLAYER_ID;
     inputStream.Read(playerID);
+    Signature signature = g_gameClient->GetEntityManager().GetSignature(entity);
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     if (playerID == clientComponent.m_playerID) {
-        clientComponent.m_entity = entity;
+        clientComponent.m_entity = entity; // TODO: remove
+        const bool hasLocalPlayer = signature & static_cast<U16>(ComponentType::LOCAL_PLAYER);
+        if (!hasLocalPlayer) {
+            g_gameClient->GetComponentManager().AddComponent<LocalPlayerComponent>(entity);
+        }
+    } else {
+        const bool hasRemotePlayer = signature & static_cast<U16>(ComponentType::REMOTE_PLAYER);
+        if (!hasRemotePlayer) {
+            g_gameClient->GetComponentManager().AddComponent<RemotePlayerComponent>(entity);
+        }
     }
 
     ReadUpdateAction(inputStream, networkID, frame);
@@ -110,16 +119,13 @@ void ReplicationManagerClient::ReadUpdateAction(InputMemoryStream& inputStream, 
 {
     Entity entity = g_gameClient->GetLinkingContext().GetEntity(networkID);
     Signature signature = g_gameClient->GetEntityManager().GetSignature(entity);
-    ILOG("Signature is %u", signature);
 
     Signature newSignature = 0;
     inputStream.Read(newSignature);
-    ILOG("New signature is %u", newSignature);
     U32 dirtyState = 0;
     inputStream.Read(dirtyState);
-    ILOG("Dirty state received %u", dirtyState);
 
-    for (U16 i = 0; i < MAX_COMPONENTS; ++i) {
+    for (U16 i = 0; i < MAX_NETWORK_COMPONENTS; ++i) {
 
         U16 hasComponent = 1 << i;
         const bool hasSignatureComponent = signature & hasComponent;
@@ -127,16 +133,12 @@ void ReplicationManagerClient::ReadUpdateAction(InputMemoryStream& inputStream, 
         if (hasSignatureComponent && hasNewSignatureComponent) {
             std::weak_ptr<Component> component = g_gameClient->GetComponentManager().GetComponent(static_cast<ComponentType>(i), entity);
             std::dynamic_pointer_cast<NetworkableReadObject>(component.lock())->Read(inputStream, dirtyState, frame, ReplicationActionType::UPDATE, entity);
-            ILOG("Update component %u", i);
         } else if (hasSignatureComponent) {
             g_gameClient->GetComponentManager().RemoveComponent(static_cast<ComponentType>(i), entity);
-            ILOG("Remove component %u", i);
         } else if (hasNewSignatureComponent) {
             std::weak_ptr<Component> component = g_gameClient->GetComponentManager().AddComponent(static_cast<ComponentType>(i), entity);
             std::dynamic_pointer_cast<NetworkableReadObject>(component.lock())->Read(inputStream, dirtyState, frame, ReplicationActionType::CREATE, entity);
-            ILOG("New component %u created", i);
         } else {
-            ILOG("Fucked component %u", i);
             assert(false);
         }
     }

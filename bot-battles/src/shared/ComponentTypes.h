@@ -15,6 +15,11 @@ enum class ComponentType : U16 {
     TEXT,
 #endif
 
+#ifdef _CLIENT
+    LOCAL_PLAYER,
+    REMOTE_PLAYER,
+#endif
+
     COUNT
 };
 }

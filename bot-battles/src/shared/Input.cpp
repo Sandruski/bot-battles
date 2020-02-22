@@ -15,14 +15,14 @@ Input::Input()
 }
 
 //----------------------------------------------------------------------------------------------------
-Input::Input(const InputComponent& inputComponent, U32 dirtyState, F32 dt, U32 frame)
+Input::Input(const InputComponent& inputComponent, U32 dirtyState, F32 dt, U32 frame, U32 from, U32 to, F32 percentage)
     : m_inputComponent(inputComponent)
     , m_dirtyState(dirtyState)
     , m_dt(dt)
     , m_frame(frame)
-    , m_interpolationFromFrame(0)
-    , m_interpolationToFrame(0)
-    , m_interpolationPercentage(0.0f)
+    , m_interpolationFromFrame(from)
+    , m_interpolationToFrame(to)
+    , m_interpolationPercentage(percentage)
 {
 }
 

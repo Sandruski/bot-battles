@@ -9,7 +9,7 @@ namespace sand {
 class Input {
 public:
     Input();
-    Input(const InputComponent& inputComponent, U32 dirtyState, F32 dt, U32 frame);
+    Input(const InputComponent& inputComponent, U32 dirtyState, F32 dt, U32 frame, U32 from, U32 to, F32 percentage);
 
 #ifdef _CLIENT
     void Write(OutputMemoryStream& outputStream) const;

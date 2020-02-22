@@ -1,4 +1,4 @@
-#include "NavigationSystemServer.h"
+#include "MovementSystemServer.h"
 
 #include "ClientProxy.h"
 #include "ComponentManager.h"
@@ -12,13 +12,13 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-NavigationSystemServer::NavigationSystemServer()
+MovementSystemServer::MovementSystemServer()
 {
     m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
 }
 
 //----------------------------------------------------------------------------------------------------
-bool NavigationSystemServer::Update()
+bool MovementSystemServer::Update()
 {
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     U32 frame = Time::GetInstance().GetFrame();

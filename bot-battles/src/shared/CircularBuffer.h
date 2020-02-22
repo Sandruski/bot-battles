@@ -100,6 +100,7 @@ inline T& CircularBuffer<T, size>::Get(U32 position)
 {
     assert(!IsEmpty());
     U32 index = IndexFromPosition(position);
+    assert(index < m_back);
     return m_buffer.at(index);
 }
 

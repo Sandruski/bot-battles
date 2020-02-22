@@ -12,9 +12,11 @@ enum class SystemType : U16 {
 #endif
     CLIENT,
 
+    REMOTE_PLAYER_MOVEMENT,
+
     INPUT,
 
-    NAVIGATION,
+    MOVEMENT,
     COLLISION,
     WEAPON,
 
@@ -33,7 +35,7 @@ enum class SystemType : U16 {
     SERVER,
 
     SPAWNER,
-    NAVIGATION,
+    MOVEMENT,
     COLLISION,
     WEAPON,
     HEALTH,

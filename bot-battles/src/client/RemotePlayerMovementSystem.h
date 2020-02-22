@@ -1,20 +1,20 @@
-#ifndef __NAVIGATION_SYSTEM_CLIENT_H__
-#define __NAVIGATION_SYSTEM_CLIENT_H__
+#ifndef __REMOTE_PLAYER_MOVEMENT_SYSTEM_H__
+#define __REMOTE_PLAYER_MOVEMENT_SYSTEM_H__
 
 #include "System.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class NavigationSystemClient : public System {
+class RemotePlayerMovementSystem : public System {
 public:
     static SystemType GetType()
     {
-        return SystemType::NAVIGATION;
+        return SystemType::REMOTE_PLAYER_MOVEMENT;
     }
 
 public:
-    NavigationSystemClient();
+    RemotePlayerMovementSystem();
 
     bool Update() override;
 };

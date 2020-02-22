@@ -7,7 +7,7 @@
 #include "HealthSystem.h"
 #include "InputSystemServer.h"
 #include "LinkingContext.h"
-#include "NavigationSystemServer.h"
+#include "MovementSystemServer.h"
 #include "ServerComponent.h"
 #include "ServerSystem.h"
 #include "SpawnerSystem.h"
@@ -38,11 +38,7 @@ bool GameServer::Init()
     if (!ret) {
         return ret;
     }
-    ret = m_systemManager->RegisterSystem<WeaponSystemServer>();
-    if (!ret) {
-        return ret;
-    }
-    ret = m_systemManager->RegisterSystem<NavigationSystemServer>();
+    ret = m_systemManager->RegisterSystem<MovementSystemServer>();
     if (!ret) {
         return ret;
     }
@@ -50,11 +46,15 @@ bool GameServer::Init()
     if (!ret) {
         return ret;
     }
-    ret = m_systemManager->RegisterSystem<InputSystemServer>();
+    ret = m_systemManager->RegisterSystem<WeaponSystemServer>();
     if (!ret) {
         return ret;
     }
     ret = m_systemManager->RegisterSystem<HealthSystem>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_systemManager->RegisterSystem<InputSystemServer>();
     if (!ret) {
         return ret;
     }
@@ -77,8 +77,8 @@ bool GameServer::Init()
     if (!ret) {
         return ret;
     }
-    std::weak_ptr<NavigationSystemServer> navigationSystemServer = m_systemManager->GetSystem<NavigationSystemServer>();
-    ret = navigationSystemServer.lock()->AddObserver(serverSystem);
+    std::weak_ptr<MovementSystemServer> movementSystemServer = m_systemManager->GetSystem<MovementSystemServer>();
+    ret = movementSystemServer.lock()->AddObserver(serverSystem);
     if (!ret) {
         return ret;
     }

@@ -175,7 +175,7 @@
     <ClCompile Include="Frame.cpp" />
     <ClCompile Include="GameClient.cpp" />
     <ClCompile Include="MainMenuState.cpp" />
-    <ClCompile Include="NavigationSystemClient.cpp" />
+    <ClCompile Include="MovementSystemClient.cpp" />
     <ClCompile Include="pchClient.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pchClient.h</PrecompiledHeaderFile>
@@ -185,6 +185,7 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="RemotePlayerMovementSystem.cpp" />
     <ClCompile Include="TransformComponentClient.cpp" />
     <ClCompile Include="InputSystemClient.cpp" />
     <ClCompile Include="ReplicationManagerClient.cpp" />
@@ -198,9 +199,12 @@
     <ClInclude Include="DeliveryManagerClient.h" />
     <ClInclude Include="Frame.h" />
     <ClInclude Include="InputSystemClient.h" />
+    <ClInclude Include="LocalPlayerComponent.h" />
     <ClInclude Include="MainMenuState.h" />
-    <ClInclude Include="NavigationSystemClient.h" />
+    <ClInclude Include="MovementSystemClient.h" />
     <ClInclude Include="pchClient.h" />
+    <ClInclude Include="RemotePlayerComponent.h" />
+    <ClInclude Include="RemotePlayerMovementSystem.h" />
     <ClInclude Include="ReplicationManagerClient.h" />
     <ClInclude Include="ClientComponent.h" />
     <ClInclude Include="GameClient.h" />
