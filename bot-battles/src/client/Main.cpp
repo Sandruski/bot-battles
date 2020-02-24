@@ -1,8 +1,5 @@
 #include "GameClient.h"
 
-#include "FSM.h"
-#include "GameplayState.h"
-
 enum MainState {
     CREATE,
     INIT,

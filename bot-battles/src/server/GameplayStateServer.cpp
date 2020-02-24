@@ -3,6 +3,8 @@
 #include "ComponentManager.h"
 #include "EntityManager.h"
 #include "GameServer.h"
+#include "GameplayComponent.h"
+#include "LinkingContext.h"
 #include "ResourceManager.h"
 #include "SpriteComponent.h"
 #include "SpriteResource.h"
@@ -26,6 +28,7 @@ const char* GameplayStateServer::GetName()
 bool GameplayStateServer::Enter()
 {
     Entity background = g_gameServer->GetEntityManager().AddEntity();
+    g_gameServer->GetLinkingContext().AddEntity(background);
 
     std::weak_ptr<TransformComponent> transform = g_gameServer->GetComponentManager().AddComponent<TransformComponent>(background);
     WindowComponent& windowComponent = g_gameServer->GetWindowComponent();
@@ -60,7 +63,7 @@ bool GameplayStateServer::PostUpdate()
 bool GameplayStateServer::Exit()
 {
     g_game->GetEntityManager().ClearEntities();
-    ILOG("Exit GameplayState");
+    g_game->GetLinkingContext().ClearEntities();
 
     return true;
 }
@@ -90,10 +93,19 @@ void GameplayStateServer::OnNotify(const Event& event)
 void GameplayStateServer::OnPlayerAdded() const
 {
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
+    U32 playerCount = serverComponent.GetPlayerCount();
+    if (playerCount == MAX_PLAYER_IDS) {
+        GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
+        gameplayComponent.m_phaseType = PhaseType::PLAY;
+    }
 }
 
 //----------------------------------------------------------------------------------------------------
 void GameplayStateServer::OnPlayerRemoved() const
 {
+    GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
+    if (gameplayComponent.m_phaseType == PhaseType::PLAY) {
+        gameplayComponent.m_phaseType = PhaseType::RESTART;
+    }
 }
 }

@@ -6,7 +6,6 @@
 #include "EntityManager.h"
 #include "EventSystem.h"
 #include "FSM.h"
-#include "GameplayState.h"
 #include "HealthComponent.h"
 #include "InputComponent.h"
 #include "LinkingContext.h"
@@ -98,12 +97,6 @@ bool Game::Init()
         return ret;
     }
     ret = m_componentManager->RegisterComponent<HealthComponent>();
-    if (!ret) {
-        return ret;
-    }
-
-    // States
-    ret = m_fsm->RegisterState<GameplayState>();
     if (!ret) {
         return ret;
     }

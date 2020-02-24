@@ -288,6 +288,12 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Random.h">
       <Filter>Header Files\Math</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameplayComponent.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameplayDefs.h">
+      <Filter>Header Files\Gameplay</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp">
@@ -426,6 +432,9 @@
       <Filter>Source Files\Components</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)HealthComponent.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)GameplayComponent.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
   </ItemGroup>

@@ -67,6 +67,15 @@ bool LinkingContext::RemoveEntity(Entity entity)
 }
 
 //----------------------------------------------------------------------------------------------------
+void LinkingContext::ClearEntities()
+{
+    for (const auto& pair : m_entityToNetworkID) {
+        Entity entity = pair.first;
+        RemoveEntity(entity);
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
 NetworkID LinkingContext::GetNetworkID(Entity entity) const
 {
     auto it = m_entityToNetworkID.find(entity);

@@ -27,6 +27,7 @@ struct ServerComponent : public Component {
     std::weak_ptr<ClientProxy> GetClientProxy(PlayerID playerID) const;
     PlayerID GetPlayerID(Entity entity) const;
     Entity GetEntity(PlayerID playerID) const;
+    U32 GetPlayerCount() const;
 
     const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& GetPlayerIDToClientProxyMap() const;
 

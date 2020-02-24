@@ -6,22 +6,22 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-    ServerComponent::ServerComponent()
-        : m_socket(nullptr)
-        , m_socketAddress(nullptr)
-        , m_port()
-        , m_playerIDToClientProxy()
-        , m_entityToPlayerID()
-        , m_availablePlayerIDs()
-        , m_isServerRewind(false)
-    {
-        m_playerIDToClientProxy.reserve(MAX_PLAYER_IDS);
-        m_entityToPlayerID.reserve(MAX_PLAYER_IDS);
+ServerComponent::ServerComponent()
+    : m_socket(nullptr)
+    , m_socketAddress(nullptr)
+    , m_port()
+    , m_playerIDToClientProxy()
+    , m_entityToPlayerID()
+    , m_availablePlayerIDs()
+    , m_isServerRewind(false)
+{
+    m_playerIDToClientProxy.reserve(MAX_PLAYER_IDS);
+    m_entityToPlayerID.reserve(MAX_PLAYER_IDS);
 
-        for (PlayerID i = 0; i < MAX_PLAYER_IDS; ++i) {
-            m_availablePlayerIDs.push(i);
-        }
+    for (PlayerID i = 0; i < MAX_PLAYER_IDS; ++i) {
+        m_availablePlayerIDs.push(i);
     }
+}
 
 //----------------------------------------------------------------------------------------------------
 void ServerComponent::LoadFromConfig(const rapidjson::Value& value)
@@ -40,6 +40,11 @@ PlayerID ServerComponent::AddPlayer(const SocketAddress& socketAddress, const ch
 {
     PlayerID playerID = GetPlayerID(socketAddress);
     if (playerID < INVALID_PLAYER_ID) {
+        WLOG("Player with socket address %s could not be added", socketAddress.GetName());
+        return playerID;
+    }
+
+    if (m_availablePlayerIDs.empty()) {
         WLOG("Player with socket address %s could not be added", socketAddress.GetName());
         return playerID;
     }
@@ -72,7 +77,8 @@ bool ServerComponent::RemovePlayer(PlayerID playerID)
 //----------------------------------------------------------------------------------------------------
 bool ServerComponent::AddEntity(Entity entity, PlayerID playerID)
 {
-    if (GetPlayerID(entity) < INVALID_PLAYER_ID) {
+    PlayerID existingPlayerID = GetPlayerID(entity);
+    if (existingPlayerID < INVALID_PLAYER_ID) {
         WLOG("Entity %u could not be added", entity);
         return false;
     }
@@ -83,7 +89,8 @@ bool ServerComponent::AddEntity(Entity entity, PlayerID playerID)
 //----------------------------------------------------------------------------------------------------
 bool ServerComponent::RemoveEntity(Entity entity)
 {
-    if (GetPlayerID(entity) >= INVALID_PLAYER_ID) {
+    PlayerID playerID = GetPlayerID(entity);
+    if (playerID >= INVALID_PLAYER_ID) {
         WLOG("Entity %u could not be removed", entity);
         return false;
     }
@@ -138,6 +145,12 @@ Entity ServerComponent::GetEntity(PlayerID playerID) const
     }
 
     return INVALID_ENTITY;
+}
+
+//----------------------------------------------------------------------------------------------------
+U32 ServerComponent::GetPlayerCount() const
+{
+    return m_playerIDToClientProxy.size();
 }
 
 //----------------------------------------------------------------------------------------------------

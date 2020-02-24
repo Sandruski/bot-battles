@@ -35,7 +35,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)FSM.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Game.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameplayComponent.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)GameplayState.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)HealthComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)HUDSystem.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)InputComponent.h" />
@@ -106,7 +105,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)FSM.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Game.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GameplayComponent.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)GameplayState.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)HealthComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)HUDSystem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)InputComponent.cpp" />

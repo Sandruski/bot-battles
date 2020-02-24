@@ -4,6 +4,7 @@
 #include "ConfigServer.h"
 #include "EntityManager.h"
 #include "FSM.h"
+#include "GameplayStateServer.h"
 #include "HealthSystem.h"
 #include "InputSystemServer.h"
 #include "LinkingContext.h"
@@ -59,6 +60,12 @@ bool GameServer::Init()
         return ret;
     }
 
+    // States
+    ret = m_fsm->RegisterState<GameplayStateServer>();
+    if (!ret) {
+        return ret;
+    }
+
     std::weak_ptr<ServerSystem> serverSystem = m_systemManager->GetSystem<ServerSystem>();
     ret = m_linkingContext->AddObserver(serverSystem);
     if (!ret) {
@@ -74,6 +81,11 @@ bool GameServer::Init()
         return ret;
     }
     ret = serverSystem.lock()->AddObserver(std::weak_ptr<Observer>(m_fsm));
+    if (!ret) {
+        return ret;
+    }
+    std::weak_ptr<GameplayStateServer> gameplayStateServer = m_fsm->GetState<GameplayStateServer>();
+    ret = serverSystem.lock()->AddObserver(gameplayStateServer);
     if (!ret) {
         return ret;
     }

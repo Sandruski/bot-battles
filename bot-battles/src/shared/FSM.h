@@ -24,6 +24,9 @@ public:
     bool DeRegisterState();
 
     template <class T>
+    std::weak_ptr<T> GetState();
+
+    template <class T>
     bool ChangeState();
     bool ChangeState(const char* name);
 
@@ -76,6 +79,21 @@ inline bool FSM::DeRegisterState()
     m_states.at(stateIndex) = nullptr;
 
     return false;
+}
+
+//----------------------------------------------------------------------------------------------------
+template <class T>
+inline std::weak_ptr<T> FSM::GetState()
+{
+    static_assert(std::is_base_of<State, T>::value, "T is not derived from State");
+
+    StateType stateType = T::GetType();
+    assert(stateType < StateType::COUNT);
+    std::size_t stateIndex = static_cast<std::size_t>(stateType);
+    std::shared_ptr<State> baseState = m_states.at(stateIndex);
+    std::weak_ptr<T> derivedState = std::weak_ptr<T>(std::static_pointer_cast<T>(baseState));
+
+    return derivedState;
 }
 
 //----------------------------------------------------------------------------------------------------

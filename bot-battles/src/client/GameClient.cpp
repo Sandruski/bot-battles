@@ -5,6 +5,7 @@
 #include "ComponentManager.h"
 #include "ConfigClient.h"
 #include "FSM.h"
+#include "GameplayStateClient.h"
 #include "InputSystemClient.h"
 #include "LocalPlayerComponent.h"
 #include "MainMenuState.h"
@@ -68,6 +69,10 @@ bool GameClient::Init()
 
     // States
     ret = m_fsm->RegisterState<MainMenuState>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_fsm->RegisterState<GameplayStateClient>();
     if (!ret) {
         return ret;
     }

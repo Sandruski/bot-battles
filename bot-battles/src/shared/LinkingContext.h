@@ -12,6 +12,7 @@ public:
 
     NetworkID AddEntity(Entity entity, NetworkID networkID = INVALID_NETWORK_ID);
     bool RemoveEntity(Entity entity);
+    void ClearEntities();
 
     NetworkID GetNetworkID(Entity entity) const;
     Entity GetEntity(NetworkID networkID) const;

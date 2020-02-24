@@ -16,8 +16,6 @@ public:
 public:
     GameplayStateClient();
 
-    void OnNotify(const Event& event) override;
-
     const char* GetName() override;
 
     bool Enter() override;
@@ -25,10 +23,6 @@ public:
     bool Update() override;
     bool PostUpdate() override;
     bool Exit() override;
-
-private:
-    void OnPlayerAdded();
-    void OnPlayerRemoved();
 };
 }
 

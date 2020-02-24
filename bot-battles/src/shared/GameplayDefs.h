@@ -3,13 +3,12 @@
 
 namespace sand {
 
-    enum class PhaseType : U16 {
-        START,
-        PLAY,
-        END
-    };
-
-    const U32 PLAYERS_PER_MATCH = 2;
+enum class PhaseType : U16 {
+    START,
+    PLAY,
+    END,
+    RESTART
+};
 }
 
 #endif

@@ -138,8 +138,6 @@ void ReplicationManagerClient::ReadUpdateAction(InputMemoryStream& inputStream, 
         } else if (hasNewSignatureComponent) {
             std::weak_ptr<Component> component = g_gameClient->GetComponentManager().AddComponent(static_cast<ComponentType>(i), entity);
             std::dynamic_pointer_cast<NetworkableReadObject>(component.lock())->Read(inputStream, dirtyState, frame, ReplicationActionType::CREATE, entity);
-        } else {
-            assert(false);
         }
     }
 }
