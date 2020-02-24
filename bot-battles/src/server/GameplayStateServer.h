@@ -1,12 +1,12 @@
-#ifndef __GAMEPLAY_STATE_H__
-#define __GAMEPLAY_STATE_H__
+#ifndef __GAMEPLAY_STATE_SERVER_H__
+#define __GAMEPLAY_STATE_SERVER_H__
 
 #include "State.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class GameplayState : public State {
+class GameplayStateServer : public State, public Observer {
 public:
     static StateType GetType()
     {
@@ -14,7 +14,7 @@ public:
     }
 
 public:
-    GameplayState();
+    GameplayStateServer();
 
     const char* GetName() override;
 
@@ -23,6 +23,12 @@ public:
     bool Update() override;
     bool PostUpdate() override;
     bool Exit() override;
+
+    void OnNotify(const Event& event) override;
+
+private:
+    void OnPlayerAdded() const;
+    void OnPlayerRemoved() const;
 };
 }
 

@@ -189,6 +189,7 @@
     <ClCompile Include="ConfigServer.cpp" />
     <ClCompile Include="Delivery.cpp" />
     <ClCompile Include="DeliveryManagerServer.cpp" />
+    <ClCompile Include="GameplayStateServer.cpp" />
     <ClCompile Include="GameServer.cpp" />
     <ClCompile Include="HealthSystem.cpp" />
     <ClCompile Include="InputSystemServer.cpp" />
@@ -222,6 +223,7 @@
     <ClInclude Include="ConfigServer.h" />
     <ClInclude Include="Delivery.h" />
     <ClInclude Include="DeliveryManagerServer.h" />
+    <ClInclude Include="GameplayStateServer.h" />
     <ClInclude Include="GameServer.h" />
     <ClInclude Include="HealthSystem.h" />
     <ClInclude Include="InputSystemServer.h" />
