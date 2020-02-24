@@ -6,7 +6,6 @@
 #include "DebugDrawer.h"
 #include "GameClient.h"
 #include "HealthComponent.h"
-#include "Interpolation.h"
 #include "Intersection.h"
 #include "LinkingContext.h"
 #include "SystemManager.h"
@@ -28,6 +27,16 @@ WeaponSystemClient::WeaponSystemClient()
 bool WeaponSystemClient::Update()
 {
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    const bool isConnected = clientComponent.IsConnected();
+    const bool hasEntity = clientComponent.m_entity < INVALID_ENTITY;
+    if (!isConnected || !hasEntity) {
+        return true;
+    }
+
+    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+    if (gameplayComponent.m_phaseType != PhaseType::PLAY) {
+        return true;
+    }
 
     for (auto& entity : m_entities) {
         if (g_gameClient->GetLinkingContext().GetNetworkID(entity) >= INVALID_NETWORK_ID) {

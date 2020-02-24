@@ -62,6 +62,7 @@ public:
 protected:
     std::vector<Entity> m_entities;
     Signature m_signature;
+    bool m_isEnabled;
 };
 }
 

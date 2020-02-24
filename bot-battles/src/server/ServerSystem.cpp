@@ -261,9 +261,11 @@ void ServerSystem::SendStatePacket(const ServerComponent& serverComponent, Playe
     Delivery& delivery = clientProxy->m_deliveryManager.WriteState(statePacket);
     delivery.m_replicationResultManager = std::make_shared<ReplicationResultManager>(std::weak_ptr<ReplicationManagerServer>(clientProxy->m_replicationManager));
 
+    GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
+    statePacket.Write(gameplayComponent.m_phaseType);
+
     statePacket.Write(clientProxy->m_timestamp);
 
-    ILOG("SERVER SENT ACKD FRAME %u", clientProxy->m_lastAckdFrame);
     statePacket.Write(clientProxy->m_lastAckdFrame);
 
     clientProxy->m_replicationManager->Write(statePacket, *delivery.m_replicationResultManager);

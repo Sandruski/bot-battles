@@ -17,6 +17,11 @@ bool InputSystemClient::Update()
         return true;
     }
 
+    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+    if (gameplayComponent.m_phaseType != PhaseType::PLAY) {
+        return true;
+    }
+
     const U8* keyboardState = SDL_GetKeyboardState(nullptr);
     for (U16 i = 0; i < SDL_NUM_SCANCODES; ++i) {
         if (keyboardState[i] == SDL_KEY_PRESSED) {

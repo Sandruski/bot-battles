@@ -20,6 +20,18 @@ CollisionSystemClient::CollisionSystemClient()
 //----------------------------------------------------------------------------------------------------
 bool CollisionSystemClient::Update()
 {
+    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    const bool isConnected = clientComponent.IsConnected();
+    const bool hasEntity = clientComponent.m_entity < INVALID_ENTITY;
+    if (!isConnected || !hasEntity) {
+        return true;
+    }
+
+    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+    if (gameplayComponent.m_phaseType != PhaseType::PLAY) {
+        return true;
+    }
+
     for (auto& entity : m_entities) {
         std::weak_ptr<ColliderComponent> colliderComponent = g_gameClient->GetComponentManager().GetComponent<ColliderComponent>(entity);
         std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);

@@ -50,6 +50,7 @@
 #include "Vec2.h"
 #include "Vec2I.h"
 #include "Vec3.h"
+#include "Interpolation.h"
 
 // Events
 #include "Events.h"
@@ -68,6 +69,7 @@
 #include "StateDefs.h"
 #include "SystemDefs.h"
 #include "WorkingDirDefs.h"
+#include "GameplayDefs.h"
 
 // Draw
 #include "Colors.h"

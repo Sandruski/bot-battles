@@ -2,7 +2,6 @@
 
 #include "ComponentManager.h"
 #include "GameClient.h"
-#include "Interpolation.h" // TODO: remove
 #include "LinkingContext.h"
 #include "TransformComponent.h"
 
@@ -19,6 +18,17 @@ RemotePlayerMovementSystem::RemotePlayerMovementSystem()
 bool RemotePlayerMovementSystem::Update()
 {
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    const bool isConnected = clientComponent.IsConnected();
+    const bool hasEntity = clientComponent.m_entity < INVALID_ENTITY;
+    if (!isConnected || !hasEntity) {
+        return true;
+    }
+
+    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+    if (gameplayComponent.m_phaseType != PhaseType::PLAY) {
+        return true;
+    }
+
     if (clientComponent.m_isEntityInterpolation) {
         if (clientComponent.m_frameBuffer.Count() >= 2) {
             clientComponent.m_interpolationFromFrame = clientComponent.m_frameBuffer.GetFirst().GetFrame();

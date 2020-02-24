@@ -39,6 +39,7 @@ Game::Game()
     , m_windowComponent()
     , m_rendererComponent()
 #endif
+    , m_gameplayComponent()
     , m_isRunning(false)
 {
     m_entityManager = std::make_shared<EntityManager>();

@@ -6,6 +6,7 @@ namespace sand {
 System::System()
     : m_entities()
     , m_signature()
+    , m_isEnabled(true)
 {
     m_entities.reserve(MAX_ENTITIES);
 }

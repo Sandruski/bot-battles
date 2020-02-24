@@ -8,12 +8,34 @@
 #include "SpriteResource.h"
 #include "TransformComponent.h"
 #include "WindowComponent.h"
+#include "GameplayComponent.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 GameplayState::GameplayState()
 {
+}
+
+//----------------------------------------------------------------------------------------------------
+void GameplayState::OnNotify(const Event& event)
+{
+    switch (event.eventType) {
+
+    case EventType::PLAYER_ADDED: {
+        OnPlayerAdded();
+        break;
+    }
+
+    case EventType::PLAYER_REMOVED: {
+        OnPlayerRemoved();
+        break;
+    }
+
+    default: {
+        break;
+    }
+    }
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -63,5 +85,15 @@ bool GameplayState::Exit()
     ILOG("Exit GameplayState");
 
     return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+void GameplayState::OnPlayerAdded()
+{
+}
+
+//----------------------------------------------------------------------------------------------------
+void GameplayState::OnPlayerRemoved()
+{
 }
 }
