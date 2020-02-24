@@ -18,6 +18,11 @@ HealthSystem::HealthSystem()
 //----------------------------------------------------------------------------------------------------
 bool HealthSystem::Update()
 {
+    GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
+    if (gameplayComponent.m_phaseType != PhaseType::PLAY) {
+        return true;
+    }
+
     for (auto& entity : m_entities) {
         std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(entity);
         if (healthComponent.lock()->m_health <= 0) {

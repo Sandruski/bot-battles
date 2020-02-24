@@ -157,6 +157,9 @@ void ClientSystem::ReceiveStatePacket(ClientComponent& clientComponent, InputMem
 
     ILOG("State packet received");
 
+    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+    inputStream.Read(gameplayComponent.m_phaseType);
+
     F32 timestamp = 0.0f;
     inputStream.Read(timestamp);
     clientComponent.m_RTT = Time::GetInstance().GetTime() - timestamp;
@@ -189,7 +192,7 @@ bool ClientSystem::SendInputPacket(ClientComponent& clientComponent) const
     OutputMemoryStream inputPacket;
     inputPacket.Write(ClientMessageType::INPUT);
     inputPacket.Write(clientComponent.m_playerID);
-    ILOG("CLIENT %u SENT A PACKET", clientComponent.m_playerID);
+
     clientComponent.m_deliveryManager.WriteState(inputPacket);
 
     F32 timestamp = Time::GetInstance().GetTime();
@@ -208,7 +211,6 @@ bool ClientSystem::SendInputPacket(ClientComponent& clientComponent) const
         for (U32 i = clientComponent.m_inputBuffer.m_front; i < back; ++i) {
             const Input& input = clientComponent.m_inputBuffer.Get(i);
             input.Write(inputPacket);
-            ILOG("SEND INPUT OF FRAME %u", input.GetFrame());
         }
     }
 

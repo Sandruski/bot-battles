@@ -7,7 +7,6 @@
 #include "DebugDrawer.h"
 #include "GameServer.h"
 #include "HealthComponent.h"
-#include "Interpolation.h"
 #include "Intersection.h"
 #include "LinkingContext.h"
 #include "ServerComponent.h"
@@ -27,7 +26,12 @@ WeaponSystemServer::WeaponSystemServer()
 //----------------------------------------------------------------------------------------------------
 bool WeaponSystemServer::Update()
 {
-    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
+    GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
+    if (gameplayComponent.m_phaseType != PhaseType::PLAY) {
+        return true;
+    }
+
+    ServerComponent serverComponent = g_gameServer->GetServerComponent();
 
     for (auto& entity : m_entities) {
         PlayerID playerID = serverComponent.GetPlayerID(entity);

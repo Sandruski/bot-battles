@@ -1,17 +1,20 @@
 #ifndef __GAME_H__
 #define __GAME_H__
 
+#ifdef _DRAW
 #include "FontImporter.h"
 #include "ResourceManager.h"
 #include "TextureImporter.h"
-#ifdef _DRAW
+
 #include "RendererComponent.h"
 #include "WindowComponent.h"
 #endif
+#include "GameplayComponent.h"
 
 namespace sand {
 
 struct Config;
+
 class EntityManager;
 class ComponentManager;
 class SystemManager;
@@ -47,6 +50,7 @@ public:
     WindowComponent& GetWindowComponent() { return m_windowComponent; }
     RendererComponent& GetRendererComponent() { return m_rendererComponent; }
 #endif
+    GameplayComponent& GetGameplayComponent() { return m_gameplayComponent; }
 
 protected:
     virtual bool Update();
@@ -76,6 +80,7 @@ protected:
     WindowComponent m_windowComponent;
     RendererComponent m_rendererComponent;
 #endif
+    GameplayComponent m_gameplayComponent;
 
     bool m_isRunning;
 };

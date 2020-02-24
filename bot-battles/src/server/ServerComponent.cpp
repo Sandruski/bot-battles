@@ -6,22 +6,22 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-ServerComponent::ServerComponent()
-    : m_socket(nullptr)
-    , m_socketAddress(nullptr)
-    , m_port()
-    , m_playerIDToClientProxy()
-    , m_entityToPlayerID()
-    , m_availablePlayerIDs()
-    , m_isServerRewind(false)
-{
-    m_playerIDToClientProxy.reserve(MAX_PLAYER_IDS);
-    m_entityToPlayerID.reserve(MAX_PLAYER_IDS);
+    ServerComponent::ServerComponent()
+        : m_socket(nullptr)
+        , m_socketAddress(nullptr)
+        , m_port()
+        , m_playerIDToClientProxy()
+        , m_entityToPlayerID()
+        , m_availablePlayerIDs()
+        , m_isServerRewind(false)
+    {
+        m_playerIDToClientProxy.reserve(MAX_PLAYER_IDS);
+        m_entityToPlayerID.reserve(MAX_PLAYER_IDS);
 
-    for (PlayerID i = 0; i < MAX_PLAYER_IDS; ++i) {
-        m_availablePlayerIDs.push(i);
+        for (PlayerID i = 0; i < MAX_PLAYER_IDS; ++i) {
+            m_availablePlayerIDs.push(i);
+        }
     }
-}
 
 //----------------------------------------------------------------------------------------------------
 void ServerComponent::LoadFromConfig(const rapidjson::Value& value)

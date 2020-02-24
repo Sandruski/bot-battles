@@ -9,7 +9,12 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 bool InputSystemServer::Update()
 {
-    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
+    GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
+    if (gameplayComponent.m_phaseType != PhaseType::PLAY) {
+        return true;
+    }
+
+    ServerComponent serverComponent = g_gameServer->GetServerComponent();
 
     for (auto& entity : m_entities) {
         PlayerID playerID = serverComponent.GetPlayerID(entity);

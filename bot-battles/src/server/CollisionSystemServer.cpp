@@ -19,6 +19,11 @@ CollisionSystemServer::CollisionSystemServer()
 //----------------------------------------------------------------------------------------------------
 bool CollisionSystemServer::Update()
 {
+    GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
+    if (gameplayComponent.m_phaseType != PhaseType::PLAY) {
+        return true;
+    }
+
     for (auto& entity : m_entities) {
         std::weak_ptr<ColliderComponent> colliderComponent = g_gameServer->GetComponentManager().GetComponent<ColliderComponent>(entity);
         std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);

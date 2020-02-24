@@ -4,12 +4,10 @@
 namespace sand {
 
 enum class StateType : U16 {
-
-    GAMEPLAY,
-
 #ifdef _CLIENT
     MAIN_MENU,
 #endif
+    GAMEPLAY,
 
     COUNT
 };
