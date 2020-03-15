@@ -21,7 +21,6 @@ enum class SystemType : U16 {
     WEAPON,
 
 #ifdef _DRAW
-    HUD,
     GUI,
 #endif
     COUNT

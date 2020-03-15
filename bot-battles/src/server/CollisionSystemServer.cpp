@@ -40,15 +40,15 @@ bool CollisionSystemServer::DebugRender()
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
 
     for (auto& entity : m_entities) {
-        std::weak_ptr<ColliderComponent> colliderComponent = g_gameServer->GetComponentManager().GetComponent<ColliderComponent>(entity);
-        DebugDrawer::DrawQuad(colliderComponent.lock()->GetRect(), Green, false);
+        //std::weak_ptr<ColliderComponent> colliderComponent = g_gameServer->GetComponentManager().GetComponent<ColliderComponent>(entity);
+        //DebugDrawer::DrawQuad(colliderComponent.lock()->GetRect(), Green, false);
 
         PlayerID playerID = serverComponent.GetPlayerID(entity);
         if (playerID >= INVALID_PLAYER_ID) {
             continue;
         }
 
-        DebugDrawer::DrawQuad(colliderComponent.lock()->GetShotRect(), Orange, false);
+        //DebugDrawer::DrawQuad(colliderComponent.lock()->GetShotRect(), Orange, false);
     }
 
     return true;

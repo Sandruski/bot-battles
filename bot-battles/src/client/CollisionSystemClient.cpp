@@ -47,14 +47,14 @@ bool CollisionSystemClient::Update()
 bool CollisionSystemClient::DebugRender()
 {
     for (auto& entity : m_entities) {
-        std::weak_ptr<ColliderComponent> colliderComponent = g_gameClient->GetComponentManager().GetComponent<ColliderComponent>(entity);
-        DebugDrawer::DrawQuad(colliderComponent.lock()->GetRect(), Green, false);
+        //std::weak_ptr<ColliderComponent> colliderComponent = g_gameClient->GetComponentManager().GetComponent<ColliderComponent>(entity);
+        //DebugDrawer::DrawQuad(colliderComponent.lock()->GetRect(), Green, false);
 
         if (g_gameClient->GetLinkingContext().GetNetworkID(entity) >= INVALID_NETWORK_ID) {
             continue;
         }
 
-        DebugDrawer::DrawQuad(colliderComponent.lock()->GetShotRect(), Orange, false);
+        //DebugDrawer::DrawQuad(colliderComponent.lock()->GetShotRect(), Orange, false);
     }
 
     return true;

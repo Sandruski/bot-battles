@@ -1,6 +1,5 @@
 #include "RendererComponent.h"
 
-#include "FontResource.h"
 #include "Game.h"
 #include "ResourceManager.h"
 
@@ -8,41 +7,27 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 RendererComponent::RendererComponent()
-    : m_renderer(nullptr)
-    , m_backgroundColor()
+    : m_shader(0)
+    , m_backgroundColor(0.0f, 0.0f, 0.0f, 0.0f)
     , m_isVsync(false)
     , m_isDebugDraw(false)
-    , m_shaderProgram(0)
 {
 }
 
 //----------------------------------------------------------------------------------------------------
 void RendererComponent::LoadFromConfig(const rapidjson::Value& value)
 {
-    assert(value.HasMember("defaultFont"));
-    assert(value["defaultFont"].IsObject());
-    const rapidjson::Value& font = value["defaultFont"];
-    assert(font.HasMember("name"));
-    assert(font["name"].IsString());
-    const char* name = font["name"].GetString();
-    assert(font.HasMember("size"));
-    assert(font["size"].IsUint());
-    U16 size = static_cast<U16>(font["size"].GetUint());
-    m_defaultFont = g_game->GetResourceManager().AddResource<FontResource>(name, FONTS_DIR, true);
-    m_defaultFont.lock()->m_size = size;
-    m_defaultFont.lock()->ReLoad();
-
     assert(value.HasMember("backgroundColor"));
     assert(value["backgroundColor"].IsArray());
     assert(!value["backgroundColor"].Empty());
-    assert(value["backgroundColor"][0].IsUint());
-    m_backgroundColor.r = static_cast<U8>(value["backgroundColor"][0].GetUint());
-    assert(value["backgroundColor"][1].IsUint());
-    m_backgroundColor.g = static_cast<U8>(value["backgroundColor"][1].GetUint());
-    assert(value["backgroundColor"][2].IsUint());
-    m_backgroundColor.b = static_cast<U8>(value["backgroundColor"][2].GetUint());
-    assert(value["backgroundColor"][3].IsUint());
-    m_backgroundColor.a = static_cast<U8>(value["backgroundColor"][3].GetUint());
+    assert(value["backgroundColor"][0].IsFloat());
+    m_backgroundColor.r = value["backgroundColor"][0].GetFloat();
+    assert(value["backgroundColor"][1].IsFloat());
+    m_backgroundColor.g = value["backgroundColor"][1].GetFloat();
+    assert(value["backgroundColor"][2].IsFloat());
+    m_backgroundColor.b = value["backgroundColor"][2].GetFloat();
+    assert(value["backgroundColor"][3].IsFloat());
+    m_backgroundColor.a = value["backgroundColor"][3].GetFloat();
 
     assert(value.HasMember("vsync"));
     assert(value["vsync"].IsBool());

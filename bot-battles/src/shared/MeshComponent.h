@@ -32,11 +32,11 @@ struct MeshComponent : public Component
     U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override;
 #endif
 
-    void CreateVBO();
+    void Init();
 
-    U32 m_VBO;
     U32 m_VAO;
-    //U32 IBO;
+    U32 m_VBO;
+    U32 m_EBO;
 };
 }
 

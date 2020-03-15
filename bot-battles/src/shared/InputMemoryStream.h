@@ -37,7 +37,7 @@ public:
     void Read(std::string& outString);
     void Read(Vec2& outVec);
     void Read(Vec3& outVec);
-    void Read(SDL_Color& outColor);
+    void Read(glm::vec4& vec4);
     void Read(SDL_Rect& outRect);
     void ReadPosition(Vec2& outVec);
 

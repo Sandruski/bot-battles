@@ -3,8 +3,6 @@
 
 namespace sand {
 
-class FontResource;
-
 //----------------------------------------------------------------------------------------------------
 // System Component
 struct RendererComponent {
@@ -15,14 +13,10 @@ struct RendererComponent {
 
     void UpdateBackgroundColor();
 
-    SDL_Renderer* m_renderer;
-
-    std::weak_ptr<FontResource> m_defaultFont;
-    SDL_Color m_backgroundColor;
+    U32 m_shader;
+    glm::vec4 m_backgroundColor;
     bool m_isVsync;
     bool m_isDebugDraw;
-
-    U32 m_shaderProgram;
 };
 }
 

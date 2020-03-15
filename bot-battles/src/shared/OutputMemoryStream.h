@@ -25,7 +25,7 @@ public:
     void Write(const std::string& inString);
     void Write(const Vec2& inVec);
     void Write(const Vec3& inVec);
-    void Write(const SDL_Color& inColor);
+    void Write(const glm::vec4& vec);
     void Write(const SDL_Rect& inRect);
     void WritePosition(const Vec2& inVec);
 

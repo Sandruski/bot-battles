@@ -100,12 +100,12 @@ void OutputMemoryStream::Write(const Vec3& inVec)
 }
 
 //----------------------------------------------------------------------------------------------------
-void OutputMemoryStream::Write(const SDL_Color& inColor)
+void OutputMemoryStream::Write(const glm::vec4& vec)
 {
-    Write(inColor.r);
-    Write(inColor.g);
-    Write(inColor.b);
-    Write(inColor.a);
+    Write(vec.x);
+    Write(vec.y);
+    Write(vec.z);
+    Write(vec.w);
 }
 
 //----------------------------------------------------------------------------------------------------

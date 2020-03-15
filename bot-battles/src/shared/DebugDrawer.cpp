@@ -6,8 +6,9 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-bool DebugDrawer::DrawQuad(const SDL_Rect& rect, const SDL_Color& color, bool isFilled)
+bool DebugDrawer::DrawQuad(const SDL_Rect& /*rect*/, const SDL_Color& /*color*/, bool /*isFilled*/)
 {
+    /*
     RendererComponent& rendererComponent = g_game->GetRendererComponent();
 
     SDL_SetRenderDrawColor(rendererComponent.m_renderer, color.r, color.g, color.b, color.a);
@@ -17,13 +18,14 @@ bool DebugDrawer::DrawQuad(const SDL_Rect& rect, const SDL_Color& color, bool is
         ELOG("Quad could not be drawn! SDL Error: %s", SDL_GetError());
         return false;
     }
-
+    */
     return true;
 }
 
 //----------------------------------------------------------------------------------------------------
-bool DebugDrawer::DrawLine(const SDL_Rect& rect, const SDL_Color& color)
+bool DebugDrawer::DrawLine(const SDL_Rect& /*rect*/, const SDL_Color& /*color*/)
 {
+    /*
     RendererComponent& rendererComponent = g_game->GetRendererComponent();
 
     SDL_SetRenderDrawColor(rendererComponent.m_renderer, color.r, color.g, color.b, color.a);
@@ -33,13 +35,14 @@ bool DebugDrawer::DrawLine(const SDL_Rect& rect, const SDL_Color& color)
         ELOG("Line could not be drawn! SDL Error: %s", SDL_GetError());
         return false;
     }
-
+    */
     return true;
 }
 
 //----------------------------------------------------------------------------------------------------
-bool DebugDrawer::DrawCircle(int x, int y, int radius, const SDL_Color& color)
+bool DebugDrawer::DrawCircle(int /*x*/, int /*y*/, int /*radius*/, const SDL_Color& /*color*/)
 {
+    /*
     RendererComponent& rendererComponent = g_game->GetRendererComponent();
 
     SDL_SetRenderDrawColor(rendererComponent.m_renderer, color.r, color.g, color.b, color.a);
@@ -56,7 +59,7 @@ bool DebugDrawer::DrawCircle(int x, int y, int radius, const SDL_Color& color)
         ELOG("Circle could not be drawn! SDL Error: %s", SDL_GetError());
         return false;
     }
-
+    */
     return true;
 }
 }

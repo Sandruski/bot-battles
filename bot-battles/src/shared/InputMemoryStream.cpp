@@ -110,12 +110,12 @@ void InputMemoryStream::Read(Vec3& outVec)
 }
 
 //----------------------------------------------------------------------------------------------------
-void InputMemoryStream::Read(SDL_Color& outColor)
+void InputMemoryStream::Read(glm::vec4& vec)
 {
-    Read(outColor.r);
-    Read(outColor.g);
-    Read(outColor.b);
-    Read(outColor.a);
+    Read(vec.x);
+    Read(vec.y);
+    Read(vec.z);
+    Read(vec.w);
 }
 
 //----------------------------------------------------------------------------------------------------

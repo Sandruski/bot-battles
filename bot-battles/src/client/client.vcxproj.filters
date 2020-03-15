@@ -46,6 +46,9 @@
     <Filter Include="Dependencies\gl3w">
       <UniqueIdentifier>{eaf56b97-93ee-4584-9942-ea4b23e8dba9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Dependencies\stb">
+      <UniqueIdentifier>{bbc7c8c2-5351-4d4f-8827-7555b846f083}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -119,6 +122,9 @@
     </ClCompile>
     <ClCompile Include="..\dependencies\source\gl3w\gl3w.cpp">
       <Filter>Dependencies\gl3w</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\source\stb\stb_image.cpp">
+      <Filter>Dependencies\stb</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

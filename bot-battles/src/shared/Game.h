@@ -2,7 +2,6 @@
 #define __GAME_H__
 
 #ifdef _DRAW
-#include "FontImporter.h"
 #include "ResourceManager.h"
 #include "TextureImporter.h"
 
@@ -40,17 +39,19 @@ public:
     FSM& GetFSM() { return *m_fsm; }
     LinkingContext& GetLinkingContext() { return *m_linkingContext; }
 #ifdef _DRAW
-    FontImporter& GetFontImporter()
+    TextureImporter& GetTextureImporter()
     {
-        return m_fontImporter;
+        return m_textureImporter;
     }
-    TextureImporter& GetTextureImporter() { return m_textureImporter; }
     ResourceManager& GetResourceManager() { return m_resourceManager; }
 
     WindowComponent& GetWindowComponent() { return m_windowComponent; }
     RendererComponent& GetRendererComponent() { return m_rendererComponent; }
 #endif
-    GameplayComponent& GetGameplayComponent() { return m_gameplayComponent; }
+    GameplayComponent& GetGameplayComponent()
+    {
+        return m_gameplayComponent;
+    }
 
 protected:
     virtual bool Update();
@@ -73,7 +74,6 @@ protected:
 
     std::shared_ptr<LinkingContext> m_linkingContext;
 #ifdef _DRAW
-    FontImporter m_fontImporter;
     TextureImporter m_textureImporter;
     ResourceManager m_resourceManager;
 

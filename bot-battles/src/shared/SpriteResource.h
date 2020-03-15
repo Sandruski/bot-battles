@@ -15,12 +15,11 @@ public:
     bool Load() override;
     bool UnLoad() override;
 
-    SDL_Texture* GetTexture() const;
-    U32 GetWidth() const;
-    U32 GetHeight() const;
+    U32 GetTexture() const;
+    Vec2I GetSize() const;
 
 private:
-    SDL_Texture* m_texture;
+    U32 m_texture;
     Vec2I m_size;
 };
 }

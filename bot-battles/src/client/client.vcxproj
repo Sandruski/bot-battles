@@ -78,7 +78,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\dependencies\include\imgui;..\dependencies\include\gl3w;..\dependencies\include\rapidjson;..\dependencies\include\SDL2;..\shared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\dependencies\include\glm;..\dependencies\include\stb;..\dependencies\include\imgui;..\dependencies\include\gl3w;..\dependencies\include\rapidjson;..\dependencies\include\SDL2;..\shared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -101,7 +101,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\dependencies\include\imgui;..\dependencies\include\gl3w;..\dependencies\include\rapidjson;..\dependencies\include\SDL2;..\shared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\dependencies\include\glm;..\dependencies\include\stb;..\dependencies\include\imgui;..\dependencies\include\gl3w;..\dependencies\include\rapidjson;..\dependencies\include\SDL2;..\shared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -125,7 +125,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\dependencies\include\imgui;..\dependencies\include\gl3w;..\dependencies\include\rapidjson;..\dependencies\include\SDL2;..\shared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\dependencies\include\glm;..\dependencies\include\stb;..\dependencies\include\imgui;..\dependencies\include\gl3w;..\dependencies\include\rapidjson;..\dependencies\include\SDL2;..\shared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -151,7 +151,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\dependencies\include\imgui;..\dependencies\include\gl3w;..\dependencies\include\rapidjson;..\dependencies\include\SDL2;..\shared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\dependencies\include\glm;..\dependencies\include\stb;..\dependencies\include\imgui;..\dependencies\include\gl3w;..\dependencies\include\rapidjson;..\dependencies\include\SDL2;..\shared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -177,6 +177,7 @@
     <ClCompile Include="..\dependencies\source\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="..\dependencies\source\imgui\imgui_impl_sdl.cpp" />
     <ClCompile Include="..\dependencies\source\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="..\dependencies\source\stb\stb_image.cpp" />
     <ClCompile Include="ClientComponent.cpp" />
     <ClCompile Include="ClientSystem.cpp" />
     <ClCompile Include="CollisionSystemClient.cpp" />

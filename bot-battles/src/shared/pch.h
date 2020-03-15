@@ -34,8 +34,16 @@
 #include <SDL_timer.h>
 #include <SDL_ttf.h>
 
+// stb
+#include <stb_image.h>
+
 // gl3w
 #include <GL/gl3w.h>
+
+// glm
+#include <glm.hpp>
+#include <gtc/matrix_transform.hpp>
+#include <gtc/type_ptr.hpp>
 
 // imgui
 #include <imgui.h>
@@ -82,5 +90,6 @@
 
 // Draw
 #include "Colors.h"
+#include "Geometry.h"
 #include "Shaders.h"
 #endif

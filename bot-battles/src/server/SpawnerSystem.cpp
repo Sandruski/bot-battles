@@ -12,8 +12,6 @@
 #include "ServerComponent.h"
 #include "SpriteComponent.h"
 #include "SpriteResource.h"
-#include "TextComponent.h"
-#include "TextResource.h"
 #include "TransformComponent.h"
 #include "WeaponComponent.h"
 
@@ -83,15 +81,6 @@ Entity SpawnerSystem::Spawn(U32 number, const std::string& name) const
         break;
     }
     }
-
-    std::weak_ptr<TextResource> textResource = g_game->GetResourceManager().AddResource<TextResource>("", "", false);
-    RendererComponent& rendererComponent = g_game->GetRendererComponent();
-    textResource.lock()->m_font = rendererComponent.m_defaultFont;
-    textResource.lock()->m_text = name;
-    textResource.lock()->m_color = Black;
-    textResource.lock()->ReLoad();
-    std::weak_ptr<TextComponent> textComponent = g_gameServer->GetComponentManager().AddComponent<TextComponent>(character);
-    textComponent.lock()->m_text = textResource;
 
     std::weak_ptr<ColliderComponent> colliderComponent = g_gameServer->GetComponentManager().AddComponent<ColliderComponent>(character);
     const SDL_Rect& currentSprite = spriteComponent.lock()->GetCurrentSprite();

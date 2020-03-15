@@ -1,98 +1,43 @@
 #include "TextureImporter.h"
 
-#include "Game.h"
-#include "RendererComponent.h"
-
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-bool TextureImporter::StartUp() const
+U32 TextureImporter::Load(const std::string& path, Vec2I& size) const
 {
-    int imgFlags = IMG_INIT_PNG | IMG_INIT_JPG;
-    if (!(IMG_Init(imgFlags) & imgFlags)) {
-        ELOG("SDL_image could not be initialized! SDL_image Error: %s", IMG_GetError());
-        return false;
+    stbi_set_flip_vertically_on_load(true);
+
+    int x, y, channels;
+    U8* data = stbi_load(path.c_str(), &x, &y, &channels, STBI_rgb_alpha);
+    if (data == nullptr) {
+        ELOG("Texture could not be loaded");
+        return 0;
     }
 
-    return true;
-}
+    U32 texture = 0;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
 
-//----------------------------------------------------------------------------------------------------
-bool TextureImporter::ShutDown() const
-{
-    IMG_Quit();
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    return true;
-}
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    glGenerateMipmap(GL_TEXTURE_2D);
 
-//----------------------------------------------------------------------------------------------------
-SDL_Texture* TextureImporter::LoadFromSprite(const char* path, int& width, int& height) const
-{
-    assert(path != nullptr);
+    stbi_image_free(data);
 
-    SDL_Surface* surface = IMG_Load(path);
-    if (surface == nullptr) {
-        ELOG("Surface could not be loaded from sprite %s! SDL_image Error: %s", path, IMG_GetError());
-        return nullptr;
-    }
-
-    SDL_Texture* texture = LoadFromSurface(surface);
-    if (texture == nullptr) {
-        ELOG("Texture could not be created from sprite %s!", path);
-    } else {
-        width = surface->w;
-        height = surface->h;
-    }
-
-    SDL_FreeSurface(surface);
+    size.x = x;
+    size.y = y;
 
     return texture;
 }
 
 //----------------------------------------------------------------------------------------------------
-SDL_Texture* TextureImporter::LoadFromText(TTF_Font* font, const char* text, const SDL_Color& color, int& width, int& height) const
+void TextureImporter::UnLoad(U32& texture) const
 {
-    assert(font != nullptr && text != nullptr);
-
-    SDL_Surface* surface = TTF_RenderText_Solid(font, text, color);
-    if (surface == nullptr) {
-        ELOG("Surface could not be loaded from text! SDL_ttf Error: %s", TTF_GetError());
-        return nullptr;
-    }
-
-    SDL_Texture* texture = LoadFromSurface(surface);
-    if (texture == nullptr) {
-        ELOG("Texture could not be created from text!");
-    } else {
-        width = surface->w;
-        height = surface->h;
-    }
-
-    SDL_FreeSurface(surface);
-
-    return texture;
-}
-
-//----------------------------------------------------------------------------------------------------
-void TextureImporter::UnLoad(SDL_Texture*& texture) const
-{
-    assert(texture != nullptr);
-
-    SDL_DestroyTexture(texture);
-    texture = nullptr;
-}
-
-//----------------------------------------------------------------------------------------------------
-SDL_Texture* TextureImporter::LoadFromSurface(SDL_Surface* surface) const
-{
-    assert(surface != nullptr);
-
-    RendererComponent& rendererComponent = g_game->GetRendererComponent();
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(rendererComponent.m_renderer, surface);
-    if (texture == nullptr) {
-        ELOG("Texture could not be created from surface! SDL Error: %s", SDL_GetError());
-    }
-
-    return texture;
+    glDeleteTextures(1, &texture);
+    texture = 0;
 }
 }

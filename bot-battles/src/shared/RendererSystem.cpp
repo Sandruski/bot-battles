@@ -3,7 +3,6 @@
 #include "Colors.h"
 #include "ComponentManager.h"
 #include "DebugDrawer.h"
-#include "FontResource.h"
 #include "Game.h"
 #include "MeshComponent.h"
 #include "RendererComponent.h"
@@ -68,6 +67,7 @@ bool RendererSystem::StartUp()
     if (!success) {
         glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
         ELOG("Shader could not be compiled %s", infoLog);
+        return false;
     }
 
     U32 fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -77,19 +77,21 @@ bool RendererSystem::StartUp()
     if (!success) {
         glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
         ELOG("Shader could not be compiled %s", infoLog);
+        return false;
     }
 
-    rendererComponent.m_shaderProgram = glCreateProgram();
-    glAttachShader(rendererComponent.m_shaderProgram, vertexShader);
-    glAttachShader(rendererComponent.m_shaderProgram, fragmentShader);
-    glLinkProgram(rendererComponent.m_shaderProgram);
-    glGetProgramiv(rendererComponent.m_shaderProgram, GL_LINK_STATUS, &success);
+    rendererComponent.m_shader = glCreateProgram();
+    glAttachShader(rendererComponent.m_shader, vertexShader);
+    glAttachShader(rendererComponent.m_shader, fragmentShader);
+    glLinkProgram(rendererComponent.m_shader);
+    glGetProgramiv(rendererComponent.m_shader, GL_LINK_STATUS, &success);
     if (!success) {
-        glGetProgramInfoLog(rendererComponent.m_shaderProgram, 512, NULL, infoLog);
+        glGetProgramInfoLog(rendererComponent.m_shader, 512, NULL, infoLog);
         ELOG("Shader could not be linked %s", infoLog);
+        return false;
     }
 
-    glUseProgram(rendererComponent.m_shaderProgram);
+    glUseProgram(rendererComponent.m_shader);
 
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
@@ -140,45 +142,18 @@ bool RendererSystem::Render()
             I32 x = static_cast<I32>(transformComponent.lock()->m_position.x) - w / 2;
             I32 y = static_cast<I32>(transformComponent.lock()->m_position.y) - h / 2;
             const SDL_Rect dstRect = { x, y, w, h };*/
-        }
+            glm::mat4 transform = glm::mat4(1.0f);
+            transform = glm::rotate(transform, transformComponent.lock()->m_rotation, glm::vec3(0.0f, 0.0f, 1.0f));
+            transform = glm::translate(transform, glm::vec3(1.0f, 1.0f, 0.0f));
+            U32 transformLoc = glGetUniformLocation(rendererComponent.m_shader, "transform");
+            glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 
-        glBindVertexArray(meshComponent.lock()->m_VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+            glBindTexture(GL_TEXTURE_2D, spriteComponent.lock()->m_spriteResource.lock()->GetTexture());
+            glBindVertexArray(meshComponent.lock()->m_VAO);
+            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-        if (rendererComponent.m_isDebugDraw) {
-            /*
-            DebugDrawer::DrawQuad(
-                {
-                    (int)transform->m_position.x,
-                    (int)transform->m_position.y,
-                    (int)transform->m_position.x + 10,
-                    (int)transform->m_position.y + 10,
-                },
-                Red);
-
-            DebugDrawer::DrawQuad(
-                {
-                    (int)g_engine->GetWindow().GetWidth() / 4,
-                    (int)g_engine->GetWindow().GetHeight() / 4,
-                    (int)g_engine->GetWindow().GetWidth() / 2,
-                    (int)g_engine->GetWindow().GetHeight() / 2,
-                },
-                Red);
-
-            DebugDrawer::DrawCircle(
-                (int)g_engine->GetWindow().GetWidth() / 4,
-                (int)g_engine->GetWindow().GetHeight() / 4,
-                50,
-                Green);
-
-            DebugDrawer::DrawLine(
-                {
-                    0,
-                    (int)g_engine->GetWindow().GetHeight() / 2,
-                    (int)g_engine->GetWindow().GetWidth(),
-                    (int)g_engine->GetWindow().GetHeight() / 2,
-                },
-                Blue);*/
+            glBindTexture(GL_TEXTURE_2D, 0);
+            glBindVertexArray(0);
         }
     }
 

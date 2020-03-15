@@ -15,12 +15,10 @@
 #include "WeaponComponent.h"
 #ifdef _DRAW
 #include "GuiSystem.h"
-#include "HUDSystem.h"
 #include "RendererSystem.h"
 #include "WindowSystem.h"
 
 #include "SpriteComponent.h"
-#include "TextComponent.h"
 #endif
 
 namespace sand {
@@ -34,7 +32,6 @@ Game::Game()
     , m_linkingContext()
     , m_fsm()
 #ifdef _DRAW
-    , m_fontImporter()
     , m_textureImporter()
     , m_resourceManager()
     , m_windowComponent()
@@ -65,10 +62,6 @@ bool Game::Init()
     if (!ret) {
         return ret;
     }
-    ret = m_systemManager->RegisterSystem<HUDSystem>();
-    if (!ret) {
-        return ret;
-    }
     ret = m_systemManager->RegisterSystem<GuiSystem>();
     if (!ret) {
         return ret;
@@ -86,10 +79,6 @@ bool Game::Init()
         return ret;
     }
     ret = m_componentManager->RegisterComponent<MeshComponent>();
-    if (!ret) {
-        return ret;
-    }
-    ret = m_componentManager->RegisterComponent<TextComponent>();
     if (!ret) {
         return ret;
     }
@@ -131,17 +120,6 @@ bool Game::Init()
     if (!ret) {
         return ret;
     }
-
-#ifdef _DRAW
-    ret = m_textureImporter.StartUp();
-    if (!ret) {
-        return ret;
-    }
-    ret = m_fontImporter.StartUp();
-    if (!ret) {
-        return ret;
-    }
-#endif
 
     m_config->LoadFromJson();
 
@@ -230,14 +208,6 @@ bool Game::End()
         return ret;
     }
 #ifdef _DRAW
-    ret = m_fontImporter.ShutDown();
-    if (!ret) {
-        return ret;
-    }
-    ret = m_textureImporter.ShutDown();
-    if (!ret) {
-        return ret;
-    }
     ret = m_resourceManager.ShutDown();
     if (!ret) {
         return ret;

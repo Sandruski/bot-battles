@@ -7,7 +7,7 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 SpriteResource::SpriteResource(U32 id, const char* dir, const char* file)
     : Resource(id, dir, file)
-    , m_texture(nullptr)
+    , m_texture(0)
     , m_size()
 {
 }
@@ -15,38 +15,32 @@ SpriteResource::SpriteResource(U32 id, const char* dir, const char* file)
 //----------------------------------------------------------------------------------------------------
 bool SpriteResource::Load()
 {
-    assert(m_texture == nullptr);
+    assert(m_texture == 0);
 
-    m_texture = g_game->GetTextureImporter().LoadFromSprite(GetPath().c_str(), m_size.x, m_size.y);
+    m_texture = g_game->GetTextureImporter().Load(GetPath(), m_size);
 
-    return m_texture != nullptr;
+    return (m_texture > 0);
 }
 
 //----------------------------------------------------------------------------------------------------
 bool SpriteResource::UnLoad()
 {
-    assert(m_texture != nullptr);
+    assert(m_texture > 0);
 
     g_game->GetTextureImporter().UnLoad(m_texture);
 
-    return true;
+    return (m_texture == 0);
 }
 
 //----------------------------------------------------------------------------------------------------
-SDL_Texture* SpriteResource::GetTexture() const
+U32 SpriteResource::GetTexture() const
 {
     return m_texture;
 }
 
 //----------------------------------------------------------------------------------------------------
-U32 SpriteResource::GetWidth() const
+Vec2I SpriteResource::GetSize() const
 {
-    return m_size.x;
-}
-
-//----------------------------------------------------------------------------------------------------
-U32 SpriteResource::GetHeight() const
-{
-    return m_size.y;
+    return m_size;
 }
 }
