@@ -35,11 +35,11 @@ public:
     template <typename T, typename U>
     void Read(std::unordered_map<T, U>& outUnorderedMap);
     void Read(std::string& outString);
-    void Read(Vec2& outVec);
-    void Read(Vec3& outVec);
+    void Read(glm::vec2& vec2);
+    void Read(glm::vec3& vec3);
     void Read(glm::vec4& vec4);
     void Read(SDL_Rect& outRect);
-    void ReadPosition(Vec2& outVec);
+    void ReadPosition(glm::vec2& vec2);
 
     char* GetPtr() const;
     U32 GetByteCapacity() const;

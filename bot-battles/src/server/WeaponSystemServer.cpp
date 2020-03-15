@@ -66,13 +66,13 @@ bool WeaponSystemServer::Update()
                     transform = transformComponent.lock()->m_inputTransformBuffer.GetLast();
                 }
 
-                Vec2 position = { transform.m_position.x, transform.m_position.y };
+                glm::vec2 position = { transform.m_position.x, transform.m_position.y };
                 ILOG("SERVER Pos is: %f %f", position.x, position.y);
                 ILOG("From frame %u to frame %u percentage %f", input.m_interpolationFromFrame, input.m_interpolationToFrame, input.m_interpolationPercentage);
 
                 F32 x = std::cos(DEGREES_TO_RADIANS(transform.m_rotation));
                 F32 y = std::sin(DEGREES_TO_RADIANS(transform.m_rotation));
-                Vec2 rotation = { x, y };
+                glm::vec2 rotation = { x, y };
                 weaponComponent.lock()->m_origin = position;
                 WindowComponent& windowComponent = g_gameServer->GetWindowComponent();
                 F32 maxLength = static_cast<F32>(std::max(windowComponent.m_resolution.x, windowComponent.m_resolution.y));
@@ -155,7 +155,7 @@ void WeaponSystemServer::Rewind(Entity localEntity, U32 from, U32 to, F32 percen
                 }
             }
 
-            Vec3 position = Lerp(fromTransform.m_position, toTransform.m_position, percentage);
+            glm::vec3 position = Lerp(fromTransform.m_position, toTransform.m_position, percentage);
             std::weak_ptr<ColliderComponent> colliderComponent = g_gameServer->GetComponentManager().GetComponent<ColliderComponent>(remoteEntity);
             colliderComponent.lock()->m_position = { position.x, position.y };
             colliderComponent.lock()->m_shotPosition = colliderComponent.lock()->m_position;

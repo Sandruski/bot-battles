@@ -41,7 +41,7 @@ bool InputSystemClient::Update()
     }
 
     InputComponent& inputComponent = g_gameClient->GetInputComponent();
-    inputComponent.m_acceleration = Vec2::zero;
+    inputComponent.m_acceleration = glm::vec2(0.0f, 0.0f);
     inputComponent.m_angularAcceleration = 0.0f;
     inputComponent.m_isShooting = false;
 

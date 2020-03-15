@@ -7,6 +7,7 @@
 #include "GameServer.h"
 #include "HealthComponent.h"
 #include "LinkingContext.h"
+#include "MeshComponent.h"
 #include "RendererComponent.h"
 #include "ResourceManager.h"
 #include "ServerComponent.h"
@@ -39,13 +40,13 @@ void SpawnerSystem::OnNotify(const Event& event)
 }
 
 //----------------------------------------------------------------------------------------------------
-Entity SpawnerSystem::Spawn(U32 number, const std::string& name) const
+Entity SpawnerSystem::Spawn(U32 number) const
 {
     Entity character = g_gameServer->GetEntityManager().AddEntity();
     g_gameServer->GetLinkingContext().AddEntity(character);
 
     std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().AddComponent<TransformComponent>(character);
-    transformComponent.lock()->m_position = Vec3(225.0f, 150.0f, 1.0f);
+    transformComponent.lock()->m_position = glm::vec3(225.0f, 150.0f, 1.0f);
 
     std::weak_ptr<SpriteResource> charactersSpriteResource = g_game->GetResourceManager().AddResource<SpriteResource>("characters.png", TEXTURES_DIR, true);
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().AddComponent<SpriteComponent>(character);
@@ -82,6 +83,9 @@ Entity SpawnerSystem::Spawn(U32 number, const std::string& name) const
     }
     }
 
+    std::weak_ptr<MeshComponent> meshComponent = g_gameServer->GetComponentManager().AddComponent<MeshComponent>(character);
+    meshComponent.lock()->Init();
+
     std::weak_ptr<ColliderComponent> colliderComponent = g_gameServer->GetComponentManager().AddComponent<ColliderComponent>(character);
     const SDL_Rect& currentSprite = spriteComponent.lock()->GetCurrentSprite();
     colliderComponent.lock()->m_size.x = static_cast<F32>(currentSprite.w);
@@ -108,8 +112,7 @@ void SpawnerSystem::OnPlayerAdded(PlayerID playerID) const
     U32 playerNumber = playerID + 1;
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
-    const std::string playerName = clientProxy.lock()->GetName();
-    Entity entity = Spawn(playerNumber, playerName);
+    Entity entity = Spawn(playerNumber);
     serverComponent.AddEntity(entity, playerID);
 }
 

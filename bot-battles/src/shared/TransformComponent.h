@@ -30,21 +30,21 @@ struct TransformComponent : public Component
 
 #ifdef _CLIENT
     void Read(InputMemoryStream& inputStream, U32 dirtyState, U32 frame, ReplicationActionType replicationActionType, Entity entity) override;
-    void Replay(bool updatePosition, bool updateRotation, Vec3 newPosition, F32 newRotation);
+    void Replay(bool updatePosition, bool updateRotation, glm::vec3 newPosition, F32 newRotation);
 #elif defined(_SERVER)
     U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override;
 #endif
 
-    void UpdateTransform(const Vec2& acceleration, F32 angularAcceleration, F32 dt);
-    void UpdatePosition(const Vec2& acceleration, F32 dt);
+    void UpdateTransform(const glm::vec2& acceleration, F32 angularAcceleration, F32 dt);
+    void UpdatePosition(const glm::vec2& acceleration, F32 dt);
     void UpdateRotation(F32 angularAcceleration, F32 dt);
 
-    Vec2 GetPosition() const;
-    Vec2 GetRotation() const;
+    glm::vec2 GetPosition() const;
+    glm::vec2 GetRotation() const;
 
-    Vec3 m_position;
+    glm::vec3 m_position;
     F32 m_rotation;
-    //Vec2 m_velocity;
+    //glm::vec2 m_velocity;
     //F32 m_angularVelocity;
     CircularBuffer<Transform, MAX_FRAMES> m_transformBuffer;
     CircularBuffer<Transform, MAX_FRAMES> m_inputTransformBuffer;

@@ -84,9 +84,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)TransformComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)UDPSocket.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utils.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Vec2.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Vec2I.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Vec3.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)WindowSystem.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)WorkingDirDefs.h" />
   </ItemGroup>
@@ -131,9 +128,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Timer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TransformComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)UDPSocket.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Vec2.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Vec2I.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Vec3.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)WindowSystem.cpp" />
   </ItemGroup>
 </Project>

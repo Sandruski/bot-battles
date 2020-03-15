@@ -5,6 +5,7 @@
 #include "GameServer.h"
 #include "GameplayComponent.h"
 #include "LinkingContext.h"
+#include "MeshComponent.h"
 #include "ResourceManager.h"
 #include "SpriteComponent.h"
 #include "SpriteResource.h"
@@ -37,6 +38,9 @@ bool GameplayStateServer::Enter()
     std::weak_ptr<SpriteResource> spriteResource = g_gameServer->GetResourceManager().AddResource<SpriteResource>("gameplayBackground.png", TEXTURES_DIR, true);
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().AddComponent<SpriteComponent>(background);
     spriteComponent.lock()->m_spriteResource = spriteResource;
+
+    std::weak_ptr<MeshComponent> meshComponent = g_gameServer->GetComponentManager().AddComponent<MeshComponent>(background);
+    meshComponent.lock()->Init();
 
     return true;
 }
@@ -94,7 +98,7 @@ void GameplayStateServer::OnPlayerAdded() const
 {
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     U32 playerCount = serverComponent.GetPlayerCount();
-    if (playerCount == MAX_PLAYER_IDS) {
+    if (playerCount < MAX_PLAYER_IDS) {
         GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
         gameplayComponent.m_phaseType = PhaseType::PLAY;
     }

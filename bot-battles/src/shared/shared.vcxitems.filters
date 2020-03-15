@@ -28,9 +28,6 @@
     <Filter Include="Source Files\Entities">
       <UniqueIdentifier>{1bd559cf-bed6-4a75-9470-32a7e577ff46}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Math">
-      <UniqueIdentifier>{1f17103c-7400-4185-bc79-fc55b7cce654}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Networking">
       <UniqueIdentifier>{5ed9b249-7fef-4202-adec-463a6da25a40}</UniqueIdentifier>
     </Filter>
@@ -101,15 +98,6 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Utils.h">
       <Filter>Header Files\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Vec2.h">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Vec2I.h">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Vec3.h">
-      <Filter>Header Files\Math</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Events.h">
       <Filter>Header Files\Events</Filter>
@@ -310,15 +298,6 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)UDPSocket.cpp">
       <Filter>Source Files\Networking</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Vec2.cpp">
-      <Filter>Source Files\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Vec2I.cpp">
-      <Filter>Source Files\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Vec3.cpp">
-      <Filter>Source Files\Math</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)ComponentManager.cpp">
       <Filter>Source Files\Components</Filter>

@@ -85,27 +85,27 @@ void OutputMemoryStream::Write(const std::string& inString)
 }
 
 //----------------------------------------------------------------------------------------------------
-void OutputMemoryStream::Write(const Vec2& inVec)
+void OutputMemoryStream::Write(const glm::vec2& vec2)
 {
-    Write(inVec.x);
-    Write(inVec.y);
+    Write(vec2.x);
+    Write(vec2.y);
 }
 
 //----------------------------------------------------------------------------------------------------
-void OutputMemoryStream::Write(const Vec3& inVec)
+void OutputMemoryStream::Write(const glm::vec3& vec3)
 {
-    Write(inVec.x);
-    Write(inVec.y);
-    Write(inVec.z);
+    Write(vec3.x);
+    Write(vec3.y);
+    Write(vec3.z);
 }
 
 //----------------------------------------------------------------------------------------------------
-void OutputMemoryStream::Write(const glm::vec4& vec)
+void OutputMemoryStream::Write(const glm::vec4& vec4)
 {
-    Write(vec.x);
-    Write(vec.y);
-    Write(vec.z);
-    Write(vec.w);
+    Write(vec4.x);
+    Write(vec4.y);
+    Write(vec4.z);
+    Write(vec4.w);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -118,10 +118,10 @@ void OutputMemoryStream::Write(const SDL_Rect& inRect)
 }
 
 //----------------------------------------------------------------------------------------------------
-void OutputMemoryStream::WritePosition(const Vec2& inVec) // TODO: this should be done properly and without hard-coded values
+void OutputMemoryStream::WritePosition(const glm::vec2& vec2) // TODO: this should be done properly and without hard-coded values
 {
-    U32 x = FLOAT_TO_FIXED(inVec.x, -2000.0f, 0.1f);
-    U32 y = FLOAT_TO_FIXED(inVec.y, -2000.0f, 0.1f);
+    U32 x = FLOAT_TO_FIXED(vec2.x, -2000.0f, 0.1f);
+    U32 y = FLOAT_TO_FIXED(vec2.y, -2000.0f, 0.1f);
     Write(x);
     Write(y);
 }

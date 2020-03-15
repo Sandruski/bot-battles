@@ -29,11 +29,11 @@ bool MainMenuState::Enter()
 {
     Entity background = g_gameClient->GetEntityManager().AddEntity();
 
-    std::weak_ptr<TransformComponent> transform = g_gameClient->GetComponentManager().AddComponent<TransformComponent>(background);
-    WindowComponent& windowComponent = g_gameClient->GetWindowComponent();
-    transform.lock()->m_position = { static_cast<F32>(windowComponent.m_resolution.x / 2), static_cast<F32>(windowComponent.m_resolution.y / 2), 0.0f };
+    WindowComponent& windowComponent = g_game->GetWindowComponent();
+    std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().AddComponent<TransformComponent>(background);
+    transformComponent.lock()->m_position = { static_cast<F32>(windowComponent.m_resolution.x) / 2.0f, static_cast<F32>(windowComponent.m_resolution.y) / 2.0f, 0.0f };
 
-    std::weak_ptr<SpriteResource> spriteResource = g_gameClient->GetResourceManager().AddResource<SpriteResource>("Sample.png", TEXTURES_DIR, true);
+    std::weak_ptr<SpriteResource> spriteResource = g_gameClient->GetResourceManager().AddResource<SpriteResource>("mainMenuBackground.png", TEXTURES_DIR, true);
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameClient->GetComponentManager().AddComponent<SpriteComponent>(background);
     spriteComponent.lock()->m_spriteResource = spriteResource;
 

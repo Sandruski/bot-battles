@@ -111,6 +111,7 @@ bool RendererSystem::PreRender()
 bool RendererSystem::Render()
 {
     RendererComponent& rendererComponent = g_game->GetRendererComponent();
+    WindowComponent& windowComponent = g_game->GetWindowComponent();
 
     /*
 		1. All level geometry
@@ -141,12 +142,26 @@ bool RendererSystem::Render()
             I32 h = spriteComponent.lock()->HasCurrentSprite() ? spriteComponent.lock()->GetCurrentSprite().h : static_cast<I32>(spriteComponent.lock()->m_spriteResource.lock()->GetHeight());
             I32 x = static_cast<I32>(transformComponent.lock()->m_position.x) - w / 2;
             I32 y = static_cast<I32>(transformComponent.lock()->m_position.y) - h / 2;
-            const SDL_Rect dstRect = { x, y, w, h };*/
-            glm::mat4 transform = glm::mat4(1.0f);
-            transform = glm::rotate(transform, transformComponent.lock()->m_rotation, glm::vec3(0.0f, 0.0f, 1.0f));
-            transform = glm::translate(transform, glm::vec3(1.0f, 1.0f, 0.0f));
-            U32 transformLoc = glGetUniformLocation(rendererComponent.m_shader, "transform");
-            glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
+            const SDL_Rect dstRect = { x, y, w, h };
+            */
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::rotate(model, transformComponent.lock()->m_rotation, glm::vec3(0.0f, 0.0f, 1.0f));
+            model = glm::translate(model, transformComponent.lock()->m_position);
+            glm::uvec2 size = spriteComponent.lock()->m_spriteResource.lock()->GetSize();
+            model = glm::scale(model, glm::vec3(static_cast<F32>(size.x), static_cast<F32>(size.y), 0.0f));
+            U32 modelLoc = glGetUniformLocation(rendererComponent.m_shader, "model");
+            glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+            glm::mat4 view = glm::mat4(1.0f);
+            U32 viewLoc = glGetUniformLocation(rendererComponent.m_shader, "view");
+            glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+
+            //F32 aspectRatio = static_cast<F32>(windowComponent.m_resolution.x) / static_cast<F32>(windowComponent.m_resolution.y);
+            //glm::mat4 projection = glm::ortho(-aspectRatio, aspectRatio, -1.0f, 1.0f, -1.0f, 1.0f);
+            //glm::mat4 projection = glm::ortho(0.0f, -aspectRatio, aspectRatio, 0.0f, -1.0f, 1.0f);
+            glm::mat4 projection = glm::ortho(0.0f, static_cast<F32>(windowComponent.m_resolution.x), static_cast<F32>(windowComponent.m_resolution.y), 0.0f, -1.0f, 1.0f);
+            U32 projectionLoc = glGetUniformLocation(rendererComponent.m_shader, "projection");
+            glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
             glBindTexture(GL_TEXTURE_2D, spriteComponent.lock()->m_spriteResource.lock()->GetTexture());
             glBindVertexArray(meshComponent.lock()->m_VAO);

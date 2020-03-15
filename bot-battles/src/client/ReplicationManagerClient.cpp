@@ -75,7 +75,7 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream) const
                 }
 
                 if (!hasTransform) {
-                    Vec3 position = !transformComponent.lock()->m_transformBuffer.IsEmpty() ? transformComponent.lock()->m_transformBuffer.GetLast().m_position : transformComponent.lock()->m_position;
+                    glm::vec3 position = !transformComponent.lock()->m_transformBuffer.IsEmpty() ? transformComponent.lock()->m_transformBuffer.GetLast().m_position : transformComponent.lock()->m_position;
                     F32 rotation = !transformComponent.lock()->m_transformBuffer.IsEmpty() ? transformComponent.lock()->m_transformBuffer.GetLast().m_rotation : transformComponent.lock()->m_rotation;
                     Transform transform = Transform(position, rotation, frame);
                     transformComponent.lock()->m_transformBuffer.Add(transform);

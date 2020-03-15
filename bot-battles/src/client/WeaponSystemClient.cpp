@@ -67,8 +67,8 @@ bool WeaponSystemClient::Update()
                 std::weak_ptr<WeaponComponent> weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(entity);
 
                 // TODO: CHECK RAYS BETWEEN SERVER AND CLIENT
-                Vec2 position = transformComponent.lock()->GetPosition();
-                Vec2 rotation = transformComponent.lock()->GetRotation();
+                glm::vec2 position = transformComponent.lock()->GetPosition();
+                glm::vec2 rotation = transformComponent.lock()->GetRotation();
                 ILOG("CLIENT Pos is: %f %f", position.x, position.y);
                 ILOG("From frame %u to frame %u percentage %f", input.m_interpolationFromFrame, input.m_interpolationToFrame, input.m_interpolationPercentage);
 

@@ -3,8 +3,6 @@
 
 #include "Resource.h"
 
-#include "Vec2I.h"
-
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
@@ -16,11 +14,11 @@ public:
     bool UnLoad() override;
 
     U32 GetTexture() const;
-    Vec2I GetSize() const;
+    glm::uvec2 GetSize() const;
 
 private:
     U32 m_texture;
-    Vec2I m_size;
+    glm::uvec2 m_size;
 };
 }
 

@@ -95,27 +95,27 @@ void InputMemoryStream::Read(std::string& outString)
 }
 
 //----------------------------------------------------------------------------------------------------
-void InputMemoryStream::Read(Vec2& outVec)
+void InputMemoryStream::Read(glm::vec2& vec2)
 {
-    Read(outVec.x);
-    Read(outVec.y);
+    Read(vec2.x);
+    Read(vec2.y);
 }
 
 //----------------------------------------------------------------------------------------------------
-void InputMemoryStream::Read(Vec3& outVec)
+void InputMemoryStream::Read(glm::vec3& vec3)
 {
-    Read(outVec.x);
-    Read(outVec.y);
-    Read(outVec.z);
+    Read(vec3.x);
+    Read(vec3.y);
+    Read(vec3.z);
 }
 
 //----------------------------------------------------------------------------------------------------
-void InputMemoryStream::Read(glm::vec4& vec)
+void InputMemoryStream::Read(glm::vec4& vec4)
 {
-    Read(vec.x);
-    Read(vec.y);
-    Read(vec.z);
-    Read(vec.w);
+    Read(vec4.x);
+    Read(vec4.y);
+    Read(vec4.z);
+    Read(vec4.w);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -128,14 +128,14 @@ void InputMemoryStream::Read(SDL_Rect& outRect)
 }
 
 //----------------------------------------------------------------------------------------------------
-void InputMemoryStream::ReadPosition(Vec2& outVec) // TODO: this should be done properly and without hard-coded values
+void InputMemoryStream::ReadPosition(glm::vec2& vec2) // TODO: this should be done properly and without hard-coded values
 {
     U32 x = 0;
     Read(x);
     U32 y = 0;
     Read(y);
-    outVec.x = FIXED_TO_FLOAT(x, -2000.0f, 0.1f);
-    outVec.y = FIXED_TO_FLOAT(y, -2000.0f, 0.1f);
+    vec2.x = FIXED_TO_FLOAT(x, -2000.0f, 0.1f);
+    vec2.y = FIXED_TO_FLOAT(y, -2000.0f, 0.1f);
 }
 
 //----------------------------------------------------------------------------------------------------

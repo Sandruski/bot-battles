@@ -1,0 +1,1 @@
+-Remove SDL_Rect.

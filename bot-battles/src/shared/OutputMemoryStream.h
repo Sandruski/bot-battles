@@ -23,11 +23,11 @@ public:
     template <typename T, typename U>
     void Write(const std::unordered_map<T, U>& inUnorderedMap);
     void Write(const std::string& inString);
-    void Write(const Vec2& inVec);
-    void Write(const Vec3& inVec);
-    void Write(const glm::vec4& vec);
+    void Write(const glm::vec2& vec2);
+    void Write(const glm::vec3& vec3);
+    void Write(const glm::vec4& vec4);
     void Write(const SDL_Rect& inRect);
-    void WritePosition(const Vec2& inVec);
+    void WritePosition(const glm::vec2& vec2);
 
     const char* GetPtr() const;
     U32 GetByteLength() const;

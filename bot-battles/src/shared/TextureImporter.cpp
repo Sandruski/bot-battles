@@ -3,9 +3,9 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-U32 TextureImporter::Load(const std::string& path, Vec2I& size) const
+U32 TextureImporter::Load(const std::string& path, glm::uvec2& size) const
 {
-    stbi_set_flip_vertically_on_load(true);
+    //stbi_set_flip_vertically_on_load(true);
 
     int x, y, channels;
     U8* data = stbi_load(path.c_str(), &x, &y, &channels, STBI_rgb_alpha);
@@ -23,7 +23,7 @@ U32 TextureImporter::Load(const std::string& path, Vec2I& size) const
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, x, y, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);
 
     stbi_image_free(data);

@@ -6,7 +6,7 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 class TextureImporter {
 public:
-    U32 Load(const std::string& path, Vec2I& size) const;
+    U32 Load(const std::string& path, glm::uvec2& size) const;
     void UnLoad(U32& texture) const;
 };
 }

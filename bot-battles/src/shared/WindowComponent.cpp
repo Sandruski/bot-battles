@@ -5,7 +5,7 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 WindowComponent::WindowComponent()
     : m_window(nullptr)
-    , m_resolution()
+    , m_resolution(0, 0)
     , m_isFullscreen(false)
 {
 }

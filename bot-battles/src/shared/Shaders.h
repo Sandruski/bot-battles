@@ -7,11 +7,13 @@ static const char* vertexShaderSource = "#version 330 core\n"
 
                                         "out vec2 TexCoord;\n"
 
-                                        "uniform mat4 transform;\n"
+                                        "uniform mat4 model;\n"
+                                        "uniform mat4 view;\n"
+                                        "uniform mat4 projection;\n"
 
                                         "void main()\n"
                                         "{\n"
-                                        "gl_Position = transform * vec4(aPos, 1.0);\n"
+                                        "gl_Position = projection * view * model * vec4(aPos, 1.0);\n"
                                         "TexCoord = aTexCoord;\n"
                                         "}\0";
 
@@ -25,5 +27,9 @@ static const char* fragmentShaderSource = "#version 330 core\n"
                                           "void main()\n"
                                           "{\n"
                                           "FragColor = texture(ourTexture, TexCoord);\n"
+                                          "if (FragColor.a == 0.0)\n"
+                                          "{\n"
+                                          "discard;\n"
+                                          "}\n"
                                           "}\0";
 #endif

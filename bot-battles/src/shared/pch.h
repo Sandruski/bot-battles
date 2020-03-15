@@ -65,9 +65,6 @@
 // Math
 #include "Interpolation.h"
 #include "Random.h"
-#include "Vec2.h"
-#include "Vec2I.h"
-#include "Vec3.h"
 
 // Events
 #include "Events.h"

@@ -14,7 +14,7 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U3
 {
     assert(replicationActionType == ReplicationActionType::CREATE || replicationActionType == ReplicationActionType::UPDATE);
 
-    Vec3 newPosition;
+    glm::vec3 newPosition = glm::vec3(0.0f, 0.0f, 0.0f);
     F32 newRotation = 0.0f;
     const bool hasPosition = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION);
     if (hasPosition) {
@@ -97,7 +97,7 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U3
 }
 
 //----------------------------------------------------------------------------------------------------
-void TransformComponent::Replay(bool updatePosition, bool updateRotation, Vec3 newPosition, F32 newRotation)
+void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::vec3 newPosition, F32 newRotation)
 {
     if (m_inputTransformBuffer.IsEmpty()) {
         return;
@@ -105,7 +105,7 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, Vec3 n
 
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     Transform& firstTransform = m_inputTransformBuffer.Get(clientComponent.m_lastAckdFrame);
-    Vec3& position = firstTransform.m_position;
+    glm::vec3& position = firstTransform.m_position;
     F32& rotation = firstTransform.m_rotation;
 
     const bool replayPosition = updatePosition ? position != newPosition : false;

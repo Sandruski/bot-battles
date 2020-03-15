@@ -8,7 +8,7 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-inline bool Raycast(Vec2 position, Vec2 rotation, F32 maxLength, std::pair<Entity, std::weak_ptr<ColliderComponent>>& intersection)
+inline bool Raycast(glm::vec2 position, glm::vec2 rotation, F32 maxLength, std::pair<Entity, std::weak_ptr<ColliderComponent>>& intersection)
 {
     bool ret = false;
 

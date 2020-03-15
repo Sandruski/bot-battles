@@ -22,13 +22,13 @@ MeshComponent::~MeshComponent()
 //----------------------------------------------------------------------------------------------------
 void MeshComponent::Read(InputMemoryStream& /*inputStream*/, U32 /*dirtyState*/, U32 /*frame*/, ReplicationActionType /*replicationActionType*/, Entity /*entity*/)
 {
+    Init();
 }
 #elif defined(_SERVER)
 //----------------------------------------------------------------------------------------------------
 U32 MeshComponent::Write(OutputMemoryStream& /*outputStream*/, U32 /*dirtyState*/) const
 {
     U32 writtenState = 0;
-
     return writtenState;
 }
 #endif

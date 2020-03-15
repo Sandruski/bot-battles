@@ -8,7 +8,7 @@ namespace sand {
 SpriteResource::SpriteResource(U32 id, const char* dir, const char* file)
     : Resource(id, dir, file)
     , m_texture(0)
-    , m_size()
+    , m_size(0, 0)
 {
 }
 
@@ -39,7 +39,7 @@ U32 SpriteResource::GetTexture() const
 }
 
 //----------------------------------------------------------------------------------------------------
-Vec2I SpriteResource::GetSize() const
+glm::uvec2 SpriteResource::GetSize() const
 {
     return m_size;
 }
