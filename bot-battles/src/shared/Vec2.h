@@ -114,12 +114,9 @@ public:
     inline void Normalize()
     {
         F32 mag = GetMagnitude();
-        if (mag > EPSILON)
-        {
+        if (mag > EPSILON) {
             *this /= mag;
-        }
-        else
-        {
+        } else {
             *this = Vec2::zero;
         }
     }
@@ -127,18 +124,15 @@ public:
     static Vec2 Normalize(Vec2 vec)
     {
         F32 mag = GetMagnitude(vec);
-        if (mag > EPSILON)
-        {
+        if (mag > EPSILON) {
             return vec / mag;
-        }
-        else
-        {
+        } else {
             return Vec2::zero;
         }
     }
 
     inline F32 GetMagnitude()
-    { 
+    {
         return sqrt(x * x + y * y);
     }
 

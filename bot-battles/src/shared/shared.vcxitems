@@ -46,6 +46,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)GameplayDefs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Memory.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)InputMemoryStream.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MeshComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MessageTypes.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Input.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)NetDefs.h" />
@@ -63,6 +64,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)ResourceDefs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)FontResource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ResourceManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Shaders.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SpriteResource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StateTypes.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TextComponent.h" />
@@ -114,6 +116,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)InputMemoryStream.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Input.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)MeshComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)OutputMemoryStream.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)RendererSystem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ReplicationCommand.cpp" />

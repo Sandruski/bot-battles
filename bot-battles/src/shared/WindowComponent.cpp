@@ -25,4 +25,10 @@ void WindowComponent::LoadFromConfig(const rapidjson::Value& value)
     assert(value["fullscreen"].IsBool());
     m_isFullscreen = value["fullscreen"].GetBool();
 }
+
+//----------------------------------------------------------------------------------------------------
+void WindowComponent::UpdateResolution()
+{
+    glViewport(0, 0, m_resolution.x, m_resolution.y);
+}
 }

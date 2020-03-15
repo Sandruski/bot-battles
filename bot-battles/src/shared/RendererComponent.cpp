@@ -12,6 +12,7 @@ RendererComponent::RendererComponent()
     , m_backgroundColor()
     , m_isVsync(false)
     , m_isDebugDraw(false)
+    , m_shaderProgram(0)
 {
 }
 
@@ -50,5 +51,11 @@ void RendererComponent::LoadFromConfig(const rapidjson::Value& value)
     assert(value.HasMember("debugDraw"));
     assert(value["debugDraw"].IsBool());
     m_isDebugDraw = value["debugDraw"].GetBool();
+}
+
+//----------------------------------------------------------------------------------------------------
+void RendererComponent::UpdateBackgroundColor()
+{
+    glClearColor(m_backgroundColor.r, m_backgroundColor.g, m_backgroundColor.b, m_backgroundColor.a);
 }
 }

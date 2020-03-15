@@ -44,17 +44,15 @@ bool GuiSystem::Render()
 {
     ImGui::ShowDemoWindow();
 
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
     return true;
 }
 
 //----------------------------------------------------------------------------------------------------
 bool GuiSystem::PostRender()
 {
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-    WindowComponent windowComponent = g_game->GetWindowComponent();
-    SDL_GL_SwapWindow(windowComponent.m_window);
-
     return true;
 }
 

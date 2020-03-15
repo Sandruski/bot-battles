@@ -4,6 +4,7 @@
 #include "Config.h"
 #include "EntityManager.h"
 #include "GameClient.h"
+#include "MeshComponent.h"
 #include "ResourceManager.h"
 #include "SpriteComponent.h"
 #include "SpriteResource.h"
@@ -35,6 +36,9 @@ bool MainMenuState::Enter()
     std::weak_ptr<SpriteResource> spriteResource = g_gameClient->GetResourceManager().AddResource<SpriteResource>("mainMenuBackground.png", TEXTURES_DIR, true);
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameClient->GetComponentManager().AddComponent<SpriteComponent>(background);
     spriteComponent.lock()->m_spriteResource = spriteResource;
+
+    std::weak_ptr<MeshComponent> meshComponent = g_gameClient->GetComponentManager().AddComponent<MeshComponent>(background);
+    meshComponent.lock()->CreateVBO();
 
     return true;
 }

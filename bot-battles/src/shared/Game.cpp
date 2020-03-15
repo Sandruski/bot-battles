@@ -9,6 +9,7 @@
 #include "HealthComponent.h"
 #include "InputComponent.h"
 #include "LinkingContext.h"
+#include "MeshComponent.h"
 #include "SystemManager.h"
 #include "TransformComponent.h"
 #include "WeaponComponent.h"
@@ -81,6 +82,10 @@ bool Game::Init()
     // Components
 #ifdef _DRAW
     ret = m_componentManager->RegisterComponent<SpriteComponent>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_componentManager->RegisterComponent<MeshComponent>();
     if (!ret) {
         return ret;
     }

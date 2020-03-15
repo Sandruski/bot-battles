@@ -11,6 +11,8 @@ struct WindowComponent {
 
     void LoadFromConfig(const rapidjson::Value& value);
 
+    void UpdateResolution();
+
     SDL_Window* m_window;
 
     Vec2I m_resolution;
