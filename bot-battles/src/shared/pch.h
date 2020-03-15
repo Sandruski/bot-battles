@@ -5,6 +5,7 @@
 #define NOMINMAX
 
 #define _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS
 
 //----------------------------------------------------------------------------------------------------
 #include <WS2tcpip.h>
@@ -33,9 +34,17 @@
 #include <SDL_timer.h>
 #include <SDL_ttf.h>
 
+// gl3w
+#include <GL/gl3w.h>
+
+// imgui
+#include <imgui.h>
+#include <imgui_impl_opengl3.h>
+#include <imgui_impl_sdl.h>
+
 // rapidjson
-#include "document.h"
-#include "filereadstream.h"
+#include <document.h>
+#include <filereadstream.h>
 
 //----------------------------------------------------------------------------------------------------
 // Utils
@@ -46,11 +55,11 @@
 #include "Utils.h"
 
 // Math
+#include "Interpolation.h"
 #include "Random.h"
 #include "Vec2.h"
 #include "Vec2I.h"
 #include "Vec3.h"
-#include "Interpolation.h"
 
 // Events
 #include "Events.h"
@@ -65,11 +74,11 @@
 // Defs
 #include "ComponentDefs.h"
 #include "EntityDefs.h"
+#include "GameplayDefs.h"
 #include "NetDefs.h"
 #include "StateDefs.h"
 #include "SystemDefs.h"
 #include "WorkingDirDefs.h"
-#include "GameplayDefs.h"
 
 // Draw
 #include "Colors.h"

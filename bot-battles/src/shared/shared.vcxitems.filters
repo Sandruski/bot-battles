@@ -294,6 +294,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)GameplayDefs.h">
       <Filter>Header Files\Gameplay</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)GuiSystem.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp">
@@ -436,6 +439,9 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)GameplayComponent.cpp">
       <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)GuiSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

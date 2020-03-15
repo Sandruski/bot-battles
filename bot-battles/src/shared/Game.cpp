@@ -13,6 +13,7 @@
 #include "TransformComponent.h"
 #include "WeaponComponent.h"
 #ifdef _DRAW
+#include "GuiSystem.h"
 #include "HUDSystem.h"
 #include "RendererSystem.h"
 #include "WindowSystem.h"
@@ -64,6 +65,10 @@ bool Game::Init()
         return ret;
     }
     ret = m_systemManager->RegisterSystem<HUDSystem>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_systemManager->RegisterSystem<GuiSystem>();
     if (!ret) {
         return ret;
     }

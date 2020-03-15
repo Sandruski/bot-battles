@@ -27,14 +27,31 @@ RendererSystem::RendererSystem()
 bool RendererSystem::StartUp()
 {
     RendererComponent& rendererComponent = g_game->GetRendererComponent();
-    U32 flags = SDL_RENDERER_ACCELERATED;
-    if (rendererComponent.m_isVsync) {
-        flags |= SDL_RENDERER_PRESENTVSYNC;
-    }
+
+    // GL 3.0 + GLSL 130
+    //const char* glslVersion = "#version 130";
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+
     WindowComponent& windowComponent = g_game->GetWindowComponent();
-    rendererComponent.m_renderer = SDL_CreateRenderer(windowComponent.m_window, -1, flags);
-    if (rendererComponent.m_renderer == nullptr) {
-        ELOG("Renderer could not be created! SDL Error: %s", SDL_GetError());
+    SDL_GLContext glContext = SDL_GL_CreateContext(windowComponent.m_window);
+    SDL_GL_MakeCurrent(windowComponent.m_window, glContext);
+    if (rendererComponent.m_isVsync) {
+        SDL_GL_SetSwapInterval(1);
+    }
+
+    if (gl3wInit()) {
+        ELOG("OpenGL could not be initialized");
+        return false;
+    }
+    if (!gl3wIsSupported(3, 0)) {
+        ELOG("OpenGL 3.0 is not supported");
         return false;
     }
 
@@ -46,8 +63,12 @@ bool RendererSystem::PreRender()
 {
     RendererComponent& rendererComponent = g_game->GetRendererComponent();
 
-    SDL_SetRenderDrawColor(rendererComponent.m_renderer, rendererComponent.m_backgroundColor.r, rendererComponent.m_backgroundColor.g, rendererComponent.m_backgroundColor.b, rendererComponent.m_backgroundColor.a);
-    SDL_RenderClear(rendererComponent.m_renderer);
+    //SDL_SetRenderDrawColor(rendererComponent.m_renderer, rendererComponent.m_backgroundColor.r, rendererComponent.m_backgroundColor.g, rendererComponent.m_backgroundColor.b, rendererComponent.m_backgroundColor.a);
+    //SDL_RenderClear(rendererComponent.m_renderer);
+
+    //glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
+    glClearColor(rendererComponent.m_backgroundColor.r, rendererComponent.m_backgroundColor.g, rendererComponent.m_backgroundColor.b, rendererComponent.m_backgroundColor.a);
+    glClear(GL_COLOR_BUFFER_BIT);
 
     return true;
 }
@@ -55,7 +76,9 @@ bool RendererSystem::PreRender()
 //----------------------------------------------------------------------------------------------------
 bool RendererSystem::Render()
 {
-    RendererComponent& rendererComponent = g_game->GetRendererComponent();
+    return true;
+
+    //RendererComponent& rendererComponent = g_game->GetRendererComponent();
 
     /*
 		1. All level geometry
@@ -64,6 +87,7 @@ bool RendererSystem::Render()
 		4. Swap buffers
 	*/
 
+    /*
     std::sort(m_entities.begin(), m_entities.end(), [](Entity entity1, Entity entity2) {
         std::weak_ptr<TransformComponent> transformComponent1 = g_game->GetComponentManager().GetComponent<TransformComponent>(entity1);
         std::weak_ptr<TransformComponent> transformComponent2 = g_game->GetComponentManager().GetComponent<TransformComponent>(entity2);
@@ -74,8 +98,7 @@ bool RendererSystem::Render()
 
         std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
         std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
-        if (!transformComponent.lock()->m_isEnabled || !spriteComponent.lock()->m_isEnabled)
-        {
+        if (!transformComponent.lock()->m_isEnabled || !spriteComponent.lock()->m_isEnabled) {
             continue;
         }
 
@@ -96,7 +119,7 @@ bool RendererSystem::Render()
         }
 
         if (rendererComponent.m_isDebugDraw) {
-            /*
+
             DebugDrawer::DrawQuad(
                 {
                     (int)transform->m_position.x,
@@ -129,19 +152,19 @@ bool RendererSystem::Render()
 				(int)g_engine->GetWindow().GetHeight() / 2,
 				},
 				Blue);
-			*/
         }
     }
 
-    return true;
+
+    return true;    */
 }
 
 //----------------------------------------------------------------------------------------------------
 bool RendererSystem::PostRender()
 {
-    RendererComponent& rendererComponent = g_game->GetRendererComponent();
+    //RendererComponent& rendererComponent = g_game->GetRendererComponent();
 
-    SDL_RenderPresent(rendererComponent.m_renderer);
+    //SDL_RenderPresent(rendererComponent.m_renderer);
 
     return true;
 }
@@ -149,10 +172,7 @@ bool RendererSystem::PostRender()
 //----------------------------------------------------------------------------------------------------
 bool RendererSystem::ShutDown()
 {
-    RendererComponent& rendererComponent = g_game->GetRendererComponent();
-
-    SDL_DestroyRenderer(rendererComponent.m_renderer);
-    rendererComponent.m_renderer = nullptr;
+    SDL_GL_DeleteContext(SDL_GL_GetCurrentContext());
 
     return true;
 }

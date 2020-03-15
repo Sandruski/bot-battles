@@ -37,6 +37,15 @@
     <Filter Include="Header Files\States">
       <UniqueIdentifier>{b92f7876-f766-4c6c-a4e3-e8b59cd1352d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Dependencies">
+      <UniqueIdentifier>{fa561a42-000b-430f-a802-c1f734d25591}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dependencies\imgui">
+      <UniqueIdentifier>{6514cf07-ed0b-42ff-9708-3515e968dd2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dependencies\gl3w">
+      <UniqueIdentifier>{eaf56b97-93ee-4584-9942-ea4b23e8dba9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -89,6 +98,27 @@
     </ClCompile>
     <ClCompile Include="GameplayStateClient.cpp">
       <Filter>Source Files\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\source\imgui\imgui.cpp">
+      <Filter>Dependencies\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\source\imgui\imgui_demo.cpp">
+      <Filter>Dependencies\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\source\imgui\imgui_draw.cpp">
+      <Filter>Dependencies\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\source\imgui\imgui_impl_opengl3.cpp">
+      <Filter>Dependencies\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\source\imgui\imgui_impl_sdl.cpp">
+      <Filter>Dependencies\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\source\imgui\imgui_widgets.cpp">
+      <Filter>Dependencies\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\source\gl3w\gl3w.cpp">
+      <Filter>Dependencies\gl3w</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

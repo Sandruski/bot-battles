@@ -15,11 +15,11 @@ bool WindowSystem::StartUp()
     }
 
     WindowComponent& windowComponent = g_game->GetWindowComponent();
-    U32 flags = SDL_WINDOW_SHOWN;
+    U32 flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI;
     if (windowComponent.m_isFullscreen) {
         flags |= SDL_WINDOW_FULLSCREEN;
     }
-    windowComponent.m_window = SDL_CreateWindow(g_game->GetConfig().m_name.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, windowComponent.m_resolution.x, windowComponent.m_resolution.y, flags);
+    windowComponent.m_window = SDL_CreateWindow(g_game->GetConfig().m_name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowComponent.m_resolution.x, windowComponent.m_resolution.y, flags);
     if (windowComponent.m_window == nullptr) {
         ELOG("Window could not be created! SDL Error: %s", SDL_GetError());
         return false;

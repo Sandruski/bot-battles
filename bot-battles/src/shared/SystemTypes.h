@@ -22,6 +22,7 @@ enum class SystemType : U16 {
 
 #ifdef _DRAW
     HUD,
+    GUI,
 #endif
     COUNT
 };
@@ -43,6 +44,7 @@ enum class SystemType : U16 {
     INPUT,
 #ifdef _DRAW
     HUD,
+    GUI,
 #endif
     COUNT
 };
