@@ -41,8 +41,8 @@ glm::vec2 TransformComponent::GetPosition() const
 //----------------------------------------------------------------------------------------------------
 glm::vec2 TransformComponent::GetRotation() const
 {
-    F32 x = std::cos(DEGREES_TO_RADIANS(m_rotation));
-    F32 y = std::sin(DEGREES_TO_RADIANS(m_rotation));
+    F32 x = std::cos(glm::radians(m_rotation));
+    F32 y = std::sin(glm::radians(m_rotation));
 
     return glm::vec2(x, y);
 }

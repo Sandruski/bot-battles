@@ -70,8 +70,8 @@ bool WeaponSystemServer::Update()
                 ILOG("SERVER Pos is: %f %f", position.x, position.y);
                 ILOG("From frame %u to frame %u percentage %f", input.m_interpolationFromFrame, input.m_interpolationToFrame, input.m_interpolationPercentage);
 
-                F32 x = std::cos(DEGREES_TO_RADIANS(transform.m_rotation));
-                F32 y = std::sin(DEGREES_TO_RADIANS(transform.m_rotation));
+                F32 x = std::cos(glm::radians(transform.m_rotation));
+                F32 y = std::sin(glm::radians(transform.m_rotation));
                 glm::vec2 rotation = { x, y };
                 weaponComponent.lock()->m_origin = position;
                 WindowComponent& windowComponent = g_gameServer->GetWindowComponent();
