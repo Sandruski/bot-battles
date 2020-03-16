@@ -53,27 +53,27 @@ Entity SpawnerSystem::Spawn(U32 number) const
     spriteComponent.lock()->m_spriteResource = charactersSpriteResource;
     switch (number) {
     case 1: {
-        SDL_Rect standRect = { 1, 1, 36, 43 };
-        SDL_Rect holdRect = { 38, 1, 38, 43 };
-        SDL_Rect shootRect = { 77, 1, 52, 43 };
-        SDL_Rect reloadRect = { 130, 1, 42, 43 };
-        spriteComponent.lock()->AddSprite("stand", standRect);
-        spriteComponent.lock()->AddSprite("hold", holdRect);
-        spriteComponent.lock()->AddSprite("shoot", shootRect);
-        spriteComponent.lock()->AddSprite("reload", reloadRect);
+        glm::vec4 standTextureCoords = glm::vec4(1.0f, 1.0f, 36.0f, 43.0f);
+        spriteComponent.lock()->AddSprite("stand", standTextureCoords);
+        glm::vec4 holdTextureCoords = glm::vec4(38.0f, 1.0f, 38.0f, 43.0f);
+        spriteComponent.lock()->AddSprite("hold", holdTextureCoords);
+        glm::vec4 shootTextureCoords = glm::vec4(77.0f, 1.0f, 52.0f, 43.0f);
+        spriteComponent.lock()->AddSprite("shoot", shootTextureCoords);
+        glm::vec4 realoadTextureCoords = glm::vec4(130.0f, 1.0f, 42.0f, 43.0f);
+        spriteComponent.lock()->AddSprite("reaload", realoadTextureCoords);
         spriteComponent.lock()->m_currentSprite = "stand";
         break;
     }
 
     case 2: {
-        SDL_Rect standRect = { 1, 45, 35, 43 };
-        SDL_Rect holdRect = { 37, 45, 37, 43 };
-        SDL_Rect shootRect = { 75, 45, 51, 43 };
-        SDL_Rect reloadRect = { 127, 45, 41, 43 };
-        spriteComponent.lock()->AddSprite("stand", standRect);
-        spriteComponent.lock()->AddSprite("hold", holdRect);
-        spriteComponent.lock()->AddSprite("shoot", shootRect);
-        spriteComponent.lock()->AddSprite("reload", reloadRect);
+        glm::vec4 standTextureCoords = glm::vec4(1.0f, 45.0f, 35.0f, 43.0f);
+        spriteComponent.lock()->AddSprite("stand", standTextureCoords);
+        glm::vec4 holdTextureCoords = glm::vec4(37.0f, 45.0f, 37.0f, 43.0f);
+        spriteComponent.lock()->AddSprite("hold", holdTextureCoords);
+        glm::vec4 shootTextureCoords = glm::vec4(75.0f, 45.0f, 51.0f, 43.0f);
+        spriteComponent.lock()->AddSprite("shoot", shootTextureCoords);
+        glm::vec4 realoadTextureCoords = glm::vec4(127.0f, 45.0f, 42.0f, 43.0f);
+        spriteComponent.lock()->AddSprite("reaload", realoadTextureCoords);
         spriteComponent.lock()->m_currentSprite = "stand";
         break;
     }
@@ -87,9 +87,9 @@ Entity SpawnerSystem::Spawn(U32 number) const
     meshComponent.lock()->Init();
 
     std::weak_ptr<ColliderComponent> colliderComponent = g_gameServer->GetComponentManager().AddComponent<ColliderComponent>(character);
-    const SDL_Rect& currentSprite = spriteComponent.lock()->GetCurrentSprite();
-    colliderComponent.lock()->m_size.x = static_cast<F32>(currentSprite.w);
-    colliderComponent.lock()->m_size.y = static_cast<F32>(currentSprite.h);
+    //const SDL_Rect& currentSprite = spriteComponent.lock()->GetCurrentSprite(); // TODO
+    //colliderComponent.lock()->m_size.x = static_cast<F32>(currentSprite.w);
+    //colliderComponent.lock()->m_size.y = static_cast<F32>(currentSprite.h);
 
     std::weak_ptr<WeaponComponent> weaponComponent = g_gameServer->GetComponentManager().AddComponent<WeaponComponent>(character);
 

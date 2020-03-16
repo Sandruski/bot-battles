@@ -9,7 +9,7 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 SpriteComponent::SpriteComponent()
     : m_spriteResource()
-    , m_sprites()
+    , m_spriteToTextureCoords()
     , m_currentSprite()
 {
 }
@@ -27,7 +27,7 @@ void SpriteComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U32 /
         m_spriteResource = g_game->GetResourceManager().AddResource<SpriteResource>(file.c_str(), TEXTURES_DIR, true);
     }
     if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_SPRITES)) {
-        inputStream.Read(m_sprites);
+        inputStream.Read(m_spriteToTextureCoords);
     }
     if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_CURRENT_SPRITE)) {
         inputStream.Read(m_currentSprite);
@@ -49,7 +49,7 @@ U32 SpriteComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) con
         writtenState |= static_cast<U32>(ComponentMemberType::SPRITE_FILE);
     }
     if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_SPRITES)) {
-        outputStream.Write(m_sprites);
+        outputStream.Write(m_spriteToTextureCoords);
         writtenState |= static_cast<U32>(ComponentMemberType::SPRITE_SPRITES);
     }
     if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_CURRENT_SPRITE)) {
@@ -62,32 +62,37 @@ U32 SpriteComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) con
 #endif
 
 //----------------------------------------------------------------------------------------------------
-bool SpriteComponent::AddSprite(std::string name, SDL_Rect rect)
+bool SpriteComponent::AddSprite(const std::string& name, const glm::vec4& textureCoords)
 {
-    return m_sprites.insert(std::make_pair(name, rect)).second;
+    return m_spriteToTextureCoords.insert(std::make_pair(name, textureCoords)).second;
 }
 
 //----------------------------------------------------------------------------------------------------
-bool SpriteComponent::RemoveSprite(std::string name)
+bool SpriteComponent::RemoveSprite(const std::string& name)
 {
-    return m_sprites.erase(name);
+    return m_spriteToTextureCoords.erase(name);
 }
 
 //----------------------------------------------------------------------------------------------------
-const SDL_Rect& SpriteComponent::GetSprite(std::string name) const
+bool SpriteComponent::GetSprite(const std::string& name, glm::vec4& textureCoords) const
 {
-    return m_sprites.at(name);
+    auto it = m_spriteToTextureCoords.find(name);
+    if (it == m_spriteToTextureCoords.end()) {
+        // TODO: change this to force to have a current sprite
+        glm::uvec2 size = !m_spriteResource.expired() ? m_spriteResource.lock()->GetSize() : glm::uvec2(1.0f, 1.0f);
+        textureCoords = glm::vec4(0.0f, 0.0f, size.x, size.y);
+
+        return false;
+    }
+
+    textureCoords = it->second;
+
+    return true;
 }
 
 //----------------------------------------------------------------------------------------------------
-const SDL_Rect& SpriteComponent::GetCurrentSprite() const
+bool SpriteComponent::GetCurrentSprite(glm::vec4& textureCoords) const
 {
-    return m_sprites.at(m_currentSprite);
-}
-
-//----------------------------------------------------------------------------------------------------
-bool SpriteComponent::HasCurrentSprite() const
-{
-    return !m_currentSprite.empty();
+    return GetSprite(m_currentSprite, textureCoords);
 }
 }

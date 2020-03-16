@@ -5,7 +5,7 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 U32 TextureImporter::Load(const std::string& path, glm::uvec2& size) const
 {
-    //stbi_set_flip_vertically_on_load(true);
+    stbi_set_flip_vertically_on_load(true);
 
     int x, y, channels;
     U8* data = stbi_load(path.c_str(), &x, &y, &channels, STBI_rgb_alpha);
