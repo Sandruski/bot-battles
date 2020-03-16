@@ -148,13 +148,27 @@ bool RendererSystem::Render()
             model = glm::translate(model, transformComponent.lock()->m_position);
             model = glm::rotate(model, glm::radians(transformComponent.lock()->m_rotation), glm::vec3(0.0f, 0.0f, 1.0f));
             glm::uvec2 size = spriteComponent.lock()->m_spriteResource.lock()->GetSize();
-            model = glm::scale(model, glm::vec3(static_cast<F32>(size.x), static_cast<F32>(size.y), 0.0f));
+            //model = glm::scale(model, glm::vec3(static_cast<F32>(size.x), static_cast<F32>(size.y), 0.0f));
+            model = glm::scale(model, glm::vec3(33.0f, 44.0f, 0.0f));
+
             U32 modelLoc = glGetUniformLocation(rendererComponent.m_shader, "model");
             glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
             glm::mat4 projection = glm::ortho(0.0f, static_cast<F32>(windowComponent.m_resolution.x), static_cast<F32>(windowComponent.m_resolution.y), 0.0f, -1.0f, 1.0f);
             U32 projectionLoc = glGetUniformLocation(rendererComponent.m_shader, "projection");
             glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+            // Vertices
+            // Top-left
+            meshComponent.lock()->m_vertices[0].m_textureCoords = glm::vec2(0.0f, 0.0f);
+            // Top-right
+            meshComponent.lock()->m_vertices[1].m_textureCoords = glm::vec2(33.0f / 256.0f, 0.0f);
+            // Bottom-left
+            meshComponent.lock()->m_vertices[2].m_textureCoords = glm::vec2(0.0f, 44.0f / 256.0f);
+            // Bottom-right
+            meshComponent.lock()->m_vertices[3].m_textureCoords = glm::vec2(33.0f / 256.0f, 44.0f / 256.0f);
+
+            meshComponent.lock()->UpdateVertex();
 
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, spriteComponent.lock()->m_spriteResource.lock()->GetTexture());

@@ -45,6 +45,7 @@ struct MeshComponent : public Component
 #endif
 
     void Init();
+    void UpdateVertex();
 
     std::array<Vertex, 4> m_vertices;
     std::array<U32, 6> m_indices;
