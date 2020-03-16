@@ -276,9 +276,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Shaders.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Geometry.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp">

@@ -23,6 +23,18 @@ struct MeshComponent : public Component
 {
     static ComponentType GetType() { return ComponentType::MESH; }
 
+    struct Vertex {
+
+        Vertex()
+            : m_position(0.0f, 0.0f)
+            , m_textureCoords(0.0f, 0.0f)
+        {
+        }
+
+        glm::vec2 m_position;
+        glm::vec2 m_textureCoords;
+    };
+
     MeshComponent();
     ~MeshComponent() override;
 
@@ -34,6 +46,8 @@ struct MeshComponent : public Component
 
     void Init();
 
+    std::array<Vertex, 4> m_vertices;
+    std::array<U32, 6> m_indices;
     U32 m_VAO;
     U32 m_VBO;
     U32 m_EBO;
