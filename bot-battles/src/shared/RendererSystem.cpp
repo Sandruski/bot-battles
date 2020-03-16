@@ -36,6 +36,8 @@ bool RendererSystem::StartUp()
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 
     SDL_GLContext glContext = SDL_GL_CreateContext(windowComponent.m_window);
     SDL_GL_MakeCurrent(windowComponent.m_window, glContext);
@@ -57,6 +59,7 @@ bool RendererSystem::StartUp()
 
     windowComponent.UpdateResolution();
     rendererComponent.UpdateBackgroundColor();
+    glClearDepth(1.0f);
 
     U32 vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
@@ -102,7 +105,7 @@ bool RendererSystem::StartUp()
 //----------------------------------------------------------------------------------------------------
 bool RendererSystem::PreRender()
 {
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     return true;
 }
