@@ -15,7 +15,7 @@ bool WindowSystem::StartUp()
     }
 
     WindowComponent& windowComponent = g_game->GetWindowComponent();
-    U32 flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL;
+    U32 flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI;
     if (windowComponent.m_isFullscreen) {
         flags |= SDL_WINDOW_FULLSCREEN;
     }
