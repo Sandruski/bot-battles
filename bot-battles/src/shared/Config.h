@@ -10,7 +10,7 @@ struct Config {
     virtual ~Config() = default;
 
     bool LoadFromJson();
-    virtual void ReadDocument(const rapidjson::Document& document);
+    virtual void LoadFromConfig(const rapidjson::Document& document);
 
     std::string m_configPath;
     std::string m_name;

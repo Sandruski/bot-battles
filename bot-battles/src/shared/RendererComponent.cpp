@@ -7,7 +7,7 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 RendererComponent::RendererComponent()
-    : m_shader(0)
+    : m_shaderResource()
     , m_backgroundColor(0.0f, 0.0f, 0.0f, 0.0f)
     , m_isVsync(false)
     , m_isDebugDraw(false)

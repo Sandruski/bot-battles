@@ -2,13 +2,15 @@
 #define __GAME_H__
 
 #ifdef _DRAW
-#include "ResourceManager.h"
-#include "TextureImporter.h"
-
 #include "RendererComponent.h"
+#include "ShaderImporter.h"
+#include "TextureImporter.h"
 #include "WindowComponent.h"
 #endif
+#include "FileSystem.h"
 #include "GameplayComponent.h"
+#include "MapImporter.h"
+#include "ResourceManager.h"
 
 namespace sand {
 
@@ -39,15 +41,26 @@ public:
     FSM& GetFSM() { return *m_fsm; }
     LinkingContext& GetLinkingContext() { return *m_linkingContext; }
 #ifdef _DRAW
+    ShaderImporter& GetShaderImporter()
+    {
+        return m_shaderImporter;
+    }
     TextureImporter& GetTextureImporter()
     {
         return m_textureImporter;
     }
-    ResourceManager& GetResourceManager() { return m_resourceManager; }
-
     WindowComponent& GetWindowComponent() { return m_windowComponent; }
     RendererComponent& GetRendererComponent() { return m_rendererComponent; }
 #endif
+    FileSystem& GetFileSystem()
+    {
+        return m_fileSystem;
+    }
+    ResourceManager& GetResourceManager() { return m_resourceManager; }
+    MapImporter& GetMapImporter()
+    {
+        return m_mapImporter;
+    }
     GameplayComponent& GetGameplayComponent()
     {
         return m_gameplayComponent;
@@ -71,15 +84,16 @@ protected:
     std::shared_ptr<ComponentManager> m_componentManager;
     std::shared_ptr<SystemManager> m_systemManager;
     std::shared_ptr<FSM> m_fsm;
-
     std::shared_ptr<LinkingContext> m_linkingContext;
 #ifdef _DRAW
+    ShaderImporter m_shaderImporter;
     TextureImporter m_textureImporter;
-    ResourceManager m_resourceManager;
-
     WindowComponent m_windowComponent;
     RendererComponent m_rendererComponent;
 #endif
+    FileSystem m_fileSystem;
+    ResourceManager m_resourceManager;
+    MapImporter m_mapImporter;
     GameplayComponent m_gameplayComponent;
 
     bool m_isRunning;

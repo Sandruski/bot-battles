@@ -8,6 +8,7 @@ enum class SystemType : U16 {
 #ifdef _DRAW
     WINDOW,
     RENDERER,
+    MAP_RENDERER,
     EVENT,
 #endif
     CLIENT,
@@ -30,6 +31,7 @@ enum class SystemType : U16 {
 #ifdef _DRAW
     WINDOW,
     RENDERER,
+    MAP_RENDERER,
     EVENT,
 #endif
     SERVER,

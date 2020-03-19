@@ -15,10 +15,12 @@
 #include "WeaponComponent.h"
 #ifdef _DRAW
 #include "GuiSystem.h"
+#include "MapComponent.h"
+#include "MapRendererSystem.h"
 #include "RendererSystem.h"
-#include "WindowSystem.h"
-
+#include "ShaderResource.h"
 #include "SpriteComponent.h"
+#include "WindowSystem.h"
 #endif
 
 namespace sand {
@@ -29,14 +31,16 @@ Game::Game()
     , m_entityManager()
     , m_componentManager()
     , m_systemManager()
-    , m_linkingContext()
     , m_fsm()
+    , m_linkingContext()
 #ifdef _DRAW
+    , m_shaderImporter()
     , m_textureImporter()
-    , m_resourceManager()
     , m_windowComponent()
     , m_rendererComponent()
 #endif
+    , m_resourceManager()
+    , m_mapImporter()
     , m_gameplayComponent()
     , m_isRunning(false)
 {
@@ -62,6 +66,10 @@ bool Game::Init()
     if (!ret) {
         return ret;
     }
+    ret = m_systemManager->RegisterSystem<MapRendererSystem>();
+    if (!ret) {
+        return ret;
+    }
     ret = m_systemManager->RegisterSystem<GuiSystem>();
     if (!ret) {
         return ret;
@@ -75,6 +83,10 @@ bool Game::Init()
     // Components
 #ifdef _DRAW
     ret = m_componentManager->RegisterComponent<SpriteComponent>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_componentManager->RegisterComponent<MapComponent>();
     if (!ret) {
         return ret;
     }

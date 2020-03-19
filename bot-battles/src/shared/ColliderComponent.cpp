@@ -7,9 +7,9 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 ColliderComponent::ColliderComponent()
-    : m_position()
-    , m_size()
-    , m_shotPosition()
+    : m_position(0.0f, 0.0f)
+    , m_size(0.0f, 0.0f)
+    , m_shotPosition(0.0f, 0.0f)
 {
 }
 

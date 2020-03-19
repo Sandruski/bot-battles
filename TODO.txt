@@ -1,1 +1,2 @@
 -Remove SDL_Rect.
+-Remove MeshComponent from everyone. We only need one.

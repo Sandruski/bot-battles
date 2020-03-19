@@ -1,0 +1,14 @@
+{ "columns":27,
+ "image":"..\/textures\/map.png",
+ "imageheight":1470,
+ "imagewidth":1988,
+ "margin":0,
+ "name":"map",
+ "spacing":10,
+ "tilecount":540,
+ "tiledversion":"1.3.3",
+ "tileheight":64,
+ "tilewidth":64,
+ "type":"tileset",
+ "version":1.2
+}

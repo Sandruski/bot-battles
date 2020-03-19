@@ -10,7 +10,7 @@ struct ConfigClient : public Config {
 
     ConfigClient(const std::string& configPath);
 
-    void ReadDocument(const rapidjson::Document& document) override;
+    void LoadFromConfig(const rapidjson::Document& document) override;
 };
 }
 

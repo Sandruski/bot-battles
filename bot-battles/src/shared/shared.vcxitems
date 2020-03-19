@@ -31,6 +31,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Events.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)EventSystem.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)EventTypes.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)FileSystem.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)FSM.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Game.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameplayComponent.h" />
@@ -42,6 +43,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)LinkingContext.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Log.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameplayDefs.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MapComponent.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MapImporter.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MapRendererSystem.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Memory.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)InputMemoryStream.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MeshComponent.h" />
@@ -61,6 +65,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Resource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ResourceDefs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ResourceManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ShaderImporter.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ShaderResource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Shaders.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SpriteResource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StateTypes.h" />
@@ -96,6 +102,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)DebugDrawer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)EntityManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)EventSystem.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)FileSystem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)FSM.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Game.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GameplayComponent.cpp" />
@@ -106,6 +113,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)InputMemoryStream.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Input.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)MapComponent.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)MapImporter.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)MapRendererSystem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MeshComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)OutputMemoryStream.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)RendererSystem.cpp" />
@@ -113,6 +123,8 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Resource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ResourceManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)RendererComponent.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ShaderImporter.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ShaderResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Transform.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)WeaponComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)WindowComponent.cpp" />

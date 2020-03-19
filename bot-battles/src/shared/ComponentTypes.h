@@ -9,6 +9,7 @@ enum class ComponentType : U16 {
     WEAPON,
     COLLIDER,
     HEALTH,
+    MAP,
 
 #ifdef _DRAW
     SPRITE,

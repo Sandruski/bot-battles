@@ -12,9 +12,9 @@ ConfigServer::ConfigServer(const std::string& configPath)
 }
 
 //----------------------------------------------------------------------------------------------------
-void ConfigServer::ReadDocument(const rapidjson::Document& document)
+void ConfigServer::LoadFromConfig(const rapidjson::Document& document)
 {
-    Config::ReadDocument(document);
+    Config::LoadFromConfig(document);
 
     assert(document.HasMember("server"));
     assert(document["server"].IsObject());

@@ -18,29 +18,20 @@ Config::Config(const std::string& configPath)
 //----------------------------------------------------------------------------------------------------
 bool Config::LoadFromJson()
 {
-    errno_t err = 0;
-    FILE* file = nullptr;
-    err = fopen_s(&file, m_configPath.c_str(), "rb");
-    if (err != 0) {
-        ELOG("File %s could not be opened", m_configPath.c_str());
+    rapidjson::Document document;
+    bool ret = g_game->GetFileSystem().ParseJsonFromFile(m_configPath, document);
+    if (!ret) {
+        ELOG("Config file could not be loaded");
         return false;
     }
 
-    char readBuffer[65536];
-    rapidjson::FileReadStream readStream(file, readBuffer, sizeof(readBuffer));
-
-    rapidjson::Document document;
-    document.ParseStream(readStream);
-
-    fclose(file);
-
-    ReadDocument(document);
+    LoadFromConfig(document);
 
     return true;
 }
 
 //----------------------------------------------------------------------------------------------------
-void Config::ReadDocument(const rapidjson::Document& document)
+void Config::LoadFromConfig(const rapidjson::Document& document)
 {
     assert(document.IsObject());
 

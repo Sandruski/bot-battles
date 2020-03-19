@@ -7,6 +7,7 @@
 #include "MeshComponent.h"
 #include "RendererComponent.h"
 #include "ResourceManager.h"
+#include "ShaderResource.h"
 #include "SpriteComponent.h"
 #include "SpriteResource.h"
 #include "TransformComponent.h"
@@ -61,43 +62,9 @@ bool RendererSystem::StartUp()
     rendererComponent.UpdateBackgroundColor();
     glClearDepth(1.0f);
 
-    U32 vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    glCompileShader(vertexShader);
-    I32 success;
-    char infoLog[512];
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-    if (!success) {
-        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-        ELOG("Shader could not be compiled %s", infoLog);
-        return false;
-    }
-
-    U32 fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glCompileShader(fragmentShader);
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-    if (!success) {
-        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-        ELOG("Shader could not be compiled %s", infoLog);
-        return false;
-    }
-
-    rendererComponent.m_shader = glCreateProgram();
-    glAttachShader(rendererComponent.m_shader, vertexShader);
-    glAttachShader(rendererComponent.m_shader, fragmentShader);
-    glLinkProgram(rendererComponent.m_shader);
-    glGetProgramiv(rendererComponent.m_shader, GL_LINK_STATUS, &success);
-    if (!success) {
-        glGetProgramInfoLog(rendererComponent.m_shader, 512, NULL, infoLog);
-        ELOG("Shader could not be linked %s", infoLog);
-        return false;
-    }
-
-    glUseProgram(rendererComponent.m_shader);
-
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
+    rendererComponent.m_shaderResource = g_game->GetResourceManager().AddResource<ShaderResource>("", "", false);
+    rendererComponent.m_shaderResource.lock()->ReLoad(defaultVertexShaderSource, defaultFragmentShaderSource);
+    glUseProgram(rendererComponent.m_shaderResource.lock()->GetProgram());
 
     return true;
 }
@@ -167,11 +134,11 @@ bool RendererSystem::Render()
             meshComponent.lock()->m_vertices[3].m_textureCoords = glm::vec2((textureCoords.x + textureCoords.z) / static_cast<F32>(size.x), 1.0f - textureCoords.y / static_cast<F32>(size.y));
             meshComponent.lock()->UpdateVertex();
 
-            U32 modelLoc = glGetUniformLocation(rendererComponent.m_shader, "model");
+            U32 modelLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "model");
             glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
             glm::mat4 projection = glm::ortho(0.0f, static_cast<F32>(windowComponent.m_resolution.x), static_cast<F32>(windowComponent.m_resolution.y), 0.0f, -1.0f, 1.0f);
-            U32 projectionLoc = glGetUniformLocation(rendererComponent.m_shader, "projection");
+            U32 projectionLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "projection");
             glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
             glActiveTexture(GL_TEXTURE0);

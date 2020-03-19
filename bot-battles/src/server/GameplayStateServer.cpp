@@ -5,6 +5,7 @@
 #include "GameServer.h"
 #include "GameplayComponent.h"
 #include "LinkingContext.h"
+#include "MapImporter.h"
 #include "MeshComponent.h"
 #include "ResourceManager.h"
 #include "SpriteComponent.h"
@@ -28,12 +29,13 @@ const char* GameplayStateServer::GetName()
 //----------------------------------------------------------------------------------------------------
 bool GameplayStateServer::Enter()
 {
+    /*
     Entity background = g_gameServer->GetEntityManager().AddEntity();
     g_gameServer->GetLinkingContext().AddEntity(background);
 
-    std::weak_ptr<TransformComponent> transform = g_gameServer->GetComponentManager().AddComponent<TransformComponent>(background);
+    std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().AddComponent<TransformComponent>(background);
     WindowComponent& windowComponent = g_gameServer->GetWindowComponent();
-    transform.lock()->m_position = { static_cast<F32>(windowComponent.m_resolution.x / 2), static_cast<F32>(windowComponent.m_resolution.y / 2), 0.0f };
+    transformComponent.lock()->m_position = { static_cast<F32>(windowComponent.m_resolution.x / 2), static_cast<F32>(windowComponent.m_resolution.y / 2), 0.0f };
 
     std::weak_ptr<SpriteResource> spriteResource = g_gameServer->GetResourceManager().AddResource<SpriteResource>("gameplayBackground.png", TEXTURES_DIR, true);
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().AddComponent<SpriteComponent>(background);
@@ -41,6 +43,12 @@ bool GameplayStateServer::Enter()
 
     std::weak_ptr<MeshComponent> meshComponent = g_gameServer->GetComponentManager().AddComponent<MeshComponent>(background);
     meshComponent.lock()->Init();
+    */
+    // TRY
+    std::string path;
+    path.append(MAPS_DIR);
+    path.append("map.json");
+    g_gameServer->GetMapImporter().Load(path);
 
     return true;
 }
