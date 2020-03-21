@@ -3,21 +3,21 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-void MeshImporter::Load(const std::array<Vertex, 4>& vertices, const std::array<U32, 6>& indices, U32& VAO, U32& VBO, U32& EBO) const
+void MeshImporter::Load(const std::array<MeshResource::Vertex, 4>& vertices, const std::array<U32, 6>& indices, U32& VAO, U32& VBO, U32& EBO) const
 {
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
 
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), &vertices[0], GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(MeshResource::Vertex) * vertices.size(), &vertices[0], GL_DYNAMIC_DRAW);
 
     // Positions
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(offsetof(Vertex, Vertex::m_position)));
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(MeshResource::Vertex), (void*)(offsetof(MeshResource::Vertex, MeshResource::Vertex::m_position)));
     glEnableVertexAttribArray(0);
 
     // Texture coords
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(offsetof(Vertex, Vertex::m_textureCoords)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(MeshResource::Vertex), (void*)(offsetof(MeshResource::Vertex, MeshResource::Vertex::m_textureCoords)));
     glEnableVertexAttribArray(1);
 
     glGenBuffers(1, &EBO);
@@ -29,10 +29,10 @@ void MeshImporter::Load(const std::array<Vertex, 4>& vertices, const std::array<
 }
 
 //----------------------------------------------------------------------------------------------------
-void MeshImporter::ReLoad(const std::array<Vertex, 4>& vertices, U32 VBO) const
+void MeshImporter::ReLoad(const std::array<MeshResource::Vertex, 4>& vertices, U32 VBO) const
 {
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), &vertices[0], GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(MeshResource::Vertex) * vertices.size(), &vertices[0], GL_DYNAMIC_DRAW);
 }
 
 //----------------------------------------------------------------------------------------------------

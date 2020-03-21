@@ -60,7 +60,7 @@ Entity SpawnerSystem::Spawn(U32 number) const
         spriteComponent.lock()->AddSprite("shoot", shootTextureCoords);
         glm::vec4 realoadTextureCoords = glm::vec4(130.0f, 1.0f, 42.0f, 43.0f);
         spriteComponent.lock()->AddSprite("reaload", realoadTextureCoords);
-        spriteComponent.lock()->m_currentSprite = "stand";
+        spriteComponent.lock()->m_spriteName = "stand";
         break;
     }
 
@@ -73,7 +73,7 @@ Entity SpawnerSystem::Spawn(U32 number) const
         spriteComponent.lock()->AddSprite("shoot", shootTextureCoords);
         glm::vec4 realoadTextureCoords = glm::vec4(127.0f, 45.0f, 42.0f, 43.0f);
         spriteComponent.lock()->AddSprite("reaload", realoadTextureCoords);
-        spriteComponent.lock()->m_currentSprite = "stand";
+        spriteComponent.lock()->m_spriteName = "stand";
         break;
     }
 

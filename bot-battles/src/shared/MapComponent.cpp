@@ -6,7 +6,7 @@ namespace sand {
 MapComponent::MapComponent()
     : m_tilesets()
     , m_tileLayers()
-    , m_size(0, 0)
+    , m_tileCount(0, 0)
     , m_tileSize(0, 0)
 {
 }
@@ -26,11 +26,28 @@ U32 MapComponent::Write(OutputMemoryStream& /*outputStream*/, U32 /*dirtyState*/
 #endif
 
 //----------------------------------------------------------------------------------------------------
-glm::uvec2 MapComponent::MapToWorld(U32 i, U32 j)
+glm::uvec2 MapComponent::MapToWorld(U32 i, U32 j) const
 {
     glm::uvec2 world;
+
     world.x = i * m_tileSize.x;
     world.y = j * m_tileSize.y;
+
     return world;
+}
+
+//----------------------------------------------------------------------------------------------------
+const MapComponent::Tileset& MapComponent::GetTileset(U32 tileGid) const
+{
+    std::vector<MapComponent::Tileset>::const_iterator it = m_tilesets.begin();
+
+    while (it != m_tilesets.end()) {
+        if (tileGid < (*it).m_firstGid) {
+            return *std::prev(it, 1);
+        }
+        ++it;
+    }
+
+    return *std::prev(it, 1);
 }
 }

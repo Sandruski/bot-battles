@@ -8,6 +8,18 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 class MeshResource : public Resource {
 public:
+    struct Vertex {
+
+        Vertex()
+            : m_position(0.0f, 0.0f)
+            , m_textureCoords(0.0f, 0.0f)
+        {
+        }
+
+        glm::vec2 m_position;
+        glm::vec2 m_textureCoords;
+    };
+
 public:
     MeshResource(U32 id, const char* dir, const char* file);
 

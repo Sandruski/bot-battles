@@ -43,11 +43,17 @@ bool GameplayStateServer::Enter()
     std::weak_ptr<MeshComponent> meshComponent = g_gameServer->GetComponentManager().AddComponent<MeshComponent>(background);
     meshComponent.lock()->Init();
     */
-    // TRY
     std::string path;
     path.append(MAPS_DIR);
     path.append("map.json");
-    g_gameServer->GetMapImporter().Load(path);
+    Entity map = g_gameServer->GetMapImporter().Load(path);
+    std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().AddComponent<TransformComponent>(map);
+    //WindowComponent& windowComponent = g_game->GetWindowComponent();
+    //transformComponent.lock()->m_position = { static_cast<F32>(windowComponent.m_resolution.x / 2), static_cast<F32>(windowComponent.m_resolution.y / 2), 0.0f };
+
+    //realPosition -= glm::vec2(static_cast<F32>(mapComponent.lock()->m_size.x * mapComponent.lock()->m_tileSize.x) / 2.0f,
+    //static_cast<F32>(mapComponent.lock()->m_size.y * mapComponent.lock()->m_tileSize.y) / 2);
+    //realPosition += glm::vec2(mapComponent.lock()->m_tileSize.x / 2, mapComponent.lock()->m_tileSize.y / 2);
 
     return true;
 }

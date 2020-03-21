@@ -32,44 +32,27 @@ bool MapRendererSystem::Render()
         if (!transformComponent.lock()->m_isEnabled || !mapComponent.lock()->m_isEnabled) {
             continue;
         }
-
-        // TODO: move center of tile so top-left tile is not half-drawn.
-
         for (const auto& tileLayer : mapComponent.lock()->m_tileLayers) {
-            for (U32 i = 0; i < mapComponent.lock()->m_size.x; ++i) {
-                for (U32 j = 0; j < mapComponent.lock()->m_size.y; ++j) {
-                    U32 tileGid = tileLayer.at(i + mapComponent.lock()->m_size.x * j);
+            for (U32 i = 0; i < mapComponent.lock()->m_tileCount.x; ++i) {
+                for (U32 j = 0; j < mapComponent.lock()->m_tileCount.y; ++j) {
+                    U32 tileGid = tileLayer.GetTileGid(i, j, mapComponent.lock()->m_tileCount.x);
                     if (tileGid == 0) {
                         continue;
                     }
+                    const MapComponent::Tileset& tileset = mapComponent.lock()->GetTileset(tileGid);
+                    glm::uvec4 textureCoords = tileset.GetTextureCoords(tileGid);
 
-                    MapComponent::Tileset tileset = mapComponent.lock()->m_tilesets.front();
-                    for (const auto& elem : mapComponent.lock()->m_tilesets) {
-                        if (tileGid < elem.m_firstGid) {
-                            break;
-                        }
-                        tileset = elem;
-                    }
-
-                    glm::uvec4 textureCoords = tileset.GetTileTextureCoords(tileGid);
                     glm::uvec2 position = mapComponent.lock()->MapToWorld(i, j);
                     glm::vec2 realPosition = glm::vec2(position.x, position.y);
                     realPosition += glm::vec2(transformComponent.lock()->m_position.x, transformComponent.lock()->m_position.y);
-                    realPosition -= glm::vec2(static_cast<F32>(mapComponent.lock()->m_size.x * mapComponent.lock()->m_tileSize.x) / 2.0f,
-                        static_cast<F32>(mapComponent.lock()->m_size.y * mapComponent.lock()->m_tileSize.y) / 2);
-                    realPosition += glm::vec2(mapComponent.lock()->m_tileSize.x / 2, mapComponent.lock()->m_tileSize.y / 2);
-                    ILOG("Tile gid %u", tileGid);
-                    ILOG("Tex coords %u and %u", textureCoords.x, textureCoords.y);
-                    ILOG("Position %u and %u", position.x, position.y);
-                    // Render tile
+
                     glm::mat4 model = glm::mat4(1.0f);
                     model = glm::translate(model, glm::vec3(realPosition.x, realPosition.y, 0.0f));
                     model = glm::rotate(model, glm::radians(transformComponent.lock()->m_rotation), glm::vec3(0.0f, 0.0f, 1.0f));
-
                     model = glm::scale(model, glm::vec3(static_cast<F32>(textureCoords.z), static_cast<F32>(textureCoords.w), 0.0f));
 
                     glm::uvec2 size = tileset.m_spriteResource.lock()->GetSize();
-                    std::array<Vertex, 4> vertices = rendererComponent.m_meshResource.lock()->GetVertices();
+                    std::array<MeshResource::Vertex, 4> vertices = rendererComponent.m_meshResource.lock()->GetVertices();
                     // Top-left
                     vertices[0].m_textureCoords = glm::vec2(textureCoords.x / static_cast<F32>(size.x), 1.0f - (textureCoords.y + textureCoords.w) / static_cast<F32>(size.y));
                     // Top-right

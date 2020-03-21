@@ -35,7 +35,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)FSM.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Game.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameplayComponent.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Geometry.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GuiComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GuiSystem.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)HealthComponent.h" />

@@ -24,21 +24,23 @@ public:
         return *this;
     }
 
-    void ReadBits(U8& outData, U32 bitCount);
-    void ReadBits(void* outData, U32 bitCount);
+    void ReadBits(U8& data, U32 bitCount);
+    void ReadBits(void* data, U32 bitCount);
 
     template <typename T>
-    void Read(T& outData, U32 bitCount = sizeof(T) * 8);
-    void Read(bool& outData);
+    void Read(T& data, U32 bitCount = sizeof(T) * 8);
+    void Read(bool& data);
     template <typename T>
-    void Read(std::vector<T>& outVector);
+    void Read(std::vector<T>& vector);
     template <typename T, typename U>
-    void Read(std::unordered_map<T, U>& outUnorderedMap);
-    void Read(std::string& outString);
+    void Read(std::unordered_map<T, U>& unorderedMap);
+    void Read(std::string& string);
     void Read(glm::vec2& vec2);
     void Read(glm::vec3& vec3);
     void Read(glm::vec4& vec4);
-    void Read(SDL_Rect& outRect);
+    void Read(glm::uvec2& uvec2);
+    void Read(glm::uvec3& uvec3);
+    void Read(glm::uvec4& uvec4);
     void ReadPosition(glm::vec2& vec2);
 
     char* GetPtr() const;

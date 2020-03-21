@@ -28,9 +28,9 @@ InputMemoryStream::~InputMemoryStream()
 }
 
 //----------------------------------------------------------------------------------------------------
-void InputMemoryStream::ReadBits(void* outData, U32 bitCount)
+void InputMemoryStream::ReadBits(void* data, U32 bitCount)
 {
-    U8* head = reinterpret_cast<U8*>(outData);
+    U8* head = reinterpret_cast<U8*>(data);
 
     // Read the bytes
     U32 currentBitCount = bitCount;
@@ -48,7 +48,7 @@ void InputMemoryStream::ReadBits(void* outData, U32 bitCount)
 }
 
 //----------------------------------------------------------------------------------------------------
-void InputMemoryStream::ReadBits(U8& outData, U32 bitCount)
+void InputMemoryStream::ReadBits(U8& data, U32 bitCount)
 {
     U32 nextHead = m_head + bitCount;
     assert(nextHead <= m_capacity);
@@ -59,37 +59,37 @@ void InputMemoryStream::ReadBits(U8& outData, U32 bitCount)
     // 0x7 = 0b111
 
     U8 currentByteData = static_cast<U8>(m_buffer[currentByteOffset]) >> currentBitOffset; // written data of the current byte
-    outData = currentByteData;
+    data = currentByteData;
 
     U32 currentByteBitsFree = 8 - currentBitOffset; // bits free in the current byte (some of them now contain in data)
     if (currentByteBitsFree < bitCount) {
         // We need another byte
         U8 nextByteData = static_cast<U8>(m_buffer[currentByteOffset + 1]) << currentByteBitsFree; // written data of the next byte
-        outData |= nextByteData;
+        data |= nextByteData;
     }
 
     U8 outByteDataMask = ~(0xFF << bitCount);
     // 0xFF << bitCount is 0xFF00000 if bitCount is 5. Since it occupies 1 byte, it is 0x11100000 (and not 0x1111111100000)
     // ~(0xFF << bitCount) is 0x00FFFFF if bitCount is 5. Since it occupies 1 byte, it is 0x00011111 (and not 0x0000000011111)
-    outData &= outByteDataMask;
+    data &= outByteDataMask;
 
     m_head = nextHead;
 }
 
 //----------------------------------------------------------------------------------------------------
-void InputMemoryStream::Read(bool& outData)
+void InputMemoryStream::Read(bool& data)
 {
-    ReadBits(&outData, 1);
+    ReadBits(&data, 1);
 }
 
 //----------------------------------------------------------------------------------------------------
-void InputMemoryStream::Read(std::string& outString)
+void InputMemoryStream::Read(std::string& string)
 {
     std::size_t size;
     Read(size);
-    outString.resize(size);
+    string.resize(size);
 
-    for (auto& element : outString) {
+    for (auto& element : string) {
         Read(element);
     }
 }
@@ -119,12 +119,27 @@ void InputMemoryStream::Read(glm::vec4& vec4)
 }
 
 //----------------------------------------------------------------------------------------------------
-void InputMemoryStream::Read(SDL_Rect& outRect)
+void InputMemoryStream::Read(glm::uvec2& uvec2)
 {
-    Read(outRect.x);
-    Read(outRect.y);
-    Read(outRect.w);
-    Read(outRect.h);
+    Read(uvec2.x);
+    Read(uvec2.y);
+}
+
+//----------------------------------------------------------------------------------------------------
+void InputMemoryStream::Read(glm::uvec3& uvec3)
+{
+    Read(uvec3.x);
+    Read(uvec3.y);
+    Read(uvec3.z);
+}
+
+//----------------------------------------------------------------------------------------------------
+void InputMemoryStream::Read(glm::uvec4& uvec4)
+{
+    Read(uvec4.x);
+    Read(uvec4.y);
+    Read(uvec4.z);
+    Read(uvec4.w);
 }
 
 //----------------------------------------------------------------------------------------------------

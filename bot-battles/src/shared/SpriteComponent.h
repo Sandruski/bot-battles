@@ -33,14 +33,14 @@ struct SpriteComponent : public Component
     U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override;
 #endif
 
-    bool AddSprite(const std::string& name, const glm::vec4& textureCoords);
+    bool AddSprite(const std::string& name, const glm::uvec4& textureCoords);
     bool RemoveSprite(const std::string& name);
-    bool GetSprite(const std::string& name, glm::vec4& textureCoords) const;
-    bool GetCurrentSprite(glm::vec4& textureCoords) const;
+    const glm::uvec4 GetSpriteTextureCoords(const std::string& name) const;
+    const glm::uvec4 GetSpriteTextureCoords() const;
 
     std::weak_ptr<SpriteResource> m_spriteResource;
-    std::unordered_map<std::string, glm::vec4> m_spriteToTextureCoords;
-    std::string m_currentSprite;
+    std::unordered_map<std::string, glm::uvec4> m_spriteNameToTextureCoords;
+    std::string m_spriteName;
 };
 }
 

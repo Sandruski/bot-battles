@@ -65,7 +65,7 @@ bool RendererSystem::StartUp()
     rendererComponent.m_shaderResource.lock()->ForceLoad(defaultVertexShaderSource, defaultFragmentShaderSource);
     glUseProgram(rendererComponent.m_shaderResource.lock()->GetProgram());
 
-    std::array<Vertex, 4> vertices;
+    std::array<MeshResource::Vertex, 4> vertices;
     // Top-left
     vertices[0].m_position = glm::vec2(-0.5f, 0.5f);
     vertices[0].m_textureCoords = glm::vec2(0.0f, 1.0f);
@@ -107,19 +107,6 @@ bool RendererSystem::Render()
     RendererComponent& rendererComponent = g_game->GetRendererComponent();
     WindowComponent& windowComponent = g_game->GetWindowComponent();
 
-    /*
-		1. All level geometry
-		2. All debug geometry -> Maybe from each state/system? Render()
-		3. The editor -> Maybe from each system? Render()
-		4. Swap buffers
-	*/
-
-    std::sort(m_entities.begin(), m_entities.end(), [](Entity entity1, Entity entity2) {
-        std::weak_ptr<TransformComponent> transformComponent1 = g_game->GetComponentManager().GetComponent<TransformComponent>(entity1);
-        std::weak_ptr<TransformComponent> transformComponent2 = g_game->GetComponentManager().GetComponent<TransformComponent>(entity2);
-        return transformComponent1.lock()->m_position.z < transformComponent2.lock()->m_position.z;
-    });
-
     for (auto& entity : m_entities) {
 
         std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
@@ -128,43 +115,40 @@ bool RendererSystem::Render()
             continue;
         }
 
-        if (!spriteComponent.lock()->m_spriteResource.expired()) {
-            glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, transformComponent.lock()->m_position);
-            model = glm::rotate(model, glm::radians(transformComponent.lock()->m_rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+        glm::uvec4 textureCoords = spriteComponent.lock()->GetSpriteTextureCoords();
 
-            glm::vec4 textureCoords;
-            spriteComponent.lock()->GetCurrentSprite(textureCoords);
-            model = glm::scale(model, glm::vec3(textureCoords.z, textureCoords.w, 0.0f));
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, transformComponent.lock()->m_position);
+        model = glm::rotate(model, glm::radians(transformComponent.lock()->m_rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+        model = glm::scale(model, glm::vec3(static_cast<F32>(textureCoords.z), static_cast<F32>(textureCoords.w), 0.0f));
 
-            glm::uvec2 size = spriteComponent.lock()->m_spriteResource.lock()->GetSize();
-            std::array<Vertex, 4> vertices = rendererComponent.m_meshResource.lock()->GetVertices();
-            // Top-left
-            vertices[0].m_textureCoords = glm::vec2(textureCoords.x / static_cast<F32>(size.x), 1.0f - (textureCoords.y + textureCoords.w) / static_cast<F32>(size.y));
-            // Top-right
-            vertices[1].m_textureCoords = glm::vec2((textureCoords.x + textureCoords.z) / static_cast<F32>(size.x), 1.0f - (textureCoords.y + textureCoords.w) / static_cast<F32>(size.y));
-            // Bottom-left
-            vertices[2].m_textureCoords = glm::vec2(textureCoords.x / static_cast<F32>(size.x), 1.0f - textureCoords.y / static_cast<F32>(size.y));
-            // Bottom-right
-            vertices[3].m_textureCoords = glm::vec2((textureCoords.x + textureCoords.z) / static_cast<F32>(size.x), 1.0f - textureCoords.y / static_cast<F32>(size.y));
-            rendererComponent.m_meshResource.lock()->ReLoad(vertices);
+        glm::uvec2 size = spriteComponent.lock()->m_spriteResource.lock()->GetSize();
+        std::array<MeshResource::Vertex, 4> vertices = rendererComponent.m_meshResource.lock()->GetVertices();
+        // Top-left
+        vertices[0].m_textureCoords = glm::vec2(textureCoords.x / static_cast<F32>(size.x), 1.0f - (textureCoords.y + textureCoords.w) / static_cast<F32>(size.y));
+        // Top-right
+        vertices[1].m_textureCoords = glm::vec2((textureCoords.x + textureCoords.z) / static_cast<F32>(size.x), 1.0f - (textureCoords.y + textureCoords.w) / static_cast<F32>(size.y));
+        // Bottom-left
+        vertices[2].m_textureCoords = glm::vec2(textureCoords.x / static_cast<F32>(size.x), 1.0f - textureCoords.y / static_cast<F32>(size.y));
+        // Bottom-right
+        vertices[3].m_textureCoords = glm::vec2((textureCoords.x + textureCoords.z) / static_cast<F32>(size.x), 1.0f - textureCoords.y / static_cast<F32>(size.y));
+        rendererComponent.m_meshResource.lock()->ReLoad(vertices);
 
-            U32 modelLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "model");
-            glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+        U32 modelLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "model");
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-            glm::mat4 projection = glm::ortho(0.0f, static_cast<F32>(windowComponent.m_resolution.x), static_cast<F32>(windowComponent.m_resolution.y), 0.0f, -1.0f, 1.0f);
-            U32 projectionLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "projection");
-            glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+        glm::mat4 projection = glm::ortho(0.0f, static_cast<F32>(windowComponent.m_resolution.x), static_cast<F32>(windowComponent.m_resolution.y), 0.0f, -1.0f, 1.0f);
+        U32 projectionLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "projection");
+        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, spriteComponent.lock()->m_spriteResource.lock()->GetTexture());
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, spriteComponent.lock()->m_spriteResource.lock()->GetTexture());
 
-            glBindVertexArray(rendererComponent.m_meshResource.lock()->GetVAO());
-            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glBindVertexArray(rendererComponent.m_meshResource.lock()->GetVAO());
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-            glBindTexture(GL_TEXTURE_2D, 0);
-            glBindVertexArray(0);
-        }
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glBindVertexArray(0);
     }
 
     return true;

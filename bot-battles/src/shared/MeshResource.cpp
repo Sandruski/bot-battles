@@ -61,7 +61,7 @@ bool MeshResource::ReLoad(const std::array<Vertex, 4>& vertices)
 }
 
 //----------------------------------------------------------------------------------------------------
-const std::array<Vertex, 4>& MeshResource::GetVertices()
+const std::array<MeshResource::Vertex, 4>& MeshResource::GetVertices()
 {
     return m_vertices;
 }

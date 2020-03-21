@@ -9,8 +9,8 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 SpriteComponent::SpriteComponent()
     : m_spriteResource()
-    , m_spriteToTextureCoords()
-    , m_currentSprite()
+    , m_spriteNameToTextureCoords()
+    , m_spriteName()
 {
 }
 
@@ -26,11 +26,11 @@ void SpriteComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U32 /
         inputStream.Read(file);
         m_spriteResource = g_game->GetResourceManager().AddResource<SpriteResource>(file.c_str(), TEXTURES_DIR, true);
     }
-    if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_SPRITES)) {
-        inputStream.Read(m_spriteToTextureCoords);
+    if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_SPRITE_NAME_TO_TEXTURE_COORDS)) {
+        inputStream.Read(m_spriteNameToTextureCoords);
     }
-    if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_CURRENT_SPRITE)) {
-        inputStream.Read(m_currentSprite);
+    if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_SPRITE_NAME)) {
+        inputStream.Read(m_spriteName);
     }
 }
 #elif defined(_SERVER)
@@ -48,13 +48,13 @@ U32 SpriteComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) con
         outputStream.Write(file);
         writtenState |= static_cast<U32>(ComponentMemberType::SPRITE_FILE);
     }
-    if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_SPRITES)) {
-        outputStream.Write(m_spriteToTextureCoords);
-        writtenState |= static_cast<U32>(ComponentMemberType::SPRITE_SPRITES);
+    if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_SPRITE_NAME_TO_TEXTURE_COORDS)) {
+        outputStream.Write(m_spriteNameToTextureCoords);
+        writtenState |= static_cast<U32>(ComponentMemberType::SPRITE_SPRITE_NAME_TO_TEXTURE_COORDS);
     }
-    if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_CURRENT_SPRITE)) {
-        outputStream.Write(m_currentSprite);
-        writtenState |= static_cast<U32>(ComponentMemberType::SPRITE_CURRENT_SPRITE);
+    if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_SPRITE_NAME)) {
+        outputStream.Write(m_spriteName);
+        writtenState |= static_cast<U32>(ComponentMemberType::SPRITE_SPRITE_NAME);
     }
 
     return writtenState;
@@ -62,37 +62,36 @@ U32 SpriteComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) con
 #endif
 
 //----------------------------------------------------------------------------------------------------
-bool SpriteComponent::AddSprite(const std::string& name, const glm::vec4& textureCoords)
+bool SpriteComponent::AddSprite(const std::string& name, const glm::uvec4& textureCoords)
 {
-    return m_spriteToTextureCoords.insert(std::make_pair(name, textureCoords)).second;
+    return m_spriteNameToTextureCoords.insert(std::make_pair(name, textureCoords)).second;
 }
 
 //----------------------------------------------------------------------------------------------------
 bool SpriteComponent::RemoveSprite(const std::string& name)
 {
-    return m_spriteToTextureCoords.erase(name);
+    return m_spriteNameToTextureCoords.erase(name);
 }
 
 //----------------------------------------------------------------------------------------------------
-bool SpriteComponent::GetSprite(const std::string& name, glm::vec4& textureCoords) const
+const glm::uvec4 SpriteComponent::GetSpriteTextureCoords(const std::string& name) const
 {
-    auto it = m_spriteToTextureCoords.find(name);
-    if (it == m_spriteToTextureCoords.end()) {
-        // TODO: change this to force to have a current sprite
-        glm::uvec2 size = !m_spriteResource.expired() ? m_spriteResource.lock()->GetSize() : glm::uvec2(1.0f, 1.0f);
-        textureCoords = glm::vec4(0.0f, 0.0f, size.x, size.y);
+    glm::uvec4 textureCoords = glm::uvec4(0, 0, 0, 0);
 
-        return false;
+    auto it = m_spriteNameToTextureCoords.find(name);
+    if (it == m_spriteNameToTextureCoords.end()) {
+        glm::uvec2 size = m_spriteResource.lock()->GetSize();
+        textureCoords = glm::uvec4(0, 0, size.x, size.y);
+    } else {
+        textureCoords = it->second;
     }
 
-    textureCoords = it->second;
-
-    return true;
+    return textureCoords;
 }
 
 //----------------------------------------------------------------------------------------------------
-bool SpriteComponent::GetCurrentSprite(glm::vec4& textureCoords) const
+const glm::uvec4 SpriteComponent::GetSpriteTextureCoords() const
 {
-    return GetSprite(m_currentSprite, textureCoords);
+    return GetSpriteTextureCoords(m_spriteName);
 }
 }

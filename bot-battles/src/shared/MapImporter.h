@@ -8,8 +8,7 @@ struct MapComponent;
 //----------------------------------------------------------------------------------------------------
 class MapImporter {
 public:
-    bool Load(const std::string& path) const;
-    //void UnLoad(U32& texture) const;
+    U32 Load(const std::string& path) const;
 
 private:
     bool LoadTilesets(const rapidjson::Value& value, std::weak_ptr<MapComponent> mapComponent) const;

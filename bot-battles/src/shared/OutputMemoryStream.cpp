@@ -18,9 +18,9 @@ OutputMemoryStream::~OutputMemoryStream()
 }
 
 //----------------------------------------------------------------------------------------------------
-void OutputMemoryStream::WriteBits(const void* inData, U32 bitCount)
+void OutputMemoryStream::WriteBits(const void* data, U32 bitCount)
 {
-    const char* head = static_cast<const char*>(inData);
+    const char* head = static_cast<const char*>(data);
 
     // Break data into bytes and write the bytes
     U32 currentBitCount = bitCount;
@@ -38,7 +38,7 @@ void OutputMemoryStream::WriteBits(const void* inData, U32 bitCount)
 }
 
 //----------------------------------------------------------------------------------------------------
-void OutputMemoryStream::WriteBits(U8 inData, U32 bitCount)
+void OutputMemoryStream::WriteBits(U8 data, U32 bitCount)
 {
     U32 nextHead = m_head + bitCount;
     if (nextHead > m_capacity) {
@@ -54,13 +54,13 @@ void OutputMemoryStream::WriteBits(U8 inData, U32 bitCount)
     // 0xFF << bitOffset is 0xFF00000 if bitOffset is 5. Since it occupies 1 byte, it is 0x11100000 (and not 0x1111111100000)
     // ~(0xFF << bitOffset) is 0x00FFFFF if bitOffset is 5. Since it occupies 1 byte, it is 0x00011111 (and not 0x0000000011111)
     U8 currentByteData = m_buffer[currentByteOffset] & currentByteDataMask; // written data of the current byte
-    U8 currentByteInData = inData << currentBitOffset; // to write data for the current byte
+    U8 currentByteInData = data << currentBitOffset; // to write data for the current byte
     m_buffer[currentByteOffset] = currentByteData | currentByteInData;
 
     U32 currentByteBitsFree = 8 - currentBitOffset; // bits free in the current byte (some of them now contain in data)
     if (currentByteBitsFree < bitCount) {
         // We need another byte
-        U8 nextByteInData = inData >> currentByteBitsFree; // to write data for the next byte
+        U8 nextByteInData = data >> currentByteBitsFree; // to write data for the next byte
         m_buffer[currentByteOffset + 1] = nextByteInData;
     }
 
@@ -68,18 +68,18 @@ void OutputMemoryStream::WriteBits(U8 inData, U32 bitCount)
 }
 
 //----------------------------------------------------------------------------------------------------
-void OutputMemoryStream::Write(bool inData)
+void OutputMemoryStream::Write(bool data)
 {
-    WriteBits(&inData, 1);
+    WriteBits(&data, 1);
 }
 
 //----------------------------------------------------------------------------------------------------
-void OutputMemoryStream::Write(const std::string& inString)
+void OutputMemoryStream::Write(const std::string& string)
 {
-    std::size_t size = inString.size();
+    std::size_t size = string.size();
     Write(size);
 
-    for (const auto& element : inString) {
+    for (const auto& element : string) {
         Write(element);
     }
 }
@@ -109,12 +109,27 @@ void OutputMemoryStream::Write(const glm::vec4& vec4)
 }
 
 //----------------------------------------------------------------------------------------------------
-void OutputMemoryStream::Write(const SDL_Rect& inRect)
+void OutputMemoryStream::Write(const glm::uvec2& uvec2)
 {
-    Write(inRect.x);
-    Write(inRect.y);
-    Write(inRect.w);
-    Write(inRect.h);
+    Write(uvec2.x);
+    Write(uvec2.y);
+}
+
+//----------------------------------------------------------------------------------------------------
+void OutputMemoryStream::Write(const glm::uvec3& uvec3)
+{
+    Write(uvec3.x);
+    Write(uvec3.y);
+    Write(uvec3.z);
+}
+
+//----------------------------------------------------------------------------------------------------
+void OutputMemoryStream::Write(const glm::uvec4& uvec4)
+{
+    Write(uvec4.x);
+    Write(uvec4.y);
+    Write(uvec4.z);
+    Write(uvec4.w);
 }
 
 //----------------------------------------------------------------------------------------------------

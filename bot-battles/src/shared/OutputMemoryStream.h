@@ -12,21 +12,23 @@ public:
     OutputMemoryStream();
     ~OutputMemoryStream();
 
-    void WriteBits(U8 inData, U32 bitCount);
-    void WriteBits(const void* inData, U32 bitCount);
+    void WriteBits(U8 data, U32 bitCount);
+    void WriteBits(const void* data, U32 bitCount);
 
     template <typename T>
-    void Write(T inData, U32 bitCount = sizeof(T) * 8);
-    void Write(bool inData);
+    void Write(T data, U32 bitCount = sizeof(T) * 8);
+    void Write(bool data);
     template <typename T>
-    void Write(const std::vector<T>& inVector);
+    void Write(const std::vector<T>& vector);
     template <typename T, typename U>
-    void Write(const std::unordered_map<T, U>& inUnorderedMap);
-    void Write(const std::string& inString);
+    void Write(const std::unordered_map<T, U>& unorderedMap);
+    void Write(const std::string& string);
     void Write(const glm::vec2& vec2);
     void Write(const glm::vec3& vec3);
     void Write(const glm::vec4& vec4);
-    void Write(const SDL_Rect& inRect);
+    void Write(const glm::uvec2& uvec2);
+    void Write(const glm::uvec3& uvec3);
+    void Write(const glm::uvec4& uvec4);
     void WritePosition(const glm::vec2& vec2);
 
     const char* GetPtr() const;

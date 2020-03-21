@@ -23,7 +23,7 @@ bool GuiSystem::StartUp()
 
     WindowComponent windowComponent = g_game->GetWindowComponent();
     ImGui_ImplSDL2_InitForOpenGL(windowComponent.m_window, SDL_GL_GetCurrentContext());
-    const char* glslVersion = "#version 130"; // TODO: store in a struct
+    const char* glslVersion = "#version 130";
     ImGui_ImplOpenGL3_Init(glslVersion);
 
     return true;
@@ -37,13 +37,13 @@ bool GuiSystem::PreRender()
     ImGui_ImplSDL2_NewFrame(windowComponent.m_window);
     ImGui::NewFrame();
 
-    GuiComponent guiComponent = g_game->GetGuiComponent();
     ImGuiWindowFlags windowFlags = 0;
     windowFlags |= ImGuiWindowFlags_NoTitleBar;
     windowFlags |= ImGuiWindowFlags_NoScrollbar;
     windowFlags |= ImGuiWindowFlags_NoCollapse;
     windowFlags |= ImGuiWindowFlags_MenuBar;
 
+    GuiComponent guiComponent = g_game->GetGuiComponent();
     if (!ImGui::Begin("Debug Options", &guiComponent.m_isOpen, windowFlags)) {
         ImGui::End();
         return true;

@@ -7,8 +7,8 @@ namespace sand {
 enum class SystemType : U16 {
 #ifdef _DRAW
     WINDOW,
-    RENDERER,
     MAP_RENDERER,
+    RENDERER,
     GUI,
     EVENT,
 #endif
@@ -28,8 +28,8 @@ enum class SystemType : U16 {
 enum class SystemType : U16 {
 #ifdef _DRAW
     WINDOW,
-    RENDERER,
     MAP_RENDERER,
+    RENDERER,
     GUI,
     EVENT,
 #endif

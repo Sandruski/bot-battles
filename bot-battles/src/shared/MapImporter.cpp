@@ -14,42 +14,43 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-bool MapImporter::Load(const std::string& path) const
+U32 MapImporter::Load(const std::string& path) const
 {
     rapidjson::Document document;
     bool ret = g_game->GetFileSystem().ParseJsonFromFile(path, document);
     if (!ret) {
         ELOG("%s file could not be loaded", path.c_str());
-        return false;
+        return 0;
     }
 
     assert(document.IsObject());
 
     Entity entity = g_game->GetEntityManager().AddEntity();
     std::weak_ptr<MapComponent> mapComponent = g_game->GetComponentManager().AddComponent<MapComponent>(entity);
-    std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().AddComponent<TransformComponent>(entity);
-    WindowComponent& windowComponent = g_game->GetWindowComponent();
-    transformComponent.lock()->m_position = { static_cast<F32>(windowComponent.m_resolution.x / 2), static_cast<F32>(windowComponent.m_resolution.y / 2), 0.0f };
 
     assert(document.HasMember("width"));
-    mapComponent.lock()->m_size.x = document["width"].GetUint();
+    mapComponent.lock()->m_tileCount.x = document["width"].GetUint();
     assert(document.HasMember("height"));
-    mapComponent.lock()->m_size.y = document["height"].GetUint();
+    mapComponent.lock()->m_tileCount.y = document["height"].GetUint();
 
     assert(document.HasMember("tilewidth"));
     mapComponent.lock()->m_tileSize.x = document["tilewidth"].GetUint();
     assert(document.HasMember("tileheight"));
     mapComponent.lock()->m_tileSize.y = document["tileheight"].GetUint();
 
+    assert(document.HasMember("tilesets"));
+    const rapidjson::Value& tilesets = document["tilesets"];
+    ret = LoadTilesets(tilesets, mapComponent);
+    if (!ret) {
+        g_game->GetEntityManager().RemoveEntity(entity);
+        return 0;
+    }
+
     assert(document.HasMember("layers"));
     const rapidjson::Value& layers = document["layers"];
     LoadLayers(layers, mapComponent);
 
-    assert(document.HasMember("tilesets"));
-    const rapidjson::Value& tilesets = document["tilesets"];
-    LoadTilesets(tilesets, mapComponent);
-
-    return true;
+    return entity;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -120,15 +121,15 @@ void MapImporter::LoadLayers(const rapidjson::Value& value, std::weak_ptr<MapCom
 //----------------------------------------------------------------------------------------------------
 void MapImporter::LoadTileLayer(const rapidjson::Value& value, std::weak_ptr<MapComponent> mapComponent) const
 {
-    std::vector<U32> tiles;
-    assert(value.HasMember("data"));
-    tiles.reserve(value["data"].Size());
+    MapComponent::TileLayer tileLayer;
 
+    assert(value.HasMember("data"));
+    tileLayer.m_data.reserve(value["data"].Size());
     for (rapidjson::Value::ConstValueIterator it = value["data"].Begin(); it != value["data"].End(); ++it) {
-        tiles.emplace_back(it->GetUint());
+        tileLayer.m_data.emplace_back(it->GetUint());
     }
 
-    mapComponent.lock()->m_tileLayers.emplace_back(tiles);
+    mapComponent.lock()->m_tileLayers.emplace_back(tileLayer);
 }
 
 //----------------------------------------------------------------------------------------------------
