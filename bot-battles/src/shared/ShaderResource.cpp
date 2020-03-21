@@ -29,7 +29,7 @@ bool ShaderResource::UnLoad()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool ShaderResource::ReLoad(const char* vertexShaderSource, const char* fragmentShaderSource)
+bool ShaderResource::ForceLoad(const char* vertexShaderSource, const char* fragmentShaderSource)
 {
     assert(vertexShaderSource != nullptr && fragmentShaderSource != nullptr);
 

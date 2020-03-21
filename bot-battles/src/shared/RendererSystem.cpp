@@ -4,7 +4,7 @@
 #include "ComponentManager.h"
 #include "DebugDrawer.h"
 #include "Game.h"
-#include "MeshComponent.h"
+#include "MeshResource.h"
 #include "RendererComponent.h"
 #include "ResourceManager.h"
 #include "ShaderResource.h"
@@ -20,7 +20,6 @@ RendererSystem::RendererSystem()
 {
     m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
     m_signature |= 1 << static_cast<U16>(ComponentType::SPRITE); // TODO: debug draw should not need having a sprite component!
-    m_signature |= 1 << static_cast<U16>(ComponentType::MESH);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -63,8 +62,33 @@ bool RendererSystem::StartUp()
     glClearDepth(1.0f);
 
     rendererComponent.m_shaderResource = g_game->GetResourceManager().AddResource<ShaderResource>("", "", false);
-    rendererComponent.m_shaderResource.lock()->ReLoad(defaultVertexShaderSource, defaultFragmentShaderSource);
+    rendererComponent.m_shaderResource.lock()->ForceLoad(defaultVertexShaderSource, defaultFragmentShaderSource);
     glUseProgram(rendererComponent.m_shaderResource.lock()->GetProgram());
+
+    std::array<Vertex, 4> vertices;
+    // Top-left
+    vertices[0].m_position = glm::vec2(-0.5f, 0.5f);
+    vertices[0].m_textureCoords = glm::vec2(0.0f, 1.0f);
+    // Top-right
+    vertices[1].m_position = glm::vec2(0.5f, 0.5f);
+    vertices[1].m_textureCoords = glm::vec2(1.0f, 1.0f);
+    // Bottom-left
+    vertices[2].m_position = glm::vec2(-0.5f, -0.5f);
+    vertices[2].m_textureCoords = glm::vec2(0.0f, 0.0f);
+    // Bottom-right
+    vertices[3].m_position = glm::vec2(0.5f, -0.5f);
+    vertices[3].m_textureCoords = glm::vec2(1.0f, 0.0f);
+    std::array<U32, 6> indices;
+    // First triangle
+    indices[0] = 0;
+    indices[1] = 2;
+    indices[2] = 3;
+    // Second triangle
+    indices[3] = 3;
+    indices[4] = 1;
+    indices[5] = 0;
+    rendererComponent.m_meshResource = g_game->GetResourceManager().AddResource<MeshResource>("", "", false);
+    rendererComponent.m_meshResource.lock()->ForceLoad(vertices, indices);
 
     return true;
 }
@@ -100,20 +124,11 @@ bool RendererSystem::Render()
 
         std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
         std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
-        std::weak_ptr<MeshComponent> meshComponent = g_game->GetComponentManager().GetComponent<MeshComponent>(entity);
-        if (!transformComponent.lock()->m_isEnabled || !spriteComponent.lock()->m_isEnabled || !meshComponent.lock()->m_isEnabled) {
+        if (!transformComponent.lock()->m_isEnabled || !spriteComponent.lock()->m_isEnabled) {
             continue;
         }
 
         if (!spriteComponent.lock()->m_spriteResource.expired()) {
-            /*
-            const SDL_Rect* srcRect = spriteComponent.lock()->HasCurrentSprite() ? &spriteComponent.lock()->GetCurrentSprite() : nullptr;
-            I32 w = spriteComponent.lock()->HasCurrentSprite() ? spriteComponent.lock()->GetCurrentSprite().w : static_cast<I32>(spriteComponent.lock()->m_spriteResource.lock()->GetWidth());
-            I32 h = spriteComponent.lock()->HasCurrentSprite() ? spriteComponent.lock()->GetCurrentSprite().h : static_cast<I32>(spriteComponent.lock()->m_spriteResource.lock()->GetHeight());
-            I32 x = static_cast<I32>(transformComponent.lock()->m_position.x) - w / 2;
-            I32 y = static_cast<I32>(transformComponent.lock()->m_position.y) - h / 2;
-            const SDL_Rect dstRect = { x, y, w, h };
-            */
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, transformComponent.lock()->m_position);
             model = glm::rotate(model, glm::radians(transformComponent.lock()->m_rotation), glm::vec3(0.0f, 0.0f, 1.0f));
@@ -123,16 +138,16 @@ bool RendererSystem::Render()
             model = glm::scale(model, glm::vec3(textureCoords.z, textureCoords.w, 0.0f));
 
             glm::uvec2 size = spriteComponent.lock()->m_spriteResource.lock()->GetSize();
-            // Vertices
+            std::array<Vertex, 4> vertices = rendererComponent.m_meshResource.lock()->GetVertices();
             // Top-left
-            meshComponent.lock()->m_vertices[0].m_textureCoords = glm::vec2(textureCoords.x / static_cast<F32>(size.x), 1.0f - (textureCoords.y + textureCoords.w) / static_cast<F32>(size.y));
+            vertices[0].m_textureCoords = glm::vec2(textureCoords.x / static_cast<F32>(size.x), 1.0f - (textureCoords.y + textureCoords.w) / static_cast<F32>(size.y));
             // Top-right
-            meshComponent.lock()->m_vertices[1].m_textureCoords = glm::vec2((textureCoords.x + textureCoords.z) / static_cast<F32>(size.x), 1.0f - (textureCoords.y + textureCoords.w) / static_cast<F32>(size.y));
+            vertices[1].m_textureCoords = glm::vec2((textureCoords.x + textureCoords.z) / static_cast<F32>(size.x), 1.0f - (textureCoords.y + textureCoords.w) / static_cast<F32>(size.y));
             // Bottom-left
-            meshComponent.lock()->m_vertices[2].m_textureCoords = glm::vec2(textureCoords.x / static_cast<F32>(size.x), 1.0f - textureCoords.y / static_cast<F32>(size.y));
+            vertices[2].m_textureCoords = glm::vec2(textureCoords.x / static_cast<F32>(size.x), 1.0f - textureCoords.y / static_cast<F32>(size.y));
             // Bottom-right
-            meshComponent.lock()->m_vertices[3].m_textureCoords = glm::vec2((textureCoords.x + textureCoords.z) / static_cast<F32>(size.x), 1.0f - textureCoords.y / static_cast<F32>(size.y));
-            meshComponent.lock()->UpdateVertex();
+            vertices[3].m_textureCoords = glm::vec2((textureCoords.x + textureCoords.z) / static_cast<F32>(size.x), 1.0f - textureCoords.y / static_cast<F32>(size.y));
+            rendererComponent.m_meshResource.lock()->ReLoad(vertices);
 
             U32 modelLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "model");
             glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
@@ -144,7 +159,7 @@ bool RendererSystem::Render()
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, spriteComponent.lock()->m_spriteResource.lock()->GetTexture());
 
-            glBindVertexArray(meshComponent.lock()->m_VAO);
+            glBindVertexArray(rendererComponent.m_meshResource.lock()->GetVAO());
             glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
             glBindTexture(GL_TEXTURE_2D, 0);

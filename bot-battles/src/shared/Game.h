@@ -2,6 +2,8 @@
 #define __GAME_H__
 
 #ifdef _DRAW
+#include "GuiComponent.h"
+#include "MeshImporter.h"
 #include "RendererComponent.h"
 #include "ShaderImporter.h"
 #include "TextureImporter.h"
@@ -49,8 +51,13 @@ public:
     {
         return m_textureImporter;
     }
+    MeshImporter& GetMeshImporter()
+    {
+        return m_meshImporter;
+    }
     WindowComponent& GetWindowComponent() { return m_windowComponent; }
     RendererComponent& GetRendererComponent() { return m_rendererComponent; }
+    GuiComponent& GetGuiComponent() { return m_guiComponent; }
 #endif
     FileSystem& GetFileSystem()
     {
@@ -75,6 +82,7 @@ private:
     bool PreRender();
     bool Render();
     bool DebugRender();
+    bool RenderGui();
     bool PostRender();
 
 protected:
@@ -88,8 +96,10 @@ protected:
 #ifdef _DRAW
     ShaderImporter m_shaderImporter;
     TextureImporter m_textureImporter;
+    MeshImporter m_meshImporter;
     WindowComponent m_windowComponent;
     RendererComponent m_rendererComponent;
+    GuiComponent m_guiComponent;
 #endif
     FileSystem m_fileSystem;
     ResourceManager m_resourceManager;

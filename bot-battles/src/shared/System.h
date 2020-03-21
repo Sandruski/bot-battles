@@ -44,6 +44,11 @@ public:
         return true;
     }
 
+    virtual bool RenderGui()
+    {
+        return true;
+    }
+
     virtual bool PostRender()
     {
         return true;

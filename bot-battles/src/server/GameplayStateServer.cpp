@@ -6,7 +6,6 @@
 #include "GameplayComponent.h"
 #include "LinkingContext.h"
 #include "MapImporter.h"
-#include "MeshComponent.h"
 #include "ResourceManager.h"
 #include "SpriteComponent.h"
 #include "SpriteResource.h"

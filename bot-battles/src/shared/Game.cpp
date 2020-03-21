@@ -9,7 +9,6 @@
 #include "HealthComponent.h"
 #include "InputComponent.h"
 #include "LinkingContext.h"
-#include "MeshComponent.h"
 #include "SystemManager.h"
 #include "TransformComponent.h"
 #include "WeaponComponent.h"
@@ -87,10 +86,6 @@ bool Game::Init()
         return ret;
     }
     ret = m_componentManager->RegisterComponent<MapComponent>();
-    if (!ret) {
-        return ret;
-    }
-    ret = m_componentManager->RegisterComponent<MeshComponent>();
     if (!ret) {
         return ret;
     }
@@ -176,6 +171,11 @@ bool Game::DoFrame()
     }
 
     ret = PreRender();
+    if (!ret) {
+        return ret;
+    }
+
+    ret = RenderGui();
     if (!ret) {
         return ret;
     }
@@ -308,6 +308,19 @@ bool Game::Render()
 bool Game::DebugRender()
 {
     return m_systemManager->DebugRender();
+}
+
+//----------------------------------------------------------------------------------------------------
+bool Game::RenderGui()
+{
+    if (ImGui::Button("Game")) {
+        m_guiComponent.m_body = []() {
+            F32 fps = Time::GetInstance().GetFps();
+            ImGui::Text("%.0f", fps);
+        };
+    }
+
+    return m_systemManager->RenderGui();
 }
 
 //----------------------------------------------------------------------------------------------------

@@ -1,6 +1,7 @@
 #include "GuiSystem.h"
 
 #include "Game.h"
+#include "GuiComponent.h"
 #include "WindowComponent.h"
 
 namespace sand {
@@ -36,13 +37,40 @@ bool GuiSystem::PreRender()
     ImGui_ImplSDL2_NewFrame(windowComponent.m_window);
     ImGui::NewFrame();
 
+    GuiComponent guiComponent = g_game->GetGuiComponent();
+    ImGuiWindowFlags windowFlags = 0;
+    windowFlags |= ImGuiWindowFlags_NoTitleBar;
+    windowFlags |= ImGuiWindowFlags_NoScrollbar;
+    windowFlags |= ImGuiWindowFlags_NoCollapse;
+    windowFlags |= ImGuiWindowFlags_MenuBar;
+
+    if (!ImGui::Begin("Debug Options", &guiComponent.m_isOpen, windowFlags)) {
+        ImGui::End();
+        return true;
+    }
+
+    if (!ImGui::BeginMenuBar()) {
+        guiComponent.m_isOpen = false;
+        ImGui::EndMenuBar();
+        ImGui::End();
+    }
+
     return true;
 }
 
 //----------------------------------------------------------------------------------------------------
 bool GuiSystem::Render()
 {
-    ImGui::ShowDemoWindow();
+    GuiComponent guiComponent = g_game->GetGuiComponent();
+    if (guiComponent.m_isOpen) {
+        ImGui::EndMenuBar();
+
+        if (guiComponent.m_body) {
+            guiComponent.m_body();
+        }
+
+        ImGui::End();
+    }
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

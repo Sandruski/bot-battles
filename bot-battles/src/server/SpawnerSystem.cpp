@@ -7,7 +7,6 @@
 #include "GameServer.h"
 #include "HealthComponent.h"
 #include "LinkingContext.h"
-#include "MeshComponent.h"
 #include "RendererComponent.h"
 #include "ResourceManager.h"
 #include "ServerComponent.h"
@@ -82,9 +81,6 @@ Entity SpawnerSystem::Spawn(U32 number) const
         break;
     }
     }
-
-    std::weak_ptr<MeshComponent> meshComponent = g_gameServer->GetComponentManager().AddComponent<MeshComponent>(character);
-    meshComponent.lock()->Init();
 
     std::weak_ptr<ColliderComponent> colliderComponent = g_gameServer->GetComponentManager().AddComponent<ColliderComponent>(character);
     //const SDL_Rect& currentSprite = spriteComponent.lock()->GetCurrentSprite(); // TODO

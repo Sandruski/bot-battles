@@ -4,6 +4,7 @@
 namespace sand {
 
 class ShaderResource;
+class MeshResource;
 
 //----------------------------------------------------------------------------------------------------
 // System Component
@@ -16,6 +17,7 @@ struct RendererComponent {
     void UpdateBackgroundColor();
 
     std::weak_ptr<ShaderResource> m_shaderResource;
+    std::weak_ptr<MeshResource> m_meshResource;
     glm::vec4 m_backgroundColor;
     bool m_isVsync;
     bool m_isDebugDraw;

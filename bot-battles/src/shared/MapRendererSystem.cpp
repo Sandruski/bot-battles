@@ -3,7 +3,7 @@
 #include "ComponentManager.h"
 #include "Game.h"
 #include "MapComponent.h"
-#include "MeshComponent.h"
+#include "MeshResource.h"
 #include "RendererComponent.h"
 #include "ShaderResource.h"
 #include "SpriteResource.h"
@@ -17,7 +17,6 @@ MapRendererSystem::MapRendererSystem()
 {
     m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
     m_signature |= 1 << static_cast<U16>(ComponentType::MAP);
-    m_signature |= 1 << static_cast<U16>(ComponentType::MESH);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -30,8 +29,7 @@ bool MapRendererSystem::Render()
 
         std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
         std::weak_ptr<MapComponent> mapComponent = g_game->GetComponentManager().GetComponent<MapComponent>(entity);
-        std::weak_ptr<MeshComponent> meshComponent = g_game->GetComponentManager().GetComponent<MeshComponent>(entity);
-        if (!transformComponent.lock()->m_isEnabled || !mapComponent.lock()->m_isEnabled || !meshComponent.lock()->m_isEnabled) {
+        if (!transformComponent.lock()->m_isEnabled || !mapComponent.lock()->m_isEnabled) {
             continue;
         }
 
@@ -71,16 +69,16 @@ bool MapRendererSystem::Render()
                     model = glm::scale(model, glm::vec3(static_cast<F32>(textureCoords.z), static_cast<F32>(textureCoords.w), 0.0f));
 
                     glm::uvec2 size = tileset.m_spriteResource.lock()->GetSize();
-                    // Vertices
+                    std::array<Vertex, 4> vertices = rendererComponent.m_meshResource.lock()->GetVertices();
                     // Top-left
-                    meshComponent.lock()->m_vertices[0].m_textureCoords = glm::vec2(textureCoords.x / static_cast<F32>(size.x), 1.0f - (textureCoords.y + textureCoords.w) / static_cast<F32>(size.y));
+                    vertices[0].m_textureCoords = glm::vec2(textureCoords.x / static_cast<F32>(size.x), 1.0f - (textureCoords.y + textureCoords.w) / static_cast<F32>(size.y));
                     // Top-right
-                    meshComponent.lock()->m_vertices[1].m_textureCoords = glm::vec2((textureCoords.x + textureCoords.z) / static_cast<F32>(size.x), 1.0f - (textureCoords.y + textureCoords.w) / static_cast<F32>(size.y));
+                    vertices[1].m_textureCoords = glm::vec2((textureCoords.x + textureCoords.z) / static_cast<F32>(size.x), 1.0f - (textureCoords.y + textureCoords.w) / static_cast<F32>(size.y));
                     // Bottom-left
-                    meshComponent.lock()->m_vertices[2].m_textureCoords = glm::vec2(textureCoords.x / static_cast<F32>(size.x), 1.0f - textureCoords.y / static_cast<F32>(size.y));
+                    vertices[2].m_textureCoords = glm::vec2(textureCoords.x / static_cast<F32>(size.x), 1.0f - textureCoords.y / static_cast<F32>(size.y));
                     // Bottom-right
-                    meshComponent.lock()->m_vertices[3].m_textureCoords = glm::vec2((textureCoords.x + textureCoords.z) / static_cast<F32>(size.x), 1.0f - textureCoords.y / static_cast<F32>(size.y));
-                    meshComponent.lock()->UpdateVertex();
+                    vertices[3].m_textureCoords = glm::vec2((textureCoords.x + textureCoords.z) / static_cast<F32>(size.x), 1.0f - textureCoords.y / static_cast<F32>(size.y));
+                    rendererComponent.m_meshResource.lock()->ReLoad(vertices);
 
                     U32 modelLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "model");
                     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
@@ -92,7 +90,7 @@ bool MapRendererSystem::Render()
                     glActiveTexture(GL_TEXTURE0);
                     glBindTexture(GL_TEXTURE_2D, tileset.m_spriteResource.lock()->GetTexture());
 
-                    glBindVertexArray(meshComponent.lock()->m_VAO);
+                    glBindVertexArray(rendererComponent.m_meshResource.lock()->GetVAO());
                     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
                     glBindTexture(GL_TEXTURE_2D, 0);

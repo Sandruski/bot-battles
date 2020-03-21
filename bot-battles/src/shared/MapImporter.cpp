@@ -6,7 +6,6 @@
 #include "FileSystem.h"
 #include "Game.h"
 #include "MapComponent.h"
-#include "MeshComponent.h"
 #include "ResourceManager.h"
 #include "SpriteResource.h"
 #include "TransformComponent.h"
@@ -31,8 +30,6 @@ bool MapImporter::Load(const std::string& path) const
     std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().AddComponent<TransformComponent>(entity);
     WindowComponent& windowComponent = g_game->GetWindowComponent();
     transformComponent.lock()->m_position = { static_cast<F32>(windowComponent.m_resolution.x / 2), static_cast<F32>(windowComponent.m_resolution.y / 2), 0.0f };
-    std::weak_ptr<MeshComponent> meshComponent = g_game->GetComponentManager().AddComponent<MeshComponent>(entity);
-    meshComponent.lock()->Init();
 
     assert(document.HasMember("width"));
     mapComponent.lock()->m_size.x = document["width"].GetUint();

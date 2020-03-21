@@ -13,7 +13,6 @@ enum class ComponentType : U16 {
 
 #ifdef _DRAW
     SPRITE,
-    MESH,
 #endif
 
 #ifdef _CLIENT

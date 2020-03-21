@@ -119,6 +119,18 @@ bool SystemManager::DebugRender()
 }
 
 //----------------------------------------------------------------------------------------------------
+bool SystemManager::RenderGui()
+{
+    bool ret = true;
+
+    for (U32 i = 0; i < m_systems.size() && ret; ++i) {
+        ret = m_systems[i]->RenderGui();
+    }
+
+    return ret;
+}
+
+//----------------------------------------------------------------------------------------------------
 bool SystemManager::PostRender()
 {
     bool ret = true;

@@ -35,6 +35,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)FSM.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Game.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameplayComponent.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Geometry.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)GuiComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GuiSystem.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)HealthComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)InputComponent.h" />
@@ -48,7 +50,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)MapRendererSystem.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Memory.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)InputMemoryStream.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)MeshComponent.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MeshImporter.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MeshResource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MessageTypes.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Input.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)NetDefs.h" />
@@ -106,6 +109,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)FSM.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Game.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GameplayComponent.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)GuiComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GuiSystem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)HealthComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)InputComponent.cpp" />
@@ -116,7 +120,8 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)MapComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MapImporter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MapRendererSystem.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)MeshComponent.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)MeshImporter.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)MeshResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)OutputMemoryStream.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)RendererSystem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ReplicationCommand.cpp" />

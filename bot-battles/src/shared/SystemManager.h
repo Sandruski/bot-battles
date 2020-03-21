@@ -19,6 +19,7 @@ public:
     bool PreRender();
     bool Render();
     bool DebugRender();
+    bool RenderGui();
     bool PostRender();
     bool ShutDown();
 

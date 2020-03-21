@@ -9,6 +9,7 @@ enum class SystemType : U16 {
     WINDOW,
     RENDERER,
     MAP_RENDERER,
+    GUI,
     EVENT,
 #endif
     CLIENT,
@@ -21,9 +22,6 @@ enum class SystemType : U16 {
     COLLISION,
     WEAPON,
 
-#ifdef _DRAW
-    GUI,
-#endif
     COUNT
 };
 #elif defined(_SERVER)
@@ -32,6 +30,7 @@ enum class SystemType : U16 {
     WINDOW,
     RENDERER,
     MAP_RENDERER,
+    GUI,
     EVENT,
 #endif
     SERVER,
@@ -43,9 +42,7 @@ enum class SystemType : U16 {
     HEALTH,
 
     INPUT,
-#ifdef _DRAW
-    GUI,
-#endif
+
     COUNT
 };
 #endif

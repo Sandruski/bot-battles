@@ -12,7 +12,7 @@ public:
 
     bool Load() override;
     bool UnLoad() override;
-    bool ReLoad(const char* vertexShaderSource, const char* fragmentShaderSource);
+    bool ForceLoad(const char* vertexShaderSource, const char* fragmentShaderSource);
 
     U32 GetProgram() const;
 
