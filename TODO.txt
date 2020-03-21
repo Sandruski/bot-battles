@@ -1,2 +1,3 @@
 -Remove SDL_Rect.
 -Remove MeshComponent from everyone. We only need one.
+-Cap MAX BYTES SENT also for State packets (already doing it for Input packets) -> Reset MAX BYTES SENT to a reasonable value.

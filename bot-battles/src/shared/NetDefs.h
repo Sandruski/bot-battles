@@ -18,7 +18,7 @@ inline const Endianness PLATFORM_ENDIANNESS()
     return ptr[0] ? Endianness::LITTLE_ENDIAN : Endianness::BIG_ENDIAN;
 }
 
-const U32 MAX_PACKET_SIZE = 1470;
+const U32 MAX_PACKET_SIZE = 10000; //1470
 const U32 MAX_PACKETS_PER_FRAME = 10;
 const U32 MAX_INPUTS_PER_PACKET = 30;
 
@@ -29,7 +29,7 @@ const U32 MAX_PLAYER_IDS = 2; // MAX_CLIENTS
 const PlayerID INVALID_PLAYER_ID = MAX_PLAYER_IDS;
 
 using NetworkID = U32;
-const U32 MAX_NETWORK_IDS = 32; // MAX_OBJECTS_PER_CLIENT
+const U32 MAX_NETWORK_IDS = 128; // MAX_OBJECTS_PER_CLIENT
 const NetworkID INVALID_NETWORK_ID = MAX_NETWORK_IDS;
 
 using SequenceNumber = U16;

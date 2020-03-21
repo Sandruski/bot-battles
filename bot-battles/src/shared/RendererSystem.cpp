@@ -60,6 +60,8 @@ bool RendererSystem::StartUp()
     windowComponent.UpdateResolution();
     rendererComponent.UpdateBackgroundColor();
     glClearDepth(1.0f);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
 
     rendererComponent.m_shaderResource = g_game->GetResourceManager().AddResource<ShaderResource>("", "", false);
     rendererComponent.m_shaderResource.lock()->ForceLoad(defaultVertexShaderSource, defaultFragmentShaderSource);

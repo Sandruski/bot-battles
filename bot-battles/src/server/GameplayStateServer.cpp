@@ -46,8 +46,7 @@ bool GameplayStateServer::Enter()
     std::string path;
     path.append(MAPS_DIR);
     path.append("map.json");
-    Entity map = g_gameServer->GetMapImporter().Load(path);
-    std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().AddComponent<TransformComponent>(map);
+    g_gameServer->GetMapImporter().Load(path);
     //WindowComponent& windowComponent = g_game->GetWindowComponent();
     //transformComponent.lock()->m_position = { static_cast<F32>(windowComponent.m_resolution.x / 2), static_cast<F32>(windowComponent.m_resolution.y / 2), 0.0f };
 

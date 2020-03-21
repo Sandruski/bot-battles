@@ -44,9 +44,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)LinkingContext.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Log.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameplayDefs.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)MapComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MapImporter.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)MapRendererSystem.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Memory.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)InputMemoryStream.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MeshImporter.h" />
@@ -116,9 +114,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)InputMemoryStream.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Input.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)MapComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MapImporter.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)MapRendererSystem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MeshImporter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MeshResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)OutputMemoryStream.cpp" />

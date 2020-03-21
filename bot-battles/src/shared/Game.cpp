@@ -14,8 +14,6 @@
 #include "WeaponComponent.h"
 #ifdef _DRAW
 #include "GuiSystem.h"
-#include "MapComponent.h"
-#include "MapRendererSystem.h"
 #include "RendererSystem.h"
 #include "ShaderResource.h"
 #include "SpriteComponent.h"
@@ -65,10 +63,6 @@ bool Game::Init()
     if (!ret) {
         return ret;
     }
-    ret = m_systemManager->RegisterSystem<MapRendererSystem>();
-    if (!ret) {
-        return ret;
-    }
     ret = m_systemManager->RegisterSystem<GuiSystem>();
     if (!ret) {
         return ret;
@@ -82,10 +76,6 @@ bool Game::Init()
     // Components
 #ifdef _DRAW
     ret = m_componentManager->RegisterComponent<SpriteComponent>();
-    if (!ret) {
-        return ret;
-    }
-    ret = m_componentManager->RegisterComponent<MapComponent>();
     if (!ret) {
         return ret;
     }

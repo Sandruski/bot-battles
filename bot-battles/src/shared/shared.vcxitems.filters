@@ -279,12 +279,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)FileSystem.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)MapComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)MapRendererSystem.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)ShaderResource.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
@@ -427,12 +421,6 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)FileSystem.cpp">
       <Filter>Source Files\Resources</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)MapComponent.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)MapRendererSystem.cpp">
-      <Filter>Source Files\Systems</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)ShaderResource.cpp">
       <Filter>Source Files\Resources</Filter>

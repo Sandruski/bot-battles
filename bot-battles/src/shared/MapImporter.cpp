@@ -5,8 +5,9 @@
 #include "EntityManager.h"
 #include "FileSystem.h"
 #include "Game.h"
-#include "MapComponent.h"
+#include "LinkingContext.h"
 #include "ResourceManager.h"
+#include "SpriteComponent.h"
 #include "SpriteResource.h"
 #include "TransformComponent.h"
 #include "WindowComponent.h"
@@ -14,56 +15,82 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-U32 MapImporter::Load(const std::string& path) const
+bool MapImporter::Load(const std::string& path) const
 {
     rapidjson::Document document;
     bool ret = g_game->GetFileSystem().ParseJsonFromFile(path, document);
     if (!ret) {
         ELOG("%s file could not be loaded", path.c_str());
-        return 0;
+        return ret;
     }
-
     assert(document.IsObject());
 
-    Entity entity = g_game->GetEntityManager().AddEntity();
-    std::weak_ptr<MapComponent> mapComponent = g_game->GetComponentManager().AddComponent<MapComponent>(entity);
+    Tilemap tilemap;
 
     assert(document.HasMember("width"));
-    mapComponent.lock()->m_tileCount.x = document["width"].GetUint();
+    tilemap.m_tileCount.x = document["width"].GetUint();
     assert(document.HasMember("height"));
-    mapComponent.lock()->m_tileCount.y = document["height"].GetUint();
-
+    tilemap.m_tileCount.y = document["height"].GetUint();
     assert(document.HasMember("tilewidth"));
-    mapComponent.lock()->m_tileSize.x = document["tilewidth"].GetUint();
+    tilemap.m_tileSize.x = document["tilewidth"].GetUint();
     assert(document.HasMember("tileheight"));
-    mapComponent.lock()->m_tileSize.y = document["tileheight"].GetUint();
+    tilemap.m_tileSize.y = document["tileheight"].GetUint();
 
     assert(document.HasMember("tilesets"));
-    const rapidjson::Value& tilesets = document["tilesets"];
-    ret = LoadTilesets(tilesets, mapComponent);
-    if (!ret) {
-        g_game->GetEntityManager().RemoveEntity(entity);
-        return 0;
-    }
+    const rapidjson::Value& tilesetsValue = document["tilesets"];
+    tilemap.m_tilesets = LoadTilesets(tilesetsValue);
 
     assert(document.HasMember("layers"));
-    const rapidjson::Value& layers = document["layers"];
-    LoadLayers(layers, mapComponent);
+    for (rapidjson::Value::ConstValueIterator it = document["layers"].Begin(); it != document["layers"].End(); ++it) {
+        assert(it->HasMember("type"));
+        std::string type = (*it)["type"].GetString();
 
-    return entity;
+        if (type == "tilelayer") {
+            Tilelayer tilelayer = LoadTilelayer(*it);
+            tilemap.m_tilelayers.emplace_back(tilelayer);
+        } else if (type == "objectgroup") {
+            //LoadObjectLayer(*it);
+        }
+    }
+
+    for (const auto& tilelayer : tilemap.m_tilelayers) {
+        for (U32 i = 0; i < tilemap.m_tileCount.x; ++i) {
+            for (U32 j = 0; j < tilemap.m_tileCount.y; ++j) {
+                U32 tileGid = tilelayer.GetTileGid(i, j, tilemap.m_tileCount.x);
+                if (tileGid == 0) {
+                    continue;
+                }
+                const Tileset& tileset = tilemap.GetTileset(tileGid);
+                glm::uvec4 textureCoords = tileset.GetTextureCoords(tileGid);
+
+                glm::uvec2 position = tilemap.MapToWorld(i, j);
+                position += tilemap.m_tileSize / 2u;
+
+                Entity tile = g_game->GetEntityManager().AddEntity();
+                g_game->GetLinkingContext().AddEntity(tile);
+                std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().AddComponent<TransformComponent>(tile);
+                transformComponent.lock()->m_position = glm::vec3(static_cast<F32>(position.x), static_cast<F32>(position.y), -1.0f);
+                std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().AddComponent<SpriteComponent>(tile);
+                spriteComponent.lock()->m_spriteResource = g_game->GetResourceManager().AddResource<SpriteResource>(tileset.m_spriteFile.c_str(), TEXTURES_DIR, true);
+                spriteComponent.lock()->AddSprite("default", textureCoords);
+            }
+        }
+    }
+
+    return true;
 }
 
 //----------------------------------------------------------------------------------------------------
-bool MapImporter::LoadTilesets(const rapidjson::Value& value, std::weak_ptr<MapComponent> mapComponent) const
+std::vector<MapImporter::Tileset> MapImporter::LoadTilesets(const rapidjson::Value& value) const
 {
-    mapComponent.lock()->m_tilesets.reserve(value.Size());
+    std::vector<Tileset> tilesets;
+    tilesets.reserve(value.Size());
 
     for (rapidjson::Value::ConstValueIterator it = value.Begin(); it != value.End(); ++it) {
-        MapComponent::Tileset tileset;
+        Tileset tileset;
 
         assert(it->HasMember("firstgid"));
         tileset.m_firstGid = (*it)["firstgid"].GetUint();
-
         assert(it->HasMember("source"));
         std::string source;
         source.append(MAPS_DIR);
@@ -73,16 +100,15 @@ bool MapImporter::LoadTilesets(const rapidjson::Value& value, std::weak_ptr<MapC
         bool ret = g_game->GetFileSystem().ParseJsonFromFile(source, document);
         if (!ret) {
             ELOG("%s file could not be loaded", source.c_str());
-            return false;
+            break;
         }
-
         assert(document.IsObject());
 
         assert(document.HasMember("image"));
         std::string image = document["image"].GetString();
         image = image.substr(image.find_last_of("/") + 1, image.size());
-        tileset.m_spriteResource = g_game->GetResourceManager().AddResource<SpriteResource>(image.c_str(), TEXTURES_DIR, true);
-
+        tileset.m_spriteFile = image;
+        //tileset.m_spriteResource = g_game->GetResourceManager().AddResource<SpriteResource>(image.c_str(), TEXTURES_DIR, true);
         assert(document.HasMember("tilewidth"));
         tileset.m_tileSize.x = document["tilewidth"].GetUint();
         assert(document.HasMember("tileheight"));
@@ -97,39 +123,24 @@ bool MapImporter::LoadTilesets(const rapidjson::Value& value, std::weak_ptr<MapC
         assert(document.HasMember("spacing"));
         tileset.m_spacing = document["spacing"].GetUint();
 
-        mapComponent.lock()->m_tilesets.emplace_back(tileset);
+        tilesets.emplace_back(tileset);
     }
 
-    return true;
+    return tilesets;
 }
 
 //----------------------------------------------------------------------------------------------------
-void MapImporter::LoadLayers(const rapidjson::Value& value, std::weak_ptr<MapComponent> mapComponent) const
+MapImporter::Tilelayer MapImporter::LoadTilelayer(const rapidjson::Value& value) const
 {
-    for (rapidjson::Value::ConstValueIterator it = value.Begin(); it != value.End(); ++it) {
-        assert(it->HasMember("type"));
-        std::string type = (*it)["type"].GetString();
-
-        if (type == "tilelayer") {
-            LoadTileLayer(*it, mapComponent);
-        } else if (type == "objectgroup") {
-            //LoadObjectLayer(*it);
-        }
-    }
-}
-
-//----------------------------------------------------------------------------------------------------
-void MapImporter::LoadTileLayer(const rapidjson::Value& value, std::weak_ptr<MapComponent> mapComponent) const
-{
-    MapComponent::TileLayer tileLayer;
+    Tilelayer tilelayer;
 
     assert(value.HasMember("data"));
-    tileLayer.m_data.reserve(value["data"].Size());
+    tilelayer.m_data.reserve(value["data"].Size());
     for (rapidjson::Value::ConstValueIterator it = value["data"].Begin(); it != value["data"].End(); ++it) {
-        tileLayer.m_data.emplace_back(it->GetUint());
+        tilelayer.m_data.emplace_back(it->GetUint());
     }
 
-    mapComponent.lock()->m_tileLayers.emplace_back(tileLayer);
+    return tilelayer;
 }
 
 //----------------------------------------------------------------------------------------------------

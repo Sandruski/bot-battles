@@ -10,7 +10,7 @@ namespace sand {
 SpriteComponent::SpriteComponent()
     : m_spriteResource()
     , m_spriteNameToTextureCoords()
-    , m_spriteName()
+    , m_spriteName("default")
 {
 }
 
