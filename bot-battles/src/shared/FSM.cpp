@@ -17,21 +17,8 @@ FSM::FSM()
 //----------------------------------------------------------------------------------------------------
 void FSM::OnNotify(const Event& event)
 {
-    switch (event.eventType) {
-
-    case EventType::PLAYER_ADDED: {
-        OnPlayerAdded();
-        break;
-    }
-
-    case EventType::PLAYER_REMOVED: {
-        OnPlayerRemoved();
-        break;
-    }
-
-    default: {
-        break;
-    }
+    if (!m_currentState.expired()) {
+        return m_currentState.lock()->OnNotify(event);
     }
 }
 
@@ -104,17 +91,5 @@ bool FSM::ChangeState(std::weak_ptr<State> state)
     }
 
     return true;
-}
-
-//----------------------------------------------------------------------------------------------------
-void FSM::OnPlayerAdded()
-{
-    g_game->GetFSM().ChangeState(g_game->GetConfig().m_onlineSceneName.c_str());
-}
-
-//----------------------------------------------------------------------------------------------------
-void FSM::OnPlayerRemoved()
-{
-    g_game->GetFSM().ChangeState(g_game->GetConfig().m_offlineSceneName.c_str());
 }
 }

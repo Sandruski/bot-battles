@@ -8,27 +8,29 @@ class State {
 public:
     virtual ~State() = default;
 
-    virtual const char* GetName() = 0;
+    virtual const char* GetName() const = 0;
 
-    virtual bool Enter()
+    virtual bool Enter() const
     {
         return true;
     }
 
-    virtual bool Update()
+    virtual bool Update() const
     {
         return true;
     }
 
-    virtual bool RenderGui()
+    virtual bool RenderGui() const
     {
         return true;
     }
 
-    virtual bool Exit()
+    virtual bool Exit() const
     {
         return true;
     }
+
+    virtual void OnNotify(const Event& /*event*/) { }
 };
 }
 

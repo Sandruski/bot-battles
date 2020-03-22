@@ -43,7 +43,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Intersection.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)LinkingContext.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Log.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)GameplayDefs.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameDefs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MapImporter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Memory.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)InputMemoryStream.h" />

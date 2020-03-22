@@ -17,19 +17,19 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-MainMenuStateServer::MainMenuStateServer()
-{
-}
-
-//----------------------------------------------------------------------------------------------------
-const char* MainMenuStateServer::GetName()
+const char* MainMenuStateServer::GetName() const
 {
     return "MainMenu";
 }
 
 //----------------------------------------------------------------------------------------------------
-bool MainMenuStateServer::Enter()
+bool MainMenuStateServer::Enter() const
 {
+    ILOG("Entering MainMenuStateServer...");
+
+    GameComponent& gameComponent = g_gameServer->GetGameComponent();
+    gameComponent.m_phaseType = PhaseType::START;
+
     Entity background = g_gameServer->GetEntityManager().AddEntity();
 
     WindowComponent& windowComponent = g_gameServer->GetWindowComponent();
@@ -44,7 +44,7 @@ bool MainMenuStateServer::Enter()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool MainMenuStateServer::RenderGui()
+bool MainMenuStateServer::RenderGui() const
 {
     ImGuiWindowFlags windowFlags = 0;
     windowFlags |= ImGuiWindowFlags_NoResize;
@@ -60,27 +60,16 @@ bool MainMenuStateServer::RenderGui()
     ImGui::SetNextWindowSize(size, ImGuiCond_Always);
 
     if (ImGui::Begin("Server", nullptr, windowFlags)) {
-        ServerComponent& serverComponent = g_gameServer->GetServerComponent();
-        ImGui::InputText("Port", &serverComponent.m_port[0], 128);
-
-        if (ImGui::BeginCombo("Map", serverComponent.m_map.c_str())) {
-            std::vector<std::string> entries = g_gameServer->GetFileSystem().GetFilesFromDirectory(MAPS_DIR);
-            for (const auto& entry : entries) {
-                if (ImGui::Selectable(entry.c_str())) {
-                    serverComponent.m_map = entry;
-                }
-            }
-            ImGui::EndCombo();
+        GameComponent& gameComponent = g_gameServer->GetGameComponent();
+        switch (gameComponent.m_phaseType) {
+        case PhaseType::START: {
+            RenderStartGui();
+            break;
         }
 
-        ImVec2 textSize = ImGui::CalcTextSize("Start");
-        ImVec2 framePadding = ImGui::GetStyle().FramePadding;
-        ImVec2 buttonSize = ImVec2(textSize.x + framePadding.x * 2.0f, textSize.y + framePadding.y * 2.0f);
-        ImVec2 contentRegionMax = ImGui::GetWindowContentRegionMax();
-        ImGui::SetCursorPosX(contentRegionMax.x - buttonSize.x);
-        ImGui::SetCursorPosY(contentRegionMax.y - buttonSize.y);
-        if (ImGui::Button("Start")) {
-            g_gameServer->GetFSM().ChangeState<GameplayStateServer>();
+        default: {
+            break;
+        }
         }
 
         ImGui::End();
@@ -90,11 +79,39 @@ bool MainMenuStateServer::RenderGui()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool MainMenuStateServer::Exit()
+bool MainMenuStateServer::Exit() const
 {
+    ILOG("Exiting MainMenuStateServer...");
+
     g_gameServer->GetEntityManager().ClearEntities();
-    ILOG("Exit MainMenuState");
 
     return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+void MainMenuStateServer::RenderStartGui() const
+{
+    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
+    ImGui::InputText("Port", &serverComponent.m_port[0], DEFAULT_INPUT_SIZE);
+
+    if (ImGui::BeginCombo("Map", serverComponent.m_map.c_str())) {
+        std::vector<std::string> entries = g_gameServer->GetFileSystem().GetFilesFromDirectory(MAPS_DIR);
+        for (const auto& entry : entries) {
+            if (ImGui::Selectable(entry.c_str())) {
+                serverComponent.m_map = entry;
+            }
+        }
+        ImGui::EndCombo();
+    }
+
+    ImVec2 textSize = ImGui::CalcTextSize("Start");
+    ImVec2 framePadding = ImGui::GetStyle().FramePadding;
+    ImVec2 buttonSize = ImVec2(textSize.x + framePadding.x * 2.0f, textSize.y + framePadding.y * 2.0f);
+    ImVec2 contentRegionMax = ImGui::GetWindowContentRegionMax();
+    ImGui::SetCursorPosX(contentRegionMax.x - buttonSize.x);
+    ImGui::SetCursorPosY(contentRegionMax.y - buttonSize.y);
+    if (ImGui::Button("Start")) {
+        g_gameServer->GetFSM().ChangeState(g_gameServer->GetConfig().m_onlineSceneName.c_str());
+    }
 }
 }

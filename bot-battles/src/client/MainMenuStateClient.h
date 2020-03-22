@@ -14,14 +14,19 @@ public:
     }
 
 public:
-    MainMenuStateClient();
+    const char* GetName() const override;
 
-    const char* GetName() override;
+    bool Enter() const override;
+    bool RenderGui() const override;
+    bool Exit() const override;
 
-    bool Enter() override;
-    bool Update() override;
-    bool RenderGui() override;
-    bool Exit() override;
+    void OnNotify(const Event& event) override;
+
+private:
+    void RenderStartGui() const;
+    void RenderConnectGui() const;
+
+    void OnPlayerAdded() const;
 };
 }
 

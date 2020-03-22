@@ -21,12 +21,12 @@ ClientComponent::ClientComponent()
     , m_deliveryManager()
     , m_socket(nullptr)
     , m_socketAddress(nullptr)
-    , m_name()
     , m_ip()
     , m_port()
+    , m_map()
+    , m_name()
     , m_playerID(INVALID_PLAYER_ID)
     , m_entity(INVALID_ENTITY)
-    , m_map()
     , m_lastPacketTime(0.0f)
     , m_lastAckdFrame(0)
     , m_interpolationFromFrame(0)
@@ -81,5 +81,26 @@ bool ClientComponent::IsConnected() const
 bool ClientComponent::IsLocalPlayer(Entity entity) const
 {
     return entity == m_entity;
+}
+
+//----------------------------------------------------------------------------------------------------
+void ClientComponent::Reset()
+{
+    m_map.clear();
+
+    m_lastPacketTime = 0.0f;
+
+    m_lastAckdFrame = 0;
+    m_interpolationFromFrame = 0;
+    m_interpolationToFrame = 0;
+    m_interpolationPercentage = 0.0f;
+
+    m_frameBuffer.Clear();
+
+    m_inputBuffer.Clear();
+    m_isLastInputTransformPending = false;
+    m_isLastInputWeaponPending = false;
+
+    m_RTT = 0.0f;
 }
 }

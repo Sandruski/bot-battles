@@ -14,12 +14,15 @@ public:
     }
 
 public:
-    GameplayStateClient();
+    const char* GetName() const override;
 
-    const char* GetName() override;
+    bool Enter() const override;
+    bool Exit() const override;
 
-    bool Enter() override;
-    bool Exit() override;
+    void OnNotify(const Event& event) override;
+
+private:
+    void OnPlayerRemoved() const;
 };
 }
 

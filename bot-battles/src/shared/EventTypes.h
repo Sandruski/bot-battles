@@ -17,6 +17,7 @@ enum class EventType {
     COMPONENT_MEMBER_CHANGED,
 
     PLAYER_ADDED,
+    PLAYER_UNWELCOMED,
     PLAYER_REMOVED,
 
     COUNT

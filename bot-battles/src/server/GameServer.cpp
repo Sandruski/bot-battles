@@ -89,11 +89,6 @@ bool GameServer::Init()
     if (!ret) {
         return ret;
     }
-    std::weak_ptr<GameplayStateServer> gameplayStateServer = m_fsm->GetState<GameplayStateServer>();
-    ret = serverSystem.lock()->AddObserver(gameplayStateServer);
-    if (!ret) {
-        return ret;
-    }
     std::weak_ptr<MovementSystemServer> movementSystemServer = m_systemManager->GetSystem<MovementSystemServer>();
     ret = movementSystemServer.lock()->AddObserver(serverSystem);
     if (!ret) {
@@ -118,14 +113,20 @@ bool GameServer::Init()
 //----------------------------------------------------------------------------------------------------
 bool GameServer::Update()
 {
+    bool ret = false;
+
     std::weak_ptr<ServerSystem> serverSystem = m_systemManager->GetSystem<ServerSystem>();
 
-    serverSystem.lock()->ReceiveIncomingPackets(m_serverComponent);
+    if (m_gameComponent.m_phaseType != PhaseType::START) {
+        serverSystem.lock()->ReceiveIncomingPackets(m_serverComponent);
+    }
 
-    Game::Update();
+    ret = Game::Update();
 
-    serverSystem.lock()->SendOutgoingPackets(m_serverComponent);
+    if (m_gameComponent.m_phaseType != PhaseType::START) {
+        serverSystem.lock()->SendOutgoingPackets(m_serverComponent);
+    }
 
-    return true;
+    return ret;
 }
 }

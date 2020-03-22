@@ -91,14 +91,20 @@ bool GameClient::Init()
 //----------------------------------------------------------------------------------------------------
 bool GameClient::Update()
 {
+    bool ret = false;
+
     std::weak_ptr<ClientSystem> clientSystem = m_systemManager->GetSystem<ClientSystem>();
 
-    clientSystem.lock()->ReceiveIncomingPackets(m_clientComponent);
+    if (m_gameComponent.m_phaseType != PhaseType::START) {
+        clientSystem.lock()->ReceiveIncomingPackets(m_clientComponent);
+    }
 
-    Game::Update();
+    ret = Game::Update();
 
-    clientSystem.lock()->SendOutgoingPackets(m_clientComponent);
+    if (m_gameComponent.m_phaseType != PhaseType::START) {
+        clientSystem.lock()->SendOutgoingPackets(m_clientComponent);
+    }
 
-    return true;
+    return ret;
 }
 }

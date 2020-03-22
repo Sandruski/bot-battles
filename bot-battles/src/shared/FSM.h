@@ -32,9 +32,6 @@ public:
 private:
     bool ChangeState(std::weak_ptr<State> state);
 
-    void OnPlayerAdded();
-    void OnPlayerRemoved();
-
 private:
     std::array<std::shared_ptr<State>, MAX_STATES> m_states;
     std::weak_ptr<State> m_currentState;

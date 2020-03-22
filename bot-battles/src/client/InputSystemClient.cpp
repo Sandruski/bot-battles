@@ -17,8 +17,8 @@ bool InputSystemClient::Update()
         return true;
     }
 
-    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-    if (gameplayComponent.m_phaseType != PhaseType::PLAY) {
+    GameComponent& gameComponent = g_gameClient->GetGameComponent();
+    if (gameComponent.m_phaseType != PhaseType::PLAY) {
         return true;
     }
 

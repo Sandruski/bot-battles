@@ -24,8 +24,8 @@ bool RemotePlayerMovementSystem::Update()
         return true;
     }
 
-    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-    if (gameplayComponent.m_phaseType != PhaseType::PLAY) {
+    GameComponent& gameComponent = g_gameClient->GetGameComponent();
+    if (gameComponent.m_phaseType != PhaseType::PLAY) {
         return true;
     }
 
@@ -33,7 +33,7 @@ bool RemotePlayerMovementSystem::Update()
         if (clientComponent.m_frameBuffer.Count() >= 2) {
             clientComponent.m_interpolationFromFrame = clientComponent.m_frameBuffer.GetFirst().GetFrame();
             clientComponent.m_interpolationToFrame = clientComponent.m_frameBuffer.GetSecond().GetFrame();
-            F32 startFrameTime = Time::GetInstance().GetStartFrameTime();
+            F32 startFrameTime = MyTime::GetInstance().GetStartFrameTime();
             F32 outOfSyncTime = startFrameTime - clientComponent.m_frameBuffer.GetSecond().GetTimestamp();
             clientComponent.m_interpolationPercentage = outOfSyncTime / ENTITY_INTERPOLATION_PERIOD;
             if (clientComponent.m_interpolationPercentage > 1.0f) {

@@ -3,7 +3,9 @@
 #include "ComponentManager.h"
 #include "Config.h"
 #include "EntityManager.h"
+#include "FSM.h"
 #include "GameClient.h"
+#include "GameComponent.h"
 #include "ResourceManager.h"
 #include "SpriteComponent.h"
 #include "SpriteResource.h"
@@ -13,19 +15,19 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-MainMenuStateClient::MainMenuStateClient()
-{
-}
-
-//----------------------------------------------------------------------------------------------------
-const char* MainMenuStateClient::GetName()
+const char* MainMenuStateClient::GetName() const
 {
     return "MainMenu";
 }
 
 //----------------------------------------------------------------------------------------------------
-bool MainMenuStateClient::Enter()
+bool MainMenuStateClient::Enter() const
 {
+    ILOG("Entering MainMenuStateClient...");
+
+    GameComponent& gameComponent = g_gameClient->GetGameComponent();
+    gameComponent.m_phaseType = PhaseType::START;
+
     Entity background = g_gameClient->GetEntityManager().AddEntity();
 
     WindowComponent& windowComponent = g_gameClient->GetWindowComponent();
@@ -40,17 +42,124 @@ bool MainMenuStateClient::Enter()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool MainMenuStateClient::RenderGui()
+bool MainMenuStateClient::RenderGui() const
 {
+    ImGuiWindowFlags windowFlags = 0;
+    windowFlags |= ImGuiWindowFlags_NoResize;
+    windowFlags |= ImGuiWindowFlags_NoMove;
+    windowFlags |= ImGuiWindowFlags_NoScrollbar;
+    windowFlags |= ImGuiWindowFlags_NoCollapse;
+    windowFlags |= ImGuiWindowFlags_NoSavedSettings;
+
+    WindowComponent& windowComponent = g_gameClient->GetWindowComponent();
+    ImVec2 position = ImVec2(static_cast<F32>(windowComponent.m_resolution.x) / 2.0f, static_cast<F32>(windowComponent.m_resolution.y) / 2.0f);
+    ImGui::SetNextWindowPos(position, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+    ImVec2 size = ImVec2(static_cast<F32>(windowComponent.m_resolution.y) / 2.0f, static_cast<F32>(windowComponent.m_resolution.x) / 2.0f);
+    ImGui::SetNextWindowSize(size, ImGuiCond_Always);
+
+    if (ImGui::Begin("Client", nullptr, windowFlags)) {
+        GameComponent& gameComponent = g_gameClient->GetGameComponent();
+        switch (gameComponent.m_phaseType) {
+        case PhaseType::START: {
+            RenderStartGui();
+            break;
+        }
+
+        case PhaseType::CONNECT: {
+            RenderConnectGui();
+            break;
+        }
+
+        default: {
+            break;
+        }
+        }
+
+        ImGui::End();
+    }
+
     return true;
 }
 
 //----------------------------------------------------------------------------------------------------
-bool MainMenuStateClient::Exit()
+bool MainMenuStateClient::Exit() const
 {
+    ILOG("Exiting MainMenuStateClient...");
+
     g_gameClient->GetEntityManager().ClearEntities();
-    ILOG("Exit MainMenuState");
 
     return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+void MainMenuStateClient::OnNotify(const Event& event)
+{
+    switch (event.eventType) {
+
+    case EventType::PLAYER_ADDED: {
+        OnPlayerAdded();
+        break;
+    }
+
+    default: {
+        break;
+    }
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
+void MainMenuStateClient::RenderStartGui() const
+{
+    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    ImGui::InputText("IP", &clientComponent.m_ip[0], DEFAULT_INPUT_SIZE);
+    ImGui::InputText("Port", &clientComponent.m_port[0], DEFAULT_INPUT_SIZE);
+
+    ImGui::InputText("Name", &clientComponent.m_name[0], DEFAULT_INPUT_SIZE);
+
+    ImVec2 textSize = ImGui::CalcTextSize("Start");
+    ImVec2 framePadding = ImGui::GetStyle().FramePadding;
+    ImVec2 buttonSize = ImVec2(textSize.x + framePadding.x * 2.0f, textSize.y + framePadding.y * 2.0f);
+    ImVec2 contentRegionMax = ImGui::GetWindowContentRegionMax();
+    ImGui::SetCursorPosX(contentRegionMax.x - buttonSize.x);
+    ImGui::SetCursorPosY(contentRegionMax.y - buttonSize.y);
+    if (ImGui::Button("Start")) {
+        GameComponent& gameComponent = g_gameClient->GetGameComponent();
+        gameComponent.m_phaseType = PhaseType::CONNECT;
+        gameComponent.m_timer.Start();
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
+void MainMenuStateClient::RenderConnectGui() const
+{
+    GameComponent& gameComponent = g_gameClient->GetGameComponent();
+    F32 time = static_cast<F32>(gameComponent.m_timer.ReadSec());
+    if (time >= 3.0f) {
+        gameComponent.m_timer.Start();
+    }
+
+    if (time >= 2.0f) {
+        ImGui::Text("Connecting...");
+    } else if (time >= 1.0f) {
+        ImGui::Text("Connecting..");
+    } else if (time >= 0.0f) {
+        ImGui::Text("Connecting.");
+    }
+
+    ImVec2 textSize = ImGui::CalcTextSize("Cancel");
+    ImVec2 framePadding = ImGui::GetStyle().FramePadding;
+    ImVec2 buttonSize = ImVec2(textSize.x + framePadding.x * 2.0f, textSize.y + framePadding.y * 2.0f);
+    ImVec2 contentRegionMax = ImGui::GetWindowContentRegionMax();
+    ImGui::SetCursorPosX(contentRegionMax.x - buttonSize.x);
+    ImGui::SetCursorPosY(contentRegionMax.y - buttonSize.y);
+    if (ImGui::Button("Cancel")) {
+        gameComponent.m_phaseType = PhaseType::START;
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
+void MainMenuStateClient::OnPlayerAdded() const
+{
+    g_gameClient->GetFSM().ChangeState(g_gameClient->GetConfig().m_onlineSceneName.c_str());
 }
 }

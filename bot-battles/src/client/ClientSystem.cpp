@@ -71,14 +71,14 @@ void ClientSystem::SendOutgoingPackets(ClientComponent& clientComponent)
 {
     clientComponent.m_inputBuffer.Remove(clientComponent.m_lastAckdFrame);
 
-    F32 timeout = Time::GetInstance().GetTime() - clientComponent.m_lastPacketTime;
-    if (timeout >= DISCONNECT_TIMEOUT) {
-        Disconnect(clientComponent);
-        return;
-    }
-
     const bool isConnected = clientComponent.IsConnected();
     if (isConnected) {
+        F32 timeout = MyTime::GetInstance().GetTime() - clientComponent.m_lastPacketTime;
+        if (timeout >= DISCONNECT_TIMEOUT) {
+            Disconnect(clientComponent);
+            return;
+        }
+
         SendInputPacket(clientComponent);
     } else {
         SendHelloPacket(clientComponent);
@@ -110,7 +110,7 @@ void ClientSystem::ReceivePacket(ClientComponent& clientComponent, InputMemorySt
     }
 
     if (type < ServerMessageType::COUNT) {
-        clientComponent.m_lastPacketTime = Time::GetInstance().GetStartFrameTime();
+        clientComponent.m_lastPacketTime = MyTime::GetInstance().GetStartFrameTime();
     }
 }
 
@@ -130,6 +130,7 @@ void ClientSystem::ReceiveWelcomePacket(ClientComponent& clientComponent, InputM
     if (isSuccessful) {
         inputStream.Read(clientComponent.m_playerID);
         assert(clientComponent.m_playerID < INVALID_PLAYER_ID);
+        inputStream.Read(clientComponent.m_map);
 
         Event newEvent;
         newEvent.eventType = EventType::PLAYER_ADDED;
@@ -137,6 +138,10 @@ void ClientSystem::ReceiveWelcomePacket(ClientComponent& clientComponent, InputM
         NotifyEvent(newEvent);
 
         ILOG("Player %s %u has joined the game", clientComponent.m_name.c_str(), clientComponent.m_playerID);
+    } else {
+        Event newEvent;
+        newEvent.eventType = EventType::PLAYER_UNWELCOMED;
+        NotifyEvent(newEvent);
     }
 }
 
@@ -157,12 +162,12 @@ void ClientSystem::ReceiveStatePacket(ClientComponent& clientComponent, InputMem
 
     ILOG("State packet received");
 
-    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-    inputStream.Read(gameplayComponent.m_phaseType);
+    GameComponent& gameComponent = g_gameClient->GetGameComponent();
+    inputStream.Read(gameComponent.m_phaseType);
 
     F32 timestamp = 0.0f;
     inputStream.Read(timestamp);
-    clientComponent.m_RTT = Time::GetInstance().GetTime() - timestamp;
+    clientComponent.m_RTT = MyTime::GetInstance().GetTime() - timestamp;
 
     inputStream.Read(clientComponent.m_lastAckdFrame);
 
@@ -195,7 +200,7 @@ bool ClientSystem::SendInputPacket(ClientComponent& clientComponent) const
 
     clientComponent.m_deliveryManager.WriteState(inputPacket);
 
-    F32 timestamp = Time::GetInstance().GetTime();
+    F32 timestamp = MyTime::GetInstance().GetTime();
     inputPacket.Write(timestamp);
 
     const bool hasInputs = !clientComponent.m_inputBuffer.IsEmpty();
@@ -240,6 +245,7 @@ void ClientSystem::ConnectionReset(ClientComponent& clientComponent)
 void ClientSystem::Disconnect(ClientComponent& clientComponent)
 {
     clientComponent.m_playerID = INVALID_PLAYER_ID;
+    clientComponent.Reset();
 
     Event newEvent;
     newEvent.eventType = EventType::PLAYER_REMOVED;

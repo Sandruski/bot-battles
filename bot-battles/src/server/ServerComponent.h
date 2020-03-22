@@ -28,7 +28,6 @@ struct ServerComponent : public Component {
     PlayerID GetPlayerID(Entity entity) const;
     Entity GetEntity(PlayerID playerID) const;
     U32 GetPlayerCount() const;
-
     const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& GetPlayerIDToClientProxyMap() const;
 
     std::shared_ptr<UDPSocket> m_socket;
@@ -36,11 +35,11 @@ struct ServerComponent : public Component {
 
     std::string m_port;
 
+    std::string m_map;
+
     std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>> m_playerIDToClientProxy;
     std::unordered_map<Entity, PlayerID> m_entityToPlayerID;
     std::queue<PlayerID> m_availablePlayerIDs;
-
-    std::string m_map;
 
     bool m_isServerRewind;
 };

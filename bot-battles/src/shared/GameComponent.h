@@ -10,6 +10,7 @@ struct GameComponent {
     GameComponent();
 
     PhaseType m_phaseType;
+    MyTimer m_timer;
 };
 }
 

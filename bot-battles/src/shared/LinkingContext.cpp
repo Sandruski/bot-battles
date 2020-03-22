@@ -69,7 +69,8 @@ bool LinkingContext::RemoveEntity(Entity entity)
 //----------------------------------------------------------------------------------------------------
 void LinkingContext::ClearEntities()
 {
-    for (const auto& pair : m_entityToNetworkID) {
+    std::unordered_map<Entity, NetworkID> entityToNetworkIDRemove = m_entityToNetworkID;
+    for (const auto& pair : entityToNetworkIDRemove) {
         Entity entity = pair.first;
         RemoveEntity(entity);
     }

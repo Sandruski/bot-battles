@@ -5,6 +5,7 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 GameComponent::GameComponent()
     : m_phaseType(PhaseType::START)
+    , m_timer()
 {
 }
 }

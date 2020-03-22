@@ -83,7 +83,7 @@
 // Defs
 #include "ComponentDefs.h"
 #include "EntityDefs.h"
-#include "GameplayDefs.h"
+#include "GameDefs.h"
 #include "NetDefs.h"
 #include "StateDefs.h"
 #include "SystemDefs.h"

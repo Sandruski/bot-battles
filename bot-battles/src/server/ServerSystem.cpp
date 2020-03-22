@@ -236,6 +236,7 @@ void ServerSystem::SendWelcomePacket(const ServerComponent& serverComponent, Pla
     welcomePacket.Write(isSuccessful);
     if (isSuccessful) {
         welcomePacket.Write(playerID);
+        welcomePacket.Write(serverComponent.m_map);
     }
 
     ILOG("Sending welcome packet to player %u...", playerID);

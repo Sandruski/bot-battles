@@ -6,7 +6,7 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class GameplayStateServer : public State, public Observer {
+class GameplayStateServer : public State {
 public:
     static StateType GetType()
     {
@@ -14,12 +14,10 @@ public:
     }
 
 public:
-    GameplayStateServer();
+    const char* GetName() const override;
 
-    const char* GetName() override;
-
-    bool Enter() override;
-    bool Exit() override;
+    bool Enter() const override;
+    bool Exit() const override;
 
     void OnNotify(const Event& event) override;
 

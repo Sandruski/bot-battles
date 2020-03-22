@@ -20,7 +20,7 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream) const
     U32 frame = 0;
     inputStream.Read(frame);
     ILOG("Frame received %u", frame);
-    F32 startFrameTime = Time::GetInstance().GetStartFrameTime();
+    F32 startFrameTime = MyTime::GetInstance().GetStartFrameTime();
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     clientComponent.m_frameBuffer.Add(Frame(frame, startFrameTime));
 

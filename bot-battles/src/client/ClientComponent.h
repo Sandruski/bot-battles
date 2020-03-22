@@ -24,20 +24,23 @@ struct ClientComponent : public Component {
     bool IsConnected() const;
     bool IsLocalPlayer(Entity entity) const;
 
+    void Reset();
+
     ReplicationManagerClient m_replicationManager;
     DeliveryManagerClient m_deliveryManager;
 
     std::shared_ptr<UDPSocket> m_socket;
     std::shared_ptr<SocketAddress> m_socketAddress;
 
-    std::string m_name;
     std::string m_ip;
     std::string m_port;
 
+    std::string m_map;
+
+    std::string m_name;
+
     PlayerID m_playerID;
     Entity m_entity;
-
-    std::string m_map;
 
     F32 m_lastPacketTime;
 

@@ -14,13 +14,14 @@ public:
     }
 
 public:
-    MainMenuStateServer();
+    const char* GetName() const override;
 
-    const char* GetName() override;
+    bool Enter() const override;
+    bool RenderGui() const override;
+    bool Exit() const override;
 
-    bool Enter() override;
-    bool RenderGui() override;
-    bool Exit() override;
+private:
+    void RenderStartGui() const;
 };
 }
 
