@@ -87,12 +87,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Subject.h">
       <Filter>Header Files\Events</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Time.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Timer.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)UDPSocket.h">
       <Filter>Header Files\Networking</Filter>
     </ClInclude>
@@ -261,9 +255,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Random.h">
       <Filter>Header Files\Math</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)GameplayComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)GameplayDefs.h">
       <Filter>Header Files\Gameplay</Filter>
     </ClInclude>
@@ -294,6 +285,15 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)MeshImporter.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)MyTime.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)MyTimer.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Projects\bot-battles\bot-battles\src\shared\GameComponent.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp">
@@ -304,12 +304,6 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Subject.cpp">
       <Filter>Source Files\Events</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Time.cpp">
-      <Filter>Source Files\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Timer.cpp">
-      <Filter>Source Files\Utils</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)UDPSocket.cpp">
       <Filter>Source Files\Networking</Filter>
@@ -410,9 +404,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)HealthComponent.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)GameplayComponent.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)GuiSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
@@ -436,6 +427,15 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)MeshImporter.cpp">
       <Filter>Source Files\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Projects\bot-battles\bot-battles\src\shared\MyTime.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)MyTimer.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Projects\bot-battles\bot-battles\src\shared\GameComponent.cpp">
+      <Filter>Source Files\Components</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

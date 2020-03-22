@@ -1,12 +1,12 @@
-#ifndef __TIMER_H__
-#define __TIMER_H__
+#ifndef __MY_TIMER_H__
+#define __MY_TIMER_H__
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class Timer {
+class MyTimer {
 public:
-    Timer();
+    MyTimer();
 
     void Start();
 

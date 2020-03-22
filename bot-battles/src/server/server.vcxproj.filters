@@ -135,6 +135,9 @@
     <ClCompile Include="..\dependencies\source\stb\stb_image.cpp">
       <Filter>Dependencies\stb</Filter>
     </ClCompile>
+    <ClCompile Include="MainMenuStateServer.cpp">
+      <Filter>Source Files\States</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientProxy.h">
@@ -183,6 +186,9 @@
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
     <ClInclude Include="GameplayStateServer.h">
+      <Filter>Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="MainMenuStateServer.h">
       <Filter>Header Files\States</Filter>
     </ClInclude>
   </ItemGroup>

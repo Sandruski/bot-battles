@@ -13,9 +13,8 @@ public:
     void OnNotify(const Event& event) override;
 
     bool StartUp();
-    bool PreUpdate();
     bool Update();
-    bool PostUpdate();
+    bool RenderGui();
     bool ShutDown();
 
     template <class T>

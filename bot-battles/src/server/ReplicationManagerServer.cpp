@@ -79,7 +79,7 @@ void ReplicationManagerServer::AddDirtyState(NetworkID networkID, U32 dirtyState
 //----------------------------------------------------------------------------------------------------
 void ReplicationManagerServer::Write(OutputMemoryStream& outputStream, ReplicationResultManager& replicationResultManager)
 {
-    U32 frame = Time::GetInstance().GetFrame();
+    U32 frame = MyTime::GetInstance().GetFrame();
     ILOG("Frame sent %u", frame);
     outputStream.Write(frame);
 

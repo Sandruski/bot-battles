@@ -13,6 +13,7 @@ ServerComponent::ServerComponent()
     , m_playerIDToClientProxy()
     , m_entityToPlayerID()
     , m_availablePlayerIDs()
+    , m_map()
     , m_isServerRewind(false)
 {
     m_playerIDToClientProxy.reserve(MAX_PLAYER_IDS);
@@ -29,6 +30,10 @@ void ServerComponent::LoadFromConfig(const rapidjson::Value& value)
     assert(value.HasMember("port"));
     assert(value["port"].IsString());
     m_port = value["port"].GetString();
+
+    assert(value.HasMember("map"));
+    assert(value["map"].IsString());
+    m_map = value["map"].GetString();
 
     assert(value.HasMember("serverRewind"));
     assert(value["serverRewind"].IsBool());

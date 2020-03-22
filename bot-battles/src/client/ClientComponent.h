@@ -37,6 +37,8 @@ struct ClientComponent : public Component {
     PlayerID m_playerID;
     Entity m_entity;
 
+    std::string m_map;
+
     F32 m_lastPacketTime;
 
     U32 m_lastAckdFrame;

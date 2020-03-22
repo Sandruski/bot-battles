@@ -38,7 +38,7 @@ Game::Game()
 #endif
     , m_resourceManager()
     , m_mapImporter()
-    , m_gameplayComponent()
+    , m_gameComponent()
     , m_isRunning(false)
 {
     m_entityManager = std::make_shared<EntityManager>();
@@ -137,7 +137,7 @@ bool Game::Init()
 //----------------------------------------------------------------------------------------------------
 void Game::InitFrame()
 {
-    Time::GetInstance().StartUpdate();
+    MyTime::GetInstance().StartUpdate();
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -193,7 +193,7 @@ bool Game::DoFrame()
 //----------------------------------------------------------------------------------------------------
 void Game::EndFrame()
 {
-    Time::GetInstance().FinishUpdate();
+    MyTime::GetInstance().FinishUpdate();
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -236,10 +236,6 @@ bool Game::PreUpdate()
     if (!ret) {
         return ret;
     }
-    ret = m_fsm->PreUpdate();
-    if (!ret) {
-        return ret;
-    }
     ret = m_linkingContext->PreUpdate();
     if (!ret) {
         return ret;
@@ -274,10 +270,6 @@ bool Game::PostUpdate()
     if (!ret) {
         return ret;
     }
-    ret = m_fsm->PostUpdate();
-    if (!ret) {
-        return ret;
-    }
 
     return ret;
 }
@@ -305,12 +297,23 @@ bool Game::RenderGui()
 {
     if (ImGui::Button("Game")) {
         m_guiComponent.m_body = []() {
-            F32 fps = Time::GetInstance().GetFps();
+            F32 fps = MyTime::GetInstance().GetFps();
             ImGui::Text("%.0f", fps);
         };
     }
 
-    return m_systemManager->RenderGui();
+    bool ret = false;
+
+    ret = m_systemManager->RenderGui();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_fsm->RenderGui();
+    if (!ret) {
+        return ret;
+    }
+
+    return ret;
 }
 
 //----------------------------------------------------------------------------------------------------

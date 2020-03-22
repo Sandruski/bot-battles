@@ -1,17 +1,17 @@
-#ifndef __TIME_H__
-#define __TIME_H__
+#ifndef __MY_TIME_H__
+#define __MY_TIME_H__
 
-#include "Timer.h"
+#include "MyTimer.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class Time {
+class MyTime {
 public:
-    static Time& GetInstance();
+    static MyTime& GetInstance();
 
 public:
-    Time();
+    MyTime();
 
     void StartUpdate();
     void FinishUpdate();
@@ -23,8 +23,8 @@ public:
     U32 GetFrame() const;
 
 private:
-    Timer m_timer;
-    Timer m_dtTimer;
+    MyTimer m_timer;
+    MyTimer m_dtTimer;
 
     F64 m_lastFrameMs;
     F64 m_fps;

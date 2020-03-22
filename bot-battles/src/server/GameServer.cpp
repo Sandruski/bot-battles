@@ -8,6 +8,7 @@
 #include "HealthSystem.h"
 #include "InputSystemServer.h"
 #include "LinkingContext.h"
+#include "MainMenuStateServer.h"
 #include "MovementSystemServer.h"
 #include "ServerComponent.h"
 #include "ServerSystem.h"
@@ -61,6 +62,10 @@ bool GameServer::Init()
     }
 
     // States
+    ret = m_fsm->RegisterState<MainMenuStateServer>();
+    if (!ret) {
+        return ret;
+    }
     ret = m_fsm->RegisterState<GameplayStateServer>();
     if (!ret) {
         return ret;

@@ -8,7 +8,7 @@
 #include "GameplayStateClient.h"
 #include "InputSystemClient.h"
 #include "LocalPlayerComponent.h"
-#include "MainMenuState.h"
+#include "MainMenuStateClient.h"
 #include "MovementSystemClient.h"
 #include "RemotePlayerComponent.h"
 #include "RemotePlayerMovementSystem.h"
@@ -68,7 +68,7 @@ bool GameClient::Init()
     }
 
     // States
-    ret = m_fsm->RegisterState<MainMenuState>();
+    ret = m_fsm->RegisterState<MainMenuStateClient>();
     if (!ret) {
         return ret;
     }

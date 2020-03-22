@@ -42,16 +42,6 @@ bool FSM::StartUp()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool FSM::PreUpdate()
-{
-    if (!m_currentState.expired()) {
-        return m_currentState.lock()->PreUpdate();
-    }
-
-    return true;
-}
-
-//----------------------------------------------------------------------------------------------------
 bool FSM::Update()
 {
     if (!m_currentState.expired()) {
@@ -62,10 +52,10 @@ bool FSM::Update()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool FSM::PostUpdate()
+bool FSM::RenderGui()
 {
     if (!m_currentState.expired()) {
-        return m_currentState.lock()->PostUpdate();
+        return m_currentState.lock()->RenderGui();
     }
 
     return true;

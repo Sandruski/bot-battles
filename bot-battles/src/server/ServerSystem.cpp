@@ -110,7 +110,7 @@ void ServerSystem::SendOutgoingPackets(ServerComponent& serverComponent)
         PlayerID playerID = pair.first;
         std::shared_ptr<ClientProxy> clientProxy = pair.second;
 
-        F32 timeout = Time::GetInstance().GetTime() - clientProxy->GetLastPacketTime();
+        F32 timeout = MyTime::GetInstance().GetTime() - clientProxy->GetLastPacketTime();
         if (timeout >= DISCONNECT_TIMEOUT) {
             playerIDToClientProxyDisconnections.insert(std::make_pair(pair.first, std::weak_ptr(pair.second)));
             continue;
@@ -261,8 +261,8 @@ void ServerSystem::SendStatePacket(const ServerComponent& serverComponent, Playe
     Delivery& delivery = clientProxy->m_deliveryManager.WriteState(statePacket);
     delivery.m_replicationResultManager = std::make_shared<ReplicationResultManager>(std::weak_ptr<ReplicationManagerServer>(clientProxy->m_replicationManager));
 
-    GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
-    statePacket.Write(gameplayComponent.m_phaseType);
+    GameComponent& gameComponent = g_gameServer->GetGameComponent();
+    statePacket.Write(gameComponent.m_phaseType);
 
     statePacket.Write(clientProxy->m_timestamp);
 

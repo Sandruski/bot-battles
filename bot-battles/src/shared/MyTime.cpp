@@ -1,16 +1,16 @@
-#include "Time.h"
+#include "MyTime.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-Time& Time::GetInstance()
+MyTime& MyTime::GetInstance()
 {
-    static Time s_instance;
+    static MyTime s_instance;
     return s_instance;
 }
 
 //----------------------------------------------------------------------------------------------------
-Time::Time()
+MyTime::MyTime()
     : m_timer()
     , m_dtTimer()
     , m_lastFrameMs(0.0f)
@@ -23,7 +23,7 @@ Time::Time()
 }
 
 //----------------------------------------------------------------------------------------------------
-void Time::StartUpdate()
+void MyTime::StartUpdate()
 {
     m_dtTimer.Start();
 
@@ -32,7 +32,7 @@ void Time::StartUpdate()
 }
 
 //----------------------------------------------------------------------------------------------------
-void Time::FinishUpdate()
+void MyTime::FinishUpdate()
 {
     m_lastFrameMs = m_dtTimer.ReadMs();
     F64 desiredLastFrameMs = 1000.0 / FPS;
@@ -46,31 +46,31 @@ void Time::FinishUpdate()
 }
 
 //----------------------------------------------------------------------------------------------------
-F32 Time::GetTime() const
+F32 MyTime::GetTime() const
 {
     return static_cast<F32>(m_timer.ReadSec());
 }
 
 //----------------------------------------------------------------------------------------------------
-F32 Time::GetStartFrameTime() const
+F32 MyTime::GetStartFrameTime() const
 {
     return m_startFrameTime;
 }
 
 //----------------------------------------------------------------------------------------------------
-F32 Time::GetDt() const
+F32 MyTime::GetDt() const
 {
     return static_cast<F32>(m_dt);
 }
 
 //----------------------------------------------------------------------------------------------------
-F32 Time::GetFps() const
+F32 MyTime::GetFps() const
 {
     return static_cast<F32>(m_fps);
 }
 
 //----------------------------------------------------------------------------------------------------
-U32 Time::GetFrame() const
+U32 MyTime::GetFrame() const
 {
     return m_frame;
 }

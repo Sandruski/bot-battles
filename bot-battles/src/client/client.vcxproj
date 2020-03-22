@@ -186,7 +186,7 @@
     <ClCompile Include="Frame.cpp" />
     <ClCompile Include="GameClient.cpp" />
     <ClCompile Include="GameplayStateClient.cpp" />
-    <ClCompile Include="MainMenuState.cpp" />
+    <ClCompile Include="MainMenuStateClient.cpp" />
     <ClCompile Include="MovementSystemClient.cpp" />
     <ClCompile Include="pchClient.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -213,7 +213,7 @@
     <ClInclude Include="GameplayStateClient.h" />
     <ClInclude Include="InputSystemClient.h" />
     <ClInclude Include="LocalPlayerComponent.h" />
-    <ClInclude Include="MainMenuState.h" />
+    <ClInclude Include="MainMenuStateClient.h" />
     <ClInclude Include="MovementSystemClient.h" />
     <ClInclude Include="pchClient.h" />
     <ClInclude Include="RemotePlayerComponent.h" />

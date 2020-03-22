@@ -38,7 +38,7 @@ void DeliveryManagerServer::ProcessTimedOutPackets()
 
         const Delivery& delivery = m_deliveries.front();
         F32 timestamp = delivery.GetTimestamp();
-        F32 time = Time::GetInstance().GetTime();
+        F32 time = MyTime::GetInstance().GetTime();
         F32 timeout = time - timestamp;
         if (timeout >= ACK_TIMEOUT) {
             Delivery deliveryCopy = delivery;

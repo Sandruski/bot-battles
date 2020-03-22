@@ -1,12 +1,12 @@
-#ifndef __MAIN_MENU_STATE_H__
-#define __MAIN_MENU_STATE_H__
+#ifndef __MAIN_MENU_STATE_SERVER_H__
+#define __MAIN_MENU_STATE_SERVER_H__
 
 #include "State.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class MainMenuState : public State {
+class MainMenuStateServer : public State {
 public:
     static StateType GetType()
     {
@@ -14,14 +14,12 @@ public:
     }
 
 public:
-    MainMenuState();
+    MainMenuStateServer();
 
     const char* GetName() override;
 
     bool Enter() override;
-    bool PreUpdate() override;
-    bool Update() override;
-    bool PostUpdate() override;
+    bool RenderGui() override;
     bool Exit() override;
 };
 }

@@ -40,6 +40,8 @@ struct ServerComponent : public Component {
     std::unordered_map<Entity, PlayerID> m_entityToPlayerID;
     std::queue<PlayerID> m_availablePlayerIDs;
 
+    std::string m_map;
+
     bool m_isServerRewind;
 };
 }

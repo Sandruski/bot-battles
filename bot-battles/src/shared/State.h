@@ -15,17 +15,12 @@ public:
         return true;
     }
 
-    virtual bool PreUpdate()
-    {
-        return true;
-    }
-
     virtual bool Update()
     {
         return true;
     }
 
-    virtual bool PostUpdate()
+    virtual bool RenderGui()
     {
         return true;
     }

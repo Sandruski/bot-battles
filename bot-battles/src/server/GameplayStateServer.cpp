@@ -2,8 +2,8 @@
 
 #include "ComponentManager.h"
 #include "EntityManager.h"
+#include "GameComponent.h"
 #include "GameServer.h"
-#include "GameplayComponent.h"
 #include "LinkingContext.h"
 #include "MapImporter.h"
 #include "ResourceManager.h"
@@ -43,9 +43,10 @@ bool GameplayStateServer::Enter()
     std::weak_ptr<MeshComponent> meshComponent = g_gameServer->GetComponentManager().AddComponent<MeshComponent>(background);
     meshComponent.lock()->Init();
     */
+    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     std::string path;
     path.append(MAPS_DIR);
-    path.append("map.json");
+    path.append(serverComponent.m_map);
     g_gameServer->GetMapImporter().Load(path);
     //WindowComponent& windowComponent = g_game->GetWindowComponent();
     //transformComponent.lock()->m_position = { static_cast<F32>(windowComponent.m_resolution.x / 2), static_cast<F32>(windowComponent.m_resolution.y / 2), 0.0f };
@@ -54,24 +55,6 @@ bool GameplayStateServer::Enter()
     //static_cast<F32>(mapComponent.lock()->m_size.y * mapComponent.lock()->m_tileSize.y) / 2);
     //realPosition += glm::vec2(mapComponent.lock()->m_tileSize.x / 2, mapComponent.lock()->m_tileSize.y / 2);
 
-    return true;
-}
-
-//----------------------------------------------------------------------------------------------------
-bool GameplayStateServer::PreUpdate()
-{
-    return true;
-}
-
-//----------------------------------------------------------------------------------------------------
-bool GameplayStateServer::Update()
-{
-    return true;
-}
-
-//----------------------------------------------------------------------------------------------------
-bool GameplayStateServer::PostUpdate()
-{
     return true;
 }
 
@@ -111,17 +94,17 @@ void GameplayStateServer::OnPlayerAdded() const
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     U32 playerCount = serverComponent.GetPlayerCount();
     if (playerCount < MAX_PLAYER_IDS) {
-        GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
-        gameplayComponent.m_phaseType = PhaseType::PLAY;
+        GameComponent& gameComponent = g_gameServer->GetGameComponent();
+        gameComponent.m_phaseType = PhaseType::PLAY;
     }
 }
 
 //----------------------------------------------------------------------------------------------------
 void GameplayStateServer::OnPlayerRemoved() const
 {
-    GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
-    if (gameplayComponent.m_phaseType == PhaseType::PLAY) {
-        gameplayComponent.m_phaseType = PhaseType::RESTART;
+    GameComponent& gameComponent = g_gameServer->GetGameComponent();
+    if (gameComponent.m_phaseType == PhaseType::PLAY) {
+        gameComponent.m_phaseType = PhaseType::RESTART;
     }
 }
 }

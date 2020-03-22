@@ -1,4 +1,4 @@
-#include "MainMenuState.h"
+#include "MainMenuStateClient.h"
 
 #include "ComponentManager.h"
 #include "Config.h"
@@ -13,22 +13,22 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-MainMenuState::MainMenuState()
+MainMenuStateClient::MainMenuStateClient()
 {
 }
 
 //----------------------------------------------------------------------------------------------------
-const char* MainMenuState::GetName()
+const char* MainMenuStateClient::GetName()
 {
     return "MainMenu";
 }
 
 //----------------------------------------------------------------------------------------------------
-bool MainMenuState::Enter()
+bool MainMenuStateClient::Enter()
 {
     Entity background = g_gameClient->GetEntityManager().AddEntity();
 
-    WindowComponent& windowComponent = g_game->GetWindowComponent();
+    WindowComponent& windowComponent = g_gameClient->GetWindowComponent();
     std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().AddComponent<TransformComponent>(background);
     transformComponent.lock()->m_position = { static_cast<F32>(windowComponent.m_resolution.x) / 2.0f, static_cast<F32>(windowComponent.m_resolution.y) / 2.0f, 0.0f };
 
@@ -40,25 +40,13 @@ bool MainMenuState::Enter()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool MainMenuState::PreUpdate()
+bool MainMenuStateClient::RenderGui()
 {
     return true;
 }
 
 //----------------------------------------------------------------------------------------------------
-bool MainMenuState::Update()
-{
-    return true;
-}
-
-//----------------------------------------------------------------------------------------------------
-bool MainMenuState::PostUpdate()
-{
-    return true;
-}
-
-//----------------------------------------------------------------------------------------------------
-bool MainMenuState::Exit()
+bool MainMenuStateClient::Exit()
 {
     g_gameClient->GetEntityManager().ClearEntities();
     ILOG("Exit MainMenuState");

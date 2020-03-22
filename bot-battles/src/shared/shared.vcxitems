@@ -34,7 +34,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)FileSystem.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)FSM.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Game.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)GameplayComponent.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GuiComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GuiSystem.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)HealthComponent.h" />
@@ -51,6 +51,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)MeshResource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MessageTypes.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Input.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MyTime.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MyTimer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)NetDefs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)NetUtils.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)NetworkableReadObject.h" />
@@ -84,8 +86,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)SystemManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SystemTypes.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TextureImporter.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Time.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Timer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TransformComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)UDPSocket.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utils.h" />
@@ -105,7 +105,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)FileSystem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)FSM.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Game.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)GameplayComponent.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)GameComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GuiComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GuiSystem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)HealthComponent.cpp" />
@@ -117,6 +117,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)MapImporter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MeshImporter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MeshResource.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)MyTimer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)OutputMemoryStream.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)RendererSystem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ReplicationCommand.cpp" />
@@ -135,8 +136,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)System.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SystemManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TextureImporter.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Time.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Timer.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)MyTime.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TransformComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)UDPSocket.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)WindowSystem.cpp" />

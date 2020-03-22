@@ -5,7 +5,6 @@
 #include "EntityManager.h"
 #include "FileSystem.h"
 #include "Game.h"
-#include "LinkingContext.h"
 #include "ResourceManager.h"
 #include "SpriteComponent.h"
 #include "SpriteResource.h"
@@ -67,7 +66,6 @@ bool MapImporter::Load(const std::string& path) const
                 position += tilemap.m_tileSize / 2u;
 
                 Entity tile = g_game->GetEntityManager().AddEntity();
-                g_game->GetLinkingContext().AddEntity(tile);
                 std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().AddComponent<TransformComponent>(tile);
                 transformComponent.lock()->m_position = glm::vec3(static_cast<F32>(position.x), static_cast<F32>(position.y), -1.0f);
                 std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().AddComponent<SpriteComponent>(tile);
@@ -93,7 +91,7 @@ std::vector<MapImporter::Tileset> MapImporter::LoadTilesets(const rapidjson::Val
         tileset.m_firstGid = (*it)["firstgid"].GetUint();
         assert(it->HasMember("source"));
         std::string source;
-        source.append(MAPS_DIR);
+        source.append(TILESETS_DIR);
         source.append((*it)["source"].GetString());
 
         rapidjson::Document document;

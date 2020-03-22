@@ -19,9 +19,6 @@ public:
     const char* GetName() override;
 
     bool Enter() override;
-    bool PreUpdate() override;
-    bool Update() override;
-    bool PostUpdate() override;
     bool Exit() override;
 
     void OnNotify(const Event& event) override;
