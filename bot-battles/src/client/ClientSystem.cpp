@@ -139,6 +139,7 @@ void ClientSystem::ReceiveWelcomePacket(ClientComponent& clientComponent, InputM
 
         ILOG("Player %s %u has joined the game", clientComponent.m_name.c_str(), clientComponent.m_playerID);
     } else {
+        // TODO
         Event newEvent;
         newEvent.eventType = EventType::PLAYER_UNWELCOMED;
         NotifyEvent(newEvent);

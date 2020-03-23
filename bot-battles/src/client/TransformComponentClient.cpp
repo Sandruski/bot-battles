@@ -83,6 +83,7 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U3
             if (hasPosition || hasRotation) {
                 Transform transform = Transform(newPosition, newRotation, frame);
                 m_transformBuffer.Add(transform);
+                ILOG("Added frame %u", frame);
                 ILOG("Client pos for frame %u is %f %f", frame, newPosition.x, newPosition.y);
             }
         } else {

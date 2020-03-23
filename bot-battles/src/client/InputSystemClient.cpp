@@ -10,13 +10,6 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 bool InputSystemClient::Update()
 {
-    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    const bool isConnected = clientComponent.IsConnected();
-    const bool hasEntity = clientComponent.m_entity < INVALID_ENTITY;
-    if (!isConnected || !hasEntity) {
-        return true;
-    }
-
     GameComponent& gameComponent = g_gameClient->GetGameComponent();
     if (gameComponent.m_phaseType != PhaseType::PLAY) {
         return true;
@@ -71,6 +64,7 @@ bool InputSystemClient::Update()
         inputComponent.m_isShooting = true;
     }
 
+    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     if (!clientComponent.m_inputBuffer.IsFull()) {
         U32 dirtyState = 0;
 

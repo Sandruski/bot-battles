@@ -22,6 +22,7 @@ public:
     void OnNotify(const Event& event) override;
 
 private:
+    void OnPlayerAdded() const;
     void OnPlayerRemoved() const;
 };
 }

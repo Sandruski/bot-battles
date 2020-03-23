@@ -20,13 +20,6 @@ CollisionSystemClient::CollisionSystemClient()
 //----------------------------------------------------------------------------------------------------
 bool CollisionSystemClient::Update()
 {
-    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    const bool isConnected = clientComponent.IsConnected();
-    const bool hasEntity = clientComponent.m_entity < INVALID_ENTITY;
-    if (!isConnected || !hasEntity) {
-        return true;
-    }
-
     GameComponent& gameComponent = g_gameClient->GetGameComponent();
     if (gameComponent.m_phaseType != PhaseType::PLAY) {
         return true;

@@ -26,17 +26,12 @@ WeaponSystemClient::WeaponSystemClient()
 //----------------------------------------------------------------------------------------------------
 bool WeaponSystemClient::Update()
 {
-    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    const bool isConnected = clientComponent.IsConnected();
-    const bool hasEntity = clientComponent.m_entity < INVALID_ENTITY;
-    if (!isConnected || !hasEntity) {
-        return true;
-    }
-
     GameComponent& gameComponent = g_gameClient->GetGameComponent();
     if (gameComponent.m_phaseType != PhaseType::PLAY) {
         return true;
     }
+
+    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
 
     for (auto& entity : m_entities) {
         if (g_gameClient->GetLinkingContext().GetNetworkID(entity) >= INVALID_NETWORK_ID) {
@@ -48,7 +43,6 @@ bool WeaponSystemClient::Update()
             const InputComponent& inputComponent = input.GetInputComponent();
 
             if (inputComponent.m_isShooting) {
-
                 LinkingContext& linkingContext = g_gameClient->GetLinkingContext();
                 const std::unordered_map<NetworkID, Entity>& newtorkIDToEntity = linkingContext.GetNetworkIDToEntityMap();
 

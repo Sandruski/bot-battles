@@ -20,10 +20,11 @@ MovementSystemServer::MovementSystemServer()
 //----------------------------------------------------------------------------------------------------
 bool MovementSystemServer::Update()
 {
+    /*
     GameComponent& gameComponent = g_gameServer->GetGameComponent();
     if (gameComponent.m_phaseType != PhaseType::PLAY) {
         return true;
-    }
+    }*/
 
     ServerComponent serverComponent = g_gameServer->GetServerComponent();
     U32 frame = MyTime::GetInstance().GetFrame();

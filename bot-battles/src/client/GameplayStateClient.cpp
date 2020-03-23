@@ -48,6 +48,11 @@ void GameplayStateClient::OnNotify(const Event& event)
 {
     switch (event.eventType) {
 
+    case EventType::PLAYER_ADDED: {
+        OnPlayerAdded();
+        break;
+    }
+
     case EventType::PLAYER_REMOVED: {
         OnPlayerRemoved();
         break;
@@ -57,6 +62,12 @@ void GameplayStateClient::OnNotify(const Event& event)
         break;
     }
     }
+}
+
+//----------------------------------------------------------------------------------------------------
+void GameplayStateClient::OnPlayerAdded() const
+{
+    // TODO: receive events for remote players
 }
 
 //----------------------------------------------------------------------------------------------------

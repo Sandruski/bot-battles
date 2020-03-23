@@ -20,9 +20,13 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream) const
     U32 frame = 0;
     inputStream.Read(frame);
     ILOG("Frame received %u", frame);
-    F32 startFrameTime = MyTime::GetInstance().GetStartFrameTime();
-    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    clientComponent.m_frameBuffer.Add(Frame(frame, startFrameTime));
+
+    GameComponent& gameComponent = g_gameClient->GetGameComponent();
+    if (gameComponent.m_phaseType == PhaseType::PLAY) {
+        F32 startFrameTime = MyTime::GetInstance().GetStartFrameTime();
+        ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+        clientComponent.m_frameBuffer.Add(Frame(frame, startFrameTime));
+    }
 
     while (inputStream.GetRemainingBitCount() >= 8) {
 
@@ -79,6 +83,7 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream) const
                     F32 rotation = !transformComponent.lock()->m_transformBuffer.IsEmpty() ? transformComponent.lock()->m_transformBuffer.GetLast().m_rotation : transformComponent.lock()->m_rotation;
                     Transform transform = Transform(position, rotation, frame);
                     transformComponent.lock()->m_transformBuffer.Add(transform);
+                    ILOG("Added frame %u", frame);
                 }
             }
         }
@@ -104,7 +109,9 @@ void ReplicationManagerClient::ReadCreateAction(InputMemoryStream& inputStream, 
         if (!hasLocalPlayer) {
             g_gameClient->GetComponentManager().AddComponent<LocalPlayerComponent>(entity);
         }
-    } else {
+    } else
+    // TODO: REMOTE PLAYERS ARE ALSO NETWORKED TILES. CHANGE THIS AND ADD A PLAYER COMPONENT TO THOSE ACTUALLY PLAYERS!
+    {
         const bool hasRemotePlayer = signature & static_cast<U16>(ComponentType::REMOTE_PLAYER);
         if (!hasRemotePlayer) {
             g_gameClient->GetComponentManager().AddComponent<RemotePlayerComponent>(entity);

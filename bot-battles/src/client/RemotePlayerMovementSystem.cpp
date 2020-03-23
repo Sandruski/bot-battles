@@ -17,32 +17,24 @@ RemotePlayerMovementSystem::RemotePlayerMovementSystem()
 //----------------------------------------------------------------------------------------------------
 bool RemotePlayerMovementSystem::Update()
 {
-    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    const bool isConnected = clientComponent.IsConnected();
-    const bool hasEntity = clientComponent.m_entity < INVALID_ENTITY;
-    if (!isConnected || !hasEntity) {
-        return true;
-    }
-
     GameComponent& gameComponent = g_gameClient->GetGameComponent();
     if (gameComponent.m_phaseType != PhaseType::PLAY) {
         return true;
     }
 
-    if (clientComponent.m_isEntityInterpolation) {
-        if (clientComponent.m_frameBuffer.Count() >= 2) {
-            clientComponent.m_interpolationFromFrame = clientComponent.m_frameBuffer.GetFirst().GetFrame();
-            clientComponent.m_interpolationToFrame = clientComponent.m_frameBuffer.GetSecond().GetFrame();
-            F32 startFrameTime = MyTime::GetInstance().GetStartFrameTime();
-            F32 outOfSyncTime = startFrameTime - clientComponent.m_frameBuffer.GetSecond().GetTimestamp();
-            clientComponent.m_interpolationPercentage = outOfSyncTime / ENTITY_INTERPOLATION_PERIOD;
-            if (clientComponent.m_interpolationPercentage > 1.0f) {
-                clientComponent.m_interpolationPercentage = 1.0f;
-            }
+    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    if (clientComponent.m_frameBuffer.Count() >= 2) {
+        clientComponent.m_interpolationFromFrame = clientComponent.m_frameBuffer.GetFirst().GetFrame();
+        clientComponent.m_interpolationToFrame = clientComponent.m_frameBuffer.GetSecond().GetFrame();
+        F32 startFrameTime = MyTime::GetInstance().GetStartFrameTime();
+        F32 outOfSyncTime = startFrameTime - clientComponent.m_frameBuffer.GetSecond().GetTimestamp();
+        clientComponent.m_interpolationPercentage = outOfSyncTime / ENTITY_INTERPOLATION_PERIOD;
+        if (clientComponent.m_interpolationPercentage > 1.0f) {
+            clientComponent.m_interpolationPercentage = 1.0f;
+        }
 
-            if (clientComponent.m_interpolationPercentage == 1.0f) {
-                clientComponent.m_frameBuffer.RemoveFirst();
-            }
+        if (clientComponent.m_interpolationPercentage == 1.0f) {
+            clientComponent.m_frameBuffer.RemoveFirst();
         }
     }
 
@@ -53,6 +45,7 @@ bool RemotePlayerMovementSystem::Update()
 
         if (clientComponent.m_isEntityInterpolation) {
             std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
+            ILOG("Position is %f %f", transformComponent.lock()->m_position.x, transformComponent.lock()->m_position.y);
             if (transformComponent.lock()->m_transformBuffer.Count() >= 2) {
                 bool interpolate1 = false;
                 Transform fromTransform;
@@ -80,10 +73,11 @@ bool RemotePlayerMovementSystem::Update()
                     transformComponent.lock()->m_rotation = Lerp(fromTransform.m_rotation, toTransform.m_rotation, clientComponent.m_interpolationPercentage);
                     ILOG("From trans %u position %f %f, to trans %u position %f %f", clientComponent.m_interpolationFromFrame, fromTransform.m_position.x, fromTransform.m_position.y,
                         clientComponent.m_interpolationToFrame, toTransform.m_position.x, toTransform.m_position.y);
-                }
 
-                if (clientComponent.m_interpolationPercentage == 1.0f) {
-                    transformComponent.lock()->m_transformBuffer.RemoveFirst();
+                    if (clientComponent.m_interpolationPercentage == 1.0f) {
+                        transformComponent.lock()->m_transformBuffer.RemoveFirst();
+                        ILOG("REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+                    }
                 }
             }
         }

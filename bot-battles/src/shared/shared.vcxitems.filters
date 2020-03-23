@@ -291,9 +291,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)GameComponent.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Projects\bot-battles\bot-battles\src\shared\GameDefs.h">
-      <Filter>Header Files\Game</Filter>
-    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameDefs.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp">
