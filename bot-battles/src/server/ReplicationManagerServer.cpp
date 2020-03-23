@@ -124,8 +124,8 @@ void ReplicationManagerServer::Write(OutputMemoryStream& outputStream, Replicati
 
             replicationResultManager.AddDelivery(networkID, replicationCommand);
 
-            replicationCommand.RemoveDirtyState(writtenState);
-            // TODO: do something with the create
+            replicationCommand.RemoveDirtyState(static_cast<U32>(ComponentMemberType::ALL));
+            //replicationCommand.RemoveDirtyState(writtenState);
 
             if (replicationCommand.m_replicationActionType == ReplicationActionType::CREATE
                 || replicationCommand.m_replicationActionType == ReplicationActionType::REMOVE) {
