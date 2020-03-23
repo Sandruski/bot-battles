@@ -90,9 +90,9 @@ private:
     bool PreUpdate();
     bool PostUpdate();
     bool PreRender();
+    bool RenderGui();
     bool Render();
     bool DebugRender();
-    bool RenderGui();
     bool PostRender();
 
 protected:

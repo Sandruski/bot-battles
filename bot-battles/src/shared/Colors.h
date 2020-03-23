@@ -1,14 +1,11 @@
 #ifndef __COLORS_H__
 #define __COLORS_H__
 
-/*
-extern const SDL_Color Black;
-extern const SDL_Color White;
-extern const SDL_Color Red;
-extern const SDL_Color Green;
-extern const SDL_Color Blue;
-extern const SDL_Color Orange;
-extern const SDL_Color Yellow;
-*/
+extern const glm::vec4 Black;
+extern const glm::vec4 White;
+extern const glm::vec4 Red;
+extern const glm::vec4 Green;
+extern const glm::vec4 Blue;
+extern const glm::vec4 Yellow;
 
 #endif

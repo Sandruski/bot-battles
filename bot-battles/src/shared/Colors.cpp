@@ -1,11 +1,8 @@
 #include "Colors.h"
 
-/*
-const SDL_Color Black = { 0, 0, 0, 255 };
-const SDL_Color White = { 255, 255, 255, 255 };
-const SDL_Color Red = { 255, 0, 0, 255 };
-const SDL_Color Green = { 0, 255, 0, 255 };
-const SDL_Color Blue = { 0, 0, 255, 255 };
-const SDL_Color Yellow = { 255, 255, 0, 255 };
-const SDL_Color Orange = { 255, 128, 0, 255 };
-*/
+const glm::vec4 Black = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+const glm::vec4 White = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+const glm::vec4 Red = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+const glm::vec4 Green = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
+const glm::vec4 Blue = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
+const glm::vec4 Yellow = glm::vec4(1.0f, 1.0f, 0.0f, 1.0f);

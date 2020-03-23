@@ -40,6 +40,17 @@ void RendererComponent::LoadFromConfig(const rapidjson::Value& value)
 }
 
 //----------------------------------------------------------------------------------------------------
+void RendererComponent::SetWireframe(bool wireframe) const
+{
+    if (wireframe) {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+    } else {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
 void RendererComponent::UpdateBackgroundColor()
 {
     glClearColor(m_backgroundColor.r, m_backgroundColor.g, m_backgroundColor.b, m_backgroundColor.a);

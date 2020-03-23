@@ -22,10 +22,12 @@ static const char* defaultFragmentShaderSource = "#version 330 core\n"
                                                  "in vec2 TextureCoords;\n"
 
                                                  "uniform sampler2D sprite;\n"
+                                                 "uniform vec4 color;\n"
+                                                 "uniform float pct;\n"
 
                                                  "void main()\n"
                                                  "{\n"
-                                                 "FragColor = texture(sprite, TextureCoords);\n"
+                                                 "FragColor = mix(texture(sprite, TextureCoords), color, pct);\n"
                                                  "if (FragColor.a == 0.0)\n"
                                                  "{\n"
                                                  "discard;\n"

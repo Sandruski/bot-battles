@@ -14,6 +14,7 @@ struct RendererComponent {
 
     void LoadFromConfig(const rapidjson::Value& value);
 
+    void SetWireframe(bool wireframe) const;
     void UpdateBackgroundColor();
 
     std::weak_ptr<ShaderResource> m_shaderResource;
