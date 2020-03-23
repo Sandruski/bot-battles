@@ -59,10 +59,40 @@ public:
         U32 m_spacing;
     };
 
+    struct Object {
+
+        Object()
+            : m_position(0.0f, 0.0f)
+            , m_size(0.0f, 0.0f)
+            , m_rotation(0.0f)
+            , m_gid(0)
+        {
+        }
+
+        glm::vec2 m_position;
+        glm::vec2 m_size;
+        F32 m_rotation;
+
+        U32 m_gid;
+    };
+
+    struct Objectlayer {
+
+        Objectlayer()
+            : m_objects()
+            , m_name()
+        {
+        }
+
+        std::vector<Object> m_objects;
+        std::string m_name;
+    };
+
     struct Tilelayer {
 
         Tilelayer()
             : m_data()
+            , m_name()
         {
         }
 
@@ -72,6 +102,7 @@ public:
         }
 
         std::vector<U32> m_data;
+        std::string m_name;
     };
 
     struct Tilemap {
@@ -79,6 +110,7 @@ public:
         Tilemap()
             : m_tilesets()
             , m_tilelayers()
+            , m_objectlayers()
             , m_tileCount(0)
             , m_tileSize(0)
         {
@@ -110,6 +142,7 @@ public:
 
         std::vector<Tileset> m_tilesets;
         std::vector<Tilelayer> m_tilelayers;
+        std::vector<Objectlayer> m_objectlayers;
 
         glm::uvec2 m_tileCount;
         glm::uvec2 m_tileSize;
@@ -119,9 +152,11 @@ public:
     bool Load(const std::string& path) const;
 
 private:
+    Tilemap LoadTilemap(const rapidjson::Value& value) const;
     std::vector<Tileset> LoadTilesets(const rapidjson::Value& value) const;
     Tilelayer LoadTilelayer(const rapidjson::Value& value) const;
-    void LoadObjectLayer(const rapidjson::Value& value) const;
+    Objectlayer LoadObjectLayer(const rapidjson::Value& value) const;
+    Object LoadObject(const rapidjson::Value& value) const;
 };
 }
 

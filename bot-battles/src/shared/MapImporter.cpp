@@ -24,58 +24,100 @@ bool MapImporter::Load(const std::string& path) const
     }
     assert(document.IsObject());
 
-    Tilemap tilemap;
-
-    assert(document.HasMember("width"));
-    tilemap.m_tileCount.x = document["width"].GetUint();
-    assert(document.HasMember("height"));
-    tilemap.m_tileCount.y = document["height"].GetUint();
-    assert(document.HasMember("tilewidth"));
-    tilemap.m_tileSize.x = document["tilewidth"].GetUint();
-    assert(document.HasMember("tileheight"));
-    tilemap.m_tileSize.y = document["tileheight"].GetUint();
-
-    assert(document.HasMember("tilesets"));
-    const rapidjson::Value& tilesetsValue = document["tilesets"];
-    tilemap.m_tilesets = LoadTilesets(tilesetsValue);
-
-    assert(document.HasMember("layers"));
-    for (rapidjson::Value::ConstValueIterator it = document["layers"].Begin(); it != document["layers"].End(); ++it) {
-        assert(it->HasMember("type"));
-        std::string type = (*it)["type"].GetString();
-
-        if (type == "tilelayer") {
-            Tilelayer tilelayer = LoadTilelayer(*it);
-            tilemap.m_tilelayers.emplace_back(tilelayer);
-        } else if (type == "objectgroup") {
-            //LoadObjectLayer(*it);
-        }
-    }
+    Tilemap tilemap = LoadTilemap(document);
 
     for (const auto& tilelayer : tilemap.m_tilelayers) {
         for (U32 i = 0; i < tilemap.m_tileCount.x; ++i) {
             for (U32 j = 0; j < tilemap.m_tileCount.y; ++j) {
-                U32 tileGid = tilelayer.GetTileGid(i, j, tilemap.m_tileCount.x);
-                if (tileGid == 0) {
-                    continue;
-                }
-                const Tileset& tileset = tilemap.GetTileset(tileGid);
-                glm::uvec4 textureCoords = tileset.GetTextureCoords(tileGid);
+                Entity entity = g_game->GetEntityManager().AddEntity();
 
+                // Transform
                 glm::uvec2 position = tilemap.MapToWorld(i, j);
                 position += tilemap.m_tileSize / 2u;
-
-                Entity tile = g_game->GetEntityManager().AddEntity();
-                std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().AddComponent<TransformComponent>(tile);
+                std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().AddComponent<TransformComponent>(entity);
                 transformComponent.lock()->m_position = glm::vec3(static_cast<F32>(position.x), static_cast<F32>(position.y), -1.0f);
-                std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().AddComponent<SpriteComponent>(tile);
+
+                // Sprite
+                U32 tileGid = tilelayer.GetTileGid(i, j, tilemap.m_tileCount.x);
+                if (tileGid != 0) {
+                    const Tileset& tileset = tilemap.GetTileset(tileGid);
+                    glm::uvec4 textureCoords = tileset.GetTextureCoords(tileGid);
+                    std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().AddComponent<SpriteComponent>(entity);
+                    spriteComponent.lock()->m_spriteResource = g_game->GetResourceManager().AddResource<SpriteResource>(tileset.m_spriteFile.c_str(), TEXTURES_DIR, true);
+                    spriteComponent.lock()->AddSprite("default", textureCoords);
+                }
+
+                // TODO: not working
+                if (tilelayer.m_name == "collision") {
+                    std::weak_ptr<ColliderComponent> colliderComponent = g_game->GetComponentManager().AddComponent<ColliderComponent>(entity);
+                    colliderComponent.lock()->m_size = tilemap.m_tileSize;
+                }
+            }
+        }
+    }
+
+    for (const auto& objectlayer : tilemap.m_objectlayers) {
+        for (const auto& object : objectlayer.m_objects) {
+            Entity entity = g_game->GetEntityManager().AddEntity();
+
+            // Transform
+            std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().AddComponent<TransformComponent>(entity);
+            transformComponent.lock()->m_position = glm::vec3(object.m_position.x, object.m_position.y, -1.0f);
+            transformComponent.lock()->m_rotation = object.m_rotation;
+
+            // Sprite
+            U32 objectGid = object.m_gid;
+            if (objectGid != 0) {
+                std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().AddComponent<SpriteComponent>(entity);
+                const Tileset& tileset = tilemap.GetTileset(objectGid);
+                glm::uvec4 textureCoords = tileset.GetTextureCoords(objectGid);
                 spriteComponent.lock()->m_spriteResource = g_game->GetResourceManager().AddResource<SpriteResource>(tileset.m_spriteFile.c_str(), TEXTURES_DIR, true);
                 spriteComponent.lock()->AddSprite("default", textureCoords);
+            }
+
+            // Collider
+            if (objectlayer.m_name == "collision") {
+                std::weak_ptr<ColliderComponent> colliderComponent = g_game->GetComponentManager().AddComponent<ColliderComponent>(entity);
+                colliderComponent.lock()->m_size = object.m_size;
             }
         }
     }
 
     return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+MapImporter::Tilemap MapImporter::LoadTilemap(const rapidjson::Value& value) const
+{
+    Tilemap tilemap;
+
+    assert(value.HasMember("width"));
+    tilemap.m_tileCount.x = value["width"].GetUint();
+    assert(value.HasMember("height"));
+    tilemap.m_tileCount.y = value["height"].GetUint();
+    assert(value.HasMember("tilewidth"));
+    tilemap.m_tileSize.x = value["tilewidth"].GetUint();
+    assert(value.HasMember("tileheight"));
+    tilemap.m_tileSize.y = value["tileheight"].GetUint();
+
+    assert(value.HasMember("tilesets"));
+    const rapidjson::Value& tilesetsValue = value["tilesets"];
+    tilemap.m_tilesets = LoadTilesets(tilesetsValue);
+
+    assert(value.HasMember("layers"));
+    for (rapidjson::Value::ConstValueIterator it = value["layers"].Begin(); it != value["layers"].End(); ++it) {
+        assert(it->HasMember("type"));
+        std::string type = (*it)["type"].GetString();
+        if (type == "tilelayer") {
+            Tilelayer tilelayer = LoadTilelayer(*it);
+            tilemap.m_tilelayers.emplace_back(tilelayer);
+        } else if (type == "objectgroup") {
+            Objectlayer objectlayer = LoadObjectLayer(*it);
+            tilemap.m_objectlayers.emplace_back(objectlayer);
+        }
+    }
+
+    return tilemap;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -138,30 +180,49 @@ MapImporter::Tilelayer MapImporter::LoadTilelayer(const rapidjson::Value& value)
         tilelayer.m_data.emplace_back(it->GetUint());
     }
 
+    assert(value.HasMember("name"));
+    tilelayer.m_name = value["name"].GetString();
+
     return tilelayer;
 }
 
 //----------------------------------------------------------------------------------------------------
-void MapImporter::LoadObjectLayer(const rapidjson::Value& value) const
+MapImporter::Objectlayer MapImporter::LoadObjectLayer(const rapidjson::Value& value) const
 {
-    Entity entity = g_game->GetEntityManager().AddEntity();
-    std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().AddComponent<TransformComponent>(entity);
-    assert(value.HasMember("x"));
-    transformComponent.lock()->m_position.x = value["x"].GetFloat();
-    assert(value.HasMember("y"));
-    transformComponent.lock()->m_position.y = value["y"].GetFloat();
-    assert(value.HasMember("rotation"));
-    transformComponent.lock()->m_rotation = value["rotation"].GetFloat();
+    Objectlayer objectlayer;
 
-    assert(value.HasMember("type"));
-    std::string type = value["type"].GetString();
-
-    if (type == "collision") {
-        std::weak_ptr<ColliderComponent> colliderComponent = g_game->GetComponentManager().AddComponent<ColliderComponent>(entity);
-        assert(value.HasMember("width"));
-        colliderComponent.lock()->m_size.x = value["width"].GetFloat();
-        assert(value.HasMember("height"));
-        colliderComponent.lock()->m_size.y = value["height"].GetFloat();
+    assert(value.HasMember("objects"));
+    objectlayer.m_objects.reserve(value["objects"].Size());
+    for (rapidjson::Value::ConstValueIterator it = value["objects"].Begin(); it != value["objects"].End(); ++it) {
+        Object object = LoadObject(*it);
+        objectlayer.m_objects.emplace_back(object);
     }
+
+    assert(value.HasMember("name"));
+    objectlayer.m_name = value["name"].GetString();
+
+    return objectlayer;
+}
+
+//----------------------------------------------------------------------------------------------------
+MapImporter::Object MapImporter::LoadObject(const rapidjson::Value& value) const
+{
+    Object object;
+
+    assert(value.HasMember("x"));
+    object.m_position.x = value["x"].GetFloat();
+    assert(value.HasMember("y"));
+    object.m_position.y = value["y"].GetFloat();
+    assert(value.HasMember("width"));
+    object.m_size.x = value["width"].GetFloat();
+    assert(value.HasMember("height"));
+    object.m_size.y = value["height"].GetFloat();
+    assert(value.HasMember("rotation"));
+    object.m_rotation = value["rotation"].GetFloat();
+    if (value.HasMember("gid")) {
+        object.m_gid = value["gid"].GetUint();
+    }
+
+    return object;
 }
 }

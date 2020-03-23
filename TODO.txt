@@ -4,3 +4,4 @@
 -Send unwelcome messages.
 -Add 'Random map' option with ImGui to select a map from all the existing maps.
 -Have debug draw again -> Debug Draw colliders and other things.
+-Collision tilelayer not working.
