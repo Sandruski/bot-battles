@@ -38,6 +38,7 @@ Game::Game()
 #endif
     , m_resourceManager()
     , m_mapImporter()
+    , m_eventComponent()
     , m_gameplayComponent()
     , m_mainMenuComponent()
     , m_isRunning(false)
@@ -296,11 +297,13 @@ bool Game::DebugRender()
 //----------------------------------------------------------------------------------------------------
 bool Game::RenderGui()
 {
-    if (ImGui::Button("Game")) {
-        m_guiComponent.m_body = []() {
-            F32 fps = MyTime::GetInstance().GetFps();
-            ImGui::Text("%.0f", fps);
-        };
+    if (m_guiComponent.m_isDebugOptions) {
+        if (ImGui::Button("Game")) {
+            m_guiComponent.m_body = []() {
+                F32 fps = MyTime::GetInstance().GetFps();
+                ImGui::Text("%.0f", fps);
+            };
+        }
     }
 
     bool ret = false;

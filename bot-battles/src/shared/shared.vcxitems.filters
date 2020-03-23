@@ -291,6 +291,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)MainMenuComponent.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)EventComponent.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp">
@@ -435,6 +438,9 @@
       <Filter>Source Files\Components</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)MainMenuComponent.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)EventComponent.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
   </ItemGroup>

@@ -9,7 +9,7 @@ struct GuiComponent {
 
     GuiComponent();
 
-    bool m_isOpen;
+    bool m_isDebugOptions;
     std::function<void()> m_body;
 };
 }

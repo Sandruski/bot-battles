@@ -1,5 +1,8 @@
 #include "EventSystem.h"
 
+#include "EventComponent.h"
+#include "Game.h"
+
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
@@ -16,6 +19,46 @@ bool EventSystem::StartUp()
 //----------------------------------------------------------------------------------------------------
 bool EventSystem::Update()
 {
+    EventComponent& eventComponent = g_game->GetEventComponent();
+
+    const U8* keyboardState = SDL_GetKeyboardState(nullptr);
+    for (U16 i = 0; i < SDL_NUM_SCANCODES; ++i) {
+        EventComponent::KeyState& keyState = eventComponent.m_keyboard.at(i);
+        if (keyboardState[i] == SDL_KEY_PRESSED) {
+            if (keyState == EventComponent::KeyState::IDLE) {
+                keyState = EventComponent::KeyState::DOWN;
+            } else {
+                keyState = EventComponent::KeyState::REPEAT;
+            }
+        } else {
+            if (keyState == EventComponent::KeyState::DOWN
+                || keyState == EventComponent::KeyState::REPEAT) {
+                keyState = EventComponent::KeyState::UP;
+            } else {
+                keyState = EventComponent::KeyState::IDLE;
+            }
+        }
+    }
+
+    U32 mouseState = SDL_GetMouseState(&eventComponent.m_mousePosition.x, &eventComponent.m_mousePosition.y);
+    for (U8 i = 0; i < SDL_BUTTON_X2; ++i) {
+        EventComponent::KeyState& keyState = eventComponent.m_mouse.at(i);
+        if (mouseState & SDL_BUTTON(i + SDL_BUTTON_LEFT)) {
+            if (keyState == EventComponent::KeyState::IDLE) {
+                keyState = EventComponent::KeyState::DOWN;
+            } else {
+                keyState = EventComponent::KeyState::REPEAT;
+            }
+        } else {
+            if (keyState == EventComponent::KeyState::DOWN
+                || keyState == EventComponent::KeyState::REPEAT) {
+                keyState = EventComponent::KeyState::UP;
+            } else {
+                keyState = EventComponent::KeyState::IDLE;
+            }
+        }
+    }
+
     static SDL_Event event;
     while (SDL_PollEvent(&event)) {
 

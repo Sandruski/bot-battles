@@ -28,6 +28,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)DebugDrawer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)EntityDefs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)EntityManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)EventComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Events.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)EventSystem.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)EventTypes.h" />
@@ -101,6 +102,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Config.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)DebugDrawer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)EntityManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)EventComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)EventSystem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)FileSystem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)FSM.cpp" />

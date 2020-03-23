@@ -17,6 +17,7 @@ public:
     GuiSystem();
 
     bool StartUp() override;
+    bool Update() override;
     bool PreRender() override;
     bool Render() override;
     bool PostRender() override;

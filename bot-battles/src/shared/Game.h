@@ -9,6 +9,7 @@
 #include "TextureImporter.h"
 #include "WindowComponent.h"
 #endif
+#include "EventComponent.h"
 #include "FileSystem.h"
 #include "GameplayComponent.h"
 #include "MainMenuComponent.h"
@@ -69,6 +70,10 @@ public:
     {
         return m_mapImporter;
     }
+    EventComponent& GetEventComponent()
+    {
+        return m_eventComponent;
+    }
     GameplayComponent& GetGameplayComponent()
     {
         return m_gameplayComponent;
@@ -109,6 +114,7 @@ protected:
     FileSystem m_fileSystem;
     ResourceManager m_resourceManager;
     MapImporter m_mapImporter;
+    EventComponent m_eventComponent;
     GameplayComponent m_gameplayComponent;
     MainMenuComponent m_mainMenuComponent;
 

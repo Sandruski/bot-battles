@@ -15,52 +15,35 @@ bool InputSystemClient::Update()
         return true;
     }
 
-    const U8* keyboardState = SDL_GetKeyboardState(nullptr);
-    for (U16 i = 0; i < SDL_NUM_SCANCODES; ++i) {
-        if (keyboardState[i] == SDL_KEY_PRESSED) {
-            if (m_keyboard[i] == KeyState::IDLE) {
-                m_keyboard[i] = KeyState::DOWN;
-            } else {
-                m_keyboard[i] = KeyState::REPEAT;
-            }
-        } else {
-            if (m_keyboard[i] == KeyState::DOWN
-                || m_keyboard[i] == KeyState::REPEAT) {
-                m_keyboard[i] = KeyState::UP;
-            } else {
-                m_keyboard[i] = KeyState::IDLE;
-            }
-        }
-    }
-
     InputComponent& inputComponent = g_gameClient->GetInputComponent();
     inputComponent.m_acceleration = glm::vec2(0.0f, 0.0f);
     inputComponent.m_angularAcceleration = 0.0f;
     inputComponent.m_isShooting = false;
 
     const F32 multiplier = 5.0f;
-    if (m_keyboard[SDL_SCANCODE_A] == KeyState::REPEAT) {
+    EventComponent& eventComponent = g_game->GetEventComponent();
+    if (eventComponent.m_keyboard.at(SDL_SCANCODE_A) == EventComponent::KeyState::REPEAT) {
         inputComponent.m_acceleration.x = -1.0f * multiplier;
     }
-    if (m_keyboard[SDL_SCANCODE_D] == KeyState::REPEAT) {
+    if (eventComponent.m_keyboard.at(SDL_SCANCODE_D) == EventComponent::KeyState::REPEAT) {
         inputComponent.m_acceleration.x = 1.0f * multiplier;
     }
-    if (m_keyboard[SDL_SCANCODE_W] == KeyState::REPEAT) {
+    if (eventComponent.m_keyboard.at(SDL_SCANCODE_W) == EventComponent::KeyState::REPEAT) {
         inputComponent.m_acceleration.y = -1.0f * multiplier;
     }
-    if (m_keyboard[SDL_SCANCODE_S] == KeyState::REPEAT) {
+    if (eventComponent.m_keyboard.at(SDL_SCANCODE_S) == EventComponent::KeyState::REPEAT) {
         inputComponent.m_acceleration.y = 1.0f * multiplier;
     }
-    if (m_keyboard[SDL_SCANCODE_LEFT] == KeyState::REPEAT) {
+    if (eventComponent.m_keyboard.at(SDL_SCANCODE_LEFT) == EventComponent::KeyState::REPEAT) {
         inputComponent.m_angularAcceleration = -1.0f * multiplier;
     }
-    if (m_keyboard[SDL_SCANCODE_RIGHT] == KeyState::REPEAT) {
+    if (eventComponent.m_keyboard.at(SDL_SCANCODE_RIGHT) == EventComponent::KeyState::REPEAT) {
         inputComponent.m_angularAcceleration = 1.0f * multiplier;
     }
-    if (m_keyboard[SDL_SCANCODE_S] == KeyState::REPEAT) {
+    if (eventComponent.m_keyboard.at(SDL_SCANCODE_S) == EventComponent::KeyState::REPEAT) {
         inputComponent.m_acceleration.y = 1.0f * multiplier;
     }
-    if (m_keyboard[SDL_SCANCODE_SPACE] == KeyState::DOWN) {
+    if (eventComponent.m_keyboard.at(SDL_SCANCODE_SPACE) == EventComponent::KeyState::DOWN) {
         inputComponent.m_isShooting = true;
     }
 
