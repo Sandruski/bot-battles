@@ -19,8 +19,9 @@ inline bool Raycast(glm::vec2 position, glm::vec2 rotation, F32 maxLength, std::
     for (const auto& pair : colliderComponents) {
         std::weak_ptr<ColliderComponent> colliderComponent = pair.second;
 
+        // TODO: reimplement raycast
         SDL_Point originPoint = { static_cast<I32>(position.x), static_cast<I32>(position.y) };
-        SDL_Rect colliderRect = colliderComponent.lock()->GetRect();
+        SDL_Rect colliderRect = { 0, 0, 0, 0 }; //colliderComponent.lock()->GetRect();
         if (SDL_PointInRect(&originPoint, &colliderRect)) {
             continue;
         }

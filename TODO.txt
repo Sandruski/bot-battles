@@ -1,7 +1,6 @@
--Remove SDL_Rect.
--Remove MeshComponent from everyone. We only need one.
 -Cap MAX BYTES SENT also for State packets (already doing it for Input packets) -> Reset MAX BYTES SENT to a reasonable value.
 -Only network those tiles that may change.
 -Remote clients are not networked anymore. Why?
 -Establish connection with TCP.
 -Send unwelcome messages.
+-Resize collider if sprite changes.

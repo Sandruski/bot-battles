@@ -31,8 +31,6 @@ struct WeaponComponent : public Component
     U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override;
 #endif
 
-    SDL_Rect GetShotRect() const;
-
     // TODO: dps?
 
     // Debug
