@@ -38,7 +38,8 @@ Game::Game()
 #endif
     , m_resourceManager()
     , m_mapImporter()
-    , m_gameComponent()
+    , m_gameplayComponent()
+    , m_mainMenuComponent()
     , m_isRunning(false)
 {
     m_entityManager = std::make_shared<EntityManager>();

@@ -21,8 +21,8 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream) const
     inputStream.Read(frame);
     ILOG("Frame received %u", frame);
 
-    GameComponent& gameComponent = g_gameClient->GetGameComponent();
-    if (gameComponent.m_phaseType == PhaseType::PLAY) {
+    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+    if (gameplayComponent.m_phase == GameplayComponent::GameplayPhase::PLAY) {
         F32 startFrameTime = MyTime::GetInstance().GetStartFrameTime();
         ClientComponent& clientComponent = g_gameClient->GetClientComponent();
         clientComponent.m_frameBuffer.Add(Frame(frame, startFrameTime));

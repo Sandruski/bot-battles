@@ -58,9 +58,6 @@
     <Filter Include="Source Files\States">
       <UniqueIdentifier>{26f6fd04-ba41-4008-9dcb-ccbf67a9d151}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Game">
-      <UniqueIdentifier>{089c2dd7-a03a-4a50-be8c-d4338ee47b01}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)ByteSwap.h">
@@ -288,10 +285,12 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)MyTimer.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)GameComponent.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameplayComponent.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)GameDefs.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MainMenuComponent.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp">
@@ -429,11 +428,14 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)MyTimer.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)GameComponent.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)MyTime.cpp">
       <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)GameplayComponent.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)MainMenuComponent.cpp">
+      <Filter>Source Files\Components</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

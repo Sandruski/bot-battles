@@ -5,7 +5,8 @@
 #include "EntityManager.h"
 #include "FSM.h"
 #include "GameClient.h"
-#include "GameComponent.h"
+#include "GameplayComponent.h"
+#include "MainMenuComponent.h"
 #include "ResourceManager.h"
 #include "SpriteComponent.h"
 #include "SpriteResource.h"
@@ -25,8 +26,8 @@ bool MainMenuStateClient::Enter() const
 {
     ILOG("Entering MainMenuStateClient...");
 
-    GameComponent& gameComponent = g_gameClient->GetGameComponent();
-    gameComponent.m_phaseType = PhaseType::START;
+    MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
+    mainMenuComponent.m_phase = MainMenuComponent::MainMenuPhase::SETUP;
 
     Entity background = g_gameClient->GetEntityManager().AddEntity();
 
@@ -37,6 +38,17 @@ bool MainMenuStateClient::Enter() const
     std::weak_ptr<SpriteResource> spriteResource = g_gameClient->GetResourceManager().AddResource<SpriteResource>("mainMenuBackground.png", TEXTURES_DIR, true);
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameClient->GetComponentManager().AddComponent<SpriteComponent>(background);
     spriteComponent.lock()->m_spriteResource = spriteResource;
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool MainMenuStateClient::Update() const
+{
+    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+    if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::NONE) {
+        g_gameClient->GetFSM().ChangeState(g_gameClient->GetConfig().m_onlineSceneName.c_str());
+    }
 
     return true;
 }
@@ -58,15 +70,15 @@ bool MainMenuStateClient::RenderGui() const
     ImGui::SetNextWindowSize(size, ImGuiCond_Always);
 
     if (ImGui::Begin("Client", nullptr, windowFlags)) {
-        GameComponent& gameComponent = g_gameClient->GetGameComponent();
-        switch (gameComponent.m_phaseType) {
-        case PhaseType::START: {
-            RenderStartGui();
+        MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
+        switch (mainMenuComponent.m_phase) {
+        case MainMenuComponent::MainMenuPhase::SETUP: {
+            RenderStartGui(mainMenuComponent);
             break;
         }
 
-        case PhaseType::CONNECT: {
-            RenderConnectGui();
+        case MainMenuComponent::MainMenuPhase::CONNECT: {
+            RenderConnectGui(mainMenuComponent);
             break;
         }
 
@@ -86,29 +98,16 @@ bool MainMenuStateClient::Exit() const
 {
     ILOG("Exiting MainMenuStateClient...");
 
+    MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
+    mainMenuComponent.m_phase = MainMenuComponent::MainMenuPhase::NONE;
+
     g_gameClient->GetEntityManager().ClearEntities();
 
     return true;
 }
 
 //----------------------------------------------------------------------------------------------------
-void MainMenuStateClient::OnNotify(const Event& event)
-{
-    switch (event.eventType) {
-
-    case EventType::PLAYER_ADDED: {
-        OnPlayerAdded();
-        break;
-    }
-
-    default: {
-        break;
-    }
-    }
-}
-
-//----------------------------------------------------------------------------------------------------
-void MainMenuStateClient::RenderStartGui() const
+void MainMenuStateClient::RenderStartGui(MainMenuComponent& mainMenuComponent) const
 {
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     ImGui::InputText("IP", &clientComponent.m_ip[0], DEFAULT_INPUT_SIZE);
@@ -123,19 +122,17 @@ void MainMenuStateClient::RenderStartGui() const
     ImGui::SetCursorPosX(contentRegionMax.x - buttonSize.x);
     ImGui::SetCursorPosY(contentRegionMax.y - buttonSize.y);
     if (ImGui::Button("Start")) {
-        GameComponent& gameComponent = g_gameClient->GetGameComponent();
-        gameComponent.m_phaseType = PhaseType::CONNECT;
-        gameComponent.m_timer.Start();
+        mainMenuComponent.m_phase = MainMenuComponent::MainMenuPhase::CONNECT;
+        mainMenuComponent.m_timer.Start();
     }
 }
 
 //----------------------------------------------------------------------------------------------------
-void MainMenuStateClient::RenderConnectGui() const
+void MainMenuStateClient::RenderConnectGui(MainMenuComponent& mainMenuComponent) const
 {
-    GameComponent& gameComponent = g_gameClient->GetGameComponent();
-    F32 time = static_cast<F32>(gameComponent.m_timer.ReadSec());
+    F32 time = static_cast<F32>(mainMenuComponent.m_timer.ReadSec());
     if (time >= 3.0f) {
-        gameComponent.m_timer.Start();
+        mainMenuComponent.m_timer.Start();
     }
 
     if (time >= 2.0f) {
@@ -153,13 +150,7 @@ void MainMenuStateClient::RenderConnectGui() const
     ImGui::SetCursorPosX(contentRegionMax.x - buttonSize.x);
     ImGui::SetCursorPosY(contentRegionMax.y - buttonSize.y);
     if (ImGui::Button("Cancel")) {
-        gameComponent.m_phaseType = PhaseType::START;
+        mainMenuComponent.m_phase = MainMenuComponent::MainMenuPhase::SETUP;
     }
-}
-
-//----------------------------------------------------------------------------------------------------
-void MainMenuStateClient::OnPlayerAdded() const
-{
-    g_gameClient->GetFSM().ChangeState(g_gameClient->GetConfig().m_onlineSceneName.c_str());
 }
 }

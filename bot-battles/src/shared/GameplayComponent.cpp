@@ -1,11 +1,11 @@
-#include "GameComponent.h"
+#include "GameplayComponent.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-GameComponent::GameComponent()
-    : m_phaseType(PhaseType::START)
-    , m_timer()
+GameplayComponent::GameplayComponent()
+    : m_timer()
+    , m_phase(GameplayPhase::NONE)
 {
 }
 }

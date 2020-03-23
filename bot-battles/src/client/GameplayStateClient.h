@@ -18,12 +18,6 @@ public:
 
     bool Enter() const override;
     bool Exit() const override;
-
-    void OnNotify(const Event& event) override;
-
-private:
-    void OnPlayerAdded() const;
-    void OnPlayerRemoved() const;
 };
 }
 

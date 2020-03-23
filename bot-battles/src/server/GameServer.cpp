@@ -117,13 +117,13 @@ bool GameServer::Update()
 
     std::weak_ptr<ServerSystem> serverSystem = m_systemManager->GetSystem<ServerSystem>();
 
-    if (m_gameComponent.m_phaseType != PhaseType::START) {
+    if (m_mainMenuComponent.m_phase != MainMenuComponent::MainMenuPhase::SETUP) {
         serverSystem.lock()->ReceiveIncomingPackets(m_serverComponent);
     }
 
     ret = Game::Update();
 
-    if (m_gameComponent.m_phaseType != PhaseType::START) {
+    if (m_mainMenuComponent.m_phase != MainMenuComponent::MainMenuPhase::SETUP) {
         serverSystem.lock()->SendOutgoingPackets(m_serverComponent);
     }
 

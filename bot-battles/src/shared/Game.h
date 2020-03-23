@@ -10,7 +10,8 @@
 #include "WindowComponent.h"
 #endif
 #include "FileSystem.h"
-#include "GameComponent.h"
+#include "GameplayComponent.h"
+#include "MainMenuComponent.h"
 #include "MapImporter.h"
 #include "ResourceManager.h"
 
@@ -68,9 +69,13 @@ public:
     {
         return m_mapImporter;
     }
-    GameComponent& GetGameComponent()
+    GameplayComponent& GetGameplayComponent()
     {
-        return m_gameComponent;
+        return m_gameplayComponent;
+    }
+    MainMenuComponent& GetMainMenuComponent()
+    {
+        return m_mainMenuComponent;
     }
 
 protected:
@@ -104,7 +109,8 @@ protected:
     FileSystem m_fileSystem;
     ResourceManager m_resourceManager;
     MapImporter m_mapImporter;
-    GameComponent m_gameComponent;
+    GameplayComponent m_gameplayComponent;
+    MainMenuComponent m_mainMenuComponent;
 
     bool m_isRunning;
 };

@@ -237,6 +237,9 @@ void ServerSystem::SendWelcomePacket(const ServerComponent& serverComponent, Pla
     if (isSuccessful) {
         welcomePacket.Write(playerID);
         welcomePacket.Write(serverComponent.m_map);
+
+        GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
+        welcomePacket.Write(gameplayComponent.m_phase);
     }
 
     ILOG("Sending welcome packet to player %u...", playerID);
@@ -262,8 +265,8 @@ void ServerSystem::SendStatePacket(const ServerComponent& serverComponent, Playe
     Delivery& delivery = clientProxy->m_deliveryManager.WriteState(statePacket);
     delivery.m_replicationResultManager = std::make_shared<ReplicationResultManager>(std::weak_ptr<ReplicationManagerServer>(clientProxy->m_replicationManager));
 
-    GameComponent& gameComponent = g_gameServer->GetGameComponent();
-    statePacket.Write(gameComponent.m_phaseType);
+    GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
+    statePacket.Write(gameplayComponent.m_phase);
 
     statePacket.Write(clientProxy->m_timestamp);
 

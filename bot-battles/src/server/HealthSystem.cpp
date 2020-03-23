@@ -18,8 +18,8 @@ HealthSystem::HealthSystem()
 //----------------------------------------------------------------------------------------------------
 bool HealthSystem::Update()
 {
-    GameComponent& gameComponent = g_gameServer->GetGameComponent();
-    if (gameComponent.m_phaseType != PhaseType::PLAY) {
+    GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
+    if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::PLAY) {
         return true;
     }
 

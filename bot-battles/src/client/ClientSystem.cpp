@@ -132,6 +132,9 @@ void ClientSystem::ReceiveWelcomePacket(ClientComponent& clientComponent, InputM
         assert(clientComponent.m_playerID < INVALID_PLAYER_ID);
         inputStream.Read(clientComponent.m_map);
 
+        GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+        inputStream.Read(gameplayComponent.m_phase);
+
         Event newEvent;
         newEvent.eventType = EventType::PLAYER_ADDED;
         newEvent.networking.playerID = clientComponent.m_playerID;
@@ -163,8 +166,8 @@ void ClientSystem::ReceiveStatePacket(ClientComponent& clientComponent, InputMem
 
     ILOG("State packet received");
 
-    GameComponent& gameComponent = g_gameClient->GetGameComponent();
-    inputStream.Read(gameComponent.m_phaseType);
+    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+    inputStream.Read(gameplayComponent.m_phase);
 
     F32 timestamp = 0.0f;
     inputStream.Read(timestamp);

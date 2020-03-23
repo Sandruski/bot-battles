@@ -7,6 +7,7 @@
 #include "FileSystem.h"
 #include "GameServer.h"
 #include "GameplayStateServer.h"
+#include "MainMenuComponent.h"
 #include "ResourceManager.h"
 #include "ServerComponent.h"
 #include "SpriteComponent.h"
@@ -27,8 +28,8 @@ bool MainMenuStateServer::Enter() const
 {
     ILOG("Entering MainMenuStateServer...");
 
-    GameComponent& gameComponent = g_gameServer->GetGameComponent();
-    gameComponent.m_phaseType = PhaseType::START;
+    MainMenuComponent& mainMenuComponent = g_gameServer->GetMainMenuComponent();
+    mainMenuComponent.m_phase = MainMenuComponent::MainMenuPhase::SETUP;
 
     Entity background = g_gameServer->GetEntityManager().AddEntity();
 
@@ -60,17 +61,8 @@ bool MainMenuStateServer::RenderGui() const
     ImGui::SetNextWindowSize(size, ImGuiCond_Always);
 
     if (ImGui::Begin("Server", nullptr, windowFlags)) {
-        GameComponent& gameComponent = g_gameServer->GetGameComponent();
-        switch (gameComponent.m_phaseType) {
-        case PhaseType::START: {
-            RenderStartGui();
-            break;
-        }
 
-        default: {
-            break;
-        }
-        }
+        RenderStartGui();
 
         ImGui::End();
     }
@@ -82,6 +74,9 @@ bool MainMenuStateServer::RenderGui() const
 bool MainMenuStateServer::Exit() const
 {
     ILOG("Exiting MainMenuStateServer...");
+
+    MainMenuComponent& mainMenuComponent = g_gameServer->GetMainMenuComponent();
+    mainMenuComponent.m_phase = MainMenuComponent::MainMenuPhase::NONE;
 
     g_gameServer->GetEntityManager().ClearEntities();
 

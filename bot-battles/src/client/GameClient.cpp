@@ -95,13 +95,13 @@ bool GameClient::Update()
 
     std::weak_ptr<ClientSystem> clientSystem = m_systemManager->GetSystem<ClientSystem>();
 
-    if (m_gameComponent.m_phaseType != PhaseType::START) {
+    if (m_mainMenuComponent.m_phase != MainMenuComponent::MainMenuPhase::SETUP) {
         clientSystem.lock()->ReceiveIncomingPackets(m_clientComponent);
     }
 
     ret = Game::Update();
 
-    if (m_gameComponent.m_phaseType != PhaseType::START) {
+    if (m_mainMenuComponent.m_phase != MainMenuComponent::MainMenuPhase::SETUP) {
         clientSystem.lock()->SendOutgoingPackets(m_clientComponent);
     }
 

@@ -20,8 +20,8 @@ MovementSystemClient::MovementSystemClient()
 //----------------------------------------------------------------------------------------------------
 bool MovementSystemClient::Update()
 {
-    GameComponent& gameComponent = g_gameClient->GetGameComponent();
-    if (gameComponent.m_phaseType != PhaseType::PLAY) {
+    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+    if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::PLAY) {
         return true;
     }
 

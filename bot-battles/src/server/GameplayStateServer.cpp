@@ -2,8 +2,8 @@
 
 #include "ComponentManager.h"
 #include "EntityManager.h"
-#include "GameComponent.h"
 #include "GameServer.h"
+#include "GameplayComponent.h"
 #include "LinkingContext.h"
 #include "MapImporter.h"
 #include "ResourceManager.h"
@@ -25,8 +25,8 @@ bool GameplayStateServer::Enter() const
 {
     ILOG("Entering GameplayStateServer...");
 
-    GameComponent& gameComponent = g_gameServer->GetGameComponent();
-    gameComponent.m_phaseType = PhaseType::WAIT;
+    GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
+    gameplayComponent.m_phase = GameplayComponent::GameplayPhase::START;
 
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     std::string path;
@@ -41,6 +41,9 @@ bool GameplayStateServer::Enter() const
 bool GameplayStateServer::Exit() const
 {
     ILOG("Exiting GameplayStateServer...");
+
+    GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
+    gameplayComponent.m_phase = GameplayComponent::GameplayPhase::NONE;
 
     g_game->GetLinkingContext().ClearEntities();
     g_game->GetEntityManager().ClearEntities();
@@ -75,17 +78,17 @@ void GameplayStateServer::OnPlayerAdded() const
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     U32 playerCount = serverComponent.GetPlayerCount();
     if (playerCount == MAX_PLAYER_IDS) {
-        GameComponent& gameComponent = g_gameServer->GetGameComponent();
-        gameComponent.m_phaseType = PhaseType::PLAY;
+        GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
+        gameplayComponent.m_phase = GameplayComponent::GameplayPhase::PLAY;
     }
 }
 
 //----------------------------------------------------------------------------------------------------
 void GameplayStateServer::OnPlayerRemoved() const
 {
-    GameComponent& gameComponent = g_gameServer->GetGameComponent();
-    if (gameComponent.m_phaseType == PhaseType::PLAY) {
-        gameComponent.m_phaseType = PhaseType::RESTART;
+    GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
+    if (gameplayComponent.m_phase == GameplayComponent::GameplayPhase::PLAY) {
+        gameplayComponent.m_phase = GameplayComponent::GameplayPhase::START;
     }
 }
 }
