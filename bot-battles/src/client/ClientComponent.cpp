@@ -46,10 +46,6 @@ ClientComponent::ClientComponent()
 //----------------------------------------------------------------------------------------------------
 void ClientComponent::LoadFromConfig(const rapidjson::Value& value)
 {
-    assert(value.HasMember("name"));
-    assert(value["name"].IsString());
-    m_name = value["name"].GetString();
-
     assert(value.HasMember("ip"));
     assert(value["ip"].IsString());
     m_ip = value["ip"].GetString();
@@ -57,6 +53,10 @@ void ClientComponent::LoadFromConfig(const rapidjson::Value& value)
     assert(value.HasMember("port"));
     assert(value["port"].IsString());
     m_port = value["port"].GetString();
+
+    assert(value.HasMember("defaultName"));
+    assert(value["defaultName"].IsString());
+    m_name = value["defaultName"].GetString();
 
     assert(value.HasMember("clientPrediction"));
     assert(value["clientPrediction"].IsBool());

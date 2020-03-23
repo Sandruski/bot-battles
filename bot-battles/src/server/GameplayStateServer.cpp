@@ -1,7 +1,9 @@
 #include "GameplayStateServer.h"
 
 #include "ComponentManager.h"
+#include "Config.h"
 #include "EntityManager.h"
+#include "FSM.h"
 #include "GameServer.h"
 #include "GameplayComponent.h"
 #include "LinkingContext.h"
@@ -89,6 +91,9 @@ void GameplayStateServer::OnPlayerRemoved() const
     GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
     if (gameplayComponent.m_phase == GameplayComponent::GameplayPhase::PLAY) {
         gameplayComponent.m_phase = GameplayComponent::GameplayPhase::START;
+        // TODO: restart the players' positions, etc.
+        // TODO: restart the global parameters of the match.
+        //g_gameServer->GetFSM().ChangeState(g_gameServer->GetConfig().m_onlineSceneName.c_str()); // if new objects are spawned throughout the gameplay
     }
 }
 }

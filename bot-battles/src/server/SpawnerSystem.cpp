@@ -84,9 +84,7 @@ Entity SpawnerSystem::Spawn(U32 number) const
 
     std::weak_ptr<ColliderComponent> colliderComponent = g_gameServer->GetComponentManager().AddComponent<ColliderComponent>(character);
     const glm::uvec4 spriteTextureCoords = spriteComponent.lock()->GetSpriteTextureCoords();
-    colliderComponent.lock()->m_size.x = static_cast<F32>(spriteTextureCoords.z);
-    colliderComponent.lock()->m_size.y = static_cast<F32>(spriteTextureCoords.w);
-    // TODO: resize collider if sprite changes?
+    colliderComponent.lock()->m_size = glm::vec2(30.0f, 30.0f);
 
     std::weak_ptr<WeaponComponent> weaponComponent = g_gameServer->GetComponentManager().AddComponent<WeaponComponent>(character);
 

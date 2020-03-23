@@ -5,6 +5,7 @@
 #include "ComponentMemberTypes.h"
 #include "DebugDrawer.h"
 #include "GameServer.h"
+#include "SpriteComponent.h"
 #include "TransformComponent.h"
 
 namespace sand {

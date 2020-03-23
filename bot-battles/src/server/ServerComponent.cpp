@@ -31,9 +31,9 @@ void ServerComponent::LoadFromConfig(const rapidjson::Value& value)
     assert(value["port"].IsString());
     m_port = value["port"].GetString();
 
-    assert(value.HasMember("map"));
-    assert(value["map"].IsString());
-    m_map = value["map"].GetString();
+    assert(value.HasMember("defaultMap"));
+    assert(value["defaultMap"].IsString());
+    m_map = value["defaultMap"].GetString();
 
     assert(value.HasMember("serverRewind"));
     assert(value["serverRewind"].IsBool());

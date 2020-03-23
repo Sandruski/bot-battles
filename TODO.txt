@@ -1,8 +1,5 @@
 -Cap MAX BYTES SENT also for State packets (already doing it for Input packets) -> Reset MAX BYTES SENT to a reasonable value.
 -Only network those tiles that may change.
--Remote clients are not networked anymore. Why?
 -Establish connection with TCP.
 -Send unwelcome messages.
--Resize collider if sprite changes.
 -Add 'Random map' option with ImGui to select a map from all the existing maps.
--Add default map and default player name with config file.
