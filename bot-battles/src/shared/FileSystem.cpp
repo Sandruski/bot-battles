@@ -39,7 +39,7 @@ std::vector<std::string> FileSystem::GetFilesFromDirectory(const std::string& pa
             std::size_t i = entryPath.find(MAPS_DIR);
             if (i != std::string::npos) {
                 entryPath.erase(i, strlen(MAPS_DIR));
-                entries.push_back(entryPath);
+                entries.emplace_back(entryPath);
             }
         }
     }

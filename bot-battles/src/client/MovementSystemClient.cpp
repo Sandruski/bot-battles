@@ -40,6 +40,7 @@ bool MovementSystemClient::Update()
 
                 std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
                 transformComponent.lock()->UpdateTransform(inputComponent.m_acceleration, inputComponent.m_angularAcceleration, dt);
+
                 Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, input.GetFrame());
                 transformComponent.lock()->m_inputTransformBuffer.Add(transform);
 

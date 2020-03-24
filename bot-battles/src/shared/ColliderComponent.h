@@ -35,9 +35,6 @@ struct ColliderComponent : public Component
 
     glm::vec2 m_position;
     glm::vec2 m_size;
-
-    // Debug
-    glm::vec2 m_shotPosition;
 };
 }
 

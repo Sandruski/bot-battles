@@ -22,7 +22,6 @@ WeaponSystemClient::WeaponSystemClient()
 {
     m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
     m_signature |= 1 << static_cast<U16>(ComponentType::WEAPON);
-    m_signature |= 1 << static_cast<U16>(ComponentType::HEALTH);
     m_signature |= 1 << static_cast<U16>(ComponentType::LOCAL_PLAYER);
 }
 
@@ -46,6 +45,9 @@ bool WeaponSystemClient::Update()
             const InputComponent& inputComponent = input.GetInputComponent();
 
             if (inputComponent.m_isShooting) {
+                std::weak_ptr<WeaponComponent> weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(entity);
+                weaponComponent.lock()->m_positions.clear();
+
                 LinkingContext& linkingContext = g_gameClient->GetLinkingContext();
                 const std::unordered_map<NetworkID, Entity>& newtorkIDToEntity = linkingContext.GetNetworkIDToEntityMap();
 
@@ -56,30 +58,43 @@ bool WeaponSystemClient::Update()
                     }
 
                     std::weak_ptr<ColliderComponent> colliderComponent = g_gameClient->GetComponentManager().GetComponent<ColliderComponent>(remoteEntity);
-                    colliderComponent.lock()->m_shotPosition = colliderComponent.lock()->m_position;
-                    ILOG("CLIENT Rewind is %f %f", colliderComponent.lock()->m_shotPosition.x, colliderComponent.lock()->m_shotPosition.y);
+                    if (colliderComponent.expired()) {
+                        continue;
+                    }
+
+                    weaponComponent.lock()->m_positions.emplace_back(colliderComponent.lock()->m_position);
                 }
 
                 std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
-                std::weak_ptr<WeaponComponent> weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(entity);
-
-                // TODO: CHECK RAYS BETWEEN SERVER AND CLIENT
                 glm::vec2 position = transformComponent.lock()->GetPosition();
                 glm::vec2 rotation = transformComponent.lock()->GetRotation();
-                ILOG("CLIENT Pos is: %f %f", position.x, position.y);
-                ILOG("From frame %u to frame %u percentage %f", input.m_interpolationFromFrame, input.m_interpolationToFrame, input.m_interpolationPercentage);
-
                 weaponComponent.lock()->m_origin = position;
                 WindowComponent& windowComponent = g_gameClient->GetWindowComponent();
                 F32 maxLength = static_cast<F32>(std::max(windowComponent.m_resolution.x, windowComponent.m_resolution.y));
-                weaponComponent.lock()->m_destination = position + rotation * maxLength;
-                std::pair<Entity, std::weak_ptr<ColliderComponent>> intersection;
-                const bool hasIntersected = Raycast(position, rotation, maxLength, intersection);
+                std::pair<Entity, std::weak_ptr<ColliderComponent>> object;
+                glm::vec2 intersection;
+                const bool hasIntersected = Raycast(position, rotation, maxLength, object, intersection);
                 if (hasIntersected) {
-                    weaponComponent.lock()->m_hasHit = true;
+                    Entity hitEntity = object.first;
+
+                    std::weak_ptr<TransformComponent> hitEntityTransformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(hitEntity);
+                    if (!hitEntityTransformComponent.expired()) {
+                        weaponComponent.lock()->m_destination = intersection; //hitEntityTransformComponent.lock()->m_position;
+                    }
+
+                    std::weak_ptr<HealthComponent> hitEntityHealthComponent = g_gameClient->GetComponentManager().GetComponent<HealthComponent>(hitEntity);
+                    if (!hitEntityHealthComponent.expired()) {
+                        weaponComponent.lock()->m_hasHit = true;
+                    } else {
+                        weaponComponent.lock()->m_hasHit = false;
+                    }
                 } else {
+                    weaponComponent.lock()->m_destination = position + rotation * maxLength;
                     weaponComponent.lock()->m_hasHit = false;
                 }
+
+                Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, input.GetFrame());
+                transformComponent.lock()->m_inputTransformBuffer.Add(transform);
             }
 
             clientComponent.m_isLastInputWeaponPending = false;

@@ -3,7 +3,8 @@
 namespace sand {
 //----------------------------------------------------------------------------------------------------
 WeaponComponent::WeaponComponent()
-    : m_origin(0.0f, 0.0f)
+    : m_positions()
+    , m_origin(0.0f, 0.0f)
     , m_destination(0.0f, 0.0f)
     , m_hasHit(false)
 {
