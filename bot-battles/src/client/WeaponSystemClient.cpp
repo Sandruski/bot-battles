@@ -8,6 +8,9 @@
 #include "HealthComponent.h"
 #include "Intersection.h"
 #include "LinkingContext.h"
+#include "MeshResource.h"
+#include "RendererComponent.h"
+#include "ShaderResource.h"
 #include "SystemManager.h"
 #include "TransformComponent.h"
 #include "WeaponComponent.h"
@@ -89,13 +92,43 @@ bool WeaponSystemClient::Update()
 //----------------------------------------------------------------------------------------------------
 bool WeaponSystemClient::DebugRender()
 {
+    RendererComponent& rendererComponent = g_gameClient->GetRendererComponent();
+    WindowComponent& windowComponent = g_gameClient->GetWindowComponent();
+
     for (auto& entity : m_entities) {
-        if (g_gameClient->GetLinkingContext().GetNetworkID(entity) >= INVALID_NETWORK_ID) {
+        std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
+        std::weak_ptr<WeaponComponent> weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(entity);
+        if (!transformComponent.lock()->m_isEnabled || !weaponComponent.lock()->m_isEnabled) {
             continue;
         }
 
-        //std::weak_ptr<WeaponComponent> weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(entity);
-        //DebugDrawer::DrawLine(weaponComponent.lock()->GetShotRect(), weaponComponent.lock()->m_hasHit ? Red : Black);
+        glm::mat4 model = glm::mat4(1.0f);
+
+        std::array<MeshResource::Vertex, 4> vertices = MeshResource::GetQuadVertices();
+        // From
+        vertices[0].m_position = weaponComponent.lock()->m_origin;
+        // To
+        vertices[2].m_position = weaponComponent.lock()->m_destination;
+        rendererComponent.m_meshResource.lock()->ReLoad(vertices);
+
+        U32 modelLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "model");
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+        glm::mat4 projection = glm::ortho(0.0f, static_cast<F32>(windowComponent.m_resolution.x), static_cast<F32>(windowComponent.m_resolution.y), 0.0f, -1.0f, 1.0f);
+        U32 projectionLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "projection");
+        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+        U32 colorLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "color");
+        glUniform4fv(colorLoc, 1, glm::value_ptr(weaponComponent.lock()->m_hasHit ? Red : Blue));
+
+        U32 pctLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "pct");
+        glUniform1f(pctLoc, 1.0f);
+
+        glBindVertexArray(rendererComponent.m_meshResource.lock()->GetVAO());
+        glDrawElements(GL_LINES, 2, GL_UNSIGNED_INT, 0);
+
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glBindVertexArray(0);
     }
 
     return true;

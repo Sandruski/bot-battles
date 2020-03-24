@@ -31,6 +31,11 @@ bool MapImporter::Load(const std::string& path) const
             for (U32 j = 0; j < tilemap.m_tileCount.y; ++j) {
                 Entity entity = g_game->GetEntityManager().AddEntity();
 
+                U32 tileGid = tilelayer.GetTileGid(i, j, tilemap.m_tileCount.x);
+                if (tileGid == 0) {
+                    continue;
+                }
+
                 // Transform
                 glm::uvec2 position = tilemap.MapToWorld(i, j);
                 position += tilemap.m_tileSize / 2u;
@@ -38,14 +43,11 @@ bool MapImporter::Load(const std::string& path) const
                 transformComponent.lock()->m_position = glm::vec3(static_cast<F32>(position.x), static_cast<F32>(position.y), -1.0f);
 
                 // Sprite
-                U32 tileGid = tilelayer.GetTileGid(i, j, tilemap.m_tileCount.x);
-                if (tileGid != 0) {
-                    const Tileset& tileset = tilemap.GetTileset(tileGid);
-                    glm::uvec4 textureCoords = tileset.GetTextureCoords(tileGid);
-                    std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().AddComponent<SpriteComponent>(entity);
-                    spriteComponent.lock()->m_spriteResource = g_game->GetResourceManager().AddResource<SpriteResource>(tileset.m_spriteFile.c_str(), TEXTURES_DIR, true);
-                    spriteComponent.lock()->AddSprite("default", textureCoords);
-                }
+                const Tileset& tileset = tilemap.GetTileset(tileGid);
+                glm::uvec4 textureCoords = tileset.GetTextureCoords(tileGid);
+                std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().AddComponent<SpriteComponent>(entity);
+                spriteComponent.lock()->m_spriteResource = g_game->GetResourceManager().AddResource<SpriteResource>(tileset.m_spriteFile.c_str(), TEXTURES_DIR, true);
+                spriteComponent.lock()->AddSprite("default", textureCoords);
 
                 // TODO: not working
                 if (tilelayer.m_name == "collision") {

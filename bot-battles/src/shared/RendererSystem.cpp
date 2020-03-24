@@ -67,29 +67,9 @@ bool RendererSystem::StartUp()
     rendererComponent.m_shaderResource.lock()->ForceLoad(defaultVertexShaderSource, defaultFragmentShaderSource);
     glUseProgram(rendererComponent.m_shaderResource.lock()->GetProgram());
 
-    std::array<MeshResource::Vertex, 4> vertices;
-    // Top-left
-    vertices[0].m_position = glm::vec2(-0.5f, 0.5f);
-    vertices[0].m_textureCoords = glm::vec2(0.0f, 1.0f);
-    // Top-right
-    vertices[1].m_position = glm::vec2(0.5f, 0.5f);
-    vertices[1].m_textureCoords = glm::vec2(1.0f, 1.0f);
-    // Bottom-left
-    vertices[2].m_position = glm::vec2(-0.5f, -0.5f);
-    vertices[2].m_textureCoords = glm::vec2(0.0f, 0.0f);
-    // Bottom-right
-    vertices[3].m_position = glm::vec2(0.5f, -0.5f);
-    vertices[3].m_textureCoords = glm::vec2(1.0f, 0.0f);
-    std::array<U32, 6> indices;
-    // First triangle
-    indices[0] = 0;
-    indices[1] = 2;
-    indices[2] = 3;
-    // Second triangle
-    indices[3] = 3;
-    indices[4] = 1;
-    indices[5] = 0;
     rendererComponent.m_meshResource = g_game->GetResourceManager().AddResource<MeshResource>("", "", false);
+    const std::array<MeshResource::Vertex, 4> vertices = MeshResource::GetQuadVertices();
+    const std::array<U32, 6> indices = MeshResource::GetQuadIndices();
     rendererComponent.m_meshResource.lock()->ForceLoad(vertices, indices);
 
     return true;
@@ -125,7 +105,7 @@ bool RendererSystem::Render()
         model = glm::scale(model, glm::vec3(static_cast<F32>(textureCoords.z), static_cast<F32>(textureCoords.w), 0.0f));
 
         glm::uvec2 size = spriteComponent.lock()->m_spriteResource.lock()->GetSize();
-        std::array<MeshResource::Vertex, 4> vertices = rendererComponent.m_meshResource.lock()->GetVertices();
+        std::array<MeshResource::Vertex, 4> vertices = MeshResource::GetQuadVertices();
         // Top-left
         vertices[0].m_textureCoords = glm::vec2(textureCoords.x / static_cast<F32>(size.x), 1.0f - (textureCoords.y + textureCoords.w) / static_cast<F32>(size.y));
         // Top-right

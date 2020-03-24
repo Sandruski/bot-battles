@@ -49,8 +49,8 @@ bool CollisionSystemClient::DebugRender()
     rendererComponent.SetWireframe(true);
 
     for (auto& entity : m_entities) {
-        std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
-        std::weak_ptr<ColliderComponent> colliderComponent = g_game->GetComponentManager().GetComponent<ColliderComponent>(entity);
+        std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
+        std::weak_ptr<ColliderComponent> colliderComponent = g_gameClient->GetComponentManager().GetComponent<ColliderComponent>(entity);
         if (!transformComponent.lock()->m_isEnabled || !colliderComponent.lock()->m_isEnabled) {
             continue;
         }
@@ -59,6 +59,9 @@ bool CollisionSystemClient::DebugRender()
         model = glm::translate(model, transformComponent.lock()->m_position);
         model = glm::rotate(model, glm::radians(transformComponent.lock()->m_rotation), glm::vec3(0.0f, 0.0f, 1.0f));
         model = glm::scale(model, glm::vec3(colliderComponent.lock()->m_size.x, colliderComponent.lock()->m_size.y, 0.0f));
+
+        std::array<MeshResource::Vertex, 4> vertices = MeshResource::GetQuadVertices();
+        rendererComponent.m_meshResource.lock()->ReLoad(vertices);
 
         U32 modelLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "model");
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
