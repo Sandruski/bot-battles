@@ -24,7 +24,8 @@ bool GameplayStateClient::Enter() const
     std::string path;
     path.append(MAPS_DIR);
     path.append(clientComponent.m_map);
-    g_gameClient->GetMapImporter().Load(path);
+    MapImporter::Tilemap tilemap = g_gameClient->GetMapImporter().Load(path);
+    g_gameClient->GetMapImporter().Create(tilemap);
 
     return true;
 }

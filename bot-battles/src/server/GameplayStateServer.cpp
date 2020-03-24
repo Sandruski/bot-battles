@@ -34,7 +34,8 @@ bool GameplayStateServer::Enter() const
     std::string path;
     path.append(MAPS_DIR);
     path.append(serverComponent.m_map);
-    g_gameServer->GetMapImporter().Load(path);
+    MapImporter::Tilemap tilemap = g_gameServer->GetMapImporter().Load(path);
+    g_gameServer->GetMapImporter().Create(tilemap);
 
     return true;
 }

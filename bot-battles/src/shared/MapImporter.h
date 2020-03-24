@@ -149,10 +149,10 @@ public:
     };
 
 public:
-    bool Load(const std::string& path) const;
+    Tilemap Load(const std::string& path) const;
+    void Create(const Tilemap& tilemap) const;
 
 private:
-    Tilemap LoadTilemap(const rapidjson::Value& value) const;
     std::vector<Tileset> LoadTilesets(const rapidjson::Value& value) const;
     Tilelayer LoadTilelayer(const rapidjson::Value& value) const;
     Objectlayer LoadObjectLayer(const rapidjson::Value& value) const;

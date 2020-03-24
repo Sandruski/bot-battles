@@ -14,17 +14,53 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-bool MapImporter::Load(const std::string& path) const
+MapImporter::Tilemap MapImporter::Load(const std::string& path) const
 {
+    Tilemap tilemap;
+
     rapidjson::Document document;
     bool ret = g_game->GetFileSystem().ParseJsonFromFile(path, document);
     if (!ret) {
         ELOG("%s file could not be loaded", path.c_str());
-        return ret;
+        return tilemap;
     }
     assert(document.IsObject());
 
-    Tilemap tilemap = LoadTilemap(document);
+    assert(document.HasMember("width"));
+    tilemap.m_tileCount.x = document["width"].GetUint();
+    assert(document.HasMember("height"));
+    tilemap.m_tileCount.y = document["height"].GetUint();
+    assert(document.HasMember("tilewidth"));
+    tilemap.m_tileSize.x = document["tilewidth"].GetUint();
+    assert(document.HasMember("tileheight"));
+    tilemap.m_tileSize.y = document["tileheight"].GetUint();
+
+    assert(document.HasMember("tilesets"));
+    const rapidjson::Value& tilesetsValue = document["tilesets"];
+    tilemap.m_tilesets = LoadTilesets(tilesetsValue);
+
+    assert(document.HasMember("layers"));
+    for (rapidjson::Value::ConstValueIterator it = document["layers"].Begin(); it != document["layers"].End(); ++it) {
+        assert(it->HasMember("type"));
+        std::string type = (*it)["type"].GetString();
+        if (type == "tilelayer") {
+            Tilelayer tilelayer = LoadTilelayer(*it);
+            tilemap.m_tilelayers.emplace_back(tilelayer);
+        } else if (type == "objectgroup") {
+            Objectlayer objectlayer = LoadObjectLayer(*it);
+            tilemap.m_objectlayers.emplace_back(objectlayer);
+        }
+    }
+
+    return tilemap;
+}
+
+//----------------------------------------------------------------------------------------------------
+void MapImporter::Create(const Tilemap& tilemap) const
+{
+    WindowComponent& windowComponent = g_game->GetWindowComponent();
+    glm::vec2 windowCenterPosition = glm::vec2(static_cast<F32>(windowComponent.m_resolution.x) / 2.0f, static_cast<F32>(windowComponent.m_resolution.y) / 2.0f);
+    glm::vec2 tilemapCenterPosition = glm::vec2(static_cast<F32>(tilemap.m_tileSize.x * tilemap.m_tileCount.x) / 2.0f, static_cast<F32>(tilemap.m_tileSize.y * tilemap.m_tileCount.y) / 2.0f);
 
     for (const auto& tilelayer : tilemap.m_tilelayers) {
         for (U32 i = 0; i < tilemap.m_tileCount.x; ++i) {
@@ -39,8 +75,9 @@ bool MapImporter::Load(const std::string& path) const
                 // Transform
                 glm::uvec2 position = tilemap.MapToWorld(i, j);
                 position += tilemap.m_tileSize / 2u;
+                glm::vec2 relativePosition = tilemapCenterPosition - glm::vec2(static_cast<F32>(position.x), static_cast<F32>(position.y));
                 std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().AddComponent<TransformComponent>(entity);
-                transformComponent.lock()->m_position = glm::vec3(static_cast<F32>(position.x), static_cast<F32>(position.y), -1.0f);
+                transformComponent.lock()->m_position = glm::vec3(windowCenterPosition.x + relativePosition.x, windowCenterPosition.y + relativePosition.y, -1.0f);
 
                 // Sprite
                 const Tileset& tileset = tilemap.GetTileset(tileGid);
@@ -49,7 +86,7 @@ bool MapImporter::Load(const std::string& path) const
                 spriteComponent.lock()->m_spriteResource = g_game->GetResourceManager().AddResource<SpriteResource>(tileset.m_spriteFile.c_str(), TEXTURES_DIR, true);
                 spriteComponent.lock()->AddSprite("default", textureCoords);
 
-                // TODO: not working
+                // Collider
                 if (tilelayer.m_name == "collision") {
                     std::weak_ptr<ColliderComponent> colliderComponent = g_game->GetComponentManager().AddComponent<ColliderComponent>(entity);
                     colliderComponent.lock()->m_size = tilemap.m_tileSize;
@@ -63,8 +100,12 @@ bool MapImporter::Load(const std::string& path) const
             Entity entity = g_game->GetEntityManager().AddEntity();
 
             // Transform
+            glm::uvec2 position = object.m_position;
+            position += tilemap.m_tileSize / 2u;
+            position -= glm::uvec2(0, tilemap.m_tileSize.y);
+            glm::vec2 relativePosition = tilemapCenterPosition - glm::vec2(static_cast<F32>(position.x), static_cast<F32>(position.y));
             std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().AddComponent<TransformComponent>(entity);
-            transformComponent.lock()->m_position = glm::vec3(object.m_position.x, object.m_position.y, -1.0f);
+            transformComponent.lock()->m_position = glm::vec3(windowCenterPosition.x + relativePosition.x, windowCenterPosition.y + relativePosition.y, -1.0f);
             transformComponent.lock()->m_rotation = object.m_rotation;
 
             // Sprite
@@ -84,42 +125,6 @@ bool MapImporter::Load(const std::string& path) const
             }
         }
     }
-
-    return true;
-}
-
-//----------------------------------------------------------------------------------------------------
-MapImporter::Tilemap MapImporter::LoadTilemap(const rapidjson::Value& value) const
-{
-    Tilemap tilemap;
-
-    assert(value.HasMember("width"));
-    tilemap.m_tileCount.x = value["width"].GetUint();
-    assert(value.HasMember("height"));
-    tilemap.m_tileCount.y = value["height"].GetUint();
-    assert(value.HasMember("tilewidth"));
-    tilemap.m_tileSize.x = value["tilewidth"].GetUint();
-    assert(value.HasMember("tileheight"));
-    tilemap.m_tileSize.y = value["tileheight"].GetUint();
-
-    assert(value.HasMember("tilesets"));
-    const rapidjson::Value& tilesetsValue = value["tilesets"];
-    tilemap.m_tilesets = LoadTilesets(tilesetsValue);
-
-    assert(value.HasMember("layers"));
-    for (rapidjson::Value::ConstValueIterator it = value["layers"].Begin(); it != value["layers"].End(); ++it) {
-        assert(it->HasMember("type"));
-        std::string type = (*it)["type"].GetString();
-        if (type == "tilelayer") {
-            Tilelayer tilelayer = LoadTilelayer(*it);
-            tilemap.m_tilelayers.emplace_back(tilelayer);
-        } else if (type == "objectgroup") {
-            Objectlayer objectlayer = LoadObjectLayer(*it);
-            tilemap.m_objectlayers.emplace_back(objectlayer);
-        }
-    }
-
-    return tilemap;
 }
 
 //----------------------------------------------------------------------------------------------------

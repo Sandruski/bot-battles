@@ -82,7 +82,7 @@ bool WeaponSystemServer::Update()
 
                     std::weak_ptr<TransformComponent> hitEntityTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(hitEntity);
                     if (!hitEntityTransformComponent.expired()) {
-                        weaponComponent.lock()->m_destination = intersection; // hitEntityTransformComponent.lock()->m_position;
+                        weaponComponent.lock()->m_destination = intersection;
                     }
 
                     std::weak_ptr<HealthComponent> hitEntityHealthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(hitEntity);
