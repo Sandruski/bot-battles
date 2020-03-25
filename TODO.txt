@@ -5,6 +5,7 @@
 -Add 'Random map' option with ImGui to select a map from all the existing maps.
 -Spawn positions (1 for player 1 i 2 for player 2).
 -Fix ImGui crash when drawing.
+-Enum for drawing layers, so I do not have to constantly hardcode the z position.
 
 -Be careful with the Tile object y position!
 -Have debug draw again.
