@@ -6,6 +6,10 @@
 -Spawn positions (1 for player 1 i 2 for player 2).
 -Debug draw in a more nice way.
 -Debug ImGui options (resize window, etc.).
+-Remove Networking inheritance for those components that are actually not being networked.
+-Make entities be able to have components that are networked and components that are not.
 
 -Be careful with the Tile object y position!
 -Have debug draw again.
+-There are a bunch of components that do not have to be networked. E.g. if Health is not printed then why would the player want it?
+-Health bars or points or life or insta kill?

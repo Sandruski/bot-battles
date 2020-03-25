@@ -17,7 +17,6 @@ public:
     CollisionSystemClient();
 
     bool Update() override;
-
     bool DebugRender() override;
 };
 }

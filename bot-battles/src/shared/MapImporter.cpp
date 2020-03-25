@@ -6,6 +6,7 @@
 #include "FileSystem.h"
 #include "Game.h"
 #include "ResourceManager.h"
+#include "SpawnComponent.h"
 #include "SpriteComponent.h"
 #include "SpriteResource.h"
 #include "TransformComponent.h"
@@ -122,6 +123,11 @@ void MapImporter::Create(const Tilemap& tilemap) const
             if (objectlayer.m_name == "collision") {
                 std::weak_ptr<ColliderComponent> colliderComponent = g_game->GetComponentManager().AddComponent<ColliderComponent>(entity);
                 colliderComponent.lock()->m_size = object.m_size;
+            }
+
+            // Spawn
+            if (objectlayer.m_name == "spawner") {
+                g_game->GetComponentManager().AddComponent<SpawnComponent>(entity);
             }
         }
     }

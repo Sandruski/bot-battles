@@ -10,12 +10,20 @@
 #include "RendererComponent.h"
 #include "ResourceManager.h"
 #include "ServerComponent.h"
+#include "SpawnComponent.h"
 #include "SpriteComponent.h"
 #include "SpriteResource.h"
 #include "TransformComponent.h"
 #include "WeaponComponent.h"
 
 namespace sand {
+
+//----------------------------------------------------------------------------------------------------
+SpawnerSystem::SpawnerSystem()
+{
+    m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
+    m_signature |= 1 << static_cast<U16>(ComponentType::SPAWN);
+}
 
 //----------------------------------------------------------------------------------------------------
 void SpawnerSystem::OnNotify(const Event& event)
@@ -45,7 +53,16 @@ Entity SpawnerSystem::Spawn(U32 number) const
     g_gameServer->GetLinkingContext().AddEntity(character);
 
     std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().AddComponent<TransformComponent>(character);
-    transformComponent.lock()->m_position = glm::vec3(225.0f, 150.0f, static_cast<F32>(LayerType::PLAYER));
+    for (const auto& spawner : m_entities) {
+        std::weak_ptr<SpawnComponent> spawnerSpawnComponent = g_gameServer->GetComponentManager().GetComponent<SpawnComponent>(spawner);
+        if (spawnerSpawnComponent.lock()->m_entity == INVALID_ENTITY) {
+            spawnerSpawnComponent.lock()->m_entity = character;
+
+            std::weak_ptr<TransformComponent> spawnerTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(spawner);
+            transformComponent.lock()->m_position = glm::vec3(spawnerTransformComponent.lock()->m_position.x, spawnerTransformComponent.lock()->m_position.y, static_cast<F32>(LayerType::PLAYER));
+            break;
+        }
+    }
 
     std::weak_ptr<SpriteResource> charactersSpriteResource = g_game->GetResourceManager().AddResource<SpriteResource>("characters.png", TEXTURES_DIR, true);
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().AddComponent<SpriteComponent>(character);
@@ -97,6 +114,14 @@ Entity SpawnerSystem::Spawn(U32 number) const
 //----------------------------------------------------------------------------------------------------
 void SpawnerSystem::Despawn(Entity entity) const
 {
+    for (const auto& spawner : m_entities) {
+        std::weak_ptr<SpawnComponent> spawnerSpawnComponent = g_gameServer->GetComponentManager().GetComponent<SpawnComponent>(spawner);
+        if (spawnerSpawnComponent.lock()->m_entity == entity) {
+            spawnerSpawnComponent.lock()->m_entity = INVALID_ENTITY;
+            break;
+        }
+    }
+
     g_gameServer->GetLinkingContext().RemoveEntity(entity);
     g_gameServer->GetEntityManager().RemoveEntity(entity);
 }

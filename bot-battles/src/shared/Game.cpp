@@ -9,6 +9,7 @@
 #include "HealthComponent.h"
 #include "InputComponent.h"
 #include "LinkingContext.h"
+#include "SpawnComponent.h"
 #include "SystemManager.h"
 #include "TransformComponent.h"
 #include "WeaponComponent.h"
@@ -95,6 +96,10 @@ bool Game::Init()
         return ret;
     }
     ret = m_componentManager->RegisterComponent<HealthComponent>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_componentManager->RegisterComponent<SpawnComponent>();
     if (!ret) {
         return ret;
     }

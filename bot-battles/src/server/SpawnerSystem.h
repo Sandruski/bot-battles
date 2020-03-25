@@ -14,6 +14,8 @@ public:
     }
 
 public:
+    SpawnerSystem();
+
     void OnNotify(const Event& event) override;
 
 private:
