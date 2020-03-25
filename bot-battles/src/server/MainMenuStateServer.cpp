@@ -26,7 +26,7 @@ const char* MainMenuStateServer::GetName() const
 //----------------------------------------------------------------------------------------------------
 bool MainMenuStateServer::Enter() const
 {
-    ILOG("Entering MainMenuStateServer...");
+    ILOG("Entering %s...", GetName());
 
     MainMenuComponent& mainMenuComponent = g_gameServer->GetMainMenuComponent();
     mainMenuComponent.m_phase = MainMenuComponent::MainMenuPhase::SETUP;
@@ -73,7 +73,7 @@ bool MainMenuStateServer::RenderGui() const
 //----------------------------------------------------------------------------------------------------
 bool MainMenuStateServer::Exit() const
 {
-    ILOG("Exiting MainMenuStateServer...");
+    ILOG("Exiting %s...", GetName());
 
     MainMenuComponent& mainMenuComponent = g_gameServer->GetMainMenuComponent();
     mainMenuComponent.m_phase = MainMenuComponent::MainMenuPhase::NONE;
@@ -99,13 +99,14 @@ void MainMenuStateServer::RenderStartGui() const
         ImGui::EndCombo();
     }
 
-    ImVec2 textSize = ImGui::CalcTextSize("Start");
+    const char* start = "Start";
+    ImVec2 textSize = ImGui::CalcTextSize(start);
     ImVec2 framePadding = ImGui::GetStyle().FramePadding;
     ImVec2 buttonSize = ImVec2(textSize.x + framePadding.x * 2.0f, textSize.y + framePadding.y * 2.0f);
     ImVec2 contentRegionMax = ImGui::GetWindowContentRegionMax();
     ImGui::SetCursorPosX(contentRegionMax.x - buttonSize.x);
     ImGui::SetCursorPosY(contentRegionMax.y - buttonSize.y);
-    if (ImGui::Button("Start")) {
+    if (ImGui::Button(start)) {
         g_gameServer->GetFSM().ChangeState(g_gameServer->GetConfig().m_onlineSceneName.c_str());
     }
 }

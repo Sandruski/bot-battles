@@ -1,18 +1,18 @@
-#ifndef __MAIN_MENU_STATE_CLIENT_H__
-#define __MAIN_MENU_STATE_CLIENT_H__
+#ifndef __SCOREBOARD_STATE_CLIENT_H__
+#define __SCOREBOARD_STATE_CLIENT_H__
 
 #include "State.h"
 
 namespace sand {
 
-struct MainMenuComponent;
+struct ScoreboardComponent;
 
 //----------------------------------------------------------------------------------------------------
-class MainMenuStateClient : public State {
+class ScoreboardStateClient : public State {
 public:
     static StateType GetType()
     {
-        return StateType::MAIN_MENU;
+        return StateType::SCOREBOARD;
     }
 
 public:
@@ -24,8 +24,8 @@ public:
     bool Exit() const override;
 
 private:
-    void RenderSetupGui(MainMenuComponent& mainMenuComponent) const;
-    void RenderConnectGui(MainMenuComponent& mainMenuComponent) const;
+    void RenderResultsGui(ScoreboardComponent& scoreboardComponent) const;
+    void RenderRestartGui(ScoreboardComponent& scoreboardComponent) const;
 };
 }
 

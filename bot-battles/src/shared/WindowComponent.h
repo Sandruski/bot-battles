@@ -12,6 +12,7 @@ struct WindowComponent {
     void LoadFromConfig(const rapidjson::Value& value);
 
     void UpdateResolution();
+    void UpdateFullscreen();
 
     SDL_Window* m_window;
 

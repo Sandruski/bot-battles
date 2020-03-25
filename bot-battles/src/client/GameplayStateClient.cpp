@@ -6,6 +6,7 @@
 #include "GameClient.h"
 #include "GameplayComponent.h"
 #include "LinkingContext.h"
+#include "WindowComponent.h"
 
 namespace sand {
 
@@ -18,7 +19,7 @@ const char* GameplayStateClient::GetName() const
 //----------------------------------------------------------------------------------------------------
 bool GameplayStateClient::Enter() const
 {
-    ILOG("Entering GameplayStateClient...");
+    ILOG("Entering %s...", GetName());
 
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     std::string path;
@@ -31,9 +32,23 @@ bool GameplayStateClient::Enter() const
 }
 
 //----------------------------------------------------------------------------------------------------
+bool GameplayStateClient::Update() const
+{
+    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+    if (gameplayComponent.m_phase == GameplayComponent::GameplayPhase::NONE) {
+        g_gameClient->GetFSM().ChangeState("Scoreboard"); // TODO: config
+    }
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
 bool GameplayStateClient::Exit() const
 {
-    ILOG("Exiting GameplayStateClient...");
+    ILOG("Exiting %s...", GetName());
+
+    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+    gameplayComponent.m_phase = GameplayComponent::GameplayPhase::NONE;
 
     g_gameClient->GetLinkingContext().ClearEntities();
     g_gameClient->GetEntityManager().ClearEntities();

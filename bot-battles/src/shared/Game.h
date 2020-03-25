@@ -15,6 +15,7 @@
 #include "MainMenuComponent.h"
 #include "MapImporter.h"
 #include "ResourceManager.h"
+#include "ScoreboardComponent.h"
 
 namespace sand {
 
@@ -74,13 +75,17 @@ public:
     {
         return m_eventComponent;
     }
+    MainMenuComponent& GetMainMenuComponent()
+    {
+        return m_mainMenuComponent;
+    }
     GameplayComponent& GetGameplayComponent()
     {
         return m_gameplayComponent;
     }
-    MainMenuComponent& GetMainMenuComponent()
+    ScoreboardComponent& GetScoreboardComponent()
     {
-        return m_mainMenuComponent;
+        return m_scoreboardComponent;
     }
 
 protected:
@@ -115,8 +120,9 @@ protected:
     ResourceManager m_resourceManager;
     MapImporter m_mapImporter;
     EventComponent m_eventComponent;
-    GameplayComponent m_gameplayComponent;
     MainMenuComponent m_mainMenuComponent;
+    GameplayComponent m_gameplayComponent;
+    ScoreboardComponent m_scoreboardComponent;
 
     bool m_isRunning;
 };

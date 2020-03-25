@@ -3,11 +3,11 @@
 -Establish connection with TCP.
 -Send unwelcome messages.
 -Add 'Random map' option with ImGui to select a map from all the existing maps.
--Spawn positions (1 for player 1 i 2 for player 2).
 -Debug draw in a more nice way.
 -Debug ImGui options (resize window, etc.).
 -Remove Networking inheritance for those components that are actually not being networked.
 -Make entities be able to have components that are networked and components that are not.
+-Add timer for server in the Scoreboard screen.
 
 -Be careful with the Tile object y position!
 -Have debug draw again.

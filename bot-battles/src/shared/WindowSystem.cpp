@@ -2,6 +2,7 @@
 
 #include "Config.h"
 #include "Game.h"
+#include "GuiComponent.h"
 #include "WindowComponent.h"
 
 namespace sand {
@@ -38,6 +39,24 @@ bool WindowSystem::ShutDown()
 
     ILOG("Quitting SDL video subsystem");
     SDL_QuitSubSystem(SDL_INIT_VIDEO);
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool WindowSystem::RenderGui()
+{
+    GuiComponent& guiComponent = g_game->GetGuiComponent();
+    if (guiComponent.m_isDebugOptions) {
+        if (ImGui::Button("Window")) {
+            guiComponent.m_body = [this]() {
+                WindowComponent& windowComponent = g_game->GetWindowComponent();
+                if (ImGui::Checkbox("Fullscreen", &windowComponent.m_isFullscreen)) {
+                    windowComponent.UpdateFullscreen();
+                }
+            };
+        }
+    }
 
     return true;
 }

@@ -198,6 +198,7 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <ClCompile Include="RemotePlayerMovementSystem.cpp" />
+    <ClCompile Include="ScoreboardStateClient.cpp" />
     <ClCompile Include="TransformComponentClient.cpp" />
     <ClCompile Include="InputSystemClient.cpp" />
     <ClCompile Include="ReplicationManagerClient.cpp" />
@@ -221,6 +222,7 @@
     <ClInclude Include="ReplicationManagerClient.h" />
     <ClInclude Include="ClientComponent.h" />
     <ClInclude Include="GameClient.h" />
+    <ClInclude Include="ScoreboardStateClient.h" />
     <ClInclude Include="WeaponSystemClient.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

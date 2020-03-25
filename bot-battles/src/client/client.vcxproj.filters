@@ -126,6 +126,9 @@
     <ClCompile Include="MainMenuStateClient.cpp">
       <Filter>Source Files\States</Filter>
     </ClCompile>
+    <ClCompile Include="ScoreboardStateClient.cpp">
+      <Filter>Source Files\States</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientSystem.h">
@@ -177,6 +180,9 @@
       <Filter>Header Files\States</Filter>
     </ClInclude>
     <ClInclude Include="MainMenuStateClient.h">
+      <Filter>Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreboardStateClient.h">
       <Filter>Header Files\States</Filter>
     </ClInclude>
   </ItemGroup>

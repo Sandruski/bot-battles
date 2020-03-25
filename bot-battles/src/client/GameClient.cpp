@@ -12,6 +12,7 @@
 #include "MovementSystemClient.h"
 #include "RemotePlayerComponent.h"
 #include "RemotePlayerMovementSystem.h"
+#include "ScoreboardStateClient.h"
 #include "SystemManager.h"
 #include "WeaponSystemClient.h"
 
@@ -73,6 +74,10 @@ bool GameClient::Init()
         return ret;
     }
     ret = m_fsm->RegisterState<GameplayStateClient>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_fsm->RegisterState<ScoreboardStateClient>();
     if (!ret) {
         return ret;
     }

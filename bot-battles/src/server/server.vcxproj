@@ -224,6 +224,7 @@
     <ClCompile Include="ReplicationResultManager.cpp" />
     <ClCompile Include="ReplicationResultManager.h" />
     <ClCompile Include="ReplicationManagerServer.cpp" />
+    <ClCompile Include="ScoreboardStateServer.cpp" />
     <ClCompile Include="ServerSystem.cpp" />
     <ClCompile Include="ServerComponent.cpp" />
     <ClCompile Include="SpawnerSystem.cpp" />
@@ -244,6 +245,7 @@
     <ClInclude Include="MovementSystemServer.h" />
     <ClInclude Include="pchServer.h" />
     <ClInclude Include="ReplicationManagerServer.h" />
+    <ClInclude Include="ScoreboardStateServer.h" />
     <ClInclude Include="ServerSystem.h" />
     <ClInclude Include="ServerComponent.h" />
     <ClInclude Include="SpawnerSystem.h" />

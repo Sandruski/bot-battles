@@ -40,8 +40,9 @@ Game::Game()
     , m_resourceManager()
     , m_mapImporter()
     , m_eventComponent()
-    , m_gameplayComponent()
     , m_mainMenuComponent()
+    , m_gameplayComponent()
+    , m_scoreboardComponent()
     , m_isRunning(false)
 {
     m_entityManager = std::make_shared<EntityManager>();
@@ -302,6 +303,8 @@ bool Game::DebugRender()
 //----------------------------------------------------------------------------------------------------
 bool Game::RenderGui()
 {
+    bool ret = false;
+
     if (m_guiComponent.m_isDebugOptions) {
         if (ImGui::Button("Game")) {
             m_guiComponent.m_body = []() {
@@ -310,8 +313,6 @@ bool Game::RenderGui()
             };
         }
     }
-
-    bool ret = false;
 
     ret = m_fsm->RenderGui();
     if (!ret) {

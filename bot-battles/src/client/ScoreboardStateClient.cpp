@@ -1,33 +1,30 @@
-#include "MainMenuStateClient.h"
+#include "ScoreboardStateClient.h"
 
 #include "ComponentManager.h"
 #include "Config.h"
 #include "EntityManager.h"
 #include "FSM.h"
 #include "GameClient.h"
-#include "GameplayComponent.h"
-#include "MainMenuComponent.h"
-#include "ResourceManager.h"
+#include "ScoreboardComponent.h"
 #include "SpriteComponent.h"
 #include "SpriteResource.h"
-#include "TransformComponent.h"
 #include "WindowComponent.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-const char* MainMenuStateClient::GetName() const
+const char* ScoreboardStateClient::GetName() const
 {
-    return "MainMenu";
+    return "Scoreboard";
 }
 
 //----------------------------------------------------------------------------------------------------
-bool MainMenuStateClient::Enter() const
+bool ScoreboardStateClient::Enter() const
 {
     ILOG("Entering %s...", GetName());
 
-    MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
-    mainMenuComponent.m_phase = MainMenuComponent::MainMenuPhase::SETUP;
+    ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
+    scoreboardComponent.m_phase = ScoreboardComponent::ScoreboardPhase::RESULTS;
 
     Entity background = g_gameClient->GetEntityManager().AddEntity();
 
@@ -35,7 +32,7 @@ bool MainMenuStateClient::Enter() const
     std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().AddComponent<TransformComponent>(background);
     transformComponent.lock()->m_position = { static_cast<F32>(windowComponent.m_resolution.x) / 2.0f, static_cast<F32>(windowComponent.m_resolution.y) / 2.0f, static_cast<F32>(LayerType::BACKGROUND) };
 
-    std::weak_ptr<SpriteResource> spriteResource = g_gameClient->GetResourceManager().AddResource<SpriteResource>("mainMenuBackground.png", TEXTURES_DIR, true);
+    std::weak_ptr<SpriteResource> spriteResource = g_gameClient->GetResourceManager().AddResource<SpriteResource>("scoreboardBackground.png", TEXTURES_DIR, true);
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameClient->GetComponentManager().AddComponent<SpriteComponent>(background);
     spriteComponent.lock()->m_spriteResource = spriteResource;
 
@@ -43,7 +40,7 @@ bool MainMenuStateClient::Enter() const
 }
 
 //----------------------------------------------------------------------------------------------------
-bool MainMenuStateClient::Update() const
+bool ScoreboardStateClient::Update() const
 {
     GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
     if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::NONE) {
@@ -54,7 +51,7 @@ bool MainMenuStateClient::Update() const
 }
 
 //----------------------------------------------------------------------------------------------------
-bool MainMenuStateClient::RenderGui() const
+bool ScoreboardStateClient::RenderGui() const
 {
     ImGuiWindowFlags windowFlags = 0;
     windowFlags |= ImGuiWindowFlags_NoResize;
@@ -70,15 +67,15 @@ bool MainMenuStateClient::RenderGui() const
     ImGui::SetNextWindowSize(size, ImGuiCond_Always);
 
     if (ImGui::Begin(GetName(), nullptr, windowFlags)) {
-        MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
-        switch (mainMenuComponent.m_phase) {
-        case MainMenuComponent::MainMenuPhase::SETUP: {
-            RenderSetupGui(mainMenuComponent);
+        ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
+        switch (scoreboardComponent.m_phase) {
+        case ScoreboardComponent::ScoreboardPhase::RESULTS: {
+            RenderResultsGui(scoreboardComponent);
             break;
         }
 
-        case MainMenuComponent::MainMenuPhase::CONNECT: {
-            RenderConnectGui(mainMenuComponent);
+        case ScoreboardComponent::ScoreboardPhase::RESTART: {
+            RenderRestartGui(scoreboardComponent);
             break;
         }
 
@@ -94,54 +91,53 @@ bool MainMenuStateClient::RenderGui() const
 }
 
 //----------------------------------------------------------------------------------------------------
-bool MainMenuStateClient::Exit() const
+bool ScoreboardStateClient::Exit() const
 {
     ILOG("Exiting %s...", GetName());
 
-    MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
-    mainMenuComponent.m_phase = MainMenuComponent::MainMenuPhase::NONE;
-
-    g_gameClient->GetEntityManager().ClearEntities();
-
-    return true;
+    return false;
 }
 
 //----------------------------------------------------------------------------------------------------
-void MainMenuStateClient::RenderSetupGui(MainMenuComponent& mainMenuComponent) const
+void ScoreboardStateClient::RenderResultsGui(ScoreboardComponent& scoreboardComponent) const
 {
-    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    ImGui::InputText("IP", &clientComponent.m_ip[0], DEFAULT_INPUT_SIZE);
-    ImGui::InputText("Port", &clientComponent.m_port[0], DEFAULT_INPUT_SIZE);
+    ImGui::Text("Player x wins");
 
-    ImGui::InputText("Name", &clientComponent.m_name[0], DEFAULT_INPUT_SIZE);
-
-    const char* start = "Start";
-    ImVec2 textSize = ImGui::CalcTextSize(start);
+    const char* playAgain = "Play again";
+    const char* mainMenu = "Main menu";
+    ImVec2 playAgainTextSize = ImGui::CalcTextSize(playAgain);
+    ImVec2 mainMenuTextSize = ImGui::CalcTextSize(mainMenu);
     ImVec2 framePadding = ImGui::GetStyle().FramePadding;
-    ImVec2 buttonSize = ImVec2(textSize.x + framePadding.x * 2.0f, textSize.y + framePadding.y * 2.0f);
+    ImVec2 playAgainButtonSize = ImVec2(playAgainTextSize.x + framePadding.x * 2.0f, playAgainTextSize.y + framePadding.y * 2.0f);
+    ImVec2 mainMenuButtonSize = ImVec2(mainMenuTextSize.x + framePadding.x * 2.0f, mainMenuTextSize.y + framePadding.y * 2.0f);
     ImVec2 contentRegionMax = ImGui::GetWindowContentRegionMax();
-    ImGui::SetCursorPosX(contentRegionMax.x - buttonSize.x);
-    ImGui::SetCursorPosY(contentRegionMax.y - buttonSize.y);
-    if (ImGui::Button(start)) {
-        mainMenuComponent.m_phase = MainMenuComponent::MainMenuPhase::CONNECT;
-        mainMenuComponent.m_timer.Start();
+    ImVec2 itemSpacing = ImGui::GetStyle().ItemSpacing;
+    ImGui::SetCursorPosX(contentRegionMax.x - playAgainButtonSize.x - mainMenuButtonSize.x - itemSpacing.x);
+    ImGui::SetCursorPosY(contentRegionMax.y - playAgainButtonSize.y);
+    if (ImGui::Button(playAgain)) {
+        scoreboardComponent.m_phase = ScoreboardComponent::ScoreboardPhase::RESTART;
+    }
+    ImGui::SetCursorPosX(contentRegionMax.x - mainMenuButtonSize.x);
+    ImGui::SetCursorPosY(contentRegionMax.y - mainMenuButtonSize.y);
+    if (ImGui::Button(mainMenu)) {
+        g_gameClient->GetFSM().ChangeState(g_gameClient->GetConfig().m_offlineSceneName.c_str());
     }
 }
 
 //----------------------------------------------------------------------------------------------------
-void MainMenuStateClient::RenderConnectGui(MainMenuComponent& mainMenuComponent) const
+void ScoreboardStateClient::RenderRestartGui(ScoreboardComponent& scoreboardComponent) const
 {
-    F32 time = static_cast<F32>(mainMenuComponent.m_timer.ReadSec());
+    F32 time = static_cast<F32>(scoreboardComponent.m_timer.ReadSec());
     if (time >= 3.0f) {
-        mainMenuComponent.m_timer.Start();
+        scoreboardComponent.m_timer.Start();
     }
 
     if (time >= 2.0f) {
-        ImGui::Text("Connecting...");
+        ImGui::Text("Waiting...");
     } else if (time >= 1.0f) {
-        ImGui::Text("Connecting..");
+        ImGui::Text("Waiting..");
     } else if (time >= 0.0f) {
-        ImGui::Text("Connecting.");
+        ImGui::Text("Waiting.");
     }
 
     const char* cancel = "Cancel";
@@ -152,7 +148,7 @@ void MainMenuStateClient::RenderConnectGui(MainMenuComponent& mainMenuComponent)
     ImGui::SetCursorPosX(contentRegionMax.x - buttonSize.x);
     ImGui::SetCursorPosY(contentRegionMax.y - buttonSize.y);
     if (ImGui::Button(cancel)) {
-        mainMenuComponent.m_phase = MainMenuComponent::MainMenuPhase::SETUP;
+        scoreboardComponent.m_phase = ScoreboardComponent::ScoreboardPhase::RESULTS;
     }
 }
 }

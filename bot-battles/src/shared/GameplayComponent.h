@@ -11,7 +11,6 @@ struct GameplayComponent {
 
         START,
         PLAY,
-        END,
 
         NONE
     };

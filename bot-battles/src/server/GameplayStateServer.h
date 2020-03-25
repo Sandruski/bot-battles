@@ -24,6 +24,7 @@ public:
 private:
     void OnPlayerAdded() const;
     void OnPlayerRemoved() const;
+    void OnHealthEmptied() const;
 };
 }
 

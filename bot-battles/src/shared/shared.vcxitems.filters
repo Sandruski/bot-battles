@@ -300,6 +300,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)SpawnComponent.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)ScoreboardComponent.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp">
@@ -450,6 +453,9 @@
       <Filter>Source Files\Components</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)SpawnComponent.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)ScoreboardComponent.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
   </ItemGroup>

@@ -50,6 +50,12 @@ bool GuiSystem::PreRender()
     ImGui_ImplSDL2_NewFrame(windowComponent.m_window);
     ImGui::NewFrame();
 
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool GuiSystem::Render()
+{
     GuiComponent& guiComponent = g_game->GetGuiComponent();
     if (guiComponent.m_isDebugOptions) {
         ImGuiWindowFlags windowFlags = 0;

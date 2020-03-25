@@ -31,4 +31,10 @@ void WindowComponent::UpdateResolution()
 {
     glViewport(0, 0, m_resolution.x, m_resolution.y);
 }
+
+//----------------------------------------------------------------------------------------------------
+void WindowComponent::UpdateFullscreen()
+{
+    SDL_SetWindowFullscreen(m_window, m_isFullscreen);
+}
 }

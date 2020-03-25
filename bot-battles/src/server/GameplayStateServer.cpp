@@ -6,6 +6,7 @@
 #include "FSM.h"
 #include "GameServer.h"
 #include "GameplayComponent.h"
+#include "HealthComponent.h"
 #include "LinkingContext.h"
 #include "MapImporter.h"
 #include "ResourceManager.h"
@@ -25,7 +26,7 @@ const char* GameplayStateServer::GetName() const
 //----------------------------------------------------------------------------------------------------
 bool GameplayStateServer::Enter() const
 {
-    ILOG("Entering GameplayStateServer...");
+    ILOG("Entering %s...", GetName());
 
     GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
     gameplayComponent.m_phase = GameplayComponent::GameplayPhase::START;
@@ -43,7 +44,7 @@ bool GameplayStateServer::Enter() const
 //----------------------------------------------------------------------------------------------------
 bool GameplayStateServer::Exit() const
 {
-    ILOG("Exiting GameplayStateServer...");
+    ILOG("Exiting %s...", GetName());
 
     GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
     gameplayComponent.m_phase = GameplayComponent::GameplayPhase::NONE;
@@ -66,6 +67,11 @@ void GameplayStateServer::OnNotify(const Event& event)
 
     case EventType::PLAYER_REMOVED: {
         OnPlayerRemoved();
+        break;
+    }
+
+    case EventType::HEALTH_EMPTIED: {
+        OnHealthEmptied();
         break;
     }
 
@@ -95,6 +101,26 @@ void GameplayStateServer::OnPlayerRemoved() const
         // TODO: restart the players' positions, etc.
         // TODO: restart the global parameters of the match.
         //g_gameServer->GetFSM().ChangeState(g_gameServer->GetConfig().m_onlineSceneName.c_str()); // if new objects are spawned throughout the gameplay
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
+void GameplayStateServer::OnHealthEmptied() const
+{
+    U32 aliveCount = 0;
+    std::vector<std::pair<Entity, std::weak_ptr<HealthComponent>>> healthComponents = g_gameServer->GetComponentManager().GetComponents<HealthComponent>();
+    for (const auto& pair : healthComponents) {
+        std::weak_ptr<HealthComponent> healthComponent = pair.second;
+        if (!healthComponent.lock()->IsDead()) {
+            ++aliveCount;
+        }
+    }
+
+    if (aliveCount == 1) {
+        GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
+        if (gameplayComponent.m_phase == GameplayComponent::GameplayPhase::PLAY) {
+            g_gameServer->GetFSM().ChangeState("Scoreboard"); // TODO: config
+        }
     }
 }
 }

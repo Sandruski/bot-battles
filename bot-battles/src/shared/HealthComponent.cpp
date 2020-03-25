@@ -32,4 +32,10 @@ U32 HealthComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) con
     return writtenState;
 }
 #endif
+
+//----------------------------------------------------------------------------------------------------
+bool HealthComponent::IsDead() const
+{
+    return m_health <= 0;
+}
 }

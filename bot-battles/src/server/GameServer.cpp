@@ -10,6 +10,7 @@
 #include "LinkingContext.h"
 #include "MainMenuStateServer.h"
 #include "MovementSystemServer.h"
+#include "ScoreboardStateServer.h"
 #include "ServerComponent.h"
 #include "ServerSystem.h"
 #include "SpawnerSystem.h"
@@ -70,6 +71,10 @@ bool GameServer::Init()
     if (!ret) {
         return ret;
     }
+    ret = m_fsm->RegisterState<ScoreboardStateServer>();
+    if (!ret) {
+        return ret;
+    }
 
     std::weak_ptr<ServerSystem> serverSystem = m_systemManager->GetSystem<ServerSystem>();
     ret = m_linkingContext->AddObserver(serverSystem);
@@ -101,6 +106,10 @@ bool GameServer::Init()
     }
     std::weak_ptr<HealthSystem> healthSystem = m_systemManager->GetSystem<HealthSystem>();
     ret = healthSystem.lock()->AddObserver(serverSystem);
+    if (!ret) {
+        return ret;
+    }
+    ret = healthSystem.lock()->AddObserver(std::weak_ptr<Observer>(m_fsm));
     if (!ret) {
         return ret;
     }

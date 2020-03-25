@@ -7,6 +7,7 @@ enum class StateType : U16 {
 
     MAIN_MENU,
     GAMEPLAY,
+    SCOREBOARD,
 
     COUNT
 };

@@ -1,29 +1,23 @@
-#ifndef __GAMEPLAY_STATE_CLIENT_H__
-#define __GAMEPLAY_STATE_CLIENT_H__
+#ifndef __SCOREBOARD_STATE_SERVER_H__
+#define __SCOREBOARD_STATE_SERVER_H__
 
 #include "State.h"
 
 namespace sand {
 
-struct GameplayComponent;
-
 //----------------------------------------------------------------------------------------------------
-class GameplayStateClient : public State {
+class ScoreboardStateServer : public State {
 public:
     static StateType GetType()
     {
-        return StateType::GAMEPLAY;
+        return StateType::SCOREBOARD;
     }
 
 public:
     const char* GetName() const override;
 
     bool Enter() const override;
-    bool Update() const override;
     bool Exit() const override;
-
-private:
-    void RenderEndGui(GameplayComponent& gameplayComponent) const;
 };
 }
 

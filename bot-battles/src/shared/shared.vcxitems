@@ -69,6 +69,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Resource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ResourceDefs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ResourceManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ScoreboardComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ShaderImporter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ShaderResource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Shaders.h" />
@@ -129,6 +130,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Resource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ResourceManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)RendererComponent.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ScoreboardComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ShaderImporter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ShaderResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SpawnComponent.cpp" />

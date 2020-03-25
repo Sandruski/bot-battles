@@ -18,6 +18,7 @@ HealthSystem::HealthSystem()
 //----------------------------------------------------------------------------------------------------
 bool HealthSystem::Update()
 {
+    // TODO: do we really need this system with insta kill?
     GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
     if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::PLAY) {
         return true;
@@ -25,6 +26,7 @@ bool HealthSystem::Update()
 
     for (auto& entity : m_entities) {
         std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(entity);
+        // TODO: this is constantly being called and could cause problems.
         if (healthComponent.lock()->m_health <= 0) {
             healthComponent.lock()->m_health = 0;
 
@@ -32,8 +34,11 @@ bool HealthSystem::Update()
             spriteComponent.lock()->m_isEnabled = false;
 
             Event newEvent;
-            newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
+            newEvent.eventType = EventType::HEALTH_EMPTIED;
             newEvent.component.entity = entity;
+            NotifyEvent(newEvent);
+
+            newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
             newEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::HEALTH_HEALTH) | static_cast<U32>(ComponentMemberType::SPRITE_ENABLED);
             NotifyEvent(newEvent);
         }
