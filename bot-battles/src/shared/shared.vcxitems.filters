@@ -294,6 +294,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)EventComponent.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Layers.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp">

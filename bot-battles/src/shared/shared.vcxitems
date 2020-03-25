@@ -42,6 +42,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)InputComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Interpolation.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Intersection.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Layers.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)LinkingContext.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Log.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MainMenuComponent.h" />
