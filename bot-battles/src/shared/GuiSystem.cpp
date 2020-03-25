@@ -74,7 +74,7 @@ bool GuiSystem::PreRender()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool GuiSystem::Render()
+bool GuiSystem::RenderGui()
 {
     GuiComponent& guiComponent = g_game->GetGuiComponent();
     if (guiComponent.m_isDebugOptions) {

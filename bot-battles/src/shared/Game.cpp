@@ -167,17 +167,17 @@ bool Game::DoFrame()
         return ret;
     }
 
-    ret = RenderGui();
-    if (!ret) {
-        return ret;
-    }
-
     ret = Render();
     if (!ret) {
         return ret;
     }
 
     ret = DebugRender();
+    if (!ret) {
+        return ret;
+    }
+
+    ret = RenderGui();
     if (!ret) {
         return ret;
     }
@@ -283,6 +283,18 @@ bool Game::PreRender()
 }
 
 //----------------------------------------------------------------------------------------------------
+bool Game::Render()
+{
+    return m_systemManager->Render();
+}
+
+//----------------------------------------------------------------------------------------------------
+bool Game::DebugRender()
+{
+    return m_systemManager->DebugRender();
+}
+
+//----------------------------------------------------------------------------------------------------
 bool Game::RenderGui()
 {
     if (m_guiComponent.m_isDebugOptions) {
@@ -296,28 +308,16 @@ bool Game::RenderGui()
 
     bool ret = false;
 
-    ret = m_systemManager->RenderGui();
+    ret = m_fsm->RenderGui();
     if (!ret) {
         return ret;
     }
-    ret = m_fsm->RenderGui();
+    ret = m_systemManager->RenderGui();
     if (!ret) {
         return ret;
     }
 
     return ret;
-}
-
-//----------------------------------------------------------------------------------------------------
-bool Game::Render()
-{
-    return m_systemManager->Render();
-}
-
-//----------------------------------------------------------------------------------------------------
-bool Game::DebugRender()
-{
-    return m_systemManager->DebugRender();
 }
 
 //----------------------------------------------------------------------------------------------------

@@ -19,7 +19,7 @@ public:
     bool StartUp() override;
     bool Update() override;
     bool PreRender() override;
-    bool Render() override;
+    bool RenderGui() override;
     bool PostRender() override;
     bool ShutDown() override;
 };
