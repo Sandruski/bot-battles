@@ -185,11 +185,11 @@ bool ClientSystem::SendHelloPacket(const ClientComponent& clientComponent) const
     helloPacket.Write(ClientMessageType::HELLO);
     helloPacket.Write(clientComponent.m_name);
 
-    ILOG("Sending hello packet to server...");
-
     const bool result = SendPacket(clientComponent, helloPacket);
     if (result) {
-        ILOG("Hello packet successfully sent to server");
+        ILOG("Hello packet of length %u successfully sent to server", helloPacket.GetByteLength());
+    } else {
+        ILOG("Hello packet of length %u unsuccessfully sent to server", helloPacket.GetByteLength());
     }
 
     return result;
@@ -223,11 +223,11 @@ bool ClientSystem::SendInputPacket(ClientComponent& clientComponent) const
         }
     }
 
-    ILOG("Sending input packet to server of length %u...", inputPacket.GetByteLength());
-
     const bool result = SendPacket(clientComponent, inputPacket);
     if (result) {
-        ILOG("Input packet successfully sent to server");
+        ILOG("Input packet of length %u successfully sent to server", inputPacket.GetByteLength());
+    } else {
+        ILOG("Input packet of length %u unsuccessfully sent to server", inputPacket.GetByteLength());
     }
 
     return true;

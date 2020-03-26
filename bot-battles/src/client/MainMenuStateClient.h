@@ -24,6 +24,8 @@ public:
     bool Exit() const override;
 
 private:
+    void UpdateConnect() const;
+
     void RenderSetupGui(MainMenuComponent& mainMenuComponent) const;
     void RenderConnectGui(MainMenuComponent& mainMenuComponent) const;
 };

@@ -24,6 +24,8 @@ public:
     bool Exit() const override;
 
 private:
+    void UpdateRestart() const;
+
     void RenderResultsGui(ScoreboardComponent& scoreboardComponent) const;
     void RenderRestartGui(ScoreboardComponent& scoreboardComponent) const;
 };

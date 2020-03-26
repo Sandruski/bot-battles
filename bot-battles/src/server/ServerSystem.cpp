@@ -242,11 +242,11 @@ void ServerSystem::SendWelcomePacket(const ServerComponent& serverComponent, Pla
         welcomePacket.Write(gameplayComponent.m_phase);
     }
 
-    ILOG("Sending welcome packet to player %u...", playerID);
-
     const bool result = SendPacket(serverComponent, welcomePacket, clientProxy->GetSocketAddress());
     if (result) {
-        ILOG("Welcome packet successfully sent to player %u", playerID);
+        ILOG("Welcome packet of length %u successfully sent to player %u", welcomePacket.GetByteLength(), playerID);
+    } else {
+        ILOG("Welcome packet of length %u unsuccessfully sent to player %u", welcomePacket.GetByteLength(), playerID);
     }
 }
 
@@ -275,11 +275,11 @@ void ServerSystem::SendStatePacket(const ServerComponent& serverComponent, Playe
     clientProxy->m_replicationManager->Write(statePacket, *delivery.m_replicationResultManager);
 
     const char* name = clientProxy->GetName();
-    ILOG("Sending state packet to player %s...", name);
-
     const bool result = SendPacket(serverComponent, statePacket, clientProxy->GetSocketAddress());
     if (result) {
-        ILOG("State packet successfully sent to player %s", name);
+        ILOG("State packet of length %u successfully sent to player %s", statePacket.GetByteLength(), name);
+    } else {
+        ILOG("State packet of length %u unsuccessfully sent to player %s", statePacket.GetByteLength(), name);
     }
 }
 

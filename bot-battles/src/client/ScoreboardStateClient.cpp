@@ -42,9 +42,16 @@ bool ScoreboardStateClient::Enter() const
 //----------------------------------------------------------------------------------------------------
 bool ScoreboardStateClient::Update() const
 {
-    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-    if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::NONE) {
-        g_gameClient->GetFSM().ChangeState(g_gameClient->GetConfig().m_onlineSceneName.c_str());
+    ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
+    switch (scoreboardComponent.m_phase) {
+    case ScoreboardComponent::ScoreboardPhase::RESTART: {
+        UpdateRestart();
+        break;
+    }
+
+    default: {
+        break;
+    }
     }
 
     return true;
@@ -95,7 +102,23 @@ bool ScoreboardStateClient::Exit() const
 {
     ILOG("Exiting %s...", GetName());
 
-    return false;
+    ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
+    scoreboardComponent.m_phase = ScoreboardComponent::ScoreboardPhase::NONE;
+
+    g_gameClient->GetEntityManager().ClearEntities();
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+void ScoreboardStateClient::UpdateRestart() const
+{
+    /*
+    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    if (clientComponent.m_isAllowedToPlay) {
+        g_gameClient->GetFSM().ChangeState(g_gameClient->GetConfig().m_onlineSceneName.c_str());
+    }
+    */
 }
 
 //----------------------------------------------------------------------------------------------------

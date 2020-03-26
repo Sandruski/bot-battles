@@ -45,9 +45,16 @@ bool MainMenuStateClient::Enter() const
 //----------------------------------------------------------------------------------------------------
 bool MainMenuStateClient::Update() const
 {
-    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-    if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::NONE) {
-        g_gameClient->GetFSM().ChangeState(g_gameClient->GetConfig().m_onlineSceneName.c_str());
+    MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
+    switch (mainMenuComponent.m_phase) {
+    case MainMenuComponent::MainMenuPhase::CONNECT: {
+        UpdateConnect();
+        break;
+    }
+
+    default: {
+        break;
+    }
     }
 
     return true;
@@ -104,6 +111,15 @@ bool MainMenuStateClient::Exit() const
     g_gameClient->GetEntityManager().ClearEntities();
 
     return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+void MainMenuStateClient::UpdateConnect() const
+{
+    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+    if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::NONE) {
+        g_gameClient->GetFSM().ChangeState(g_gameClient->GetConfig().m_onlineSceneName.c_str());
+    }
 }
 
 //----------------------------------------------------------------------------------------------------
