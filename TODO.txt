@@ -7,8 +7,16 @@
 -Debug ImGui options (resize window, etc.).
 -Remove Networking inheritance for those components that are actually not being networked.
 -Make entities be able to have components that are networked and components that are not.
+
+PLAYLIST:
 -Add timer for server in the Scoreboard screen.
 -Send Bye packet at the Scoreboard screen and if entity disconnects during gameplay.
+-Send players back to main menu after 30 seconds.
+-Use TCP for everything. Check out the book section about games!
+-Check that 2 players can connect to the game from different computers.
+-Add Play Again option.
+
+----------
 
 -Be careful with the Tile object y position!
 -Have debug draw again.
