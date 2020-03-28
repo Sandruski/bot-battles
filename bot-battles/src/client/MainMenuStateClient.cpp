@@ -44,24 +44,6 @@ bool MainMenuStateClient::Enter() const
 }
 
 //----------------------------------------------------------------------------------------------------
-bool MainMenuStateClient::Update() const
-{
-    MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
-    switch (mainMenuComponent.m_phase) {
-    case MainMenuComponent::MainMenuPhase::CONNECT: {
-        UpdateConnect();
-        break;
-    }
-
-    default: {
-        break;
-    }
-    }
-
-    return true;
-}
-
-//----------------------------------------------------------------------------------------------------
 bool MainMenuStateClient::RenderGui() const
 {
     ImGuiWindowFlags windowFlags = 0;
@@ -115,11 +97,18 @@ bool MainMenuStateClient::Exit() const
 }
 
 //----------------------------------------------------------------------------------------------------
-void MainMenuStateClient::UpdateConnect() const
+void MainMenuStateClient::OnNotify(const Event& event)
 {
-    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-    if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::NONE) {
-        g_gameClient->GetFSM().ChangeState(g_gameClient->GetConfig().m_onlineSceneName.c_str());
+    switch (event.eventType) {
+
+    case EventType::WELCOME_RECEIVED: {
+        OnWelcomeReceived();
+        break;
+    }
+
+    default: {
+        break;
+    }
     }
 }
 
@@ -173,5 +162,11 @@ void MainMenuStateClient::RenderConnectGui(MainMenuComponent& mainMenuComponent)
     if (ImGui::Button(cancel)) {
         mainMenuComponent.m_phase = MainMenuComponent::MainMenuPhase::SETUP;
     }
+}
+
+//----------------------------------------------------------------------------------------------------
+void MainMenuStateClient::OnWelcomeReceived() const
+{
+    g_gameClient->GetFSM().ChangeState(g_gameClient->GetConfig().m_onlineSceneName.c_str());
 }
 }

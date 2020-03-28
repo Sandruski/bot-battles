@@ -24,6 +24,8 @@ public:
     U32 WriteCreateAction(OutputMemoryStream& outputStream, NetworkID networkID, U32 dirtyState) const;
     U32 WriteUpdateAction(OutputMemoryStream& outputStream, NetworkID networkID, U32 dirtyState) const;
 
+    void Reset();
+
 private:
     std::unordered_map<NetworkID, ReplicationCommand> m_networkIDToReplicationCommand;
 };

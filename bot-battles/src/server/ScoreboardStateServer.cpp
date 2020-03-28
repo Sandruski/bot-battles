@@ -81,8 +81,8 @@ void ScoreboardStateServer::OnNotify(const Event& event)
 {
     switch (event.eventType) {
 
-    case EventType::PLAYER_READDED: {
-        OnPlayerReAdded();
+    case EventType::REHELLO_RECEIVED: {
+        OnReHelloReceived();
         break;
     }
 
@@ -93,7 +93,7 @@ void ScoreboardStateServer::OnNotify(const Event& event)
 }
 
 //----------------------------------------------------------------------------------------------------
-void ScoreboardStateServer::OnPlayerReAdded() const
+void ScoreboardStateServer::OnReHelloReceived() const
 {
     g_gameServer->GetFSM().ChangeState(g_gameServer->GetConfig().m_onlineSceneName.c_str());
 }

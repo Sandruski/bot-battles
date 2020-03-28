@@ -43,7 +43,7 @@ ClientComponent::ClientComponent()
     , m_isEntityInterpolation(false)
     , m_connect(false)
     , m_sendHelloPacket(false)
-    , m_sendAgainPacket(false)
+    , m_sendReHelloPacket(false)
 {
 }
 
@@ -90,21 +90,17 @@ bool ClientComponent::IsLocalPlayer(Entity entity) const
 //----------------------------------------------------------------------------------------------------
 void ClientComponent::Reset()
 {
-    m_map.clear();
-
+    //m_replicationManager
+    m_deliveryManager.Reset();
     m_lastPacketTime = 0.0f;
-
     m_lastAckdFrame = 0;
     m_interpolationFromFrame = 0;
     m_interpolationToFrame = 0;
     m_interpolationPercentage = 0.0f;
-
     m_frameBuffer.Clear();
-
     m_inputBuffer.Clear();
     m_isLastInputTransformPending = false;
     m_isLastInputWeaponPending = false;
-
     m_RTT = 0.0f;
 }
 }

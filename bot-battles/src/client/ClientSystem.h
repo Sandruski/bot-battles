@@ -26,12 +26,13 @@ public:
 private:
     void ReceivePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream);
     void ReceiveWelcomePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream);
+    void ReceiveReWelcomePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream);
     void ReceiveStatePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream) const;
-    void ReceiveResultPacket(ClientComponent& clientComponent, InputMemoryStream& inputStream) const;
+    void ReceiveResultPacket(ClientComponent& clientComponent, InputMemoryStream& inputStream);
 
     bool SendHelloPacket(const ClientComponent& clientComponent) const;
+    bool SendReHelloPacket(const ClientComponent& clientComponent) const;
     bool SendInputPacket(ClientComponent& clientComponent) const;
-    bool SendAgainPacket(const ClientComponent& clientComponent) const;
     bool SendUDPPacket(const ClientComponent& clientComponent, const OutputMemoryStream& outputStream) const;
     bool SendTCPPacket(const ClientComponent& clientComponent, const OutputMemoryStream& outputStream) const;
 

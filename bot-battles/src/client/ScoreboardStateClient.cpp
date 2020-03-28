@@ -50,17 +50,6 @@ bool ScoreboardStateClient::Update() const
         g_gameClient->GetFSM().ChangeState(g_gameClient->GetConfig().m_offlineSceneName.c_str());
     }
 
-    switch (scoreboardComponent.m_phase) {
-    case ScoreboardComponent::ScoreboardPhase::RESTART: {
-        UpdateRestart();
-        break;
-    }
-
-    default: {
-        break;
-    }
-    }
-
     return true;
 }
 
@@ -118,11 +107,18 @@ bool ScoreboardStateClient::Exit() const
 }
 
 //----------------------------------------------------------------------------------------------------
-void ScoreboardStateClient::UpdateRestart() const
+void ScoreboardStateClient::OnNotify(const Event& event)
 {
-    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-    if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::NONE) {
-        g_gameClient->GetFSM().ChangeState(g_gameClient->GetConfig().m_onlineSceneName.c_str());
+    switch (event.eventType) {
+
+    case EventType::REWELCOME_RECEIVED: {
+        OnReWelcomeReceived();
+        break;
+    }
+
+    default: {
+        break;
+    }
     }
 }
 
@@ -150,7 +146,7 @@ void ScoreboardStateClient::RenderResultsGui(ScoreboardComponent& scoreboardComp
         scoreboardComponent.m_phase = ScoreboardComponent::ScoreboardPhase::RESTART;
 
         ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-        clientComponent.m_sendAgainPacket = true;
+        clientComponent.m_sendReHelloPacket = true;
     }
     ImGui::SetCursorPosX(contentRegionMax.x - mainMenuButtonSize.x);
     ImGui::SetCursorPosY(contentRegionMax.y - mainMenuButtonSize.y);
@@ -185,5 +181,11 @@ void ScoreboardStateClient::RenderRestartGui(ScoreboardComponent& scoreboardComp
     if (ImGui::Button(cancel)) {
         scoreboardComponent.m_phase = ScoreboardComponent::ScoreboardPhase::RESULTS;
     }
+}
+
+//----------------------------------------------------------------------------------------------------
+void ScoreboardStateClient::OnReWelcomeReceived() const
+{
+    g_gameClient->GetFSM().ChangeState(g_gameClient->GetConfig().m_onlineSceneName.c_str());
 }
 }

@@ -19,15 +19,16 @@ public:
     const char* GetName() const override;
 
     bool Enter() const override;
-    bool Update() const override;
     bool RenderGui() const override;
     bool Exit() const override;
 
-private:
-    void UpdateConnect() const;
+    void OnNotify(const Event& event) override;
 
+private:
     void RenderSetupGui(MainMenuComponent& mainMenuComponent) const;
     void RenderConnectGui(MainMenuComponent& mainMenuComponent) const;
+
+    void OnWelcomeReceived() const;
 };
 }
 

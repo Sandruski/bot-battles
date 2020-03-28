@@ -25,6 +25,15 @@ bool DeliveryManagerClient::ReadState(InputMemoryStream& inputStream)
 }
 
 //----------------------------------------------------------------------------------------------------
+void DeliveryManagerClient::Reset()
+{
+    m_pendingAcks.clear();
+    m_nextOutgoingSequenceNumber = 0;
+    m_nextExpectedSequenceNumber = 0;
+    m_deliveriesCount = 0;
+}
+
+//----------------------------------------------------------------------------------------------------
 void DeliveryManagerClient::WriteSequenceNumber(OutputMemoryStream& outputStream)
 {
     SequenceNumber sequenceNumber = m_nextOutgoingSequenceNumber++;

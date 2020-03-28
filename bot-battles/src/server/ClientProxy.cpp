@@ -12,6 +12,7 @@ ClientProxy::ClientProxy(const SocketAddress& socketAddress, const char* name)
     , m_lastAckdFrame(0)
     , m_timestamp(0.0f)
     , m_sendWelcomePacket(false)
+    , m_sendReWelcomePacket(false)
     , m_sendResultPacket(false)
     , m_socketAddress(socketAddress)
     , m_name(name)
@@ -42,5 +43,16 @@ void ClientProxy::UpdateLastPacketTime()
 F32 ClientProxy::GetLastPacketTime() const
 {
     return m_lastPacketTime;
+}
+
+//----------------------------------------------------------------------------------------------------
+void ClientProxy::Reset()
+{
+    m_replicationManager->Reset();
+    m_deliveryManager.Reset();
+    m_inputBuffer.Clear();
+    m_lastAckdFrame = 0;
+    m_timestamp = 0.0f;
+    m_lastPacketTime = 0.0f;
 }
 }

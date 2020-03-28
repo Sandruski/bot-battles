@@ -23,11 +23,13 @@ public:
     bool RenderGui() const override;
     bool Exit() const override;
 
-private:
-    void UpdateRestart() const;
+    void OnNotify(const Event& event) override;
 
+private:
     void RenderResultsGui(ScoreboardComponent& scoreboardComponent) const;
     void RenderRestartGui(ScoreboardComponent& scoreboardComponent) const;
+
+    void OnReWelcomeReceived() const;
 };
 }
 

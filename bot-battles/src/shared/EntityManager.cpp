@@ -81,8 +81,6 @@ Signature EntityManager::GetSignature(Entity entity)
 //----------------------------------------------------------------------------------------------------
 bool EntityManager::RemoveEntity(Entity entity)
 {
-    assert(entity < INVALID_ENTITY);
-
     auto entityToSignature = m_entitiesToSignatures.find(entity);
     if (entityToSignature == m_entitiesToSignatures.end()) {
         WLOG("Entity %u does not exist!", entity);
@@ -109,8 +107,6 @@ void EntityManager::ClearEntities()
 //----------------------------------------------------------------------------------------------------
 bool EntityManager::KillEntity(Entity entity)
 {
-    assert(entity < INVALID_ENTITY);
-
     auto entityToSignature = m_entitiesToSignatures.find(entity);
     if (entityToSignature == m_entitiesToSignatures.end()) {
         return false;

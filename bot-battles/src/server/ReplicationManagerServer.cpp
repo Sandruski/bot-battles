@@ -168,4 +168,10 @@ U32 ReplicationManagerServer::WriteUpdateAction(OutputMemoryStream& outputStream
 
     return writtenState;
 }
+
+//----------------------------------------------------------------------------------------------------
+void ReplicationManagerServer::Reset()
+{
+    m_networkIDToReplicationCommand.clear();
+}
 }

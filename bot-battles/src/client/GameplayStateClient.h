@@ -19,11 +19,12 @@ public:
     const char* GetName() const override;
 
     bool Enter() const override;
-    bool Update() const override;
     bool Exit() const override;
 
+    void OnNotify(const Event& event) override;
+
 private:
-    void RenderEndGui(GameplayComponent& gameplayComponent) const;
+    void OnResultReceived() const;
 };
 }
 

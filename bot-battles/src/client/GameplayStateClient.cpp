@@ -32,17 +32,6 @@ bool GameplayStateClient::Enter() const
 }
 
 //----------------------------------------------------------------------------------------------------
-bool GameplayStateClient::Update() const
-{
-    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-    if (gameplayComponent.m_phase == GameplayComponent::GameplayPhase::NONE) {
-        g_gameClient->GetFSM().ChangeState("Scoreboard"); // TODO: config
-    }
-
-    return true;
-}
-
-//----------------------------------------------------------------------------------------------------
 bool GameplayStateClient::Exit() const
 {
     ILOG("Exiting %s...", GetName());
@@ -53,6 +42,33 @@ bool GameplayStateClient::Exit() const
     g_gameClient->GetLinkingContext().ClearEntities();
     g_gameClient->GetEntityManager().ClearEntities();
 
+    // TODO: do it through the event PLAYER_REMOVED
+    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    clientComponent.m_entity = INVALID_ENTITY;
+    clientComponent.Reset();
+
     return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+void GameplayStateClient::OnNotify(const Event& event)
+{
+    switch (event.eventType) {
+
+    case EventType::RESULT_RECEIVED: {
+        OnResultReceived();
+        break;
+    }
+
+    default: {
+        break;
+    }
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
+void GameplayStateClient::OnResultReceived() const
+{
+    g_gameClient->GetFSM().ChangeState("Scoreboard"); // TODO: config
 }
 }

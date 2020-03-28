@@ -48,15 +48,8 @@ bool MainMenuStateServer::Enter() const
 bool MainMenuStateServer::Update() const
 {
     MainMenuComponent& mainMenuComponent = g_gameServer->GetMainMenuComponent();
-    switch (mainMenuComponent.m_phase) {
-    case MainMenuComponent::MainMenuPhase::CONNECT: {
-        UpdateConnect();
-        break;
-    }
-
-    default: {
-        break;
-    }
+    if (mainMenuComponent.m_phase == MainMenuComponent::MainMenuPhase::CONNECT) {
+        g_gameServer->GetFSM().ChangeState(g_gameServer->GetConfig().m_onlineSceneName.c_str());
     }
 
     return true;
@@ -113,12 +106,6 @@ bool MainMenuStateServer::Exit() const
     g_gameServer->GetEntityManager().ClearEntities();
 
     return true;
-}
-
-//----------------------------------------------------------------------------------------------------
-void MainMenuStateServer::UpdateConnect() const
-{
-    g_gameServer->GetFSM().ChangeState(g_gameServer->GetConfig().m_onlineSceneName.c_str());
 }
 
 //----------------------------------------------------------------------------------------------------

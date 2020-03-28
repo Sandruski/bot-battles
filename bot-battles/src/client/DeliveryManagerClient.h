@@ -13,6 +13,8 @@ public:
     void WriteState(OutputMemoryStream& outputStream);
     bool ReadState(InputMemoryStream& inputStream);
 
+    void Reset();
+
 private:
     void WriteSequenceNumber(OutputMemoryStream& outputStream);
     bool ReadSequenceNumber(InputMemoryStream& inputStream);

@@ -23,7 +23,7 @@ public:
     void OnNotify(const Event& event) override;
 
 private:
-    void OnPlayerReAdded() const;
+    void OnReHelloReceived() const;
 };
 }
 

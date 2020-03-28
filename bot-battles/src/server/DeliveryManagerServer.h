@@ -18,6 +18,8 @@ public:
     const std::deque<Delivery>& GetDeliveries() const;
     U32 GetNextExpectedSequenceNumber() const;
 
+    void Reset();
+
 private:
     Delivery& WriteSequenceNumber(OutputMemoryStream& outputStream);
     bool ReadSequenceNumber(InputMemoryStream& inputStream);

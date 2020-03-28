@@ -66,7 +66,7 @@ struct ClientComponent : public Component {
     bool m_connect;
 
     bool m_sendHelloPacket;
-    bool m_sendAgainPacket;
+    bool m_sendReHelloPacket;
 };
 }
 

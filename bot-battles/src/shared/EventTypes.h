@@ -17,11 +17,19 @@ enum class EventType {
     COMPONENT_MEMBER_CHANGED,
 
     PLAYER_ADDED,
-    PLAYER_READDED,
     PLAYER_UNWELCOMED, // TODO
     PLAYER_REMOVED,
 
     HEALTH_EMPTIED,
+
+#ifdef _CLIENT
+    WELCOME_RECEIVED,
+    REWELCOME_RECEIVED,
+    RESULT_RECEIVED,
+#elif defined(_SERVER)
+    REHELLO_RECEIVED,
+#endif
+    // TODO: BYE_RECEIVED for both client and server
 
     COUNT
 };

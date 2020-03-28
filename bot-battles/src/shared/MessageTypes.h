@@ -6,8 +6,8 @@ namespace sand {
 enum class ClientMessageType : U16 {
 
     HELLO,
+    REHELLO,
     INPUT,
-    AGAIN,
 
     BYE,
 
@@ -17,6 +17,7 @@ enum class ClientMessageType : U16 {
 enum class ServerMessageType : U16 {
 
     WELCOME,
+    REWELCOME,
     STATE,
     RESULT,
 

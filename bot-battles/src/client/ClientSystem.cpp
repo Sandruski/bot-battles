@@ -94,6 +94,31 @@ void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent)
     U32 byteCapacity = packet.GetByteCapacity();
     U32 receivedPacketCount = 0;
 
+    // TCP
+    fd_set readSet;
+    FD_ZERO(&readSet);
+    FD_SET(clientComponent.m_TCPSocket->GetSocket(), &readSet);
+
+    timeval timeout;
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 0;
+    int iResult = select(0, &readSet, nullptr, nullptr, &timeout);
+    if (iResult == 0 || iResult == SOCKET_ERROR) {
+        NETLOG("select");
+    } else if (FD_ISSET(clientComponent.m_TCPSocket->GetSocket(), &readSet)) {
+        I32 readByteCount = clientComponent.m_TCPSocket->Receive(packet.GetPtr(), byteCapacity);
+        if (readByteCount > 0) {
+            packet.SetCapacity(readByteCount);
+            packet.ResetHead();
+            ReceivePacket(clientComponent, packet);
+            ++receivedPacketCount;
+        } else if (readByteCount == -WSAECONNRESET) {
+            ConnectionReset(clientComponent);
+        } else if (readByteCount == 0) {
+            // TODO: graceful disconnection if readByteCount == 0?
+        }
+    }
+
     // UDP
     while (receivedPacketCount < MAX_PACKETS_PER_FRAME) {
         SocketAddress fromSocketAddress;
@@ -112,34 +137,6 @@ void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent)
     }
 
     // TODO: handle timeout disconnections here
-
-    // TCP
-    fd_set readSet;
-    FD_ZERO(&readSet);
-    FD_SET(clientComponent.m_TCPSocket->GetSocket(), &readSet);
-
-    timeval timeout;
-    timeout.tv_sec = 0;
-    timeout.tv_usec = 0;
-    int iResult = select(0, &readSet, nullptr, nullptr, &timeout);
-    if (iResult == 0 || iResult == SOCKET_ERROR) {
-        NETLOG("select");
-        return;
-    }
-
-    if (FD_ISSET(clientComponent.m_TCPSocket->GetSocket(), &readSet)) {
-        I32 readByteCount = clientComponent.m_TCPSocket->Receive(packet.GetPtr(), byteCapacity);
-        if (readByteCount > 0) {
-            packet.SetCapacity(readByteCount);
-            packet.ResetHead();
-            ReceivePacket(clientComponent, packet);
-            ++receivedPacketCount;
-        } else if (readByteCount == -WSAECONNRESET) {
-            ConnectionReset(clientComponent);
-        } else if (readByteCount == 0) {
-            // TODO: graceful disconnection if readByteCount == 0?
-        }
-    }
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -166,9 +163,9 @@ void ClientSystem::SendOutgoingPackets(ClientComponent& clientComponent)
         SendHelloPacket(clientComponent);
         clientComponent.m_sendHelloPacket = false;
     }
-    if (clientComponent.m_sendAgainPacket) {
-        SendAgainPacket(clientComponent);
-        clientComponent.m_sendAgainPacket = false;
+    if (clientComponent.m_sendReHelloPacket) {
+        SendReHelloPacket(clientComponent);
+        clientComponent.m_sendReHelloPacket = false;
     }
 }
 
@@ -182,6 +179,11 @@ void ClientSystem::ReceivePacket(ClientComponent& clientComponent, InputMemorySt
 
     case ServerMessageType::WELCOME: {
         ReceiveWelcomePacket(clientComponent, inputStream);
+        break;
+    }
+
+    case ServerMessageType::REWELCOME: {
+        ReceiveReWelcomePacket(clientComponent, inputStream);
         break;
     }
 
@@ -228,17 +230,41 @@ void ClientSystem::ReceiveWelcomePacket(ClientComponent& clientComponent, InputM
         inputStream.Read(gameplayComponent.m_phase);
 
         Event newEvent;
-        newEvent.eventType = EventType::PLAYER_ADDED;
+        newEvent.eventType = EventType::WELCOME_RECEIVED;
         newEvent.networking.playerID = clientComponent.m_playerID;
+        NotifyEvent(newEvent);
+
+        newEvent.eventType = EventType::PLAYER_ADDED;
         NotifyEvent(newEvent);
 
         ILOG("Player %s %u has joined the game", clientComponent.m_name.c_str(), clientComponent.m_playerID);
     } else {
         // TODO
+        /*
         Event newEvent;
         newEvent.eventType = EventType::PLAYER_UNWELCOMED;
-        NotifyEvent(newEvent);
+        NotifyEvent(newEvent);*/
     }
+}
+
+//----------------------------------------------------------------------------------------------------
+void ClientSystem::ReceiveReWelcomePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream)
+{
+    const bool isConnected = clientComponent.IsConnected();
+    if (!isConnected) {
+        ELOG("ReWelcome packet received but skipped because Player is not connected");
+        return;
+    }
+
+    ILOG("ReWelcome packet received");
+
+    Event newEvent;
+    newEvent.eventType = EventType::REWELCOME_RECEIVED;
+    newEvent.networking.playerID = clientComponent.m_playerID;
+    NotifyEvent(newEvent);
+
+    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+    inputStream.Read(gameplayComponent.m_phase);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -271,7 +297,7 @@ void ClientSystem::ReceiveStatePacket(ClientComponent& clientComponent, InputMem
 }
 
 //----------------------------------------------------------------------------------------------------
-void ClientSystem::ReceiveResultPacket(ClientComponent& clientComponent, InputMemoryStream& inputStream) const
+void ClientSystem::ReceiveResultPacket(ClientComponent& clientComponent, InputMemoryStream& inputStream)
 {
     const bool isConnected = clientComponent.IsConnected();
     if (!isConnected) {
@@ -280,6 +306,11 @@ void ClientSystem::ReceiveResultPacket(ClientComponent& clientComponent, InputMe
     }
 
     ILOG("Result packet received");
+
+    Event newEvent;
+    newEvent.eventType = EventType::RESULT_RECEIVED;
+    newEvent.networking.playerID = clientComponent.m_playerID;
+    NotifyEvent(newEvent);
 
     GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
     inputStream.Read(gameplayComponent.m_phase);
@@ -297,6 +328,23 @@ bool ClientSystem::SendHelloPacket(const ClientComponent& clientComponent) const
         ILOG("Hello packet of length %u successfully sent to server", helloPacket.GetByteLength());
     } else {
         ELOG("Hello packet of length %u unsuccessfully sent to server", helloPacket.GetByteLength());
+    }
+
+    return result;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool ClientSystem::SendReHelloPacket(const ClientComponent& clientComponent) const
+{
+    OutputMemoryStream reHelloPacket;
+    reHelloPacket.Write(ClientMessageType::REHELLO);
+    reHelloPacket.Write(clientComponent.m_playerID);
+
+    bool result = SendTCPPacket(clientComponent, reHelloPacket);
+    if (result) {
+        ILOG("ReHello packet of length %u successfully sent to server", reHelloPacket.GetByteLength());
+    } else {
+        ELOG("ReHello packet of length %u unsuccessfully sent to server", reHelloPacket.GetByteLength());
     }
 
     return result;
@@ -338,23 +386,6 @@ bool ClientSystem::SendInputPacket(ClientComponent& clientComponent) const
     }
 
     return true;
-}
-
-//----------------------------------------------------------------------------------------------------
-bool ClientSystem::SendAgainPacket(const ClientComponent& clientComponent) const
-{
-    OutputMemoryStream againPacket;
-    againPacket.Write(ClientMessageType::AGAIN);
-    againPacket.Write(clientComponent.m_playerID);
-
-    bool result = SendTCPPacket(clientComponent, againPacket);
-    if (result) {
-        ILOG("Again packet of length %u successfully sent to server", againPacket.GetByteLength());
-    } else {
-        ELOG("Again packet of length %u unsuccessfully sent to server", againPacket.GetByteLength());
-    }
-
-    return result;
 }
 
 //----------------------------------------------------------------------------------------------------

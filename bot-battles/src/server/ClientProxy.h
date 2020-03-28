@@ -20,6 +20,8 @@ public:
     void UpdateLastPacketTime();
     F32 GetLastPacketTime() const;
 
+    void Reset();
+
 public:
     std::shared_ptr<ReplicationManagerServer> m_replicationManager;
     DeliveryManagerServer m_deliveryManager;
@@ -30,6 +32,7 @@ public:
     F32 m_timestamp;
 
     bool m_sendWelcomePacket;
+    bool m_sendReWelcomePacket;
     bool m_sendResultPacket;
 
 private:
