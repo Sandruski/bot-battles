@@ -29,6 +29,9 @@ public:
     U32 m_lastAckdFrame;
     F32 m_timestamp;
 
+    bool m_sendStatePacket;
+    bool m_sendWelcomePacket;
+
 private:
     SocketAddress m_socketAddress;
     std::string m_name;

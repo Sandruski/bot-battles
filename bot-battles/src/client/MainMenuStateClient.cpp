@@ -1,5 +1,6 @@
 #include "MainMenuStateClient.h"
 
+#include "ClientComponent.h"
 #include "ComponentManager.h"
 #include "Config.h"
 #include "EntityManager.h"
@@ -141,6 +142,8 @@ void MainMenuStateClient::RenderSetupGui(MainMenuComponent& mainMenuComponent) c
     if (ImGui::Button(start)) {
         mainMenuComponent.m_phase = MainMenuComponent::MainMenuPhase::CONNECT;
         mainMenuComponent.m_timer.Start();
+
+        clientComponent.m_sendHelloPacket = true;
     }
 }
 

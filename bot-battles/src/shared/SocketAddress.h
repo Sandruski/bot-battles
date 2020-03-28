@@ -6,6 +6,7 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 class SocketAddress {
     friend class UDPSocket;
+    friend class TCPSocket;
 
 public:
     static std::shared_ptr<SocketAddress> CreateIPv4(U32 address, U16 port);

@@ -77,6 +77,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)SpriteResource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StateTypes.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)RendererComponent.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)TCPSocket.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Transform.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)WeaponComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)WindowComponent.h" />
@@ -134,6 +135,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)ShaderImporter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ShaderResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SpawnComponent.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)TCPSocket.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Transform.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)WeaponComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)WindowComponent.cpp" />

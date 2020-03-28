@@ -12,17 +12,17 @@ public:
 
 public:
     UDPSocket();
-    UDPSocket(SOCKET socket, bool isNonBlockingMode);
+    UDPSocket(const SOCKET& socket);
     ~UDPSocket();
 
     bool SetNonBlockingMode(bool isNonBlockingMode);
+    bool SetReuseAddress(bool isReuseAddress);
     bool Bind(const SocketAddress& socketAddress);
-    bool SendTo(const void* data, int length, const SocketAddress& toSocketAddress);
+    I32 SendTo(const void* data, int length, const SocketAddress& toSocketAddress);
     I32 ReceiveFrom(void* buffer, int length, SocketAddress& fromSocketAddress);
 
 private:
     SOCKET m_socket;
-    bool m_isNonBlockingMode;
 };
 }
 

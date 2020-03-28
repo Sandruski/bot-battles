@@ -12,6 +12,7 @@ namespace sand {
 
 class SocketAddress;
 class UDPSocket;
+class TCPSocket;
 
 //----------------------------------------------------------------------------------------------------
 // System Component
@@ -29,7 +30,8 @@ struct ClientComponent : public Component {
     ReplicationManagerClient m_replicationManager;
     DeliveryManagerClient m_deliveryManager;
 
-    std::shared_ptr<UDPSocket> m_socket;
+    std::shared_ptr<UDPSocket> m_UDPSocket;
+    std::shared_ptr<TCPSocket> m_TCPSocket;
     std::shared_ptr<SocketAddress> m_socketAddress;
 
     std::string m_ip;
@@ -60,6 +62,8 @@ struct ClientComponent : public Component {
     bool m_isClientPrediction;
     bool m_isServerReconciliation;
     bool m_isEntityInterpolation;
+
+    bool m_sendHelloPacket;
 };
 }
 

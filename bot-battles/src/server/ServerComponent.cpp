@@ -2,13 +2,16 @@
 
 #include "ClientProxy.h"
 #include "SocketAddress.h"
+#include "TCPSocket.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 ServerComponent::ServerComponent()
-    : m_socket(nullptr)
-    , m_socketAddress(nullptr)
+    : m_UDPSocket()
+    , m_TCPListenSocket()
+    , m_TCPSockets()
+    , m_socketAddress()
     , m_port()
     , m_playerIDToClientProxy()
     , m_entityToPlayerID()
@@ -162,5 +165,17 @@ U32 ServerComponent::GetPlayerCount() const
 const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& ServerComponent::GetPlayerIDToClientProxyMap() const
 {
     return m_playerIDToClientProxy;
+}
+
+//----------------------------------------------------------------------------------------------------
+std::weak_ptr<TCPSocket> ServerComponent::GetTCPSocket(const SocketAddress& socketAddress) const
+{
+    for (const auto& TCPSock : m_TCPSockets) {
+        if (TCPSock->GetRemoteSocketAddress() == socketAddress) {
+            return std::weak_ptr<TCPSocket>(TCPSock);
+        }
+    }
+
+    return std::weak_ptr<TCPSocket>();
 }
 }

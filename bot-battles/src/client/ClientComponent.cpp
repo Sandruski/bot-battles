@@ -19,8 +19,9 @@ namespace sand {
 ClientComponent::ClientComponent()
     : m_replicationManager()
     , m_deliveryManager()
-    , m_socket(nullptr)
-    , m_socketAddress(nullptr)
+    , m_UDPSocket()
+    , m_TCPSocket()
+    , m_socketAddress()
     , m_ip()
     , m_port()
     , m_map()
@@ -40,6 +41,7 @@ ClientComponent::ClientComponent()
     , m_isClientPrediction(false)
     , m_isServerReconciliation(false)
     , m_isEntityInterpolation(false)
+    , m_sendHelloPacket(false)
 {
 }
 

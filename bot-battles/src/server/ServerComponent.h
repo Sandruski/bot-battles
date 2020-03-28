@@ -6,6 +6,7 @@
 namespace sand {
 
 class UDPSocket;
+class TCPSocket;
 class SocketAddress;
 class ClientProxy;
 
@@ -30,7 +31,11 @@ struct ServerComponent : public Component {
     U32 GetPlayerCount() const;
     const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& GetPlayerIDToClientProxyMap() const;
 
-    std::shared_ptr<UDPSocket> m_socket;
+    std::weak_ptr<TCPSocket> GetTCPSocket(const SocketAddress& socketAddress) const;
+
+    std::shared_ptr<UDPSocket> m_UDPSocket;
+    std::shared_ptr<TCPSocket> m_TCPListenSocket;
+    std::vector<std::shared_ptr<TCPSocket>> m_TCPSockets;
     std::shared_ptr<SocketAddress> m_socketAddress;
 
     std::string m_port;

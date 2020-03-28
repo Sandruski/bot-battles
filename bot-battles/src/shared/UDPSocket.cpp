@@ -13,20 +13,18 @@ std::shared_ptr<UDPSocket> UDPSocket::CreateIPv4()
         return nullptr;
     }
 
-    return std::make_shared<UDPSocket>(sock, false);
+    return std::make_shared<UDPSocket>(sock);
 }
 
 //----------------------------------------------------------------------------------------------------
 UDPSocket::UDPSocket()
     : m_socket()
-    , m_isNonBlockingMode(false)
 {
 }
 
 //----------------------------------------------------------------------------------------------------
-UDPSocket::UDPSocket(SOCKET socket, bool isNonBlockingMode)
+UDPSocket::UDPSocket(const SOCKET& socket)
     : m_socket(socket)
-    , m_isNonBlockingMode(isNonBlockingMode)
 {
 }
 
@@ -40,14 +38,23 @@ UDPSocket::~UDPSocket()
 //----------------------------------------------------------------------------------------------------
 bool UDPSocket::SetNonBlockingMode(bool isNonBlockingMode)
 {
-    u_long arg = isNonBlockingMode;
-    int iResult = ioctlsocket(m_socket, FIONBIO, &arg);
+    int iResult = ioctlsocket(m_socket, FIONBIO, reinterpret_cast<u_long*>(&isNonBlockingMode));
     if (iResult == SOCKET_ERROR) {
         NETLOG("ioctlsocket");
         return false;
     }
 
-    m_isNonBlockingMode = isNonBlockingMode;
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool UDPSocket::SetReuseAddress(bool isReuseAddress)
+{
+    int iResult = setsockopt(m_socket, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&isReuseAddress), sizeof(isReuseAddress));
+    if (iResult == SOCKET_ERROR) {
+        NETLOG("setsockopt");
+        return false;
+    }
 
     return true;
 }
@@ -65,15 +72,16 @@ bool UDPSocket::Bind(const SocketAddress& socketAddress)
 }
 
 //----------------------------------------------------------------------------------------------------
-bool UDPSocket::SendTo(const void* data, int length, const SocketAddress& toSocketAddress)
+I32 UDPSocket::SendTo(const void* data, int length, const SocketAddress& toSocketAddress)
 {
     int iResult = sendto(m_socket, static_cast<const char*>(data), length, 0, &toSocketAddress.m_sockAddr, sizeof(toSocketAddress.m_sockAddr));
     if (iResult == SOCKET_ERROR) {
         NETLOG("sendto");
-        return false;
+        int iError = WSAGetLastError();
+        return -iError;
     }
 
-    return true;
+    return iResult;
 }
 
 //----------------------------------------------------------------------------------------------------

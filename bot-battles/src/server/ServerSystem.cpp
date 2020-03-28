@@ -10,6 +10,7 @@
 #include "ReplicationManagerServer.h"
 #include "ReplicationResultManager.h"
 #include "ServerComponent.h"
+#include "TCPSocket.h"
 #include "UDPSocket.h"
 
 namespace sand {
@@ -48,23 +49,52 @@ void ServerSystem::OnNotify(const Event& event)
 //----------------------------------------------------------------------------------------------------
 bool ServerSystem::StartUp()
 {
+    bool ret = false;
+
     WORD winsockVersion = MAKEWORD(2, 2);
     WSADATA winsockData;
     int iResult = WSAStartup(winsockVersion, &winsockData);
     if (iResult == SOCKET_ERROR) {
         NETLOG("WSAStartup");
-        return false;
+        return ret;
     }
 
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     serverComponent.m_socketAddress = SocketAddress::CreateIPv4(INADDR_ANY, static_cast<U16>(atoi(serverComponent.m_port.c_str())));
     assert(serverComponent.m_socketAddress != nullptr);
-    serverComponent.m_socket = UDPSocket::CreateIPv4();
-    assert(serverComponent.m_socket != nullptr);
-    serverComponent.m_socket->SetNonBlockingMode(true);
-    serverComponent.m_socket->Bind(*serverComponent.m_socketAddress);
 
-    return true;
+    serverComponent.m_UDPSocket = UDPSocket::CreateIPv4();
+    assert(serverComponent.m_UDPSocket != nullptr);
+    ret = serverComponent.m_UDPSocket->SetReuseAddress(true);
+    if (!ret) {
+        return ret;
+    }
+    ret = serverComponent.m_UDPSocket->SetNonBlockingMode(true);
+    if (!ret) {
+        return ret;
+    }
+    ret = serverComponent.m_UDPSocket->Bind(*serverComponent.m_socketAddress);
+    if (!ret) {
+        return ret;
+    }
+
+    serverComponent.m_TCPListenSocket = TCPSocket::CreateIPv4();
+    assert(serverComponent.m_TCPListenSocket != nullptr);
+    ret = serverComponent.m_TCPListenSocket->SetReuseAddress(true);
+    if (!ret) {
+        return ret;
+    }
+    ret = serverComponent.m_TCPListenSocket->Bind(*serverComponent.m_socketAddress);
+    if (!ret) {
+        return ret;
+    }
+    ret = serverComponent.m_TCPListenSocket->Listen(MAX_PLAYER_IDS);
+    if (!ret) {
+        return ret;
+    }
+    serverComponent.m_TCPSockets.emplace_back(serverComponent.m_TCPListenSocket);
+
+    return ret;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -80,12 +110,12 @@ void ServerSystem::ReceiveIncomingPackets(ServerComponent& serverComponent)
 {
     InputMemoryStream packet;
     U32 byteCapacity = packet.GetByteCapacity();
-    SocketAddress fromSocketAddress;
-
     U32 receivedPacketCount = 0;
 
+    // UDP
     while (receivedPacketCount < MAX_PACKETS_PER_FRAME) {
-        I32 readByteCount = serverComponent.m_socket->ReceiveFrom(packet.GetPtr(), byteCapacity, fromSocketAddress);
+        SocketAddress fromSocketAddress;
+        I32 readByteCount = serverComponent.m_UDPSocket->ReceiveFrom(packet.GetPtr(), byteCapacity, fromSocketAddress);
         if (readByteCount > 0) {
             packet.SetCapacity(readByteCount);
             packet.ResetHead();
@@ -97,6 +127,56 @@ void ServerSystem::ReceiveIncomingPackets(ServerComponent& serverComponent)
             // TODO: graceful disconnection if readByteCount == 0?
             break;
         }
+    }
+
+    // TCP
+    fd_set readSet;
+    FD_ZERO(&readSet);
+    for (const auto& TCPSock : serverComponent.m_TCPSockets) {
+        FD_SET(TCPSock->GetSocket(), &readSet);
+    }
+
+    timeval timeout;
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 0;
+    int iResult = select(0, &readSet, nullptr, nullptr, &timeout);
+    if (iResult == SOCKET_ERROR) {
+        NETLOG("select");
+        return;
+    }
+
+    std::vector<std::shared_ptr<TCPSocket>> connections;
+    std::vector<std::shared_ptr<TCPSocket>> disconnections;
+    for (const auto& TCPSock : serverComponent.m_TCPSockets) {
+        if (FD_ISSET(TCPSock->GetSocket(), &readSet)) {
+            if (TCPSock == serverComponent.m_TCPListenSocket) {
+                SocketAddress fromSocketAddress;
+                std::shared_ptr<TCPSocket> acceptedTCPSock = TCPSock->Accept(fromSocketAddress);
+                connections.emplace_back(acceptedTCPSock);
+            } else {
+                I32 readByteCount = TCPSock->Receive(packet.GetPtr(), byteCapacity);
+                if (readByteCount > 0) {
+                    packet.SetCapacity(readByteCount);
+                    packet.ResetHead();
+                    ReceivePacket(serverComponent, packet, TCPSock->GetRemoteSocketAddress());
+                    ++receivedPacketCount;
+                } else if (readByteCount == -WSAECONNRESET) {
+                    ConnectionReset(serverComponent, TCPSock->GetRemoteSocketAddress());
+                    disconnections.emplace_back(TCPSock);
+                } else if (readByteCount == 0) {
+                    // TODO: graceful disconnection if readByteCount == 0?
+                    break;
+                }
+            }
+        }
+    }
+
+    for (const auto& connection : connections) {
+        serverComponent.m_TCPSockets.emplace_back(connection);
+    }
+
+    for (const auto& disconnection : disconnections) {
+        serverComponent.m_TCPSockets.erase(std::find(serverComponent.m_TCPSockets.begin(), serverComponent.m_TCPSockets.end(), disconnection));
     }
 }
 
@@ -116,12 +196,17 @@ void ServerSystem::SendOutgoingPackets(ServerComponent& serverComponent)
             continue;
         }
 
-        const bool isConnected = clientProxy->m_deliveryManager.GetNextExpectedSequenceNumber() > 0;
-        if (isConnected) {
-            clientProxy->m_deliveryManager.ProcessTimedOutPackets();
-            SendStatePacket(serverComponent, playerID, clientProxy);
-        } else {
+        GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
+        if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::NONE) {
+            if (clientProxy->m_sendStatePacket) {
+                clientProxy->m_deliveryManager.ProcessTimedOutPackets();
+                SendStatePacket(serverComponent, playerID, clientProxy);
+            }
+        }
+
+        if (clientProxy->m_sendWelcomePacket) {
             SendWelcomePacket(serverComponent, playerID, clientProxy);
+            clientProxy->m_sendWelcomePacket = false;
         }
     }
 
@@ -159,7 +244,9 @@ void ServerSystem::ReceivePacket(ServerComponent& serverComponent, InputMemorySt
 
     if (playerID < INVALID_PLAYER_ID && type < ClientMessageType::COUNT) {
         std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
-        clientProxy.lock()->UpdateLastPacketTime();
+        if (!clientProxy.expired()) {
+            clientProxy.lock()->UpdateLastPacketTime();
+        }
     }
 }
 
@@ -169,7 +256,7 @@ void ServerSystem::ReceiveHelloPacket(ServerComponent& serverComponent, InputMem
     playerID = serverComponent.GetPlayerID(fromSocketAddress);
     if (playerID < INVALID_PLAYER_ID) {
         std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
-        ILOG("Hello packet received from existing player %u %s", playerID, clientProxy.lock()->GetName());
+        ELOG("Hello packet received from existing player %u %s", playerID, clientProxy.lock()->GetName());
         return;
     }
 
@@ -185,6 +272,9 @@ void ServerSystem::ReceiveHelloPacket(ServerComponent& serverComponent, InputMem
         newEvent.networking.playerID = playerID;
         NotifyEvent(newEvent);
 
+        std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
+        clientProxy.lock()->m_sendWelcomePacket = true;
+
         ILOG("New player %u %s has joined the game", playerID, name.c_str());
     }
 }
@@ -194,14 +284,17 @@ void ServerSystem::ReceiveInputPacket(ServerComponent& serverComponent, InputMem
 {
     inputStream.Read(playerID);
     if (playerID >= INVALID_PLAYER_ID) {
-        ILOG("Input packet received from unknown player");
+        ELOG("Input packet received from unknown player");
         return;
     }
 
     std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
+    if (clientProxy.expired()) {
+        return;
+    }
     const bool isValid = clientProxy.lock()->m_deliveryManager.ReadState(inputStream);
     if (!isValid) {
-        ILOG("Input packet received but skipped because it is not valid");
+        ELOG("Input packet received but skipped because it is not valid");
         return;
     }
 
@@ -225,6 +318,8 @@ void ServerSystem::ReceiveInputPacket(ServerComponent& serverComponent, InputMem
             --inputCount;
         }
     }
+
+    clientProxy.lock()->m_sendStatePacket = true;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -242,11 +337,11 @@ void ServerSystem::SendWelcomePacket(const ServerComponent& serverComponent, Pla
         welcomePacket.Write(gameplayComponent.m_phase);
     }
 
-    const bool result = SendPacket(serverComponent, welcomePacket, clientProxy->GetSocketAddress());
+    const bool result = SendTCPPacket(serverComponent, welcomePacket, clientProxy->GetSocketAddress());
     if (result) {
         ILOG("Welcome packet of length %u successfully sent to player %u", welcomePacket.GetByteLength(), playerID);
     } else {
-        ILOG("Welcome packet of length %u unsuccessfully sent to player %u", welcomePacket.GetByteLength(), playerID);
+        ELOG("Welcome packet of length %u unsuccessfully sent to player %u", welcomePacket.GetByteLength(), playerID);
     }
 }
 
@@ -275,18 +370,25 @@ void ServerSystem::SendStatePacket(const ServerComponent& serverComponent, Playe
     clientProxy->m_replicationManager->Write(statePacket, *delivery.m_replicationResultManager);
 
     const char* name = clientProxy->GetName();
-    const bool result = SendPacket(serverComponent, statePacket, clientProxy->GetSocketAddress());
+    const bool result = SendUDPPacket(serverComponent, statePacket, clientProxy->GetSocketAddress());
     if (result) {
         ILOG("State packet of length %u successfully sent to player %s", statePacket.GetByteLength(), name);
     } else {
-        ILOG("State packet of length %u unsuccessfully sent to player %s", statePacket.GetByteLength(), name);
+        ELOG("State packet of length %u unsuccessfully sent to player %s", statePacket.GetByteLength(), name);
     }
 }
 
 //----------------------------------------------------------------------------------------------------
-bool ServerSystem::SendPacket(const ServerComponent& serverComponent, const OutputMemoryStream& outputStream, const SocketAddress& toSocketAddress) const
+bool ServerSystem::SendUDPPacket(const ServerComponent& serverComponent, const OutputMemoryStream& outputStream, const SocketAddress& toSocketAddress) const
 {
-    return serverComponent.m_socket->SendTo(outputStream.GetPtr(), outputStream.GetByteLength(), toSocketAddress);
+    return serverComponent.m_UDPSocket->SendTo(outputStream.GetPtr(), outputStream.GetByteLength(), toSocketAddress);
+}
+
+//----------------------------------------------------------------------------------------------------
+bool ServerSystem::SendTCPPacket(const ServerComponent& serverComponent, const OutputMemoryStream& outputStream, const SocketAddress& toSocketAddress) const
+{
+    std::weak_ptr<TCPSocket> TCPSock = serverComponent.GetTCPSocket(toSocketAddress);
+    return TCPSock.lock()->Send(outputStream.GetPtr(), outputStream.GetByteLength());
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -300,6 +402,8 @@ void ServerSystem::ConnectionReset(ServerComponent& serverComponent, const Socke
 //----------------------------------------------------------------------------------------------------
 void ServerSystem::Disconnect(ServerComponent& serverComponent, PlayerID playerID, Entity entity)
 {
+    ILOG("Disconnecting player %u...", playerID);
+
     serverComponent.RemovePlayer(playerID);
 
     Event newEvent;

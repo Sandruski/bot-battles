@@ -8,6 +8,7 @@
 #include "MessageTypes.h"
 #include "ReplicationManagerClient.h"
 #include "SocketAddress.h"
+#include "TCPSocket.h"
 #include "UDPSocket.h"
 
 namespace sand {
@@ -15,22 +16,48 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 bool ClientSystem::StartUp()
 {
+    bool ret = false;
+
     WORD winsockVersion = MAKEWORD(2, 2);
     WSADATA winsockData;
     int iResult = WSAStartup(winsockVersion, &winsockData);
     if (iResult == SOCKET_ERROR) {
         NETLOG("WSAStartup");
-        return false;
+        return ret;
     }
 
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     clientComponent.m_socketAddress = SocketAddress::CreateIPv4(clientComponent.m_ip.c_str(), clientComponent.m_port.c_str());
     assert(clientComponent.m_socketAddress != nullptr);
-    clientComponent.m_socket = UDPSocket::CreateIPv4();
-    assert(clientComponent.m_socket != nullptr);
-    clientComponent.m_socket->SetNonBlockingMode(true);
 
-    return true;
+    clientComponent.m_TCPSocket = TCPSocket::CreateIPv4();
+    assert(clientComponent.m_TCPSocket != nullptr);
+    ret = clientComponent.m_TCPSocket->SetReuseAddress(true);
+    if (!ret) {
+        return ret;
+    }
+    ret = clientComponent.m_TCPSocket->Connect(*clientComponent.m_socketAddress);
+    if (!ret) {
+        return ret;
+    }
+
+    clientComponent.m_UDPSocket = UDPSocket::CreateIPv4();
+    assert(clientComponent.m_UDPSocket != nullptr);
+    ret = clientComponent.m_UDPSocket->SetReuseAddress(true);
+    if (!ret) {
+        return ret;
+    }
+    ret = clientComponent.m_UDPSocket->SetNonBlockingMode(true);
+    if (!ret) {
+        return ret;
+    }
+    SocketAddress socketAddress = clientComponent.m_TCPSocket->GetLocalSocketAddress();
+    ret = clientComponent.m_UDPSocket->Bind(socketAddress);
+    if (!ret) {
+        return ret;
+    }
+
+    return ret;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -46,12 +73,12 @@ void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent)
 {
     InputMemoryStream packet;
     U32 byteCapacity = packet.GetByteCapacity();
-    SocketAddress fromSocketAddress;
-
     U32 receivedPacketCount = 0;
 
+    // UDP
     while (receivedPacketCount < MAX_PACKETS_PER_FRAME) {
-        I32 readByteCount = clientComponent.m_socket->ReceiveFrom(packet.GetPtr(), byteCapacity, fromSocketAddress);
+        SocketAddress fromSocketAddress;
+        I32 readByteCount = clientComponent.m_UDPSocket->ReceiveFrom(packet.GetPtr(), byteCapacity, fromSocketAddress);
         if (readByteCount > 0) {
             packet.SetCapacity(readByteCount);
             packet.ResetHead();
@@ -64,6 +91,34 @@ void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent)
             break;
         }
     }
+
+    // TCP
+    fd_set readSet;
+    FD_ZERO(&readSet);
+    FD_SET(clientComponent.m_TCPSocket->GetSocket(), &readSet);
+
+    timeval timeout;
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 0;
+    int iResult = select(0, &readSet, nullptr, nullptr, &timeout);
+    if (iResult == SOCKET_ERROR) {
+        NETLOG("select");
+        return;
+    }
+
+    if (FD_ISSET(clientComponent.m_TCPSocket->GetSocket(), &readSet)) {
+        I32 readByteCount = clientComponent.m_TCPSocket->Receive(packet.GetPtr(), byteCapacity);
+        if (readByteCount > 0) {
+            packet.SetCapacity(readByteCount);
+            packet.ResetHead();
+            ReceivePacket(clientComponent, packet);
+            ++receivedPacketCount;
+        } else if (readByteCount == -WSAECONNRESET) {
+            ConnectionReset(clientComponent);
+        } else if (readByteCount == 0) {
+            // TODO: graceful disconnection if readByteCount == 0?
+        }
+    }
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -71,8 +126,8 @@ void ClientSystem::SendOutgoingPackets(ClientComponent& clientComponent)
 {
     clientComponent.m_inputBuffer.Remove(clientComponent.m_lastAckdFrame);
 
-    const bool isConnected = clientComponent.IsConnected();
-    if (isConnected) {
+    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+    if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::NONE) {
         F32 timeout = MyTime::GetInstance().GetTime() - clientComponent.m_lastPacketTime;
         if (timeout >= DISCONNECT_TIMEOUT) {
             Disconnect(clientComponent);
@@ -80,8 +135,11 @@ void ClientSystem::SendOutgoingPackets(ClientComponent& clientComponent)
         }
 
         SendInputPacket(clientComponent);
-    } else {
+    }
+
+    if (clientComponent.m_sendHelloPacket) {
         SendHelloPacket(clientComponent);
+        clientComponent.m_sendHelloPacket = false;
     }
 }
 
@@ -119,7 +177,7 @@ void ClientSystem::ReceiveWelcomePacket(ClientComponent& clientComponent, InputM
 {
     const bool isConnected = clientComponent.IsConnected();
     if (isConnected) {
-        ILOG("Welcome packet received but skipped because Player is already connected");
+        ELOG("Welcome packet received but skipped because Player is already connected");
         return;
     }
 
@@ -154,13 +212,13 @@ void ClientSystem::ReceiveStatePacket(ClientComponent& clientComponent, InputMem
 {
     const bool isConnected = clientComponent.IsConnected();
     if (!isConnected) {
-        ILOG("State packet received but skipped because Player is not connected");
+        ELOG("State packet received but skipped because Player is not connected");
         return;
     }
 
     const bool isValid = clientComponent.m_deliveryManager.ReadState(inputStream);
     if (!isValid) {
-        ILOG("State packet received but skipped because it is not valid");
+        ELOG("State packet received but skipped because it is not valid");
         return;
     }
 
@@ -185,11 +243,11 @@ bool ClientSystem::SendHelloPacket(const ClientComponent& clientComponent) const
     helloPacket.Write(ClientMessageType::HELLO);
     helloPacket.Write(clientComponent.m_name);
 
-    const bool result = SendPacket(clientComponent, helloPacket);
+    bool result = SendTCPPacket(clientComponent, helloPacket);
     if (result) {
         ILOG("Hello packet of length %u successfully sent to server", helloPacket.GetByteLength());
     } else {
-        ILOG("Hello packet of length %u unsuccessfully sent to server", helloPacket.GetByteLength());
+        ELOG("Hello packet of length %u unsuccessfully sent to server", helloPacket.GetByteLength());
     }
 
     return result;
@@ -223,20 +281,26 @@ bool ClientSystem::SendInputPacket(ClientComponent& clientComponent) const
         }
     }
 
-    const bool result = SendPacket(clientComponent, inputPacket);
+    const bool result = SendUDPPacket(clientComponent, inputPacket);
     if (result) {
         ILOG("Input packet of length %u successfully sent to server", inputPacket.GetByteLength());
     } else {
-        ILOG("Input packet of length %u unsuccessfully sent to server", inputPacket.GetByteLength());
+        ELOG("Input packet of length %u unsuccessfully sent to server", inputPacket.GetByteLength());
     }
 
     return true;
 }
 
 //----------------------------------------------------------------------------------------------------
-bool ClientSystem::SendPacket(const ClientComponent& clientComponent, const OutputMemoryStream& outputStream) const
+bool ClientSystem::SendUDPPacket(const ClientComponent& clientComponent, const OutputMemoryStream& outputStream) const
 {
-    return clientComponent.m_socket->SendTo(outputStream.GetPtr(), outputStream.GetByteLength(), *clientComponent.m_socketAddress);
+    return clientComponent.m_UDPSocket->SendTo(outputStream.GetPtr(), outputStream.GetByteLength(), *clientComponent.m_socketAddress);
+}
+
+//----------------------------------------------------------------------------------------------------
+bool ClientSystem::SendTCPPacket(const ClientComponent& clientComponent, const OutputMemoryStream& outputStream) const
+{
+    return clientComponent.m_TCPSocket->Send(outputStream.GetPtr(), outputStream.GetByteLength());
 }
 
 //----------------------------------------------------------------------------------------------------

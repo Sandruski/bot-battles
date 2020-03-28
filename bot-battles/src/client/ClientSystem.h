@@ -29,7 +29,8 @@ private:
 
     bool SendHelloPacket(const ClientComponent& clientComponent) const;
     bool SendInputPacket(ClientComponent& clientComponent) const;
-    bool SendPacket(const ClientComponent& clientComponent, const OutputMemoryStream& outputStream) const;
+    bool SendUDPPacket(const ClientComponent& clientComponent, const OutputMemoryStream& outputStream) const;
+    bool SendTCPPacket(const ClientComponent& clientComponent, const OutputMemoryStream& outputStream) const;
 
     void ConnectionReset(ClientComponent& clientComponent);
     void Disconnect(ClientComponent& clientComponent);
