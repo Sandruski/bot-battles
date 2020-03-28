@@ -141,9 +141,7 @@ void ServerSystem::ReceiveIncomingPackets(ServerComponent& serverComponent)
     timeout.tv_sec = 0;
     timeout.tv_usec = 0;
     int iResult = select(0, &readSet, nullptr, nullptr, &timeout);
-    if (iResult == 0 || iResult == SOCKET_ERROR) {
-        NETLOG("select");
-    } else {
+    if (iResult != 0 && iResult != SOCKET_ERROR) {
         std::vector<std::shared_ptr<TCPSocket>> connections;
         std::vector<std::shared_ptr<TCPSocket>> disconnections;
         for (const auto& TCPSock : serverComponent.m_TCPSockets) {
@@ -154,6 +152,7 @@ void ServerSystem::ReceiveIncomingPackets(ServerComponent& serverComponent)
                     const bool result = acceptedTCPSock->SetNonBlockingMode(true);
                     if (result) {
                         connections.emplace_back(acceptedTCPSock);
+                        ILOG("New TCP client added");
                     }
                 } else {
                     I32 readByteCount = TCPSock->Receive(packet.GetPtr(), byteCapacity);
@@ -199,7 +198,27 @@ void ServerSystem::ReceiveIncomingPackets(ServerComponent& serverComponent)
         }
     }
 
-    // TODO: handle timeout disconnections here
+    GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
+    if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::NONE) {
+        std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>> disconnections;
+        const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.GetPlayerIDToClientProxyMap();
+        for (const auto& pair : playerIDToClientProxy) {
+            PlayerID playerID = pair.first;
+            std::shared_ptr<ClientProxy> clientProxy = pair.second;
+
+            F32 timeDiff = MyTime::GetInstance().GetTime() - clientProxy->GetLastPacketTime();
+            if (timeDiff >= DISCONNECT_TIMEOUT) {
+                disconnections.insert(std::make_pair(playerID, clientProxy));
+                continue;
+            }
+        }
+
+        for (const auto& pair : disconnections) {
+            PlayerID playerID = pair.first;
+            Entity entity = serverComponent.GetEntity(playerID);
+            Disconnect(serverComponent, playerID, entity);
+        }
+    }
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -209,18 +228,10 @@ void ServerSystem::SendOutgoingPackets(ServerComponent& serverComponent)
         return;
     }
 
-    std::unordered_map<PlayerID, std::weak_ptr<ClientProxy>> playerIDToClientProxyDisconnections;
-
     const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.GetPlayerIDToClientProxyMap();
     for (const auto& pair : playerIDToClientProxy) {
         PlayerID playerID = pair.first;
         std::shared_ptr<ClientProxy> clientProxy = pair.second;
-
-        F32 timeout = MyTime::GetInstance().GetTime() - clientProxy->GetLastPacketTime();
-        if (timeout >= DISCONNECT_TIMEOUT) {
-            playerIDToClientProxyDisconnections.insert(std::make_pair(pair.first, std::weak_ptr(pair.second)));
-            continue;
-        }
 
         GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
         if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::NONE) {
@@ -240,12 +251,6 @@ void ServerSystem::SendOutgoingPackets(ServerComponent& serverComponent)
             SendResultPacket(serverComponent, playerID, clientProxy);
             clientProxy->m_sendResultPacket = false;
         }
-    }
-
-    for (const auto& pair : playerIDToClientProxyDisconnections) {
-        PlayerID playerID = pair.first;
-        Entity entity = serverComponent.GetEntity(playerID);
-        Disconnect(serverComponent, playerID, entity);
     }
 }
 

@@ -103,19 +103,19 @@ void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent)
     timeout.tv_sec = 0;
     timeout.tv_usec = 0;
     int iResult = select(0, &readSet, nullptr, nullptr, &timeout);
-    if (iResult == 0 || iResult == SOCKET_ERROR) {
-        NETLOG("select");
-    } else if (FD_ISSET(clientComponent.m_TCPSocket->GetSocket(), &readSet)) {
-        I32 readByteCount = clientComponent.m_TCPSocket->Receive(packet.GetPtr(), byteCapacity);
-        if (readByteCount > 0) {
-            packet.SetCapacity(readByteCount);
-            packet.ResetHead();
-            ReceivePacket(clientComponent, packet);
-            ++receivedPacketCount;
-        } else if (readByteCount == -WSAECONNRESET) {
-            ConnectionReset(clientComponent);
-        } else if (readByteCount == 0) {
-            // TODO: graceful disconnection if readByteCount == 0?
+    if (iResult != 0 && iResult != SOCKET_ERROR) {
+        if (FD_ISSET(clientComponent.m_TCPSocket->GetSocket(), &readSet)) {
+            I32 readByteCount = clientComponent.m_TCPSocket->Receive(packet.GetPtr(), byteCapacity);
+            if (readByteCount > 0) {
+                packet.SetCapacity(readByteCount);
+                packet.ResetHead();
+                ReceivePacket(clientComponent, packet);
+                ++receivedPacketCount;
+            } else if (readByteCount == -WSAECONNRESET) {
+                ConnectionReset(clientComponent);
+            } else if (readByteCount == 0) {
+                // TODO: graceful disconnection if readByteCount == 0?
+            }
         }
     }
 
@@ -136,7 +136,13 @@ void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent)
         }
     }
 
-    // TODO: handle timeout disconnections here
+    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+    if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::NONE) {
+        F32 timeDiff = MyTime::GetInstance().GetTime() - clientComponent.m_lastPacketTime;
+        if (timeDiff >= DISCONNECT_TIMEOUT) {
+            Disconnect(clientComponent);
+        }
+    }
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -150,12 +156,6 @@ void ClientSystem::SendOutgoingPackets(ClientComponent& clientComponent)
 
     GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
     if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::NONE) {
-        F32 timeout = MyTime::GetInstance().GetTime() - clientComponent.m_lastPacketTime;
-        if (timeout >= DISCONNECT_TIMEOUT) {
-            Disconnect(clientComponent);
-            return;
-        }
-
         SendInputPacket(clientComponent);
     }
 

@@ -11,9 +11,6 @@
 PLAYLIST:
 -Send Bye packet at the Scoreboard screen and if entity disconnects during gameplay.
 -Check that 2 players can connect to the game from different computers.
--Timeout disconnections when receiving packets.
--Canviar d'estats de la màquina d'estats per events. Nom paquet -> Event amb el mateix nom -> Canvi d'estat de diferent nom.
-
 ----------
 
 -Be careful with the Tile object y position!
