@@ -51,7 +51,7 @@ void ClientProxy::Reset()
     m_replicationManager->Reset();
     m_deliveryManager.Reset();
     m_inputBuffer.Clear();
-    m_lastAckdFrame = 0;
+    //m_lastAckdFrame = 0;
     m_timestamp = 0.0f;
     m_lastPacketTime = 0.0f;
 }

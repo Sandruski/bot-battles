@@ -93,7 +93,7 @@ void ClientComponent::Reset()
     //m_replicationManager
     m_deliveryManager.Reset();
     m_lastPacketTime = 0.0f;
-    m_lastAckdFrame = 0;
+    //m_lastAckdFrame = 0;
     m_interpolationFromFrame = 0;
     m_interpolationToFrame = 0;
     m_interpolationPercentage = 0.0f;
