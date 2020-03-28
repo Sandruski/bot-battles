@@ -45,6 +45,24 @@ bool MainMenuStateServer::Enter() const
 }
 
 //----------------------------------------------------------------------------------------------------
+bool MainMenuStateServer::Update() const
+{
+    MainMenuComponent& mainMenuComponent = g_gameServer->GetMainMenuComponent();
+    switch (mainMenuComponent.m_phase) {
+    case MainMenuComponent::MainMenuPhase::CONNECT: {
+        UpdateConnect();
+        break;
+    }
+
+    default: {
+        break;
+    }
+    }
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
 bool MainMenuStateServer::RenderGui() const
 {
     ImGuiWindowFlags windowFlags = 0;
@@ -61,8 +79,22 @@ bool MainMenuStateServer::RenderGui() const
     ImGui::SetNextWindowSize(size, ImGuiCond_Always);
 
     if (ImGui::Begin("Server", nullptr, windowFlags)) {
+        MainMenuComponent& mainMenuComponent = g_gameServer->GetMainMenuComponent();
+        switch (mainMenuComponent.m_phase) {
+        case MainMenuComponent::MainMenuPhase::SETUP: {
+            RenderSetupGui(mainMenuComponent);
+            break;
+        }
 
-        RenderStartGui();
+        case MainMenuComponent::MainMenuPhase::CONNECT: {
+
+            break;
+        }
+
+        default: {
+            break;
+        }
+        }
 
         ImGui::End();
     }
@@ -84,7 +116,13 @@ bool MainMenuStateServer::Exit() const
 }
 
 //----------------------------------------------------------------------------------------------------
-void MainMenuStateServer::RenderStartGui() const
+void MainMenuStateServer::UpdateConnect() const
+{
+    g_gameServer->GetFSM().ChangeState(g_gameServer->GetConfig().m_onlineSceneName.c_str());
+}
+
+//----------------------------------------------------------------------------------------------------
+void MainMenuStateServer::RenderSetupGui(MainMenuComponent& mainMenuComponent) const
 {
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     ImGui::InputText("Port", &serverComponent.m_port[0], DEFAULT_INPUT_SIZE);
@@ -107,7 +145,7 @@ void MainMenuStateServer::RenderStartGui() const
     ImGui::SetCursorPosX(contentRegionMax.x - buttonSize.x);
     ImGui::SetCursorPosY(contentRegionMax.y - buttonSize.y);
     if (ImGui::Button(start)) {
-        g_gameServer->GetFSM().ChangeState(g_gameServer->GetConfig().m_onlineSceneName.c_str());
+        mainMenuComponent.m_phase = MainMenuComponent::MainMenuPhase::CONNECT;
     }
 }
 }

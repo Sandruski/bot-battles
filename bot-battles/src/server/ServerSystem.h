@@ -23,6 +23,7 @@ public:
     bool StartUp() override;
     bool PreUpdate() override;
 
+    bool Connect(ServerComponent& serverComponent);
     void ReceiveIncomingPackets(ServerComponent& serverComponent);
     void SendOutgoingPackets(ServerComponent& serverComponent);
 

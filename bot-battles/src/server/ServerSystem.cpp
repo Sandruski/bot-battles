@@ -49,19 +49,33 @@ void ServerSystem::OnNotify(const Event& event)
 //----------------------------------------------------------------------------------------------------
 bool ServerSystem::StartUp()
 {
-    bool ret = false;
-
     WORD winsockVersion = MAKEWORD(2, 2);
     WSADATA winsockData;
     int iResult = WSAStartup(winsockVersion, &winsockData);
     if (iResult == SOCKET_ERROR) {
         NETLOG("WSAStartup");
-        return ret;
+        return false;
     }
 
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     serverComponent.m_socketAddress = SocketAddress::CreateIPv4(INADDR_ANY, static_cast<U16>(atoi(serverComponent.m_port.c_str())));
     assert(serverComponent.m_socketAddress != nullptr);
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool ServerSystem::PreUpdate()
+{
+    NotifyEvents();
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool ServerSystem::Connect(ServerComponent& serverComponent)
+{
+    bool ret = false;
 
     serverComponent.m_UDPSocket = UDPSocket::CreateIPv4();
     assert(serverComponent.m_UDPSocket != nullptr);
@@ -84,6 +98,10 @@ bool ServerSystem::StartUp()
     if (!ret) {
         return ret;
     }
+    ret = serverComponent.m_TCPListenSocket->SetNonBlockingMode(true);
+    if (!ret) {
+        return ret;
+    }
     ret = serverComponent.m_TCPListenSocket->Bind(*serverComponent.m_socketAddress);
     if (!ret) {
         return ret;
@@ -95,14 +113,6 @@ bool ServerSystem::StartUp()
     serverComponent.m_TCPSockets.emplace_back(serverComponent.m_TCPListenSocket);
 
     return ret;
-}
-
-//----------------------------------------------------------------------------------------------------
-bool ServerSystem::PreUpdate()
-{
-    NotifyEvents();
-
-    return true;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -140,7 +150,7 @@ void ServerSystem::ReceiveIncomingPackets(ServerComponent& serverComponent)
     timeout.tv_sec = 0;
     timeout.tv_usec = 0;
     int iResult = select(0, &readSet, nullptr, nullptr, &timeout);
-    if (iResult == SOCKET_ERROR) {
+    if (iResult == 0 || iResult == SOCKET_ERROR) {
         NETLOG("select");
         return;
     }
@@ -152,7 +162,10 @@ void ServerSystem::ReceiveIncomingPackets(ServerComponent& serverComponent)
             if (TCPSock == serverComponent.m_TCPListenSocket) {
                 SocketAddress fromSocketAddress;
                 std::shared_ptr<TCPSocket> acceptedTCPSock = TCPSock->Accept(fromSocketAddress);
-                connections.emplace_back(acceptedTCPSock);
+                const bool result = acceptedTCPSock->SetNonBlockingMode(true);
+                if (result) {
+                    connections.emplace_back(acceptedTCPSock);
+                }
             } else {
                 I32 readByteCount = TCPSock->Receive(packet.GetPtr(), byteCapacity);
                 if (readByteCount > 0) {

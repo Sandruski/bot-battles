@@ -16,48 +16,19 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 bool ClientSystem::StartUp()
 {
-    bool ret = false;
-
     WORD winsockVersion = MAKEWORD(2, 2);
     WSADATA winsockData;
     int iResult = WSAStartup(winsockVersion, &winsockData);
     if (iResult == SOCKET_ERROR) {
         NETLOG("WSAStartup");
-        return ret;
+        return false;
     }
 
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     clientComponent.m_socketAddress = SocketAddress::CreateIPv4(clientComponent.m_ip.c_str(), clientComponent.m_port.c_str());
     assert(clientComponent.m_socketAddress != nullptr);
 
-    clientComponent.m_TCPSocket = TCPSocket::CreateIPv4();
-    assert(clientComponent.m_TCPSocket != nullptr);
-    ret = clientComponent.m_TCPSocket->SetReuseAddress(true);
-    if (!ret) {
-        return ret;
-    }
-    ret = clientComponent.m_TCPSocket->Connect(*clientComponent.m_socketAddress);
-    if (!ret) {
-        return ret;
-    }
-
-    clientComponent.m_UDPSocket = UDPSocket::CreateIPv4();
-    assert(clientComponent.m_UDPSocket != nullptr);
-    ret = clientComponent.m_UDPSocket->SetReuseAddress(true);
-    if (!ret) {
-        return ret;
-    }
-    ret = clientComponent.m_UDPSocket->SetNonBlockingMode(true);
-    if (!ret) {
-        return ret;
-    }
-    SocketAddress socketAddress = clientComponent.m_TCPSocket->GetLocalSocketAddress();
-    ret = clientComponent.m_UDPSocket->Bind(socketAddress);
-    if (!ret) {
-        return ret;
-    }
-
-    return ret;
+    return true;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -69,8 +40,56 @@ bool ClientSystem::PreUpdate()
 }
 
 //----------------------------------------------------------------------------------------------------
+bool ClientSystem::Connect(ClientComponent& clientComponent)
+{
+    bool ret = false;
+
+    if (clientComponent.m_connect) {
+        clientComponent.m_TCPSocket = TCPSocket::CreateIPv4();
+        assert(clientComponent.m_TCPSocket != nullptr);
+        ret = clientComponent.m_TCPSocket->SetReuseAddress(true);
+        if (!ret) {
+            return ret;
+        }
+        ret = clientComponent.m_TCPSocket->SetNonBlockingMode(true);
+        if (!ret) {
+            return ret;
+        }
+        ret = clientComponent.m_TCPSocket->Connect(*clientComponent.m_socketAddress);
+        if (!ret) {
+            return ret;
+        }
+
+        clientComponent.m_UDPSocket = UDPSocket::CreateIPv4();
+        assert(clientComponent.m_UDPSocket != nullptr);
+        ret = clientComponent.m_UDPSocket->SetReuseAddress(true);
+        if (!ret) {
+            return ret;
+        }
+        ret = clientComponent.m_UDPSocket->SetNonBlockingMode(true);
+        if (!ret) {
+            return ret;
+        }
+        SocketAddress socketAddress = clientComponent.m_TCPSocket->GetLocalSocketAddress();
+        ret = clientComponent.m_UDPSocket->Bind(socketAddress);
+        if (!ret) {
+            return ret;
+        }
+
+        clientComponent.m_sendHelloPacket = true;
+        clientComponent.m_connect = false;
+    }
+
+    return ret;
+}
+
+//----------------------------------------------------------------------------------------------------
 void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent)
 {
+    if (clientComponent.m_connect) {
+        return;
+    }
+
     InputMemoryStream packet;
     U32 byteCapacity = packet.GetByteCapacity();
     U32 receivedPacketCount = 0;
@@ -101,7 +120,7 @@ void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent)
     timeout.tv_sec = 0;
     timeout.tv_usec = 0;
     int iResult = select(0, &readSet, nullptr, nullptr, &timeout);
-    if (iResult == SOCKET_ERROR) {
+    if (iResult == 0 || iResult == SOCKET_ERROR) {
         NETLOG("select");
         return;
     }
@@ -124,6 +143,10 @@ void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent)
 //----------------------------------------------------------------------------------------------------
 void ClientSystem::SendOutgoingPackets(ClientComponent& clientComponent)
 {
+    if (clientComponent.m_connect) {
+        return;
+    }
+
     clientComponent.m_inputBuffer.Remove(clientComponent.m_lastAckdFrame);
 
     GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();

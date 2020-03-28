@@ -12,9 +12,7 @@ struct MainMenuComponent : public Component {
     enum class MainMenuPhase : U16 {
 
         SETUP,
-#ifdef _CLIENT
         CONNECT,
-#endif
 
         NONE
     };

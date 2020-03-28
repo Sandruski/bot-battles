@@ -15,6 +15,7 @@ public:
     TCPSocket(const SOCKET& socket);
     ~TCPSocket();
 
+    bool SetNonBlockingMode(bool isNonBlockingMode);
     bool SetReuseAddress(bool isReuseAddress);
     bool Bind(const SocketAddress& socketAddress);
     bool Listen(U32 backlog);

@@ -34,6 +34,18 @@ TCPSocket::~TCPSocket()
 }
 
 //----------------------------------------------------------------------------------------------------
+bool TCPSocket::SetNonBlockingMode(bool isNonBlockingMode)
+{
+    int iResult = ioctlsocket(m_socket, FIONBIO, reinterpret_cast<u_long*>(&isNonBlockingMode));
+    if (iResult == SOCKET_ERROR) {
+        NETLOG("ioctlsocket");
+        return false;
+    }
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
 bool TCPSocket::SetReuseAddress(bool isReuseAddress)
 {
     int iResult = setsockopt(m_socket, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&isReuseAddress), sizeof(isReuseAddress));
@@ -74,8 +86,26 @@ bool TCPSocket::Connect(const SocketAddress& socketAddress)
 {
     int iResult = connect(m_socket, &socketAddress.m_sockAddr, sizeof(socketAddress.m_sockAddr));
     if (iResult == SOCKET_ERROR) {
-        NETLOG("connect");
-        return false;
+        int iError = WSAGetLastError();
+        if (iError != WSAEWOULDBLOCK) {
+            NETLOG("connect");
+            return false;
+        }
+
+        fd_set writeSet;
+        FD_ZERO(&writeSet);
+        FD_SET(m_socket, &writeSet);
+
+        timeval timeout;
+        timeout.tv_sec = 0;
+        timeout.tv_usec = 0;
+        iResult = select(0, nullptr, &writeSet, nullptr, &timeout);
+        if (iResult == 0 || iResult == SOCKET_ERROR) {
+            NETLOG("select");
+            return false;
+        }
+
+        return true;
     }
 
     return true;

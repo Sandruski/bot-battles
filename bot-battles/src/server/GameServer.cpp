@@ -126,6 +126,12 @@ bool GameServer::Update()
 
     std::weak_ptr<ServerSystem> serverSystem = m_systemManager->GetSystem<ServerSystem>();
 
+    if (m_mainMenuComponent.m_phase == MainMenuComponent::MainMenuPhase::CONNECT) {
+        serverSystem.lock()->Connect(m_serverComponent);
+    }
+
+    // TODO: disconnect
+
     if (m_mainMenuComponent.m_phase != MainMenuComponent::MainMenuPhase::SETUP) {
         serverSystem.lock()->ReceiveIncomingPackets(m_serverComponent);
     }

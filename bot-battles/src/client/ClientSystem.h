@@ -19,6 +19,7 @@ public:
     bool StartUp() override;
     bool PreUpdate() override;
 
+    bool Connect(ClientComponent& clientComponent);
     void ReceiveIncomingPackets(ClientComponent& clientComponent);
     void SendOutgoingPackets(ClientComponent& clientComponent);
 

@@ -143,7 +143,7 @@ void MainMenuStateClient::RenderSetupGui(MainMenuComponent& mainMenuComponent) c
         mainMenuComponent.m_phase = MainMenuComponent::MainMenuPhase::CONNECT;
         mainMenuComponent.m_timer.Start();
 
-        clientComponent.m_sendHelloPacket = true;
+        clientComponent.m_connect = true;
     }
 }
 

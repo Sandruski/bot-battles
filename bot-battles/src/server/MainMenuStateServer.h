@@ -5,6 +5,8 @@
 
 namespace sand {
 
+struct MainMenuComponent;
+
 //----------------------------------------------------------------------------------------------------
 class MainMenuStateServer : public State {
 public:
@@ -17,11 +19,14 @@ public:
     const char* GetName() const override;
 
     bool Enter() const override;
+    bool Update() const override;
     bool RenderGui() const override;
     bool Exit() const override;
 
 private:
-    void RenderStartGui() const;
+    void UpdateConnect() const;
+
+    void RenderSetupGui(MainMenuComponent& mainMenuComponent) const;
 };
 }
 

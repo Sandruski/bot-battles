@@ -63,6 +63,7 @@ struct ClientComponent : public Component {
     bool m_isServerReconciliation;
     bool m_isEntityInterpolation;
 
+    bool m_connect;
     bool m_sendHelloPacket;
 };
 }
