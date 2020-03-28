@@ -17,6 +17,8 @@ struct ScoreboardComponent {
 
     ScoreboardComponent();
 
+    F32 m_mainMenuTimeout;
+
     MyTimer m_timer;
     ScoreboardPhase m_phase;
 };

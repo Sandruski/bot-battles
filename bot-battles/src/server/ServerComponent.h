@@ -47,6 +47,8 @@ struct ServerComponent : public Component {
     std::queue<PlayerID> m_availablePlayerIDs;
 
     bool m_isServerRewind;
+
+    bool m_connect;
 };
 }
 

@@ -4,7 +4,7 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 GuiComponent::GuiComponent()
-    : m_isDebugOptions(true)
+    : m_isDebugOptions(false)
     , m_body()
 {
 }

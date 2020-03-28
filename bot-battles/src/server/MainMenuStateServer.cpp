@@ -146,6 +146,8 @@ void MainMenuStateServer::RenderSetupGui(MainMenuComponent& mainMenuComponent) c
     ImGui::SetCursorPosY(contentRegionMax.y - buttonSize.y);
     if (ImGui::Button(start)) {
         mainMenuComponent.m_phase = MainMenuComponent::MainMenuPhase::CONNECT;
+
+        serverComponent.m_connect = true;
     }
 }
 }

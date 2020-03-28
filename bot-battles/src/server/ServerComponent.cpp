@@ -18,6 +18,7 @@ ServerComponent::ServerComponent()
     , m_availablePlayerIDs()
     , m_map()
     , m_isServerRewind(false)
+    , m_connect(false)
 {
     m_playerIDToClientProxy.reserve(MAX_PLAYER_IDS);
     m_entityToPlayerID.reserve(MAX_PLAYER_IDS);

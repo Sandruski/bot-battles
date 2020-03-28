@@ -111,6 +111,8 @@ void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent)
         }
     }
 
+    // TODO: handle timeout disconnections here
+
     // TCP
     fd_set readSet;
     FD_ZERO(&readSet);
@@ -164,6 +166,10 @@ void ClientSystem::SendOutgoingPackets(ClientComponent& clientComponent)
         SendHelloPacket(clientComponent);
         clientComponent.m_sendHelloPacket = false;
     }
+    if (clientComponent.m_sendAgainPacket) {
+        SendAgainPacket(clientComponent);
+        clientComponent.m_sendAgainPacket = false;
+    }
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -181,6 +187,11 @@ void ClientSystem::ReceivePacket(ClientComponent& clientComponent, InputMemorySt
 
     case ServerMessageType::STATE: {
         ReceiveStatePacket(clientComponent, inputStream);
+        break;
+    }
+
+    case ServerMessageType::RESULT: {
+        ReceiveResultPacket(clientComponent, inputStream);
         break;
     }
 
@@ -260,6 +271,21 @@ void ClientSystem::ReceiveStatePacket(ClientComponent& clientComponent, InputMem
 }
 
 //----------------------------------------------------------------------------------------------------
+void ClientSystem::ReceiveResultPacket(ClientComponent& clientComponent, InputMemoryStream& inputStream) const
+{
+    const bool isConnected = clientComponent.IsConnected();
+    if (!isConnected) {
+        ELOG("Result packet received but skipped because Player is not connected");
+        return;
+    }
+
+    ILOG("Result packet received");
+
+    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+    inputStream.Read(gameplayComponent.m_phase);
+}
+
+//----------------------------------------------------------------------------------------------------
 bool ClientSystem::SendHelloPacket(const ClientComponent& clientComponent) const
 {
     OutputMemoryStream helloPacket;
@@ -312,6 +338,23 @@ bool ClientSystem::SendInputPacket(ClientComponent& clientComponent) const
     }
 
     return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool ClientSystem::SendAgainPacket(const ClientComponent& clientComponent) const
+{
+    OutputMemoryStream againPacket;
+    againPacket.Write(ClientMessageType::AGAIN);
+    againPacket.Write(clientComponent.m_playerID);
+
+    bool result = SendTCPPacket(clientComponent, againPacket);
+    if (result) {
+        ILOG("Again packet of length %u successfully sent to server", againPacket.GetByteLength());
+    } else {
+        ELOG("Again packet of length %u unsuccessfully sent to server", againPacket.GetByteLength());
+    }
+
+    return result;
 }
 
 //----------------------------------------------------------------------------------------------------

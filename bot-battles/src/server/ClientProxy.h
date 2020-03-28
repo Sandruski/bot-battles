@@ -29,8 +29,8 @@ public:
     U32 m_lastAckdFrame;
     F32 m_timestamp;
 
-    bool m_sendStatePacket;
     bool m_sendWelcomePacket;
+    bool m_sendResultPacket;
 
 private:
     SocketAddress m_socketAddress;

@@ -12,9 +12,10 @@ PLAYLIST:
 -Add timer for server in the Scoreboard screen.
 -Send Bye packet at the Scoreboard screen and if entity disconnects during gameplay.
 -Send players back to main menu after 30 seconds.
--Use TCP for everything. Check out the multiplayer book section about games! Maybe also read the other book FSM section.
 -Check that 2 players can connect to the game from different computers.
 -Add Play Again option.
+-Timeout disconnections when receiving packets.
+-Game loop with TCP.
 
 ----------
 

@@ -1,7 +1,7 @@
 #include "ScoreboardStateClient.h"
 
 #include "ComponentManager.h"
-#include "Config.h"
+#include "ConfigClient.h"
 #include "EntityManager.h"
 #include "FSM.h"
 #include "GameClient.h"
@@ -36,6 +36,8 @@ bool ScoreboardStateClient::Enter() const
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameClient->GetComponentManager().AddComponent<SpriteComponent>(background);
     spriteComponent.lock()->m_spriteResource = spriteResource;
 
+    scoreboardComponent.m_timer.Start();
+
     return true;
 }
 
@@ -43,6 +45,11 @@ bool ScoreboardStateClient::Enter() const
 bool ScoreboardStateClient::Update() const
 {
     ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
+    F32 time = static_cast<F32>(scoreboardComponent.m_timer.ReadSec());
+    if (time >= scoreboardComponent.m_mainMenuTimeout) {
+        g_gameClient->GetFSM().ChangeState(g_gameClient->GetConfig().m_offlineSceneName.c_str());
+    }
+
     switch (scoreboardComponent.m_phase) {
     case ScoreboardComponent::ScoreboardPhase::RESTART: {
         UpdateRestart();
@@ -113,17 +120,19 @@ bool ScoreboardStateClient::Exit() const
 //----------------------------------------------------------------------------------------------------
 void ScoreboardStateClient::UpdateRestart() const
 {
-    /*
-    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    if (clientComponent.m_isAllowedToPlay) {
+    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+    if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::NONE) {
         g_gameClient->GetFSM().ChangeState(g_gameClient->GetConfig().m_onlineSceneName.c_str());
     }
-    */
 }
 
 //----------------------------------------------------------------------------------------------------
 void ScoreboardStateClient::RenderResultsGui(ScoreboardComponent& scoreboardComponent) const
 {
+    F32 time = static_cast<F32>(scoreboardComponent.m_timer.ReadSec());
+    F32 timeLeft = scoreboardComponent.m_mainMenuTimeout - time;
+    ImGui::Text("%.0f", timeLeft);
+
     ImGui::Text("Player x wins");
 
     const char* playAgain = "Play again";
@@ -139,6 +148,9 @@ void ScoreboardStateClient::RenderResultsGui(ScoreboardComponent& scoreboardComp
     ImGui::SetCursorPosY(contentRegionMax.y - playAgainButtonSize.y);
     if (ImGui::Button(playAgain)) {
         scoreboardComponent.m_phase = ScoreboardComponent::ScoreboardPhase::RESTART;
+
+        ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+        clientComponent.m_sendAgainPacket = true;
     }
     ImGui::SetCursorPosX(contentRegionMax.x - mainMenuButtonSize.x);
     ImGui::SetCursorPosY(contentRegionMax.y - mainMenuButtonSize.y);
