@@ -149,6 +149,9 @@ void ScoreboardStateClient::RenderResultsGui(ScoreboardComponent& scoreboardComp
     ImGui::SetCursorPosY(contentRegionMax.y - mainMenuButtonSize.y);
     if (ImGui::Button(mainMenu)) {
         g_gameClient->GetFSM().ChangeState(g_gameClient->GetConfig().m_offlineSceneName.c_str());
+
+        ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+        clientComponent.m_sendByePacket = true;
     }
 }
 

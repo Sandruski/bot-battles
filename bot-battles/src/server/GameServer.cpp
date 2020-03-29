@@ -138,15 +138,15 @@ bool GameServer::Update()
         }
     }
 
-    if (m_mainMenuComponent.m_phase != MainMenuComponent::MainMenuPhase::SETUP) {
-        serverSystem.lock()->ReceiveIncomingPackets(m_serverComponent);
-    }
+    //if (m_mainMenuComponent.m_phase != MainMenuComponent::MainMenuPhase::SETUP) {
+    serverSystem.lock()->ReceiveIncomingPackets(m_serverComponent);
+    //}
 
     ret = Game::Update();
 
-    if (m_mainMenuComponent.m_phase != MainMenuComponent::MainMenuPhase::SETUP) {
-        serverSystem.lock()->SendOutgoingPackets(m_serverComponent);
-    }
+    //if (m_mainMenuComponent.m_phase != MainMenuComponent::MainMenuPhase::SETUP) {
+    serverSystem.lock()->SendOutgoingPackets(m_serverComponent);
+    //}
 
     return ret;
 }

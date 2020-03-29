@@ -38,8 +38,8 @@ bool MainMenuStateClient::Enter() const
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameClient->GetComponentManager().AddComponent<SpriteComponent>(background);
     spriteComponent.lock()->m_spriteResource = spriteResource;
 
-    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    clientComponent.DisconnectSockets();
+    //ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    //clientComponent.DisconnectSockets();
 
     return true;
 }
@@ -133,7 +133,7 @@ void MainMenuStateClient::RenderSetupGui(MainMenuComponent& mainMenuComponent) c
         mainMenuComponent.m_phase = MainMenuComponent::MainMenuPhase::CONNECT;
         mainMenuComponent.m_timer.Start();
 
-        clientComponent.ConnectSockets();
+        clientComponent.m_connect = true;
     }
 }
 
@@ -164,7 +164,7 @@ void MainMenuStateClient::RenderConnectGui(MainMenuComponent& mainMenuComponent)
         mainMenuComponent.m_phase = MainMenuComponent::MainMenuPhase::SETUP;
 
         ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-        clientComponent.DisconnectSockets();
+        clientComponent.m_disconnect = true;
     }
 }
 

@@ -138,100 +138,100 @@ void ServerSystem::ReceiveIncomingPackets(ServerComponent& serverComponent)
     U32 byteCapacity = packet.GetByteCapacity();
 
     // TCP
-    fd_set readSet;
-    FD_ZERO(&readSet);
-    for (const auto& TCPSock : serverComponent.m_TCPSockets) {
-        FD_SET(TCPSock->GetSocket(), &readSet);
-    }
+    if (serverComponent.m_TCPListenSocket != nullptr) {
+        fd_set readSet;
+        FD_ZERO(&readSet);
+        for (const auto& TCPSock : serverComponent.m_TCPSockets) {
+            FD_SET(TCPSock->GetSocket(), &readSet);
+        }
 
-    timeval timeout;
-    timeout.tv_sec = 0;
-    timeout.tv_usec = 0;
-    int iResult = select(0, &readSet, nullptr, nullptr, &timeout);
-    if (iResult != 0 && iResult != SOCKET_ERROR) {
-        std::vector<std::shared_ptr<TCPSocket>> disconnections;
-        for (U32 i = 0; i < serverComponent.m_TCPSockets.size(); ++i) {
-            std::shared_ptr<TCPSocket> TCPSock = serverComponent.m_TCPSockets.at(i);
-            if (FD_ISSET(TCPSock->GetSocket(), &readSet)) {
-                if (TCPSock == serverComponent.m_TCPListenSocket) {
-                    SocketAddress fromSocketAddress;
-                    std::shared_ptr<TCPSocket> acceptedTCPSock = TCPSock->Accept(fromSocketAddress);
-                    bool result = acceptedTCPSock->SetReuseAddress(true);
-                    if (result) {
-                        result = acceptedTCPSock->SetNonBlockingMode(true);
+        timeval timeout;
+        timeout.tv_sec = 0;
+        timeout.tv_usec = 0;
+        int iResult = select(0, &readSet, nullptr, nullptr, &timeout);
+        if (iResult != 0 && iResult != SOCKET_ERROR) {
+            std::vector<std::shared_ptr<TCPSocket>> disconnections;
+            for (U32 i = 0; i < serverComponent.m_TCPSockets.size(); ++i) {
+                std::shared_ptr<TCPSocket> TCPSock = serverComponent.m_TCPSockets.at(i);
+                if (FD_ISSET(TCPSock->GetSocket(), &readSet)) {
+                    if (TCPSock == serverComponent.m_TCPListenSocket) {
+                        SocketAddress fromSocketAddress;
+                        std::shared_ptr<TCPSocket> acceptedTCPSock = TCPSock->Accept(fromSocketAddress);
+                        bool result = acceptedTCPSock->SetReuseAddress(true);
                         if (result) {
-                            result = acceptedTCPSock->SetNoDelay(true);
+                            result = acceptedTCPSock->SetNonBlockingMode(true);
                             if (result) {
-                                serverComponent.m_TCPSockets.emplace_back(acceptedTCPSock);
-                                ILOG("TCP socket added");
+                                result = acceptedTCPSock->SetNoDelay(true);
+                                if (result) {
+                                    serverComponent.m_TCPSockets.emplace_back(acceptedTCPSock);
+                                    ILOG("TCP socket added");
+                                }
                             }
                         }
-                    }
-                } else {
-                    I32 readByteCount = TCPSock->Receive(packet.GetPtr(), byteCapacity);
-                    if (readByteCount > 0) {
-                        packet.SetCapacity(readByteCount);
-                        packet.ResetHead();
-                        ReceivePacket(serverComponent, packet, TCPSock->GetRemoteSocketAddress());
-                    } else if (readByteCount == -WSAECONNRESET) {
-                        ConnectionReset(serverComponent, TCPSock->GetRemoteSocketAddress());
-                        disconnections.emplace_back(TCPSock);
-                    } else if (readByteCount == 0) {
-                        // TODO: graceful disconnection if readByteCount == 0?
-                        continue;
+                    } else {
+                        I32 readByteCount = TCPSock->Receive(packet.GetPtr(), byteCapacity);
+                        if (readByteCount > 0) {
+                            packet.SetCapacity(readByteCount);
+                            packet.ResetHead();
+                            ReceivePacket(serverComponent, packet, TCPSock->GetRemoteSocketAddress());
+                        } else if (readByteCount == -WSAECONNRESET) {
+                            ConnectionReset(serverComponent, TCPSock->GetRemoteSocketAddress());
+                            disconnections.emplace_back(TCPSock);
+                        } else if (readByteCount == 0) {
+                            // TODO: graceful disconnection if readByteCount == 0?
+                            continue;
+                        }
                     }
                 }
             }
-        }
 
-        for (const auto& disconnection : disconnections) {
-            PlayerID playerID = serverComponent.GetPlayerID(disconnection->GetRemoteSocketAddress());
-            Entity entity = serverComponent.GetEntity(playerID);
-            Disconnect(serverComponent, playerID, entity);
+            for (const auto& disconnection : disconnections) {
+                PlayerID playerID = serverComponent.GetPlayerID(disconnection->GetRemoteSocketAddress());
+                Entity entity = serverComponent.GetEntity(playerID);
+                Disconnect(serverComponent, playerID, entity);
+            }
         }
-    }
-
-    if (serverComponent.m_connectSockets) {
-        return;
     }
 
     // UDP
-    U32 receivedPacketCount = 0;
-    while (receivedPacketCount < MAX_PACKETS_PER_FRAME) {
-        SocketAddress fromSocketAddress;
-        I32 readByteCount = serverComponent.m_UDPSocket->ReceiveFrom(packet.GetPtr(), byteCapacity, fromSocketAddress);
-        if (readByteCount > 0) {
-            packet.SetCapacity(readByteCount);
-            packet.ResetHead();
-            ReceivePacket(serverComponent, packet, fromSocketAddress);
-            ++receivedPacketCount;
-        } else if (readByteCount == -WSAECONNRESET) {
-            ConnectionReset(serverComponent, fromSocketAddress);
-        } else if (readByteCount == 0 || -WSAEWOULDBLOCK) {
-            // TODO: graceful disconnection if readByteCount == 0?
-            break;
-        }
-    }
-
-    GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
-    if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::NONE) {
-        std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>> disconnections;
-        const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.GetPlayerIDToClientProxyMap();
-        for (const auto& pair : playerIDToClientProxy) {
-            PlayerID playerID = pair.first;
-            std::shared_ptr<ClientProxy> clientProxy = pair.second;
-
-            F32 timeDiff = MyTime::GetInstance().GetTime() - clientProxy->GetLastPacketTime();
-            if (timeDiff >= DISCONNECT_TIMEOUT) {
-                disconnections.insert(std::make_pair(playerID, clientProxy));
-                continue;
+    if (serverComponent.m_UDPSocket != nullptr) {
+        U32 receivedPacketCount = 0;
+        while (receivedPacketCount < MAX_PACKETS_PER_FRAME) {
+            SocketAddress fromSocketAddress;
+            I32 readByteCount = serverComponent.m_UDPSocket->ReceiveFrom(packet.GetPtr(), byteCapacity, fromSocketAddress);
+            if (readByteCount > 0) {
+                packet.SetCapacity(readByteCount);
+                packet.ResetHead();
+                ReceivePacket(serverComponent, packet, fromSocketAddress);
+                ++receivedPacketCount;
+            } else if (readByteCount == -WSAECONNRESET) {
+                ConnectionReset(serverComponent, fromSocketAddress);
+            } else if (readByteCount == 0 || -WSAEWOULDBLOCK) {
+                // TODO: graceful disconnection if readByteCount == 0?
+                break;
             }
         }
 
-        for (const auto& disconnection : disconnections) {
-            PlayerID playerID = disconnection.first;
-            Entity entity = serverComponent.GetEntity(playerID);
-            Disconnect(serverComponent, playerID, entity);
+        GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
+        if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::NONE) {
+            std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>> disconnections;
+            const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.GetPlayerIDToClientProxyMap();
+            for (const auto& pair : playerIDToClientProxy) {
+                PlayerID playerID = pair.first;
+                std::shared_ptr<ClientProxy> clientProxy = pair.second;
+
+                F32 timeDiff = MyTime::GetInstance().GetTime() - clientProxy->GetLastPacketTime();
+                if (timeDiff >= DISCONNECT_TIMEOUT) {
+                    disconnections.insert(std::make_pair(playerID, clientProxy));
+                    continue;
+                }
+            }
+
+            for (const auto& disconnection : disconnections) {
+                PlayerID playerID = disconnection.first;
+                Entity entity = serverComponent.GetEntity(playerID);
+                Disconnect(serverComponent, playerID, entity);
+            }
         }
     }
 }

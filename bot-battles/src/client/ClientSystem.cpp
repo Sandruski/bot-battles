@@ -87,12 +87,10 @@ bool ClientSystem::ConnectSockets(ClientComponent& clientComponent)
 //----------------------------------------------------------------------------------------------------
 bool ClientSystem::DisconnectSockets(ClientComponent& clientComponent)
 {
-    if (clientComponent.m_TCPSocket != nullptr) {
-        SendByePacket(clientComponent);
-    }
-
     clientComponent.m_UDPSocket = nullptr;
     clientComponent.m_TCPSocket = nullptr;
+
+    Disconnect(clientComponent);
 
     return true;
 }
@@ -104,56 +102,56 @@ void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent)
     U32 byteCapacity = packet.GetByteCapacity();
 
     // TCP
-    fd_set readSet;
-    FD_ZERO(&readSet);
-    FD_SET(clientComponent.m_TCPSocket->GetSocket(), &readSet);
+    if (clientComponent.m_TCPSocket != nullptr) {
+        fd_set readSet;
+        FD_ZERO(&readSet);
+        FD_SET(clientComponent.m_TCPSocket->GetSocket(), &readSet);
 
-    timeval timeout;
-    timeout.tv_sec = 0;
-    timeout.tv_usec = 0;
-    int iResult = select(0, &readSet, nullptr, nullptr, &timeout);
-    if (iResult != 0 && iResult != SOCKET_ERROR) {
-        if (FD_ISSET(clientComponent.m_TCPSocket->GetSocket(), &readSet)) {
-            I32 readByteCount = clientComponent.m_TCPSocket->Receive(packet.GetPtr(), byteCapacity);
-            if (readByteCount > 0) {
-                packet.SetCapacity(readByteCount);
-                packet.ResetHead();
-                ReceivePacket(clientComponent, packet);
-            } else if (readByteCount == -WSAECONNRESET) {
-                ConnectionReset(clientComponent);
-            } else if (readByteCount == 0) {
-                // TODO: graceful disconnection if readByteCount == 0?
+        timeval timeout;
+        timeout.tv_sec = 0;
+        timeout.tv_usec = 0;
+        int iResult = select(0, &readSet, nullptr, nullptr, &timeout);
+        if (iResult != 0 && iResult != SOCKET_ERROR) {
+            if (FD_ISSET(clientComponent.m_TCPSocket->GetSocket(), &readSet)) {
+                I32 readByteCount = clientComponent.m_TCPSocket->Receive(packet.GetPtr(), byteCapacity);
+                if (readByteCount > 0) {
+                    packet.SetCapacity(readByteCount);
+                    packet.ResetHead();
+                    ReceivePacket(clientComponent, packet);
+                } else if (readByteCount == -WSAECONNRESET) {
+                    ConnectionReset(clientComponent);
+                } else if (readByteCount == 0) {
+                    // TODO: graceful disconnection if readByteCount == 0?
+                }
             }
         }
     }
 
-    if (clientComponent.m_connectSockets) {
-        return;
-    }
-
     // UDP
-    U32 receivedPacketCount = 0;
-    while (receivedPacketCount < MAX_PACKETS_PER_FRAME) {
-        SocketAddress fromSocketAddress;
-        I32 readByteCount = clientComponent.m_UDPSocket->ReceiveFrom(packet.GetPtr(), byteCapacity, fromSocketAddress);
-        if (readByteCount > 0) {
-            packet.SetCapacity(readByteCount);
-            packet.ResetHead();
-            ReceivePacket(clientComponent, packet);
-            ++receivedPacketCount;
-        } else if (readByteCount == -WSAECONNRESET) {
-            ConnectionReset(clientComponent);
-        } else if (readByteCount == 0 || -WSAEWOULDBLOCK) {
-            // TODO: graceful disconnection if readByteCount == 0?
-            break;
+    if (clientComponent.m_UDPSocket != nullptr) {
+        U32 receivedPacketCount = 0;
+        while (receivedPacketCount < MAX_PACKETS_PER_FRAME) {
+            SocketAddress fromSocketAddress;
+            I32 readByteCount = clientComponent.m_UDPSocket->ReceiveFrom(packet.GetPtr(), byteCapacity, fromSocketAddress);
+            if (readByteCount > 0) {
+                packet.SetCapacity(readByteCount);
+                packet.ResetHead();
+                ReceivePacket(clientComponent, packet);
+                ++receivedPacketCount;
+            } else if (readByteCount == -WSAECONNRESET) {
+                ConnectionReset(clientComponent);
+            } else if (readByteCount == 0 || -WSAEWOULDBLOCK) {
+                // TODO: graceful disconnection if readByteCount == 0?
+                break;
+            }
         }
-    }
 
-    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-    if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::NONE) {
-        F32 timeDiff = MyTime::GetInstance().GetTime() - clientComponent.m_lastPacketTime;
-        if (timeDiff >= DISCONNECT_TIMEOUT) {
-            Disconnect(clientComponent);
+        GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+        if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::NONE) {
+            F32 timeDiff = MyTime::GetInstance().GetTime() - clientComponent.m_lastPacketTime;
+            if (timeDiff >= DISCONNECT_TIMEOUT) {
+                DisconnectSockets(clientComponent);
+            }
         }
     }
 }
@@ -169,8 +167,12 @@ void ClientSystem::SendOutgoingPackets(ClientComponent& clientComponent)
         SendReHelloPacket(clientComponent);
         clientComponent.m_sendReHelloPacket = false;
     }
+    if (clientComponent.m_sendByePacket) {
+        SendByePacket(clientComponent);
+        clientComponent.m_sendByePacket = false;
+    }
 
-    if (clientComponent.m_connectSockets) {
+    if (clientComponent.m_UDPSocket == nullptr) {
         return;
     }
 
@@ -194,18 +196,6 @@ void ClientSystem::SendOutgoingPackets(ClientComponent& clientComponent)
     if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::NONE) {
         SendInputPacket(clientComponent);
     }
-}
-
-//----------------------------------------------------------------------------------------------------
-void ClientSystem::Disconnect(ClientComponent& clientComponent)
-{
-    clientComponent.m_playerID = INVALID_PLAYER_ID;
-    clientComponent.Reset();
-
-    Event newEvent;
-    newEvent.eventType = EventType::PLAYER_REMOVED;
-    newEvent.networking.entity = clientComponent.m_entity;
-    NotifyEvent(newEvent);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -434,7 +424,7 @@ bool ClientSystem::SendInputPacket(ClientComponent& clientComponent) const
 }
 
 //----------------------------------------------------------------------------------------------------
-bool ClientSystem::SendByePacket(const ClientComponent& clientComponent) const
+bool ClientSystem::SendByePacket(ClientComponent& clientComponent)
 {
     OutputMemoryStream byePacket;
     byePacket.Write(ClientMessageType::BYE);
@@ -446,6 +436,8 @@ bool ClientSystem::SendByePacket(const ClientComponent& clientComponent) const
     } else {
         ELOG("Bye packet of length %u unsuccessfully sent to server", byePacket.GetByteLength());
     }
+
+    DisconnectSockets(clientComponent);
 
     return result;
 }
@@ -465,6 +457,18 @@ bool ClientSystem::SendTCPPacket(const ClientComponent& clientComponent, const O
 //----------------------------------------------------------------------------------------------------
 void ClientSystem::ConnectionReset(ClientComponent& clientComponent)
 {
-    Disconnect(clientComponent);
+    DisconnectSockets(clientComponent);
+}
+
+//----------------------------------------------------------------------------------------------------
+void ClientSystem::Disconnect(ClientComponent& clientComponent)
+{
+    clientComponent.m_playerID = INVALID_PLAYER_ID;
+    clientComponent.Reset();
+
+    Event newEvent;
+    newEvent.eventType = EventType::PLAYER_REMOVED;
+    newEvent.networking.entity = clientComponent.m_entity;
+    NotifyEvent(newEvent);
 }
 }
