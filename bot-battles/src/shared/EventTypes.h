@@ -27,6 +27,7 @@ enum class EventType {
     REWELCOME_RECEIVED,
     RESULT_RECEIVED,
 // TODO: bye received?
+#elif defined(_SERVER)
 #endif
 
     COUNT

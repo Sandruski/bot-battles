@@ -24,6 +24,8 @@ public:
     void ReceiveIncomingPackets(ClientComponent& clientComponent);
     void SendOutgoingPackets(ClientComponent& clientComponent);
 
+    void Disconnect(ClientComponent& clientComponent);
+
 private:
     void ReceivePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream);
     void ReceiveWelcomePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream);
@@ -39,7 +41,6 @@ private:
     bool SendTCPPacket(const ClientComponent& clientComponent, const OutputMemoryStream& outputStream) const;
 
     void ConnectionReset(ClientComponent& clientComponent);
-    void Disconnect(ClientComponent& clientComponent);
 };
 }
 

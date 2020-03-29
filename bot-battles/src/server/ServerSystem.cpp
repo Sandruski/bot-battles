@@ -122,6 +122,8 @@ bool ServerSystem::ConnectSockets(ServerComponent& serverComponent)
 //----------------------------------------------------------------------------------------------------
 bool ServerSystem::DisconnectSockets(ServerComponent& serverComponent)
 {
+    // TODO: send bye packet
+
     serverComponent.m_UDPSocket = nullptr;
     serverComponent.m_TCPSockets.clear();
     serverComponent.m_TCPListenSocket = nullptr;
@@ -147,9 +149,9 @@ void ServerSystem::ReceiveIncomingPackets(ServerComponent& serverComponent)
     timeout.tv_usec = 0;
     int iResult = select(0, &readSet, nullptr, nullptr, &timeout);
     if (iResult != 0 && iResult != SOCKET_ERROR) {
-        std::vector<std::shared_ptr<TCPSocket>> connections;
         std::vector<std::shared_ptr<TCPSocket>> disconnections;
-        for (const auto& TCPSock : serverComponent.m_TCPSockets) {
+        for (U32 i = 0; i < serverComponent.m_TCPSockets.size(); ++i) {
+            std::shared_ptr<TCPSocket> TCPSock = serverComponent.m_TCPSockets.at(i);
             if (FD_ISSET(TCPSock->GetSocket(), &readSet)) {
                 if (TCPSock == serverComponent.m_TCPListenSocket) {
                     SocketAddress fromSocketAddress;
@@ -160,7 +162,8 @@ void ServerSystem::ReceiveIncomingPackets(ServerComponent& serverComponent)
                         if (result) {
                             result = acceptedTCPSock->SetNoDelay(true);
                             if (result) {
-                                connections.emplace_back(acceptedTCPSock);
+                                serverComponent.m_TCPSockets.emplace_back(acceptedTCPSock);
+                                ILOG("TCP socket added");
                             }
                         }
                     }
@@ -179,11 +182,6 @@ void ServerSystem::ReceiveIncomingPackets(ServerComponent& serverComponent)
                     }
                 }
             }
-        }
-
-        for (const auto& connection : connections) {
-            serverComponent.m_TCPSockets.emplace_back(connection);
-            ILOG("TCP socket added");
         }
 
         for (const auto& disconnection : disconnections) {

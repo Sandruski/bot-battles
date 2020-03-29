@@ -87,6 +87,10 @@ bool ClientSystem::ConnectSockets(ClientComponent& clientComponent)
 //----------------------------------------------------------------------------------------------------
 bool ClientSystem::DisconnectSockets(ClientComponent& clientComponent)
 {
+    if (clientComponent.m_TCPSocket != nullptr) {
+        SendByePacket(clientComponent);
+    }
+
     clientComponent.m_UDPSocket = nullptr;
     clientComponent.m_TCPSocket = nullptr;
 
@@ -165,10 +169,6 @@ void ClientSystem::SendOutgoingPackets(ClientComponent& clientComponent)
         SendReHelloPacket(clientComponent);
         clientComponent.m_sendReHelloPacket = false;
     }
-    if (clientComponent.m_sendByePacket) {
-        SendByePacket(clientComponent);
-        clientComponent.m_sendByePacket = false;
-    }
 
     if (clientComponent.m_connectSockets) {
         return;
@@ -194,6 +194,18 @@ void ClientSystem::SendOutgoingPackets(ClientComponent& clientComponent)
     if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::NONE) {
         SendInputPacket(clientComponent);
     }
+}
+
+//----------------------------------------------------------------------------------------------------
+void ClientSystem::Disconnect(ClientComponent& clientComponent)
+{
+    clientComponent.m_playerID = INVALID_PLAYER_ID;
+    clientComponent.Reset();
+
+    Event newEvent;
+    newEvent.eventType = EventType::PLAYER_REMOVED;
+    newEvent.networking.entity = clientComponent.m_entity;
+    NotifyEvent(newEvent);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -454,17 +466,5 @@ bool ClientSystem::SendTCPPacket(const ClientComponent& clientComponent, const O
 void ClientSystem::ConnectionReset(ClientComponent& clientComponent)
 {
     Disconnect(clientComponent);
-}
-
-//----------------------------------------------------------------------------------------------------
-void ClientSystem::Disconnect(ClientComponent& clientComponent)
-{
-    clientComponent.m_playerID = INVALID_PLAYER_ID;
-    clientComponent.Reset();
-
-    Event newEvent;
-    newEvent.eventType = EventType::PLAYER_REMOVED;
-    newEvent.networking.entity = clientComponent.m_entity;
-    NotifyEvent(newEvent);
 }
 }

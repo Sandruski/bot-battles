@@ -108,6 +108,7 @@ bool GameClient::Update()
 
     if (m_clientComponent.m_disconnectSockets) {
         if (clientSystem.lock()->DisconnectSockets(m_clientComponent)) {
+            clientSystem.lock()->Disconnect(m_clientComponent);
             m_clientComponent.m_disconnectSockets = false;
         }
     }
