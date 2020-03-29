@@ -53,20 +53,17 @@ bool WeaponSystemServer::Update()
                     Rewind(weaponComponent, entity, input.m_interpolationFromFrame, input.m_interpolationToFrame, input.m_interpolationPercentage);
                 }
 
-                Transform transform;
-                bool hasTransform = false;
-                for (U32 j = transformComponent.lock()->m_inputTransformBuffer.m_front; j < transformComponent.lock()->m_inputTransformBuffer.m_back; ++j) {
-                    Transform& t = transformComponent.lock()->m_inputTransformBuffer.Get(j);
-                    if (t.GetFrame() == input.GetFrame()) {
-                        transform = t;
-                        hasTransform = true;
+                U32 index = transformComponent.lock()->m_inputTransformBuffer.m_front;
+                bool isFound = false;
+                while (index < transformComponent.lock()->m_inputTransformBuffer.m_back) {
+                    const Transform& transform = transformComponent.lock()->m_inputTransformBuffer.Get(index);
+                    if (transform.GetFrame() == input.GetFrame()) {
+                        isFound = true;
                         break;
                     }
+                    ++index;
                 }
-                if (!hasTransform) {
-                    transform = transformComponent.lock()->m_inputTransformBuffer.GetLast();
-                }
-
+                Transform& transform = isFound ? transformComponent.lock()->m_inputTransformBuffer.Get(index) : transformComponent.lock()->m_inputTransformBuffer.GetLast();
                 glm::vec2 position = { transform.m_position.x, transform.m_position.y };
                 weaponComponent.lock()->m_origin = position;
                 F32 x = std::cos(glm::radians(transform.m_rotation));

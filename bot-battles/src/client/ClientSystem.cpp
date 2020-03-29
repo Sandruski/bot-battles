@@ -40,59 +40,64 @@ bool ClientSystem::PreUpdate()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool ClientSystem::Connect(ClientComponent& clientComponent)
+bool ClientSystem::ConnectSockets(ClientComponent& clientComponent)
 {
     bool ret = false;
 
-    if (clientComponent.m_connect) {
-        clientComponent.m_TCPSocket = TCPSocket::CreateIPv4();
-        assert(clientComponent.m_TCPSocket != nullptr);
-        ret = clientComponent.m_TCPSocket->SetReuseAddress(true);
-        if (!ret) {
-            return ret;
-        }
-        ret = clientComponent.m_TCPSocket->SetNonBlockingMode(true);
-        if (!ret) {
-            return ret;
-        }
-        ret = clientComponent.m_TCPSocket->Connect(*clientComponent.m_socketAddress);
-        if (!ret) {
-            return ret;
-        }
-
-        clientComponent.m_UDPSocket = UDPSocket::CreateIPv4();
-        assert(clientComponent.m_UDPSocket != nullptr);
-        ret = clientComponent.m_UDPSocket->SetReuseAddress(true);
-        if (!ret) {
-            return ret;
-        }
-        ret = clientComponent.m_UDPSocket->SetNonBlockingMode(true);
-        if (!ret) {
-            return ret;
-        }
-        SocketAddress socketAddress = clientComponent.m_TCPSocket->GetLocalSocketAddress();
-        ret = clientComponent.m_UDPSocket->Bind(socketAddress);
-        if (!ret) {
-            return ret;
-        }
-
-        clientComponent.m_sendHelloPacket = true;
-        clientComponent.m_connect = false;
+    clientComponent.m_TCPSocket = TCPSocket::CreateIPv4();
+    assert(clientComponent.m_TCPSocket != nullptr);
+    ret = clientComponent.m_TCPSocket->SetReuseAddress(true);
+    if (!ret) {
+        return ret;
     }
+    ret = clientComponent.m_TCPSocket->SetNonBlockingMode(true);
+    if (!ret) {
+        return ret;
+    }
+    ret = clientComponent.m_TCPSocket->SetNoDelay(true);
+    if (!ret) {
+        return ret;
+    }
+    ret = clientComponent.m_TCPSocket->Connect(*clientComponent.m_socketAddress);
+    if (!ret) {
+        return ret;
+    }
+
+    clientComponent.m_UDPSocket = UDPSocket::CreateIPv4();
+    assert(clientComponent.m_UDPSocket != nullptr);
+    ret = clientComponent.m_UDPSocket->SetReuseAddress(true);
+    if (!ret) {
+        return ret;
+    }
+    ret = clientComponent.m_UDPSocket->SetNonBlockingMode(true);
+    if (!ret) {
+        return ret;
+    }
+    SocketAddress socketAddress = clientComponent.m_TCPSocket->GetLocalSocketAddress();
+    ret = clientComponent.m_UDPSocket->Bind(socketAddress);
+    if (!ret) {
+        return ret;
+    }
+
+    clientComponent.m_sendHelloPacket = true;
 
     return ret;
 }
 
 //----------------------------------------------------------------------------------------------------
+bool ClientSystem::DisconnectSockets(ClientComponent& clientComponent)
+{
+    clientComponent.m_UDPSocket = nullptr;
+    clientComponent.m_TCPSocket = nullptr;
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
 void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent)
 {
-    if (clientComponent.m_connect) {
-        return;
-    }
-
     InputMemoryStream packet;
     U32 byteCapacity = packet.GetByteCapacity();
-    U32 receivedPacketCount = 0;
 
     // TCP
     fd_set readSet;
@@ -110,7 +115,6 @@ void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent)
                 packet.SetCapacity(readByteCount);
                 packet.ResetHead();
                 ReceivePacket(clientComponent, packet);
-                ++receivedPacketCount;
             } else if (readByteCount == -WSAECONNRESET) {
                 ConnectionReset(clientComponent);
             } else if (readByteCount == 0) {
@@ -119,7 +123,12 @@ void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent)
         }
     }
 
+    if (clientComponent.m_connectSockets) {
+        return;
+    }
+
     // UDP
+    U32 receivedPacketCount = 0;
     while (receivedPacketCount < MAX_PACKETS_PER_FRAME) {
         SocketAddress fromSocketAddress;
         I32 readByteCount = clientComponent.m_UDPSocket->ReceiveFrom(packet.GetPtr(), byteCapacity, fromSocketAddress);
@@ -148,17 +157,6 @@ void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent)
 //----------------------------------------------------------------------------------------------------
 void ClientSystem::SendOutgoingPackets(ClientComponent& clientComponent)
 {
-    if (clientComponent.m_connect) {
-        return;
-    }
-
-    clientComponent.m_inputBuffer.Remove(clientComponent.m_lastAckdFrame);
-
-    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-    if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::NONE) {
-        SendInputPacket(clientComponent);
-    }
-
     if (clientComponent.m_sendHelloPacket) {
         SendHelloPacket(clientComponent);
         clientComponent.m_sendHelloPacket = false;
@@ -166,6 +164,31 @@ void ClientSystem::SendOutgoingPackets(ClientComponent& clientComponent)
     if (clientComponent.m_sendReHelloPacket) {
         SendReHelloPacket(clientComponent);
         clientComponent.m_sendReHelloPacket = false;
+    }
+
+    if (clientComponent.m_connectSockets) {
+        return;
+    }
+
+    if (!clientComponent.m_inputBuffer.IsEmpty()) {
+        U32 index = clientComponent.m_inputBuffer.m_front;
+        bool isFound = false;
+        while (index < clientComponent.m_inputBuffer.m_back) {
+            const Input& input = clientComponent.m_inputBuffer.Get(index);
+            if (input.GetFrame() == clientComponent.m_lastAckdFrame) {
+                isFound = true;
+                break;
+            }
+            ++index;
+        }
+        if (isFound) {
+            clientComponent.m_inputBuffer.Remove(index);
+        }
+    }
+
+    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+    if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::NONE) {
+        SendInputPacket(clientComponent);
     }
 }
 

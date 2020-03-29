@@ -11,18 +11,20 @@ std::shared_ptr<TCPSocket> TCPSocket::CreateIPv4()
         return nullptr;
     }
 
-    return std::make_shared<TCPSocket>(sock);
+    return std::make_shared<TCPSocket>(sock, SocketAddress());
 }
 
 //----------------------------------------------------------------------------------------------------
 TCPSocket::TCPSocket()
     : m_socket()
+    , m_remoteSocketAddress()
 {
 }
 
 //----------------------------------------------------------------------------------------------------
-TCPSocket::TCPSocket(const SOCKET& socket)
+TCPSocket::TCPSocket(const SOCKET& socket, const SocketAddress& socketAddress)
     : m_socket(socket)
+    , m_remoteSocketAddress(socketAddress)
 {
 }
 
@@ -31,6 +33,18 @@ TCPSocket::~TCPSocket()
 {
     shutdown(m_socket, SD_BOTH);
     closesocket(m_socket);
+}
+
+//----------------------------------------------------------------------------------------------------
+bool TCPSocket::SetNoDelay(bool isNoDelay)
+{
+    int iResult = setsockopt(m_socket, SOL_SOCKET, TCP_NODELAY, reinterpret_cast<const char*>(&isNoDelay), sizeof(isNoDelay));
+    if (iResult == SOCKET_ERROR) {
+        NETLOG("setsockopt");
+        return false;
+    }
+
+    return true;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -105,6 +119,8 @@ bool TCPSocket::Connect(const SocketAddress& socketAddress)
             return false;
         }
 
+        m_remoteSocketAddress = socketAddress;
+
         return true;
     }
 
@@ -121,7 +137,7 @@ std::shared_ptr<TCPSocket> TCPSocket::Accept(SocketAddress& socketAddress)
         return nullptr;
     }
 
-    return std::make_shared<TCPSocket>(sock);
+    return std::make_shared<TCPSocket>(sock, socketAddress);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -174,6 +190,7 @@ SocketAddress TCPSocket::GetLocalSocketAddress() const
 //----------------------------------------------------------------------------------------------------
 SocketAddress TCPSocket::GetRemoteSocketAddress() const
 {
+    /*
     sockaddr_in sockAddrIn;
     sockaddr* sockAddr = reinterpret_cast<sockaddr*>(&sockAddrIn);
     socklen_t sockAddrInLength = sizeof(sockAddrIn);
@@ -183,6 +200,16 @@ SocketAddress TCPSocket::GetRemoteSocketAddress() const
         return SocketAddress();
     }
 
-    return SocketAddress(*sockAddr);
+    return SocketAddress(*sockAddr);*/
+    /*
+    sockaddr_in sockAddrIn;
+    sockaddr* sockAddr = reinterpret_cast<sockaddr*>(&sockAddrIn);
+    socklen_t sockAddrInLength = sizeof(sockAddrIn);
+    int iResult = getpeername(m_socket, sockAddr, &sockAddrInLength);
+    if (iResult == SOCKET_ERROR) {
+        NETLOG("getpeername");
+    }*/
+
+    return m_remoteSocketAddress;
 }
 }

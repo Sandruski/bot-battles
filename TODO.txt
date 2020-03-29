@@ -9,6 +9,8 @@
 -Make entities be able to have components that are networked and components that are not.
 
 PLAYLIST:
+-REPLAY VIA GOING BACK TO MAIN MENU.
+-Server automatically goes back to main menu at end screen.
 -Send Bye packet at the Scoreboard screen and if entity disconnects during gameplay.
 -Check that 2 players can connect to the game from different computers.
 ----------

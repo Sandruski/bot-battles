@@ -12,9 +12,10 @@ public:
 
 public:
     TCPSocket();
-    TCPSocket(const SOCKET& socket);
+    TCPSocket(const SOCKET& socket, const SocketAddress& socketAddress);
     ~TCPSocket();
 
+    bool SetNoDelay(bool isNoDelay);
     bool SetNonBlockingMode(bool isNonBlockingMode);
     bool SetReuseAddress(bool isReuseAddress);
     bool Bind(const SocketAddress& socketAddress);
@@ -30,6 +31,7 @@ public:
 
 private:
     SOCKET m_socket;
+    SocketAddress m_remoteSocketAddress;
 };
 }
 

@@ -25,6 +25,9 @@ struct ClientComponent : public Component {
     bool IsConnected() const;
     bool IsLocalPlayer(Entity entity) const;
 
+    void ConnectSockets();
+    void DisconnectSockets();
+
     void Reset();
 
     ReplicationManagerClient m_replicationManager;
@@ -63,8 +66,8 @@ struct ClientComponent : public Component {
     bool m_isServerReconciliation;
     bool m_isEntityInterpolation;
 
-    bool m_connect;
-
+    bool m_connectSockets;
+    bool m_disconnectSockets;
     bool m_sendHelloPacket;
     bool m_sendReHelloPacket;
 };

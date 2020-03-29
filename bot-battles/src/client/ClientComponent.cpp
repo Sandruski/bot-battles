@@ -41,7 +41,8 @@ ClientComponent::ClientComponent()
     , m_isClientPrediction(false)
     , m_isServerReconciliation(false)
     , m_isEntityInterpolation(false)
-    , m_connect(false)
+    , m_connectSockets(false)
+    , m_disconnectSockets(false)
     , m_sendHelloPacket(false)
     , m_sendReHelloPacket(false)
 {
@@ -85,6 +86,20 @@ bool ClientComponent::IsConnected() const
 bool ClientComponent::IsLocalPlayer(Entity entity) const
 {
     return entity == m_entity;
+}
+
+//----------------------------------------------------------------------------------------------------
+void ClientComponent::ConnectSockets()
+{
+    m_connectSockets = true;
+    m_disconnectSockets = false;
+}
+
+//----------------------------------------------------------------------------------------------------
+void ClientComponent::DisconnectSockets()
+{
+    m_disconnectSockets = true;
+    m_connectSockets = false;
 }
 
 //----------------------------------------------------------------------------------------------------

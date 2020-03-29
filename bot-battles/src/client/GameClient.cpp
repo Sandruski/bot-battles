@@ -100,11 +100,17 @@ bool GameClient::Update()
 
     std::weak_ptr<ClientSystem> clientSystem = m_systemManager->GetSystem<ClientSystem>();
 
-    if (m_mainMenuComponent.m_phase == MainMenuComponent::MainMenuPhase::CONNECT) {
-        clientSystem.lock()->Connect(m_clientComponent);
+    if (m_clientComponent.m_connectSockets) {
+        if (clientSystem.lock()->ConnectSockets(m_clientComponent)) {
+            m_clientComponent.m_connectSockets = false;
+        }
     }
 
-    // TODO: disconnect
+    if (m_clientComponent.m_disconnectSockets) {
+        if (clientSystem.lock()->DisconnectSockets(m_clientComponent)) {
+            m_clientComponent.m_disconnectSockets = false;
+        }
+    }
 
     if (m_mainMenuComponent.m_phase != MainMenuComponent::MainMenuPhase::SETUP) {
         clientSystem.lock()->ReceiveIncomingPackets(m_clientComponent);

@@ -100,12 +100,26 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U3
 //----------------------------------------------------------------------------------------------------
 void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::vec3 newPosition, F32 newRotation)
 {
-    if (m_inputTransformBuffer.IsEmpty()) {
+    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    if (m_inputTransformBuffer.IsEmpty() || clientComponent.m_inputBuffer.IsEmpty()) {
         return;
     }
 
-    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    Transform& firstTransform = m_inputTransformBuffer.Get(clientComponent.m_lastAckdFrame);
+    U32 index = m_inputTransformBuffer.m_front;
+    bool isFound = false;
+    while (index < m_inputTransformBuffer.m_back) {
+        const Transform& transform = m_inputTransformBuffer.Get(index);
+        if (transform.GetFrame() == clientComponent.m_lastAckdFrame) {
+            isFound = true;
+            break;
+        }
+        ++index;
+    }
+    if (!isFound) {
+        return;
+    }
+
+    Transform& firstTransform = m_inputTransformBuffer.Get(index);
     glm::vec3& position = firstTransform.m_position;
     F32& rotation = firstTransform.m_rotation;
 
@@ -146,8 +160,22 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::v
         }
     }
 
-    ILOG("Remove until %u", clientComponent.m_lastAckdFrame);
-    m_inputTransformBuffer.Remove(clientComponent.m_lastAckdFrame);
-    clientComponent.m_inputBuffer.Remove(clientComponent.m_lastAckdFrame);
+    m_inputTransformBuffer.Remove(index);
+
+    index = clientComponent.m_inputBuffer.m_front;
+    isFound = false;
+    while (index < clientComponent.m_inputBuffer.m_back) {
+        const Input& input = clientComponent.m_inputBuffer.Get(index);
+        if (input.GetFrame() == clientComponent.m_lastAckdFrame) {
+            isFound = true;
+            break;
+        }
+        ++index;
+    }
+    if (!isFound) {
+        return;
+    }
+
+    clientComponent.m_inputBuffer.Remove(index);
 }
 }

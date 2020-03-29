@@ -69,16 +69,18 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream) const
             const bool hasRemotePlayer = signature & static_cast<U16>(ComponentType::REMOTE_PLAYER);
             if (hasRemotePlayer) {
                 std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
-                bool hasTransform = false;
-                for (U32 i = transformComponent.lock()->m_transformBuffer.m_front; i < transformComponent.lock()->m_transformBuffer.m_back; ++i) {
-                    Transform& t = transformComponent.lock()->m_transformBuffer.Get(i);
-                    if (t.GetFrame() == frame) {
-                        hasTransform = true;
+                U32 index = transformComponent.lock()->m_transformBuffer.m_front;
+                bool isFound = false;
+                while (index < transformComponent.lock()->m_transformBuffer.m_back) {
+                    const Transform& transform = transformComponent.lock()->m_transformBuffer.Get(index);
+                    if (transform.GetFrame() == frame) {
+                        isFound = true;
                         break;
                     }
+                    ++index;
                 }
 
-                if (!hasTransform) {
+                if (!isFound) {
                     glm::vec3 position = !transformComponent.lock()->m_transformBuffer.IsEmpty() ? transformComponent.lock()->m_transformBuffer.GetLast().m_position : transformComponent.lock()->m_position;
                     F32 rotation = !transformComponent.lock()->m_transformBuffer.IsEmpty() ? transformComponent.lock()->m_transformBuffer.GetLast().m_rotation : transformComponent.lock()->m_rotation;
                     Transform transform = Transform(position, rotation, frame);

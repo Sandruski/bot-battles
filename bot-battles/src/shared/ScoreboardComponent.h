@@ -17,9 +17,10 @@ struct ScoreboardComponent {
 
     ScoreboardComponent();
 
+#ifdef _CLIENT
     F32 m_mainMenuTimeout;
-
     MyTimer m_timer;
+#endif
     ScoreboardPhase m_phase;
 };
 }
