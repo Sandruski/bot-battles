@@ -26,10 +26,8 @@ enum class EventType {
     WELCOME_RECEIVED,
     REWELCOME_RECEIVED,
     RESULT_RECEIVED,
-#elif defined(_SERVER)
-    REHELLO_RECEIVED,
+// TODO: bye received?
 #endif
-    // TODO: BYE_RECEIVED for both client and server
 
     COUNT
 };

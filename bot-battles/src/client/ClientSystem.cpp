@@ -165,6 +165,10 @@ void ClientSystem::SendOutgoingPackets(ClientComponent& clientComponent)
         SendReHelloPacket(clientComponent);
         clientComponent.m_sendReHelloPacket = false;
     }
+    if (clientComponent.m_sendByePacket) {
+        SendByePacket(clientComponent);
+        clientComponent.m_sendByePacket = false;
+    }
 
     if (clientComponent.m_connectSockets) {
         return;
@@ -337,6 +341,9 @@ void ClientSystem::ReceiveResultPacket(ClientComponent& clientComponent, InputMe
 
     GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
     inputStream.Read(gameplayComponent.m_phase);
+
+    ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
+    inputStream.Read(scoreboardComponent.m_gameCount);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -380,6 +387,9 @@ bool ClientSystem::SendInputPacket(ClientComponent& clientComponent) const
     inputPacket.Write(ClientMessageType::INPUT);
     inputPacket.Write(clientComponent.m_playerID);
 
+    ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
+    inputPacket.Write(scoreboardComponent.m_gameCount);
+
     clientComponent.m_deliveryManager.WriteState(inputPacket);
 
     F32 timestamp = MyTime::GetInstance().GetTime();
@@ -409,6 +419,23 @@ bool ClientSystem::SendInputPacket(ClientComponent& clientComponent) const
     }
 
     return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool ClientSystem::SendByePacket(const ClientComponent& clientComponent) const
+{
+    OutputMemoryStream byePacket;
+    byePacket.Write(ClientMessageType::BYE);
+    byePacket.Write(clientComponent.m_playerID);
+
+    bool result = SendTCPPacket(clientComponent, byePacket);
+    if (result) {
+        ILOG("Bye packet of length %u successfully sent to server", byePacket.GetByteLength());
+    } else {
+        ELOG("Bye packet of length %u unsuccessfully sent to server", byePacket.GetByteLength());
+    }
+
+    return result;
 }
 
 //----------------------------------------------------------------------------------------------------

@@ -22,6 +22,7 @@ struct ScoreboardComponent {
     MyTimer m_timer;
 #endif
     ScoreboardPhase m_phase;
+    U32 m_gameCount;
 };
 }
 

@@ -187,11 +187,9 @@ void ServerSystem::ReceiveIncomingPackets(ServerComponent& serverComponent)
         }
 
         for (const auto& disconnection : disconnections) {
-            serverComponent.m_TCPSockets.erase(std::find(serverComponent.m_TCPSockets.begin(), serverComponent.m_TCPSockets.end(), disconnection));
             PlayerID playerID = serverComponent.GetPlayerID(disconnection->GetRemoteSocketAddress());
             Entity entity = serverComponent.GetEntity(playerID);
             Disconnect(serverComponent, playerID, entity);
-            ILOG("TCP socket removed");
         }
     }
 
@@ -233,12 +231,9 @@ void ServerSystem::ReceiveIncomingPackets(ServerComponent& serverComponent)
         }
 
         for (const auto& disconnection : disconnections) {
-            std::shared_ptr<ClientProxy> clientProxy = disconnection.second;
-            serverComponent.RemoveTCPSocket(clientProxy->GetSocketAddress());
             PlayerID playerID = disconnection.first;
             Entity entity = serverComponent.GetEntity(playerID);
             Disconnect(serverComponent, playerID, entity);
-            ILOG("TCP socket removed");
         }
     }
 }
@@ -300,6 +295,11 @@ void ServerSystem::ReceivePacket(ServerComponent& serverComponent, InputMemorySt
         break;
     }
 
+    case ClientMessageType::BYE: {
+        ReceiveByePacket(serverComponent, inputStream, playerID);
+        break;
+    }
+
     default: {
         WLOG("Unknown packet received from socket address %s", fromSocketAddress.GetName());
         break;
@@ -358,11 +358,8 @@ void ServerSystem::ReceiveReHelloPacket(ServerComponent& serverComponent, InputM
     }
 
     Event newEvent;
-    newEvent.eventType = EventType::REHELLO_RECEIVED;
-    newEvent.networking.playerID = playerID;
-    NotifyEvent(newEvent);
-
     newEvent.eventType = EventType::PLAYER_ADDED;
+    newEvent.networking.playerID = playerID;
     NotifyEvent(newEvent);
 
     ILOG("ReHello packet received from player %u %s", playerID, clientProxy.lock()->GetName());
@@ -383,6 +380,15 @@ void ServerSystem::ReceiveInputPacket(ServerComponent& serverComponent, InputMem
     if (clientProxy.expired()) {
         return;
     }
+
+    U32 gameCount = 0;
+    inputStream.Read(gameCount);
+    ScoreboardComponent& scoreboardComponent = g_gameServer->GetScoreboardComponent();
+    if (scoreboardComponent.m_gameCount != gameCount) {
+        ELOG("Input packet received from another game");
+        return;
+    }
+
     const bool isValid = clientProxy.lock()->m_deliveryManager.ReadState(inputStream);
     if (!isValid) {
         ELOG("Input packet received but skipped because it is not valid");
@@ -409,6 +415,26 @@ void ServerSystem::ReceiveInputPacket(ServerComponent& serverComponent, InputMem
             --inputCount;
         }
     }
+}
+
+//----------------------------------------------------------------------------------------------------
+void ServerSystem::ReceiveByePacket(ServerComponent& serverComponent, InputMemoryStream& inputStream, PlayerID& playerID)
+{
+    inputStream.Read(playerID);
+    if (playerID >= INVALID_PLAYER_ID) {
+        ELOG("Bye packet received from unknown player");
+        return;
+    }
+
+    std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
+    if (clientProxy.expired()) {
+        return;
+    }
+
+    ILOG("Bye packet received from player %u %s", playerID, clientProxy.lock()->GetName());
+
+    Entity entity = serverComponent.GetEntity(playerID);
+    Disconnect(serverComponent, playerID, entity);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -494,6 +520,9 @@ void ServerSystem::SendResultPacket(const ServerComponent& serverComponent, Play
     GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
     resultPacket.Write(gameplayComponent.m_phase);
 
+    ScoreboardComponent& scoreboardComponent = g_gameServer->GetScoreboardComponent();
+    resultPacket.Write(scoreboardComponent.m_gameCount);
+
     const char* name = clientProxy->GetName();
     const bool result = SendTCPPacket(serverComponent, resultPacket, clientProxy->GetSocketAddress());
     if (result) {
@@ -528,6 +557,10 @@ void ServerSystem::ConnectionReset(ServerComponent& serverComponent, const Socke
 void ServerSystem::Disconnect(ServerComponent& serverComponent, PlayerID playerID, Entity entity)
 {
     ILOG("Disconnecting player %u...", playerID);
+
+    std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
+    serverComponent.RemoveTCPSocket(clientProxy.lock()->GetSocketAddress());
+    ILOG("TCP socket removed");
 
     serverComponent.RemovePlayer(playerID);
 

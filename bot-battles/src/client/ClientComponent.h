@@ -70,6 +70,7 @@ struct ClientComponent : public Component {
     bool m_disconnectSockets;
     bool m_sendHelloPacket;
     bool m_sendReHelloPacket;
+    bool m_sendByePacket;
 };
 }
 

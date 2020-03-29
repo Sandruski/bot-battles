@@ -34,6 +34,7 @@ private:
     bool SendHelloPacket(const ClientComponent& clientComponent) const;
     bool SendReHelloPacket(const ClientComponent& clientComponent) const;
     bool SendInputPacket(ClientComponent& clientComponent) const;
+    bool SendByePacket(const ClientComponent& clientComponent) const;
     bool SendUDPPacket(const ClientComponent& clientComponent, const OutputMemoryStream& outputStream) const;
     bool SendTCPPacket(const ClientComponent& clientComponent, const OutputMemoryStream& outputStream) const;
 

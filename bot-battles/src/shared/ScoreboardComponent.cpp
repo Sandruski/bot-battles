@@ -11,6 +11,7 @@ ScoreboardComponent::ScoreboardComponent()
     ,
 #endif
     m_phase(ScoreboardPhase::NONE)
+    , m_gameCount(0)
 {
 }
 }

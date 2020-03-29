@@ -9,10 +9,14 @@
 -Make entities be able to have components that are networked and components that are not.
 
 PLAYLIST:
--REPLAY VIA GOING BACK TO MAIN MENU.
--Server automatically goes back to main menu at end screen.
 -Send Bye packet at the Scoreboard screen and if entity disconnects during gameplay.
 -Check that 2 players can connect to the game from different computers.
+
+Known bugs:
+-1 or 2 players get stuck at Connecting... from the Main Menu.
+-Bye event never arrives because Player closes sockets before, thus it cannot be send. Send events for these type of TCP packets instead than using bools.
+-Play again, the first player connected starts moving down, like if it were falling. Why?
+
 ----------
 
 -Be careful with the Tile object y position!

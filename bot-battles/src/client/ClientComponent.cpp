@@ -45,6 +45,7 @@ ClientComponent::ClientComponent()
     , m_disconnectSockets(false)
     , m_sendHelloPacket(false)
     , m_sendReHelloPacket(false)
+    , m_sendByePacket(false)
 {
 }
 
