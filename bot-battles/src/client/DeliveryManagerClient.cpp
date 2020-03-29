@@ -28,8 +28,8 @@ bool DeliveryManagerClient::ReadState(InputMemoryStream& inputStream)
 void DeliveryManagerClient::Reset()
 {
     m_pendingAcks.clear();
-    //m_nextOutgoingSequenceNumber = 0;
-    //m_nextExpectedSequenceNumber = 0;
+    m_nextOutgoingSequenceNumber = 0;
+    m_nextExpectedSequenceNumber = 0;
     m_deliveriesCount = 0;
 }
 

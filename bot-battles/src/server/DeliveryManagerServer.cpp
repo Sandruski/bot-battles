@@ -67,8 +67,8 @@ U32 DeliveryManagerServer::GetNextExpectedSequenceNumber() const
 void DeliveryManagerServer::Reset()
 {
     m_deliveries.clear();
-    //m_nextOutgoingSequenceNumber = 0;
-    //m_nextExpectedSequenceNumber = 0;
+    m_nextOutgoingSequenceNumber = 0;
+    m_nextExpectedSequenceNumber = 0;
     m_deliveriesCount = 0;
     m_successfulDeliveriesCount = 0;
     m_failedDeliveriesCount = 0;
