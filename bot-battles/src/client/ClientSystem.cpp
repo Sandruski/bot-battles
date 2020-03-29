@@ -399,13 +399,13 @@ bool ClientSystem::SendInputPacket(ClientComponent& clientComponent) const
     inputPacket.Write(ClientMessageType::INPUT);
     inputPacket.Write(clientComponent.m_playerID);
 
-    ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
-    inputPacket.Write(scoreboardComponent.m_gameCount);
-
     clientComponent.m_deliveryManager.WriteState(inputPacket);
 
     F32 timestamp = MyTime::GetInstance().GetTime();
     inputPacket.Write(timestamp);
+
+    ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
+    inputPacket.Write(scoreboardComponent.m_gameCount);
 
     const bool hasInputs = !clientComponent.m_inputBuffer.IsEmpty();
     inputPacket.Write(hasInputs);

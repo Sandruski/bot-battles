@@ -178,7 +178,7 @@ void ServerSystem::ReceiveIncomingPackets(ServerComponent& serverComponent)
                         disconnections.emplace_back(TCPSock);
                     } else if (readByteCount == 0) {
                         // TODO: graceful disconnection if readByteCount == 0?
-                        break;
+                        continue;
                     }
                 }
             }
@@ -379,14 +379,6 @@ void ServerSystem::ReceiveInputPacket(ServerComponent& serverComponent, InputMem
         return;
     }
 
-    U32 gameCount = 0;
-    inputStream.Read(gameCount);
-    ScoreboardComponent& scoreboardComponent = g_gameServer->GetScoreboardComponent();
-    if (scoreboardComponent.m_gameCount != gameCount) {
-        ELOG("Input packet received from another game");
-        return;
-    }
-
     const bool isValid = clientProxy.lock()->m_deliveryManager.ReadState(inputStream);
     if (!isValid) {
         ELOG("Input packet received but skipped because it is not valid");
@@ -396,6 +388,14 @@ void ServerSystem::ReceiveInputPacket(ServerComponent& serverComponent, InputMem
     ILOG("Input packet received from player %u %s", playerID, clientProxy.lock()->GetName());
 
     inputStream.Read(clientProxy.lock()->m_timestamp);
+
+    U32 gameCount = 0;
+    inputStream.Read(gameCount);
+    ScoreboardComponent& scoreboardComponent = g_gameServer->GetScoreboardComponent();
+    if (scoreboardComponent.m_gameCount != gameCount) {
+        ELOG("Input packet received from another game");
+        return;
+    }
 
     bool hasInputs = false;
     inputStream.Read(hasInputs);

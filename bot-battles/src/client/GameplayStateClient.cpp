@@ -36,9 +36,6 @@ bool GameplayStateClient::Exit() const
 {
     ILOG("Exiting %s...", GetName());
 
-    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-    gameplayComponent.m_phase = GameplayComponent::GameplayPhase::NONE;
-
     g_gameClient->GetLinkingContext().ClearEntities();
     g_gameClient->GetEntityManager().ClearEntities();
 

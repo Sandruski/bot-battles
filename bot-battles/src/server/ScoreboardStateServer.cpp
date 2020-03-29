@@ -26,6 +26,10 @@ bool ScoreboardStateServer::Enter() const
 {
     ILOG("Entering %s...", GetName());
 
+    ScoreboardComponent& scoreboardComponent = g_gameServer->GetScoreboardComponent();
+    scoreboardComponent.m_phase = ScoreboardComponent::ScoreboardPhase::RESULTS;
+    ++scoreboardComponent.m_gameCount;
+
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.GetPlayerIDToClientProxyMap();
     for (const auto& pair : playerIDToClientProxy) {

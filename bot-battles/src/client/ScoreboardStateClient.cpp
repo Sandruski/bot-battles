@@ -25,18 +25,15 @@ bool ScoreboardStateClient::Enter() const
 
     ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
     scoreboardComponent.m_phase = ScoreboardComponent::ScoreboardPhase::RESULTS;
+    scoreboardComponent.m_timer.Start();
 
     Entity background = g_gameClient->GetEntityManager().AddEntity();
-
     WindowComponent& windowComponent = g_gameClient->GetWindowComponent();
     std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().AddComponent<TransformComponent>(background);
     transformComponent.lock()->m_position = { static_cast<F32>(windowComponent.m_resolution.x) / 2.0f, static_cast<F32>(windowComponent.m_resolution.y) / 2.0f, static_cast<F32>(LayerType::BACKGROUND) };
-
     std::weak_ptr<SpriteResource> spriteResource = g_gameClient->GetResourceManager().AddResource<SpriteResource>("scoreboardBackground.png", TEXTURES_DIR, true);
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameClient->GetComponentManager().AddComponent<SpriteComponent>(background);
     spriteComponent.lock()->m_spriteResource = spriteResource;
-
-    scoreboardComponent.m_timer.Start();
 
     return true;
 }
