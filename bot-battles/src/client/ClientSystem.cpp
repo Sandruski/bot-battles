@@ -467,8 +467,8 @@ void ClientSystem::ConnectionReset(ClientComponent& clientComponent)
 //----------------------------------------------------------------------------------------------------
 void ClientSystem::Disconnect(ClientComponent& clientComponent)
 {
-    clientComponent.m_playerID = INVALID_PLAYER_ID;
     clientComponent.Reset();
+    clientComponent.m_playerID = INVALID_PLAYER_ID;
 
     Event newEvent;
     newEvent.eventType = EventType::PLAYER_REMOVED;

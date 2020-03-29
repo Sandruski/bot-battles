@@ -565,6 +565,7 @@ void ServerSystem::Disconnect(ServerComponent& serverComponent, PlayerID playerI
     serverComponent.RemoveTCPSocket(clientProxy.lock()->GetSocketAddress());
     ILOG("TCP socket removed");
 
+    clientProxy.lock()->Reset();
     serverComponent.RemovePlayer(playerID);
 
     Event newEvent;

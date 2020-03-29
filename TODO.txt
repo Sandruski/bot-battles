@@ -14,9 +14,7 @@ PLAYLIST:
 -Timeout when Connecting... clients to not wait forever. Return to the SETUP state.
 
 Known bugs:
--1 or 2 players get stuck at Connecting... from the Main Menu.
--Bye event never arrives because Player closes sockets before, thus it cannot be send. Send events for these type of TCP packets instead than using bools.
--Play again, the first player connected starts moving down, like if it were falling. Why?
+-Play->Main Menu->Play Again: client delay receiving the state packet + client can still send inputs to server (crash).
 
 ----------
 
