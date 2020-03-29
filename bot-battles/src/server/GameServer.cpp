@@ -138,14 +138,13 @@ bool GameServer::Update()
         }
     }
 
-    MainMenuComponent::MainMenuPhase mainMenuPhase = m_mainMenuComponent.m_phase;
-    if (mainMenuPhase != MainMenuComponent::MainMenuPhase::SETUP) {
+    if (m_mainMenuComponent.m_phase != MainMenuComponent::MainMenuPhase::SETUP) {
         serverSystem.lock()->ReceiveIncomingPackets(m_serverComponent);
     }
 
     ret = Game::Update();
 
-    if (mainMenuPhase != MainMenuComponent::MainMenuPhase::SETUP) {
+    if (m_mainMenuComponent.m_phase != MainMenuComponent::MainMenuPhase::SETUP) {
         serverSystem.lock()->SendOutgoingPackets(m_serverComponent);
     }
 
