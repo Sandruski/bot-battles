@@ -43,7 +43,22 @@ bool ScoreboardStateServer::Enter() const
 //----------------------------------------------------------------------------------------------------
 bool ScoreboardStateServer::Update() const
 {
-    g_gameServer->GetFSM().ChangeState(g_gameServer->GetConfig().m_onlineSceneName.c_str());
+    ScoreboardComponent& scoreboardComponent = g_gameServer->GetScoreboardComponent();
+    switch (scoreboardComponent.m_phase) {
+    case ScoreboardComponent::ScoreboardPhase::RESULTS: {
+        UpdateResults(scoreboardComponent);
+        break;
+    }
+
+    case ScoreboardComponent::ScoreboardPhase::RESTART: {
+        UpdateRestart();
+        break;
+    }
+
+    default: {
+        break;
+    }
+    }
 
     return true;
 }
@@ -57,5 +72,17 @@ bool ScoreboardStateServer::Exit() const
     scoreboardComponent.m_phase = ScoreboardComponent::ScoreboardPhase::NONE;
 
     return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+void ScoreboardStateServer::UpdateResults(ScoreboardComponent& scoreboardComponent) const
+{
+    scoreboardComponent.m_phase = ScoreboardComponent::ScoreboardPhase::RESTART;
+}
+
+//----------------------------------------------------------------------------------------------------
+void ScoreboardStateServer::UpdateRestart() const
+{
+    g_gameServer->GetFSM().ChangeState(g_gameServer->GetConfig().m_onlineSceneName.c_str());
 }
 }

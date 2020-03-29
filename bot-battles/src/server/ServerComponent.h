@@ -35,9 +35,6 @@ struct ServerComponent : public Component {
 
     std::weak_ptr<TCPSocket> GetTCPSocket(const SocketAddress& socketAddress) const;
 
-    void ConnectSockets();
-    void DisconnectSockets();
-
     std::shared_ptr<UDPSocket> m_UDPSocket;
     std::shared_ptr<TCPSocket> m_TCPListenSocket;
     std::vector<std::shared_ptr<TCPSocket>> m_TCPSockets;
@@ -53,8 +50,8 @@ struct ServerComponent : public Component {
 
     bool m_isServerRewind;
 
-    bool m_connectSockets;
-    bool m_disconnectSockets;
+    bool m_connect;
+    bool m_disconnect;
 };
 }
 

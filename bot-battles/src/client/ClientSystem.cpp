@@ -81,16 +81,20 @@ bool ClientSystem::ConnectSockets(ClientComponent& clientComponent)
 
     clientComponent.m_sendHelloPacket = true;
 
+    ILOG("Sockets connected");
+
     return ret;
 }
 
 //----------------------------------------------------------------------------------------------------
 bool ClientSystem::DisconnectSockets(ClientComponent& clientComponent)
 {
+    Disconnect(clientComponent);
+
     clientComponent.m_UDPSocket = nullptr;
     clientComponent.m_TCPSocket = nullptr;
 
-    Disconnect(clientComponent);
+    ILOG("Sockets disconnected");
 
     return true;
 }
@@ -147,7 +151,7 @@ void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent)
         }
 
         GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-        if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::NONE) {
+        if (gameplayComponent.m_phase == GameplayComponent::GameplayPhase::PLAY) {
             F32 timeDiff = MyTime::GetInstance().GetTime() - clientComponent.m_lastPacketTime;
             if (timeDiff >= DISCONNECT_TIMEOUT) {
                 DisconnectSockets(clientComponent);
@@ -159,42 +163,42 @@ void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent)
 //----------------------------------------------------------------------------------------------------
 void ClientSystem::SendOutgoingPackets(ClientComponent& clientComponent)
 {
-    if (clientComponent.m_sendHelloPacket) {
-        SendHelloPacket(clientComponent);
-        clientComponent.m_sendHelloPacket = false;
-    }
-    if (clientComponent.m_sendReHelloPacket) {
-        SendReHelloPacket(clientComponent);
-        clientComponent.m_sendReHelloPacket = false;
-    }
-    if (clientComponent.m_sendByePacket) {
-        SendByePacket(clientComponent);
-        clientComponent.m_sendByePacket = false;
-    }
-
-    if (clientComponent.m_UDPSocket == nullptr) {
-        return;
+    if (clientComponent.m_TCPSocket != nullptr) {
+        if (clientComponent.m_sendHelloPacket) {
+            SendHelloPacket(clientComponent);
+            clientComponent.m_sendHelloPacket = false;
+        }
+        if (clientComponent.m_sendReHelloPacket) {
+            SendReHelloPacket(clientComponent);
+            clientComponent.m_sendReHelloPacket = false;
+        }
+        if (clientComponent.m_sendByePacket) {
+            SendByePacket(clientComponent);
+            clientComponent.m_sendByePacket = false;
+        }
     }
 
-    if (!clientComponent.m_inputBuffer.IsEmpty()) {
-        U32 index = clientComponent.m_inputBuffer.m_front;
-        bool isFound = false;
-        while (index < clientComponent.m_inputBuffer.m_back) {
-            const Input& input = clientComponent.m_inputBuffer.Get(index);
-            if (input.GetFrame() == clientComponent.m_lastAckdFrame) {
-                isFound = true;
-                break;
+    if (clientComponent.m_UDPSocket != nullptr) {
+        if (!clientComponent.m_inputBuffer.IsEmpty()) {
+            U32 index = clientComponent.m_inputBuffer.m_front;
+            bool isFound = false;
+            while (index < clientComponent.m_inputBuffer.m_back) {
+                const Input& input = clientComponent.m_inputBuffer.Get(index);
+                if (input.GetFrame() == clientComponent.m_lastAckdFrame) {
+                    isFound = true;
+                    break;
+                }
+                ++index;
             }
-            ++index;
+            if (isFound) {
+                clientComponent.m_inputBuffer.Remove(index);
+            }
         }
-        if (isFound) {
-            clientComponent.m_inputBuffer.Remove(index);
-        }
-    }
 
-    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-    if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::NONE) {
-        SendInputPacket(clientComponent);
+        GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+        if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::NONE) {
+            SendInputPacket(clientComponent);
+        }
     }
 }
 

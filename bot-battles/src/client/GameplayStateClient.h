@@ -5,8 +5,6 @@
 
 namespace sand {
 
-struct GameplayComponent;
-
 //----------------------------------------------------------------------------------------------------
 class GameplayStateClient : public State {
 public:

@@ -39,9 +39,6 @@ bool MainMenuStateServer::Enter() const
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().AddComponent<SpriteComponent>(background);
     spriteComponent.lock()->m_spriteResource = spriteResource;
 
-    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
-    serverComponent.DisconnectSockets();
-
     return true;
 }
 
@@ -135,7 +132,7 @@ void MainMenuStateServer::RenderSetupGui(MainMenuComponent& mainMenuComponent) c
     if (ImGui::Button(start)) {
         mainMenuComponent.m_phase = MainMenuComponent::MainMenuPhase::CONNECT;
 
-        serverComponent.ConnectSockets();
+        serverComponent.m_connect = true;
     }
 }
 }

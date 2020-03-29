@@ -5,6 +5,8 @@
 
 namespace sand {
 
+struct ScoreboardComponent;
+
 //----------------------------------------------------------------------------------------------------
 class ScoreboardStateServer : public State {
 public:
@@ -19,6 +21,10 @@ public:
     bool Enter() const override;
     bool Update() const override;
     bool Exit() const override;
+
+private:
+    void UpdateResults(ScoreboardComponent& scoreboardComponent) const;
+    void UpdateRestart() const;
 };
 }
 

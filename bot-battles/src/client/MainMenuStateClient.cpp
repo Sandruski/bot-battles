@@ -38,9 +38,6 @@ bool MainMenuStateClient::Enter() const
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameClient->GetComponentManager().AddComponent<SpriteComponent>(background);
     spriteComponent.lock()->m_spriteResource = spriteResource;
 
-    //ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    //clientComponent.DisconnectSockets();
-
     return true;
 }
 

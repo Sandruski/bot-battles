@@ -122,6 +122,13 @@ bool ServerSystem::ConnectSockets(ServerComponent& serverComponent)
 //----------------------------------------------------------------------------------------------------
 bool ServerSystem::DisconnectSockets(ServerComponent& serverComponent)
 {
+    const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.GetPlayerIDToClientProxyMap();
+    for (const auto& pair : playerIDToClientProxy) {
+        PlayerID playerID = pair.first;
+        Entity entity = serverComponent.GetEntity(playerID);
+        Disconnect(serverComponent, playerID, entity);
+    }
+
     // TODO: send bye packet
 
     serverComponent.m_UDPSocket = nullptr;
@@ -213,7 +220,7 @@ void ServerSystem::ReceiveIncomingPackets(ServerComponent& serverComponent)
         }
 
         GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
-        if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::NONE) {
+        if (gameplayComponent.m_phase == GameplayComponent::GameplayPhase::PLAY) {
             std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>> disconnections;
             const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.GetPlayerIDToClientProxyMap();
             for (const auto& pair : playerIDToClientProxy) {
@@ -244,27 +251,27 @@ void ServerSystem::SendOutgoingPackets(ServerComponent& serverComponent)
         PlayerID playerID = pair.first;
         std::shared_ptr<ClientProxy> clientProxy = pair.second;
 
-        if (clientProxy->m_sendWelcomePacket) {
-            SendWelcomePacket(serverComponent, playerID, clientProxy);
-            clientProxy->m_sendWelcomePacket = false;
-        }
-        if (clientProxy->m_sendReWelcomePacket) {
-            SendReWelcomePacket(serverComponent, playerID, clientProxy);
-            clientProxy->m_sendReWelcomePacket = false;
-        }
-        if (clientProxy->m_sendResultPacket) {
-            SendResultPacket(serverComponent, playerID, clientProxy);
-            clientProxy->m_sendResultPacket = false;
-        }
-
-        if (serverComponent.m_connectSockets) {
-            return;
+        if (serverComponent.m_TCPListenSocket != nullptr) {
+            if (clientProxy->m_sendWelcomePacket) {
+                SendWelcomePacket(serverComponent, playerID, clientProxy);
+                clientProxy->m_sendWelcomePacket = false;
+            }
+            if (clientProxy->m_sendReWelcomePacket) {
+                SendReWelcomePacket(serverComponent, playerID, clientProxy);
+                clientProxy->m_sendReWelcomePacket = false;
+            }
+            if (clientProxy->m_sendResultPacket) {
+                SendResultPacket(serverComponent, playerID, clientProxy);
+                clientProxy->m_sendResultPacket = false;
+            }
         }
 
-        GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
-        if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::NONE) {
-            clientProxy->m_deliveryManager.ProcessTimedOutPackets();
-            SendStatePacket(serverComponent, playerID, clientProxy);
+        if (serverComponent.m_UDPSocket != nullptr) {
+            GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
+            if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::NONE) {
+                clientProxy->m_deliveryManager.ProcessTimedOutPackets();
+                SendStatePacket(serverComponent, playerID, clientProxy);
+            }
         }
     }
 }
@@ -554,8 +561,6 @@ void ServerSystem::ConnectionReset(ServerComponent& serverComponent, const Socke
 //----------------------------------------------------------------------------------------------------
 void ServerSystem::Disconnect(ServerComponent& serverComponent, PlayerID playerID, Entity entity)
 {
-    ILOG("Disconnecting player %u...", playerID);
-
     std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
     serverComponent.RemoveTCPSocket(clientProxy.lock()->GetSocketAddress());
     ILOG("TCP socket removed");

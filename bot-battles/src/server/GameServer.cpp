@@ -126,15 +126,15 @@ bool GameServer::Update()
 
     std::weak_ptr<ServerSystem> serverSystem = m_systemManager->GetSystem<ServerSystem>();
 
-    if (m_serverComponent.m_connectSockets) {
+    if (m_serverComponent.m_connect) {
         if (serverSystem.lock()->ConnectSockets(m_serverComponent)) {
-            m_serverComponent.m_connectSockets = false;
+            m_serverComponent.m_connect = false;
         }
     }
 
-    if (m_serverComponent.m_disconnectSockets) {
+    if (m_serverComponent.m_disconnect) {
         if (serverSystem.lock()->DisconnectSockets(m_serverComponent)) {
-            m_serverComponent.m_disconnectSockets = false;
+            m_serverComponent.m_disconnect = false;
         }
     }
 

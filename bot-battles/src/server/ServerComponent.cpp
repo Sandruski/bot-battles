@@ -18,8 +18,8 @@ ServerComponent::ServerComponent()
     , m_availablePlayerIDs()
     , m_map()
     , m_isServerRewind(false)
-    , m_connectSockets(false)
-    , m_disconnectSockets(false)
+    , m_connect(false)
+    , m_disconnect(false)
 {
     m_playerIDToClientProxy.reserve(MAX_PLAYER_IDS);
     m_entityToPlayerID.reserve(MAX_PLAYER_IDS);
@@ -192,19 +192,5 @@ std::weak_ptr<TCPSocket> ServerComponent::GetTCPSocket(const SocketAddress& sock
     }
 
     return std::weak_ptr<TCPSocket>();
-}
-
-//----------------------------------------------------------------------------------------------------
-void ServerComponent::ConnectSockets()
-{
-    m_connectSockets = true;
-    m_disconnectSockets = false;
-}
-
-//----------------------------------------------------------------------------------------------------
-void ServerComponent::DisconnectSockets()
-{
-    m_disconnectSockets = true;
-    m_connectSockets = false;
 }
 }
