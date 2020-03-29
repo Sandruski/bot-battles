@@ -45,6 +45,9 @@ bool ScoreboardStateClient::Update() const
     F32 time = static_cast<F32>(scoreboardComponent.m_timer.ReadSec());
     if (time >= scoreboardComponent.m_mainMenuTimeout) {
         g_gameClient->GetFSM().ChangeState(g_gameClient->GetConfig().m_offlineSceneName.c_str());
+
+        ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+        clientComponent.m_sendByePacket = true;
     }
 
     return true;
