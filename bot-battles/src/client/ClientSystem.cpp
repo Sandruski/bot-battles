@@ -122,10 +122,9 @@ void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent)
                     packet.SetCapacity(readByteCount);
                     packet.ResetHead();
                     ReceivePacket(clientComponent, packet);
-                } else if (readByteCount == -WSAECONNRESET) {
+                } else if (readByteCount == -WSAECONNRESET || readByteCount == 0) {
                     ConnectionReset(clientComponent);
-                } else if (readByteCount == 0) {
-                    // TODO: graceful disconnection if readByteCount == 0?
+                } else if (readByteCount == -WSAEWOULDBLOCK) {
                 }
             }
         }
@@ -142,10 +141,9 @@ void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent)
                 packet.ResetHead();
                 ReceivePacket(clientComponent, packet);
                 ++receivedPacketCount;
-            } else if (readByteCount == -WSAECONNRESET) {
+            } else if (readByteCount == -WSAECONNRESET || readByteCount == 0) {
                 ConnectionReset(clientComponent);
-            } else if (readByteCount == 0 || -WSAEWOULDBLOCK) {
-                // TODO: graceful disconnection if readByteCount == 0?
+            } else if (readByteCount == -WSAEWOULDBLOCK) {
                 break;
             }
         }

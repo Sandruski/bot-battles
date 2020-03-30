@@ -16,6 +16,7 @@ TO DO TOMORROW:
 -Timeout when Connecting... (Main Menu) and Waiting... (Scoreboard) clients to not wait forever.
 -Handle timeout when playing and server is disconnected.
 -Server send Bye message when disconnecting and Clients handle it in all online states?
+-Be careful with the UDP disconnect condition == Play. When they are in Start this won't happen (bugs).
 
 ----------
 

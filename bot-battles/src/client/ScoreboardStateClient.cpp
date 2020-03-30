@@ -111,8 +111,15 @@ void ScoreboardStateClient::OnNotify(const Event& event)
 {
     switch (event.eventType) {
 
+        // V. Gameplay
     case EventType::REWELCOME_RECEIVED: {
         OnReWelcomeReceived();
+        break;
+    }
+
+        // X. Main Menu
+    case EventType::PLAYER_REMOVED: {
+        OnPlayerRemoved();
         break;
     }
 
@@ -150,6 +157,7 @@ void ScoreboardStateClient::RenderResultsGui(ScoreboardComponent& scoreboardComp
     }
     ImGui::SetCursorPosX(contentRegionMax.x - mainMenuButtonSize.x);
     ImGui::SetCursorPosY(contentRegionMax.y - mainMenuButtonSize.y);
+    // X. Main Menu
     if (ImGui::Button(mainMenu)) {
         g_gameClient->GetFSM().ChangeState(g_gameClient->GetConfig().m_offlineSceneName.c_str());
 
@@ -190,5 +198,11 @@ void ScoreboardStateClient::RenderRestartGui(ScoreboardComponent& scoreboardComp
 void ScoreboardStateClient::OnReWelcomeReceived() const
 {
     g_gameClient->GetFSM().ChangeState(g_gameClient->GetConfig().m_onlineSceneName.c_str());
+}
+
+//----------------------------------------------------------------------------------------------------
+void ScoreboardStateClient::OnPlayerRemoved() const
+{
+    g_gameClient->GetFSM().ChangeState(g_gameClient->GetConfig().m_offlineSceneName.c_str());
 }
 }

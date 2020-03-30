@@ -30,6 +30,7 @@ private:
     void RenderRestartGui(ScoreboardComponent& scoreboardComponent) const;
 
     void OnReWelcomeReceived() const;
+    void OnPlayerRemoved() const;
 };
 }
 

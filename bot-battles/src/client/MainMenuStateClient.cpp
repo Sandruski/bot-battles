@@ -99,8 +99,15 @@ void MainMenuStateClient::OnNotify(const Event& event)
 {
     switch (event.eventType) {
 
+        // V. Gameplay
     case EventType::WELCOME_RECEIVED: {
         OnWelcomeReceived();
+        break;
+    }
+
+        // X. Main Menu
+    case EventType::PLAYER_REMOVED: {
+        OnPlayerRemoved();
         break;
     }
 
@@ -158,6 +165,7 @@ void MainMenuStateClient::RenderConnectGui(MainMenuComponent& mainMenuComponent)
     ImGui::SetCursorPosX(contentRegionMax.x - buttonSize.x);
     ImGui::SetCursorPosY(contentRegionMax.y - buttonSize.y);
     if (ImGui::Button(cancel)) {
+        // X. Main Menu
         mainMenuComponent.m_phase = MainMenuComponent::MainMenuPhase::SETUP;
 
         ClientComponent& clientComponent = g_gameClient->GetClientComponent();
@@ -169,5 +177,15 @@ void MainMenuStateClient::RenderConnectGui(MainMenuComponent& mainMenuComponent)
 void MainMenuStateClient::OnWelcomeReceived() const
 {
     g_gameClient->GetFSM().ChangeState(g_gameClient->GetConfig().m_onlineSceneName.c_str());
+}
+
+//----------------------------------------------------------------------------------------------------
+void MainMenuStateClient::OnPlayerRemoved() const
+{
+    MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
+    mainMenuComponent.m_phase = MainMenuComponent::MainMenuPhase::SETUP;
+
+    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    clientComponent.m_disconnect = true;
 }
 }

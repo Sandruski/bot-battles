@@ -23,6 +23,7 @@ public:
 
 private:
     void OnResultReceived() const;
+    void OnPlayerRemoved() const;
 };
 }
 

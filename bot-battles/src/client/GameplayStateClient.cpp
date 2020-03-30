@@ -52,8 +52,15 @@ void GameplayStateClient::OnNotify(const Event& event)
 {
     switch (event.eventType) {
 
+        // V. Scoreboard
     case EventType::RESULT_RECEIVED: {
         OnResultReceived();
+        break;
+    }
+
+        // X. Main Menu
+    case EventType::PLAYER_REMOVED: {
+        OnPlayerRemoved();
         break;
     }
 
@@ -67,5 +74,11 @@ void GameplayStateClient::OnNotify(const Event& event)
 void GameplayStateClient::OnResultReceived() const
 {
     g_gameClient->GetFSM().ChangeState("Scoreboard"); // TODO: config
+}
+
+//----------------------------------------------------------------------------------------------------
+void GameplayStateClient::OnPlayerRemoved() const
+{
+    g_gameClient->GetFSM().ChangeState(g_gameClient->GetConfig().m_offlineSceneName.c_str());
 }
 }

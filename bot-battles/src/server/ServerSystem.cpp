@@ -157,7 +157,6 @@ void ServerSystem::ReceiveIncomingPackets(ServerComponent& serverComponent)
         timeout.tv_usec = 0;
         int iResult = select(0, &readSet, nullptr, nullptr, &timeout);
         if (iResult != 0 && iResult != SOCKET_ERROR) {
-            std::vector<std::shared_ptr<TCPSocket>> disconnections;
             for (U32 i = 0; i < serverComponent.m_TCPSockets.size(); ++i) {
                 std::shared_ptr<TCPSocket> TCPSock = serverComponent.m_TCPSockets.at(i);
                 if (FD_ISSET(TCPSock->GetSocket(), &readSet)) {
@@ -181,21 +180,13 @@ void ServerSystem::ReceiveIncomingPackets(ServerComponent& serverComponent)
                             packet.SetCapacity(readByteCount);
                             packet.ResetHead();
                             ReceivePacket(serverComponent, packet, TCPSock->GetRemoteSocketAddress());
-                        } else if (readByteCount == -WSAECONNRESET) {
+                        } else if (readByteCount == -WSAECONNRESET || readByteCount == 0) {
                             ConnectionReset(serverComponent, TCPSock->GetRemoteSocketAddress());
-                            disconnections.emplace_back(TCPSock);
-                        } else if (readByteCount == 0) {
-                            // TODO: graceful disconnection if readByteCount == 0?
+                        } else if (readByteCount == -WSAEWOULDBLOCK) {
                             continue;
                         }
                     }
                 }
-            }
-
-            for (const auto& disconnection : disconnections) {
-                PlayerID playerID = serverComponent.GetPlayerID(disconnection->GetRemoteSocketAddress());
-                Entity entity = serverComponent.GetEntity(playerID);
-                Disconnect(serverComponent, playerID, entity);
             }
         }
     }
@@ -211,10 +202,9 @@ void ServerSystem::ReceiveIncomingPackets(ServerComponent& serverComponent)
                 packet.ResetHead();
                 ReceivePacket(serverComponent, packet, fromSocketAddress);
                 ++receivedPacketCount;
-            } else if (readByteCount == -WSAECONNRESET) {
+            } else if (readByteCount == -WSAECONNRESET || readByteCount == 0) {
                 ConnectionReset(serverComponent, fromSocketAddress);
-            } else if (readByteCount == 0 || -WSAEWOULDBLOCK) {
-                // TODO: graceful disconnection if readByteCount == 0?
+            } else if (readByteCount == -WSAEWOULDBLOCK) {
                 break;
             }
         }
@@ -562,6 +552,10 @@ void ServerSystem::ConnectionReset(ServerComponent& serverComponent, const Socke
 void ServerSystem::Disconnect(ServerComponent& serverComponent, PlayerID playerID, Entity entity)
 {
     std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
+    if (clientProxy.expired()) {
+        return;
+    }
+
     serverComponent.RemoveTCPSocket(clientProxy.lock()->GetSocketAddress());
     ILOG("TCP socket removed");
 

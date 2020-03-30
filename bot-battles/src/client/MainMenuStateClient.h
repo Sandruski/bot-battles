@@ -29,6 +29,7 @@ private:
     void RenderConnectGui(MainMenuComponent& mainMenuComponent) const;
 
     void OnWelcomeReceived() const;
+    void OnPlayerRemoved() const;
 };
 }
 
