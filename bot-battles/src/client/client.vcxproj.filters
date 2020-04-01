@@ -49,6 +49,24 @@
     <Filter Include="Dependencies\stb">
       <UniqueIdentifier>{bbc7c8c2-5351-4d4f-8827-7555b846f083}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\States\Main Menu States">
+      <UniqueIdentifier>{f202c3e2-4792-4ed1-b488-0aacde4073a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\States\Scoreboard States">
+      <UniqueIdentifier>{31eef6b0-6bd5-4ca9-a03f-b573573eb38b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\States\Gameplay States">
+      <UniqueIdentifier>{8d2ddb02-87d7-48bd-83db-4ed72823df82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\States\Main Menu States">
+      <UniqueIdentifier>{f0f55fe1-c1af-48a4-a8f0-04e97938bfb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\States\Gameplay States">
+      <UniqueIdentifier>{b14fd197-e946-4cad-8f82-53b797675f2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\States\Scoreboard States">
+      <UniqueIdentifier>{03c2cb01-580c-4ef9-b05f-ad5d0b693ef7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -129,6 +147,27 @@
     <ClCompile Include="ScoreboardStateClient.cpp">
       <Filter>Source Files\States</Filter>
     </ClCompile>
+    <ClCompile Include="ConnectStateClient.cpp">
+      <Filter>Source Files\States\Main Menu States</Filter>
+    </ClCompile>
+    <ClCompile Include="SetupStateClient.cpp">
+      <Filter>Source Files\States\Main Menu States</Filter>
+    </ClCompile>
+    <ClCompile Include="StartStateClient.cpp">
+      <Filter>Source Files\States\Gameplay States</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayStateClient.cpp">
+      <Filter>Source Files\States\Gameplay States</Filter>
+    </ClCompile>
+    <ClCompile Include="ResultsStateClient.cpp">
+      <Filter>Source Files\States\Scoreboard States</Filter>
+    </ClCompile>
+    <ClCompile Include="RestartStateClient.cpp">
+      <Filter>Source Files\States\Scoreboard States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\source\imgui\imgui_stdlib.cpp">
+      <Filter>Dependencies\imgui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientSystem.h">
@@ -184,6 +223,24 @@
     </ClInclude>
     <ClInclude Include="ScoreboardStateClient.h">
       <Filter>Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="SetupStateClient.h">
+      <Filter>Header Files\States\Main Menu States</Filter>
+    </ClInclude>
+    <ClInclude Include="ConnectStateClient.h">
+      <Filter>Header Files\States\Main Menu States</Filter>
+    </ClInclude>
+    <ClInclude Include="ResultsStateClient.h">
+      <Filter>Header Files\States\Scoreboard States</Filter>
+    </ClInclude>
+    <ClInclude Include="StartStateClient.h">
+      <Filter>Header Files\States\Gameplay States</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayStateClient.h">
+      <Filter>Header Files\States\Gameplay States</Filter>
+    </ClInclude>
+    <ClInclude Include="RestartStateClient.h">
+      <Filter>Header Files\States\Scoreboard States</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

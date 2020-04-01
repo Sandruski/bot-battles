@@ -2,10 +2,11 @@
 
 namespace sand {
 
+// TODO: fill from config with gameplay info
+
 //----------------------------------------------------------------------------------------------------
 GameplayComponent::GameplayComponent()
-    : m_timer()
-    , m_phase(GameplayPhase::NONE)
+    : m_fsm()
 {
 }
 }

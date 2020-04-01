@@ -41,11 +41,6 @@ ClientComponent::ClientComponent()
     , m_isClientPrediction(false)
     , m_isServerReconciliation(false)
     , m_isEntityInterpolation(false)
-    , m_connect(false)
-    , m_disconnect(false)
-    , m_sendHelloPacket(false)
-    , m_sendReHelloPacket(false)
-    , m_sendByePacket(false)
 {
 }
 

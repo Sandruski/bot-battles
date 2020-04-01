@@ -77,6 +77,10 @@ bool GameServer::Init()
     }
 
     std::weak_ptr<ServerSystem> serverSystem = m_systemManager->GetSystem<ServerSystem>();
+    ret = m_fsm->AddObserver(serverSystem);
+    if (!ret) {
+        return ret;
+    }
     ret = m_linkingContext->AddObserver(serverSystem);
     if (!ret) {
         return ret;
@@ -86,11 +90,11 @@ bool GameServer::Init()
     if (!ret) {
         return ret;
     }
-    ret = serverSystem.lock()->AddObserver(serverSystem);
+    ret = serverSystem.lock()->AddObserver(std::weak_ptr<Observer>(m_fsm));
     if (!ret) {
         return ret;
     }
-    ret = serverSystem.lock()->AddObserver(std::weak_ptr<Observer>(m_fsm));
+    ret = serverSystem.lock()->AddObserver(serverSystem);
     if (!ret) {
         return ret;
     }
@@ -125,18 +129,6 @@ bool GameServer::Update()
     bool ret = false;
 
     std::weak_ptr<ServerSystem> serverSystem = m_systemManager->GetSystem<ServerSystem>();
-
-    if (m_serverComponent.m_connect) {
-        if (serverSystem.lock()->ConnectSockets(m_serverComponent)) {
-            m_serverComponent.m_connect = false;
-        }
-    }
-
-    if (m_serverComponent.m_disconnect) {
-        if (serverSystem.lock()->DisconnectSockets(m_serverComponent)) {
-            m_serverComponent.m_disconnect = false;
-        }
-    }
 
     //if (m_mainMenuComponent.m_phase != MainMenuComponent::MainMenuPhase::SETUP) {
     serverSystem.lock()->ReceiveIncomingPackets(m_serverComponent);

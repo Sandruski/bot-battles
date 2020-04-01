@@ -14,16 +14,13 @@ public:
     }
 
 public:
-    const char* GetName() const override;
+    std::string GetName() const override;
 
+    bool Create() const override;
     bool Enter() const override;
     bool Exit() const override;
 
     void OnNotify(const Event& event) override;
-
-private:
-    void OnResultReceived() const;
-    void OnPlayerRemoved() const;
 };
 }
 

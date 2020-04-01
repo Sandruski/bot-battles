@@ -2,14 +2,15 @@
 
 namespace sand {
 
+// TODO: fill from config with gameplay info
+
 //----------------------------------------------------------------------------------------------------
 MainMenuComponent::MainMenuComponent()
-    :
+    : m_fsm()
 #ifdef _CLIENT
-    m_timer()
-    ,
+    , m_guiTimer()
 #endif
-    m_phase(MainMenuPhase::NONE)
+
 {
 }
 }

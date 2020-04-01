@@ -1,28 +1,20 @@
 #ifndef __MAIN_MENU_COMPONENT_H__
 #define __MAIN_MENU_COMPONENT_H__
 
-#include "Component.h"
+#include "FSM.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 // System Component
-struct MainMenuComponent : public Component {
-
-    enum class MainMenuPhase : U16 {
-
-        SETUP,
-        CONNECT,
-
-        NONE
-    };
+struct MainMenuComponent {
 
     MainMenuComponent();
 
+    FSM m_fsm;
 #ifdef _CLIENT
-    MyTimer m_timer;
+    MyTimer m_guiTimer;
 #endif
-    MainMenuPhase m_phase;
 };
 }
 

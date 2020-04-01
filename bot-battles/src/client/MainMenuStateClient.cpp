@@ -1,35 +1,45 @@
 #include "MainMenuStateClient.h"
 
-#include "ClientComponent.h"
 #include "ComponentManager.h"
-#include "Config.h"
+#include "ConnectStateClient.h"
 #include "EntityManager.h"
-#include "FSM.h"
 #include "GameClient.h"
-#include "GameplayComponent.h"
 #include "MainMenuComponent.h"
-#include "ResourceManager.h"
+#include "SetupStateClient.h"
 #include "SpriteComponent.h"
 #include "SpriteResource.h"
-#include "TransformComponent.h"
 #include "WindowComponent.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-const char* MainMenuStateClient::GetName() const
+std::string MainMenuStateClient::GetName() const
 {
     return "MainMenu";
 }
 
 //----------------------------------------------------------------------------------------------------
-bool MainMenuStateClient::Enter() const
+bool MainMenuStateClient::Create() const
 {
-    ILOG("Entering %s...", GetName());
+    bool ret = false;
 
     MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
-    mainMenuComponent.m_phase = MainMenuComponent::MainMenuPhase::SETUP;
+    ret = mainMenuComponent.m_fsm.RegisterState<SetupStateClient>();
+    if (!ret) {
+        return ret;
+    }
+    ret = mainMenuComponent.m_fsm.RegisterState<ConnectStateClient>();
+    if (!ret) {
+        return ret;
+    }
 
+    return ret;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool MainMenuStateClient::Enter() const
+{
+    // Scene
     Entity background = g_gameClient->GetEntityManager().AddEntity();
     WindowComponent& windowComponent = g_gameClient->GetWindowComponent();
     std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().AddComponent<TransformComponent>(background);
@@ -38,12 +48,22 @@ bool MainMenuStateClient::Enter() const
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameClient->GetComponentManager().AddComponent<SpriteComponent>(background);
     spriteComponent.lock()->m_spriteResource = spriteResource;
 
-    return true;
+    MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
+    return mainMenuComponent.m_fsm.ChangeState("Setup");
+}
+
+//----------------------------------------------------------------------------------------------------
+bool MainMenuStateClient::Update() const
+{
+    MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
+    return mainMenuComponent.m_fsm.Update();
 }
 
 //----------------------------------------------------------------------------------------------------
 bool MainMenuStateClient::RenderGui() const
 {
+    bool ret = false;
+
     ImGuiWindowFlags windowFlags = 0;
     windowFlags |= ImGuiWindowFlags_NoResize;
     windowFlags |= ImGuiWindowFlags_NoMove;
@@ -57,39 +77,25 @@ bool MainMenuStateClient::RenderGui() const
     ImVec2 size = ImVec2(static_cast<F32>(windowComponent.m_resolution.y) / 2.0f, static_cast<F32>(windowComponent.m_resolution.x) / 2.0f);
     ImGui::SetNextWindowSize(size, ImGuiCond_Always);
 
-    if (ImGui::Begin(GetName(), nullptr, windowFlags)) {
+    if (ImGui::Begin(GetName().c_str(), nullptr, windowFlags)) {
         MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
-        switch (mainMenuComponent.m_phase) {
-        case MainMenuComponent::MainMenuPhase::SETUP: {
-            RenderSetupGui(mainMenuComponent);
-            break;
-        }
-
-        case MainMenuComponent::MainMenuPhase::CONNECT: {
-            RenderConnectGui(mainMenuComponent);
-            break;
-        }
-
-        default: {
-            break;
-        }
-        }
+        ret = mainMenuComponent.m_fsm.RenderGui();
 
         ImGui::End();
     }
 
-    return true;
+    return ret;
 }
 
 //----------------------------------------------------------------------------------------------------
 bool MainMenuStateClient::Exit() const
 {
-    ILOG("Exiting %s...", GetName());
+    // Scene
+    g_gameClient->GetEntityManager().ClearEntities();
 
     MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
-    mainMenuComponent.m_phase = MainMenuComponent::MainMenuPhase::NONE;
-
-    g_gameClient->GetEntityManager().ClearEntities();
+    std::weak_ptr<State> emptyState = std::weak_ptr<State>();
+    mainMenuComponent.m_fsm.ChangeState(emptyState);
 
     return true;
 }
@@ -97,95 +103,7 @@ bool MainMenuStateClient::Exit() const
 //----------------------------------------------------------------------------------------------------
 void MainMenuStateClient::OnNotify(const Event& event)
 {
-    switch (event.eventType) {
-
-        // V. Gameplay
-    case EventType::WELCOME_RECEIVED: {
-        OnWelcomeReceived();
-        break;
-    }
-
-        // X. Main Menu
-    case EventType::PLAYER_REMOVED: {
-        OnPlayerRemoved();
-        break;
-    }
-
-    default: {
-        break;
-    }
-    }
-}
-
-//----------------------------------------------------------------------------------------------------
-void MainMenuStateClient::RenderSetupGui(MainMenuComponent& mainMenuComponent) const
-{
-    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    ImGui::InputText("IP", &clientComponent.m_ip[0], DEFAULT_INPUT_SIZE);
-    ImGui::InputText("Port", &clientComponent.m_port[0], DEFAULT_INPUT_SIZE);
-
-    ImGui::InputText("Name", &clientComponent.m_name[0], DEFAULT_INPUT_SIZE);
-
-    const char* start = "Start";
-    ImVec2 textSize = ImGui::CalcTextSize(start);
-    ImVec2 framePadding = ImGui::GetStyle().FramePadding;
-    ImVec2 buttonSize = ImVec2(textSize.x + framePadding.x * 2.0f, textSize.y + framePadding.y * 2.0f);
-    ImVec2 contentRegionMax = ImGui::GetWindowContentRegionMax();
-    ImGui::SetCursorPosX(contentRegionMax.x - buttonSize.x);
-    ImGui::SetCursorPosY(contentRegionMax.y - buttonSize.y);
-    if (ImGui::Button(start)) {
-        mainMenuComponent.m_phase = MainMenuComponent::MainMenuPhase::CONNECT;
-        mainMenuComponent.m_timer.Start();
-
-        clientComponent.m_connect = true;
-    }
-}
-
-//----------------------------------------------------------------------------------------------------
-void MainMenuStateClient::RenderConnectGui(MainMenuComponent& mainMenuComponent) const
-{
-    F32 time = static_cast<F32>(mainMenuComponent.m_timer.ReadSec());
-    if (time >= 3.0f) {
-        mainMenuComponent.m_timer.Start();
-    }
-
-    if (time >= 2.0f) {
-        ImGui::Text("Connecting...");
-    } else if (time >= 1.0f) {
-        ImGui::Text("Connecting..");
-    } else if (time >= 0.0f) {
-        ImGui::Text("Connecting.");
-    }
-
-    const char* cancel = "Cancel";
-    ImVec2 textSize = ImGui::CalcTextSize(cancel);
-    ImVec2 framePadding = ImGui::GetStyle().FramePadding;
-    ImVec2 buttonSize = ImVec2(textSize.x + framePadding.x * 2.0f, textSize.y + framePadding.y * 2.0f);
-    ImVec2 contentRegionMax = ImGui::GetWindowContentRegionMax();
-    ImGui::SetCursorPosX(contentRegionMax.x - buttonSize.x);
-    ImGui::SetCursorPosY(contentRegionMax.y - buttonSize.y);
-    if (ImGui::Button(cancel)) {
-        // X. Main Menu
-        mainMenuComponent.m_phase = MainMenuComponent::MainMenuPhase::SETUP;
-
-        ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-        clientComponent.m_disconnect = true;
-    }
-}
-
-//----------------------------------------------------------------------------------------------------
-void MainMenuStateClient::OnWelcomeReceived() const
-{
-    g_gameClient->GetFSM().ChangeState(g_gameClient->GetConfig().m_onlineSceneName.c_str());
-}
-
-//----------------------------------------------------------------------------------------------------
-void MainMenuStateClient::OnPlayerRemoved() const
-{
     MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
-    mainMenuComponent.m_phase = MainMenuComponent::MainMenuPhase::SETUP;
-
-    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    clientComponent.m_disconnect = true;
+    mainMenuComponent.m_fsm.OnNotify(event);
 }
 }

@@ -49,6 +49,24 @@
     <Filter Include="Dependencies\stb">
       <UniqueIdentifier>{4afb4614-36a1-4291-9bb6-78f1b6c9ddab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\States\Gameplay States">
+      <UniqueIdentifier>{51b46cec-028c-4337-9629-cce3b9472024}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\States\Gameplay States">
+      <UniqueIdentifier>{c0e9fede-3989-4dab-955b-83bfe5bc4604}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\States\Main Menu States">
+      <UniqueIdentifier>{48a12808-8d44-4d99-a657-7974c42c6313}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\States\Main Menu States">
+      <UniqueIdentifier>{7e460006-94da-4fad-8379-03dad7775f7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\States\Scoreboard States">
+      <UniqueIdentifier>{bf272ca6-34f0-4597-bb18-86bb5c80fa49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\States\Scoreboard States">
+      <UniqueIdentifier>{36a83916-5d1b-4518-b954-e6468f3f0609}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -141,6 +159,30 @@
     <ClCompile Include="ScoreboardStateServer.cpp">
       <Filter>Source Files\States</Filter>
     </ClCompile>
+    <ClCompile Include="PlayStateServer.h">
+      <Filter>Header Files\States\Gameplay States</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayStateServer.cpp">
+      <Filter>Source Files\States\Gameplay States</Filter>
+    </ClCompile>
+    <ClCompile Include="StartStateServer.cpp">
+      <Filter>Source Files\States\Gameplay States</Filter>
+    </ClCompile>
+    <ClCompile Include="ResultsStateServer.cpp">
+      <Filter>Source Files\States\Scoreboard States</Filter>
+    </ClCompile>
+    <ClCompile Include="RestartStateServer.cpp">
+      <Filter>Source Files\States\Scoreboard States</Filter>
+    </ClCompile>
+    <ClCompile Include="ConnectStateServer.cpp">
+      <Filter>Source Files\States\Main Menu States</Filter>
+    </ClCompile>
+    <ClCompile Include="SetupStateServer.cpp">
+      <Filter>Source Files\States\Main Menu States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\source\imgui\imgui_stdlib.cpp">
+      <Filter>Dependencies\imgui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientProxy.h">
@@ -196,6 +238,21 @@
     </ClInclude>
     <ClInclude Include="ScoreboardStateServer.h">
       <Filter>Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="StartStateServer.h">
+      <Filter>Header Files\States\Gameplay States</Filter>
+    </ClInclude>
+    <ClInclude Include="SetupStateServer.h">
+      <Filter>Header Files\States\Main Menu States</Filter>
+    </ClInclude>
+    <ClInclude Include="ConnectStateServer.h">
+      <Filter>Header Files\States\Main Menu States</Filter>
+    </ClInclude>
+    <ClInclude Include="ResultsStateServer.h">
+      <Filter>Header Files\States\Scoreboard States</Filter>
+    </ClInclude>
+    <ClInclude Include="RestartStateServer.h">
+      <Filter>Header Files\States\Scoreboard States</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

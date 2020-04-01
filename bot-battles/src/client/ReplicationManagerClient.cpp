@@ -11,6 +11,7 @@
 #include "NetworkableReadObject.h"
 #include "RemotePlayerComponent.h"
 #include "ReplicationCommand.h"
+#include "State.h"
 
 namespace sand {
 
@@ -22,7 +23,8 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream) const
     ILOG("Frame received %u", frame);
 
     GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-    if (gameplayComponent.m_phase == GameplayComponent::GameplayPhase::PLAY) {
+    std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
+    if (!currentState.expired() && currentState.lock()->GetName() == "Play") {
         F32 startFrameTime = MyTime::GetInstance().GetStartFrameTime();
         ClientComponent& clientComponent = g_gameClient->GetClientComponent();
         clientComponent.m_frameBuffer.Add(Frame(frame, startFrameTime));

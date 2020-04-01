@@ -10,8 +10,9 @@ namespace sand {
 Config::Config(const std::string& configPath)
     : m_configPath(configPath)
     , m_name()
-    , m_offlineSceneName()
-    , m_onlineSceneName()
+    , m_mainMenuSceneName()
+    , m_gameplaySceneName()
+    , m_scoreboardSceneName()
 {
 }
 
@@ -43,13 +44,17 @@ void Config::LoadFromConfig(const rapidjson::Document& document)
     assert(game["name"].IsString());
     m_name = game["name"].GetString();
 
-    assert(game.HasMember("offlineScene"));
-    assert(game["offlineScene"].IsString());
-    m_offlineSceneName = game["offlineScene"].GetString();
+    assert(game.HasMember("mainMenuScene"));
+    assert(game["mainMenuScene"].IsString());
+    m_mainMenuSceneName = game["mainMenuScene"].GetString();
 
-    assert(game.HasMember("onlineScene"));
-    assert(game["onlineScene"].IsString());
-    m_onlineSceneName = game["onlineScene"].GetString();
+    assert(game.HasMember("gameplayScene"));
+    assert(game["gameplayScene"].IsString());
+    m_gameplaySceneName = game["gameplayScene"].GetString();
+
+    assert(game.HasMember("scoreboardScene"));
+    assert(game["scoreboardScene"].IsString());
+    m_scoreboardSceneName = game["scoreboardScene"].GetString();
 
     assert(document.HasMember("window"));
     assert(document["window"].IsObject());

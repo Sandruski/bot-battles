@@ -194,6 +194,7 @@
     <ClCompile Include="..\dependencies\source\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\dependencies\source\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="..\dependencies\source\imgui\imgui_impl_sdl.cpp" />
+    <ClCompile Include="..\dependencies\source\imgui\imgui_stdlib.cpp" />
     <ClCompile Include="..\dependencies\source\imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\dependencies\source\stb\stb_image.cpp" />
     <ClCompile Include="ClientProxy.cpp" />
@@ -221,13 +222,18 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="PlayStateServer.cpp" />
+    <ClCompile Include="PlayStateServer.h" />
     <ClCompile Include="ReplicationResultManager.cpp" />
     <ClCompile Include="ReplicationResultManager.h" />
     <ClCompile Include="ReplicationManagerServer.cpp" />
+    <ClCompile Include="RestartStateServer.cpp" />
+    <ClCompile Include="ResultsStateServer.cpp" />
     <ClCompile Include="ScoreboardStateServer.cpp" />
     <ClCompile Include="ServerSystem.cpp" />
     <ClCompile Include="ServerComponent.cpp" />
     <ClCompile Include="SpawnerSystem.cpp" />
+    <ClCompile Include="StartStateServer.cpp" />
     <ClCompile Include="TransformComponentServer.cpp" />
     <ClCompile Include="WeaponSystemServer.cpp" />
   </ItemGroup>
@@ -235,6 +241,8 @@
     <ClInclude Include="ClientProxy.h" />
     <ClInclude Include="CollisionSystemServer.h" />
     <ClInclude Include="ConfigServer.h" />
+    <ClCompile Include="ConnectStateServer.cpp" />
+    <ClInclude Include="ConnectStateServer.h" />
     <ClInclude Include="Delivery.h" />
     <ClInclude Include="DeliveryManagerServer.h" />
     <ClInclude Include="GameplayStateServer.h" />
@@ -245,10 +253,15 @@
     <ClInclude Include="MovementSystemServer.h" />
     <ClInclude Include="pchServer.h" />
     <ClInclude Include="ReplicationManagerServer.h" />
+    <ClInclude Include="RestartStateServer.h" />
+    <ClInclude Include="ResultsStateServer.h" />
     <ClInclude Include="ScoreboardStateServer.h" />
     <ClInclude Include="ServerSystem.h" />
     <ClInclude Include="ServerComponent.h" />
+    <ClCompile Include="SetupStateServer.cpp" />
+    <ClInclude Include="SetupStateServer.h" />
     <ClInclude Include="SpawnerSystem.h" />
+    <ClInclude Include="StartStateServer.h" />
     <ClInclude Include="WeaponSystemServer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

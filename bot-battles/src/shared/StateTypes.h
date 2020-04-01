@@ -6,8 +6,16 @@ namespace sand {
 enum class StateType : U16 {
 
     MAIN_MENU,
+    SETUP,
+    CONNECT,
+
     GAMEPLAY,
+    START,
+    PLAY,
+
     SCOREBOARD,
+    RESULTS,
+    RESTART,
 
     COUNT
 };

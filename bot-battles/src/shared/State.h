@@ -8,7 +8,12 @@ class State {
 public:
     virtual ~State() = default;
 
-    virtual const char* GetName() const = 0;
+    virtual std::string GetName() const = 0;
+
+    virtual bool Create() const
+    {
+        return true;
+    }
 
     virtual bool Enter() const
     {
@@ -26,6 +31,11 @@ public:
     }
 
     virtual bool Exit() const
+    {
+        return true;
+    }
+
+    virtual bool Destroy() const
     {
         return true;
     }

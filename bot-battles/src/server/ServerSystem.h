@@ -18,13 +18,11 @@ public:
     }
 
 public:
-    void OnNotify(const Event& event) override;
-
     bool StartUp() override;
     bool PreUpdate() override;
 
-    bool ConnectSockets(ServerComponent& serverComponent);
-    bool DisconnectSockets(ServerComponent& serverComponent);
+    void OnNotify(const Event& event) override;
+
     void ReceiveIncomingPackets(ServerComponent& serverComponent);
     void SendOutgoingPackets(ServerComponent& serverComponent);
 
@@ -32,15 +30,21 @@ private:
     void ReceivePacket(ServerComponent& serverComponent, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress);
     void ReceiveHelloPacket(ServerComponent& serverComponent, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress, PlayerID& playerID);
     void ReceiveReHelloPacket(ServerComponent& serverComponent, InputMemoryStream& inputStream, PlayerID& playerID) const;
-    void ReceiveInputPacket(ServerComponent& serverComponent, InputMemoryStream& inputStream, PlayerID& playerID) const;
     void ReceiveByePacket(ServerComponent& serverComponent, InputMemoryStream& inputStream, PlayerID& playerID);
+    void ReceiveInputPacket(ServerComponent& serverComponent, InputMemoryStream& inputStream, PlayerID& playerID) const;
 
     void SendWelcomePacket(const ServerComponent& serverComponent, PlayerID playerID, std::shared_ptr<ClientProxy> clientProxy) const;
     void SendReWelcomePacket(const ServerComponent& serverComponent, PlayerID playerID, std::shared_ptr<ClientProxy> clientProxy) const;
+    void SendPlayPacket(const ServerComponent& serverComponent, PlayerID playerID, std::shared_ptr<ClientProxy> clientProxy) const;
+    void SendResultsPacket(const ServerComponent& serverComponent, PlayerID playerID, std::shared_ptr<ClientProxy> clientProxy) const;
+    void SendByePacket(ServerComponent& serverComponent, PlayerID playerID, std::shared_ptr<ClientProxy> clientProxy);
     void SendStatePacket(const ServerComponent& serverComponent, PlayerID playerID, std::shared_ptr<ClientProxy> clientProxy) const;
-    void SendResultPacket(const ServerComponent& serverComponent, PlayerID playerID, std::shared_ptr<ClientProxy> clientProxy) const;
+
     bool SendUDPPacket(const ServerComponent& serverComponent, const OutputMemoryStream& outputStream, const SocketAddress& toSocketAddress) const;
     bool SendTCPPacket(const ServerComponent& serverComponent, const OutputMemoryStream& outputStream, const SocketAddress& toSocketAddress) const;
+
+    bool ConnectSockets(ServerComponent& serverComponent);
+    bool DisconnectSockets(ServerComponent& serverComponent);
 
     void ConnectionReset(ServerComponent& serverComponent, const SocketAddress& socketAddress);
     void Disconnect(ServerComponent& serverComponent, PlayerID playerID, Entity entity);

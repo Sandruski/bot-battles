@@ -1,37 +1,42 @@
 #include "GameplayStateServer.h"
 
-#include "ClientProxy.h"
-#include "ComponentManager.h"
-#include "Config.h"
 #include "EntityManager.h"
-#include "FSM.h"
 #include "GameServer.h"
 #include "GameplayComponent.h"
-#include "HealthComponent.h"
 #include "LinkingContext.h"
-#include "MapImporter.h"
-#include "ResourceManager.h"
-#include "SpriteComponent.h"
-#include "SpriteResource.h"
-#include "TransformComponent.h"
-#include "WindowComponent.h"
+#include "PlayStateServer.h"
+#include "StartStateServer.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-const char* GameplayStateServer::GetName() const
+std::string GameplayStateServer::GetName() const
 {
     return "Gameplay";
 }
 
 //----------------------------------------------------------------------------------------------------
-bool GameplayStateServer::Enter() const
+bool GameplayStateServer::Create() const
 {
-    ILOG("Entering %s...", GetName());
+    bool ret = false;
 
     GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
-    gameplayComponent.m_phase = GameplayComponent::GameplayPhase::START;
+    ret = gameplayComponent.m_fsm.RegisterState<StartStateServer>();
+    if (!ret) {
+        return ret;
+    }
+    ret = gameplayComponent.m_fsm.RegisterState<PlayStateServer>();
+    if (!ret) {
+        return ret;
+    }
 
+    return ret;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool GameplayStateServer::Enter() const
+{
+    // Scene
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     std::string path;
     path.append(MAPS_DIR);
@@ -39,21 +44,19 @@ bool GameplayStateServer::Enter() const
     MapImporter::Tilemap tilemap = g_gameServer->GetMapImporter().Load(path);
     g_gameServer->GetMapImporter().Create(tilemap);
 
-    return true;
+    GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
+    return gameplayComponent.m_fsm.ChangeState("Start");
 }
 
 //----------------------------------------------------------------------------------------------------
 bool GameplayStateServer::Exit() const
 {
-    ILOG("Exiting %s...", GetName());
-
-    GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
-    gameplayComponent.m_phase = GameplayComponent::GameplayPhase::NONE;
-
-    g_game->GetLinkingContext().ClearEntities();
-    g_game->GetEntityManager().ClearEntities();
+    // Scene
+    g_gameServer->GetLinkingContext().ClearEntities();
+    g_gameServer->GetEntityManager().ClearEntities();
 
     // TODO: do it through the event PLAYER_REMOVED
+    /*
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.GetPlayerIDToClientProxyMap();
     for (const auto& pair : playerIDToClientProxy) {
@@ -63,6 +66,11 @@ bool GameplayStateServer::Exit() const
         std::shared_ptr<ClientProxy> clientProxy = pair.second;
         clientProxy->Reset();
     }
+    */
+
+    GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
+    std::weak_ptr<State> emptyState = std::weak_ptr<State>();
+    gameplayComponent.m_fsm.ChangeState(emptyState);
 
     return true;
 }
@@ -70,69 +78,7 @@ bool GameplayStateServer::Exit() const
 //----------------------------------------------------------------------------------------------------
 void GameplayStateServer::OnNotify(const Event& event)
 {
-    switch (event.eventType) {
-
-    case EventType::PLAYER_ADDED: {
-        OnPlayerAdded();
-        break;
-    }
-
-    case EventType::PLAYER_REMOVED: {
-        OnPlayerRemoved();
-        break;
-    }
-
-    case EventType::HEALTH_EMPTIED: {
-        OnHealthEmptied();
-        break;
-    }
-
-    default: {
-        break;
-    }
-    }
-}
-
-//----------------------------------------------------------------------------------------------------
-void GameplayStateServer::OnPlayerAdded() const
-{
-    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
-    U32 entityCount = serverComponent.GetEntityCount();
-    if (entityCount == MAX_PLAYER_IDS) {
-        GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
-        gameplayComponent.m_phase = GameplayComponent::GameplayPhase::PLAY;
-    }
-}
-
-//----------------------------------------------------------------------------------------------------
-void GameplayStateServer::OnPlayerRemoved() const
-{
     GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
-    if (gameplayComponent.m_phase == GameplayComponent::GameplayPhase::PLAY) {
-        gameplayComponent.m_phase = GameplayComponent::GameplayPhase::START;
-        // TODO: restart the players' positions, etc.
-        // TODO: restart the global parameters of the match.
-        //g_gameServer->GetFSM().ChangeState(g_gameServer->GetConfig().m_onlineSceneName.c_str()); // if new objects are spawned throughout the gameplay
-    }
-}
-
-//----------------------------------------------------------------------------------------------------
-void GameplayStateServer::OnHealthEmptied() const
-{
-    U32 aliveCount = 0;
-    std::vector<std::pair<Entity, std::weak_ptr<HealthComponent>>> healthComponents = g_gameServer->GetComponentManager().GetComponents<HealthComponent>();
-    for (const auto& pair : healthComponents) {
-        std::weak_ptr<HealthComponent> healthComponent = pair.second;
-        if (!healthComponent.lock()->IsDead()) {
-            ++aliveCount;
-        }
-    }
-
-    if (aliveCount == 1) {
-        GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
-        if (gameplayComponent.m_phase == GameplayComponent::GameplayPhase::PLAY) {
-            g_gameServer->GetFSM().ChangeState("Scoreboard"); // TODO: config
-        }
-    }
+    gameplayComponent.m_fsm.OnNotify(event);
 }
 }

@@ -1,15 +1,12 @@
 #include "MainMenuStateServer.h"
 
 #include "ComponentManager.h"
-#include "Config.h"
+#include "ConnectStateServer.h"
 #include "EntityManager.h"
 #include "FSM.h"
-#include "FileSystem.h"
 #include "GameServer.h"
-#include "GameplayStateServer.h"
 #include "MainMenuComponent.h"
-#include "ResourceManager.h"
-#include "ServerComponent.h"
+#include "SetupStateServer.h"
 #include "SpriteComponent.h"
 #include "SpriteResource.h"
 #include "TransformComponent.h"
@@ -18,19 +15,33 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-const char* MainMenuStateServer::GetName() const
+std::string MainMenuStateServer::GetName() const
 {
     return "MainMenu";
 }
 
 //----------------------------------------------------------------------------------------------------
-bool MainMenuStateServer::Enter() const
+bool MainMenuStateServer::Create() const
 {
-    ILOG("Entering %s...", GetName());
+    bool ret = false;
 
     MainMenuComponent& mainMenuComponent = g_gameServer->GetMainMenuComponent();
-    mainMenuComponent.m_phase = MainMenuComponent::MainMenuPhase::SETUP;
+    ret = mainMenuComponent.m_fsm.RegisterState<SetupStateServer>();
+    if (!ret) {
+        return ret;
+    }
+    ret = mainMenuComponent.m_fsm.RegisterState<ConnectStateServer>();
+    if (!ret) {
+        return ret;
+    }
 
+    return ret;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool MainMenuStateServer::Enter() const
+{
+    // Scene
     Entity background = g_gameServer->GetEntityManager().AddEntity();
     WindowComponent& windowComponent = g_gameServer->GetWindowComponent();
     std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().AddComponent<TransformComponent>(background);
@@ -39,100 +50,41 @@ bool MainMenuStateServer::Enter() const
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().AddComponent<SpriteComponent>(background);
     spriteComponent.lock()->m_spriteResource = spriteResource;
 
-    return true;
+    MainMenuComponent& mainMenuComponent = g_gameServer->GetMainMenuComponent();
+    return mainMenuComponent.m_fsm.ChangeState("Setup");
 }
 
 //----------------------------------------------------------------------------------------------------
 bool MainMenuStateServer::Update() const
 {
     MainMenuComponent& mainMenuComponent = g_gameServer->GetMainMenuComponent();
-    if (mainMenuComponent.m_phase == MainMenuComponent::MainMenuPhase::CONNECT) {
-        g_gameServer->GetFSM().ChangeState(g_gameServer->GetConfig().m_onlineSceneName.c_str());
-    }
-
-    return true;
+    return mainMenuComponent.m_fsm.Update();
 }
 
 //----------------------------------------------------------------------------------------------------
 bool MainMenuStateServer::RenderGui() const
 {
-    ImGuiWindowFlags windowFlags = 0;
-    windowFlags |= ImGuiWindowFlags_NoResize;
-    windowFlags |= ImGuiWindowFlags_NoMove;
-    windowFlags |= ImGuiWindowFlags_NoScrollbar;
-    windowFlags |= ImGuiWindowFlags_NoCollapse;
-    windowFlags |= ImGuiWindowFlags_NoSavedSettings;
-
-    WindowComponent& windowComponent = g_gameServer->GetWindowComponent();
-    ImVec2 position = ImVec2(static_cast<F32>(windowComponent.m_resolution.x) / 2.0f, static_cast<F32>(windowComponent.m_resolution.y) / 2.0f);
-    ImGui::SetNextWindowPos(position, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-    ImVec2 size = ImVec2(static_cast<F32>(windowComponent.m_resolution.y) / 2.0f, static_cast<F32>(windowComponent.m_resolution.x) / 2.0f);
-    ImGui::SetNextWindowSize(size, ImGuiCond_Always);
-
-    if (ImGui::Begin("Server", nullptr, windowFlags)) {
-        MainMenuComponent& mainMenuComponent = g_gameServer->GetMainMenuComponent();
-        switch (mainMenuComponent.m_phase) {
-        case MainMenuComponent::MainMenuPhase::SETUP: {
-            RenderSetupGui(mainMenuComponent);
-            break;
-        }
-
-        case MainMenuComponent::MainMenuPhase::CONNECT: {
-
-            break;
-        }
-
-        default: {
-            break;
-        }
-        }
-
-        ImGui::End();
-    }
-
-    return true;
+    MainMenuComponent& mainMenuComponent = g_gameServer->GetMainMenuComponent();
+    return mainMenuComponent.m_fsm.RenderGui();
 }
 
 //----------------------------------------------------------------------------------------------------
 bool MainMenuStateServer::Exit() const
 {
-    ILOG("Exiting %s...", GetName());
+    // Scene
+    g_gameServer->GetEntityManager().ClearEntities();
 
     MainMenuComponent& mainMenuComponent = g_gameServer->GetMainMenuComponent();
-    mainMenuComponent.m_phase = MainMenuComponent::MainMenuPhase::NONE;
-
-    g_gameServer->GetEntityManager().ClearEntities();
+    std::weak_ptr<State> emptyState = std::weak_ptr<State>();
+    mainMenuComponent.m_fsm.ChangeState(emptyState);
 
     return true;
 }
 
 //----------------------------------------------------------------------------------------------------
-void MainMenuStateServer::RenderSetupGui(MainMenuComponent& mainMenuComponent) const
+void MainMenuStateServer::OnNotify(const Event& event)
 {
-    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
-    ImGui::InputText("Port", &serverComponent.m_port[0], DEFAULT_INPUT_SIZE);
-
-    if (ImGui::BeginCombo("Map", serverComponent.m_map.c_str())) {
-        std::vector<std::string> entries = g_gameServer->GetFileSystem().GetFilesFromDirectory(MAPS_DIR);
-        for (const auto& entry : entries) {
-            if (ImGui::Selectable(entry.c_str())) {
-                serverComponent.m_map = entry;
-            }
-        }
-        ImGui::EndCombo();
-    }
-
-    const char* start = "Start";
-    ImVec2 textSize = ImGui::CalcTextSize(start);
-    ImVec2 framePadding = ImGui::GetStyle().FramePadding;
-    ImVec2 buttonSize = ImVec2(textSize.x + framePadding.x * 2.0f, textSize.y + framePadding.y * 2.0f);
-    ImVec2 contentRegionMax = ImGui::GetWindowContentRegionMax();
-    ImGui::SetCursorPosX(contentRegionMax.x - buttonSize.x);
-    ImGui::SetCursorPosY(contentRegionMax.y - buttonSize.y);
-    if (ImGui::Button(start)) {
-        mainMenuComponent.m_phase = MainMenuComponent::MainMenuPhase::CONNECT;
-
-        serverComponent.m_connect = true;
-    }
+    MainMenuComponent& mainMenuComponent = g_gameServer->GetMainMenuComponent();
+    mainMenuComponent.m_fsm.OnNotify(event);
 }
 }

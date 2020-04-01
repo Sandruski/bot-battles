@@ -10,6 +10,7 @@
 #include "Intersection.h"
 #include "LinkingContext.h"
 #include "ServerComponent.h"
+#include "State.h"
 #include "SystemManager.h"
 #include "TransformComponent.h"
 #include "WeaponComponent.h"
@@ -27,7 +28,8 @@ WeaponSystemServer::WeaponSystemServer()
 bool WeaponSystemServer::Update()
 {
     GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
-    if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::PLAY) {
+    std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
+    if (currentState.expired() || currentState.lock()->GetName() != "Play") {
         return true;
     }
 

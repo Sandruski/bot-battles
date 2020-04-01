@@ -5,6 +5,7 @@
 #include "GameServer.h"
 #include "HealthComponent.h"
 #include "SpriteComponent.h"
+#include "State.h"
 
 namespace sand {
 
@@ -20,7 +21,8 @@ bool HealthSystem::Update()
 {
     // TODO: do we really need this system with insta kill?
     GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
-    if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::PLAY) {
+    std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
+    if (currentState.expired() || currentState.lock()->GetName() != "Play") {
         return true;
     }
 

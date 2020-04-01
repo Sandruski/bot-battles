@@ -1,26 +1,42 @@
 #include "GameplayStateClient.h"
 
-#include "Config.h"
 #include "EntityManager.h"
-#include "FSM.h"
 #include "GameClient.h"
 #include "GameplayComponent.h"
 #include "LinkingContext.h"
-#include "WindowComponent.h"
+#include "PlayStateClient.h"
+#include "StartStateClient.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-const char* GameplayStateClient::GetName() const
+std::string GameplayStateClient::GetName() const
 {
     return "Gameplay";
 }
 
 //----------------------------------------------------------------------------------------------------
+bool GameplayStateClient::Create() const
+{
+    bool ret = false;
+
+    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+    ret = gameplayComponent.m_fsm.RegisterState<StartStateClient>();
+    if (!ret) {
+        return ret;
+    }
+    ret = gameplayComponent.m_fsm.RegisterState<PlayStateClient>();
+    if (!ret) {
+        return ret;
+    }
+
+    return ret;
+}
+
+//----------------------------------------------------------------------------------------------------
 bool GameplayStateClient::Enter() const
 {
-    ILOG("Entering %s...", GetName());
-
+    // Scene
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     std::string path;
     path.append(MAPS_DIR);
@@ -28,21 +44,27 @@ bool GameplayStateClient::Enter() const
     MapImporter::Tilemap tilemap = g_gameClient->GetMapImporter().Load(path);
     g_gameClient->GetMapImporter().Create(tilemap);
 
-    return true;
+    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+    return gameplayComponent.m_fsm.ChangeState("Start");
 }
 
 //----------------------------------------------------------------------------------------------------
 bool GameplayStateClient::Exit() const
 {
-    ILOG("Exiting %s...", GetName());
-
+    // Scene
     g_gameClient->GetLinkingContext().ClearEntities();
     g_gameClient->GetEntityManager().ClearEntities();
 
     // TODO: do it through the event PLAYER_REMOVED
+    /*
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     clientComponent.m_entity = INVALID_ENTITY;
     clientComponent.Reset();
+    */
+
+    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+    std::weak_ptr<State> emptyState = std::weak_ptr<State>();
+    gameplayComponent.m_fsm.ChangeState(emptyState);
 
     return true;
 }
@@ -50,35 +72,7 @@ bool GameplayStateClient::Exit() const
 //----------------------------------------------------------------------------------------------------
 void GameplayStateClient::OnNotify(const Event& event)
 {
-    switch (event.eventType) {
-
-        // V. Scoreboard
-    case EventType::RESULT_RECEIVED: {
-        OnResultReceived();
-        break;
-    }
-
-        // X. Main Menu
-    case EventType::PLAYER_REMOVED: {
-        OnPlayerRemoved();
-        break;
-    }
-
-    default: {
-        break;
-    }
-    }
-}
-
-//----------------------------------------------------------------------------------------------------
-void GameplayStateClient::OnResultReceived() const
-{
-    g_gameClient->GetFSM().ChangeState("Scoreboard"); // TODO: config
-}
-
-//----------------------------------------------------------------------------------------------------
-void GameplayStateClient::OnPlayerRemoved() const
-{
-    g_gameClient->GetFSM().ChangeState(g_gameClient->GetConfig().m_offlineSceneName.c_str());
+    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+    gameplayComponent.m_fsm.OnNotify(event);
 }
 }

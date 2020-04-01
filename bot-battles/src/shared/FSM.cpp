@@ -25,7 +25,7 @@ void FSM::OnNotify(const Event& event)
 //----------------------------------------------------------------------------------------------------
 bool FSM::StartUp()
 {
-    return ChangeState(g_game->GetConfig().m_offlineSceneName.c_str());
+    return ChangeState(g_game->GetConfig().m_mainMenuSceneName.c_str());
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -57,11 +57,35 @@ bool FSM::ShutDown()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool FSM::ChangeState(const char* name)
+std::weak_ptr<State> FSM::GetCurrentState() const
+{
+    return m_currentState;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool FSM::ChangeState(std::weak_ptr<State> state)
+{
+    if (!m_currentState.expired()) {
+        m_currentState.lock()->Exit();
+    }
+
+    m_currentState = state;
+
+    if (state.expired()) {
+        return false;
+    }
+
+    m_currentState.lock()->Enter();
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool FSM::ChangeState(const std::string& name)
 {
     for (const auto& state : m_states) {
 
-        if (COMPARE_STRINGS(state->GetName(), name)) {
+        if (state != nullptr && state->GetName() == name) { // TODO: change FSM so not every FSM has an array of all states size
 
             ChangeState(std::weak_ptr<State>(state));
 
@@ -69,24 +93,8 @@ bool FSM::ChangeState(const char* name)
         }
     }
 
-    WLOG("State could not be changed to %s!", name);
+    WLOG("State could not be changed to %s!", name.c_str());
+
     return false;
-}
-
-//----------------------------------------------------------------------------------------------------
-bool FSM::ChangeState(std::weak_ptr<State> state)
-{
-    if (state.expired()) {
-        return false;
-    }
-
-    if (!m_currentState.expired()) {
-        m_currentState.lock()->Exit();
-    }
-
-    m_currentState = state;
-    m_currentState.lock()->Enter();
-
-    return true;
 }
 }

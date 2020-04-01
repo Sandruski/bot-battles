@@ -11,6 +11,7 @@
 #include "MeshResource.h"
 #include "RendererComponent.h"
 #include "ShaderResource.h"
+#include "State.h"
 #include "SystemManager.h"
 #include "TransformComponent.h"
 #include "WeaponComponent.h"
@@ -29,7 +30,8 @@ WeaponSystemClient::WeaponSystemClient()
 bool WeaponSystemClient::Update()
 {
     GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-    if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::PLAY) {
+    std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
+    if (currentState.expired() || currentState.lock()->GetName() != "Play") {
         return true;
     }
 

@@ -62,13 +62,6 @@ struct ClientComponent : public Component {
     bool m_isClientPrediction;
     bool m_isServerReconciliation;
     bool m_isEntityInterpolation;
-
-    bool m_connect;
-    bool m_disconnect;
-
-    bool m_sendHelloPacket;
-    bool m_sendReHelloPacket;
-    bool m_sendByePacket;
 };
 }
 

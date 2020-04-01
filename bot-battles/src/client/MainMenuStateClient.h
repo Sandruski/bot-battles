@@ -5,8 +5,6 @@
 
 namespace sand {
 
-struct MainMenuComponent;
-
 //----------------------------------------------------------------------------------------------------
 class MainMenuStateClient : public State {
 public:
@@ -16,20 +14,15 @@ public:
     }
 
 public:
-    const char* GetName() const override;
+    std::string GetName() const override;
 
+    bool Create() const override;
     bool Enter() const override;
+    bool Update() const override;
     bool RenderGui() const override;
     bool Exit() const override;
 
     void OnNotify(const Event& event) override;
-
-private:
-    void RenderSetupGui(MainMenuComponent& mainMenuComponent) const;
-    void RenderConnectGui(MainMenuComponent& mainMenuComponent) const;
-
-    void OnWelcomeReceived() const;
-    void OnPlayerRemoved() const;
 };
 }
 

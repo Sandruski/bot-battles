@@ -153,9 +153,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)State.h">
       <Filter>Header Files\States</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)StateDefs.h">
-      <Filter>Header Files\States</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Colors.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
@@ -218,9 +215,6 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)NetworkableWriteObject.h">
       <Filter>Header Files\Networking</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)StateTypes.h">
-      <Filter>Header Files\States</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)NetworkableReadObject.h">
       <Filter>Header Files\Networking</Filter>
@@ -305,6 +299,12 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)TCPSocket.h">
       <Filter>Header Files\Networking</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)StateDefs.h">
+      <Filter>Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)StateTypes.h">
+      <Filter>Header Files\States</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

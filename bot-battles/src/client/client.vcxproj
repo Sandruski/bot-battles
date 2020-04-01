@@ -176,12 +176,14 @@
     <ClCompile Include="..\dependencies\source\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\dependencies\source\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="..\dependencies\source\imgui\imgui_impl_sdl.cpp" />
+    <ClCompile Include="..\dependencies\source\imgui\imgui_stdlib.cpp" />
     <ClCompile Include="..\dependencies\source\imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\dependencies\source\stb\stb_image.cpp" />
     <ClCompile Include="ClientComponent.cpp" />
     <ClCompile Include="ClientSystem.cpp" />
     <ClCompile Include="CollisionSystemClient.cpp" />
     <ClCompile Include="ConfigClient.cpp" />
+    <ClCompile Include="ConnectStateClient.cpp" />
     <ClCompile Include="DeliveryManagerClient.cpp" />
     <ClCompile Include="Frame.cpp" />
     <ClCompile Include="GameClient.cpp" />
@@ -197,8 +199,13 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="PlayStateClient.cpp" />
     <ClCompile Include="RemotePlayerMovementSystem.cpp" />
+    <ClCompile Include="RestartStateClient.cpp" />
+    <ClCompile Include="ResultsStateClient.cpp" />
     <ClCompile Include="ScoreboardStateClient.cpp" />
+    <ClCompile Include="SetupStateClient.cpp" />
+    <ClCompile Include="StartStateClient.cpp" />
     <ClCompile Include="TransformComponentClient.cpp" />
     <ClCompile Include="InputSystemClient.cpp" />
     <ClCompile Include="ReplicationManagerClient.cpp" />
@@ -209,6 +216,7 @@
     <ClInclude Include="ClientSystem.h" />
     <ClInclude Include="CollisionSystemClient.h" />
     <ClInclude Include="ConfigClient.h" />
+    <ClInclude Include="ConnectStateClient.h" />
     <ClInclude Include="DeliveryManagerClient.h" />
     <ClInclude Include="Frame.h" />
     <ClInclude Include="GameplayStateClient.h" />
@@ -217,12 +225,17 @@
     <ClInclude Include="MainMenuStateClient.h" />
     <ClInclude Include="MovementSystemClient.h" />
     <ClInclude Include="pchClient.h" />
+    <ClInclude Include="PlayStateClient.h" />
     <ClInclude Include="RemotePlayerComponent.h" />
     <ClInclude Include="RemotePlayerMovementSystem.h" />
     <ClInclude Include="ReplicationManagerClient.h" />
     <ClInclude Include="ClientComponent.h" />
     <ClInclude Include="GameClient.h" />
+    <ClInclude Include="RestartStateClient.h" />
+    <ClInclude Include="ResultsStateClient.h" />
     <ClInclude Include="ScoreboardStateClient.h" />
+    <ClInclude Include="SetupStateClient.h" />
+    <ClInclude Include="StartStateClient.h" />
     <ClInclude Include="WeaponSystemClient.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

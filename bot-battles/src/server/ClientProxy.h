@@ -31,10 +31,6 @@ public:
     U32 m_lastAckdFrame;
     F32 m_timestamp;
 
-    bool m_sendWelcomePacket;
-    bool m_sendReWelcomePacket;
-    bool m_sendResultPacket;
-
 private:
     SocketAddress m_socketAddress;
     std::string m_name;

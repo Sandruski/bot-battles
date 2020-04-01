@@ -6,7 +6,7 @@ namespace sand {
 class State;
 
 //----------------------------------------------------------------------------------------------------
-class FSM : public Observer {
+class FSM : public Subject, public Observer {
 public:
     FSM();
 
@@ -22,15 +22,14 @@ public:
     template <class T>
     bool DeRegisterState();
 
+    std::weak_ptr<State> GetCurrentState() const;
     template <class T>
-    std::weak_ptr<T> GetState();
+    std::weak_ptr<T> GetState() const;
 
     template <class T>
     bool ChangeState();
-    bool ChangeState(const char* name);
-
-private:
     bool ChangeState(std::weak_ptr<State> state);
+    bool ChangeState(const std::string& name);
 
 private:
     std::array<std::shared_ptr<State>, MAX_STATES> m_states;
@@ -53,6 +52,7 @@ inline bool FSM::RegisterState()
     }
 
     m_states.at(stateIndex) = std::make_shared<T>();
+    m_states.at(stateIndex)->Create();
 
     return true;
 }
@@ -72,6 +72,7 @@ inline bool FSM::DeRegisterState()
         return false;
     }
 
+    m_states.at(stateIndex)->Destroy();
     m_states.at(stateIndex) = nullptr;
 
     return false;
@@ -79,7 +80,7 @@ inline bool FSM::DeRegisterState()
 
 //----------------------------------------------------------------------------------------------------
 template <class T>
-inline std::weak_ptr<T> FSM::GetState()
+inline std::weak_ptr<T> FSM::GetState() const
 {
     static_assert(std::is_base_of<State, T>::value, "T is not derived from State");
 

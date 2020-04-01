@@ -14,8 +14,9 @@ struct Config {
 
     std::string m_configPath;
     std::string m_name;
-    std::string m_offlineSceneName;
-    std::string m_onlineSceneName;
+    std::string m_mainMenuSceneName;
+    std::string m_gameplaySceneName;
+    std::string m_scoreboardSceneName;
 };
 }
 

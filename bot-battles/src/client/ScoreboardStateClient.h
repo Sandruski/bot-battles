@@ -5,8 +5,6 @@
 
 namespace sand {
 
-struct ScoreboardComponent;
-
 //----------------------------------------------------------------------------------------------------
 class ScoreboardStateClient : public State {
 public:
@@ -16,21 +14,15 @@ public:
     }
 
 public:
-    const char* GetName() const override;
+    std::string GetName() const override;
 
+    bool Create() const override;
     bool Enter() const override;
     bool Update() const override;
     bool RenderGui() const override;
     bool Exit() const override;
 
     void OnNotify(const Event& event) override;
-
-private:
-    void RenderResultsGui(ScoreboardComponent& scoreboardComponent) const;
-    void RenderRestartGui(ScoreboardComponent& scoreboardComponent) const;
-
-    void OnReWelcomeReceived() const;
-    void OnPlayerRemoved() const;
 };
 }
 

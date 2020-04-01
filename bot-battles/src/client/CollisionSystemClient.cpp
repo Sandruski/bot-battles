@@ -9,6 +9,7 @@
 #include "MeshResource.h"
 #include "RendererComponent.h"
 #include "ShaderResource.h"
+#include "State.h"
 #include "TransformComponent.h"
 #include "WindowComponent.h"
 
@@ -25,7 +26,8 @@ CollisionSystemClient::CollisionSystemClient()
 bool CollisionSystemClient::Update()
 {
     GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-    if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::PLAY) {
+    std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
+    if (currentState.expired() || currentState.lock()->GetName() != "Play") {
         return true;
     }
 

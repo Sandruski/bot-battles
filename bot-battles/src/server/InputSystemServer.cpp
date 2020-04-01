@@ -3,6 +3,7 @@
 #include "ClientProxy.h"
 #include "GameServer.h"
 #include "ServerComponent.h"
+#include "State.h"
 
 namespace sand {
 
@@ -10,7 +11,8 @@ namespace sand {
 bool InputSystemServer::Update()
 {
     GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
-    if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::PLAY) {
+    std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
+    if (currentState.expired() || currentState.lock()->GetName() != "Play") {
         return true;
     }
 

@@ -83,6 +83,10 @@ bool GameClient::Init()
     }
 
     std::weak_ptr<ClientSystem> clientSystem = m_systemManager->GetSystem<ClientSystem>();
+    ret = m_fsm->AddObserver(clientSystem);
+    if (!ret) {
+        return ret;
+    }
     ret = clientSystem.lock()->AddObserver(std::weak_ptr<Observer>(m_fsm));
     if (!ret) {
         return ret;
@@ -99,18 +103,6 @@ bool GameClient::Update()
     bool ret = false;
 
     std::weak_ptr<ClientSystem> clientSystem = m_systemManager->GetSystem<ClientSystem>();
-
-    if (m_clientComponent.m_connect) {
-        if (clientSystem.lock()->ConnectSockets(m_clientComponent)) {
-            m_clientComponent.m_connect = false;
-        }
-    }
-
-    if (m_clientComponent.m_disconnect) {
-        if (clientSystem.lock()->DisconnectSockets(m_clientComponent)) {
-            m_clientComponent.m_disconnect = false;
-        }
-    }
 
     //if (m_mainMenuComponent.m_phase != MainMenuComponent::MainMenuPhase::SETUP) {
     clientSystem.lock()->ReceiveIncomingPackets(m_clientComponent);

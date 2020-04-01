@@ -6,6 +6,8 @@
 #include "EntityManager.h"
 #include "FSM.h"
 #include "GameServer.h"
+#include "RestartStateServer.h"
+#include "ResultsStateServer.h"
 #include "ScoreboardComponent.h"
 #include "ServerComponent.h"
 #include "SpriteComponent.h"
@@ -16,73 +18,77 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-const char* ScoreboardStateServer::GetName() const
+std::string ScoreboardStateServer::GetName() const
 {
     return "Scoreboard";
 }
 
 //----------------------------------------------------------------------------------------------------
-bool ScoreboardStateServer::Enter() const
+bool ScoreboardStateServer::Create() const
 {
-    ILOG("Entering %s...", GetName());
+    bool ret = false;
 
     ScoreboardComponent& scoreboardComponent = g_gameServer->GetScoreboardComponent();
-    scoreboardComponent.m_phase = ScoreboardComponent::ScoreboardPhase::RESULTS;
-    ++scoreboardComponent.m_gameCount;
-
-    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
-    const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.GetPlayerIDToClientProxyMap();
-    for (const auto& pair : playerIDToClientProxy) {
-        std::shared_ptr<ClientProxy> clientProxy = pair.second;
-        clientProxy->m_sendResultPacket = true;
+    ret = scoreboardComponent.m_fsm.RegisterState<ResultsStateServer>();
+    if (!ret) {
+        return ret;
+    }
+    ret = scoreboardComponent.m_fsm.RegisterState<RestartStateServer>();
+    if (!ret) {
+        return ret;
     }
 
-    return true;
+    return ret;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool ScoreboardStateServer::Enter() const
+{
+    // Scene
+    Entity background = g_gameServer->GetEntityManager().AddEntity();
+    WindowComponent& windowComponent = g_gameServer->GetWindowComponent();
+    std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().AddComponent<TransformComponent>(background);
+    transformComponent.lock()->m_position = { static_cast<F32>(windowComponent.m_resolution.x) / 2.0f, static_cast<F32>(windowComponent.m_resolution.y) / 2.0f, static_cast<F32>(LayerType::BACKGROUND) };
+    std::weak_ptr<SpriteResource> spriteResource = g_gameServer->GetResourceManager().AddResource<SpriteResource>("scoreboardBackground.png", TEXTURES_DIR, true);
+    std::weak_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().AddComponent<SpriteComponent>(background);
+    spriteComponent.lock()->m_spriteResource = spriteResource;
+
+    ScoreboardComponent& scoreboardComponent = g_gameServer->GetScoreboardComponent();
+    ++scoreboardComponent.m_gameCount;
+    return scoreboardComponent.m_fsm.ChangeState("Results");
 }
 
 //----------------------------------------------------------------------------------------------------
 bool ScoreboardStateServer::Update() const
 {
     ScoreboardComponent& scoreboardComponent = g_gameServer->GetScoreboardComponent();
-    switch (scoreboardComponent.m_phase) {
-    case ScoreboardComponent::ScoreboardPhase::RESULTS: {
-        UpdateResults(scoreboardComponent);
-        break;
-    }
+    return scoreboardComponent.m_fsm.Update();
+}
 
-    case ScoreboardComponent::ScoreboardPhase::RESTART: {
-        UpdateRestart();
-        break;
-    }
-
-    default: {
-        break;
-    }
-    }
-
-    return true;
+//----------------------------------------------------------------------------------------------------
+bool ScoreboardStateServer::RenderGui() const
+{
+    ScoreboardComponent& scoreboardComponent = g_gameServer->GetScoreboardComponent();
+    return scoreboardComponent.m_fsm.RenderGui();
 }
 
 //----------------------------------------------------------------------------------------------------
 bool ScoreboardStateServer::Exit() const
 {
-    ILOG("Exiting %s...", GetName());
+    // Scene
+    g_gameServer->GetEntityManager().ClearEntities();
 
     ScoreboardComponent& scoreboardComponent = g_gameServer->GetScoreboardComponent();
-    scoreboardComponent.m_phase = ScoreboardComponent::ScoreboardPhase::NONE;
+    std::weak_ptr<State> emptyState = std::weak_ptr<State>();
+    scoreboardComponent.m_fsm.ChangeState(emptyState);
 
     return true;
 }
 
 //----------------------------------------------------------------------------------------------------
-void ScoreboardStateServer::UpdateResults(ScoreboardComponent& scoreboardComponent) const
+void ScoreboardStateServer::OnNotify(const Event& event)
 {
-    scoreboardComponent.m_phase = ScoreboardComponent::ScoreboardPhase::RESTART;
-}
-
-//----------------------------------------------------------------------------------------------------
-void ScoreboardStateServer::UpdateRestart() const
-{
-    g_gameServer->GetFSM().ChangeState(g_gameServer->GetConfig().m_onlineSceneName.c_str());
+    ScoreboardComponent& scoreboardComponent = g_gameServer->GetScoreboardComponent();
+    scoreboardComponent.m_fsm.OnNotify(event);
 }
 }

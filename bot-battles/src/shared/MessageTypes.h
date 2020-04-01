@@ -7,9 +7,9 @@ enum class ClientMessageType : U16 {
 
     HELLO,
     REHELLO,
-    INPUT,
-
     BYE,
+
+    INPUT,
 
     COUNT
 };
@@ -18,10 +18,11 @@ enum class ServerMessageType : U16 {
 
     WELCOME,
     REWELCOME,
-    STATE,
-    RESULT,
-
+    PLAY,
+    RESULTS,
     BYE,
+
+    STATE,
 
     COUNT
 };
