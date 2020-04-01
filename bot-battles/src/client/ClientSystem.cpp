@@ -480,10 +480,6 @@ bool ClientSystem::ConnectSockets(ClientComponent& clientComponent)
     if (!ret) {
         return ret;
     }
-    ret = clientComponent.m_TCPSocket->SetNoDelay(false);
-    if (!ret) {
-        return ret;
-    }
 
     clientComponent.m_UDPSocket = UDPSocket::CreateIPv4();
     assert(clientComponent.m_UDPSocket != nullptr);

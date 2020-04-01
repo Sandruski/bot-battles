@@ -157,8 +157,11 @@ void ServerSystem::ReceiveIncomingPackets(ServerComponent& serverComponent)
                         if (result) {
                             result = acceptedTCPSock->SetNonBlockingMode(true);
                             if (result) {
-                                serverComponent.m_TCPSockets.emplace_back(acceptedTCPSock);
-                                ILOG("TCP socket added");
+                                result = acceptedTCPSock->SetNoDelay(true);
+                                if (result) {
+                                    serverComponent.m_TCPSockets.emplace_back(acceptedTCPSock);
+                                    ILOG("TCP socket added");
+                                }
                             }
                         }
                     } else {
@@ -566,6 +569,10 @@ bool ServerSystem::ConnectSockets(ServerComponent& serverComponent)
         return ret;
     }
     ret = TCPListenSocket->SetNonBlockingMode(true);
+    if (!ret) {
+        return ret;
+    }
+    ret = TCPListenSocket->SetNoDelay(true);
     if (!ret) {
         return ret;
     }
