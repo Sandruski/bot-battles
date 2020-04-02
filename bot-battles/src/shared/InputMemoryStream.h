@@ -44,10 +44,12 @@ public:
     void ReadPosition(glm::vec2& vec2);
 
     char* GetPtr() const;
+    U32 GetByteLength() const;
     U32 GetByteCapacity() const;
     U32 GetRemainingBitCount() const;
 
     void SetCapacity(U32 byteCapacity);
+    void SetHead(U32 bitCount);
     void AdvanceHead(U32 bitCount);
     void ResetHead();
 

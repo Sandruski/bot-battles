@@ -155,21 +155,30 @@ void ServerSystem::ReceiveIncomingPackets(ServerComponent& serverComponent)
                         std::shared_ptr<TCPSocket> acceptedTCPSock = TCPSock->Accept(fromSocketAddress);
                         bool result = acceptedTCPSock->SetReuseAddress(true);
                         if (result) {
-                            result = acceptedTCPSock->SetNonBlockingMode(true);
-                            if (result) {
-                                result = acceptedTCPSock->SetNoDelay(true);
-                                if (result) {
-                                    serverComponent.m_TCPSockets.emplace_back(acceptedTCPSock);
-                                    ILOG("TCP socket added");
-                                }
-                            }
+                            //result = acceptedTCPSock->SetNonBlockingMode(true);
+                            //if (result) {
+                            //result = acceptedTCPSock->SetNoDelay(true);
+                            //if (result) {
+                            serverComponent.m_TCPSockets.emplace_back(acceptedTCPSock);
+                            ILOG("TCP socket added");
+                            //}
+                            //}
                         }
                     } else {
                         I32 readByteCount = TCPSock->Receive(packet.GetPtr(), byteCapacity);
                         if (readByteCount > 0) {
                             packet.SetCapacity(readByteCount);
                             packet.ResetHead();
-                            ReceivePacket(serverComponent, packet, TCPSock->GetRemoteSocketAddress());
+                            U32 previousByteCount = 0;
+                            while (readByteCount > 0) {
+                                ReceivePacket(serverComponent, packet, TCPSock->GetRemoteSocketAddress());
+                                U32 byteCount = packet.GetByteLength();
+                                U32 newByteCount = byteCount - previousByteCount;
+                                previousByteCount = newByteCount;
+                                readByteCount -= newByteCount;
+                                U32 bitCount = BYTES_TO_BITS(byteCount);
+                                packet.SetHead(bitCount);
+                            }
                         } else if (readByteCount == -WSAECONNRESET || readByteCount == 0) {
                             ConnectionReset(serverComponent, TCPSock->GetRemoteSocketAddress());
                         } else if (readByteCount == -WSAEWOULDBLOCK) {
@@ -289,6 +298,8 @@ void ServerSystem::ReceiveHelloPacket(ServerComponent& serverComponent, InputMem
 {
     playerID = serverComponent.GetPlayerID(fromSocketAddress);
     if (playerID < INVALID_PLAYER_ID) {
+        std::string name;
+        inputStream.Read(name);
         std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
         ELOG("Hello packet received from existing player %u %s", playerID, clientProxy.lock()->GetName());
         return;
@@ -528,14 +539,17 @@ void ServerSystem::SendStatePacket(const ServerComponent& serverComponent, Playe
 //----------------------------------------------------------------------------------------------------
 bool ServerSystem::SendUDPPacket(const ServerComponent& serverComponent, const OutputMemoryStream& outputStream, const SocketAddress& toSocketAddress) const
 {
-    return serverComponent.m_UDPSocket->SendTo(outputStream.GetPtr(), outputStream.GetByteLength(), toSocketAddress);
+    I32 bytesSent = serverComponent.m_UDPSocket->SendTo(outputStream.GetPtr(), outputStream.GetByteLength(), toSocketAddress);
+    return (bytesSent == static_cast<I32>(outputStream.GetByteLength()));
 }
 
 //----------------------------------------------------------------------------------------------------
 bool ServerSystem::SendTCPPacket(const ServerComponent& serverComponent, const OutputMemoryStream& outputStream, const SocketAddress& toSocketAddress) const
 {
     std::weak_ptr<TCPSocket> TCPSock = serverComponent.GetTCPSocket(toSocketAddress);
-    return TCPSock.lock()->Send(outputStream.GetPtr(), outputStream.GetByteLength());
+    I32 bytesSent = TCPSock.lock()->Send(outputStream.GetPtr(), outputStream.GetByteLength());
+    ILOG("TCP sent %i bytes", bytesSent);
+    return (bytesSent == static_cast<I32>(outputStream.GetByteLength()));
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -567,15 +581,16 @@ bool ServerSystem::ConnectSockets(ServerComponent& serverComponent)
     ret = TCPListenSocket->SetReuseAddress(true);
     if (!ret) {
         return ret;
-    }
+    } /*
     ret = TCPListenSocket->SetNonBlockingMode(true);
     if (!ret) {
         return ret;
-    }
+    }*/
+    /*
     ret = TCPListenSocket->SetNoDelay(true);
     if (!ret) {
         return ret;
-    }
+    }*/
     ret = TCPListenSocket->Bind(*serverComponent.m_socketAddress);
     if (!ret) {
         return ret;

@@ -102,7 +102,16 @@ void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent)
                 if (readByteCount > 0) {
                     packet.SetCapacity(readByteCount);
                     packet.ResetHead();
-                    ReceivePacket(clientComponent, packet);
+                    U32 previousByteCount = 0;
+                    while (readByteCount > 0) {
+                        ReceivePacket(clientComponent, packet);
+                        U32 byteCount = packet.GetByteLength();
+                        U32 newByteCount = byteCount - previousByteCount;
+                        previousByteCount = newByteCount;
+                        readByteCount -= newByteCount;
+                        U32 bitCount = BYTES_TO_BITS(byteCount);
+                        packet.SetHead(bitCount);
+                    }
                 } else if (readByteCount == -WSAECONNRESET || readByteCount == 0) {
                     ConnectionReset(clientComponent);
                     DisconnectSockets(clientComponent);
@@ -224,6 +233,14 @@ void ClientSystem::ReceiveWelcomePacket(ClientComponent& clientComponent, InputM
 {
     const bool isConnected = clientComponent.IsConnected();
     if (isConnected) {
+        bool isSuccessful = false;
+        inputStream.Read(isSuccessful);
+        if (isSuccessful) {
+            PlayerID playerID = INVALID_PLAYER_ID;
+            inputStream.Read(playerID);
+            std::string map;
+            inputStream.Read(map);
+        }
         ELOG("Welcome packet received but skipped because Player is already connected");
         return;
     }
@@ -291,6 +308,8 @@ void ClientSystem::ReceiveResultsPacket(ClientComponent& clientComponent, InputM
 {
     const bool isConnected = clientComponent.IsConnected();
     if (!isConnected) {
+        U32 gameCount = 0;
+        inputStream.Read(gameCount);
         ELOG("Results packet received but skipped because Player is not connected");
         return;
     }
@@ -472,11 +491,16 @@ bool ClientSystem::ConnectSockets(ClientComponent& clientComponent)
     if (!ret) {
         return ret;
     }
+    /*
     ret = clientComponent.m_TCPSocket->SetNoDelay(true);
     if (!ret) {
         return ret;
-    }
+    }*/
     ret = clientComponent.m_TCPSocket->Connect(*clientComponent.m_socketAddress);
+    if (!ret) {
+        return ret;
+    }
+    ret = clientComponent.m_TCPSocket->SetNonBlockingMode(false);
     if (!ret) {
         return ret;
     }

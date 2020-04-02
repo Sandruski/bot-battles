@@ -160,6 +160,12 @@ char* InputMemoryStream::GetPtr() const
 }
 
 //----------------------------------------------------------------------------------------------------
+U32 InputMemoryStream::GetByteLength() const
+{
+    return BITS_TO_BYTES(m_head + 7);
+}
+
+//----------------------------------------------------------------------------------------------------
 U32 InputMemoryStream::GetByteCapacity() const
 {
     return BITS_TO_BYTES(m_capacity);
@@ -175,6 +181,14 @@ U32 InputMemoryStream::GetRemainingBitCount() const
 void InputMemoryStream::SetCapacity(U32 byteCapacity)
 {
     m_capacity = BYTES_TO_BITS(byteCapacity);
+}
+
+//----------------------------------------------------------------------------------------------------
+void InputMemoryStream::SetHead(U32 bitCount)
+{
+    assert(bitCount <= m_capacity);
+
+    m_head = bitCount;
 }
 
 //----------------------------------------------------------------------------------------------------
