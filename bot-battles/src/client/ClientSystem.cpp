@@ -248,6 +248,8 @@ void ClientSystem::ReceiveWelcomePacket(ClientComponent& clientComponent, InputM
             inputStream.Read(playerID);
             std::string map;
             inputStream.Read(map);
+            U32 gameCount = 0;
+            inputStream.Read(gameCount);
         }
         ELOG("Welcome packet received but skipped because at incorrect state");
         return;
@@ -261,6 +263,8 @@ void ClientSystem::ReceiveWelcomePacket(ClientComponent& clientComponent, InputM
             inputStream.Read(playerID);
             std::string map;
             inputStream.Read(map);
+            U32 gameCount = 0;
+            inputStream.Read(gameCount);
         }
         ELOG("Welcome packet received but skipped because player is already connected");
         return;
@@ -274,6 +278,9 @@ void ClientSystem::ReceiveWelcomePacket(ClientComponent& clientComponent, InputM
         inputStream.Read(clientComponent.m_playerID);
         assert(clientComponent.m_playerID < INVALID_PLAYER_ID);
         inputStream.Read(clientComponent.m_map);
+
+        ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
+        inputStream.Read(scoreboardComponent.m_gameCount);
 
         Event newEvent;
         newEvent.eventType = EventType::WELCOME_RECEIVED;
@@ -293,22 +300,28 @@ void ClientSystem::ReceiveWelcomePacket(ClientComponent& clientComponent, InputM
 }
 
 //----------------------------------------------------------------------------------------------------
-void ClientSystem::ReceiveReWelcomePacket(ClientComponent& clientComponent, InputMemoryStream& /*inputStream*/)
+void ClientSystem::ReceiveReWelcomePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream)
 {
     // Only Restart
     ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
     std::weak_ptr<State> currentState = scoreboardComponent.m_fsm.GetCurrentState();
     if (currentState.expired() || currentState.lock()->GetName() != "Restart") {
+        U32 gameCount = 0;
+        inputStream.Read(gameCount);
         ELOG("ReWelcome packet received but skipped because at incorrect state");
         return;
     }
     const bool isConnected = clientComponent.IsConnected();
     if (!isConnected) {
+        U32 gameCount = 0;
+        inputStream.Read(gameCount);
         ELOG("ReWelcome packet received but skipped because player is not connected");
         return;
     }
 
     ILOG("ReWelcome packet received");
+
+    inputStream.Read(scoreboardComponent.m_gameCount);
 
     Event newEvent;
     newEvent.eventType = EventType::REWELCOME_RECEIVED;
@@ -339,29 +352,22 @@ void ClientSystem::ReceivePlayPacket(ClientComponent& clientComponent, InputMemo
 }
 
 //----------------------------------------------------------------------------------------------------
-void ClientSystem::ReceiveResultsPacket(ClientComponent& clientComponent, InputMemoryStream& inputStream)
+void ClientSystem::ReceiveResultsPacket(ClientComponent& clientComponent, InputMemoryStream& /*inputStream*/)
 {
     // Only Play
     GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
     std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
     if (currentState.expired() || currentState.lock()->GetName() != "Play") {
-        U32 gameCount = 0;
-        inputStream.Read(gameCount);
         ELOG("Results packet received but skipped because at incorrect state");
         return;
     }
     const bool isConnected = clientComponent.IsConnected();
     if (!isConnected) {
-        U32 gameCount = 0;
-        inputStream.Read(gameCount);
         ELOG("Results packet received but skipped because player is not connected");
         return;
     }
 
     ILOG("Results packet received");
-
-    ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
-    inputStream.Read(scoreboardComponent.m_gameCount);
 
     Event newEvent;
     newEvent.eventType = EventType::RESULTS_RECEIVED;

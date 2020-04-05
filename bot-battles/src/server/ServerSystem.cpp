@@ -458,6 +458,9 @@ void ServerSystem::SendWelcomePacket(const ServerComponent& serverComponent, Pla
     if (isSuccessful) {
         welcomePacket.Write(playerID);
         welcomePacket.Write(serverComponent.m_map);
+
+        ScoreboardComponent& scoreboardComponent = g_gameServer->GetScoreboardComponent();
+        welcomePacket.Write(scoreboardComponent.m_gameCount);
     }
 
     const bool result = SendTCPPacket(serverComponent, welcomePacket, clientProxy->GetSocketAddress());
@@ -473,6 +476,9 @@ void ServerSystem::SendReWelcomePacket(const ServerComponent& serverComponent, P
 {
     OutputMemoryStream reWelcomePacket;
     reWelcomePacket.Write(ServerMessageType::REWELCOME);
+
+    ScoreboardComponent& scoreboardComponent = g_gameServer->GetScoreboardComponent();
+    reWelcomePacket.Write(scoreboardComponent.m_gameCount);
 
     const char* name = clientProxy->GetName();
     const bool result = SendTCPPacket(serverComponent, reWelcomePacket, clientProxy->GetSocketAddress());
@@ -503,9 +509,6 @@ void ServerSystem::SendResultsPacket(const ServerComponent& serverComponent, Pla
 {
     OutputMemoryStream resultsPacket;
     resultsPacket.Write(ServerMessageType::RESULTS);
-
-    ScoreboardComponent& scoreboardComponent = g_gameServer->GetScoreboardComponent();
-    resultsPacket.Write(scoreboardComponent.m_gameCount);
 
     const char* name = clientProxy->GetName();
     const bool result = SendTCPPacket(serverComponent, resultsPacket, clientProxy->GetSocketAddress());

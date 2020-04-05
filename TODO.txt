@@ -18,10 +18,12 @@ TO DO TOMORROW:
 -Be careful with the UDP disconnect condition == Play. When they are in Start this won't happen (bugs).
 -Remove entities from spawners from ALL PLACES where I remove entities.
 -Be careful of server players that have disconnected but have not been removed from the server.
--*************Scoreboard->One player plays again->The other disconnects->A new player joins the game.*************
+-TO CHECK: server and client disconnecting in each of the states.
+-TO CHECK: server going back to Main Menu at the end of the game instead of Playing Again and Clients trying to play, etc.
 
 ***
 -Change FSM to not be based on the type of the state and be a vector instead.
+-Stop the 1s timeout for TCP because it is horrible. (test it with bad network conditions)
 ***
 
 ----------
