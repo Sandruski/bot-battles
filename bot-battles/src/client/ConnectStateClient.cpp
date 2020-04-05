@@ -92,14 +92,14 @@ void ConnectStateClient::OnNotify(const Event& event)
         break;
     }
 
-    case EventType::WELCOME_RECEIVED: {
         // V
+    case EventType::WELCOME_RECEIVED: {
         ChangeToGameplay();
         break;
     }
 
-    case EventType::PLAYER_REMOVED: {
         // X
+    case EventType::PLAYER_REMOVED: {
         ChangeToSetup();
         break;
     }

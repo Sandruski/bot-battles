@@ -2,12 +2,14 @@
 
 #include "ClientComponent.h"
 #include "DeliveryManagerClient.h"
+#include "FSM.h"
 #include "GameClient.h"
 #include "InputComponent.h"
 #include "LinkingContext.h"
 #include "MessageTypes.h"
 #include "ReplicationManagerClient.h"
 #include "SocketAddress.h"
+#include "State.h"
 #include "TCPSocket.h"
 #include "UDPSocket.h"
 
@@ -231,8 +233,11 @@ void ClientSystem::ReceivePacket(ClientComponent& clientComponent, InputMemorySt
 //----------------------------------------------------------------------------------------------------
 void ClientSystem::ReceiveWelcomePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream)
 {
+    // Only Connect
+    MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
+    std::weak_ptr<State> currentState = mainMenuComponent.m_fsm.GetCurrentState();
     const bool isConnected = clientComponent.IsConnected();
-    if (isConnected) {
+    if (currentState.expired() || currentState.lock()->GetName() != "Connect" || isConnected) {
         bool isSuccessful = false;
         inputStream.Read(isSuccessful);
         if (isSuccessful) {
@@ -274,6 +279,13 @@ void ClientSystem::ReceiveWelcomePacket(ClientComponent& clientComponent, InputM
 //----------------------------------------------------------------------------------------------------
 void ClientSystem::ReceiveReWelcomePacket(ClientComponent& clientComponent, InputMemoryStream& /*inputStream*/)
 {
+    // Only Restart
+    ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
+    std::weak_ptr<State> currentState = scoreboardComponent.m_fsm.GetCurrentState();
+    if (currentState.expired() || currentState.lock()->GetName() != "Restart") {
+        return;
+    }
+
     const bool isConnected = clientComponent.IsConnected();
     if (!isConnected) {
         ELOG("ReWelcome packet received but skipped because Player is not connected");
@@ -290,6 +302,13 @@ void ClientSystem::ReceiveReWelcomePacket(ClientComponent& clientComponent, Inpu
 //----------------------------------------------------------------------------------------------------
 void ClientSystem::ReceivePlayPacket(ClientComponent& clientComponent, InputMemoryStream& /*inputStream*/)
 {
+    // Only Start
+    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+    std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
+    if (currentState.expired() || currentState.lock()->GetName() != "Start") {
+        return;
+    }
+
     const bool isConnected = clientComponent.IsConnected();
     if (!isConnected) {
         ELOG("Play packet received but skipped because Player is not connected");
@@ -306,8 +325,11 @@ void ClientSystem::ReceivePlayPacket(ClientComponent& clientComponent, InputMemo
 //----------------------------------------------------------------------------------------------------
 void ClientSystem::ReceiveResultsPacket(ClientComponent& clientComponent, InputMemoryStream& inputStream)
 {
+    // Only Play
+    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+    std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
     const bool isConnected = clientComponent.IsConnected();
-    if (!isConnected) {
+    if (currentState.expired() || currentState.lock()->GetName() != "Play" || !isConnected) {
         U32 gameCount = 0;
         inputStream.Read(gameCount);
         ELOG("Results packet received but skipped because Player is not connected");
@@ -327,6 +349,13 @@ void ClientSystem::ReceiveResultsPacket(ClientComponent& clientComponent, InputM
 //----------------------------------------------------------------------------------------------------
 void ClientSystem::ReceiveByePacket(ClientComponent& clientComponent, InputMemoryStream& /*inputStream*/)
 {
+    // All except Setup
+    MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
+    std::weak_ptr<State> currentState = mainMenuComponent.m_fsm.GetCurrentState();
+    if (!currentState.expired() && currentState.lock()->GetName() == "Setup") {
+        return;
+    }
+
     const bool isConnected = clientComponent.IsConnected();
     if (!isConnected) {
         ELOG("Bye packet received but skipped because Player is not connected");
@@ -342,6 +371,13 @@ void ClientSystem::ReceiveByePacket(ClientComponent& clientComponent, InputMemor
 //----------------------------------------------------------------------------------------------------
 void ClientSystem::ReceiveStatePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream) const
 {
+    // Only Play
+    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+    std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
+    if (currentState.expired() || currentState.lock()->GetName() != "Play") {
+        return;
+    }
+
     const bool isConnected = clientComponent.IsConnected();
     if (!isConnected) {
         ELOG("State packet received but skipped because Player is not connected");
@@ -563,5 +599,7 @@ void ClientSystem::Disconnect(ClientComponent& clientComponent)
     newEvent.eventType = EventType::PLAYER_REMOVED;
     newEvent.networking.entity = clientComponent.m_entity;
     NotifyEvent(newEvent);
+
+    clientComponent.m_entity = INVALID_ENTITY;
 }
 }

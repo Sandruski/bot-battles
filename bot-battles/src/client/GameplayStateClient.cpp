@@ -55,12 +55,10 @@ bool GameplayStateClient::Exit() const
     g_gameClient->GetLinkingContext().ClearEntities();
     g_gameClient->GetEntityManager().ClearEntities();
 
-    // TODO: do it through the event PLAYER_REMOVED
-    /*
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    clientComponent.m_entity = INVALID_ENTITY;
     clientComponent.Reset();
-    */
+
+    clientComponent.m_entity = INVALID_ENTITY;
 
     GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
     std::weak_ptr<State> emptyState = std::weak_ptr<State>();

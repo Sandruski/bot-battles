@@ -23,6 +23,7 @@ bool RestartStateServer::Enter() const
 //----------------------------------------------------------------------------------------------------
 bool RestartStateServer::Update() const
 {
+    // V
     ChangeToGameplay();
 
     return true;

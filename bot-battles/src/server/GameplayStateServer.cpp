@@ -1,5 +1,6 @@
 #include "GameplayStateServer.h"
 
+#include "ClientProxy.h"
 #include "EntityManager.h"
 #include "GameServer.h"
 #include "GameplayComponent.h"
@@ -55,18 +56,16 @@ bool GameplayStateServer::Exit() const
     g_gameServer->GetLinkingContext().ClearEntities();
     g_gameServer->GetEntityManager().ClearEntities();
 
-    // TODO: do it through the event PLAYER_REMOVED
-    /*
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.GetPlayerIDToClientProxyMap();
     for (const auto& pair : playerIDToClientProxy) {
         PlayerID playerID = pair.first;
-        Entity entity = serverComponent.GetEntity(playerID);
-        serverComponent.RemoveEntity(entity);
         std::shared_ptr<ClientProxy> clientProxy = pair.second;
         clientProxy->Reset();
+
+        Entity entity = serverComponent.GetEntity(playerID);
+        serverComponent.RemoveEntity(entity);
     }
-    */
 
     GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
     std::weak_ptr<State> emptyState = std::weak_ptr<State>();

@@ -4,12 +4,14 @@
 #include "ComponentMemberTypes.h"
 #include "DeliveryManagerServer.h"
 #include "EntityManager.h"
+#include "FSM.h"
 #include "GameServer.h"
 #include "LinkingContext.h"
 #include "MessageTypes.h"
 #include "ReplicationManagerServer.h"
 #include "ReplicationResultManager.h"
 #include "ServerComponent.h"
+#include "State.h"
 #include "TCPSocket.h"
 #include "UDPSocket.h"
 
@@ -296,8 +298,11 @@ void ServerSystem::ReceivePacket(ServerComponent& serverComponent, InputMemorySt
 //----------------------------------------------------------------------------------------------------
 void ServerSystem::ReceiveHelloPacket(ServerComponent& serverComponent, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress, PlayerID& playerID)
 {
+    // Only Start
+    GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
+    std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
     playerID = serverComponent.GetPlayerID(fromSocketAddress);
-    if (playerID < INVALID_PLAYER_ID) {
+    if (currentState.expired() || currentState.lock()->GetName() != "Start" || playerID < INVALID_PLAYER_ID) {
         std::string name;
         inputStream.Read(name);
         std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
@@ -327,6 +332,13 @@ void ServerSystem::ReceiveHelloPacket(ServerComponent& serverComponent, InputMem
 //----------------------------------------------------------------------------------------------------
 void ServerSystem::ReceiveReHelloPacket(ServerComponent& serverComponent, InputMemoryStream& inputStream, PlayerID& playerID) const
 {
+    // Only Start
+    GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
+    std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
+    if (currentState.expired() || currentState.lock()->GetName() != "Start") {
+        return;
+    }
+
     inputStream.Read(playerID);
     if (playerID >= INVALID_PLAYER_ID) {
         ELOG("ReHello packet received from unknown player");
@@ -352,6 +364,13 @@ void ServerSystem::ReceiveReHelloPacket(ServerComponent& serverComponent, InputM
 //----------------------------------------------------------------------------------------------------
 void ServerSystem::ReceiveByePacket(ServerComponent& serverComponent, InputMemoryStream& inputStream, PlayerID& playerID)
 {
+    // All except Setup
+    MainMenuComponent& mainMenuComponent = g_gameServer->GetMainMenuComponent();
+    std::weak_ptr<State> currentState = mainMenuComponent.m_fsm.GetCurrentState();
+    if (!currentState.expired() && currentState.lock()->GetName() == "Setup") {
+        return;
+    }
+
     inputStream.Read(playerID);
     if (playerID >= INVALID_PLAYER_ID) {
         ELOG("Bye packet received from unknown player");
@@ -372,6 +391,13 @@ void ServerSystem::ReceiveByePacket(ServerComponent& serverComponent, InputMemor
 //----------------------------------------------------------------------------------------------------
 void ServerSystem::ReceiveInputPacket(ServerComponent& serverComponent, InputMemoryStream& inputStream, PlayerID& playerID) const
 {
+    // Only Play
+    GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
+    std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
+    if (currentState.expired() || currentState.lock()->GetName() != "Play") {
+        return;
+    }
+
     inputStream.Read(playerID);
     if (playerID >= INVALID_PLAYER_ID) {
         ELOG("Input packet received from unknown player");

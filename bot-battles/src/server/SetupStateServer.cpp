@@ -58,6 +58,7 @@ bool SetupStateServer::RenderGui() const
         ImVec2 contentRegionMax = ImGui::GetWindowContentRegionMax();
         ImGui::SetCursorPosX(contentRegionMax.x - buttonSize.x);
         ImGui::SetCursorPosY(contentRegionMax.y - buttonSize.y);
+        // V
         if (ImGui::Button(start)) {
             ChangeToConnect();
         }

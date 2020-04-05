@@ -20,16 +20,16 @@ bool RestartStateClient::Enter() const
     ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
     scoreboardComponent.m_guiTimer.Start();
 
-    Event newEvent;
-    newEvent.eventType = EventType::SEND_REHELLO;
-    g_gameClient->GetFSM().NotifyEvent(newEvent);
-
     return true;
 }
 
 //----------------------------------------------------------------------------------------------------
 bool RestartStateClient::Update() const
 {
+    Event newEvent;
+    newEvent.eventType = EventType::SEND_REHELLO;
+    g_gameClient->GetFSM().NotifyEvent(newEvent);
+
     ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
     F32 time = static_cast<F32>(scoreboardComponent.m_mainMenuTimer.ReadSec());
     // X

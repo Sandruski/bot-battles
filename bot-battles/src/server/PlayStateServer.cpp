@@ -45,7 +45,7 @@ void PlayStateServer::OnNotify(const Event& event)
 
         // X
     case EventType::PLAYER_REMOVED: {
-        ChangeToScoreboard(); // TODO: it could also change to Start. If it changes to Start, send an event to all Players
+        ChangeToScoreboard();
         break;
     }
 
