@@ -58,30 +58,32 @@ bool GuiSystem::PreRender()
 bool GuiSystem::RenderGui()
 {
     GuiComponent& guiComponent = g_game->GetGuiComponent();
-    ImGuiWindowFlags windowFlags = 0;
-    windowFlags |= ImGuiWindowFlags_NoTitleBar;
-    windowFlags |= ImGuiWindowFlags_NoScrollbar;
-    windowFlags |= ImGuiWindowFlags_NoCollapse;
-    windowFlags |= ImGuiWindowFlags_MenuBar;
-    if (ImGui::Begin("Debug Options", &guiComponent.m_isDebugOptions, windowFlags)) {
-        if (ImGui::BeginMenuBar()) {
-            for (const auto& panel : guiComponent.m_panels) {
-                if (panel != nullptr && panel->m_isEnabled) {
-                    const bool result = panel->RenderHeader();
-                    if (result) {
-                        guiComponent.m_currentPanel = std::weak_ptr<Panel>(panel);
+    if (guiComponent.m_isDebugOptions) {
+        ImGuiWindowFlags windowFlags = 0;
+        windowFlags |= ImGuiWindowFlags_NoTitleBar;
+        windowFlags |= ImGuiWindowFlags_NoScrollbar;
+        windowFlags |= ImGuiWindowFlags_NoCollapse;
+        windowFlags |= ImGuiWindowFlags_MenuBar;
+        if (ImGui::Begin("Debug Options", &guiComponent.m_isDebugOptions, windowFlags)) {
+            if (ImGui::BeginMenuBar()) {
+                for (const auto& panel : guiComponent.m_panels) {
+                    if (panel != nullptr && panel->m_isEnabled) {
+                        const bool result = panel->RenderHeader();
+                        if (result) {
+                            guiComponent.m_currentPanel = std::weak_ptr<Panel>(panel);
+                        }
                     }
                 }
+
+                ImGui::EndMenuBar();
             }
 
-            ImGui::EndMenuBar();
-        }
+            if (!guiComponent.m_currentPanel.expired()) {
+                guiComponent.m_currentPanel.lock()->RenderBody();
+            }
 
-        if (!guiComponent.m_currentPanel.expired()) {
-            guiComponent.m_currentPanel.lock()->RenderBody();
+            ImGui::End();
         }
-
-        ImGui::End();
     }
 
     ImGui::Render();

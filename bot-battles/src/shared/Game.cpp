@@ -122,7 +122,7 @@ bool Game::Init()
     if (!ret) {
         return ret;
     }
-    ret = m_guiComponent.SetCurrentPanel<GamePanel>();
+    ret = m_guiComponent.SetCurrentPanel<StatesPanel>(); // TODO: config string
     if (!ret) {
         return ret;
     }

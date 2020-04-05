@@ -24,12 +24,13 @@ enum class ComponentMemberType : U32 {
     COLLIDER_SIZE = 1 << 4,
 
     HEALTH_HEALTH = 1 << 5,
+    HEALTH_DEAD = 1 << 6,
 
 #ifdef _DRAW
-    SPRITE_ENABLED = 1 << 6,
-    SPRITE_FILE = 1 << 7,
-    SPRITE_SPRITE_NAME_TO_TEXTURE_COORDS = 1 << 8,
-    SPRITE_SPRITE_NAME = 1 << 9,
+    SPRITE_ENABLED = 1 << 7,
+    SPRITE_FILE = 1 << 8,
+    SPRITE_SPRITE_NAME_TO_TEXTURE_COORDS = 1 << 9,
+    SPRITE_SPRITE_NAME = 1 << 10,
 #endif
 
     COUNT,

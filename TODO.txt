@@ -14,9 +14,9 @@ PLAYLIST:
 -Check that 2 players can connect to the game from different computers.
 
 TO DO TOMORROW:
--Timeout when Connecting... (Main Menu) and Waiting... (Scoreboard) clients to not wait forever.
 -Handle timeout when playing and server is disconnected.
 -Be careful with the UDP disconnect condition == Play. When they are in Start this won't happen (bugs).
+-Remove entities from spawners from ALL PLACES where I remove entities.
 
 ***
 -Change FSM to not be based on the type of the state and be a vector instead.

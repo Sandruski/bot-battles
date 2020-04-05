@@ -108,7 +108,7 @@ void ServerSystem::OnNotify(const Event& event)
 
     case EventType::SEND_BYE: {
         ServerComponent& serverComponent = g_gameServer->GetServerComponent();
-        const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.GetPlayerIDToClientProxyMap();
+        const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>> playerIDToClientProxy = serverComponent.GetPlayerIDToClientProxyMap();
         for (const auto& pair : playerIDToClientProxy) {
             PlayerID playerID = pair.first;
             std::shared_ptr<ClientProxy> clientProxy = pair.second;
@@ -210,27 +210,31 @@ void ServerSystem::ReceiveIncomingPackets(ServerComponent& serverComponent)
             }
         }
 
-        //GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
-        //if (gameplayComponent.m_phase == GameplayComponent::GameplayPhase::PLAY) {
-        std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>> disconnections;
-        const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.GetPlayerIDToClientProxyMap();
-        for (const auto& pair : playerIDToClientProxy) {
-            PlayerID playerID = pair.first;
-            std::shared_ptr<ClientProxy> clientProxy = pair.second;
+        // Only Gameplay
+        GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
+        std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
+        if (!currentState.expired()) {
+            std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>> disconnections;
+            const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.GetPlayerIDToClientProxyMap();
+            for (const auto& pair : playerIDToClientProxy) {
+                PlayerID playerID = pair.first;
+                std::shared_ptr<ClientProxy> clientProxy = pair.second;
+                Entity entity = serverComponent.GetEntity(playerID);
+                if (entity < INVALID_ENTITY) {
+                    F32 timeDiff = MyTime::GetInstance().GetTime() - clientProxy->GetLastPacketTime();
+                    if (timeDiff >= DISCONNECT_TIMEOUT) {
+                        disconnections.insert(std::make_pair(playerID, clientProxy));
+                        continue;
+                    }
+                }
+            }
 
-            F32 timeDiff = MyTime::GetInstance().GetTime() - clientProxy->GetLastPacketTime();
-            if (timeDiff >= DISCONNECT_TIMEOUT) {
-                disconnections.insert(std::make_pair(playerID, clientProxy));
-                continue;
+            for (const auto& disconnection : disconnections) {
+                PlayerID playerID = disconnection.first;
+                Entity entity = serverComponent.GetEntity(playerID);
+                Disconnect(serverComponent, playerID, entity);
             }
         }
-
-        for (const auto& disconnection : disconnections) {
-            PlayerID playerID = disconnection.first;
-            Entity entity = serverComponent.GetEntity(playerID);
-            Disconnect(serverComponent, playerID, entity);
-        }
-        //}
     }
 }
 
@@ -243,11 +247,13 @@ void ServerSystem::SendOutgoingPackets(ServerComponent& serverComponent)
             PlayerID playerID = pair.first;
             std::shared_ptr<ClientProxy> clientProxy = pair.second;
 
-            //GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
-            //if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::NONE) {
-            clientProxy->m_deliveryManager.ProcessTimedOutPackets();
-            SendStatePacket(serverComponent, playerID, clientProxy);
-            //}
+            // Only Gameplay
+            GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
+            std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
+            if (!currentState.expired()) {
+                clientProxy->m_deliveryManager.ProcessTimedOutPackets();
+                SendStatePacket(serverComponent, playerID, clientProxy);
+            }
         }
     }
 }
@@ -301,18 +307,23 @@ void ServerSystem::ReceiveHelloPacket(ServerComponent& serverComponent, InputMem
     // Only Start
     GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
     std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
-    playerID = serverComponent.GetPlayerID(fromSocketAddress);
-    if (currentState.expired() || currentState.lock()->GetName() != "Start" || playerID < INVALID_PLAYER_ID) {
+    if (currentState.expired() || currentState.lock()->GetName() != "Start") {
         std::string name;
         inputStream.Read(name);
-        std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
-        ELOG("Hello packet received from existing player %u %s", playerID, clientProxy.lock()->GetName());
+        ELOG("Hello packet received but skipped because at incorrect state");
+        return;
+    }
+    playerID = serverComponent.GetPlayerID(fromSocketAddress);
+    std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
+    if (!clientProxy.expired()) {
+        std::string name;
+        inputStream.Read(name);
+        ELOG("Hello packet received but skipped because existing player %u %s", playerID, clientProxy.lock()->GetName());
         return;
     }
 
     std::string name;
     inputStream.Read(name);
-
     ILOG("Hello packet received from new player %s", name.c_str());
 
     playerID = serverComponent.AddPlayer(fromSocketAddress, name.c_str());
@@ -336,19 +347,19 @@ void ServerSystem::ReceiveReHelloPacket(ServerComponent& serverComponent, InputM
     GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
     std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
     if (currentState.expired() || currentState.lock()->GetName() != "Start") {
+        PlayerID newPlayerID = INVALID_PLAYER_ID;
+        inputStream.Read(newPlayerID);
+        ELOG("ReHello packet received but skipped because at incorrect state");
         return;
     }
-
     inputStream.Read(playerID);
-    if (playerID >= INVALID_PLAYER_ID) {
-        ELOG("ReHello packet received from unknown player");
-        return;
-    }
-
     std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
     if (clientProxy.expired()) {
+        ELOG("ReHello packet received but skipped because unknown player");
         return;
     }
+
+    ILOG("ReHello packet received from player %u %s", playerID, clientProxy.lock()->GetName());
 
     Event newEvent;
     newEvent.eventType = EventType::REHELLO_RECEIVED;
@@ -357,8 +368,6 @@ void ServerSystem::ReceiveReHelloPacket(ServerComponent& serverComponent, InputM
 
     newEvent.eventType = EventType::PLAYER_ADDED;
     NotifyEvent(newEvent);
-
-    ILOG("ReHello packet received from player %u %s", playerID, clientProxy.lock()->GetName());
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -368,17 +377,15 @@ void ServerSystem::ReceiveByePacket(ServerComponent& serverComponent, InputMemor
     MainMenuComponent& mainMenuComponent = g_gameServer->GetMainMenuComponent();
     std::weak_ptr<State> currentState = mainMenuComponent.m_fsm.GetCurrentState();
     if (!currentState.expired() && currentState.lock()->GetName() == "Setup") {
+        PlayerID newPlayerID = INVALID_PLAYER_ID;
+        inputStream.Read(newPlayerID);
+        ELOG("Bye packet received but skipped because at incorrect state");
         return;
     }
-
     inputStream.Read(playerID);
-    if (playerID >= INVALID_PLAYER_ID) {
-        ELOG("Bye packet received from unknown player");
-        return;
-    }
-
     std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
     if (clientProxy.expired()) {
+        ELOG("Bye packet received because unknown player");
         return;
     }
 
@@ -391,24 +398,19 @@ void ServerSystem::ReceiveByePacket(ServerComponent& serverComponent, InputMemor
 //----------------------------------------------------------------------------------------------------
 void ServerSystem::ReceiveInputPacket(ServerComponent& serverComponent, InputMemoryStream& inputStream, PlayerID& playerID) const
 {
-    // Only Play
+    // Only Gameplay
     GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
     std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
-    if (currentState.expired() || currentState.lock()->GetName() != "Play") {
+    if (currentState.expired()) {
+        ELOG("Input packet received but skipped because at incorrect state");
         return;
     }
-
     inputStream.Read(playerID);
-    if (playerID >= INVALID_PLAYER_ID) {
-        ELOG("Input packet received from unknown player");
-        return;
-    }
-
     std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
     if (clientProxy.expired()) {
+        ELOG("Input packet received but skipped because unknown player");
         return;
     }
-
     const bool isValid = clientProxy.lock()->m_deliveryManager.ReadState(inputStream);
     if (!isValid) {
         ELOG("Input packet received but skipped because it is not valid");

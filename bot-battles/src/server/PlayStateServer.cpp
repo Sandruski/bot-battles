@@ -62,7 +62,7 @@ void PlayStateServer::OnHealthEmptied() const
     std::vector<std::pair<Entity, std::weak_ptr<HealthComponent>>> healthComponents = g_gameServer->GetComponentManager().GetComponents<HealthComponent>();
     for (const auto& pair : healthComponents) {
         std::weak_ptr<HealthComponent> healthComponent = pair.second;
-        if (!healthComponent.lock()->IsDead()) {
+        if (!healthComponent.lock()->m_isDead) {
             ++aliveCount;
         }
     }

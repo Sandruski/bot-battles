@@ -28,8 +28,8 @@ bool HealthSystem::Update()
 
     for (auto& entity : m_entities) {
         std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(entity);
-        // TODO: this is constantly being called and could cause problems.
-        if (healthComponent.lock()->m_health <= 0) {
+        if (!healthComponent.lock()->m_isDead && healthComponent.lock()->m_health <= 0) {
+            healthComponent.lock()->m_isDead = true;
             healthComponent.lock()->m_health = 0;
 
             std::weak_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().GetComponent<SpriteComponent>(entity);
@@ -41,7 +41,7 @@ bool HealthSystem::Update()
             NotifyEvent(newEvent);
 
             newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
-            newEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::HEALTH_HEALTH) | static_cast<U32>(ComponentMemberType::SPRITE_ENABLED);
+            newEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::HEALTH_HEALTH) | static_cast<U32>(ComponentMemberType::HEALTH_DEAD) | static_cast<U32>(ComponentMemberType::SPRITE_ENABLED);
             NotifyEvent(newEvent);
         }
     }

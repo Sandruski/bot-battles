@@ -130,10 +130,15 @@ void SpawnerSystem::Despawn(Entity entity) const
 //----------------------------------------------------------------------------------------------------
 void SpawnerSystem::OnPlayerAdded(PlayerID playerID) const
 {
-    U32 playerNumber = playerID + 1;
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
-    std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
-    Entity entity = Spawn(playerNumber);
+    Entity entity = serverComponent.GetEntity(playerID);
+    if (entity < INVALID_ENTITY) {
+        WLOG("Entity not created because player %u already has an entity");
+        return;
+    }
+
+    U32 playerNumber = playerID + 1;
+    entity = Spawn(playerNumber);
     serverComponent.AddEntity(entity, playerID);
 }
 

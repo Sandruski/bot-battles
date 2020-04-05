@@ -143,14 +143,16 @@ void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent)
             }
         }
 
-        //GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-        //if (gameplayComponent.m_phase == GameplayComponent::GameplayPhase::PLAY) {
-        F32 timeDiff = MyTime::GetInstance().GetTime() - clientComponent.m_lastPacketTime;
-        if (timeDiff >= DISCONNECT_TIMEOUT) {
-            ConnectionReset(clientComponent);
-            DisconnectSockets(clientComponent);
+        // Only Gameplay
+        GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+        std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
+        if (!currentState.expired() && clientComponent.m_entity < INVALID_ENTITY) {
+            F32 timeDiff = MyTime::GetInstance().GetTime() - clientComponent.m_lastPacketTime;
+            if (timeDiff >= DISCONNECT_TIMEOUT) {
+                ConnectionReset(clientComponent);
+                DisconnectSockets(clientComponent);
+            }
         }
-        //}
     }
 }
 
@@ -174,10 +176,12 @@ void ClientSystem::SendOutgoingPackets(ClientComponent& clientComponent)
             }
         }
 
-        //GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-        //if (gameplayComponent.m_phase != GameplayComponent::GameplayPhase::NONE) {
-        SendInputPacket(clientComponent);
-        //}
+        // Only Gameplay
+        GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+        std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
+        if (!currentState.expired()) {
+            SendInputPacket(clientComponent);
+        }
     }
 }
 
@@ -236,8 +240,7 @@ void ClientSystem::ReceiveWelcomePacket(ClientComponent& clientComponent, InputM
     // Only Connect
     MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
     std::weak_ptr<State> currentState = mainMenuComponent.m_fsm.GetCurrentState();
-    const bool isConnected = clientComponent.IsConnected();
-    if (currentState.expired() || currentState.lock()->GetName() != "Connect" || isConnected) {
+    if (currentState.expired() || currentState.lock()->GetName() != "Connect") {
         bool isSuccessful = false;
         inputStream.Read(isSuccessful);
         if (isSuccessful) {
@@ -246,7 +249,20 @@ void ClientSystem::ReceiveWelcomePacket(ClientComponent& clientComponent, InputM
             std::string map;
             inputStream.Read(map);
         }
-        ELOG("Welcome packet received but skipped because Player is already connected");
+        ELOG("Welcome packet received but skipped because at incorrect state");
+        return;
+    }
+    const bool isConnected = clientComponent.IsConnected();
+    if (isConnected) {
+        bool isSuccessful = false;
+        inputStream.Read(isSuccessful);
+        if (isSuccessful) {
+            PlayerID playerID = INVALID_PLAYER_ID;
+            inputStream.Read(playerID);
+            std::string map;
+            inputStream.Read(map);
+        }
+        ELOG("Welcome packet received but skipped because player is already connected");
         return;
     }
 
@@ -283,12 +299,12 @@ void ClientSystem::ReceiveReWelcomePacket(ClientComponent& clientComponent, Inpu
     ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
     std::weak_ptr<State> currentState = scoreboardComponent.m_fsm.GetCurrentState();
     if (currentState.expired() || currentState.lock()->GetName() != "Restart") {
+        ELOG("ReWelcome packet received but skipped because at incorrect state");
         return;
     }
-
     const bool isConnected = clientComponent.IsConnected();
     if (!isConnected) {
-        ELOG("ReWelcome packet received but skipped because Player is not connected");
+        ELOG("ReWelcome packet received but skipped because player is not connected");
         return;
     }
 
@@ -306,12 +322,12 @@ void ClientSystem::ReceivePlayPacket(ClientComponent& clientComponent, InputMemo
     GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
     std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
     if (currentState.expired() || currentState.lock()->GetName() != "Start") {
+        ELOG("Play packet received but skipped because at incorrect state");
         return;
     }
-
     const bool isConnected = clientComponent.IsConnected();
     if (!isConnected) {
-        ELOG("Play packet received but skipped because Player is not connected");
+        ELOG("Play packet received but skipped because player is not connected");
         return;
     }
 
@@ -328,11 +344,17 @@ void ClientSystem::ReceiveResultsPacket(ClientComponent& clientComponent, InputM
     // Only Play
     GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
     std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
-    const bool isConnected = clientComponent.IsConnected();
-    if (currentState.expired() || currentState.lock()->GetName() != "Play" || !isConnected) {
+    if (currentState.expired() || currentState.lock()->GetName() != "Play") {
         U32 gameCount = 0;
         inputStream.Read(gameCount);
-        ELOG("Results packet received but skipped because Player is not connected");
+        ELOG("Results packet received but skipped because at incorrect state");
+        return;
+    }
+    const bool isConnected = clientComponent.IsConnected();
+    if (!isConnected) {
+        U32 gameCount = 0;
+        inputStream.Read(gameCount);
+        ELOG("Results packet received but skipped because player is not connected");
         return;
     }
 
@@ -353,9 +375,9 @@ void ClientSystem::ReceiveByePacket(ClientComponent& clientComponent, InputMemor
     MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
     std::weak_ptr<State> currentState = mainMenuComponent.m_fsm.GetCurrentState();
     if (!currentState.expired() && currentState.lock()->GetName() == "Setup") {
+        ELOG("Bye packet received but skipped because at incorrect state");
         return;
     }
-
     const bool isConnected = clientComponent.IsConnected();
     if (!isConnected) {
         ELOG("Bye packet received but skipped because Player is not connected");
@@ -371,19 +393,18 @@ void ClientSystem::ReceiveByePacket(ClientComponent& clientComponent, InputMemor
 //----------------------------------------------------------------------------------------------------
 void ClientSystem::ReceiveStatePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream) const
 {
-    // Only Play
+    // Only Gameplay
     GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
     std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
-    if (currentState.expired() || currentState.lock()->GetName() != "Play") {
+    if (currentState.expired()) {
+        ELOG("State packet received but skipped because at incorrect state");
         return;
     }
-
     const bool isConnected = clientComponent.IsConnected();
     if (!isConnected) {
-        ELOG("State packet received but skipped because Player is not connected");
+        ELOG("State packet received but skipped because player is not connected");
         return;
     }
-
     const bool isValid = clientComponent.m_deliveryManager.ReadState(inputStream);
     if (!isValid) {
         ELOG("State packet received but skipped because it is not valid");
@@ -513,48 +534,46 @@ bool ClientSystem::ConnectSockets(ClientComponent& clientComponent)
 {
     bool ret = true;
 
-    if (clientComponent.m_TCPSocket != nullptr && clientComponent.m_UDPSocket != nullptr) {
-        return ret;
-    }
-
-    clientComponent.m_TCPSocket = TCPSocket::CreateIPv4();
-    assert(clientComponent.m_TCPSocket != nullptr);
-    ret = clientComponent.m_TCPSocket->SetReuseAddress(true);
-    if (!ret) {
-        return ret;
-    }
-    ret = clientComponent.m_TCPSocket->SetNonBlockingMode(true);
-    if (!ret) {
-        return ret;
-    }
-    /*
+    if (clientComponent.m_TCPSocket == nullptr || clientComponent.m_UDPSocket == nullptr) {
+        clientComponent.m_TCPSocket = TCPSocket::CreateIPv4();
+        assert(clientComponent.m_TCPSocket != nullptr);
+        ret = clientComponent.m_TCPSocket->SetReuseAddress(true);
+        if (!ret) {
+            return ret;
+        }
+        ret = clientComponent.m_TCPSocket->SetNonBlockingMode(true);
+        if (!ret) {
+            return ret;
+        }
+        /*
     ret = clientComponent.m_TCPSocket->SetNoDelay(true);
     if (!ret) {
         return ret;
     }*/
-    ret = clientComponent.m_TCPSocket->Connect(*clientComponent.m_socketAddress);
-    if (!ret) {
-        return ret;
-    }
-    ret = clientComponent.m_TCPSocket->SetNonBlockingMode(false);
-    if (!ret) {
-        return ret;
-    }
+        ret = clientComponent.m_TCPSocket->Connect(*clientComponent.m_socketAddress);
+        if (!ret) {
+            return ret;
+        }
+        ret = clientComponent.m_TCPSocket->SetNonBlockingMode(false);
+        if (!ret) {
+            return ret;
+        }
 
-    clientComponent.m_UDPSocket = UDPSocket::CreateIPv4();
-    assert(clientComponent.m_UDPSocket != nullptr);
-    ret = clientComponent.m_UDPSocket->SetReuseAddress(true);
-    if (!ret) {
-        return ret;
-    }
-    ret = clientComponent.m_UDPSocket->SetNonBlockingMode(true);
-    if (!ret) {
-        return ret;
-    }
-    SocketAddress socketAddress = clientComponent.m_TCPSocket->GetLocalSocketAddress();
-    ret = clientComponent.m_UDPSocket->Bind(socketAddress);
-    if (!ret) {
-        return ret;
+        clientComponent.m_UDPSocket = UDPSocket::CreateIPv4();
+        assert(clientComponent.m_UDPSocket != nullptr);
+        ret = clientComponent.m_UDPSocket->SetReuseAddress(true);
+        if (!ret) {
+            return ret;
+        }
+        ret = clientComponent.m_UDPSocket->SetNonBlockingMode(true);
+        if (!ret) {
+            return ret;
+        }
+        SocketAddress socketAddress = clientComponent.m_TCPSocket->GetLocalSocketAddress();
+        ret = clientComponent.m_UDPSocket->Bind(socketAddress);
+        if (!ret) {
+            return ret;
+        }
     }
 
     Event newEvent;
