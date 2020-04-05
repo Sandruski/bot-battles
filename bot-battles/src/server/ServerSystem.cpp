@@ -176,7 +176,7 @@ void ServerSystem::ReceiveIncomingPackets(ServerComponent& serverComponent)
                                 ReceivePacket(serverComponent, packet, TCPSock->GetRemoteSocketAddress());
                                 U32 byteCount = packet.GetByteLength();
                                 U32 newByteCount = byteCount - previousByteCount;
-                                previousByteCount = newByteCount;
+                                previousByteCount = byteCount;
                                 readByteCount -= newByteCount;
                                 U32 bitCount = BYTES_TO_BITS(byteCount);
                                 packet.SetHead(bitCount);
@@ -585,55 +585,53 @@ bool ServerSystem::ConnectSockets(ServerComponent& serverComponent)
 {
     bool ret = true;
 
-    if (!serverComponent.m_TCPListenSocket.expired() && serverComponent.m_UDPSocket != nullptr) {
-        return ret;
-    }
+    if (serverComponent.m_TCPListenSocket.expired() || serverComponent.m_UDPSocket != nullptr) {
+        serverComponent.m_UDPSocket = UDPSocket::CreateIPv4();
+        assert(serverComponent.m_UDPSocket != nullptr);
+        ret = serverComponent.m_UDPSocket->SetReuseAddress(true);
+        if (!ret) {
+            return ret;
+        }
+        ret = serverComponent.m_UDPSocket->SetNonBlockingMode(true);
+        if (!ret) {
+            return ret;
+        }
+        ret = serverComponent.m_UDPSocket->Bind(*serverComponent.m_socketAddress);
+        if (!ret) {
+            return ret;
+        }
 
-    serverComponent.m_UDPSocket = UDPSocket::CreateIPv4();
-    assert(serverComponent.m_UDPSocket != nullptr);
-    ret = serverComponent.m_UDPSocket->SetReuseAddress(true);
-    if (!ret) {
-        return ret;
-    }
-    ret = serverComponent.m_UDPSocket->SetNonBlockingMode(true);
-    if (!ret) {
-        return ret;
-    }
-    ret = serverComponent.m_UDPSocket->Bind(*serverComponent.m_socketAddress);
-    if (!ret) {
-        return ret;
-    }
+        std::shared_ptr<TCPSocket> TCPListenSocket = TCPSocket::CreateIPv4();
+        assert(TCPListenSocket != nullptr);
+        ret = TCPListenSocket->SetReuseAddress(true);
+        if (!ret) {
+            return ret;
+        } /*
+        ret = TCPListenSocket->SetNonBlockingMode(true);
+        if (!ret) {
+            return ret;
+        }*/
+        /*
+        ret = TCPListenSocket->SetNoDelay(true);
+        if (!ret) {
+            return ret;
+        }*/
+        ret = TCPListenSocket->Bind(*serverComponent.m_socketAddress);
+        if (!ret) {
+            return ret;
+        }
+        ret = TCPListenSocket->Listen(MAX_PLAYER_IDS);
+        if (!ret) {
+            return ret;
+        }
+        serverComponent.m_TCPListenSocket = serverComponent.m_TCPSockets.emplace_back(TCPListenSocket);
 
-    std::shared_ptr<TCPSocket> TCPListenSocket = TCPSocket::CreateIPv4();
-    assert(TCPListenSocket != nullptr);
-    ret = TCPListenSocket->SetReuseAddress(true);
-    if (!ret) {
-        return ret;
-    } /*
-    ret = TCPListenSocket->SetNonBlockingMode(true);
-    if (!ret) {
-        return ret;
-    }*/
-    /*
-    ret = TCPListenSocket->SetNoDelay(true);
-    if (!ret) {
-        return ret;
-    }*/
-    ret = TCPListenSocket->Bind(*serverComponent.m_socketAddress);
-    if (!ret) {
-        return ret;
+        ILOG("Sockets connected");
     }
-    ret = TCPListenSocket->Listen(MAX_PLAYER_IDS);
-    if (!ret) {
-        return ret;
-    }
-    serverComponent.m_TCPListenSocket = serverComponent.m_TCPSockets.emplace_back(TCPListenSocket);
 
     Event newEvent;
     newEvent.eventType = EventType::SOCKETS_CONNECTED;
     NotifyEvent(newEvent);
-
-    ILOG("Sockets connected");
 
     return ret;
 }

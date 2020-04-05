@@ -133,7 +133,7 @@ void SpawnerSystem::OnPlayerAdded(PlayerID playerID) const
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     Entity entity = serverComponent.GetEntity(playerID);
     if (entity < INVALID_ENTITY) {
-        WLOG("Entity not created because player %u already has an entity");
+        WLOG("Entity not created because player %u already has an entity", playerID);
         return;
     }
 

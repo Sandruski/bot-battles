@@ -27,6 +27,10 @@ bool ResultsStateClient::Update() const
     F32 time = static_cast<F32>(scoreboardComponent.m_mainMenuTimer.ReadSec());
     // X
     if (time >= scoreboardComponent.m_mainMenuTimeout) {
+        Event newEvent;
+        newEvent.eventType = EventType::SEND_BYE;
+        g_gameClient->GetFSM().NotifyEvent(newEvent);
+
         ChangeToMainMenu();
     }
 

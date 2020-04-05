@@ -109,7 +109,7 @@ void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent)
                         ReceivePacket(clientComponent, packet);
                         U32 byteCount = packet.GetByteLength();
                         U32 newByteCount = byteCount - previousByteCount;
-                        previousByteCount = newByteCount;
+                        previousByteCount = byteCount;
                         readByteCount -= newByteCount;
                         U32 bitCount = BYTES_TO_BITS(byteCount);
                         packet.SetHead(bitCount);
@@ -574,13 +574,13 @@ bool ClientSystem::ConnectSockets(ClientComponent& clientComponent)
         if (!ret) {
             return ret;
         }
+
+        ILOG("Sockets connected");
     }
 
     Event newEvent;
     newEvent.eventType = EventType::SOCKETS_CONNECTED;
     NotifyEvent(newEvent);
-
-    ILOG("Sockets connected");
 
     return ret;
 }
@@ -588,10 +588,6 @@ bool ClientSystem::ConnectSockets(ClientComponent& clientComponent)
 //----------------------------------------------------------------------------------------------------
 bool ClientSystem::DisconnectSockets(ClientComponent& clientComponent)
 {
-    if (clientComponent.m_TCPSocket != nullptr && clientComponent.m_UDPSocket != nullptr) {
-        return true;
-    }
-
     clientComponent.m_UDPSocket = nullptr;
     clientComponent.m_TCPSocket = nullptr;
 
