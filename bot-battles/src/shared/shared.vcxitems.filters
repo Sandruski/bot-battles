@@ -58,6 +58,12 @@
     <Filter Include="Source Files\States">
       <UniqueIdentifier>{26f6fd04-ba41-4008-9dcb-ccbf67a9d151}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Panels">
+      <UniqueIdentifier>{94535bdc-8bd4-4411-8f6f-35324f52ef2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Panels">
+      <UniqueIdentifier>{224d56b5-7bb0-471b-98e3-2fff23157bed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)ByteSwap.h">
@@ -306,6 +312,24 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)StateTypes.h">
       <Filter>Header Files\States</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Panel.h">
+      <Filter>Header Files\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)PanelTypes.h">
+      <Filter>Header Files\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)PanelDefs.h">
+      <Filter>Header Files\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)WindowPanel.h">
+      <Filter>Header Files\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)StatesPanel.h">
+      <Filter>Header Files\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)GamePanel.h">
+      <Filter>Header Files\Panels</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp">
@@ -463,6 +487,18 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)TCPSocket.cpp">
       <Filter>Source Files\Networking</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Panel.cpp">
+      <Filter>Source Files\Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)WindowPanel.cpp">
+      <Filter>Source Files\Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)StatesPanel.cpp">
+      <Filter>Source Files\Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)GamePanel.cpp">
+      <Filter>Source Files\Panels</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -43,7 +43,7 @@ inline bool FSM::RegisterState()
     static_assert(std::is_base_of<State, T>::value, "T is not derived from State");
 
     StateType stateType = T::GetType();
-    assert(stateType < StateType::COUNT);
+    assert(static_cast<U16>(stateType) < INVALID_STATE);
     std::size_t stateIndex = static_cast<std::size_t>(stateType);
     std::shared_ptr<State> state = m_states.at(stateIndex);
     if (state != nullptr) {
@@ -51,8 +51,9 @@ inline bool FSM::RegisterState()
         return false;
     }
 
-    m_states.at(stateIndex) = std::make_shared<T>();
-    m_states.at(stateIndex)->Create();
+    state = std::make_shared<T>();
+    state->Create();
+    m_states.at(stateIndex) = state;
 
     return true;
 }
@@ -64,7 +65,7 @@ inline bool FSM::DeRegisterState()
     static_assert(std::is_base_of<State, T>::value, "T is not derived from State");
 
     StateType stateType = T::GetType();
-    assert(stateType < StateType::COUNT);
+    assert(static_cast<U16>(stateType) < INVALID_STATE);
     std::size_t stateIndex = static_cast<std::size_t>(stateType);
     std::shared_ptr<State> state = m_states.at(stateIndex);
     if (state == nullptr) {
@@ -72,10 +73,10 @@ inline bool FSM::DeRegisterState()
         return false;
     }
 
-    m_states.at(stateIndex)->Destroy();
-    m_states.at(stateIndex) = nullptr;
+    state->Destroy();
+    state = nullptr;
 
-    return false;
+    return true;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -85,7 +86,7 @@ inline std::weak_ptr<T> FSM::GetState() const
     static_assert(std::is_base_of<State, T>::value, "T is not derived from State");
 
     StateType stateType = T::GetType();
-    assert(stateType < StateType::COUNT);
+    assert(static_cast<U16>(stateType) < INVALID_STATE);
     std::size_t stateIndex = static_cast<std::size_t>(stateType);
     std::shared_ptr<State> baseState = m_states.at(stateIndex);
     std::weak_ptr<T> derivedState = std::weak_ptr<T>(std::static_pointer_cast<T>(baseState));
@@ -100,7 +101,7 @@ inline bool FSM::ChangeState()
     static_assert(std::is_base_of<State, T>::value, "T is not derived from State");
 
     StateType stateType = T::GetType();
-    assert(stateType < StateType::COUNT);
+    assert(static_cast<U16>(stateType) < INVALID_STATE);
     std::size_t stateIndex = static_cast<std::size_t>(stateType);
     std::shared_ptr<State> state = m_states.at(stateIndex);
     if (state == nullptr) {

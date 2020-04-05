@@ -67,6 +67,9 @@
     <Filter Include="Source Files\States\Scoreboard States">
       <UniqueIdentifier>{36a83916-5d1b-4518-b954-e6468f3f0609}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Panels">
+      <UniqueIdentifier>{e3e79f79-7ea0-4a04-b005-4dcae58e81a4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -89,9 +92,6 @@
     </ClCompile>
     <ClCompile Include="Delivery.cpp">
       <Filter>Source Files\Networking</Filter>
-    </ClCompile>
-    <ClCompile Include="ReplicationResultManager.h">
-      <Filter>Header Files\Networking</Filter>
     </ClCompile>
     <ClCompile Include="ReplicationResultManager.cpp">
       <Filter>Source Files\Networking</Filter>
@@ -159,9 +159,6 @@
     <ClCompile Include="ScoreboardStateServer.cpp">
       <Filter>Source Files\States</Filter>
     </ClCompile>
-    <ClCompile Include="PlayStateServer.h">
-      <Filter>Header Files\States\Gameplay States</Filter>
-    </ClCompile>
     <ClCompile Include="PlayStateServer.cpp">
       <Filter>Source Files\States\Gameplay States</Filter>
     </ClCompile>
@@ -182,6 +179,9 @@
     </ClCompile>
     <ClCompile Include="..\dependencies\source\imgui\imgui_stdlib.cpp">
       <Filter>Dependencies\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="StatesPanelServer.cpp">
+      <Filter>Source Files\Panels</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -253,6 +253,12 @@
     </ClInclude>
     <ClInclude Include="RestartStateServer.h">
       <Filter>Header Files\States\Scoreboard States</Filter>
+    </ClInclude>
+    <ClInclude Include="ReplicationResultManager.h">
+      <Filter>Header Files\Networking</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayStateServer.h">
+      <Filter>Header Files\States\Gameplay States</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

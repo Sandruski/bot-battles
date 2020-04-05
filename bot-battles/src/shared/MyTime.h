@@ -16,6 +16,7 @@ public:
     void StartUpdate();
     void FinishUpdate();
 
+    const std::vector<F32>& GetFpsTrack() const;
     F32 GetTime() const;
     F32 GetStartFrameTime() const;
     F32 GetDt() const;
@@ -23,8 +24,13 @@ public:
     U32 GetFrame() const;
 
 private:
+    void AddFpsToTrack(F32 fps);
+
+private:
     MyTimer m_timer;
     MyTimer m_dtTimer;
+
+    std::vector<F32> m_fpsTrack;
 
     F64 m_lastFrameMs;
     F64 m_fps;

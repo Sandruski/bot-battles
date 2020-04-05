@@ -14,10 +14,13 @@
 #include "TransformComponent.h"
 #include "WeaponComponent.h"
 #ifdef _DRAW
+#include "GamePanel.h"
 #include "GuiSystem.h"
 #include "RendererSystem.h"
 #include "ShaderResource.h"
 #include "SpriteComponent.h"
+#include "StatesPanel.h"
+#include "WindowPanel.h"
 #include "WindowSystem.h"
 #endif
 
@@ -104,6 +107,26 @@ bool Game::Init()
     if (!ret) {
         return ret;
     }
+
+    // Panels
+#ifdef _DRAW
+    ret = m_guiComponent.RegisterPanel<WindowPanel>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_guiComponent.RegisterPanel<StatesPanel>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_guiComponent.RegisterPanel<GamePanel>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_guiComponent.SetCurrentPanel<GamePanel>();
+    if (!ret) {
+        return ret;
+    }
+#endif
 
     ret = m_entityManager->AddObserver(std::weak_ptr<Observer>(m_componentManager));
     if (!ret) {
@@ -304,15 +327,6 @@ bool Game::DebugRender()
 bool Game::RenderGui()
 {
     bool ret = false;
-
-    if (m_guiComponent.m_isDebugOptions) {
-        if (ImGui::Button("Game")) {
-            m_guiComponent.m_body = []() {
-                F32 fps = MyTime::GetInstance().GetFps();
-                ImGui::Text("%.0f", fps);
-            };
-        }
-    }
 
     ret = m_fsm->RenderGui();
     if (!ret) {

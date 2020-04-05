@@ -16,7 +16,6 @@ public:
 public:
     bool StartUp() override;
     bool ShutDown() override;
-    bool RenderGui() override;
 };
 }
 

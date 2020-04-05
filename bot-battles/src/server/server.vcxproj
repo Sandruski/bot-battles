@@ -223,9 +223,9 @@
       </PreprocessorDefinitions>
     </ClCompile>
     <ClCompile Include="PlayStateServer.cpp" />
-    <ClCompile Include="PlayStateServer.h" />
+    <ClInclude Include="PlayStateServer.h" />
     <ClCompile Include="ReplicationResultManager.cpp" />
-    <ClCompile Include="ReplicationResultManager.h" />
+    <ClInclude Include="ReplicationResultManager.h" />
     <ClCompile Include="ReplicationManagerServer.cpp" />
     <ClCompile Include="RestartStateServer.cpp" />
     <ClCompile Include="ResultsStateServer.cpp" />
@@ -234,6 +234,7 @@
     <ClCompile Include="ServerComponent.cpp" />
     <ClCompile Include="SpawnerSystem.cpp" />
     <ClCompile Include="StartStateServer.cpp" />
+    <ClCompile Include="StatesPanelServer.cpp" />
     <ClCompile Include="TransformComponentServer.cpp" />
     <ClCompile Include="WeaponSystemServer.cpp" />
   </ItemGroup>

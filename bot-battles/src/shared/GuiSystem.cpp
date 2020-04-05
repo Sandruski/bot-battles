@@ -3,6 +3,7 @@
 #include "EventComponent.h"
 #include "Game.h"
 #include "GuiComponent.h"
+#include "Panel.h"
 #include "WindowComponent.h"
 
 namespace sand {
@@ -54,40 +55,30 @@ bool GuiSystem::PreRender()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool GuiSystem::Render()
-{
-    GuiComponent& guiComponent = g_game->GetGuiComponent();
-    if (guiComponent.m_isDebugOptions) {
-        ImGuiWindowFlags windowFlags = 0;
-        windowFlags |= ImGuiWindowFlags_NoTitleBar;
-        windowFlags |= ImGuiWindowFlags_NoScrollbar;
-        windowFlags |= ImGuiWindowFlags_NoCollapse;
-        windowFlags |= ImGuiWindowFlags_MenuBar;
-        if (!ImGui::Begin("Debug Options", &guiComponent.m_isDebugOptions, windowFlags)) {
-            ImGui::End();
-            return true;
-        }
-
-        if (!ImGui::BeginMenuBar()) {
-            ImGui::EndMenuBar();
-            ImGui::End();
-            guiComponent.m_isDebugOptions = false;
-            return true;
-        }
-    }
-
-    return true;
-}
-
-//----------------------------------------------------------------------------------------------------
 bool GuiSystem::RenderGui()
 {
     GuiComponent& guiComponent = g_game->GetGuiComponent();
-    if (guiComponent.m_isDebugOptions) {
-        ImGui::EndMenuBar();
+    ImGuiWindowFlags windowFlags = 0;
+    windowFlags |= ImGuiWindowFlags_NoTitleBar;
+    windowFlags |= ImGuiWindowFlags_NoScrollbar;
+    windowFlags |= ImGuiWindowFlags_NoCollapse;
+    windowFlags |= ImGuiWindowFlags_MenuBar;
+    if (ImGui::Begin("Debug Options", &guiComponent.m_isDebugOptions, windowFlags)) {
+        if (ImGui::BeginMenuBar()) {
+            for (const auto& panel : guiComponent.m_panels) {
+                if (panel != nullptr && panel->m_isEnabled) {
+                    const bool result = panel->RenderHeader();
+                    if (result) {
+                        guiComponent.m_currentPanel = std::weak_ptr<Panel>(panel);
+                    }
+                }
+            }
 
-        if (guiComponent.m_body != nullptr) {
-            guiComponent.m_body();
+            ImGui::EndMenuBar();
+        }
+
+        if (!guiComponent.m_currentPanel.expired()) {
+            guiComponent.m_currentPanel.lock()->RenderBody();
         }
 
         ImGui::End();
@@ -96,12 +87,6 @@ bool GuiSystem::RenderGui()
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-    return true;
-}
-
-//----------------------------------------------------------------------------------------------------
-bool GuiSystem::PostRender()
-{
     return true;
 }
 

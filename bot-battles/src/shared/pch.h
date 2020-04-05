@@ -86,6 +86,7 @@
 #include "ComponentDefs.h"
 #include "EntityDefs.h"
 #include "NetDefs.h"
+#include "PanelDefs.h"
 #include "StateDefs.h"
 #include "SystemDefs.h"
 #include "WorkingDirDefs.h"

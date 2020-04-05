@@ -67,6 +67,9 @@
     <Filter Include="Source Files\States\Scoreboard States">
       <UniqueIdentifier>{03c2cb01-580c-4ef9-b05f-ad5d0b693ef7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Panels">
+      <UniqueIdentifier>{79d0f817-2e2c-4d69-adc7-78ad65eba52d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -167,6 +170,9 @@
     </ClCompile>
     <ClCompile Include="..\dependencies\source\imgui\imgui_stdlib.cpp">
       <Filter>Dependencies\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="StatesPanelClient.cpp">
+      <Filter>Source Files\Panels</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
