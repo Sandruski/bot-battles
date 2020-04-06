@@ -157,27 +157,29 @@ void ServerSystem::ReceiveIncomingPackets(ServerComponent& serverComponent)
                         std::shared_ptr<TCPSocket> acceptedTCPSock = TCPSock->Accept(fromSocketAddress);
                         bool result = acceptedTCPSock->SetReuseAddress(true);
                         if (result) {
-                            //result = acceptedTCPSock->SetNonBlockingMode(true);
-                            //if (result) {
-                            //result = acceptedTCPSock->SetNoDelay(true);
-                            //if (result) {
-                            serverComponent.m_TCPSockets.emplace_back(acceptedTCPSock);
-                            ILOG("TCP socket added");
-                            //}
-                            //}
+                            result = acceptedTCPSock->SetNonBlockingMode(true);
+                            if (result) {
+                                result = acceptedTCPSock->SetNoDelay(true);
+                                if (result) {
+                                    serverComponent.m_TCPSockets.emplace_back(acceptedTCPSock);
+                                    ILOG("TCP socket added");
+                                }
+                            }
                         }
                     } else {
                         I32 readByteCount = TCPSock->Receive(packet.GetPtr(), byteCapacity);
+                        ILOG("readByteCount %i", readByteCount);
                         if (readByteCount > 0) {
                             packet.SetCapacity(readByteCount);
                             packet.ResetHead();
+                            U32 remainingReadByteCount = readByteCount;
                             U32 previousByteCount = 0;
-                            while (readByteCount > 0) {
+                            while (remainingReadByteCount > 0) {
                                 ReceivePacket(serverComponent, packet, TCPSock->GetRemoteSocketAddress());
                                 U32 byteCount = packet.GetByteLength();
                                 U32 newByteCount = byteCount - previousByteCount;
                                 previousByteCount = byteCount;
-                                readByteCount -= newByteCount;
+                                remainingReadByteCount -= newByteCount;
                                 U32 bitCount = BYTES_TO_BITS(byteCount);
                                 packet.SetHead(bitCount);
                             }
@@ -631,16 +633,15 @@ bool ServerSystem::ConnectSockets(ServerComponent& serverComponent)
         ret = TCPListenSocket->SetReuseAddress(true);
         if (!ret) {
             return ret;
-        } /*
+        }
         ret = TCPListenSocket->SetNonBlockingMode(true);
         if (!ret) {
             return ret;
-        }*/
-        /*
+        }
         ret = TCPListenSocket->SetNoDelay(true);
         if (!ret) {
             return ret;
-        }*/
+        }
         ret = TCPListenSocket->Bind(*serverComponent.m_socketAddress);
         if (!ret) {
             return ret;

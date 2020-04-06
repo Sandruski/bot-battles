@@ -24,9 +24,9 @@ bool ResultsStateClient::Enter() const
 bool ResultsStateClient::Update() const
 {
     ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
-    F32 time = static_cast<F32>(scoreboardComponent.m_mainMenuTimer.ReadSec());
+    F32 mainMenuCurrentTime = static_cast<F32>(scoreboardComponent.m_mainMenuTimer.ReadSec());
     // X
-    if (time >= scoreboardComponent.m_mainMenuTimeout) {
+    if (mainMenuCurrentTime >= scoreboardComponent.m_mainMenuTimeout) {
         Event newEvent;
         newEvent.eventType = EventType::SEND_BYE;
         g_gameClient->GetFSM().NotifyEvent(newEvent);

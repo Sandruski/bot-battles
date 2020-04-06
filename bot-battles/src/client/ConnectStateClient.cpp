@@ -21,6 +21,7 @@ bool ConnectStateClient::Enter() const
     ILOG("Entering %s...", GetName().c_str());
 
     MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
+    mainMenuComponent.m_helloTimer.Start();
     mainMenuComponent.m_guiTimer.Start();
 
     return true;
@@ -29,9 +30,15 @@ bool ConnectStateClient::Enter() const
 //----------------------------------------------------------------------------------------------------
 bool ConnectStateClient::Update() const
 {
-    Event newEvent;
-    newEvent.eventType = EventType::CONNECT_SOCKETS;
-    g_gameClient->GetFSM().NotifyEvent(newEvent);
+    MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
+    F32 helloCurrentTime = static_cast<F32>(mainMenuComponent.m_helloTimer.ReadSec());
+    if (helloCurrentTime >= SECONDS_BETWEEN_PACKETS) {
+        Event newEvent;
+        newEvent.eventType = EventType::CONNECT_SOCKETS;
+        g_gameClient->GetFSM().NotifyEvent(newEvent);
+
+        mainMenuComponent.m_helloTimer.Start();
+    }
 
     return true;
 }

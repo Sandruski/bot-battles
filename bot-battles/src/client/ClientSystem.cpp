@@ -104,13 +104,14 @@ void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent)
                 if (readByteCount > 0) {
                     packet.SetCapacity(readByteCount);
                     packet.ResetHead();
+                    U32 remainingReadByteCount = readByteCount;
                     U32 previousByteCount = 0;
-                    while (readByteCount > 0) {
+                    while (remainingReadByteCount > 0) {
                         ReceivePacket(clientComponent, packet);
                         U32 byteCount = packet.GetByteLength();
                         U32 newByteCount = byteCount - previousByteCount;
                         previousByteCount = byteCount;
-                        readByteCount -= newByteCount;
+                        remainingReadByteCount -= newByteCount;
                         U32 bitCount = BYTES_TO_BITS(byteCount);
                         packet.SetHead(bitCount);
                     }
@@ -556,16 +557,11 @@ bool ClientSystem::ConnectSockets(ClientComponent& clientComponent)
         if (!ret) {
             return ret;
         }
-        /*
-    ret = clientComponent.m_TCPSocket->SetNoDelay(true);
-    if (!ret) {
-        return ret;
-    }*/
-        ret = clientComponent.m_TCPSocket->Connect(*clientComponent.m_socketAddress);
+        ret = clientComponent.m_TCPSocket->SetNoDelay(true);
         if (!ret) {
             return ret;
         }
-        ret = clientComponent.m_TCPSocket->SetNonBlockingMode(false);
+        ret = clientComponent.m_TCPSocket->Connect(*clientComponent.m_socketAddress);
         if (!ret) {
             return ret;
         }

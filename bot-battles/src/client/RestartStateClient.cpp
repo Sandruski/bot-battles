@@ -18,6 +18,7 @@ bool RestartStateClient::Enter() const
     ILOG("Entering %s...", GetName().c_str());
 
     ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
+    scoreboardComponent.m_reHelloTimer.Start();
     scoreboardComponent.m_guiTimer.Start();
 
     return true;
@@ -26,14 +27,20 @@ bool RestartStateClient::Enter() const
 //----------------------------------------------------------------------------------------------------
 bool RestartStateClient::Update() const
 {
-    Event newEvent;
-    newEvent.eventType = EventType::SEND_REHELLO;
-    g_gameClient->GetFSM().NotifyEvent(newEvent);
-
     ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
-    F32 time = static_cast<F32>(scoreboardComponent.m_mainMenuTimer.ReadSec());
+    F32 reHelloCurrentTime = static_cast<F32>(scoreboardComponent.m_reHelloTimer.ReadSec());
+    if (reHelloCurrentTime >= SECONDS_BETWEEN_PACKETS) {
+        Event newEvent;
+        newEvent.eventType = EventType::SEND_REHELLO;
+        g_gameClient->GetFSM().NotifyEvent(newEvent);
+
+        scoreboardComponent.m_reHelloTimer.Start();
+    }
+
+    F32 mainMenuCurrentTime = static_cast<F32>(scoreboardComponent.m_mainMenuTimer.ReadSec());
     // X
-    if (time >= scoreboardComponent.m_mainMenuTimeout) {
+    if (mainMenuCurrentTime >= scoreboardComponent.m_mainMenuTimeout) {
+        Event newEvent;
         newEvent.eventType = EventType::SEND_BYE;
         g_gameClient->GetFSM().NotifyEvent(newEvent);
 

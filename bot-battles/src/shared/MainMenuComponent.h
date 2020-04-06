@@ -13,6 +13,7 @@ struct MainMenuComponent {
 
     FSM m_fsm;
 #ifdef _CLIENT
+    MyTimer m_helloTimer;
     MyTimer m_guiTimer;
 #endif
 };

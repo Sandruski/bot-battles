@@ -1,19 +1,16 @@
 -Cap MAX BYTES SENT also for State packets (already doing it for Input packets) -> Reset MAX BYTES SENT to a reasonable value.
 -Only network those tiles that may change.
--Send unwelcome messages.
 -Add 'Random map' option with ImGui to select a map from all the existing maps.
 -Debug draw in a more nice way.
 -Debug ImGui options (resize window, etc.).
 -Remove Networking inheritance for those components that are actually not being networked.
 -Make entities be able to have components that are networked and components that are not.
+-Change FSM to not be based on the type of the state and be a vector instead.
 
 PLAYLIST:
 -Check that 2 players can connect to the game from different computers.
-
-***
--Change FSM to not be based on the type of the state and be a vector instead.
 -Stop the 1s timeout for TCP because it is horrible. (test it with bad network conditions)
-***
+-Not send every Update certain packets (it is too much!). Add a timer or something to do it.
 
 ----------
 
@@ -22,4 +19,4 @@ PLAYLIST:
 -Health bars or points or life or insta kill?
 
 BUGS:
--Bug: client does not interpolate until the last position received (maybe it deleats it before). It only goes to the right position if remote entity moves again.
+-SUPER IMPORTANT Bug: client does not interpolate until the last position received (maybe it deleats it before). It only goes to the right position if remote entity moves again.

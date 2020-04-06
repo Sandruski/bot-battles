@@ -15,6 +15,7 @@ struct ScoreboardComponent {
     U32 m_gameCount;
 #ifdef _CLIENT
     MyTimer m_mainMenuTimer;
+    MyTimer m_reHelloTimer;
     MyTimer m_guiTimer;
     F32 m_mainMenuTimeout;
 #endif

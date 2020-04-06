@@ -41,6 +41,7 @@ const F32 DISCONNECT_TIMEOUT = 15.0f; // 5.0f
 #ifdef _SERVER
 const F32 ACK_TIMEOUT = 5.0f; // 0.5f
 #endif
+const F32 SECONDS_BETWEEN_PACKETS = 5.0f;
 }
 
 #endif

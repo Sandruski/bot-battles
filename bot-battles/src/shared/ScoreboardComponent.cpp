@@ -10,6 +10,7 @@ ScoreboardComponent::ScoreboardComponent()
     , m_gameCount(0)
 #ifdef _CLIENT
     , m_mainMenuTimer()
+    , m_reHelloTimer()
     , m_guiTimer()
     , m_mainMenuTimeout(15.0f)
 #endif

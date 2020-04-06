@@ -50,7 +50,7 @@ bool UDPSocket::SetNonBlockingMode(bool isNonBlockingMode)
 //----------------------------------------------------------------------------------------------------
 bool UDPSocket::SetReuseAddress(bool isReuseAddress)
 {
-    int iResult = setsockopt(m_socket, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&isReuseAddress), sizeof(isReuseAddress));
+    int iResult = setsockopt(m_socket, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&isReuseAddress), sizeof(int));
     if (iResult == SOCKET_ERROR) {
         NETLOG("setsockopt");
         return false;
