@@ -642,10 +642,6 @@ bool ServerSystem::ConnectSockets(ServerComponent& serverComponent)
 //----------------------------------------------------------------------------------------------------
 bool ServerSystem::DisconnectSockets(ServerComponent& serverComponent)
 {
-    if (!serverComponent.m_TCPListenSocket.expired() && serverComponent.m_UDPSocket != nullptr) {
-        return true;
-    }
-
     serverComponent.m_UDPSocket = nullptr;
     serverComponent.m_TCPSockets.clear();
 
