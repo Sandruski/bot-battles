@@ -17,6 +17,7 @@ enum class ClientMessageType : U16 {
 enum class ServerMessageType : U16 {
 
     WELCOME,
+    UNWELCOME,
     REWELCOME,
     PLAY,
     RESULTS,

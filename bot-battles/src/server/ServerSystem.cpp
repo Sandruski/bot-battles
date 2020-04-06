@@ -304,10 +304,10 @@ void ServerSystem::ReceivePacket(ServerComponent& serverComponent, InputMemorySt
 //----------------------------------------------------------------------------------------------------
 void ServerSystem::ReceiveHelloPacket(ServerComponent& serverComponent, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress, PlayerID& playerID)
 {
-    // Only Start
+    // Only Gameplay
     GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
     std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
-    if (currentState.expired() || currentState.lock()->GetName() != "Start") {
+    if (currentState.expired()) {
         std::string name;
         inputStream.Read(name);
         ELOG("Hello packet received but skipped because at incorrect state");
@@ -337,6 +337,8 @@ void ServerSystem::ReceiveHelloPacket(ServerComponent& serverComponent, InputMem
         NotifyEvent(newEvent);
 
         ILOG("New player %u %s has joined the game", playerID, name.c_str());
+    } else {
+        SendUnWelcomePacket(serverComponent, fromSocketAddress);
     }
 }
 
@@ -453,15 +455,11 @@ void ServerSystem::SendWelcomePacket(const ServerComponent& serverComponent, Pla
     OutputMemoryStream welcomePacket;
     welcomePacket.Write(ServerMessageType::WELCOME);
 
-    const bool isSuccessful = playerID < INVALID_PLAYER_ID;
-    welcomePacket.Write(isSuccessful);
-    if (isSuccessful) {
-        welcomePacket.Write(playerID);
-        welcomePacket.Write(serverComponent.m_map);
+    welcomePacket.Write(playerID);
+    welcomePacket.Write(serverComponent.m_map);
 
-        ScoreboardComponent& scoreboardComponent = g_gameServer->GetScoreboardComponent();
-        welcomePacket.Write(scoreboardComponent.m_gameCount);
-    }
+    ScoreboardComponent& scoreboardComponent = g_gameServer->GetScoreboardComponent();
+    welcomePacket.Write(scoreboardComponent.m_gameCount);
 
     const bool result = SendTCPPacket(serverComponent, welcomePacket, clientProxy->GetSocketAddress());
     if (result) {
@@ -469,6 +467,23 @@ void ServerSystem::SendWelcomePacket(const ServerComponent& serverComponent, Pla
     } else {
         ELOG("Welcome packet of length %u unsuccessfully sent to player %u", welcomePacket.GetByteLength(), playerID);
     }
+}
+
+//----------------------------------------------------------------------------------------------------
+void ServerSystem::SendUnWelcomePacket(ServerComponent& serverComponent, const SocketAddress& toSocketAddress) const
+{
+    OutputMemoryStream unWelcomePacket;
+    unWelcomePacket.Write(ServerMessageType::UNWELCOME);
+
+    const bool result = SendTCPPacket(serverComponent, unWelcomePacket, toSocketAddress);
+    if (result) {
+        ILOG("UnWelcome packet of length %u successfully sent to socket address %s", unWelcomePacket.GetByteLength(), toSocketAddress.GetName());
+    } else {
+        ELOG("UnWelcome packet of length %u unsuccessfully sent to socket address %s", unWelcomePacket.GetByteLength(), toSocketAddress.GetName());
+    }
+
+    serverComponent.RemoveTCPSocket(toSocketAddress);
+    ILOG("TCP socket removed");
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -570,6 +585,10 @@ void ServerSystem::SendStatePacket(const ServerComponent& serverComponent, Playe
 //----------------------------------------------------------------------------------------------------
 bool ServerSystem::SendUDPPacket(const ServerComponent& serverComponent, const OutputMemoryStream& outputStream, const SocketAddress& toSocketAddress) const
 {
+    if (serverComponent.m_UDPSocket == nullptr) {
+        return false;
+    }
+
     I32 bytesSent = serverComponent.m_UDPSocket->SendTo(outputStream.GetPtr(), outputStream.GetByteLength(), toSocketAddress);
     return (bytesSent == static_cast<I32>(outputStream.GetByteLength()));
 }
@@ -578,8 +597,11 @@ bool ServerSystem::SendUDPPacket(const ServerComponent& serverComponent, const O
 bool ServerSystem::SendTCPPacket(const ServerComponent& serverComponent, const OutputMemoryStream& outputStream, const SocketAddress& toSocketAddress) const
 {
     std::weak_ptr<TCPSocket> TCPSock = serverComponent.GetTCPSocket(toSocketAddress);
+    if (TCPSock.expired()) {
+        return false;
+    }
+
     I32 bytesSent = TCPSock.lock()->Send(outputStream.GetPtr(), outputStream.GetByteLength());
-    ILOG("TCP sent %i bytes", bytesSent);
     return (bytesSent == static_cast<I32>(outputStream.GetByteLength()));
 }
 

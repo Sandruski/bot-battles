@@ -198,6 +198,11 @@ void ClientSystem::ReceivePacket(ClientComponent& clientComponent, InputMemorySt
         break;
     }
 
+    case ServerMessageType::UNWELCOME: {
+        ReceiveUnWelcomePacket(clientComponent, inputStream);
+        break;
+    }
+
     case ServerMessageType::REWELCOME: {
         ReceiveReWelcomePacket(clientComponent, inputStream);
         break;
@@ -241,62 +246,62 @@ void ClientSystem::ReceiveWelcomePacket(ClientComponent& clientComponent, InputM
     MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
     std::weak_ptr<State> currentState = mainMenuComponent.m_fsm.GetCurrentState();
     if (currentState.expired() || currentState.lock()->GetName() != "Connect") {
-        bool isSuccessful = false;
-        inputStream.Read(isSuccessful);
-        if (isSuccessful) {
-            PlayerID playerID = INVALID_PLAYER_ID;
-            inputStream.Read(playerID);
-            std::string map;
-            inputStream.Read(map);
-            U32 gameCount = 0;
-            inputStream.Read(gameCount);
-        }
+        PlayerID playerID = INVALID_PLAYER_ID;
+        inputStream.Read(playerID);
+        std::string map;
+        inputStream.Read(map);
+        U32 gameCount = 0;
+        inputStream.Read(gameCount);
         ELOG("Welcome packet received but skipped because at incorrect state");
         return;
     }
     const bool isConnected = clientComponent.IsConnected();
     if (isConnected) {
-        bool isSuccessful = false;
-        inputStream.Read(isSuccessful);
-        if (isSuccessful) {
-            PlayerID playerID = INVALID_PLAYER_ID;
-            inputStream.Read(playerID);
-            std::string map;
-            inputStream.Read(map);
-            U32 gameCount = 0;
-            inputStream.Read(gameCount);
-        }
+        PlayerID playerID = INVALID_PLAYER_ID;
+        inputStream.Read(playerID);
+        std::string map;
+        inputStream.Read(map);
+        U32 gameCount = 0;
+        inputStream.Read(gameCount);
         ELOG("Welcome packet received but skipped because player is already connected");
         return;
     }
 
     ILOG("Welcome packet received");
 
-    bool isSuccessful = false;
-    inputStream.Read(isSuccessful);
-    if (isSuccessful) {
-        inputStream.Read(clientComponent.m_playerID);
-        assert(clientComponent.m_playerID < INVALID_PLAYER_ID);
-        inputStream.Read(clientComponent.m_map);
+    inputStream.Read(clientComponent.m_playerID);
+    assert(clientComponent.m_playerID < INVALID_PLAYER_ID);
+    inputStream.Read(clientComponent.m_map);
 
-        ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
-        inputStream.Read(scoreboardComponent.m_gameCount);
+    ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
+    inputStream.Read(scoreboardComponent.m_gameCount);
 
-        Event newEvent;
-        newEvent.eventType = EventType::WELCOME_RECEIVED;
-        NotifyEvent(newEvent);
+    Event newEvent;
+    newEvent.eventType = EventType::WELCOME_RECEIVED;
+    NotifyEvent(newEvent);
 
-        newEvent.eventType = EventType::PLAYER_ADDED;
-        NotifyEvent(newEvent);
+    newEvent.eventType = EventType::PLAYER_ADDED;
+    NotifyEvent(newEvent);
 
-        ILOG("Player %s %u has joined the game", clientComponent.m_name.c_str(), clientComponent.m_playerID);
-    } else {
-        // TODO
-        /*
-        Event newEvent;
-        newEvent.eventType = EventType::PLAYER_UNWELCOMED;
-        NotifyEvent(newEvent);*/
+    ILOG("Player %s %u has joined the game", clientComponent.m_name.c_str(), clientComponent.m_playerID);
+}
+
+//----------------------------------------------------------------------------------------------------
+void ClientSystem::ReceiveUnWelcomePacket(ClientComponent& /*clientComponent*/, InputMemoryStream& /*inputStream*/)
+{
+    // Only Connect
+    MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
+    std::weak_ptr<State> currentState = mainMenuComponent.m_fsm.GetCurrentState();
+    if (currentState.expired() || currentState.lock()->GetName() != "Connect") {
+        ELOG("UnWelcome packet received but skipped because at incorrect state");
+        return;
     }
+
+    ILOG("UnWelcome packet received");
+
+    Event newEvent;
+    newEvent.eventType = EventType::UNWELCOME_RECEIVED;
+    NotifyEvent(newEvent);
 }
 
 //----------------------------------------------------------------------------------------------------

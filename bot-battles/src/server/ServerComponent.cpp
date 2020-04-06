@@ -89,6 +89,8 @@ bool ServerComponent::AddEntity(Entity entity, PlayerID playerID)
     if (existingPlayerID < INVALID_PLAYER_ID) {
         WLOG("Entity %u could not be added", entity);
         return false;
+    } else {
+        ILOG("Entity %u added", entity);
     }
 
     return m_entityToPlayerID.insert(std::make_pair(entity, playerID)).second;
@@ -101,6 +103,8 @@ bool ServerComponent::RemoveEntity(Entity entity)
     if (playerID >= INVALID_PLAYER_ID) {
         WLOG("Entity %u could not be removed", entity);
         return false;
+    } else {
+        ILOG("Entity %u removed", entity);
     }
 
     m_entityToPlayerID.erase(entity);

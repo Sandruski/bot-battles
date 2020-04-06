@@ -27,6 +27,7 @@ public:
 private:
     void ReceivePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream);
     void ReceiveWelcomePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream);
+    void ReceiveUnWelcomePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream);
     void ReceiveReWelcomePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream);
     void ReceivePlayPacket(ClientComponent& clientComponent, InputMemoryStream& inputStream);
     void ReceiveResultsPacket(ClientComponent& clientComponent, InputMemoryStream& inputStream);

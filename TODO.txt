@@ -1,25 +1,14 @@
 -Cap MAX BYTES SENT also for State packets (already doing it for Input packets) -> Reset MAX BYTES SENT to a reasonable value.
 -Only network those tiles that may change.
--Establish connection with TCP.
 -Send unwelcome messages.
 -Add 'Random map' option with ImGui to select a map from all the existing maps.
 -Debug draw in a more nice way.
 -Debug ImGui options (resize window, etc.).
--ImGui panels for debug console.
 -Remove Networking inheritance for those components that are actually not being networked.
 -Make entities be able to have components that are networked and components that are not.
 
 PLAYLIST:
--Send Bye packet at the Scoreboard screen and if entity disconnects during gameplay.
 -Check that 2 players can connect to the game from different computers.
-
-TO DO TOMORROW:
--Handle timeout when playing and server is disconnected.
--Be careful with the UDP disconnect condition == Play. When they are in Start this won't happen (bugs).
--Remove entities from spawners from ALL PLACES where I remove entities.
--Be careful of server players that have disconnected but have not been removed from the server.
--TO CHECK: server and client disconnecting in each of the states.
--TO CHECK: server going back to Main Menu at the end of the game instead of Playing Again and Clients trying to play, etc.
 
 ***
 -Change FSM to not be based on the type of the state and be a vector instead.
@@ -29,7 +18,6 @@ TO DO TOMORROW:
 ----------
 
 -Be careful with the Tile object y position!
--Have debug draw again.
 -There are a bunch of components that do not have to be networked. E.g. if Health is not printed then why would the player want it?
 -Health bars or points or life or insta kill?
 

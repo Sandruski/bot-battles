@@ -41,9 +41,9 @@ bool ResultsStateClient::Update() const
 bool ResultsStateClient::RenderGui() const
 {
     ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
-    F32 time = static_cast<F32>(scoreboardComponent.m_mainMenuTimer.ReadSec());
-    F32 timeLeft = scoreboardComponent.m_mainMenuTimeout - time;
-    ImGui::Text("%.0f", timeLeft);
+    F32 mainMenuCurrentTime = static_cast<F32>(scoreboardComponent.m_mainMenuTimer.ReadSec());
+    F32 mainMenuTimeLeft = scoreboardComponent.m_mainMenuTimeout - mainMenuCurrentTime;
+    ImGui::Text("%.0f", mainMenuTimeLeft);
 
     ImGui::Text("Player x wins");
 

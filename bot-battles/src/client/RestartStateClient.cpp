@@ -34,6 +34,9 @@ bool RestartStateClient::Update() const
     F32 time = static_cast<F32>(scoreboardComponent.m_mainMenuTimer.ReadSec());
     // X
     if (time >= scoreboardComponent.m_mainMenuTimeout) {
+        newEvent.eventType = EventType::SEND_BYE;
+        g_gameClient->GetFSM().NotifyEvent(newEvent);
+
         ChangeToMainMenu();
     }
 
@@ -44,16 +47,19 @@ bool RestartStateClient::Update() const
 bool RestartStateClient::RenderGui() const
 {
     ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
-    F32 time = static_cast<F32>(scoreboardComponent.m_guiTimer.ReadSec());
-    if (time >= 3.0f) {
+    F32 mainMenuCurrentTime = static_cast<F32>(scoreboardComponent.m_mainMenuTimer.ReadSec());
+    F32 mainMenuTimeLeft = scoreboardComponent.m_mainMenuTimeout - mainMenuCurrentTime;
+    ImGui::Text("%.0f", mainMenuTimeLeft);
+
+    F32 guiCurrentTime = static_cast<F32>(scoreboardComponent.m_guiTimer.ReadSec());
+    if (guiCurrentTime >= 3.0f) {
         scoreboardComponent.m_guiTimer.Start();
     }
-
-    if (time >= 2.0f) {
+    if (guiCurrentTime >= 2.0f) {
         ImGui::Text("Waiting...");
-    } else if (time >= 1.0f) {
+    } else if (guiCurrentTime >= 1.0f) {
         ImGui::Text("Waiting..");
-    } else if (time >= 0.0f) {
+    } else if (guiCurrentTime >= 0.0f) {
         ImGui::Text("Waiting.");
     }
 
@@ -112,8 +118,8 @@ void RestartStateClient::ChangeToGameplay() const
 //----------------------------------------------------------------------------------------------------
 void RestartStateClient::ChangeToResults() const
 {
-    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-    gameplayComponent.m_fsm.ChangeState("Results");
+    ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
+    scoreboardComponent.m_fsm.ChangeState("Results");
 }
 
 //----------------------------------------------------------------------------------------------------

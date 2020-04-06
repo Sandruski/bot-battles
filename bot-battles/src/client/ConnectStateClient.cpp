@@ -40,16 +40,15 @@ bool ConnectStateClient::Update() const
 bool ConnectStateClient::RenderGui() const
 {
     MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
-    F32 time = static_cast<F32>(mainMenuComponent.m_guiTimer.ReadSec());
-    if (time >= 3.0f) {
+    F32 guiCurrentTime = static_cast<F32>(mainMenuComponent.m_guiTimer.ReadSec());
+    if (guiCurrentTime >= 3.0f) {
         mainMenuComponent.m_guiTimer.Start();
     }
-
-    if (time >= 2.0f) {
+    if (guiCurrentTime >= 2.0f) {
         ImGui::Text("Connecting...");
-    } else if (time >= 1.0f) {
+    } else if (guiCurrentTime >= 1.0f) {
         ImGui::Text("Connecting..");
-    } else if (time >= 0.0f) {
+    } else if (guiCurrentTime >= 0.0f) {
         ImGui::Text("Connecting.");
     }
 
@@ -99,7 +98,11 @@ void ConnectStateClient::OnNotify(const Event& event)
     }
 
         // X
-    case EventType::PLAYER_REMOVED: {
+    case EventType::UNWELCOME_RECEIVED: {
+        Event newEvent;
+        newEvent.eventType = EventType::DISCONNECT_SOCKETS;
+        g_gameClient->GetFSM().NotifyEvent(newEvent);
+
         ChangeToSetup();
         break;
     }
