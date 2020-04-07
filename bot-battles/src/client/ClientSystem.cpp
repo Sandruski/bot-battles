@@ -70,6 +70,12 @@ void ClientSystem::OnNotify(const Event& event)
         break;
     }
 
+    case EventType::CHECK_CONNECT: {
+        ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+        CheckConnect(clientComponent);
+        break;
+    }
+
     case EventType::DISCONNECT_SOCKETS: {
         ClientComponent& clientComponent = g_gameClient->GetClientComponent();
         DisconnectSockets(clientComponent);
@@ -546,50 +552,64 @@ bool ClientSystem::ConnectSockets(ClientComponent& clientComponent)
 {
     bool ret = true;
 
-    if (clientComponent.m_TCPSocket == nullptr || clientComponent.m_UDPSocket == nullptr) {
-        clientComponent.m_TCPSocket = TCPSocket::CreateIPv4();
-        assert(clientComponent.m_TCPSocket != nullptr);
-        ret = clientComponent.m_TCPSocket->SetReuseAddress(true);
-        if (!ret) {
-            return ret;
-        }
-        ret = clientComponent.m_TCPSocket->SetNonBlockingMode(true);
-        if (!ret) {
-            return ret;
-        }
-        ret = clientComponent.m_TCPSocket->SetNoDelay(true);
-        if (!ret) {
-            return ret;
-        }
-        ret = clientComponent.m_TCPSocket->Connect(*clientComponent.m_socketAddress);
-        if (!ret) {
-            return ret;
-        }
-
-        clientComponent.m_UDPSocket = UDPSocket::CreateIPv4();
-        assert(clientComponent.m_UDPSocket != nullptr);
-        ret = clientComponent.m_UDPSocket->SetReuseAddress(true);
-        if (!ret) {
-            return ret;
-        }
-        ret = clientComponent.m_UDPSocket->SetNonBlockingMode(true);
-        if (!ret) {
-            return ret;
-        }
-        SocketAddress socketAddress = clientComponent.m_TCPSocket->GetLocalSocketAddress();
-        ret = clientComponent.m_UDPSocket->Bind(socketAddress);
-        if (!ret) {
-            return ret;
-        }
-
-        ILOG("Sockets connected");
+    clientComponent.m_TCPSocket = TCPSocket::CreateIPv4();
+    assert(clientComponent.m_TCPSocket != nullptr);
+    ret = clientComponent.m_TCPSocket->SetReuseAddress(true);
+    if (!ret) {
+        return ret;
     }
+    ret = clientComponent.m_TCPSocket->SetNonBlockingMode(true);
+    if (!ret) {
+        return ret;
+    }
+    ret = clientComponent.m_TCPSocket->SetNoDelay(true);
+    if (!ret) {
+        return ret;
+    }
+    clientComponent.m_TCPSocket->Connect(*clientComponent.m_socketAddress);
+
+    clientComponent.m_UDPSocket = UDPSocket::CreateIPv4();
+    assert(clientComponent.m_UDPSocket != nullptr);
+    ret = clientComponent.m_UDPSocket->SetReuseAddress(true);
+    if (!ret) {
+        return ret;
+    }
+    ret = clientComponent.m_UDPSocket->SetNonBlockingMode(true);
+    if (!ret) {
+        return ret;
+    }
+    SocketAddress socketAddress = clientComponent.m_TCPSocket->GetLocalSocketAddress();
+    ret = clientComponent.m_UDPSocket->Bind(socketAddress);
+    if (!ret) {
+        return ret;
+    }
+
+    return ret;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool ClientSystem::CheckConnect(ClientComponent& clientComponent)
+{
+    fd_set writeSet;
+    FD_ZERO(&writeSet);
+    FD_SET(clientComponent.m_TCPSocket->GetSocket(), &writeSet);
+
+    timeval timeout;
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 0;
+    int iResult = select(0, nullptr, &writeSet, nullptr, &timeout);
+    if (iResult == 0 || iResult == SOCKET_ERROR) {
+        NETLOG("select");
+        return false;
+    }
+
+    ILOG("Sockets connected");
 
     Event newEvent;
     newEvent.eventType = EventType::SOCKETS_CONNECTED;
     NotifyEvent(newEvent);
 
-    return ret;
+    return true;
 }
 
 //----------------------------------------------------------------------------------------------------

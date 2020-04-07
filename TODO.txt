@@ -9,8 +9,7 @@
 
 PLAYLIST:
 -Check that 2 players can connect to the game from different computers.
--Stop the 1s timeout for TCP because it is horrible. (test it with bad network conditions)
--Not send every Update certain packets (it is too much!). Add a timer or something to do it.
+-Decouple CHECK_CONNECT OR CONNECT_SOCKETS from sending the SOCKETS_CONNECTED event and this being the one sending the HELLO_PACKET. We need to send the Hello Packet every 2 seconds or so but to try to connect every update.
 
 ----------
 

@@ -42,6 +42,7 @@ private:
     bool SendTCPPacket(const ClientComponent& clientComponent, const OutputMemoryStream& outputStream) const;
 
     bool ConnectSockets(ClientComponent& clientComponent);
+    bool CheckConnect(ClientComponent& clientComponent);
     bool DisconnectSockets(ClientComponent& clientComponent);
 
     void ConnectionReset(ClientComponent& clientComponent);

@@ -18,16 +18,16 @@ bool ConnectStateServer::Enter() const
 {
     ILOG("Entering %s...", GetName().c_str());
 
+    Event newEvent;
+    newEvent.eventType = EventType::CONNECT_SOCKETS;
+    g_gameServer->GetFSM().NotifyEvent(newEvent);
+
     return true;
 }
 
 //----------------------------------------------------------------------------------------------------
 bool ConnectStateServer::Update() const
 {
-    Event newEvent;
-    newEvent.eventType = EventType::CONNECT_SOCKETS;
-    g_gameServer->GetFSM().NotifyEvent(newEvent);
-
     return true;
 }
 

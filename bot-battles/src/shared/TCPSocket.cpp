@@ -105,24 +105,9 @@ bool TCPSocket::Connect(const SocketAddress& socketAddress)
             NETLOG("connect");
             return false;
         }
-
-        fd_set writeSet;
-        FD_ZERO(&writeSet);
-        FD_SET(m_socket, &writeSet);
-
-        timeval timeout;
-        timeout.tv_sec = 1; // TODO: MACRO
-        timeout.tv_usec = 0;
-        iResult = select(0, nullptr, &writeSet, nullptr, &timeout);
-        if (iResult == 0 || iResult == SOCKET_ERROR) {
-            NETLOG("select");
-            return false;
-        }
-
-        m_remoteSocketAddress = socketAddress;
-
-        return true;
     }
+
+    m_remoteSocketAddress = socketAddress;
 
     return true;
 }

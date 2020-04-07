@@ -26,6 +26,8 @@ enum class EventType {
     SOCKETS_CONNECTED,
 
 #ifdef _CLIENT
+    CHECK_CONNECT,
+
     SEND_HELLO,
     SEND_REHELLO,
 

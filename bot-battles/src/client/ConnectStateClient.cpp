@@ -24,21 +24,25 @@ bool ConnectStateClient::Enter() const
     mainMenuComponent.m_helloTimer.Start();
     mainMenuComponent.m_guiTimer.Start();
 
+    Event newEvent;
+    newEvent.eventType = EventType::CONNECT_SOCKETS;
+    g_gameClient->GetFSM().NotifyEvent(newEvent);
+
     return true;
 }
 
 //----------------------------------------------------------------------------------------------------
 bool ConnectStateClient::Update() const
 {
-    MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
-    F32 helloCurrentTime = static_cast<F32>(mainMenuComponent.m_helloTimer.ReadSec());
-    if (helloCurrentTime >= SECONDS_BETWEEN_PACKETS) {
-        Event newEvent;
-        newEvent.eventType = EventType::CONNECT_SOCKETS;
-        g_gameClient->GetFSM().NotifyEvent(newEvent);
+    //MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
+    //F32 helloCurrentTime = static_cast<F32>(mainMenuComponent.m_helloTimer.ReadSec());
+    //if (helloCurrentTime >= SECONDS_BETWEEN_PACKETS) {
 
-        mainMenuComponent.m_helloTimer.Start();
-    }
+    //mainMenuComponent.m_helloTimer.Start();
+    //}
+    Event newEvent;
+    newEvent.eventType = EventType::CHECK_CONNECT;
+    g_gameClient->GetFSM().NotifyEvent(newEvent);
 
     return true;
 }
