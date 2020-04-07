@@ -20,7 +20,7 @@ bool RemotePlayerMovementSystem::Update()
 {
     GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
     std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
-    if (currentState.expired() || currentState.lock()->GetName() != "Play") {
+    if (currentState.expired()) {
         return true;
     }
 
@@ -47,7 +47,7 @@ bool RemotePlayerMovementSystem::Update()
 
         if (clientComponent.m_isEntityInterpolation) {
             std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
-            if (transformComponent.lock()->m_transformBuffer.Count() >= 2) {
+            if (!transformComponent.lock()->m_transformBuffer.IsEmpty()) {
                 U32 indexFrom = transformComponent.lock()->m_transformBuffer.m_front;
                 bool isFoundFrom = false;
                 while (indexFrom < transformComponent.lock()->m_transformBuffer.m_back) {
@@ -59,24 +59,29 @@ bool RemotePlayerMovementSystem::Update()
                     ++indexFrom;
                 }
 
-                U32 indexTo = transformComponent.lock()->m_transformBuffer.m_front;
-                bool isFoundTo = false;
-                while (indexTo < transformComponent.lock()->m_transformBuffer.m_back) {
-                    const Transform& transform = transformComponent.lock()->m_transformBuffer.Get(indexTo);
-                    if (transform.GetFrame() == clientComponent.m_interpolationToFrame) {
-                        isFoundTo = true;
-                        break;
+                if (transformComponent.lock()->m_transformBuffer.Count() >= 2) {
+                    U32 indexTo = transformComponent.lock()->m_transformBuffer.m_front;
+                    bool isFoundTo = false;
+                    while (indexTo < transformComponent.lock()->m_transformBuffer.m_back) {
+                        const Transform& transform = transformComponent.lock()->m_transformBuffer.Get(indexTo);
+                        if (transform.GetFrame() == clientComponent.m_interpolationToFrame) {
+                            isFoundTo = true;
+                            break;
+                        }
+                        ++indexTo;
                     }
-                    ++indexTo;
+
+                    if (isFoundFrom && isFoundTo) {
+                        Transform fromTransform = transformComponent.lock()->m_transformBuffer.Get(indexFrom);
+                        Transform toTransform = transformComponent.lock()->m_transformBuffer.Get(indexTo);
+                        transformComponent.lock()->m_position = Lerp(fromTransform.m_position, toTransform.m_position, clientComponent.m_interpolationPercentage);
+                        transformComponent.lock()->m_rotation = Lerp(fromTransform.m_rotation, toTransform.m_rotation, clientComponent.m_interpolationPercentage);
+                    }
                 }
 
-                if (isFoundFrom && isFoundTo) {
-                    Transform fromTransform = transformComponent.lock()->m_transformBuffer.Get(indexFrom);
-                    Transform toTransform = transformComponent.lock()->m_transformBuffer.Get(indexTo);
-                    transformComponent.lock()->m_position = Lerp(fromTransform.m_position, toTransform.m_position, clientComponent.m_interpolationPercentage);
-                    transformComponent.lock()->m_rotation = Lerp(fromTransform.m_rotation, toTransform.m_rotation, clientComponent.m_interpolationPercentage);
-                    if (clientComponent.m_interpolationPercentage == 1.0f) {
-                        transformComponent.lock()->m_transformBuffer.RemoveFirst();
+                if (clientComponent.m_interpolationPercentage == 1.0f) {
+                    if (isFoundFrom) {
+                        transformComponent.lock()->m_transformBuffer.Remove(indexFrom);
                     }
                 }
             }

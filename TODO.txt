@@ -17,6 +17,4 @@ PLAYLIST:
 -Be careful with the Tile object y position!
 -There are a bunch of components that do not have to be networked. E.g. if Health is not printed then why would the player want it?
 -Health bars or points or life or insta kill?
-
-BUGS:
--SUPER IMPORTANT Bug: client does not interpolate until the last position received (maybe it deleats it before). It only goes to the right position if remote entity moves again.
+-Packets == 1470bytes (MTU) from client to server make server to CRASH. This happens with pretty bad network conditions.
