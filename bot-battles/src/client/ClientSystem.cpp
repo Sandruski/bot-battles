@@ -451,7 +451,7 @@ bool ClientSystem::SendHelloPacket(const ClientComponent& clientComponent) const
     if (result) {
         ILOG("Hello packet of length %u successfully sent to server", helloPacket.GetByteLength());
     } else {
-        ELOG("Hello packet of length %u unsuccessfully sent to server", helloPacket.GetByteLength());
+        ELOG("Hello packet unsuccessfully sent to server");
     }
 
     return result;
@@ -468,7 +468,7 @@ bool ClientSystem::SendReHelloPacket(const ClientComponent& clientComponent) con
     if (result) {
         ILOG("ReHello packet of length %u successfully sent to server", reHelloPacket.GetByteLength());
     } else {
-        ELOG("ReHello packet of length %u unsuccessfully sent to server", reHelloPacket.GetByteLength());
+        ELOG("ReHello packet unsuccessfully sent to server");
     }
 
     return result;
@@ -485,7 +485,7 @@ bool ClientSystem::SendByePacket(ClientComponent& clientComponent)
     if (result) {
         ILOG("Bye packet of length %u successfully sent to server", byePacket.GetByteLength());
     } else {
-        ELOG("Bye packet of length %u unsuccessfully sent to server", byePacket.GetByteLength());
+        ELOG("Bye packet unsuccessfully sent to server");
     }
 
     Disconnect(clientComponent);
@@ -529,7 +529,7 @@ bool ClientSystem::SendInputPacket(ClientComponent& clientComponent) const
     if (result) {
         ILOG("Input packet of length %u successfully sent to server", inputPacket.GetByteLength());
     } else {
-        ELOG("Input packet of length %u unsuccessfully sent to server", inputPacket.GetByteLength());
+        ELOG("Input packet unsuccessfully sent to server");
     }
 
     return true;

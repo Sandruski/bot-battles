@@ -1,16 +1,12 @@
 -Cap MAX BYTES SENT also for State packets (already doing it for Input packets) -> Reset MAX BYTES SENT to a reasonable value.
 -Only network those tiles that may change.
 -Add 'Random map' option with ImGui to select a map from all the existing maps.
--Debug draw in a more nice way.
--Debug ImGui options (resize window, etc.).
 -Remove Networking inheritance for those components that are actually not being networked.
 -Make entities be able to have components that are networked and components that are not.
 -Change FSM to not be based on the type of the state and be a vector instead.
 
 PLAYLIST:
 -Check that 2 players can connect to the game from different computers.
--Decouple CHECK_CONNECT OR CONNECT_SOCKETS from sending the SOCKETS_CONNECTED event and this being the one sending the HELLO_PACKET. We need to send the Hello Packet every 2 seconds or so but to try to connect every update.
-
 ----------
 
 -Be careful with the Tile object y position!

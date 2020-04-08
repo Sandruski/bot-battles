@@ -47,24 +47,20 @@ bool MovementSystemServer::Update()
             const bool hasPosition = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION);
             if (hasPosition) {
                 transformComponent.lock()->UpdatePosition(inputComponent.m_acceleration, dt);
-                hasChanged = true;
             }
             const bool hasRotation = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_ROTATION);
             if (hasRotation) {
                 transformComponent.lock()->UpdateRotation(inputComponent.m_angularAcceleration, dt);
-                hasChanged = true;
             }
 
-            if (hasChanged) { // TODO: this may arise problems...
-                Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, input.GetFrame());
-                transformComponent.lock()->m_inputTransformBuffer.Add(transform); // TODO: also remove this transform buffer at some point
+            Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, input.GetFrame());
+            transformComponent.lock()->m_inputTransformBuffer.Add(transform); // TODO: also remove this transform buffer at some point
 
-                Event newEvent;
-                newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
-                newEvent.component.entity = entity;
-                newEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::TRANSFORM_ALL);
-                NotifyEvent(newEvent);
-            }
+            Event newEvent;
+            newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
+            newEvent.component.entity = entity;
+            newEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::TRANSFORM_ALL);
+            NotifyEvent(newEvent);
         }
 
         Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, frame);

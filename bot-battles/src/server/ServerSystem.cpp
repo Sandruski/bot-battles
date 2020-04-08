@@ -467,7 +467,7 @@ void ServerSystem::SendWelcomePacket(const ServerComponent& serverComponent, Pla
     if (result) {
         ILOG("Welcome packet of length %u successfully sent to player %u", welcomePacket.GetByteLength(), playerID);
     } else {
-        ELOG("Welcome packet of length %u unsuccessfully sent to player %u", welcomePacket.GetByteLength(), playerID);
+        ELOG("Welcome packet unsuccessfully sent to player %u", playerID);
     }
 }
 
@@ -481,7 +481,7 @@ void ServerSystem::SendUnWelcomePacket(ServerComponent& serverComponent, const S
     if (result) {
         ILOG("UnWelcome packet of length %u successfully sent to socket address %s", unWelcomePacket.GetByteLength(), toSocketAddress.GetName());
     } else {
-        ELOG("UnWelcome packet of length %u unsuccessfully sent to socket address %s", unWelcomePacket.GetByteLength(), toSocketAddress.GetName());
+        ELOG("UnWelcome packet unsuccessfully sent to socket address %s", toSocketAddress.GetName());
     }
 
     serverComponent.RemoveTCPSocket(toSocketAddress);
@@ -502,7 +502,7 @@ void ServerSystem::SendReWelcomePacket(const ServerComponent& serverComponent, P
     if (result) {
         ILOG("ReWelcome packet of length %u successfully sent to player %s", reWelcomePacket.GetByteLength(), name);
     } else {
-        ELOG("ReWelcome packet of length %u unsuccessfully sent to player %s", reWelcomePacket.GetByteLength(), name);
+        ELOG("ReWelcome packet unsuccessfully sent to player %s", name);
     }
 }
 
@@ -517,7 +517,7 @@ void ServerSystem::SendPlayPacket(const ServerComponent& serverComponent, Player
     if (result) {
         ILOG("Play packet of length %u successfully sent to player %s", playPacket.GetByteLength(), name);
     } else {
-        ELOG("Play packet of length %u unsuccessfully sent to player %s", playPacket.GetByteLength(), name);
+        ELOG("Play packet unsuccessfully sent to player %s", name);
     }
 }
 
@@ -532,7 +532,7 @@ void ServerSystem::SendResultsPacket(const ServerComponent& serverComponent, Pla
     if (result) {
         ILOG("Results packet of length %u successfully sent to player %s", resultsPacket.GetByteLength(), name);
     } else {
-        ELOG("Results packet of length %u unsuccessfully sent to player %s", resultsPacket.GetByteLength(), name);
+        ELOG("Results packet unsuccessfully sent to player %s", name);
     }
 }
 
@@ -547,7 +547,7 @@ void ServerSystem::SendByePacket(ServerComponent& serverComponent, PlayerID play
     if (result) {
         ILOG("Bye packet of length %u successfully sent to player %s", byePacket.GetByteLength(), name);
     } else {
-        ELOG("Bye packet of length %u unsuccessfully sent to player %s", byePacket.GetByteLength(), name);
+        ELOG("Bye packet unsuccessfully sent to player %s", name);
     }
 
     Entity entity = serverComponent.GetEntity(playerID);
@@ -580,7 +580,7 @@ void ServerSystem::SendStatePacket(const ServerComponent& serverComponent, Playe
     if (result) {
         ILOG("State packet of length %u successfully sent to player %s", statePacket.GetByteLength(), name);
     } else {
-        ELOG("State packet of length %u unsuccessfully sent to player %s", statePacket.GetByteLength(), name);
+        ELOG("State packet unsuccessfully sent to player %s", name);
     }
 }
 

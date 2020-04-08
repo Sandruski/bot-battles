@@ -23,7 +23,7 @@ bool CollisionSystemServer::Update()
 {
     GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
     std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
-    if (currentState.expired() || currentState.lock()->GetName() != "Play") {
+    if (currentState.expired()) {
         return true;
     }
 
