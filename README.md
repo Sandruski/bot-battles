@@ -18,12 +18,15 @@ Have fun!
 - Left and right arrows: rotate character
 - Spacebar: shoot
 
-# Tools
+# About
+The code is written in C++ and follows the ISO C++ 17 Standard.
+
+## Tools
 - Microsoft Visual Studio
 - Tiled Map Editor
 - Aseprite
 
-# Libraries
+## Libraries
 - gl3w
 - OpenGL Mathematics (GLM)
 - Dear ImGui
@@ -31,7 +34,7 @@ Have fun!
 - SDL
 - STB Image
 
-# Assets
+## Assets
 - [Topdown Shooter pack from Kenney](https://www.kenney.nl/assets/topdown-shooter)
 
 # License
