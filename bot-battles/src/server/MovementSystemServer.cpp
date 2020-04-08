@@ -43,7 +43,6 @@ bool MovementSystemServer::Update()
             const InputComponent& inputComponent = input.GetInputComponent();
             U32 dirtyState = input.GetDirtyState();
             F32 dt = input.GetDt();
-            bool hasChanged = false;
             const bool hasPosition = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION);
             if (hasPosition) {
                 transformComponent.lock()->UpdatePosition(inputComponent.m_acceleration, dt);
