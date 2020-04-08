@@ -34,12 +34,6 @@ bool ConnectStateClient::Enter() const
 //----------------------------------------------------------------------------------------------------
 bool ConnectStateClient::Update() const
 {
-    //MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
-    //F32 helloCurrentTime = static_cast<F32>(mainMenuComponent.m_helloTimer.ReadSec());
-    //if (helloCurrentTime >= SECONDS_BETWEEN_PACKETS) {
-
-    //mainMenuComponent.m_helloTimer.Start();
-    //}
     Event newEvent;
     newEvent.eventType = EventType::CHECK_CONNECT;
     g_gameClient->GetFSM().NotifyEvent(newEvent);
@@ -96,9 +90,15 @@ void ConnectStateClient::OnNotify(const Event& event)
     switch (event.eventType) {
 
     case EventType::SOCKETS_CONNECTED: {
-        Event newEvent;
-        newEvent.eventType = EventType::SEND_HELLO;
-        g_gameClient->GetFSM().NotifyEvent(newEvent);
+        MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
+        F32 helloCurrentTime = static_cast<F32>(mainMenuComponent.m_helloTimer.ReadSec());
+        if (helloCurrentTime >= SECONDS_BETWEEN_PACKETS) {
+            Event newEvent;
+            newEvent.eventType = EventType::SEND_HELLO;
+            g_gameClient->GetFSM().NotifyEvent(newEvent);
+
+            mainMenuComponent.m_helloTimer.Start();
+        }
         break;
     }
 

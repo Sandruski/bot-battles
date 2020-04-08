@@ -7,7 +7,7 @@ The project is in the Vertical Slice stage.
 1. Go to the Releases section of the repository.
 2. Download any release of the game.
 3. Unzip it.
-4. Run the executable.
+4. Run one instance of the server executable and two instances of the client executable.
 
 Have fun!
 
@@ -34,7 +34,7 @@ The code is written in C++ and follows the ISO C++ 17 Standard.
 - Winsock
 
 ## Assets
-- [Topdown Shooter pack from Kenney](https://www.kenney.nl/assets/topdown-shooter)
+- [Kenney's Topdown Shooter pack](https://www.kenney.nl/assets/topdown-shooter)
 
 # License
 The project is under the MIT License.

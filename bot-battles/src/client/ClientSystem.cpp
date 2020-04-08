@@ -567,6 +567,7 @@ bool ClientSystem::ConnectSockets(ClientComponent& clientComponent)
         return ret;
     }
     clientComponent.m_TCPSocket->Connect(*clientComponent.m_socketAddress);
+    clientComponent.m_connectTimer.Start();
 
     clientComponent.m_UDPSocket = UDPSocket::CreateIPv4();
     assert(clientComponent.m_UDPSocket != nullptr);
@@ -590,6 +591,13 @@ bool ClientSystem::ConnectSockets(ClientComponent& clientComponent)
 //----------------------------------------------------------------------------------------------------
 bool ClientSystem::CheckConnect(ClientComponent& clientComponent)
 {
+    F32 connectCurrentTime = static_cast<F32>(clientComponent.m_connectTimer.ReadSec());
+    if (connectCurrentTime >= SECONDS_BETWEEN_CONNECTS) {
+        clientComponent.m_TCPSocket->Connect(*clientComponent.m_socketAddress);
+
+        clientComponent.m_connectTimer.Start();
+    }
+
     fd_set writeSet;
     FD_ZERO(&writeSet);
     FD_SET(clientComponent.m_TCPSocket->GetSocket(), &writeSet);

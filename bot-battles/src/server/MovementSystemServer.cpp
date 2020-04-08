@@ -38,12 +38,12 @@ bool MovementSystemServer::Update()
 
         std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
         std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
-        bool hasChanged = false;
         for (U32 i = clientProxy.lock()->m_inputBuffer.m_front; i < clientProxy.lock()->m_inputBuffer.m_back; ++i) {
             const Input& input = clientProxy.lock()->m_inputBuffer.Get(i);
             const InputComponent& inputComponent = input.GetInputComponent();
             U32 dirtyState = input.GetDirtyState();
             F32 dt = input.GetDt();
+            bool hasChanged = false;
             const bool hasPosition = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION);
             if (hasPosition) {
                 transformComponent.lock()->UpdatePosition(inputComponent.m_acceleration, dt);
@@ -55,7 +55,7 @@ bool MovementSystemServer::Update()
                 hasChanged = true;
             }
 
-            if (hasChanged) {
+            if (hasChanged) { // TODO: this may arise problems...
                 Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, input.GetFrame());
                 transformComponent.lock()->m_inputTransformBuffer.Add(transform); // TODO: also remove this transform buffer at some point
 

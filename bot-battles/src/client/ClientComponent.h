@@ -57,6 +57,8 @@ struct ClientComponent : public Component {
     bool m_isLastInputTransformPending;
     bool m_isLastInputWeaponPending;
 
+    MyTimer m_connectTimer;
+
     F32 m_RTT;
 
     bool m_isClientPrediction;

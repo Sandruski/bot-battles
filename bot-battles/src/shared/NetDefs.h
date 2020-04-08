@@ -38,10 +38,12 @@ const SequenceNumber INVALID_SEQUENCE_NUMBER = UINT16_MAX;
 const F32 ENTITY_INTERPOLATION_PERIOD = 1.0f / FPS_SERVER; // TODO: *2? https://developer.valvesoftware.com/wiki/Source_Multiplayer_Networking#Entity_interpolation
 
 const F32 DISCONNECT_TIMEOUT = 15.0f; // 5.0f
-#ifdef _SERVER
+#ifdef _CLIENT
+const F32 SECONDS_BETWEEN_CONNECTS = 5.0f;
+#elif defined(_SERVER)
 const F32 ACK_TIMEOUT = 5.0f; // 0.5f
 #endif
-const F32 SECONDS_BETWEEN_PACKETS = 5.0f;
+const F32 SECONDS_BETWEEN_PACKETS = 1.0f;
 }
 
 #endif
