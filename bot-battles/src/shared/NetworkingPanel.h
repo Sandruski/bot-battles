@@ -1,16 +1,16 @@
-#ifndef __RENDERER_PANEL_H__
-#define __RENDERER_PANEL_H__
+#ifndef __NETWORKING_PANEL_H__
+#define __NETWORKING_PANEL_H__
 
 #include "Panel.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class RendererPanel : public Panel {
+class NetworkingPanel : public Panel {
 public:
     static DebugOptionsPanelType GetType()
     {
-        return DebugOptionsPanelType::RENDERER;
+        return DebugOptionsPanelType::NETWORKING;
     }
 
 public:

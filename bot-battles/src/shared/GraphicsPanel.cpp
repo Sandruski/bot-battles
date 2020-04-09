@@ -1,4 +1,4 @@
-#include "RendererPanel.h"
+#include "GraphicsPanel.h"
 
 #include "Game.h"
 #include "RendererComponent.h"
@@ -6,13 +6,13 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-bool RendererPanel::RenderHeader() const
+bool GraphicsPanel::RenderHeader() const
 {
     return ImGui::Button("Graphics");
 }
 
 //----------------------------------------------------------------------------------------------------
-bool RendererPanel::RenderBody() const
+bool GraphicsPanel::RenderBody() const
 {
     RendererComponent& rendererComponent = g_game->GetRendererComponent();
     ImGui::Checkbox("Debug Draw", &rendererComponent.m_isDebugDraw);

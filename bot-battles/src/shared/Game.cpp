@@ -16,8 +16,9 @@
 #ifdef _DRAW
 #include "DisplayPanel.h"
 #include "GamePanel.h"
+#include "GraphicsPanel.h"
 #include "GuiSystem.h"
-#include "RendererPanel.h"
+#include "NetworkingPanel.h"
 #include "RendererSystem.h"
 #include "ShaderResource.h"
 #include "SpriteComponent.h"
@@ -115,11 +116,15 @@ bool Game::Init()
     if (!ret) {
         return ret;
     }
-    ret = m_guiComponent.RegisterDebugOptionsPanel<RendererPanel>();
+    ret = m_guiComponent.RegisterDebugOptionsPanel<GraphicsPanel>();
     if (!ret) {
         return ret;
     }
     ret = m_guiComponent.RegisterDebugOptionsPanel<StatesPanel>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_guiComponent.RegisterDebugOptionsPanel<NetworkingPanel>();
     if (!ret) {
         return ret;
     }

@@ -13,8 +13,9 @@ enum class SettingsPanelType : U8 {
 enum class DebugOptionsPanelType : U8 {
 
     GAME,
-    RENDERER,
+    GRAPHICS,
     STATES,
+    NETWORKING,
 
     COUNT
 };

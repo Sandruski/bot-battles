@@ -190,6 +190,7 @@
     <ClCompile Include="GameplayStateClient.cpp" />
     <ClCompile Include="MainMenuStateClient.cpp" />
     <ClCompile Include="MovementSystemClient.cpp" />
+    <ClCompile Include="NetworkingPanelClient.cpp" />
     <ClCompile Include="pchClient.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pchClient.h</PrecompiledHeaderFile>

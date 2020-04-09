@@ -70,6 +70,9 @@
     <Filter Include="Source Files\Panels">
       <UniqueIdentifier>{e3e79f79-7ea0-4a04-b005-4dcae58e81a4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Panels\Debug Options">
+      <UniqueIdentifier>{ea0ff998-fcc6-4137-963a-568ceac82f41}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -181,7 +184,10 @@
       <Filter>Dependencies\imgui</Filter>
     </ClCompile>
     <ClCompile Include="StatesPanelServer.cpp">
-      <Filter>Source Files\Panels</Filter>
+      <Filter>Source Files\Panels\Debug Options</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkingPanelServer.cpp">
+      <Filter>Source Files\Panels\Debug Options</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

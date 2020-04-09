@@ -209,6 +209,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MainMenuStateServer.cpp" />
     <ClCompile Include="MovementSystemServer.cpp" />
+    <ClCompile Include="NetworkingPanelServer.cpp" />
     <ClCompile Include="pchServer.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pchServer.h</PrecompiledHeaderFile>

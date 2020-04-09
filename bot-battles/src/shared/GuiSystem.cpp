@@ -77,6 +77,7 @@ bool GuiSystem::RenderGui()
         ImVec2 size = ImVec2(static_cast<F32>(resolution.y) / 1.5f, static_cast<F32>(resolution.x) / 1.5f);
         ImGui::SetNextWindowSize(size, ImGuiCond_Always);
 
+        // TODO: "Options", "Credits", "Quit to Desktop" only when no match is running
         if (ImGui::Begin("Settings", &guiComponent.m_isSettings, windowFlags)) {
             if (ImGui::BeginMenuBar()) {
                 for (const auto& panel : guiComponent.m_settingsPanels) {
