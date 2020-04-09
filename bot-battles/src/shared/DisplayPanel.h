@@ -1,16 +1,16 @@
-#ifndef __GAME_PANEL_H__
-#define __GAME_PANEL_H__
+#ifndef __DISPLAY_PANEL_H__
+#define __DISPLAY_PANEL_H__
 
 #include "Panel.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class GamePanel : public Panel {
+class DisplayPanel : public Panel {
 public:
-    static DebugOptionsPanelType GetType()
+    static SettingsPanelType GetType()
     {
-        return DebugOptionsPanelType::GAME;
+        return SettingsPanelType::DISPLAY;
     }
 
 public:

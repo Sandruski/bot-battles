@@ -1,16 +1,16 @@
-#ifndef __WINDOW_PANEL_H__
-#define __WINDOW_PANEL_H__
+#ifndef __RENDERER_PANEL_H__
+#define __RENDERER_PANEL_H__
 
 #include "Panel.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class WindowPanel : public Panel {
+class RendererPanel : public Panel {
 public:
-    static PanelType GetType()
+    static DebugOptionsPanelType GetType()
     {
-        return PanelType::WINDOW;
+        return DebugOptionsPanelType::RENDERER;
     }
 
 public:

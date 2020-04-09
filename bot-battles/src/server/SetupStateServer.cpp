@@ -37,7 +37,7 @@ bool SetupStateServer::RenderGui() const
     ImVec2 size = ImVec2(static_cast<F32>(windowComponent.m_resolution.y) / 2.0f, static_cast<F32>(windowComponent.m_resolution.x) / 2.0f);
     ImGui::SetNextWindowSize(size, ImGuiCond_Always);
 
-    if (ImGui::Begin("Server", nullptr, windowFlags)) {
+    if (ImGui::Begin("Main Menu", nullptr, windowFlags)) {
         ServerComponent& serverComponent = g_gameServer->GetServerComponent();
         ImGui::InputText("Port", &serverComponent.m_port);
 

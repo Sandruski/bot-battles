@@ -42,7 +42,7 @@ bool ResultsStateServer::RenderGui() const
     ImVec2 size = ImVec2(static_cast<F32>(windowComponent.m_resolution.y) / 2.0f, static_cast<F32>(windowComponent.m_resolution.x) / 2.0f);
     ImGui::SetNextWindowSize(size, ImGuiCond_Always);
 
-    if (ImGui::Begin("Server", nullptr, windowFlags)) {
+    if (ImGui::Begin("Scoreboard", nullptr, windowFlags)) {
         ScoreboardComponent& scoreboardComponent = g_gameServer->GetScoreboardComponent();
         if (scoreboardComponent.m_winnerPlayerID == INVALID_PLAYER_ID) {
             ImGui::Text("Match ended because a player left...");

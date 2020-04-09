@@ -3,10 +3,17 @@
 
 namespace sand {
 
-enum class PanelType : U16 {
+enum class SettingsPanelType : U8 {
+
+    DISPLAY,
+
+    COUNT
+};
+
+enum class DebugOptionsPanelType : U8 {
 
     GAME,
-    WINDOW,
+    RENDERER,
     STATES,
 
     COUNT

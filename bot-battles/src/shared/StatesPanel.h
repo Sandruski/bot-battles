@@ -8,9 +8,9 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 class StatesPanel : public Panel {
 public:
-    static PanelType GetType()
+    static DebugOptionsPanelType GetType()
     {
-        return PanelType::STATES;
+        return DebugOptionsPanelType::STATES;
     }
 
 public:

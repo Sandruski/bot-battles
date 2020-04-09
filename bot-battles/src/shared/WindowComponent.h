@@ -7,17 +7,25 @@ namespace sand {
 // System Component
 struct WindowComponent {
 
+    enum DisplayMode : U8 {
+        FULLSCREEN,
+        WINDOWED,
+        BORDERLESS
+    };
+
     WindowComponent();
 
     void LoadFromConfig(const rapidjson::Value& value);
 
     void UpdateResolution();
-    void UpdateFullscreen();
+    void UpdateDisplayMode();
 
     SDL_Window* m_window;
 
     glm::uvec2 m_resolution;
-    bool m_isFullscreen;
+    bool m_isResizable;
+
+    DisplayMode m_displayMode;
 };
 }
 

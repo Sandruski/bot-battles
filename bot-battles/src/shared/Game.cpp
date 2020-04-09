@@ -14,13 +14,14 @@
 #include "TransformComponent.h"
 #include "WeaponComponent.h"
 #ifdef _DRAW
+#include "DisplayPanel.h"
 #include "GamePanel.h"
 #include "GuiSystem.h"
+#include "RendererPanel.h"
 #include "RendererSystem.h"
 #include "ShaderResource.h"
 #include "SpriteComponent.h"
 #include "StatesPanel.h"
-#include "WindowPanel.h"
 #include "WindowSystem.h"
 #endif
 
@@ -110,19 +111,28 @@ bool Game::Init()
 
     // Panels
 #ifdef _DRAW
-    ret = m_guiComponent.RegisterPanel<WindowPanel>();
+    ret = m_guiComponent.RegisterDebugOptionsPanel<GamePanel>();
     if (!ret) {
         return ret;
     }
-    ret = m_guiComponent.RegisterPanel<StatesPanel>();
+    ret = m_guiComponent.RegisterDebugOptionsPanel<RendererPanel>();
     if (!ret) {
         return ret;
     }
-    ret = m_guiComponent.RegisterPanel<GamePanel>();
+    ret = m_guiComponent.RegisterDebugOptionsPanel<StatesPanel>();
     if (!ret) {
         return ret;
     }
-    ret = m_guiComponent.SetCurrentPanel<StatesPanel>(); // TODO: config string
+    ret = m_guiComponent.SetCurrentDebugOptionsPanel<StatesPanel>(); // TODO: config string
+    if (!ret) {
+        return ret;
+    }
+
+    ret = m_guiComponent.RegisterSettingsPanel<DisplayPanel>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_guiComponent.SetCurrentSettingsPanel<DisplayPanel>(); // TODO: config string
     if (!ret) {
         return ret;
     }
@@ -320,7 +330,13 @@ bool Game::Render()
 //----------------------------------------------------------------------------------------------------
 bool Game::DebugRender()
 {
-    return m_systemManager->DebugRender();
+    bool ret = true;
+
+    if (m_rendererComponent.m_isDebugDraw) {
+        ret = m_systemManager->DebugRender();
+    }
+
+    return ret;
 }
 
 //----------------------------------------------------------------------------------------------------

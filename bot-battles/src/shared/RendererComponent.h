@@ -19,8 +19,11 @@ struct RendererComponent {
 
     std::weak_ptr<ShaderResource> m_shaderResource;
     std::weak_ptr<MeshResource> m_meshResource;
+
     glm::vec4 m_backgroundColor;
+
     bool m_isVsync;
+
     bool m_isDebugDraw;
 };
 }

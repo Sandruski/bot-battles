@@ -15,7 +15,7 @@ bool StatesPanel::RenderBody() const
 
         ImGui::Spacing();
         ImGui::SameLine();
-        if (name == "MainMenu") {
+        if (name == "Main Menu") {
             std::weak_ptr<State> mainMenuState = g_gameClient->GetMainMenuComponent().m_fsm.GetCurrentState();
             if (!mainMenuState.expired()) {
                 std::string subName = mainMenuState.lock()->GetName();

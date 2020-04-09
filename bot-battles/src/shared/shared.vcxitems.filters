@@ -64,6 +64,18 @@
     <Filter Include="Source Files\Panels">
       <UniqueIdentifier>{224d56b5-7bb0-471b-98e3-2fff23157bed}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Panels\Settings">
+      <UniqueIdentifier>{5b2a61de-af74-463f-953f-c75bab19e001}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Panels\Debug Options">
+      <UniqueIdentifier>{e8b13cb1-897f-44cb-9317-21fc780c7f22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Panels\Settings">
+      <UniqueIdentifier>{0c6e1e24-198f-4934-979c-bf6d175edb7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Panels\Debug Options">
+      <UniqueIdentifier>{5e89874d-83d1-4465-8be8-b8686785f9da}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)ByteSwap.h">
@@ -321,14 +333,17 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)PanelDefs.h">
       <Filter>Header Files\Panels</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)WindowPanel.h">
-      <Filter>Header Files\Panels</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)GamePanel.h">
+      <Filter>Header Files\Panels\Debug Options</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)RendererPanel.h">
+      <Filter>Header Files\Panels\Debug Options</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)StatesPanel.h">
-      <Filter>Header Files\Panels</Filter>
+      <Filter>Header Files\Panels\Debug Options</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)GamePanel.h">
-      <Filter>Header Files\Panels</Filter>
+    <ClInclude Include="C:\Projects\bot-battles\bot-battles\src\shared\DisplayPanel.h">
+      <Filter>Header Files\Panels\Settings</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -491,14 +506,17 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Panel.cpp">
       <Filter>Source Files\Panels</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)WindowPanel.cpp">
-      <Filter>Source Files\Panels</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)GamePanel.cpp">
+      <Filter>Source Files\Panels\Debug Options</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)RendererPanel.cpp">
+      <Filter>Source Files\Panels\Debug Options</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)StatesPanel.cpp">
-      <Filter>Source Files\Panels</Filter>
+      <Filter>Source Files\Panels\Debug Options</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)GamePanel.cpp">
-      <Filter>Source Files\Panels</Filter>
+    <ClCompile Include="C:\Projects\bot-battles\bot-battles\src\shared\DisplayPanel.cpp">
+      <Filter>Source Files\Panels\Settings</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
