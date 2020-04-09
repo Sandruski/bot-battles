@@ -527,6 +527,9 @@ void ServerSystem::SendResultsPacket(const ServerComponent& serverComponent, Pla
     OutputMemoryStream resultsPacket;
     resultsPacket.Write(ServerMessageType::RESULTS);
 
+    ScoreboardComponent& scoreboardComponent = g_gameServer->GetScoreboardComponent();
+    resultsPacket.Write(scoreboardComponent.m_winnerPlayerID);
+
     const char* name = clientProxy->GetName();
     const bool result = SendTCPPacket(serverComponent, resultsPacket, clientProxy->GetSocketAddress());
     if (result) {

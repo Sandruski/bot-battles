@@ -23,7 +23,8 @@ struct ClientComponent : public Component {
     void LoadFromConfig(const rapidjson::Value& value);
 
     bool IsConnected() const;
-    bool IsLocalPlayer(Entity entity) const;
+    bool IsLocalEntity(Entity entity) const;
+    bool IsLocalPlayer(PlayerID playerID) const;
 
     void Reset();
 

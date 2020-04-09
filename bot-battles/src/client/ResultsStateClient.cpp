@@ -45,7 +45,17 @@ bool ResultsStateClient::RenderGui() const
     F32 mainMenuTimeLeft = scoreboardComponent.m_mainMenuTimeout - mainMenuCurrentTime;
     ImGui::Text("%.0f", mainMenuTimeLeft);
 
-    ImGui::Text("Player x wins");
+    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    if (scoreboardComponent.m_winnerPlayerID == INVALID_PLAYER_ID) {
+        ImGui::Text("Match ended because a player left...");
+    } else {
+        const bool isLocalPlayer = clientComponent.IsLocalPlayer(scoreboardComponent.m_winnerPlayerID);
+        if (isLocalPlayer) {
+            ImGui::Text("You win :)");
+        } else {
+            ImGui::Text("You lose :(");
+        }
+    }
 
     const char* playAgain = "Play again";
     const char* mainMenu = "Main menu";

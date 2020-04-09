@@ -26,8 +26,8 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U3
     }
 
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    const bool isLocalPlayer = clientComponent.IsLocalPlayer(entity);
-    if (isLocalPlayer) {
+    const bool isLocalEntity = clientComponent.IsLocalEntity(entity);
+    if (isLocalEntity) {
         if (replicationActionType == ReplicationActionType::CREATE
             || !clientComponent.m_isServerReconciliation) {
             if (hasPosition) {

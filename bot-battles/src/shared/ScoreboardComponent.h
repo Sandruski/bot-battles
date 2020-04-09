@@ -13,6 +13,7 @@ struct ScoreboardComponent {
 
     FSM m_fsm;
     U32 m_gameCount;
+    PlayerID m_winnerPlayerID;
 #ifdef _CLIENT
     MyTimer m_mainMenuTimer;
     MyTimer m_reHelloTimer;

@@ -43,6 +43,14 @@ bool ResultsStateServer::RenderGui() const
     ImGui::SetNextWindowSize(size, ImGuiCond_Always);
 
     if (ImGui::Begin("Server", nullptr, windowFlags)) {
+        ScoreboardComponent& scoreboardComponent = g_gameServer->GetScoreboardComponent();
+        if (scoreboardComponent.m_winnerPlayerID == INVALID_PLAYER_ID) {
+            ImGui::Text("Match ended because a player left...");
+        } else {
+            U32 playerNumber = scoreboardComponent.m_winnerPlayerID + 1;
+            ImGui::Text("Player %u wins :)", playerNumber);
+        }
+
         const char* playAgain = "Play again";
         const char* mainMenu = "Main menu";
         ImVec2 playAgainTextSize = ImGui::CalcTextSize(playAgain);

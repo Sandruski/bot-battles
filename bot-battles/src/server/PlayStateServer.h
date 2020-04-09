@@ -23,6 +23,7 @@ public:
 
 private:
     void OnHealthEmptied() const;
+    void OnPlayerRemoved() const;
 
     void ChangeToScoreboard() const; // OnHealthEmptied (== 1 player alive) or player disconnected
 };

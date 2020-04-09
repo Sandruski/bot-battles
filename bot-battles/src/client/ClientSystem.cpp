@@ -364,7 +364,7 @@ void ClientSystem::ReceivePlayPacket(ClientComponent& clientComponent, InputMemo
 }
 
 //----------------------------------------------------------------------------------------------------
-void ClientSystem::ReceiveResultsPacket(ClientComponent& clientComponent, InputMemoryStream& /*inputStream*/)
+void ClientSystem::ReceiveResultsPacket(ClientComponent& clientComponent, InputMemoryStream& inputStream)
 {
     // Only Play
     GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
@@ -380,6 +380,9 @@ void ClientSystem::ReceiveResultsPacket(ClientComponent& clientComponent, InputM
     }
 
     ILOG("Results packet received");
+
+    ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
+    inputStream.Read(scoreboardComponent.m_winnerPlayerID);
 
     Event newEvent;
     newEvent.eventType = EventType::RESULTS_RECEIVED;

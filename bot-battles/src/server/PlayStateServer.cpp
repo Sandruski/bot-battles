@@ -43,9 +43,8 @@ void PlayStateServer::OnNotify(const Event& event)
         break;
     }
 
-        // X
     case EventType::PLAYER_REMOVED: {
-        ChangeToScoreboard();
+        OnPlayerRemoved();
         break;
     }
 
@@ -59,18 +58,35 @@ void PlayStateServer::OnNotify(const Event& event)
 void PlayStateServer::OnHealthEmptied() const
 {
     U32 aliveCount = 0;
+    Entity winnerEntity = INVALID_ENTITY;
     std::vector<std::pair<Entity, std::weak_ptr<HealthComponent>>> healthComponents = g_gameServer->GetComponentManager().GetComponents<HealthComponent>();
     for (const auto& pair : healthComponents) {
         std::weak_ptr<HealthComponent> healthComponent = pair.second;
         if (!healthComponent.lock()->m_isDead) {
             ++aliveCount;
+            Entity entity = pair.first;
+            winnerEntity = entity;
         }
     }
 
     // V
     if (aliveCount == 1) {
+        ScoreboardComponent& scoreboardComponent = g_gameServer->GetScoreboardComponent();
+        ServerComponent& serverComponent = g_gameServer->GetServerComponent();
+        scoreboardComponent.m_winnerPlayerID = serverComponent.GetPlayerID(winnerEntity);
+
         ChangeToScoreboard();
     }
+}
+
+//----------------------------------------------------------------------------------------------------
+void PlayStateServer::OnPlayerRemoved() const
+{
+    ScoreboardComponent& scoreboardComponent = g_gameServer->GetScoreboardComponent();
+    scoreboardComponent.m_winnerPlayerID = INVALID_PLAYER_ID;
+
+    // X
+    ChangeToScoreboard();
 }
 
 //----------------------------------------------------------------------------------------------------

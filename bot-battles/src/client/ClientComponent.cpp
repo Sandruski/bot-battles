@@ -80,9 +80,15 @@ bool ClientComponent::IsConnected() const
 }
 
 //----------------------------------------------------------------------------------------------------
-bool ClientComponent::IsLocalPlayer(Entity entity) const
+bool ClientComponent::IsLocalEntity(Entity entity) const
 {
     return entity == m_entity;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool ClientComponent::IsLocalPlayer(PlayerID playerID) const
+{
+    return playerID == m_playerID;
 }
 
 //----------------------------------------------------------------------------------------------------
