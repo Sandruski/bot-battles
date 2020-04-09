@@ -10,7 +10,7 @@ RendererComponent::RendererComponent()
     : m_shaderResource()
     , m_meshResource()
     , m_backgroundColor(0.0f, 0.0f, 0.0f, 0.0f)
-    , m_isVsync(false)
+    , m_isVSync(true)
     , m_isDebugDraw(false)
 {
 }
@@ -30,9 +30,12 @@ void RendererComponent::LoadFromConfig(const rapidjson::Value& value)
     assert(value["backgroundColor"][3].IsFloat());
     m_backgroundColor.a = value["backgroundColor"][3].GetFloat();
 
+    // TODO
+    /*
     assert(value.HasMember("vsync"));
     assert(value["vsync"].IsBool());
     m_isVsync = value["vsync"].GetBool();
+    */
 
     assert(value.HasMember("debugDraw"));
     assert(value["debugDraw"].IsBool());
@@ -51,7 +54,18 @@ void RendererComponent::SetWireframe(bool wireframe) const
 }
 
 //----------------------------------------------------------------------------------------------------
-void RendererComponent::UpdateBackgroundColor()
+bool RendererComponent::UpdateVSync() const
+{
+    if (SDL_GL_SetSwapInterval(m_isVSync) == -1) {
+        ELOG("VSync could not be updated");
+        return false;
+    }
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+void RendererComponent::UpdateBackgroundColor() const
 {
     glClearColor(m_backgroundColor.r, m_backgroundColor.g, m_backgroundColor.b, m_backgroundColor.a);
 }

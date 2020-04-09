@@ -60,7 +60,8 @@ MapImporter::Tilemap MapImporter::Load(const std::string& path) const
 void MapImporter::Create(const Tilemap& tilemap) const
 {
     WindowComponent& windowComponent = g_game->GetWindowComponent();
-    glm::vec2 windowCenterPosition = glm::vec2(static_cast<F32>(windowComponent.m_resolution.x) / 2.0f, static_cast<F32>(windowComponent.m_resolution.y) / 2.0f);
+    glm::uvec2 resolution = windowComponent.GetResolution();
+    glm::vec2 windowCenterPosition = glm::vec2(static_cast<F32>(resolution.x) / 2.0f, static_cast<F32>(resolution.y) / 2.0f);
     glm::vec2 tilemapCenterPosition = glm::vec2(static_cast<F32>(tilemap.m_tileSize.x * tilemap.m_tileCount.x) / 2.0f, static_cast<F32>(tilemap.m_tileSize.y * tilemap.m_tileCount.y) / 2.0f);
 
     for (const auto& tilelayer : tilemap.m_tilelayers) {

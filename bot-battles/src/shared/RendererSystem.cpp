@@ -41,11 +41,8 @@ bool RendererSystem::StartUp()
 
     SDL_GLContext glContext = SDL_GL_CreateContext(windowComponent.m_window);
     SDL_GL_MakeCurrent(windowComponent.m_window, glContext);
-    if (rendererComponent.m_isVsync) {
-        if (SDL_GL_SetSwapInterval(1) == -1) {
-            ELOG("Vsync could not be set");
-            return false;
-        }
+    if (!rendererComponent.UpdateVSync()) {
+        return false;
     }
 
     if (gl3wInit()) {
@@ -58,6 +55,10 @@ bool RendererSystem::StartUp()
     }
 
     windowComponent.UpdateResolution();
+    if (!windowComponent.UpdateDisplayMode()) {
+        return false;
+    }
+
     rendererComponent.UpdateBackgroundColor();
     glClearDepth(1.0f);
     glEnable(GL_DEPTH_TEST);
@@ -122,7 +123,8 @@ bool RendererSystem::Render()
         U32 modelLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "model");
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-        glm::mat4 projection = glm::ortho(0.0f, static_cast<F32>(windowComponent.m_resolution.x), static_cast<F32>(windowComponent.m_resolution.y), 0.0f, -static_cast<F32>(LayerType::NEAR_PLANE), -static_cast<F32>(LayerType::FAR_PLANE));
+        glm::uvec2 resolution = windowComponent.GetResolution();
+        glm::mat4 projection = glm::ortho(0.0f, static_cast<F32>(resolution.x), static_cast<F32>(resolution.y), 0.0f, -static_cast<F32>(LayerType::NEAR_PLANE), -static_cast<F32>(LayerType::FAR_PLANE));
         U32 projectionLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "projection");
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 

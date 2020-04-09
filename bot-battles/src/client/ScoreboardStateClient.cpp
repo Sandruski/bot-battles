@@ -44,8 +44,9 @@ bool ScoreboardStateClient::Enter() const
     // Scene
     Entity background = g_gameClient->GetEntityManager().AddEntity();
     WindowComponent& windowComponent = g_gameClient->GetWindowComponent();
+    glm::uvec2 resolution = windowComponent.GetResolution();
     std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().AddComponent<TransformComponent>(background);
-    transformComponent.lock()->m_position = { static_cast<F32>(windowComponent.m_resolution.x) / 2.0f, static_cast<F32>(windowComponent.m_resolution.y) / 2.0f, static_cast<F32>(LayerType::BACKGROUND) };
+    transformComponent.lock()->m_position = { static_cast<F32>(resolution.x) / 2.0f, static_cast<F32>(resolution.y) / 2.0f, static_cast<F32>(LayerType::BACKGROUND) };
     std::weak_ptr<SpriteResource> spriteResource = g_gameClient->GetResourceManager().AddResource<SpriteResource>("scoreboardBackground.png", TEXTURES_DIR, true);
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameClient->GetComponentManager().AddComponent<SpriteComponent>(background);
     spriteComponent.lock()->m_spriteResource = spriteResource;
@@ -75,9 +76,10 @@ bool ScoreboardStateClient::RenderGui() const
     windowFlags |= ImGuiWindowFlags_NoSavedSettings;
 
     WindowComponent& windowComponent = g_gameClient->GetWindowComponent();
-    ImVec2 position = ImVec2(static_cast<F32>(windowComponent.m_resolution.x) / 2.0f, static_cast<F32>(windowComponent.m_resolution.y) / 2.0f);
+    glm::uvec2 resolution = windowComponent.GetResolution();
+    ImVec2 position = ImVec2(static_cast<F32>(resolution.x) / 2.0f, static_cast<F32>(resolution.y) / 2.0f);
     ImGui::SetNextWindowPos(position, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-    ImVec2 size = ImVec2(static_cast<F32>(windowComponent.m_resolution.y) / 2.0f, static_cast<F32>(windowComponent.m_resolution.x) / 2.0f);
+    ImVec2 size = ImVec2(static_cast<F32>(resolution.y) / 2.0f, static_cast<F32>(resolution.x) / 2.0f);
     ImGui::SetNextWindowSize(size, ImGuiCond_Always);
 
     if (ImGui::Begin(GetName().c_str(), nullptr, windowFlags)) {

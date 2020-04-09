@@ -71,9 +71,10 @@ bool GuiSystem::RenderGui()
         windowFlags |= ImGuiWindowFlags_NoSavedSettings;
 
         WindowComponent& windowComponent = g_game->GetWindowComponent();
-        ImVec2 position = ImVec2(static_cast<F32>(windowComponent.m_resolution.x) / 2.0f, static_cast<F32>(windowComponent.m_resolution.y) / 2.0f);
+        glm::uvec2 resolution = windowComponent.GetResolution();
+        ImVec2 position = ImVec2(static_cast<F32>(resolution.x) / 2.0f, static_cast<F32>(resolution.y) / 2.0f);
         ImGui::SetNextWindowPos(position, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-        ImVec2 size = ImVec2(static_cast<F32>(windowComponent.m_resolution.y) / 1.5f, static_cast<F32>(windowComponent.m_resolution.x) / 1.5f);
+        ImVec2 size = ImVec2(static_cast<F32>(resolution.y) / 1.5f, static_cast<F32>(resolution.x) / 1.5f);
         ImGui::SetNextWindowSize(size, ImGuiCond_Always);
 
         if (ImGui::Begin("Settings", &guiComponent.m_isSettings, windowFlags)) {
@@ -97,6 +98,7 @@ bool GuiSystem::RenderGui()
             ImGui::End();
         }
     }
+
     if (guiComponent.m_isDebugOptions) {
         ImGuiWindowFlags windowFlags = 0;
         windowFlags |= ImGuiWindowFlags_NoTitleBar;

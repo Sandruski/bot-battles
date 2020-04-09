@@ -7,6 +7,11 @@ namespace sand {
 // System Component
 struct WindowComponent {
 
+    enum Resolution : U8 {
+        MAX,
+        MID,
+        LOW
+    };
     enum DisplayMode : U8 {
         FULLSCREEN,
         WINDOWED,
@@ -17,14 +22,14 @@ struct WindowComponent {
 
     void LoadFromConfig(const rapidjson::Value& value);
 
-    void UpdateResolution();
-    void UpdateDisplayMode();
+    void UpdateResolution() const;
+    bool UpdateDisplayMode() const;
+
+    glm::uvec2 GetResolution() const;
 
     SDL_Window* m_window;
 
-    glm::uvec2 m_resolution;
-    bool m_isResizable;
-
+    Resolution m_resolution;
     DisplayMode m_displayMode;
 };
 }

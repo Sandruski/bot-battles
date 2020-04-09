@@ -72,7 +72,8 @@ bool WeaponSystemClient::Update()
                 glm::vec2 rotation = transformComponent.lock()->GetRotation();
                 weaponComponent.lock()->m_origin = position;
                 WindowComponent& windowComponent = g_gameClient->GetWindowComponent();
-                F32 maxLength = static_cast<F32>(std::max(windowComponent.m_resolution.x, windowComponent.m_resolution.y));
+                glm::uvec2 resolution = windowComponent.GetResolution();
+                F32 maxLength = static_cast<F32>(std::max(resolution.x, resolution.y));
                 std::pair<Entity, std::weak_ptr<ColliderComponent>> object;
                 glm::vec2 intersection;
                 const bool hasIntersected = Raycast(position, rotation, maxLength, object, intersection);
@@ -132,7 +133,8 @@ bool WeaponSystemClient::DebugRender()
         U32 modelLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "model");
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-        glm::mat4 projection = glm::ortho(0.0f, static_cast<F32>(windowComponent.m_resolution.x), static_cast<F32>(windowComponent.m_resolution.y), 0.0f, -static_cast<F32>(LayerType::NEAR_PLANE), -static_cast<F32>(LayerType::FAR_PLANE));
+        glm::uvec2 resolution = windowComponent.GetResolution();
+        glm::mat4 projection = glm::ortho(0.0f, static_cast<F32>(resolution.x), static_cast<F32>(resolution.y), 0.0f, -static_cast<F32>(LayerType::NEAR_PLANE), -static_cast<F32>(LayerType::FAR_PLANE));
         U32 projectionLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "projection");
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
