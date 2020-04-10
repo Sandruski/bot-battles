@@ -654,6 +654,7 @@ bool ServerSystem::ConnectSockets(ServerComponent& serverComponent)
     }
     serverComponent.m_TCPListenSocket = serverComponent.m_TCPSockets.emplace_back(TCPListenSocket);
 
+    ILOG("Connect sockets");
     ILOG("Sockets connected");
 
     Event newEvent;
@@ -669,6 +670,7 @@ bool ServerSystem::DisconnectSockets(ServerComponent& serverComponent)
     serverComponent.m_UDPSocket = nullptr;
     serverComponent.m_TCPSockets.clear();
 
+    ILOG("Disconnect sockets");
     ILOG("Sockets disconnected");
 
     return true;

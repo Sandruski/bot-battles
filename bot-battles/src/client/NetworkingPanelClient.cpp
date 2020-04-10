@@ -39,9 +39,9 @@ bool NetworkingPanel::RenderBody() const
         ImGui::Spacing();
     }
 
-    ImGui::Checkbox("Client Prediction", &clientComponent.m_isClientPrediction);
-    ImGui::Checkbox("Server Reconciliation", &clientComponent.m_isServerReconciliation);
-    ImGui::Checkbox("Entity Interpolation", &clientComponent.m_isEntityInterpolation);
+    //ImGui::Checkbox("Client Prediction", &clientComponent.m_isClientPrediction);
+    //ImGui::Checkbox("Server Reconciliation", &clientComponent.m_isServerReconciliation);
+    //ImGui::Checkbox("Entity Interpolation", &clientComponent.m_isEntityInterpolation);
 
     return true;
 }

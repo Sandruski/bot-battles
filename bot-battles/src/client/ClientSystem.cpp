@@ -589,12 +589,18 @@ bool ClientSystem::ConnectSockets(ClientComponent& clientComponent)
         return ret;
     }
 
+    ILOG("Connect sockets");
+
     return ret;
 }
 
 //----------------------------------------------------------------------------------------------------
 bool ClientSystem::CheckConnect(ClientComponent& clientComponent)
 {
+    if (clientComponent.m_TCPSocket == nullptr) {
+        return false;
+    }
+
     F32 connectCurrentTime = static_cast<F32>(clientComponent.m_connectTimer.ReadSec());
     if (connectCurrentTime >= SECONDS_BETWEEN_CONNECTS) {
         clientComponent.m_TCPSocket->Connect(*clientComponent.m_socketAddress);
@@ -630,6 +636,7 @@ bool ClientSystem::DisconnectSockets(ClientComponent& clientComponent)
     clientComponent.m_UDPSocket = nullptr;
     clientComponent.m_TCPSocket = nullptr;
 
+    ILOG("Disconnect sockets");
     ILOG("Sockets disconnected");
 
     return true;
