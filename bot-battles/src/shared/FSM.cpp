@@ -85,7 +85,7 @@ bool FSM::ChangeState(const std::string& name)
 {
     for (const auto& state : m_states) {
 
-        if (state != nullptr && state->GetName() == name) { // TODO: change FSM so not every FSM has an array of all states size
+        if (state != nullptr && state->GetName() == name) {
 
             ChangeState(std::weak_ptr<State>(state));
 

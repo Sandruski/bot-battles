@@ -19,7 +19,7 @@ namespace sand {
 RendererSystem::RendererSystem()
 {
     m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
-    m_signature |= 1 << static_cast<U16>(ComponentType::SPRITE); // TODO: debug draw should not need having a sprite component!
+    m_signature |= 1 << static_cast<U16>(ComponentType::SPRITE); // TODO: debug draw should not require having a sprite component!
 }
 
 //----------------------------------------------------------------------------------------------------

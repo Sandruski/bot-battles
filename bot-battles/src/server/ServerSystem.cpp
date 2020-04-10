@@ -441,7 +441,7 @@ void ServerSystem::ReceiveInputPacket(ServerComponent& serverComponent, InputMem
         while (inputCount > 0) {
             Input input;
             input.Read(inputStream);
-            if (input.GetFrame() > clientProxy.lock()->m_lastAckdFrame) { // TODO: be careful if new frame is 15 and last frame is 13 and frame 14 contains a shoot for example
+            if (input.GetFrame() > clientProxy.lock()->m_lastAckdFrame) {
                 clientProxy.lock()->m_inputBuffer.Add(input);
                 clientProxy.lock()->m_lastAckdFrame = input.GetFrame();
                 ILOG("Server received ackd frame %u", clientProxy.lock()->m_lastAckdFrame);

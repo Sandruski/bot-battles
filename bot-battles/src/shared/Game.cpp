@@ -128,7 +128,7 @@ bool Game::Init()
     if (!ret) {
         return ret;
     }
-    ret = m_guiComponent.SetCurrentDebugOptionsPanel<StatesPanel>(); // TODO: config string
+    ret = m_guiComponent.SetCurrentDebugOptionsPanel<GamePanel>();
     if (!ret) {
         return ret;
     }
@@ -137,7 +137,7 @@ bool Game::Init()
     if (!ret) {
         return ret;
     }
-    ret = m_guiComponent.SetCurrentSettingsPanel<DisplayPanel>(); // TODO: config string
+    ret = m_guiComponent.SetCurrentSettingsPanel<DisplayPanel>();
     if (!ret) {
         return ret;
     }

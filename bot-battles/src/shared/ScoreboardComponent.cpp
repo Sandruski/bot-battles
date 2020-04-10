@@ -2,7 +2,7 @@
 
 namespace sand {
 
-// TODO: fill from config with gameplay info
+// TODO: fill from config with scoreboard info
 
 //----------------------------------------------------------------------------------------------------
 ScoreboardComponent::ScoreboardComponent()

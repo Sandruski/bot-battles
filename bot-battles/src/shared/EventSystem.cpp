@@ -67,7 +67,6 @@ bool EventSystem::Update()
         switch (event.type) {
 
         case SDL_QUIT: {
-            // TODO SEND EVENT
             return false;
             break;
         }
@@ -78,8 +77,6 @@ bool EventSystem::Update()
             case SDL_WINDOWEVENT_MAXIMIZED:
             case SDL_WINDOWEVENT_FOCUS_GAINED: {
                 // TODO: we show and update m_isRunning accordingly
-                // TODO: Event System
-
                 break;
             }
 
@@ -87,8 +84,6 @@ bool EventSystem::Update()
             case SDL_WINDOWEVENT_MINIMIZED:
             case SDL_WINDOWEVENT_FOCUS_LOST: {
                 // TODO: we hide and update m_isRunning accordingly
-                // TODO: Event System
-
                 break;
             }
 

@@ -22,7 +22,7 @@ public:
 
 private:
     void ChangeToRestart() const; // if button
-    void ChangeToMainMenu() const; // if button (TODO: why do clients have timers?)
+    void ChangeToMainMenu() const; // if button
 };
 }
 

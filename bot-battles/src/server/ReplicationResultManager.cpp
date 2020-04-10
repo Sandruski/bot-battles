@@ -11,7 +11,7 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 ReplicationResultManager::ReplicationResultManager(std::weak_ptr<ReplicationManagerServer> replicationManager)
-    : m_replicationManager(std::move(replicationManager)) // TODO: std move
+    : m_replicationManager(std::move(replicationManager))
     , m_networkIDToReplicationCommand()
 {
 }

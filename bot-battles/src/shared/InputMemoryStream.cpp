@@ -143,7 +143,7 @@ void InputMemoryStream::Read(glm::uvec4& uvec4)
 }
 
 //----------------------------------------------------------------------------------------------------
-void InputMemoryStream::ReadPosition(glm::vec2& vec2) // TODO: this should be done properly and without hard-coded values
+void InputMemoryStream::ReadPosition(glm::vec2& vec2) // TODO: this should be done properly and without hardcoded values
 {
     U32 x = 0;
     Read(x);
