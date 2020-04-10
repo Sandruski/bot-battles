@@ -87,7 +87,7 @@ U32 MyTime::GetFrame() const
 //----------------------------------------------------------------------------------------------------
 void MyTime::AddFpsToTrack(F32 fps)
 {
-    for (U32 i = m_fpsTrack.size() - 1; i > 0; --i)
+    for (std::size_t i = m_fpsTrack.size() - 1; i > 0; --i)
         m_fpsTrack.at(i) = m_fpsTrack.at(i - 1);
 
     m_fpsTrack.at(0) = fps;

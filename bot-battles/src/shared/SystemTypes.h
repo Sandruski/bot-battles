@@ -3,8 +3,9 @@
 
 namespace sand {
 
-#ifdef _CLIENT
 enum class SystemType : U16 {
+
+#ifdef _CLIENT
 #ifdef _DRAW
     WINDOW,
     RENDERER,
@@ -26,10 +27,7 @@ enum class SystemType : U16 {
     GUI,
 #endif
 
-    COUNT
-};
 #elif defined(_SERVER)
-enum class SystemType : U16 {
 #ifdef _DRAW
     WINDOW,
     RENDERER,
@@ -48,10 +46,10 @@ enum class SystemType : U16 {
 #ifdef _DRAW
     GUI,
 #endif
+#endif
 
     COUNT
 };
-#endif
 }
 
 #endif

@@ -23,7 +23,7 @@ bool GamePanel::RenderBody() const
 
     F32 fps = MyTime::GetInstance().GetFps();
     const std::vector<F32> fpsTrack = MyTime::GetInstance().GetFpsTrack();
-    ImGui::PlotHistogram("FPS", &fpsTrack.front(), fpsTrack.size(), 0, std::to_string(static_cast<U32>(fps)).c_str(), 0.0f, 100.0f, ImVec2(250, 80));
+    ImGui::PlotHistogram("FPS", &fpsTrack.front(), static_cast<U32>(fpsTrack.size()), 0, std::to_string(static_cast<U32>(fps)).c_str(), 0.0f, 100.0f, ImVec2(250.0f, 80.0f));
 
     ImGui::Text("Dt:");
     ImGui::SameLine();

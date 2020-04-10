@@ -497,12 +497,11 @@ void ServerSystem::SendReWelcomePacket(const ServerComponent& serverComponent, P
     ScoreboardComponent& scoreboardComponent = g_gameServer->GetScoreboardComponent();
     reWelcomePacket.Write(scoreboardComponent.m_gameCount);
 
-    const char* name = clientProxy->GetName();
     const bool result = SendTCPPacket(serverComponent, reWelcomePacket, clientProxy->GetSocketAddress());
     if (result) {
-        ILOG("ReWelcome packet of length %u successfully sent to player %s", reWelcomePacket.GetByteLength(), name);
+        ILOG("ReWelcome packet of length %u successfully sent to player %s", reWelcomePacket.GetByteLength(), clientProxy->GetName());
     } else {
-        ELOG("ReWelcome packet unsuccessfully sent to player %s", name);
+        ELOG("ReWelcome packet unsuccessfully sent to player %s", clientProxy->GetName());
     }
 }
 
@@ -512,12 +511,11 @@ void ServerSystem::SendPlayPacket(const ServerComponent& serverComponent, Player
     OutputMemoryStream playPacket;
     playPacket.Write(ServerMessageType::PLAY);
 
-    const char* name = clientProxy->GetName();
     const bool result = SendTCPPacket(serverComponent, playPacket, clientProxy->GetSocketAddress());
     if (result) {
-        ILOG("Play packet of length %u successfully sent to player %s", playPacket.GetByteLength(), name);
+        ILOG("Play packet of length %u successfully sent to player %s", playPacket.GetByteLength(), clientProxy->GetName());
     } else {
-        ELOG("Play packet unsuccessfully sent to player %s", name);
+        ELOG("Play packet unsuccessfully sent to player %s", clientProxy->GetName());
     }
 }
 
@@ -530,12 +528,11 @@ void ServerSystem::SendResultsPacket(const ServerComponent& serverComponent, Pla
     ScoreboardComponent& scoreboardComponent = g_gameServer->GetScoreboardComponent();
     resultsPacket.Write(scoreboardComponent.m_winnerPlayerID);
 
-    const char* name = clientProxy->GetName();
     const bool result = SendTCPPacket(serverComponent, resultsPacket, clientProxy->GetSocketAddress());
     if (result) {
-        ILOG("Results packet of length %u successfully sent to player %s", resultsPacket.GetByteLength(), name);
+        ILOG("Results packet of length %u successfully sent to player %s", resultsPacket.GetByteLength(), clientProxy->GetName());
     } else {
-        ELOG("Results packet unsuccessfully sent to player %s", name);
+        ELOG("Results packet unsuccessfully sent to player %s", clientProxy->GetName());
     }
 }
 
@@ -545,12 +542,11 @@ void ServerSystem::SendByePacket(ServerComponent& serverComponent, PlayerID play
     OutputMemoryStream byePacket;
     byePacket.Write(ServerMessageType::BYE);
 
-    const char* name = clientProxy->GetName();
     const bool result = SendTCPPacket(serverComponent, byePacket, clientProxy->GetSocketAddress());
     if (result) {
-        ILOG("Bye packet of length %u successfully sent to player %s", byePacket.GetByteLength(), name);
+        ILOG("Bye packet of length %u successfully sent to player %s", byePacket.GetByteLength(), clientProxy->GetName());
     } else {
-        ELOG("Bye packet unsuccessfully sent to player %s", name);
+        ELOG("Bye packet unsuccessfully sent to player %s", clientProxy->GetName());
     }
 
     Entity entity = serverComponent.GetEntity(playerID);
@@ -578,12 +574,11 @@ void ServerSystem::SendStatePacket(const ServerComponent& serverComponent, Playe
 
     clientProxy->m_replicationManager->Write(statePacket, *delivery.m_replicationResultManager);
 
-    const char* name = clientProxy->GetName();
     const bool result = SendUDPPacket(serverComponent, statePacket, clientProxy->GetSocketAddress());
     if (result) {
-        ILOG("State packet of length %u successfully sent to player %s", statePacket.GetByteLength(), name);
+        ILOG("State packet of length %u successfully sent to player %s", statePacket.GetByteLength(), clientProxy->GetName());
     } else {
-        ELOG("State packet unsuccessfully sent to player %s", name);
+        ELOG("State packet unsuccessfully sent to player %s", clientProxy->GetName());
     }
 }
 

@@ -35,16 +35,12 @@ bool WeaponSystemClient::Update()
         return true;
     }
 
-    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    if (!clientComponent.m_isClientPrediction) {
-        return true;
-    }
-
     for (auto& entity : m_entities) {
         if (g_gameClient->GetLinkingContext().GetNetworkID(entity) >= INVALID_NETWORK_ID) {
             continue;
         }
 
+        ClientComponent& clientComponent = g_gameClient->GetClientComponent();
         if (clientComponent.m_isLastInputWeaponPending) {
             const Input& input = clientComponent.m_inputBuffer.GetLast();
             const InputComponent& inputComponent = input.GetInputComponent();
@@ -99,8 +95,10 @@ bool WeaponSystemClient::Update()
                     weaponComponent.lock()->m_hasHit = false;
                 }
 
-                Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, input.GetFrame());
-                transformComponent.lock()->m_inputTransformBuffer.Add(transform);
+                if (clientComponent.m_isClientPrediction) {
+                    Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, input.GetFrame());
+                    transformComponent.lock()->m_inputTransformBuffer.Add(transform);
+                }
             }
 
             clientComponent.m_isLastInputWeaponPending = false;

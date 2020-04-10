@@ -162,13 +162,13 @@ Entity ServerComponent::GetEntity(PlayerID playerID) const
 //----------------------------------------------------------------------------------------------------
 U32 ServerComponent::GetPlayerCount() const
 {
-    return m_playerIDToClientProxy.size();
+    return static_cast<U32>(m_playerIDToClientProxy.size());
 }
 
 //----------------------------------------------------------------------------------------------------
 U32 ServerComponent::GetEntityCount() const
 {
-    return m_entityToPlayerID.size();
+    return static_cast<U32>(m_entityToPlayerID.size());
 }
 
 //----------------------------------------------------------------------------------------------------

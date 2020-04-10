@@ -29,7 +29,7 @@ bool InputSystemClient::Update()
     inputComponent.m_angularAcceleration = 0.0f;
     inputComponent.m_isShooting = false;
 
-    const F32 multiplier = 5.0f;
+    const F32 multiplier = 300.0f;
     EventComponent& eventComponent = g_game->GetEventComponent();
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_A) == EventComponent::KeyState::REPEAT) {
         inputComponent.m_acceleration.x = -1.0f * multiplier;
@@ -77,7 +77,8 @@ bool InputSystemClient::Update()
         }
 
         if (dirtyState != 0) {
-            Input input = Input(inputComponent, dirtyState, 1.0f, clientComponent.m_inputBuffer.m_back, clientComponent.m_interpolationFromFrame, clientComponent.m_interpolationToFrame, clientComponent.m_interpolationPercentage);
+            F32 dt = MyTime::GetInstance().GetDt();
+            Input input = Input(inputComponent, dirtyState, dt, clientComponent.m_inputBuffer.m_back, clientComponent.m_interpolationFromFrame, clientComponent.m_interpolationToFrame, clientComponent.m_interpolationPercentage);
             ILOG("NEW FRAME %u", clientComponent.m_inputBuffer.m_back);
             clientComponent.m_inputBuffer.Add(input);
         }
