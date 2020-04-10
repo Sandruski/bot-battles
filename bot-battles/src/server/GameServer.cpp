@@ -1,15 +1,17 @@
 #include "GameServer.h"
 
 #include "CollisionSystemServer.h"
+#include "ComponentManager.h"
 #include "ConfigServer.h"
 #include "EntityManager.h"
 #include "FSM.h"
 #include "GameplayStateServer.h"
 #include "HealthSystem.h"
-#include "InputSystemServer.h"
 #include "LinkingContext.h"
 #include "MainMenuStateServer.h"
 #include "MovementSystemServer.h"
+#include "OutputSystemServer.h"
+#include "PlayerComponent.h"
 #include "ScoreboardStateServer.h"
 #include "ServerComponent.h"
 #include "ServerSystem.h"
@@ -57,7 +59,13 @@ bool GameServer::Init()
     if (!ret) {
         return ret;
     }
-    ret = m_systemManager->RegisterSystem<InputSystemServer>();
+    ret = m_systemManager->RegisterSystem<OutputSystemServer>();
+    if (!ret) {
+        return ret;
+    }
+
+    // Components
+    ret = m_componentManager->RegisterComponent<PlayerComponent>();
     if (!ret) {
         return ret;
     }

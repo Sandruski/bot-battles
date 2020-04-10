@@ -17,6 +17,13 @@ bool InputSystemClient::Update()
         return true;
     }
 
+    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    const bool hasEntity = clientComponent.m_entity < INVALID_ENTITY;
+    if (!hasEntity) {
+        ILOG("Input could not be get because entity is not created");
+        return true;
+    }
+
     InputComponent& inputComponent = g_gameClient->GetInputComponent();
     inputComponent.m_acceleration = glm::vec2(0.0f, 0.0f);
     inputComponent.m_angularAcceleration = 0.0f;
@@ -49,7 +56,6 @@ bool InputSystemClient::Update()
         inputComponent.m_isShooting = true;
     }
 
-    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     if (!clientComponent.m_inputBuffer.IsFull()) {
         U32 dirtyState = 0;
 

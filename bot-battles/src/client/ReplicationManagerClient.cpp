@@ -22,11 +22,9 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream) const
     inputStream.Read(frame);
     ILOG("Frame received %u", frame);
 
-    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-    std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
-    if (!currentState.expired()) {
+    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    if (clientComponent.m_isEntityInterpolation) {
         F32 startFrameTime = MyTime::GetInstance().GetStartFrameTime();
-        ClientComponent& clientComponent = g_gameClient->GetClientComponent();
         clientComponent.m_frameBuffer.Add(Frame(frame, startFrameTime));
     }
 
@@ -65,31 +63,33 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream) const
         }
     }
 
-    LinkingContext& linkingContext = g_gameClient->GetLinkingContext();
-    const std::unordered_map<NetworkID, Entity>& networkIDToEntityMap = linkingContext.GetNetworkIDToEntityMap();
-    for (const auto& pair : networkIDToEntityMap) {
-        Entity entity = pair.second;
-        Signature signature = g_gameClient->GetEntityManager().GetSignature(entity);
-        const bool hasRemotePlayer = signature & static_cast<U16>(ComponentType::REMOTE_PLAYER);
-        if (hasRemotePlayer) {
-            std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
-            U32 index = transformComponent.lock()->m_transformBuffer.m_front;
-            bool isFound = false;
-            while (index < transformComponent.lock()->m_transformBuffer.m_back) {
-                const Transform& transform = transformComponent.lock()->m_transformBuffer.Get(index);
-                if (transform.GetFrame() == frame) {
-                    isFound = true;
-                    break;
+    if (clientComponent.m_isEntityInterpolation) {
+        LinkingContext& linkingContext = g_gameClient->GetLinkingContext();
+        const std::unordered_map<NetworkID, Entity>& networkIDToEntityMap = linkingContext.GetNetworkIDToEntityMap();
+        for (const auto& pair : networkIDToEntityMap) {
+            Entity entity = pair.second;
+            Signature signature = g_gameClient->GetEntityManager().GetSignature(entity);
+            const bool hasRemotePlayer = signature & static_cast<U16>(ComponentType::REMOTE_PLAYER);
+            if (hasRemotePlayer) {
+                std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
+                U32 index = transformComponent.lock()->m_transformBuffer.m_front;
+                bool isFound = false;
+                while (index < transformComponent.lock()->m_transformBuffer.m_back) {
+                    const Transform& transform = transformComponent.lock()->m_transformBuffer.Get(index);
+                    if (transform.GetFrame() == frame) {
+                        isFound = true;
+                        break;
+                    }
+                    ++index;
                 }
-                ++index;
-            }
 
-            if (!isFound) {
-                glm::vec2 position = !transformComponent.lock()->m_transformBuffer.IsEmpty() ? transformComponent.lock()->m_transformBuffer.GetLast().m_position : transformComponent.lock()->m_position;
-                F32 rotation = !transformComponent.lock()->m_transformBuffer.IsEmpty() ? transformComponent.lock()->m_transformBuffer.GetLast().m_rotation : transformComponent.lock()->m_rotation;
-                Transform transform = Transform(position, rotation, frame);
-                transformComponent.lock()->m_transformBuffer.Add(transform);
-                ILOG("Added frame %u", frame);
+                if (!isFound) {
+                    glm::vec2 position = !transformComponent.lock()->m_transformBuffer.IsEmpty() ? transformComponent.lock()->m_transformBuffer.GetLast().m_position : transformComponent.lock()->m_position;
+                    F32 rotation = !transformComponent.lock()->m_transformBuffer.IsEmpty() ? transformComponent.lock()->m_transformBuffer.GetLast().m_rotation : transformComponent.lock()->m_rotation;
+                    Transform transform = Transform(position, rotation, frame);
+                    transformComponent.lock()->m_transformBuffer.Add(transform);
+                    ILOG("Added frame %u", frame);
+                }
             }
         }
     }
@@ -114,7 +114,7 @@ void ReplicationManagerClient::ReadCreateAction(InputMemoryStream& inputStream, 
         if (!hasLocalPlayer) {
             g_gameClient->GetComponentManager().AddComponent<LocalPlayerComponent>(entity);
         }
-    } else if (playerID != INVALID_PLAYER_ID) {
+    } else /*if (playerID != INVALID_PLAYER_ID)*/ {
         const bool hasRemotePlayer = signature & static_cast<U16>(ComponentType::REMOTE_PLAYER);
         if (!hasRemotePlayer) {
             g_gameClient->GetComponentManager().AddComponent<RemotePlayerComponent>(entity);

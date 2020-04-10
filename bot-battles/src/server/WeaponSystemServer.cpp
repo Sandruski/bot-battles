@@ -25,6 +25,7 @@ WeaponSystemServer::WeaponSystemServer()
 {
     m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
     m_signature |= 1 << static_cast<U16>(ComponentType::WEAPON);
+    m_signature |= 1 << static_cast<U16>(ComponentType::PLAYER);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -36,7 +37,7 @@ bool WeaponSystemServer::Update()
         return true;
     }
 
-    ServerComponent serverComponent = g_gameServer->GetServerComponent();
+    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
 
     for (auto& entity : m_entities) {
         PlayerID playerID = serverComponent.GetPlayerID(entity);

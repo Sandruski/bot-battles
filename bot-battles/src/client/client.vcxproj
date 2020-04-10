@@ -191,6 +191,7 @@
     <ClCompile Include="MainMenuStateClient.cpp" />
     <ClCompile Include="MovementSystemClient.cpp" />
     <ClCompile Include="NetworkingPanelClient.cpp" />
+    <ClCompile Include="OutputSystemClient.cpp" />
     <ClCompile Include="pchClient.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pchClient.h</PrecompiledHeaderFile>
@@ -226,6 +227,7 @@
     <ClInclude Include="LocalPlayerComponent.h" />
     <ClInclude Include="MainMenuStateClient.h" />
     <ClInclude Include="MovementSystemClient.h" />
+    <ClInclude Include="OutputSystemClient.h" />
     <ClInclude Include="pchClient.h" />
     <ClInclude Include="PlayStateClient.h" />
     <ClInclude Include="RemotePlayerComponent.h" />

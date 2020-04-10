@@ -7,6 +7,7 @@
 #include "GameServer.h"
 #include "HealthComponent.h"
 #include "LinkingContext.h"
+#include "PlayerComponent.h"
 #include "RendererComponent.h"
 #include "ResourceManager.h"
 #include "ServerComponent.h"
@@ -104,10 +105,12 @@ Entity SpawnerSystem::Spawn(U32 number) const
     const glm::uvec4 spriteTextureCoords = spriteComponent.lock()->GetSpriteTextureCoords();
     colliderComponent.lock()->m_size = glm::vec2(30.0f, 30.0f);
 
-    std::weak_ptr<WeaponComponent> weaponComponent = g_gameServer->GetComponentManager().AddComponent<WeaponComponent>(character);
+    g_gameServer->GetComponentManager().AddComponent<WeaponComponent>(character);
 
     std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().AddComponent<HealthComponent>(character);
     healthComponent.lock()->m_health = 100;
+
+    g_gameServer->GetComponentManager().AddComponent<PlayerComponent>(character);
 
     return character;
 }

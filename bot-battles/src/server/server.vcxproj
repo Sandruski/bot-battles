@@ -205,7 +205,7 @@
     <ClCompile Include="GameplayStateServer.cpp" />
     <ClCompile Include="GameServer.cpp" />
     <ClCompile Include="HealthSystem.cpp" />
-    <ClCompile Include="InputSystemServer.cpp" />
+    <ClCompile Include="OutputSystemServer.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MainMenuStateServer.cpp" />
     <ClCompile Include="MovementSystemServer.cpp" />
@@ -224,6 +224,7 @@
       </PreprocessorDefinitions>
     </ClCompile>
     <ClCompile Include="PlayStateServer.cpp" />
+    <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="PlayStateServer.h" />
     <ClCompile Include="ReplicationResultManager.cpp" />
     <ClInclude Include="ReplicationResultManager.h" />
@@ -250,7 +251,7 @@
     <ClInclude Include="GameplayStateServer.h" />
     <ClInclude Include="GameServer.h" />
     <ClInclude Include="HealthSystem.h" />
-    <ClInclude Include="InputSystemServer.h" />
+    <ClInclude Include="OutputSystemServer.h" />
     <ClInclude Include="MainMenuStateServer.h" />
     <ClInclude Include="MovementSystemServer.h" />
     <ClInclude Include="pchServer.h" />

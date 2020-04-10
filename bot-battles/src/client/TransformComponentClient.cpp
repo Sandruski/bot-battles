@@ -87,7 +87,6 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U3
                 Transform transform = Transform(newPosition, newRotation, frame);
                 m_transformBuffer.Add(transform);
                 ILOG("Added frame %u", frame);
-                ILOG("Client pos for frame %u is %f %f", frame, newPosition.x, newPosition.y);
             }
         } else {
             if (hasPosition) {
@@ -160,23 +159,5 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::v
             m_rotation = lastTransform.m_rotation;
         }
     }
-
-    m_inputTransformBuffer.Remove(index);
-
-    index = clientComponent.m_inputBuffer.m_front;
-    isFound = false;
-    while (index < clientComponent.m_inputBuffer.m_back) {
-        const Input& input = clientComponent.m_inputBuffer.Get(index);
-        if (input.GetFrame() == clientComponent.m_lastAckdFrame) {
-            isFound = true;
-            break;
-        }
-        ++index;
-    }
-    if (!isFound) {
-        return;
-    }
-
-    clientComponent.m_inputBuffer.Remove(index);
 }
 }

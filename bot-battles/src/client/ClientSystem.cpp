@@ -167,22 +167,6 @@ void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent)
 void ClientSystem::SendOutgoingPackets(ClientComponent& clientComponent)
 {
     if (clientComponent.m_UDPSocket != nullptr) {
-        if (!clientComponent.m_inputBuffer.IsEmpty()) {
-            U32 index = clientComponent.m_inputBuffer.m_front;
-            bool isFound = false;
-            while (index < clientComponent.m_inputBuffer.m_back) {
-                const Input& input = clientComponent.m_inputBuffer.Get(index);
-                if (input.GetFrame() == clientComponent.m_lastAckdFrame) {
-                    isFound = true;
-                    break;
-                }
-                ++index;
-            }
-            if (isFound) {
-                clientComponent.m_inputBuffer.Remove(index);
-            }
-        }
-
         // Only Gameplay
         GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
         std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();

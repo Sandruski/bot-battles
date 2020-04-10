@@ -52,9 +52,18 @@ struct ClientComponent : public Component {
     U32 m_interpolationToFrame;
     F32 m_interpolationPercentage;
 
-    CircularBuffer<Frame, MAX_FRAMES> m_frameBuffer;
+    CircularBuffer<Frame, MAX_FRAMES> m_frameBuffer; // client-side only
+    /*
+    (for Entity Interpolation)
+    -Add: ReplicationManagerClient 
+    -Remove: RemotePlayerMovementSystem
+    */
 
     CircularBuffer<Input, MAX_FRAMES> m_inputBuffer;
+    /*
+    -Add: InputSystemClient
+    -Remove: OutputSystemClient
+    */
     bool m_isLastInputTransformPending;
     bool m_isLastInputWeaponPending;
 
@@ -62,6 +71,7 @@ struct ClientComponent : public Component {
 
     F32 m_RTT;
 
+    bool m_isClientPredictionServerReconciliation;
     bool m_isClientPrediction;
     bool m_isServerReconciliation;
     bool m_isEntityInterpolation;

@@ -36,6 +36,9 @@ bool WeaponSystemClient::Update()
     }
 
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    if (!clientComponent.m_isClientPrediction) {
+        return true;
+    }
 
     for (auto& entity : m_entities) {
         if (g_gameClient->GetLinkingContext().GetNetworkID(entity) >= INVALID_NETWORK_ID) {

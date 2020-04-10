@@ -39,6 +39,7 @@ ClientComponent::ClientComponent()
     , m_isLastInputWeaponPending(false)
     , m_RTT(0.0f)
     , m_connectTimer()
+    , m_isClientPredictionServerReconciliation(false)
     , m_isClientPrediction(false)
     , m_isServerReconciliation(false)
     , m_isEntityInterpolation(false)
@@ -60,13 +61,9 @@ void ClientComponent::LoadFromConfig(const rapidjson::Value& value)
     assert(value["defaultName"].IsString());
     m_name = value["defaultName"].GetString();
 
-    assert(value.HasMember("clientPrediction"));
-    assert(value["clientPrediction"].IsBool());
-    m_isClientPrediction = value["clientPrediction"].GetBool();
-
-    assert(value.HasMember("serverReconciliation"));
-    assert(value["serverReconciliation"].IsBool());
-    m_isServerReconciliation = value["serverReconciliation"].GetBool();
+    assert(value.HasMember("clientPredictionServerReconciliation"));
+    assert(value["clientPredictionServerReconciliation"].IsBool());
+    m_isClientPrediction = m_isServerReconciliation = m_isClientPredictionServerReconciliation = value["clientPredictionServerReconciliation"].GetBool();
 
     assert(value.HasMember("entityInterpolation"));
     assert(value["entityInterpolation"].IsBool());

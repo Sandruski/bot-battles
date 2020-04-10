@@ -20,6 +20,8 @@ enum class SystemType : U16 {
     COLLISION,
     WEAPON,
 
+    OUTPUT,
+
 #ifdef _DRAW
     GUI,
 #endif
@@ -41,7 +43,7 @@ enum class SystemType : U16 {
     WEAPON,
     HEALTH,
 
-    INPUT,
+    OUTPUT,
 
 #ifdef _DRAW
     GUI,

@@ -51,7 +51,25 @@ struct TransformComponent : public Component
     //F32 m_angularVelocity;
 
     CircularBuffer<Transform, MAX_FRAMES> m_transformBuffer;
+    /*
+    Client: transform per frame received from server (for Entity Interpolation)
+    -Add: ReplicationManagerClient and TransformComponentClient
+    -Remove: RemotePlayerMovementSystem
+
+    Server: transform per frame from server (for Server Rewind)
+    -Add: MovementSystemServer
+    -Remove: OutputSystemServer
+    */
     CircularBuffer<Transform, MAX_FRAMES> m_inputTransformBuffer;
+    /*
+    Client: transform per input from client (for Server Reconciliation)
+    -Add: MovementSystemClient and WeaponSystemClient 
+    -Remove: OutputSystemClient
+
+    Server: transform per input received from client
+    -Add: MovementSystemServer
+    -Remove: OutputSystemServer
+    */
 };
 }
 

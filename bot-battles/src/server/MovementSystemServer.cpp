@@ -16,6 +16,7 @@ namespace sand {
 MovementSystemServer::MovementSystemServer()
 {
     m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
+    m_signature |= 1 << static_cast<U16>(ComponentType::PLAYER);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -27,7 +28,7 @@ bool MovementSystemServer::Update()
         return true;
     }
 
-    ServerComponent serverComponent = g_gameServer->GetServerComponent();
+    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     U32 frame = MyTime::GetInstance().GetFrame();
 
     for (auto& entity : m_entities) {
@@ -53,7 +54,7 @@ bool MovementSystemServer::Update()
             }
 
             Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, input.GetFrame());
-            transformComponent.lock()->m_inputTransformBuffer.Add(transform); // TODO: also remove this transform buffer at some point
+            transformComponent.lock()->m_inputTransformBuffer.Add(transform);
 
             Event newEvent;
             newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
@@ -62,9 +63,10 @@ bool MovementSystemServer::Update()
             NotifyEvent(newEvent);
         }
 
-        Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, frame);
-        transformComponent.lock()->m_transformBuffer.Add(transform); // TODO: also remove this transform buffer at some point
-        ILOG("Server pos for frame %u is %f %f", frame, transformComponent.lock()->m_position.x, transformComponent.lock()->m_position.y);
+        if (serverComponent.m_isServerRewind) {
+            Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, frame);
+            transformComponent.lock()->m_transformBuffer.Add(transform);
+        }
     }
 
     return true;

@@ -16,8 +16,10 @@ enum class ComponentType : U16 {
 #endif
 
 #ifdef _CLIENT
-    LOCAL_PLAYER,
-    REMOTE_PLAYER,
+    LOCAL_PLAYER, // client-only
+    REMOTE_PLAYER, // client-only
+#elif defined(_SERVER)
+    PLAYER, // server-only
 #endif
 
     COUNT

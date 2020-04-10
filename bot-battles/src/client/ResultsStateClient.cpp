@@ -47,7 +47,7 @@ bool ResultsStateClient::RenderGui() const
 
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     if (scoreboardComponent.m_winnerPlayerID == INVALID_PLAYER_ID) {
-        ImGui::Text("Match ended because a player left...");
+        ImGui::Text("Match interrupted...");
     } else {
         const bool isLocalPlayer = clientComponent.IsLocalPlayer(scoreboardComponent.m_winnerPlayerID);
         if (isLocalPlayer) {

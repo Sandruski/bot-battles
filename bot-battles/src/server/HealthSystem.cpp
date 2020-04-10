@@ -14,6 +14,7 @@ HealthSystem::HealthSystem()
 {
     m_signature |= 1 << static_cast<U16>(ComponentType::HEALTH);
     m_signature |= 1 << static_cast<U16>(ComponentType::SPRITE);
+    m_signature |= 1 << static_cast<U16>(ComponentType::PLAYER);
 }
 
 //----------------------------------------------------------------------------------------------------

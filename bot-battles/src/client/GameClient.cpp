@@ -10,6 +10,7 @@
 #include "LocalPlayerComponent.h"
 #include "MainMenuStateClient.h"
 #include "MovementSystemClient.h"
+#include "OutputSystemClient.h"
 #include "RemotePlayerComponent.h"
 #include "RemotePlayerMovementSystem.h"
 #include "ScoreboardStateClient.h"
@@ -54,6 +55,10 @@ bool GameClient::Init()
         return ret;
     }
     ret = m_systemManager->RegisterSystem<WeaponSystemClient>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_systemManager->RegisterSystem<OutputSystemClient>();
     if (!ret) {
         return ret;
     }

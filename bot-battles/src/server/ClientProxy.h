@@ -27,7 +27,10 @@ public:
     DeliveryManagerServer m_deliveryManager;
 
     CircularBuffer<Input, MAX_FRAMES> m_inputBuffer;
-
+    /*
+    -Add: ServerSystem
+    -Remove: OutputSystemServer
+    */
     U32 m_lastAckdFrame;
     F32 m_lastPacketTime;
     F32 m_timestamp;

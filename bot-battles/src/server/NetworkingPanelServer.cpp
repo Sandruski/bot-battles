@@ -53,7 +53,7 @@ bool NetworkingPanel::RenderBody() const
         ImGui::Spacing();
     }
 
-    //ImGui::Checkbox("Server Rewind", &serverComponent.m_isServerRewind);
+    ImGui::Checkbox("Server Rewind", &serverComponent.m_isServerRewind);
 
     return true;
 }

@@ -114,9 +114,6 @@
     <ClCompile Include="CollisionSystemServer.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="InputSystemServer.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
     <ClCompile Include="HealthSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
@@ -189,6 +186,9 @@
     <ClCompile Include="NetworkingPanelServer.cpp">
       <Filter>Source Files\Panels\Debug Options</Filter>
     </ClCompile>
+    <ClCompile Include="OutputSystemServer.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientProxy.h">
@@ -219,9 +219,6 @@
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
     <ClInclude Include="CollisionSystemServer.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="InputSystemServer.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
     <ClInclude Include="HealthSystem.h">
@@ -265,6 +262,12 @@
     </ClInclude>
     <ClInclude Include="PlayStateServer.h">
       <Filter>Header Files\States\Gameplay States</Filter>
+    </ClInclude>
+    <ClInclude Include="OutputSystemServer.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerComponent.h">
+      <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

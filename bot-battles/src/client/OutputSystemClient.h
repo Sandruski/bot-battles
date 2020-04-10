@@ -1,19 +1,21 @@
-#ifndef __INPUT_SYSTEM_SERVER_H__
-#define __INPUT_SYSTEM_SERVER_H__
+#ifndef __OUTPUT_SYSTEM_CLIENT_H__
+#define __OUTPUT_SYSTEM_CLIENT_H__
 
 #include "System.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class InputSystemServer : public System {
+class OutputSystemClient : public System {
 public:
     static SystemType GetType()
     {
-        return SystemType::INPUT;
+        return SystemType::OUTPUT;
     }
 
 public:
+    OutputSystemClient();
+
     bool Update() override;
 };
 }

@@ -39,9 +39,11 @@ bool NetworkingPanel::RenderBody() const
         ImGui::Spacing();
     }
 
-    //ImGui::Checkbox("Client Prediction", &clientComponent.m_isClientPrediction);
-    //ImGui::Checkbox("Server Reconciliation", &clientComponent.m_isServerReconciliation);
-    //ImGui::Checkbox("Entity Interpolation", &clientComponent.m_isEntityInterpolation);
+    if (ImGui::Checkbox("Client Prediction & Server Reconciliation", &clientComponent.m_isClientPredictionServerReconciliation)) {
+        clientComponent.m_isClientPrediction = clientComponent.m_isServerReconciliation = clientComponent.m_isClientPredictionServerReconciliation;
+    }
+
+    ImGui::Checkbox("Entity Interpolation", &clientComponent.m_isEntityInterpolation);
 
     return true;
 }
