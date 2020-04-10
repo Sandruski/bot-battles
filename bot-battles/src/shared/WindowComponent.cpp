@@ -36,6 +36,7 @@ void WindowComponent::LoadFromConfig(const rapidjson::Value& /*value*/)
 void WindowComponent::UpdateResolution() const
 {
     glm::uvec2 resolution = GetResolution();
+    SDL_SetWindowSize(m_window, resolution.x, resolution.y);
     glViewport(0, 0, resolution.x, resolution.y);
 }
 

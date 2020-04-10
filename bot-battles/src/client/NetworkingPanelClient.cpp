@@ -1,10 +1,27 @@
 #include "NetworkingPanel.h"
 
+#include "ClientComponent.h"
+#include "GameClient.h"
+
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 bool NetworkingPanel::RenderBody() const
 {
+    ImGui::Text("%s", GetName().c_str());
+    ImGui::Separator();
+    ImGui::Spacing();
+
+    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    ImGui::Text("RTT:");
+    ImGui::SameLine();
+    F32 rtt = clientComponent.m_RTT;
+    ImGui::Text("%.2f", rtt);
+
+    ImGui::Checkbox("Client Prediction", &clientComponent.m_isClientPrediction);
+    ImGui::Checkbox("Server Reconciliation", &clientComponent.m_isServerReconciliation);
+    ImGui::Checkbox("Entity Interpolation", &clientComponent.m_isEntityInterpolation);
+
     return true;
 }
 }

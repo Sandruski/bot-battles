@@ -3,14 +3,24 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
+std::string GamePanel::GetName() const
+{
+    return "Game";
+}
+
+//----------------------------------------------------------------------------------------------------
 bool GamePanel::RenderHeader() const
 {
-    return ImGui::Button("Game");
+    return ImGui::Button(GetName().c_str());
 }
 
 //----------------------------------------------------------------------------------------------------
 bool GamePanel::RenderBody() const
 {
+    ImGui::Text("%s", GetName().c_str());
+    ImGui::Separator();
+    ImGui::Spacing();
+
     F32 fps = MyTime::GetInstance().GetFps();
     const std::vector<F32> fpsTrack = MyTime::GetInstance().GetFpsTrack();
     ImGui::PlotHistogram("FPS", &fpsTrack.front(), fpsTrack.size(), 0, std::to_string(static_cast<U32>(fps)).c_str(), 0.0f, 100.0f, ImVec2(250, 80));

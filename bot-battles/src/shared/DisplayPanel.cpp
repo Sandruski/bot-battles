@@ -6,16 +6,25 @@
 
 namespace sand {
 
-// TODO: move WindowPanel to the generic Settings panel and no the Debug Options panel
+//----------------------------------------------------------------------------------------------------
+std::string DisplayPanel::GetName() const
+{
+    return "Display";
+}
+
 //----------------------------------------------------------------------------------------------------
 bool DisplayPanel::RenderHeader() const
 {
-    return ImGui::Button("Display");
+    return ImGui::Button(GetName().c_str());
 }
 
 //----------------------------------------------------------------------------------------------------
 bool DisplayPanel::RenderBody() const
 {
+    ImGui::Text("%s", GetName().c_str());
+    ImGui::Separator();
+    ImGui::Spacing();
+
     WindowComponent& windowComponent = g_game->GetWindowComponent();
     const char* resolutions[] = { "1920x1080", "1280x720", "640x480" };
     I32 currentResolution = windowComponent.m_resolution;

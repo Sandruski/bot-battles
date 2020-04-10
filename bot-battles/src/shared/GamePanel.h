@@ -14,6 +14,8 @@ public:
     }
 
 public:
+    std::string GetName() const override;
+
     bool RenderHeader() const override;
     bool RenderBody() const override;
 };

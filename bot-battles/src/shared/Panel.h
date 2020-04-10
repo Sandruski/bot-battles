@@ -9,6 +9,8 @@ public:
     Panel();
     virtual ~Panel() = default;
 
+    virtual std::string GetName() const = 0;
+
     virtual bool RenderHeader() const = 0;
     virtual bool RenderBody() const = 0;
 

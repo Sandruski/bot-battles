@@ -8,6 +8,10 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 bool StatesPanel::RenderBody() const
 {
+    ImGui::Text("%s", GetName().c_str());
+    ImGui::Separator();
+    ImGui::Spacing();
+
     std::weak_ptr<State> state = g_gameClient->GetFSM().GetCurrentState();
     if (!state.expired()) {
         std::string name = state.lock()->GetName();

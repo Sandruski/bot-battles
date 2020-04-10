@@ -339,13 +339,13 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)StatesPanel.h">
       <Filter>Header Files\Panels\Debug Options</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Projects\bot-battles\bot-battles\src\shared\DisplayPanel.h">
-      <Filter>Header Files\Panels\Settings</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)NetworkingPanel.h">
       <Filter>Header Files\Panels\Debug Options</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Projects\bot-battles\bot-battles\src\shared\GraphicsPanel.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)DisplayPanel.h">
+      <Filter>Header Files\Panels\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)GraphicsPanel.h">
       <Filter>Header Files\Panels\Debug Options</Filter>
     </ClInclude>
   </ItemGroup>
@@ -515,13 +515,13 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)StatesPanel.cpp">
       <Filter>Source Files\Panels\Debug Options</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Projects\bot-battles\bot-battles\src\shared\DisplayPanel.cpp">
-      <Filter>Source Files\Panels\Settings</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Projects\bot-battles\bot-battles\src\shared\GraphicsPanel.cpp">
+    <ClCompile Include="$(MSBuildThisFileDirectory)NetworkingPanel.cpp">
       <Filter>Source Files\Panels\Debug Options</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)NetworkingPanel.cpp">
+    <ClCompile Include="$(MSBuildThisFileDirectory)DisplayPanel.cpp">
+      <Filter>Source Files\Panels\Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)GraphicsPanel.cpp">
       <Filter>Source Files\Panels\Debug Options</Filter>
     </ClCompile>
   </ItemGroup>
