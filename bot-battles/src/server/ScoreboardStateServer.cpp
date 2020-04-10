@@ -46,10 +46,8 @@ bool ScoreboardStateServer::Enter() const
 {
     // Scene
     Entity background = g_gameServer->GetEntityManager().AddEntity();
-    WindowComponent& windowComponent = g_gameServer->GetWindowComponent();
-    glm::uvec2 resolution = windowComponent.GetResolution();
     std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().AddComponent<TransformComponent>(background);
-    transformComponent.lock()->m_position = { static_cast<F32>(resolution.x) / 2.0f, static_cast<F32>(resolution.y) / 2.0f, static_cast<F32>(LayerType::BACKGROUND) };
+    transformComponent.lock()->m_layerType = LayerType::BACKGROUND;
     std::weak_ptr<SpriteResource> spriteResource = g_gameServer->GetResourceManager().AddResource<SpriteResource>("scoreboardBackground.png", TEXTURES_DIR, true);
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().AddComponent<SpriteComponent>(background);
     spriteComponent.lock()->m_spriteResource = spriteResource;

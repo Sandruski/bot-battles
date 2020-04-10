@@ -13,6 +13,8 @@ public:
     void WriteState(OutputMemoryStream& outputStream);
     bool ReadState(InputMemoryStream& inputStream);
 
+    U32 GetDeliveriesCount() const;
+
     void Reset();
 
 private:

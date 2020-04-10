@@ -13,6 +13,23 @@ bool NetworkingPanel::RenderBody() const
     ImGui::Spacing();
 
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    ImGui::Text("Player %u %s", clientComponent.m_playerID, clientComponent.m_name.c_str());
+
+    ImGui::Text("Last akd frame:");
+    ImGui::SameLine();
+    U32 lastAckdFrame = clientComponent.m_lastAckdFrame;
+    ImGui::Text("%u", lastAckdFrame);
+
+    ImGui::Text("Last packet time:");
+    ImGui::SameLine();
+    F32 lastPacketTime = clientComponent.m_lastPacketTime;
+    ImGui::Text("%.f", lastPacketTime);
+
+    ImGui::Text("Deliveries:");
+    ImGui::SameLine();
+    U32 deliveriesCount = clientComponent.m_deliveryManager.GetDeliveriesCount();
+    ImGui::Text("%u", deliveriesCount);
+
     ImGui::Text("RTT:");
     ImGui::SameLine();
     F32 rtt = clientComponent.m_RTT;

@@ -92,6 +92,7 @@ bool RendererSystem::Render()
 {
     RendererComponent& rendererComponent = g_game->GetRendererComponent();
     WindowComponent& windowComponent = g_game->GetWindowComponent();
+    glm::uvec2 resolution = windowComponent.GetResolution();
 
     for (auto& entity : m_entities) {
 
@@ -104,7 +105,10 @@ bool RendererSystem::Render()
         glm::uvec4 textureCoords = spriteComponent.lock()->GetSpriteTextureCoords();
 
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, transformComponent.lock()->m_position);
+        glm::vec3 position = transformComponent.lock()->GetPosition();
+        position.x += static_cast<F32>(resolution.x) / 2.0f;
+        position.y += static_cast<F32>(resolution.y) / 2.0f;
+        model = glm::translate(model, position);
         model = glm::rotate(model, glm::radians(transformComponent.lock()->m_rotation), glm::vec3(0.0f, 0.0f, 1.0f));
         model = glm::scale(model, glm::vec3(static_cast<F32>(textureCoords.z), static_cast<F32>(textureCoords.w), 0.0f));
 
@@ -123,7 +127,6 @@ bool RendererSystem::Render()
         U32 modelLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "model");
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-        glm::uvec2 resolution = windowComponent.GetResolution();
         glm::mat4 projection = glm::ortho(0.0f, static_cast<F32>(resolution.x), static_cast<F32>(resolution.y), 0.0f, -static_cast<F32>(LayerType::NEAR_PLANE), -static_cast<F32>(LayerType::FAR_PLANE));
         U32 projectionLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "projection");
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));

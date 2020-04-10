@@ -29,13 +29,12 @@ public:
     CircularBuffer<Input, MAX_FRAMES> m_inputBuffer;
 
     U32 m_lastAckdFrame;
+    F32 m_lastPacketTime;
     F32 m_timestamp;
 
 private:
     SocketAddress m_socketAddress;
     std::string m_name;
-
-    F32 m_lastPacketTime;
 };
 }
 

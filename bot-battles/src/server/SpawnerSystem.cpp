@@ -59,8 +59,8 @@ Entity SpawnerSystem::Spawn(U32 number) const
             spawnerSpawnComponent.lock()->m_entity = character;
 
             std::weak_ptr<TransformComponent> spawnerTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(spawner);
-            transformComponent.lock()->m_position = glm::vec3(spawnerTransformComponent.lock()->m_position.x, spawnerTransformComponent.lock()->m_position.y, static_cast<F32>(LayerType::PLAYER));
-            ILOG("Spawn position: %f, %f", spawnerTransformComponent.lock()->m_position.x, spawnerTransformComponent.lock()->m_position.y);
+            transformComponent.lock()->m_position = glm::vec2(spawnerTransformComponent.lock()->m_position.x, spawnerTransformComponent.lock()->m_position.y);
+            transformComponent.lock()->m_layerType = LayerType::PLAYER;
             break;
         }
     }

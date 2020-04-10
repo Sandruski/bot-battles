@@ -14,11 +14,14 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U3
 {
     assert(replicationActionType == ReplicationActionType::CREATE || replicationActionType == ReplicationActionType::UPDATE);
 
-    glm::vec3 newPosition = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec2 newPosition = glm::vec2(0.0f, 0.0f);
     F32 newRotation = 0.0f;
     const bool hasPosition = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION);
     if (hasPosition) {
         inputStream.Read(newPosition);
+    }
+    if (dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_LAYER_TYPE)) {
+        inputStream.Read(m_layerType);
     }
     const bool hasRotation = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_ROTATION);
     if (hasRotation) {
@@ -98,7 +101,7 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U3
 }
 
 //----------------------------------------------------------------------------------------------------
-void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::vec3 newPosition, F32 newRotation)
+void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::vec2 newPosition, F32 newRotation)
 {
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     if (m_inputTransformBuffer.IsEmpty() || clientComponent.m_inputBuffer.IsEmpty()) {
@@ -120,7 +123,7 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::v
     }
 
     Transform& firstTransform = m_inputTransformBuffer.Get(index);
-    glm::vec3& position = firstTransform.m_position;
+    glm::vec2& position = firstTransform.m_position;
     F32& rotation = firstTransform.m_rotation;
 
     const bool replayPosition = updatePosition ? position != newPosition : false;

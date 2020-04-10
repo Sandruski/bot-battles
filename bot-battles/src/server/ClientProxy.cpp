@@ -10,10 +10,10 @@ ClientProxy::ClientProxy(const SocketAddress& socketAddress, const char* name)
     , m_deliveryManager()
     , m_inputBuffer()
     , m_lastAckdFrame(0)
+    , m_lastPacketTime(0.0f)
     , m_timestamp(0.0f)
     , m_socketAddress(socketAddress)
     , m_name(name)
-    , m_lastPacketTime(0.0f)
 {
     m_replicationManager = std::make_shared<ReplicationManagerServer>();
 }

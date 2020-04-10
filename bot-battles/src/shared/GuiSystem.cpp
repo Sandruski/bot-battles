@@ -74,7 +74,7 @@ bool GuiSystem::RenderGui()
         glm::uvec2 resolution = windowComponent.GetResolution();
         ImVec2 position = ImVec2(static_cast<F32>(resolution.x) / 2.0f, static_cast<F32>(resolution.y) / 2.0f);
         ImGui::SetNextWindowPos(position, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-        ImVec2 size = ImVec2(static_cast<F32>(resolution.y) / 1.5f, static_cast<F32>(resolution.x) / 1.5f);
+        ImVec2 size = ImVec2(static_cast<F32>(resolution.y) / 1.8f, static_cast<F32>(resolution.x) / 1.8f);
         ImGui::SetNextWindowSize(size, ImGuiCond_Always);
 
         // TODO: "Options", "Credits", "Quit to Desktop" only when no match is running

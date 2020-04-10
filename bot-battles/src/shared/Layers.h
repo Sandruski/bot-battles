@@ -15,7 +15,9 @@ enum class LayerType : U16 {
     FLOOR,
     BACKGROUND,
 
-    FAR_PLANE
+    FAR_PLANE,
+
+    NONE
 };
 }
 

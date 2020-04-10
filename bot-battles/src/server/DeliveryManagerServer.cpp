@@ -64,6 +64,24 @@ U32 DeliveryManagerServer::GetNextExpectedSequenceNumber() const
 }
 
 //----------------------------------------------------------------------------------------------------
+U32 DeliveryManagerServer::GetDeliveriesCount() const
+{
+    return m_deliveriesCount;
+}
+
+//----------------------------------------------------------------------------------------------------
+U32 DeliveryManagerServer::GetSuccessfulDeliveriesCount() const
+{
+    return m_successfulDeliveriesCount;
+}
+
+//----------------------------------------------------------------------------------------------------
+U32 DeliveryManagerServer::GetFailedDeliveriesCount() const
+{
+    return m_failedDeliveriesCount;
+}
+
+//----------------------------------------------------------------------------------------------------
 void DeliveryManagerServer::Reset()
 {
     m_deliveries.clear();

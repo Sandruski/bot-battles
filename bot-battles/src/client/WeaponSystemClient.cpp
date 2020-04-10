@@ -68,7 +68,7 @@ bool WeaponSystemClient::Update()
                 }
 
                 std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
-                glm::vec2 position = transformComponent.lock()->GetPosition();
+                glm::vec2 position = transformComponent.lock()->m_position;
                 glm::vec2 rotation = transformComponent.lock()->GetRotation();
                 weaponComponent.lock()->m_origin = position;
                 WindowComponent& windowComponent = g_gameClient->GetWindowComponent();
@@ -112,6 +112,7 @@ bool WeaponSystemClient::DebugRender()
 {
     RendererComponent& rendererComponent = g_gameClient->GetRendererComponent();
     WindowComponent& windowComponent = g_gameClient->GetWindowComponent();
+    glm::uvec2 resolution = windowComponent.GetResolution();
 
     for (auto& entity : m_entities) {
         std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
@@ -121,7 +122,10 @@ bool WeaponSystemClient::DebugRender()
         }
 
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 0.0f, static_cast<F32>(LayerType::DEBUG)));
+        glm::vec3 position = transformComponent.lock()->GetDebugPosition();
+        position.x += static_cast<F32>(resolution.x) / 2.0f;
+        position.y += static_cast<F32>(resolution.y) / 2.0f;
+        model = glm::translate(model, position);
 
         std::array<MeshResource::Vertex, 4> vertices = MeshResource::GetQuadVertices();
         // From
@@ -133,7 +137,6 @@ bool WeaponSystemClient::DebugRender()
         U32 modelLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "model");
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-        glm::uvec2 resolution = windowComponent.GetResolution();
         glm::mat4 projection = glm::ortho(0.0f, static_cast<F32>(resolution.x), static_cast<F32>(resolution.y), 0.0f, -static_cast<F32>(LayerType::NEAR_PLANE), -static_cast<F32>(LayerType::FAR_PLANE));
         U32 projectionLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "projection");
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));

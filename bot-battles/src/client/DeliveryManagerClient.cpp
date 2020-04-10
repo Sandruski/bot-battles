@@ -25,6 +25,12 @@ bool DeliveryManagerClient::ReadState(InputMemoryStream& inputStream)
 }
 
 //----------------------------------------------------------------------------------------------------
+U32 DeliveryManagerClient::GetDeliveriesCount() const
+{
+    return m_deliveriesCount;
+}
+
+//----------------------------------------------------------------------------------------------------
 void DeliveryManagerClient::Reset()
 {
     m_pendingAcks.clear();

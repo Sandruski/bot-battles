@@ -18,6 +18,10 @@ public:
     const std::deque<Delivery>& GetDeliveries() const;
     U32 GetNextExpectedSequenceNumber() const;
 
+    U32 GetDeliveriesCount() const;
+    U32 GetSuccessfulDeliveriesCount() const;
+    U32 GetFailedDeliveriesCount() const;
+
     void Reset();
 
 private:

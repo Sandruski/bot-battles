@@ -61,7 +61,6 @@ void MapImporter::Create(const Tilemap& tilemap) const
 {
     WindowComponent& windowComponent = g_game->GetWindowComponent();
     glm::uvec2 resolution = windowComponent.GetResolution();
-    glm::vec2 windowCenterPosition = glm::vec2(static_cast<F32>(resolution.x) / 2.0f, static_cast<F32>(resolution.y) / 2.0f);
     glm::vec2 tilemapCenterPosition = glm::vec2(static_cast<F32>(tilemap.m_tileSize.x * tilemap.m_tileCount.x) / 2.0f, static_cast<F32>(tilemap.m_tileSize.y * tilemap.m_tileCount.y) / 2.0f);
 
     for (const auto& tilelayer : tilemap.m_tilelayers) {
@@ -79,7 +78,8 @@ void MapImporter::Create(const Tilemap& tilemap) const
                 position += tilemap.m_tileSize / 2u;
                 glm::vec2 relativePosition = tilemapCenterPosition - glm::vec2(static_cast<F32>(position.x), static_cast<F32>(position.y));
                 std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().AddComponent<TransformComponent>(entity);
-                transformComponent.lock()->m_position = glm::vec3(windowCenterPosition.x + relativePosition.x, windowCenterPosition.y + relativePosition.y, static_cast<F32>(LayerType::FLOOR));
+                transformComponent.lock()->m_position = relativePosition;
+                transformComponent.lock()->m_layerType = LayerType::FLOOR;
 
                 // Sprite
                 const Tileset& tileset = tilemap.GetTileset(tileGid);
@@ -107,7 +107,8 @@ void MapImporter::Create(const Tilemap& tilemap) const
             position -= glm::uvec2(0, tilemap.m_tileSize.y);
             glm::vec2 relativePosition = tilemapCenterPosition - glm::vec2(static_cast<F32>(position.x), static_cast<F32>(position.y));
             std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().AddComponent<TransformComponent>(entity);
-            transformComponent.lock()->m_position = glm::vec3(windowCenterPosition.x + relativePosition.x, windowCenterPosition.y + relativePosition.y, static_cast<F32>(LayerType::OBJECT));
+            transformComponent.lock()->m_position = relativePosition;
+            transformComponent.lock()->m_layerType = LayerType::OBJECT;
             transformComponent.lock()->m_rotation = object.m_rotation;
 
             // Sprite

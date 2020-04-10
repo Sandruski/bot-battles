@@ -6,9 +6,11 @@
 namespace sand {
 //----------------------------------------------------------------------------------------------------
 TransformComponent::TransformComponent()
-    : m_position(0.0f, 0.0f, 0.0f)
+    : m_position(0.0f, 0.0f)
+    , m_layerType(LayerType::NONE)
     , m_rotation(0.0f)
     , m_transformBuffer()
+    , m_inputTransformBuffer()
 {
 }
 
@@ -33,9 +35,15 @@ void TransformComponent::UpdateRotation(F32 angularAcceleration, F32 dt)
 }
 
 //----------------------------------------------------------------------------------------------------
-glm::vec2 TransformComponent::GetPosition() const
+glm::vec3 TransformComponent::GetPosition() const
 {
-    return glm::vec2(m_position.x, m_position.y);
+    return glm::vec3(m_position.x, m_position.y, static_cast<F32>(m_layerType));
+}
+
+//----------------------------------------------------------------------------------------------------
+glm::vec3 TransformComponent::GetDebugPosition() const
+{
+    return glm::vec3(m_position.x, m_position.y, static_cast<F32>(LayerType::DEBUG));
 }
 
 //----------------------------------------------------------------------------------------------------
