@@ -7,6 +7,8 @@
 
 PLAYLIST:
 -Check that 2 players can connect to the game from different computers.
+-True/False lag compensation bools (try for client and for server): game should work without crashing.
+-Clean up lag compensation buffers.
 ----------
 
 -Be careful with the Tile object y position!
