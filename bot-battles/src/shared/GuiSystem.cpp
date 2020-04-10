@@ -103,7 +103,6 @@ bool GuiSystem::RenderGui()
     if (guiComponent.m_isDebugOptions) {
         ImGuiWindowFlags windowFlags = 0;
         windowFlags |= ImGuiWindowFlags_NoTitleBar;
-        windowFlags |= ImGuiWindowFlags_NoScrollbar;
         windowFlags |= ImGuiWindowFlags_NoCollapse;
         windowFlags |= ImGuiWindowFlags_MenuBar;
 

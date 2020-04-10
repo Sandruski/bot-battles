@@ -439,6 +439,7 @@ void ClientSystem::ReceiveStatePacket(ClientComponent& clientComponent, InputMem
     clientComponent.m_RTT = MyTime::GetInstance().GetTime() - timestamp;
 
     inputStream.Read(clientComponent.m_lastAckdFrame);
+    ILOG("Last ackd %u", clientComponent.m_lastAckdFrame);
 
     clientComponent.m_replicationManager.Read(inputStream);
 }

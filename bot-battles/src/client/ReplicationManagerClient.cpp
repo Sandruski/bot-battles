@@ -109,14 +109,12 @@ void ReplicationManagerClient::ReadCreateAction(InputMemoryStream& inputStream, 
     Signature signature = g_gameClient->GetEntityManager().GetSignature(entity);
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     if (playerID == clientComponent.m_playerID) {
-        clientComponent.m_entity = entity; // TODO: remove
+        clientComponent.m_entity = entity;
         const bool hasLocalPlayer = signature & static_cast<U16>(ComponentType::LOCAL_PLAYER);
         if (!hasLocalPlayer) {
             g_gameClient->GetComponentManager().AddComponent<LocalPlayerComponent>(entity);
         }
-    } else
-    // TODO: REMOTE PLAYERS ARE ALSO NETWORKED TILES. CHANGE THIS AND ADD A PLAYER COMPONENT TO THOSE ACTUALLY PLAYERS!
-    {
+    } else if (playerID != INVALID_PLAYER_ID) {
         const bool hasRemotePlayer = signature & static_cast<U16>(ComponentType::REMOTE_PLAYER);
         if (!hasRemotePlayer) {
             g_gameClient->GetComponentManager().AddComponent<RemotePlayerComponent>(entity);

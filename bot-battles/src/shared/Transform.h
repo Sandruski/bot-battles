@@ -9,6 +9,10 @@ public:
     Transform();
     Transform(const glm::vec2& position, F32 rotation, U32 frame);
 
+    void UpdateTransform(const glm::vec2& acceleration, F32 angularAcceleration, F32 dt);
+    void UpdatePosition(const glm::vec2& acceleration, F32 dt);
+    void UpdateRotation(F32 angularAcceleration, F32 dt);
+
     U32 GetFrame() const;
 
 public:

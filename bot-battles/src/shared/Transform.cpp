@@ -19,6 +19,26 @@ Transform::Transform(const glm::vec2& position, F32 rotation, U32 frame)
 }
 
 //----------------------------------------------------------------------------------------------------
+void Transform::UpdateTransform(const glm::vec2& acceleration, F32 angularAcceleration, F32 dt)
+{
+    UpdatePosition(acceleration, dt);
+    UpdateRotation(angularAcceleration, dt);
+}
+
+//----------------------------------------------------------------------------------------------------
+void Transform::UpdatePosition(const glm::vec2& acceleration, F32 dt)
+{
+    m_position.x += acceleration.x * dt;
+    m_position.y += acceleration.y * dt;
+}
+
+//----------------------------------------------------------------------------------------------------
+void Transform::UpdateRotation(F32 angularAcceleration, F32 dt)
+{
+    m_rotation += angularAcceleration * dt;
+}
+
+//----------------------------------------------------------------------------------------------------
 U32 Transform::GetFrame() const
 {
     return m_frame;

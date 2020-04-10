@@ -44,6 +44,13 @@ bool NetworkingPanel::RenderBody() const
         ImGui::SameLine();
         U32 failedDeliveriesCount = clientProxy->m_deliveryManager.GetFailedDeliveriesCount();
         ImGui::Text("%u", failedDeliveriesCount);
+
+        ImGui::Text("Timestamp:");
+        ImGui::SameLine();
+        F32 timestamp = clientProxy->m_timestamp;
+        ImGui::Text("%.f", timestamp);
+
+        ImGui::Spacing();
     }
 
     ImGui::Checkbox("Server Rewind", &serverComponent.m_isServerRewind);

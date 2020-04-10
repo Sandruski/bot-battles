@@ -144,13 +144,11 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::v
             const InputComponent& inputComponent = input.GetInputComponent();
             F32 dt = input.GetDt();
 
-            // TODO: use TransformComponent's (static?) UpdatePosition and UpdateRotation methods
             if (replayPosition) {
-                transform.m_position.x += inputComponent.m_acceleration.x * dt;
-                transform.m_position.y += inputComponent.m_acceleration.y * dt;
+                transform.UpdatePosition(inputComponent.m_acceleration, dt);
             }
             if (replayRotation) {
-                transform.m_rotation += inputComponent.m_angularAcceleration * dt;
+                transform.UpdateRotation(inputComponent.m_angularAcceleration, dt);
             }
         }
 

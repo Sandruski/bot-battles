@@ -140,8 +140,8 @@ bool WeaponSystemServer::DebugRender()
 
         glm::mat4 model = glm::mat4(1.0f);
         glm::vec3 position = transformComponent.lock()->GetDebugPosition();
-        position.x += static_cast<F32>(resolution.x) / 2.0f;
-        position.y += static_cast<F32>(resolution.y) / 2.0f;
+        position.x = resolution.x / 2.0f;
+        position.y = resolution.y / 2.0f;
         model = glm::translate(model, position);
 
         std::array<MeshResource::Vertex, 4> vertices = MeshResource::GetQuadVertices();
