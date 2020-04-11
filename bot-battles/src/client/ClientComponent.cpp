@@ -33,16 +33,17 @@ ClientComponent::ClientComponent()
     , m_interpolationFromFrame(0)
     , m_interpolationToFrame(0)
     , m_interpolationPercentage(0.0f)
+    , m_entityInterpolationPeriod(0.0f)
     , m_frameBuffer()
     , m_inputBuffer()
     , m_isLastInputTransformPending(false)
     , m_isLastInputWeaponPending(false)
     , m_RTT(0.0f)
     , m_connectTimer()
-    , m_isClientPredictionServerReconciliation(false)
-    , m_isClientPrediction(false)
-    , m_isServerReconciliation(false)
-    , m_isEntityInterpolation(false)
+    , m_isClientPredictionServerReconciliation(true)
+    , m_isClientPrediction(true)
+    , m_isServerReconciliation(true)
+    , m_isEntityInterpolation(true)
 {
 }
 
@@ -50,24 +51,17 @@ ClientComponent::ClientComponent()
 void ClientComponent::LoadFromConfig(const rapidjson::Value& value)
 {
     assert(value.HasMember("ip"));
-    assert(value["ip"].IsString());
     m_ip = value["ip"].GetString();
 
     assert(value.HasMember("port"));
-    assert(value["port"].IsString());
     m_port = value["port"].GetString();
 
     assert(value.HasMember("defaultName"));
-    assert(value["defaultName"].IsString());
     m_name = value["defaultName"].GetString();
 
-    assert(value.HasMember("clientPredictionServerReconciliation"));
-    assert(value["clientPredictionServerReconciliation"].IsBool());
-    m_isClientPrediction = m_isServerReconciliation = m_isClientPredictionServerReconciliation = value["clientPredictionServerReconciliation"].GetBool();
-
-    assert(value.HasMember("entityInterpolation"));
-    assert(value["entityInterpolation"].IsBool());
-    m_isEntityInterpolation = value["entityInterpolation"].GetBool();
+    assert(value.HasMember("serverFps"));
+    F32 serverFps = value["serverFps"].GetFloat();
+    m_entityInterpolationPeriod = 1.0f / serverFps;
 }
 
 //----------------------------------------------------------------------------------------------------

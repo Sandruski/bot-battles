@@ -185,6 +185,8 @@ bool Game::Init()
         return ret;
     }
 
+    MyTime::GetInstance().Init();
+
     m_isRunning = true;
 
     return ret;

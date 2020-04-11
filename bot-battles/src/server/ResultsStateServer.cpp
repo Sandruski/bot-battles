@@ -103,6 +103,6 @@ void ResultsStateServer::ChangeToRestart() const
 //----------------------------------------------------------------------------------------------------
 void ResultsStateServer::ChangeToMainMenu() const
 {
-    g_gameServer->GetFSM().ChangeState(g_gameServer->GetConfig().m_mainMenuSceneName.c_str());
+    g_gameServer->GetFSM().ChangeState("Main Menu");
 }
 }

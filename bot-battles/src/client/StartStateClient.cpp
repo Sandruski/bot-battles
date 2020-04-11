@@ -61,6 +61,6 @@ void StartStateClient::ChangeToPlay() const
 //----------------------------------------------------------------------------------------------------
 void StartStateClient::ChangeToMainMenu() const
 {
-    g_gameClient->GetFSM().ChangeState(g_gameClient->GetConfig().m_mainMenuSceneName.c_str());
+    g_gameClient->GetFSM().ChangeState("Main Menu");
 }
 }

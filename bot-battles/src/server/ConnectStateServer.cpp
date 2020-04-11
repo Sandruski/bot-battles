@@ -59,6 +59,6 @@ void ConnectStateServer::OnNotify(const Event& event)
 //----------------------------------------------------------------------------------------------------
 void ConnectStateServer::ChangeToGameplay() const
 {
-    g_gameServer->GetFSM().ChangeState(g_gameServer->GetConfig().m_gameplaySceneName.c_str());
+    g_gameServer->GetFSM().ChangeState("Gameplay");
 }
 }

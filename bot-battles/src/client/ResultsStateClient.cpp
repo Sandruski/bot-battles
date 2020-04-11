@@ -121,6 +121,6 @@ void ResultsStateClient::ChangeToRestart() const
 //----------------------------------------------------------------------------------------------------
 void ResultsStateClient::ChangeToMainMenu() const
 {
-    g_gameClient->GetFSM().ChangeState(g_gameClient->GetConfig().m_mainMenuSceneName.c_str());
+    g_gameClient->GetFSM().ChangeState("Main Menu");
 }
 }

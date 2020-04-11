@@ -1,5 +1,8 @@
 #include "MyTime.h"
 
+#include "Game.h"
+#include "WindowComponent.h"
+
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
@@ -21,7 +24,13 @@ MyTime::MyTime()
     , m_frame(0)
 {
     m_timer.Start();
-    m_fpsTrack.resize(static_cast<std::size_t>(FPS));
+}
+
+//----------------------------------------------------------------------------------------------------
+void MyTime::Init()
+{
+    WindowComponent& windowComponent = g_game->GetWindowComponent();
+    m_fpsTrack.resize(static_cast<std::size_t>(windowComponent.m_fps));
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -37,7 +46,8 @@ void MyTime::StartUpdate()
 void MyTime::FinishUpdate()
 {
     m_lastFrameMs = m_dtTimer.ReadMs();
-    F64 desiredLastFrameMs = 1000.0 / FPS;
+    WindowComponent& windowComponent = g_game->GetWindowComponent();
+    F64 desiredLastFrameMs = 1000.0 / windowComponent.m_fps;
     if (m_lastFrameMs < desiredLastFrameMs) {
         SDL_Delay(static_cast<U32>(desiredLastFrameMs - m_lastFrameMs));
         m_lastFrameMs = m_dtTimer.ReadMs();

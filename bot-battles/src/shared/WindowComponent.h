@@ -8,9 +8,9 @@ namespace sand {
 struct WindowComponent {
 
     enum Resolution : U8 {
-        MAX,
-        MID,
-        LOW
+        LOW,
+        MEDIUM,
+        HIGH
     };
     enum DisplayMode : U8 {
         FULLSCREEN,
@@ -31,6 +31,7 @@ struct WindowComponent {
 
     Resolution m_resolution;
     DisplayMode m_displayMode;
+    F32 m_fps;
 };
 }
 

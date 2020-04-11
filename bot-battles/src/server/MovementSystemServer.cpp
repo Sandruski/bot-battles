@@ -44,11 +44,11 @@ bool MovementSystemServer::Update()
             const InputComponent& inputComponent = input.GetInputComponent();
             U32 dirtyState = input.GetDirtyState();
             F32 dt = input.GetDt();
-            const bool hasPosition = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION);
+            const bool hasPosition = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_ACCELERATION);
             if (hasPosition) {
                 transformComponent.lock()->UpdatePosition(inputComponent.m_acceleration, dt);
             }
-            const bool hasRotation = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_ROTATION);
+            const bool hasRotation = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_ACCELERATION);
             if (hasRotation) {
                 transformComponent.lock()->UpdateRotation(inputComponent.m_angularAcceleration, dt);
             }

@@ -7,29 +7,35 @@ WindowComponent::WindowComponent()
     : m_window(nullptr)
     , m_resolution(Resolution::LOW)
     , m_displayMode(DisplayMode::WINDOWED)
+    , m_fps(0.0f)
 {
 }
 
 //----------------------------------------------------------------------------------------------------
-void WindowComponent::LoadFromConfig(const rapidjson::Value& /*value*/)
+void WindowComponent::LoadFromConfig(const rapidjson::Value& value)
 {
-    // TODO
-
-    /*
     assert(value.HasMember("resolution"));
-    assert(value["resolution"].IsArray());
-    assert(!value["resolution"].Empty());
-    assert(value["resolution"][0].IsUint());
-    m_resolution.x = value["resolution"][0].GetUint();
-    assert(value["resolution"][1].IsUint());
-    m_resolution.y = value["resolution"][1].GetUint();
-    */
+    std::string resolution = value["resolution"].GetString();
+    if (resolution == "low") {
+        m_resolution = Resolution::LOW;
+    } else if (resolution == "medium") {
+        m_resolution = Resolution::MEDIUM;
+    } else if (resolution == "high") {
+        m_resolution = Resolution::HIGH;
+    }
 
-    /*
-    assert(value.HasMember("fullscreen"));
-    assert(value["fullscreen"].IsBool());
-    m_isFullscreen = value["fullscreen"].GetBool();
-    */
+    assert(value.HasMember("displayMode"));
+    std::string displayMode = value["displayMode"].GetString();
+    if (displayMode == "fullscreen") {
+        m_displayMode = DisplayMode::FULLSCREEN;
+    } else if (displayMode == "windowed") {
+        m_displayMode = DisplayMode::WINDOWED;
+    } else if (displayMode == "borderless") {
+        m_displayMode = DisplayMode::BORDERLESS;
+    }
+
+    assert(value.HasMember("fps"));
+    m_fps = value["fps"].GetFloat();
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -86,18 +92,18 @@ glm::uvec2 WindowComponent::GetResolution() const
 
     switch (m_resolution) {
 
-    case Resolution::MAX: {
-        resolution = glm::vec2(1920, 1080);
+    case Resolution::LOW: {
+        resolution = glm::vec2(640, 480);
         break;
     }
 
-    case Resolution::MID: {
+    case Resolution::MEDIUM: {
         resolution = glm::vec2(1280, 720);
         break;
     }
 
-    case Resolution::LOW: {
-        resolution = glm::vec2(640, 480);
+    case Resolution::HIGH: {
+        resolution = glm::vec2(1920, 1080);
         break;
     }
 

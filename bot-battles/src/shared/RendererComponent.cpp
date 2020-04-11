@@ -18,28 +18,8 @@ RendererComponent::RendererComponent()
 //----------------------------------------------------------------------------------------------------
 void RendererComponent::LoadFromConfig(const rapidjson::Value& value)
 {
-    assert(value.HasMember("backgroundColor"));
-    assert(value["backgroundColor"].IsArray());
-    assert(!value["backgroundColor"].Empty());
-    assert(value["backgroundColor"][0].IsFloat());
-    m_backgroundColor.r = value["backgroundColor"][0].GetFloat();
-    assert(value["backgroundColor"][1].IsFloat());
-    m_backgroundColor.g = value["backgroundColor"][1].GetFloat();
-    assert(value["backgroundColor"][2].IsFloat());
-    m_backgroundColor.b = value["backgroundColor"][2].GetFloat();
-    assert(value["backgroundColor"][3].IsFloat());
-    m_backgroundColor.a = value["backgroundColor"][3].GetFloat();
-
-    // TODO
-    /*
-    assert(value.HasMember("vsync"));
-    assert(value["vsync"].IsBool());
-    m_isVsync = value["vsync"].GetBool();
-    */
-
-    assert(value.HasMember("debugDraw"));
-    assert(value["debugDraw"].IsBool());
-    m_isDebugDraw = value["debugDraw"].GetBool();
+    assert(value.HasMember("VSync"));
+    m_isVSync = value["VSync"].GetBool();
 }
 
 //----------------------------------------------------------------------------------------------------

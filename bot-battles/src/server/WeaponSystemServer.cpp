@@ -120,7 +120,7 @@ bool WeaponSystemServer::Update()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool WeaponSystemServer::DebugRender()
+bool WeaponSystemServer::Render()
 {
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     RendererComponent& rendererComponent = g_gameServer->GetRendererComponent();
@@ -160,7 +160,7 @@ bool WeaponSystemServer::DebugRender()
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
         U32 colorLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "color");
-        glUniform4fv(colorLoc, 1, glm::value_ptr(weaponComponent.lock()->m_hasHit ? Red : Blue));
+        glUniform4fv(colorLoc, 1, glm::value_ptr(weaponComponent.lock()->m_hasHit ? Red : White));
 
         U32 pctLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "pct");
         glUniform1f(pctLoc, 1.0f);

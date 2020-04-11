@@ -34,7 +34,7 @@ bool RemotePlayerMovementSystem::Update()
         clientComponent.m_interpolationToFrame = clientComponent.m_frameBuffer.GetSecond().GetFrame();
         F32 startFrameTime = MyTime::GetInstance().GetStartFrameTime();
         F32 outOfSyncTime = startFrameTime - clientComponent.m_frameBuffer.GetSecond().GetTimestamp();
-        clientComponent.m_interpolationPercentage = outOfSyncTime / ENTITY_INTERPOLATION_PERIOD;
+        clientComponent.m_interpolationPercentage = outOfSyncTime / clientComponent.m_entityInterpolationPeriod;
         if (clientComponent.m_interpolationPercentage > 1.0f) {
             clientComponent.m_interpolationPercentage = 1.0f;
         }

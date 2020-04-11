@@ -28,33 +28,31 @@ bool InputSystemClient::Update()
     inputComponent.m_acceleration = glm::vec2(0.0f, 0.0f);
     inputComponent.m_angularAcceleration = 0.0f;
     inputComponent.m_isShooting = false;
-
-    const F32 multiplier = 300.0f;
     EventComponent& eventComponent = g_game->GetEventComponent();
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_A) == EventComponent::KeyState::REPEAT) {
-        inputComponent.m_acceleration.x = -1.0f * multiplier;
+        inputComponent.m_acceleration.x = -1.0f;
     }
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_D) == EventComponent::KeyState::REPEAT) {
-        inputComponent.m_acceleration.x = 1.0f * multiplier;
+        inputComponent.m_acceleration.x = 1.0f;
     }
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_W) == EventComponent::KeyState::REPEAT) {
-        inputComponent.m_acceleration.y = -1.0f * multiplier;
+        inputComponent.m_acceleration.y = -1.0f;
     }
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_S) == EventComponent::KeyState::REPEAT) {
-        inputComponent.m_acceleration.y = 1.0f * multiplier;
+        inputComponent.m_acceleration.y = 1.0f;
     }
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_LEFT) == EventComponent::KeyState::REPEAT) {
-        inputComponent.m_angularAcceleration = -1.0f * multiplier;
+        inputComponent.m_angularAcceleration = -1.0f;
     }
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_RIGHT) == EventComponent::KeyState::REPEAT) {
-        inputComponent.m_angularAcceleration = 1.0f * multiplier;
-    }
-    if (eventComponent.m_keyboard.at(SDL_SCANCODE_S) == EventComponent::KeyState::REPEAT) {
-        inputComponent.m_acceleration.y = 1.0f * multiplier;
+        inputComponent.m_angularAcceleration = 1.0f;
     }
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_SPACE) == EventComponent::KeyState::DOWN) {
         inputComponent.m_isShooting = true;
     }
+    glm::normalize(inputComponent.m_acceleration);
+    inputComponent.m_acceleration *= inputComponent.m_maxAcceleration;
+    inputComponent.m_angularAcceleration *= inputComponent.m_maxAngularAcceleration;
 
     if (!clientComponent.m_inputBuffer.IsFull()) {
         U32 dirtyState = 0;

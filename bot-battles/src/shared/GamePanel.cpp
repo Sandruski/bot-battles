@@ -1,5 +1,8 @@
 #include "GamePanel.h"
 
+#include "Game.h"
+#include "WindowComponent.h"
+
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------

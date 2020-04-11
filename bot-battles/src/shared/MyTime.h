@@ -13,6 +13,7 @@ public:
 public:
     MyTime();
 
+    void Init();
     void StartUpdate();
     void FinishUpdate();
 

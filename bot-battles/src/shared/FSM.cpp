@@ -25,7 +25,7 @@ void FSM::OnNotify(const Event& event)
 //----------------------------------------------------------------------------------------------------
 bool FSM::StartUp()
 {
-    return ChangeState(g_game->GetConfig().m_mainMenuSceneName.c_str());
+    return ChangeState("Main Menu");
 }
 
 //----------------------------------------------------------------------------------------------------

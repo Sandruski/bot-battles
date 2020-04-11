@@ -56,12 +56,12 @@ void PlayStateClient::OnNotify(const Event& event)
 //----------------------------------------------------------------------------------------------------
 void PlayStateClient::ChangeToScoreboard() const
 {
-    g_gameClient->GetFSM().ChangeState(g_gameClient->GetConfig().m_scoreboardSceneName.c_str());
+    g_gameClient->GetFSM().ChangeState("Scoreboard");
 }
 
 //----------------------------------------------------------------------------------------------------
 void PlayStateClient::ChangeToMainMenu() const
 {
-    g_gameClient->GetFSM().ChangeState(g_gameClient->GetConfig().m_mainMenuSceneName.c_str());
+    g_gameClient->GetFSM().ChangeState("Main Menu");
 }
 }

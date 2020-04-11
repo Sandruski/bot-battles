@@ -127,7 +127,7 @@ void ConnectStateClient::OnNotify(const Event& event)
 //----------------------------------------------------------------------------------------------------
 void ConnectStateClient::ChangeToGameplay() const
 {
-    g_gameClient->GetFSM().ChangeState(g_gameClient->GetConfig().m_gameplaySceneName.c_str());
+    g_gameClient->GetFSM().ChangeState("Gameplay");
 }
 
 //----------------------------------------------------------------------------------------------------

@@ -19,7 +19,7 @@ public:
     WeaponSystemServer();
 
     bool Update() override;
-    bool DebugRender() override;
+    bool Render() override;
 
 private:
     void Rewind(std::weak_ptr<WeaponComponent> weaponComponent, Entity localEntity, U32 from, U32 to, F32 percentage);

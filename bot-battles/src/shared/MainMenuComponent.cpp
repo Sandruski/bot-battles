@@ -2,7 +2,7 @@
 
 namespace sand {
 
-// TODO: fill from config with gameplay info
+// TODO: fill from config with main menu info (e.g. timers)
 
 //----------------------------------------------------------------------------------------------------
 MainMenuComponent::MainMenuComponent()
@@ -11,7 +11,6 @@ MainMenuComponent::MainMenuComponent()
     , m_helloTimer()
     , m_guiTimer()
 #endif
-
 {
 }
 }

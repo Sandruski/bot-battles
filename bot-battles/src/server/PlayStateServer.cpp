@@ -92,6 +92,6 @@ void PlayStateServer::OnPlayerRemoved() const
 //----------------------------------------------------------------------------------------------------
 void PlayStateServer::ChangeToScoreboard() const
 {
-    g_gameServer->GetFSM().ChangeState(g_gameServer->GetConfig().m_scoreboardSceneName.c_str());
+    g_gameServer->GetFSM().ChangeState("Scoreboard");
 }
 }

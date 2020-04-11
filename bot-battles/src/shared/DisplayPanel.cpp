@@ -40,6 +40,8 @@ bool DisplayPanel::RenderBody() const
         windowComponent.UpdateDisplayMode();
     }
 
+    ImGui::InputFloat("FPS cap", &windowComponent.m_fps);
+
     RendererComponent& rendererComponent = g_game->GetRendererComponent();
     if (ImGui::Checkbox("VSync", &rendererComponent.m_isVSync)) {
         rendererComponent.UpdateVSync();

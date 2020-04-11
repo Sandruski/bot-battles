@@ -119,7 +119,7 @@ void RestartStateClient::OnNotify(const Event& event)
 //----------------------------------------------------------------------------------------------------
 void RestartStateClient::ChangeToGameplay() const
 {
-    g_gameClient->GetFSM().ChangeState(g_gameClient->GetConfig().m_gameplaySceneName.c_str());
+    g_gameClient->GetFSM().ChangeState("Gameplay");
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -132,6 +132,6 @@ void RestartStateClient::ChangeToResults() const
 //----------------------------------------------------------------------------------------------------
 void RestartStateClient::ChangeToMainMenu() const
 {
-    g_gameClient->GetFSM().ChangeState(g_gameClient->GetConfig().m_mainMenuSceneName.c_str());
+    g_gameClient->GetFSM().ChangeState("Main Menu");
 }
 }

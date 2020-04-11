@@ -40,6 +40,6 @@ bool RestartStateServer::Exit() const
 //----------------------------------------------------------------------------------------------------
 void RestartStateServer::ChangeToGameplay() const
 {
-    g_gameServer->GetFSM().ChangeState(g_gameServer->GetConfig().m_gameplaySceneName.c_str());
+    g_gameServer->GetFSM().ChangeState("Gameplay");
 }
 }
