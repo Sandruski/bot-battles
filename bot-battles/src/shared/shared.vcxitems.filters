@@ -348,6 +348,12 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)GraphicsPanel.h">
       <Filter>Header Files\Panels\Debug Options</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)LabelComponent.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)HUDSystem.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp">
@@ -523,6 +529,12 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)GraphicsPanel.cpp">
       <Filter>Source Files\Panels\Debug Options</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)LabelComponent.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)HUDSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

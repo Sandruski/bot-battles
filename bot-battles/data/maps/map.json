@@ -4,29 +4,17 @@
      "export":
         {
          "format":"json",
-         "target":"map.json"
+         "target":"..\/..\/..\/..\/..\/Users\/disob\/Desktop\/Bot Battles Files\/Maps\/map.json"
         }
     },
  "height":8,
  "infinite":false,
  "layers":[
         {
-         "data":[5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 33, 34, 5, 5, 5, 5, 5, 5, 60, 61, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5],
+         "data":[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
          "height":8,
          "id":1,
          "name":"base",
-         "opacity":1,
-         "type":"tilelayer",
-         "visible":true,
-         "width":8,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         "height":8,
-         "id":2,
-         "name":"collision",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
@@ -43,25 +31,25 @@
                  "gid":198,
                  "height":64,
                  "id":17,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":64,
-                 "x":64,
-                 "y":128
-                }, 
-                {
-                 "gid":198,
-                 "height":64,
-                 "id":18,
-                 "name":"",
+                 "name":"spawner2",
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":64,
                  "x":384,
                  "y":448
+                }, 
+                {
+                 "gid":198,
+                 "height":64,
+                 "id":18,
+                 "name":"spawner1",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":64,
+                 "y":128
                 }],
          "opacity":1,
          "type":"objectgroup",

@@ -40,9 +40,11 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)GuiComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GuiSystem.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)HealthComponent.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)HUDSystem.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)InputComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Interpolation.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Intersection.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)LabelComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Layers.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)LinkingContext.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Log.h" />
@@ -124,7 +126,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)GuiComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GuiSystem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)HealthComponent.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)HUDSystem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)InputComponent.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)LabelComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)LinkingContext.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)InputMemoryStream.cpp" />

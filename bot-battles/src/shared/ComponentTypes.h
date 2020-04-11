@@ -12,6 +12,7 @@ enum class ComponentType : U16 {
     SPAWN,
 
 #ifdef _DRAW
+    LABEL,
     SPRITE,
 #endif
 

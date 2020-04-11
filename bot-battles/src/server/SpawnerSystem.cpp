@@ -6,6 +6,7 @@
 #include "EntityManager.h"
 #include "GameServer.h"
 #include "HealthComponent.h"
+#include "LabelComponent.h"
 #include "LinkingContext.h"
 #include "PlayerComponent.h"
 #include "RendererComponent.h"
@@ -100,6 +101,12 @@ Entity SpawnerSystem::Spawn(U32 number) const
         break;
     }
     }
+
+    std::weak_ptr<LabelComponent> labelComponent = g_gameServer->GetComponentManager().AddComponent<LabelComponent>(character);
+    std::string name = "Player ";
+    name.append(std::to_string(number));
+    labelComponent.lock()->m_text = name;
+    labelComponent.lock()->m_offset = glm::vec2(0.0f, -35.0f);
 
     std::weak_ptr<ColliderComponent> colliderComponent = g_gameServer->GetComponentManager().AddComponent<ColliderComponent>(character);
     const glm::uvec4 spriteTextureCoords = spriteComponent.lock()->GetSpriteTextureCoords();

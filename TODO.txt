@@ -1,12 +1,14 @@
 NETWORKING:
 -Cap MAX_INPUTS_PER_PACKET/similar also for State packets (already doing it for Input packets).
 -Remove Networking inheritance for those components that are actually not being networked or do not need to be networked (see MAX_NETWORK_COMPONENTS). E.g. if Health is not printed then why would the player want it?
+-Network m_isEnabled variable for all components.
 
 GAMEPLAY:
 -Add 'Random map' option with ImGui to select a map from all the existing maps.
 
 ENGINE:
 -Change FSM to not be based on the type of the state and be a vector instead.
+-ifdef _DRAW. Do it in all places where something related to draw is used! Try to compile without draw and see what happens.
 
 PLAYLIST:
 -Check that 2 players can connect to the game from different computers with/without different routers.

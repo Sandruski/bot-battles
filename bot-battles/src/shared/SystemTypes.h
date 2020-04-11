@@ -24,6 +24,7 @@ enum class SystemType : U16 {
     OUTPUT,
 
 #ifdef _DRAW
+    HUD,
     GUI,
 #endif
 
@@ -44,6 +45,7 @@ enum class SystemType : U16 {
     OUTPUT,
 
 #ifdef _DRAW
+    HUD,
     GUI,
 #endif
 #endif

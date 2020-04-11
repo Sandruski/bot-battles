@@ -18,6 +18,8 @@
 #include "GamePanel.h"
 #include "GraphicsPanel.h"
 #include "GuiSystem.h"
+#include "HUDSystem.h"
+#include "LabelComponent.h"
 #include "NetworkingPanel.h"
 #include "RendererSystem.h"
 #include "ShaderResource.h"
@@ -72,6 +74,10 @@ bool Game::Init()
     if (!ret) {
         return ret;
     }
+    ret = m_systemManager->RegisterSystem<HUDSystem>();
+    if (!ret) {
+        return ret;
+    }
     ret = m_systemManager->RegisterSystem<GuiSystem>();
     if (!ret) {
         return ret;
@@ -84,6 +90,10 @@ bool Game::Init()
 
     // Components
 #ifdef _DRAW
+    ret = m_componentManager->RegisterComponent<LabelComponent>();
+    if (!ret) {
+        return ret;
+    }
     ret = m_componentManager->RegisterComponent<SpriteComponent>();
     if (!ret) {
         return ret;

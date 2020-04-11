@@ -16,6 +16,10 @@ Have fun!
 - Left and right arrows: rotate character
 - Spacebar: shoot
 
+# Versions
+## Vertical Slice
+
+
 # About
 The code is written in C++ and follows the ISO C++ 17 Standard.
 

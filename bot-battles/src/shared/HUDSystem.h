@@ -1,24 +1,22 @@
-#ifndef __GUI_SYSTEM_H__
-#define __GUI_SYSTEM_H__
+#ifndef __HUD_SYSTEM_H__
+#define __HUD_SYSTEM_H__
 
 #include "System.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class GuiSystem : public System {
+class HUDSystem : public System {
 public:
     static SystemType GetType()
     {
-        return SystemType::GUI;
+        return SystemType::HUD;
     }
 
 public:
-    bool StartUp() override;
-    bool Update() override;
-    bool PreRender() override;
+    HUDSystem();
+
     bool RenderGui() override;
-    bool ShutDown() override;
 };
 }
 
