@@ -73,6 +73,18 @@
     <Filter Include="Source Files\Panels\Debug Options">
       <UniqueIdentifier>{ea0ff998-fcc6-4137-963a-568ceac82f41}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Components\Entity Components">
+      <UniqueIdentifier>{d044f5d1-4d9f-4809-be37-fa25c6af30ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Components\System Components">
+      <UniqueIdentifier>{eb3c8b9a-c69e-4507-b5e8-5c51d9474beb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Components\Entity Components">
+      <UniqueIdentifier>{7e533038-41b3-4581-8823-78698a176f36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Components\System Components">
+      <UniqueIdentifier>{9e5cc5ac-e959-4a0b-837e-c0839032b7f0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -99,9 +111,6 @@
     <ClCompile Include="ReplicationResultManager.cpp">
       <Filter>Source Files\Networking</Filter>
     </ClCompile>
-    <ClCompile Include="ServerComponent.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
     <ClCompile Include="ConfigServer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -117,17 +126,11 @@
     <ClCompile Include="HealthSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="TransformComponentServer.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
     <ClCompile Include="SpawnerSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
     <ClCompile Include="MovementSystemServer.cpp">
       <Filter>Source Files\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="GameplayStateServer.cpp">
-      <Filter>Source Files\States</Filter>
     </ClCompile>
     <ClCompile Include="..\dependencies\source\imgui\imgui.cpp">
       <Filter>Dependencies\imgui</Filter>
@@ -152,12 +155,6 @@
     </ClCompile>
     <ClCompile Include="..\dependencies\source\stb\stb_image.cpp">
       <Filter>Dependencies\stb</Filter>
-    </ClCompile>
-    <ClCompile Include="MainMenuStateServer.cpp">
-      <Filter>Source Files\States</Filter>
-    </ClCompile>
-    <ClCompile Include="ScoreboardStateServer.cpp">
-      <Filter>Source Files\States</Filter>
     </ClCompile>
     <ClCompile Include="PlayStateServer.cpp">
       <Filter>Source Files\States\Gameplay States</Filter>
@@ -189,6 +186,21 @@
     <ClCompile Include="OutputSystemServer.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="ServerComponent.cpp">
+      <Filter>Source Files\Components\System Components</Filter>
+    </ClCompile>
+    <ClCompile Include="TransformComponentServer.cpp">
+      <Filter>Source Files\Components\Entity Components</Filter>
+    </ClCompile>
+    <ClCompile Include="GameplayStateServer.cpp">
+      <Filter>Source Files\States\Gameplay States</Filter>
+    </ClCompile>
+    <ClCompile Include="MainMenuStateServer.cpp">
+      <Filter>Source Files\States\Main Menu States</Filter>
+    </ClCompile>
+    <ClCompile Include="ScoreboardStateServer.cpp">
+      <Filter>Source Files\States\Scoreboard States</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientProxy.h">
@@ -205,9 +217,6 @@
     </ClInclude>
     <ClInclude Include="Delivery.h">
       <Filter>Header Files\Networking</Filter>
-    </ClInclude>
-    <ClInclude Include="ServerComponent.h">
-      <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="ConfigServer.h">
       <Filter>Header Files</Filter>
@@ -232,15 +241,6 @@
     </ClInclude>
     <ClInclude Include="MovementSystemServer.h">
       <Filter>Header Files\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="GameplayStateServer.h">
-      <Filter>Header Files\States</Filter>
-    </ClInclude>
-    <ClInclude Include="MainMenuStateServer.h">
-      <Filter>Header Files\States</Filter>
-    </ClInclude>
-    <ClInclude Include="ScoreboardStateServer.h">
-      <Filter>Header Files\States</Filter>
     </ClInclude>
     <ClInclude Include="StartStateServer.h">
       <Filter>Header Files\States\Gameplay States</Filter>
@@ -267,7 +267,19 @@
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
     <ClInclude Include="PlayerComponent.h">
-      <Filter>Header Files\Components</Filter>
+      <Filter>Header Files\Components\Entity Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerComponent.h">
+      <Filter>Header Files\Components\System Components</Filter>
+    </ClInclude>
+    <ClInclude Include="GameplayStateServer.h">
+      <Filter>Header Files\States\Gameplay States</Filter>
+    </ClInclude>
+    <ClInclude Include="MainMenuStateServer.h">
+      <Filter>Header Files\States\Main Menu States</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreboardStateServer.h">
+      <Filter>Header Files\States\Scoreboard States</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

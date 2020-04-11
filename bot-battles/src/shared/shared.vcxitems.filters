@@ -76,6 +76,36 @@
     <Filter Include="Header Files\Panels\Debug Options">
       <UniqueIdentifier>{5e89874d-83d1-4465-8be8-b8686785f9da}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Components\Entity Components">
+      <UniqueIdentifier>{718e6194-8d43-46ab-a16b-3e75b8c8ac6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Components\System Components">
+      <UniqueIdentifier>{0c076470-13f2-40a3-a452-3283fb30e091}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Resources\Resources">
+      <UniqueIdentifier>{3c96b3c4-4346-4bd0-8965-3e73cf511aad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Resources\Importers">
+      <UniqueIdentifier>{0972d3bd-9d44-4252-9ed0-33be6aaf602b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Systems\Systems">
+      <UniqueIdentifier>{ed66fbfb-2826-4b73-9c4c-c2d97d76c26d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Components\Entity Components">
+      <UniqueIdentifier>{8b345871-9048-4fc2-8c14-39bb784c2338}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Components\System Components">
+      <UniqueIdentifier>{d6c17e68-d171-4c2a-b432-e0375c1a478b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Resources\Importers">
+      <UniqueIdentifier>{ebb70d17-ab44-46de-af34-9e1ac447b087}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Resources\Resources">
+      <UniqueIdentifier>{14465402-cfbe-491b-aa1c-27abadb67d1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Systems\Systems">
+      <UniqueIdentifier>{82e15572-71c6-433f-b938-603525e98917}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)ByteSwap.h">
@@ -147,12 +177,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)LinkingContext.h">
       <Filter>Header Files\Networking</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)TransformComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)SpriteComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Resource.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
@@ -160,9 +184,6 @@
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)ResourceManager.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)TextureImporter.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)FSM.h">
@@ -177,20 +198,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)DebugDrawer.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)WorkingDirDefs.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Game.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)EventSystem.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)RendererSystem.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)WindowSystem.h">
-      <Filter>Header Files\Systems</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)pch.h">
       <Filter>Header Files</Filter>
@@ -207,16 +216,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)ComponentMemberTypes.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)SpriteResource.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Component.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)WindowComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)RendererComponent.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Config.h">
@@ -224,9 +224,6 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)OutputMemoryStream.h">
       <Filter>Header Files\Networking</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)InputComponent.h">
-      <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)InputMemoryStream.h">
       <Filter>Header Files\Networking</Filter>
@@ -249,46 +246,16 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Transform.h">
       <Filter>Header Files\Networking</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)WeaponComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ColliderComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)HealthComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Intersection.h">
       <Filter>Header Files\Math</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Random.h">
       <Filter>Header Files\Math</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)GuiSystem.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Shaders.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)MapImporter.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)FileSystem.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ShaderResource.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ShaderImporter.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)GuiComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)MeshResource.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)MeshImporter.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)MyTime.h">
@@ -297,23 +264,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)MyTimer.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)GameplayComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)MainMenuComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)EventComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Layers.h">
       <Filter>Header Files\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)SpawnComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ScoreboardComponent.h">
-      <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)TCPSocket.h">
       <Filter>Header Files\Networking</Filter>
@@ -348,11 +300,89 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)GraphicsPanel.h">
       <Filter>Header Files\Panels\Debug Options</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)ColliderComponent.h">
+      <Filter>Header Files\Components\Entity Components</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)EventComponent.h">
+      <Filter>Header Files\Components\System Components</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameplayComponent.h">
+      <Filter>Header Files\Components\System Components</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)GuiComponent.h">
+      <Filter>Header Files\Components\System Components</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)HealthComponent.h">
+      <Filter>Header Files\Components\Entity Components</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)InputComponent.h">
+      <Filter>Header Files\Components\System Components</Filter>
+    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)LabelComponent.h">
-      <Filter>Header Files\Components</Filter>
+      <Filter>Header Files\Components\Entity Components</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)MainMenuComponent.h">
+      <Filter>Header Files\Components\System Components</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)RendererComponent.h">
+      <Filter>Header Files\Components\System Components</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)SpawnComponent.h">
+      <Filter>Header Files\Components\Entity Components</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)SpriteComponent.h">
+      <Filter>Header Files\Components\Entity Components</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)TransformComponent.h">
+      <Filter>Header Files\Components\Entity Components</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)WeaponComponent.h">
+      <Filter>Header Files\Components\Entity Components</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)WindowComponent.h">
+      <Filter>Header Files\Components\System Components</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)ScoreboardComponent.h">
+      <Filter>Header Files\Components\System Components</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)MapImporter.h">
+      <Filter>Header Files\Resources\Importers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)ShaderImporter.h">
+      <Filter>Header Files\Resources\Importers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)TextureImporter.h">
+      <Filter>Header Files\Resources\Importers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)ShaderResource.h">
+      <Filter>Header Files\Resources\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)SpriteResource.h">
+      <Filter>Header Files\Resources\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)MeshResource.h">
+      <Filter>Header Files\Resources\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)MeshImporter.h">
+      <Filter>Header Files\Resources\Importers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)EventSystem.h">
+      <Filter>Header Files\Systems\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)GuiSystem.h">
+      <Filter>Header Files\Systems\Systems</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)HUDSystem.h">
-      <Filter>Header Files\Systems</Filter>
+      <Filter>Header Files\Systems\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)RendererSystem.h">
+      <Filter>Header Files\Systems\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)WindowSystem.h">
+      <Filter>Header Files\Systems\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)WorkingDirDefs.h">
+      <Filter>Header Files\Resources</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -392,9 +422,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)ResourceManager.cpp">
       <Filter>Source Files\Resources</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)TextureImporter.cpp">
-      <Filter>Source Files\Resources</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)FSM.cpp">
       <Filter>Source Files\States</Filter>
     </ClCompile>
@@ -407,34 +434,10 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)EventSystem.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)RendererSystem.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)WindowSystem.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)AckRange.cpp">
       <Filter>Source Files\Networking</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)SpriteComponent.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)TransformComponent.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)SpriteResource.cpp">
-      <Filter>Source Files\Resources</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Component.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)RendererComponent.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)WindowComponent.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Config.cpp">
@@ -442,9 +445,6 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)OutputMemoryStream.cpp">
       <Filter>Source Files\Networking</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)InputComponent.cpp">
-      <Filter>Source Files\Components</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)InputMemoryStream.cpp">
       <Filter>Source Files\Networking</Filter>
@@ -455,37 +455,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Transform.cpp">
       <Filter>Source Files\Networking</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)WeaponComponent.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)ColliderComponent.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)HealthComponent.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)GuiSystem.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)MapImporter.cpp">
-      <Filter>Source Files\Resources</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)FileSystem.cpp">
-      <Filter>Source Files\Resources</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)ShaderResource.cpp">
-      <Filter>Source Files\Resources</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)ShaderImporter.cpp">
-      <Filter>Source Files\Resources</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)GuiComponent.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)MeshResource.cpp">
-      <Filter>Source Files\Resources</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)MeshImporter.cpp">
       <Filter>Source Files\Resources</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)MyTimer.cpp">
@@ -493,21 +463,6 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)MyTime.cpp">
       <Filter>Source Files\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)GameplayComponent.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)MainMenuComponent.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)EventComponent.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)SpawnComponent.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)ScoreboardComponent.cpp">
-      <Filter>Source Files\Components</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)TCPSocket.cpp">
       <Filter>Source Files\Networking</Filter>
@@ -530,11 +485,86 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)GraphicsPanel.cpp">
       <Filter>Source Files\Panels\Debug Options</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)ColliderComponent.cpp">
+      <Filter>Source Files\Components\Entity Components</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)EventComponent.cpp">
+      <Filter>Source Files\Components\System Components</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)GameplayComponent.cpp">
+      <Filter>Source Files\Components\System Components</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)GuiComponent.cpp">
+      <Filter>Source Files\Components\System Components</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)HealthComponent.cpp">
+      <Filter>Source Files\Components\Entity Components</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)InputComponent.cpp">
+      <Filter>Source Files\Components\System Components</Filter>
+    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)LabelComponent.cpp">
-      <Filter>Source Files\Components</Filter>
+      <Filter>Source Files\Components\Entity Components</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)MainMenuComponent.cpp">
+      <Filter>Source Files\Components\System Components</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)RendererComponent.cpp">
+      <Filter>Source Files\Components\System Components</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)ScoreboardComponent.cpp">
+      <Filter>Source Files\Components\System Components</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)SpawnComponent.cpp">
+      <Filter>Source Files\Components\Entity Components</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)TransformComponent.cpp">
+      <Filter>Source Files\Components\Entity Components</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)SpriteComponent.cpp">
+      <Filter>Source Files\Components\Entity Components</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)WeaponComponent.cpp">
+      <Filter>Source Files\Components\Entity Components</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)WindowComponent.cpp">
+      <Filter>Source Files\Components\System Components</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)MapImporter.cpp">
+      <Filter>Source Files\Resources\Importers</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)MeshImporter.cpp">
+      <Filter>Source Files\Resources\Importers</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)MeshResource.cpp">
+      <Filter>Source Files\Resources\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)ShaderImporter.cpp">
+      <Filter>Source Files\Resources\Importers</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)ShaderResource.cpp">
+      <Filter>Source Files\Resources\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)SpriteResource.cpp">
+      <Filter>Source Files\Resources\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)TextureImporter.cpp">
+      <Filter>Source Files\Resources\Importers</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)EventSystem.cpp">
+      <Filter>Source Files\Systems\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)GuiSystem.cpp">
+      <Filter>Source Files\Systems\Systems</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)HUDSystem.cpp">
-      <Filter>Source Files\Systems</Filter>
+      <Filter>Source Files\Systems\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)RendererSystem.cpp">
+      <Filter>Source Files\Systems\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)WindowSystem.cpp">
+      <Filter>Source Files\Systems\Systems</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

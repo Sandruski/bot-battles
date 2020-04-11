@@ -71,6 +71,7 @@ bool GuiSystem::RenderGui()
         ImGui::SetNextWindowPos(position, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
         ImVec2 size = ImVec2(static_cast<F32>(resolution.y) / 1.8f, static_cast<F32>(resolution.x) / 1.8f);
         ImGui::SetNextWindowSize(size, ImGuiCond_Always);
+        ImGui::SetNextWindowFocus();
 
         // TODO: "Options", "Credits", "Quit to Desktop" only when no match is running
         if (ImGui::Begin("Settings", &guiComponent.m_isSettings, windowFlags)) {
@@ -100,6 +101,8 @@ bool GuiSystem::RenderGui()
         windowFlags |= ImGuiWindowFlags_NoTitleBar;
         windowFlags |= ImGuiWindowFlags_NoCollapse;
         windowFlags |= ImGuiWindowFlags_MenuBar;
+        windowFlags |= ImGuiWindowFlags_NoSavedSettings;
+        windowFlags |= ImGuiWindowFlags_NoBringToFrontOnFocus;
 
         if (ImGui::Begin("Debug Options", &guiComponent.m_isDebugOptions, windowFlags)) {
             if (ImGui::BeginMenuBar()) {

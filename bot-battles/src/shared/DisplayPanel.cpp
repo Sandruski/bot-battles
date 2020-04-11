@@ -35,7 +35,7 @@ bool DisplayPanel::RenderBody() const
 
     const char* displayModes[] = { "Fullscreen", "Windowed", "Borderless" };
     I32 currentDisplayMode = windowComponent.m_displayMode;
-    if (ImGui::Combo("Display Mode", &currentDisplayMode, displayModes, IM_ARRAYSIZE(displayModes))) {
+    if (ImGui::Combo("Display", &currentDisplayMode, displayModes, IM_ARRAYSIZE(displayModes))) { // TODO: "Display Mode"
         windowComponent.m_displayMode = static_cast<WindowComponent::DisplayMode>(currentDisplayMode);
         windowComponent.UpdateDisplayMode();
     }

@@ -73,6 +73,18 @@
     <Filter Include="Source Files\Panels\Debug Options">
       <UniqueIdentifier>{bf2ad616-c293-42b0-9127-3306b5f5c4f7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Components\Entity Components">
+      <UniqueIdentifier>{a1c3a3d9-c063-4575-b33b-4a08c2e4bb87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Components\System Components">
+      <UniqueIdentifier>{b8c27293-c631-4f93-9c89-5d53c619645a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Components\Entity Components">
+      <UniqueIdentifier>{5bfa5c41-1651-45d9-b8ee-93b411e791fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Components\System Components">
+      <UniqueIdentifier>{871b5168-7097-48e3-b146-4c774134c399}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -90,14 +102,8 @@
     <ClCompile Include="DeliveryManagerClient.cpp">
       <Filter>Source Files\Networking</Filter>
     </ClCompile>
-    <ClCompile Include="ClientComponent.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
     <ClCompile Include="ConfigClient.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TransformComponentClient.cpp">
-      <Filter>Source Files\Components</Filter>
     </ClCompile>
     <ClCompile Include="pchClient.cpp">
       <Filter>Source Files</Filter>
@@ -119,9 +125,6 @@
     </ClCompile>
     <ClCompile Include="RemotePlayerMovementSystem.cpp">
       <Filter>Source Files\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="GameplayStateClient.cpp">
-      <Filter>Source Files\States</Filter>
     </ClCompile>
     <ClCompile Include="..\dependencies\source\imgui\imgui.cpp">
       <Filter>Dependencies\imgui</Filter>
@@ -146,12 +149,6 @@
     </ClCompile>
     <ClCompile Include="..\dependencies\source\stb\stb_image.cpp">
       <Filter>Dependencies\stb</Filter>
-    </ClCompile>
-    <ClCompile Include="MainMenuStateClient.cpp">
-      <Filter>Source Files\States</Filter>
-    </ClCompile>
-    <ClCompile Include="ScoreboardStateClient.cpp">
-      <Filter>Source Files\States</Filter>
     </ClCompile>
     <ClCompile Include="ConnectStateClient.cpp">
       <Filter>Source Files\States\Main Menu States</Filter>
@@ -183,6 +180,21 @@
     <ClCompile Include="OutputSystemClient.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="ClientComponent.cpp">
+      <Filter>Source Files\Components\System Components</Filter>
+    </ClCompile>
+    <ClCompile Include="TransformComponentClient.cpp">
+      <Filter>Source Files\Components\Entity Components</Filter>
+    </ClCompile>
+    <ClCompile Include="GameplayStateClient.cpp">
+      <Filter>Source Files\States\Gameplay States</Filter>
+    </ClCompile>
+    <ClCompile Include="MainMenuStateClient.cpp">
+      <Filter>Source Files\States\Main Menu States</Filter>
+    </ClCompile>
+    <ClCompile Include="ScoreboardStateClient.cpp">
+      <Filter>Source Files\States\Scoreboard States</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientSystem.h">
@@ -196,9 +208,6 @@
     </ClInclude>
     <ClInclude Include="DeliveryManagerClient.h">
       <Filter>Header Files\Networking</Filter>
-    </ClInclude>
-    <ClInclude Include="ClientComponent.h">
-      <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="ConfigClient.h">
       <Filter>Header Files</Filter>
@@ -224,21 +233,6 @@
     <ClInclude Include="RemotePlayerMovementSystem.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="LocalPlayerComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="RemotePlayerComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="GameplayStateClient.h">
-      <Filter>Header Files\States</Filter>
-    </ClInclude>
-    <ClInclude Include="MainMenuStateClient.h">
-      <Filter>Header Files\States</Filter>
-    </ClInclude>
-    <ClInclude Include="ScoreboardStateClient.h">
-      <Filter>Header Files\States</Filter>
-    </ClInclude>
     <ClInclude Include="SetupStateClient.h">
       <Filter>Header Files\States\Main Menu States</Filter>
     </ClInclude>
@@ -259,6 +253,24 @@
     </ClInclude>
     <ClInclude Include="OutputSystemClient.h">
       <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientComponent.h">
+      <Filter>Header Files\Components\System Components</Filter>
+    </ClInclude>
+    <ClInclude Include="LocalPlayerComponent.h">
+      <Filter>Header Files\Components\Entity Components</Filter>
+    </ClInclude>
+    <ClInclude Include="RemotePlayerComponent.h">
+      <Filter>Header Files\Components\Entity Components</Filter>
+    </ClInclude>
+    <ClInclude Include="GameplayStateClient.h">
+      <Filter>Header Files\States\Gameplay States</Filter>
+    </ClInclude>
+    <ClInclude Include="MainMenuStateClient.h">
+      <Filter>Header Files\States\Main Menu States</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreboardStateClient.h">
+      <Filter>Header Files\States\Scoreboard States</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
