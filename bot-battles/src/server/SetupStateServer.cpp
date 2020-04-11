@@ -37,7 +37,6 @@ bool SetupStateServer::RenderGui() const
     ImGui::SetNextWindowPos(position, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
     ImVec2 size = ImVec2(static_cast<F32>(resolution.y) / 2.0f, static_cast<F32>(resolution.x) / 2.0f);
     ImGui::SetNextWindowSize(size, ImGuiCond_Always);
-    ImGui::SetNextWindowFocus();
 
     if (ImGui::Begin("Main Menu", nullptr, windowFlags)) {
         ServerComponent& serverComponent = g_gameServer->GetServerComponent();

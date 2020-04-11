@@ -54,10 +54,10 @@ bool RendererSystem::StartUp()
         return false;
     }
 
-    windowComponent.UpdateResolution();
     if (!windowComponent.UpdateDisplayMode()) {
         return false;
     }
+    windowComponent.UpdateResolution();
 
     rendererComponent.UpdateBackgroundColor();
     glClearDepth(1.0f);
