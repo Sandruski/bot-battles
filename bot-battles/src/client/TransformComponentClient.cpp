@@ -12,10 +12,10 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U32 frame, ReplicationActionType replicationActionType, Entity entity)
 {
-    assert(replicationActionType == ReplicationActionType::CREATE || replicationActionType == ReplicationActionType::UPDATE);
-
+    if (dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_ENABLED)) {
+        inputStream.Read(m_isEnabled);
+    }
     glm::vec2 newPosition = glm::vec2(0.0f, 0.0f);
-    F32 newRotation = 0.0f;
     const bool hasPosition = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION);
     if (hasPosition) {
         inputStream.Read(newPosition);
@@ -23,6 +23,7 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U3
     if (dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_LAYER_TYPE)) {
         inputStream.Read(m_layerType);
     }
+    F32 newRotation = 0.0f;
     const bool hasRotation = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_ROTATION);
     if (hasRotation) {
         inputStream.Read(newRotation);

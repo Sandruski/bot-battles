@@ -46,7 +46,8 @@ bool HUDSystem::RenderGui()
         std::string name = "##";
         name.append(labelComponent.lock()->m_text);
         if (ImGui::Begin(name.c_str(), nullptr, windowFlags)) {
-            ImGui::Text(labelComponent.lock()->m_text.c_str());
+            ImVec4 color = ImVec4(labelComponent.lock()->m_color.r, labelComponent.lock()->m_color.g, labelComponent.lock()->m_color.b, labelComponent.lock()->m_color.a);
+            ImGui::TextColored(color, labelComponent.lock()->m_text.c_str());
 
             ImGui::End();
         }

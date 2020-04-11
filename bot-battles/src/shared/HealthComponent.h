@@ -31,6 +31,7 @@ struct HealthComponent : public Component
     U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override;
 #endif
 
+    // Networked
     I32 m_health;
     bool m_isDead;
 };

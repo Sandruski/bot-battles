@@ -43,13 +43,14 @@ struct TransformComponent : public Component
     glm::vec3 GetDebugPosition() const;
     glm::vec2 GetRotation() const;
 
+    // Networked
     glm::vec2 m_position;
     LayerType m_layerType;
     F32 m_rotation;
-
     //glm::vec2 m_velocity;
     //F32 m_angularVelocity;
 
+    // Local
     CircularBuffer<Transform, MAX_TRANSFORMS> m_transformBuffer;
     /*
     Client: transform per frame received from server (for Entity Interpolation)

@@ -38,6 +38,7 @@ struct SpriteComponent : public Component
     const glm::uvec4 GetSpriteTextureCoords(const std::string& name) const;
     const glm::uvec4 GetSpriteTextureCoords() const;
 
+    // Networked
     std::weak_ptr<SpriteResource> m_spriteResource;
     std::unordered_map<std::string, glm::uvec4> m_spriteNameToTextureCoords;
     std::string m_spriteName;

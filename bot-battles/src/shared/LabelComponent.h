@@ -31,8 +31,10 @@ struct LabelComponent : public Component
     U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override;
 #endif
 
+    // Networked
     glm::vec2 m_offset;
     std::string m_text;
+    glm::vec4 m_color;
 };
 }
 

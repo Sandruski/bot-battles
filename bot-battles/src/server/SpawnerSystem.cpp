@@ -49,7 +49,7 @@ void SpawnerSystem::OnNotify(const Event& event)
 }
 
 //----------------------------------------------------------------------------------------------------
-Entity SpawnerSystem::Spawn(U32 number) const
+Entity SpawnerSystem::Spawn(U32 playerNumber) const
 {
     Entity character = g_gameServer->GetEntityManager().AddEntity();
     g_gameServer->GetLinkingContext().AddEntity(character);
@@ -70,7 +70,7 @@ Entity SpawnerSystem::Spawn(U32 number) const
     std::weak_ptr<SpriteResource> charactersSpriteResource = g_game->GetResourceManager().AddResource<SpriteResource>("characters.png", TEXTURES_DIR, true);
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().AddComponent<SpriteComponent>(character);
     spriteComponent.lock()->m_spriteResource = charactersSpriteResource;
-    switch (number) {
+    switch (playerNumber) {
     case 1: {
         glm::vec4 standTextureCoords = glm::vec4(1.0f, 1.0f, 36.0f, 43.0f);
         spriteComponent.lock()->AddSprite("stand", standTextureCoords);
@@ -83,7 +83,6 @@ Entity SpawnerSystem::Spawn(U32 number) const
         spriteComponent.lock()->m_spriteName = "stand";
         break;
     }
-
     case 2: {
         glm::vec4 standTextureCoords = glm::vec4(1.0f, 45.0f, 35.0f, 43.0f);
         spriteComponent.lock()->AddSprite("stand", standTextureCoords);
@@ -96,17 +95,29 @@ Entity SpawnerSystem::Spawn(U32 number) const
         spriteComponent.lock()->m_spriteName = "stand";
         break;
     }
-
     default: {
         break;
     }
     }
 
     std::weak_ptr<LabelComponent> labelComponent = g_gameServer->GetComponentManager().AddComponent<LabelComponent>(character);
-    std::string name = "Player ";
-    name.append(std::to_string(number));
-    labelComponent.lock()->m_text = name;
+    std::string playerName = "Player ";
+    playerName.append(std::to_string(playerNumber));
+    labelComponent.lock()->m_text = playerName;
     labelComponent.lock()->m_offset = glm::vec2(0.0f, -35.0f);
+    switch (playerNumber) {
+    case 1: {
+        labelComponent.lock()->m_color = Red;
+        break;
+    }
+    case 2: {
+        labelComponent.lock()->m_color = Blue;
+        break;
+    }
+    default: {
+        break;
+    }
+    }
 
     std::weak_ptr<ColliderComponent> colliderComponent = g_gameServer->GetComponentManager().AddComponent<ColliderComponent>(character);
     const glm::uvec4 spriteTextureCoords = spriteComponent.lock()->GetSpriteTextureCoords();

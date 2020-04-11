@@ -33,8 +33,11 @@ struct ColliderComponent : public Component
     U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override;
 #endif
 
-    glm::vec2 m_position;
+    // Networked
     glm::vec2 m_size;
+
+    // Local
+    glm::vec2 m_position;
 };
 }
 

@@ -31,6 +31,7 @@ struct SpawnComponent : public Component
     U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override;
 #endif
 
+    // Local
     Entity m_entity;
 };
 }

@@ -53,7 +53,6 @@ bool WeaponSystemServer::Update()
             const Input& input = clientProxy.lock()->m_inputBuffer.Get(i);
             const InputComponent& inputComponent = input.GetInputComponent();
             if (inputComponent.m_isShooting) {
-                weaponComponent.lock()->m_positions.clear();
 
                 if (serverComponent.m_isServerRewind) {
                     Rewind(weaponComponent, entity, input.m_interpolationFromFrame, input.m_interpolationToFrame, input.m_interpolationPercentage);
@@ -109,6 +108,12 @@ bool WeaponSystemServer::Update()
                     weaponComponent.lock()->m_hasHit = false;
                 }
 
+                Event newEvent;
+                newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
+                newEvent.component.entity = entity;
+                newEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::WEAPON_ALL);
+                NotifyEvent(newEvent);
+
                 if (serverComponent.m_isServerRewind) {
                     Revert(entity);
                 }
@@ -139,6 +144,21 @@ bool WeaponSystemServer::Render()
             continue;
         }
 
+        glm::vec4 color = White;
+        switch (playerID) {
+        case 0: {
+            color = Red;
+            break;
+        }
+        case 1: {
+            color = Blue;
+            break;
+        }
+        default: {
+            break;
+        }
+        }
+
         glm::mat4 model = glm::mat4(1.0f);
         glm::vec3 position = transformComponent.lock()->GetDebugPosition();
         position.x = resolution.x / 2.0f;
@@ -160,7 +180,7 @@ bool WeaponSystemServer::Render()
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
         U32 colorLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "color");
-        glUniform4fv(colorLoc, 1, glm::value_ptr(weaponComponent.lock()->m_hasHit ? Red : White));
+        glUniform4fv(colorLoc, 1, glm::value_ptr(weaponComponent.lock()->m_hasHit ? Yellow : color));
 
         U32 pctLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "pct");
         glUniform1f(pctLoc, 1.0f);
@@ -215,8 +235,6 @@ void WeaponSystemServer::Rewind(std::weak_ptr<WeaponComponent> weaponComponent, 
             glm::vec2 position = Lerp(fromTransform.m_position, toTransform.m_position, percentage);
             colliderComponent.lock()->m_position = glm::vec2(position.x, position.y);
         }
-
-        weaponComponent.lock()->m_positions.emplace_back(colliderComponent.lock()->m_position);
     }
 }
 

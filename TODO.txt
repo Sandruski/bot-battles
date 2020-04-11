@@ -1,7 +1,6 @@
 NETWORKING:
 -Cap MAX_INPUTS_PER_PACKET/similar also for State packets (already doing it for Input packets).
 -Remove Networking inheritance for those components that are actually not being networked or do not need to be networked (see MAX_NETWORK_COMPONENTS). E.g. if Health is not printed then why would the player want it?
--Network m_isEnabled variable for all components.
 
 GAMEPLAY:
 -Add 'Random map' option with ImGui to select a map from all the existing maps.
@@ -20,8 +19,3 @@ NOTES:
 KNOWN ISSUES (Will Not Fix):
 -EXPLOIT: remote entities are replicated (updated) when the state is Start. When state is Play and local entity is updated, remote entities are not at the spawn position anymore -> Remote entity shoots at you when you cannot move yet and kills you.
 -CRASH: TCP packets == 1470 bytes (MTU) from client to server make server crash. This happens with pretty bad network conditions when a lot of TCP packets are accumulated.
-
-
-
-
--Draw weapon shoots different color all clients.

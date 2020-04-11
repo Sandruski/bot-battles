@@ -9,6 +9,10 @@ U32 TransformComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) 
 {
     U32 writtenState = 0;
 
+    if (dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_ENABLED)) {
+        outputStream.Write(m_isEnabled);
+        writtenState |= static_cast<U32>(ComponentMemberType::TRANSFORM_ENABLED);
+    }
     if (dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION)) {
         outputStream.Write(m_position);
         writtenState |= static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION);

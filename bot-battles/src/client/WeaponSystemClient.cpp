@@ -23,7 +23,6 @@ WeaponSystemClient::WeaponSystemClient()
 {
     m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
     m_signature |= 1 << static_cast<U16>(ComponentType::WEAPON);
-    m_signature |= 1 << static_cast<U16>(ComponentType::LOCAL_PLAYER);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -35,37 +34,22 @@ bool WeaponSystemClient::Update()
         return true;
     }
 
+    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     for (auto& entity : m_entities) {
         if (g_gameClient->GetLinkingContext().GetNetworkID(entity) >= INVALID_NETWORK_ID) {
             continue;
         }
 
-        ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+        if (!clientComponent.IsLocalEntity(entity)) {
+            continue;
+        }
+
         if (clientComponent.m_isLastInputWeaponPending) {
             const Input& input = clientComponent.m_inputBuffer.GetLast();
             const InputComponent& inputComponent = input.GetInputComponent();
 
             if (inputComponent.m_isShooting) {
                 std::weak_ptr<WeaponComponent> weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(entity);
-                weaponComponent.lock()->m_positions.clear();
-
-                LinkingContext& linkingContext = g_gameClient->GetLinkingContext();
-                const std::unordered_map<NetworkID, Entity>& newtorkIDToEntity = linkingContext.GetNetworkIDToEntityMap();
-
-                for (const auto& pair : newtorkIDToEntity) {
-                    Entity remoteEntity = pair.second;
-                    if (entity == remoteEntity) {
-                        continue;
-                    }
-
-                    std::weak_ptr<ColliderComponent> colliderComponent = g_gameClient->GetComponentManager().GetComponent<ColliderComponent>(remoteEntity);
-                    if (colliderComponent.expired()) {
-                        continue;
-                    }
-
-                    weaponComponent.lock()->m_positions.emplace_back(colliderComponent.lock()->m_position);
-                }
-
                 std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
                 glm::vec2 position = transformComponent.lock()->m_position;
                 glm::vec2 rotation = transformComponent.lock()->GetRotation();
@@ -111,15 +95,51 @@ bool WeaponSystemClient::Update()
 //----------------------------------------------------------------------------------------------------
 bool WeaponSystemClient::Render()
 {
+    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     RendererComponent& rendererComponent = g_gameClient->GetRendererComponent();
     WindowComponent& windowComponent = g_gameClient->GetWindowComponent();
     glm::uvec2 resolution = windowComponent.GetResolution();
 
     for (auto& entity : m_entities) {
+        if (g_gameClient->GetLinkingContext().GetNetworkID(entity) >= INVALID_NETWORK_ID) {
+            continue;
+        }
+
         std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
         std::weak_ptr<WeaponComponent> weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(entity);
         if (!transformComponent.lock()->m_isEnabled || !weaponComponent.lock()->m_isEnabled) {
             continue;
+        }
+
+        glm::vec4 color = White;
+        if (clientComponent.IsLocalEntity(entity)) {
+            switch (clientComponent.m_playerID) {
+            case 0: {
+                color = Red;
+                break;
+            }
+            case 1: {
+                color = Blue;
+                break;
+            }
+            default: {
+                break;
+            }
+            }
+        } else {
+            switch (clientComponent.m_playerID) {
+            case 0: {
+                color = Blue;
+                break;
+            }
+            case 1: {
+                color = Red;
+                break;
+            }
+            default: {
+                break;
+            }
+            }
         }
 
         glm::mat4 model = glm::mat4(1.0f);
@@ -143,7 +163,7 @@ bool WeaponSystemClient::Render()
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
         U32 colorLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "color");
-        glUniform4fv(colorLoc, 1, glm::value_ptr(weaponComponent.lock()->m_hasHit ? Red : White));
+        glUniform4fv(colorLoc, 1, glm::value_ptr(weaponComponent.lock()->m_hasHit ? Yellow : color));
 
         U32 pctLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "pct");
         glUniform1f(pctLoc, 1.0f);

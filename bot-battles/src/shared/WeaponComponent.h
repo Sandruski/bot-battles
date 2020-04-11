@@ -34,7 +34,6 @@ struct WeaponComponent : public Component
     // TODO: dps?
 
     // Debug
-    std::vector<glm::vec2> m_positions;
     glm::vec2 m_origin;
     glm::vec2 m_destination;
     bool m_hasHit;
