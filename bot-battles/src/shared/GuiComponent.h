@@ -30,6 +30,8 @@ struct GuiComponent {
     std::weak_ptr<Panel> m_currentSettingsPanel;
     std::weak_ptr<Panel> m_currentDebugOptionsPanel;
 
+    F32 m_secondsBetweenEllipsis;
+
     bool m_isSettings;
     bool m_isDebugOptions;
 };

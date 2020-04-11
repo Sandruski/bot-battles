@@ -50,7 +50,7 @@ struct TransformComponent : public Component
     //glm::vec2 m_velocity;
     //F32 m_angularVelocity;
 
-    CircularBuffer<Transform, MAX_FRAMES> m_transformBuffer;
+    CircularBuffer<Transform, MAX_TRANSFORMS> m_transformBuffer;
     /*
     Client: transform per frame received from server (for Entity Interpolation)
     -Add: ReplicationManagerClient and TransformComponentClient
@@ -60,7 +60,7 @@ struct TransformComponent : public Component
     -Add: MovementSystemServer
     -Remove: OutputSystemServer
     */
-    CircularBuffer<Transform, MAX_FRAMES> m_inputTransformBuffer;
+    CircularBuffer<Transform, MAX_TRANSFORMS> m_inputTransformBuffer;
     /*
     Client: transform per input from client (for Server Reconciliation)
     -Add: MovementSystemClient and WeaponSystemClient 

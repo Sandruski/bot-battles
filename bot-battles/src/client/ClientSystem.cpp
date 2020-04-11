@@ -133,7 +133,7 @@ void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent)
     // UDP
     if (clientComponent.m_UDPSocket != nullptr) {
         U32 receivedPacketCount = 0;
-        while (receivedPacketCount < MAX_PACKETS_PER_FRAME) {
+        while (receivedPacketCount < clientComponent.m_maxPacketsPerFrame) {
             SocketAddress fromSocketAddress;
             I32 readByteCount = clientComponent.m_UDPSocket->ReceiveFrom(packet.GetPtr(), byteCapacity, fromSocketAddress);
             if (readByteCount > 0) {
@@ -155,7 +155,7 @@ void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent)
         std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
         if (!currentState.expired() && clientComponent.m_entity < INVALID_ENTITY) {
             F32 timeDiff = MyTime::GetInstance().GetTime() - clientComponent.m_lastPacketTime;
-            if (timeDiff >= DISCONNECT_TIMEOUT) {
+            if (timeDiff >= clientComponent.m_disconnectTimeout) {
                 ConnectionReset(clientComponent);
                 DisconnectSockets(clientComponent);
             }
@@ -502,9 +502,10 @@ bool ClientSystem::SendInputPacket(ClientComponent& clientComponent) const
     if (hasInputs) {
         U32 inputCount = clientComponent.m_inputBuffer.Count();
         U32 back = clientComponent.m_inputBuffer.m_back;
-        if (inputCount > MAX_INPUTS_PER_PACKET) {
-            back -= (inputCount - MAX_INPUTS_PER_PACKET);
-            inputCount = MAX_INPUTS_PER_PACKET;
+        if (inputCount > clientComponent.m_maxInputsPerPaquet) {
+            U32 diff = inputCount - clientComponent.m_maxInputsPerPaquet;
+            back -= diff;
+            inputCount = clientComponent.m_maxInputsPerPaquet;
         }
         inputPacket.Write(inputCount);
         for (U32 i = clientComponent.m_inputBuffer.m_front; i < back; ++i) {
@@ -586,7 +587,7 @@ bool ClientSystem::CheckConnect(ClientComponent& clientComponent)
     }
 
     F32 connectCurrentTime = static_cast<F32>(clientComponent.m_connectTimer.ReadSec());
-    if (connectCurrentTime >= SECONDS_BETWEEN_CONNECTS) {
+    if (connectCurrentTime >= clientComponent.m_secondsBetweenConnect) {
         clientComponent.m_TCPSocket->Connect(*clientComponent.m_socketAddress);
 
         clientComponent.m_connectTimer.Start();

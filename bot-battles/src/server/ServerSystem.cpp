@@ -197,7 +197,7 @@ void ServerSystem::ReceiveIncomingPackets(ServerComponent& serverComponent)
     // UDP
     if (serverComponent.m_UDPSocket != nullptr) {
         U32 receivedPacketCount = 0;
-        while (receivedPacketCount < MAX_PACKETS_PER_FRAME) {
+        while (receivedPacketCount < serverComponent.m_maxPacketsPerFrame) {
             SocketAddress fromSocketAddress;
             I32 readByteCount = serverComponent.m_UDPSocket->ReceiveFrom(packet.GetPtr(), byteCapacity, fromSocketAddress);
             if (readByteCount > 0) {
@@ -224,7 +224,7 @@ void ServerSystem::ReceiveIncomingPackets(ServerComponent& serverComponent)
                 Entity entity = serverComponent.GetEntity(playerID);
                 if (entity < INVALID_ENTITY) {
                     F32 timeDiff = MyTime::GetInstance().GetTime() - clientProxy->GetLastPacketTime();
-                    if (timeDiff >= DISCONNECT_TIMEOUT) {
+                    if (timeDiff >= serverComponent.m_disconnectTimeout) {
                         disconnections.insert(std::make_pair(playerID, clientProxy));
                         continue;
                     }

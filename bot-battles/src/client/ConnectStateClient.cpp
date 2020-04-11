@@ -4,6 +4,7 @@
 #include "ConfigClient.h"
 #include "FSM.h"
 #include "GameClient.h"
+#include "GuiComponent.h"
 #include "MainMenuComponent.h"
 #include "WindowComponent.h"
 
@@ -45,13 +46,15 @@ bool ConnectStateClient::Update() const
 bool ConnectStateClient::RenderGui() const
 {
     MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
+    GuiComponent& guiComponent = g_gameClient->GetGuiComponent();
     F32 guiCurrentTime = static_cast<F32>(mainMenuComponent.m_guiTimer.ReadSec());
-    if (guiCurrentTime >= 3.0f) {
+    if (guiCurrentTime >= guiComponent.m_secondsBetweenEllipsis) {
         mainMenuComponent.m_guiTimer.Start();
     }
-    if (guiCurrentTime >= 2.0f) {
+    F32 fractionSecondsBetweenEllipsis = guiComponent.m_secondsBetweenEllipsis / 3.0f;
+    if (guiCurrentTime >= fractionSecondsBetweenEllipsis * 2.0f) {
         ImGui::Text("Connecting...");
-    } else if (guiCurrentTime >= 1.0f) {
+    } else if (guiCurrentTime >= fractionSecondsBetweenEllipsis) {
         ImGui::Text("Connecting..");
     } else if (guiCurrentTime >= 0.0f) {
         ImGui::Text("Connecting.");
@@ -92,7 +95,7 @@ void ConnectStateClient::OnNotify(const Event& event)
     case EventType::SOCKETS_CONNECTED: {
         MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
         F32 helloCurrentTime = static_cast<F32>(mainMenuComponent.m_helloTimer.ReadSec());
-        if (helloCurrentTime >= SECONDS_BETWEEN_PACKETS) {
+        if (helloCurrentTime >= mainMenuComponent.m_secondsBetweenHello) {
             Event newEvent;
             newEvent.eventType = EventType::SEND_HELLO;
             g_gameClient->GetFSM().NotifyEvent(newEvent);

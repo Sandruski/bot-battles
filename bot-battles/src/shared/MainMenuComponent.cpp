@@ -10,6 +10,7 @@ MainMenuComponent::MainMenuComponent()
 #ifdef _CLIENT
     , m_helloTimer()
     , m_guiTimer()
+    , m_secondsBetweenHello(1.0f)
 #endif
 {
 }

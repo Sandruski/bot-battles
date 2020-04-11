@@ -19,10 +19,6 @@ inline const Endianness PLATFORM_ENDIANNESS()
 }
 
 const U32 MAX_PACKET_SIZE = 1470;
-const U32 MAX_PACKETS_PER_FRAME = 10;
-const U32 MAX_INPUTS_PER_PACKET = 30;
-
-const U32 MAX_FRAMES = 256;
 
 using PlayerID = U32;
 const U32 MAX_PLAYER_IDS = 2; // MAX_CLIENTS
@@ -35,13 +31,9 @@ const NetworkID INVALID_NETWORK_ID = MAX_NETWORK_IDS;
 using SequenceNumber = U16;
 const SequenceNumber INVALID_SEQUENCE_NUMBER = UINT16_MAX;
 
-const F32 DISCONNECT_TIMEOUT = 15.0f; // 5.0f
-#ifdef _CLIENT
-const F32 SECONDS_BETWEEN_CONNECTS = 5.0f;
-#elif defined(_SERVER)
-const F32 ACK_TIMEOUT = 5.0f; // 0.5f
-#endif
-const F32 SECONDS_BETWEEN_PACKETS = 1.0f;
+const U32 MAX_FRAMES = 256;
+const U32 MAX_INPUTS = MAX_FRAMES;
+const U32 MAX_TRANSFORMS = MAX_FRAMES;
 }
 
 #endif

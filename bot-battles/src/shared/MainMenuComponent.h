@@ -15,6 +15,8 @@ struct MainMenuComponent {
 #ifdef _CLIENT
     MyTimer m_helloTimer;
     MyTimer m_guiTimer;
+
+    F32 m_secondsBetweenHello;
 #endif
 };
 }

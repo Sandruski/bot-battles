@@ -49,6 +49,11 @@ struct ServerComponent : public Component {
     std::unordered_map<Entity, PlayerID> m_entityToPlayerID;
     std::queue<PlayerID> m_availablePlayerIDs;
 
+    U32 m_maxPacketsPerFrame;
+    F32 m_ackTimeout;
+
+    F32 m_disconnectTimeout;
+
     bool m_isServerRewind;
 };
 }

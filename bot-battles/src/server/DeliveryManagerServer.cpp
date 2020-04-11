@@ -1,7 +1,9 @@
 #include "DeliveryManagerServer.h"
 
 #include "AckRange.h"
+#include "GameServer.h"
 #include "ReplicationResultManager.h"
+#include "ServerComponent.h"
 
 namespace sand {
 
@@ -34,13 +36,14 @@ bool DeliveryManagerServer::ReadState(InputMemoryStream& inputStream)
 //----------------------------------------------------------------------------------------------------
 void DeliveryManagerServer::ProcessTimedOutPackets()
 {
+    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     while (!m_deliveries.empty()) {
 
         const Delivery& delivery = m_deliveries.front();
         F32 timestamp = delivery.GetTimestamp();
         F32 time = MyTime::GetInstance().GetTime();
         F32 timeout = time - timestamp;
-        if (timeout >= ACK_TIMEOUT) {
+        if (timeout >= serverComponent.m_ackTimeout) {
             Delivery deliveryCopy = delivery;
             m_deliveries.pop_front();
             ILOG("Timeout failure");

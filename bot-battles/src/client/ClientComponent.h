@@ -60,7 +60,7 @@ struct ClientComponent : public Component {
     -Remove: RemotePlayerMovementSystem
     */
 
-    CircularBuffer<Input, MAX_FRAMES> m_inputBuffer;
+    CircularBuffer<Input, MAX_INPUTS> m_inputBuffer;
     /*
     -Add: InputSystemClient
     -Remove: OutputSystemClient
@@ -68,9 +68,15 @@ struct ClientComponent : public Component {
     bool m_isLastInputTransformPending;
     bool m_isLastInputWeaponPending;
 
+    F32 m_secondsBetweenConnect;
     MyTimer m_connectTimer;
 
     F32 m_RTT;
+
+    F32 m_disconnectTimeout;
+
+    U32 m_maxPacketsPerFrame;
+    U32 m_maxInputsPerPaquet;
 
     bool m_isClientPredictionServerReconciliation;
     bool m_isClientPrediction;

@@ -16,6 +16,9 @@ ServerComponent::ServerComponent()
     , m_playerIDToClientProxy()
     , m_entityToPlayerID()
     , m_availablePlayerIDs()
+    , m_maxPacketsPerFrame(10)
+    , m_ackTimeout(5.0f) // 0.5f
+    , m_disconnectTimeout(15.0f) // 5.0f
     , m_map()
     , m_isServerRewind(true)
 {

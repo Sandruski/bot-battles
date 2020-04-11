@@ -25,5 +25,3 @@ KNOWN ISSUES (Will Not Fix):
 
 
 -Draw weapon shoots different color all clients.
--Remove weapon debug stuff.
--Check all variables are initialized and ok.

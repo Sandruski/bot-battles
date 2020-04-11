@@ -19,6 +19,7 @@ struct ScoreboardComponent {
     MyTimer m_reHelloTimer;
     MyTimer m_guiTimer;
     F32 m_mainMenuTimeout;
+    F32 m_secondsBetweenReHello;
 #endif
 };
 }
