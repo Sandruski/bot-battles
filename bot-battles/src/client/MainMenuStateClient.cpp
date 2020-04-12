@@ -4,6 +4,7 @@
 #include "ConnectStateClient.h"
 #include "EntityManager.h"
 #include "GameClient.h"
+#include "GuiComponent.h"
 #include "MainMenuComponent.h"
 #include "SetupStateClient.h"
 #include "SpriteComponent.h"
@@ -48,6 +49,9 @@ bool MainMenuStateClient::Enter() const
     std::weak_ptr<SpriteResource> spriteResource = g_gameClient->GetResourceManager().AddResource<SpriteResource>("mainMenuBackground.png", TEXTURES_DIR, true);
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameClient->GetComponentManager().AddComponent<SpriteComponent>(background);
     spriteComponent.lock()->m_spriteResource = spriteResource;
+
+    GuiComponent& guiComponent = g_gameClient->GetGuiComponent();
+    guiComponent.m_isSettings = false;
 
     MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
     return mainMenuComponent.m_fsm.ChangeState("Setup");

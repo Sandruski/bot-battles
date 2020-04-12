@@ -5,6 +5,7 @@
 #include "EntityManager.h"
 #include "FSM.h"
 #include "GameClient.h"
+#include "GuiComponent.h"
 #include "RestartStateClient.h"
 #include "ResultsStateClient.h"
 #include "ScoreboardComponent.h"
@@ -50,6 +51,9 @@ bool ScoreboardStateClient::Enter() const
     std::weak_ptr<SpriteResource> spriteResource = g_gameClient->GetResourceManager().AddResource<SpriteResource>("scoreboardBackground.png", TEXTURES_DIR, true);
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameClient->GetComponentManager().AddComponent<SpriteComponent>(background);
     spriteComponent.lock()->m_spriteResource = spriteResource;
+
+    GuiComponent& guiComponent = g_gameClient->GetGuiComponent();
+    guiComponent.m_isSettings = false;
 
     ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
     scoreboardComponent.m_mainMenuTimer.Start();

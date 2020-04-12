@@ -4,6 +4,7 @@
 #include "EntityManager.h"
 #include "GameServer.h"
 #include "GameplayComponent.h"
+#include "GuiComponent.h"
 #include "LinkingContext.h"
 #include "PlayStateServer.h"
 #include "StartStateServer.h"
@@ -44,6 +45,9 @@ bool GameplayStateServer::Enter() const
     path.append(serverComponent.m_map);
     MapImporter::Tilemap tilemap = g_gameServer->GetMapImporter().Load(path);
     g_gameServer->GetMapImporter().Create(tilemap);
+
+    GuiComponent& guiComponent = g_gameServer->GetGuiComponent();
+    guiComponent.m_isSettings = false;
 
     GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
     return gameplayComponent.m_fsm.ChangeState("Start");
