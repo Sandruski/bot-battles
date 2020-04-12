@@ -22,15 +22,16 @@ struct WindowComponent {
 
     void LoadFromConfig(const rapidjson::Value& value);
 
+    void UpdateCurrentResolution();
     void UpdateResolution() const;
-    bool UpdateDisplayMode() const;
+    bool UpdateDisplayMode();
 
-    glm::uvec2 GetResolution() const;
-    glm::uvec2 GetBaseResolution() const;
+    glm::vec2 GetProportion() const;
 
     SDL_Window* m_window;
 
     Resolution m_resolution;
+    glm::uvec2 m_currentResolution;
     glm::uvec2 m_baseResolution;
     DisplayMode m_displayMode;
     F32 m_fps;

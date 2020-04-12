@@ -80,10 +80,9 @@ bool ScoreboardStateClient::RenderGui() const
     windowFlags |= ImGuiWindowFlags_NoSavedSettings;
 
     WindowComponent& windowComponent = g_gameClient->GetWindowComponent();
-    glm::uvec2 resolution = windowComponent.GetResolution();
-    ImVec2 position = ImVec2(static_cast<F32>(resolution.x) / 2.0f, static_cast<F32>(resolution.y) / 2.0f);
+    ImVec2 position = ImVec2(static_cast<F32>(windowComponent.m_currentResolution.x) / 2.0f, static_cast<F32>(windowComponent.m_currentResolution.y) / 2.0f);
     ImGui::SetNextWindowPos(position, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-    ImVec2 size = ImVec2(static_cast<F32>(resolution.y) / 2.0f, static_cast<F32>(resolution.x) / 2.0f);
+    ImVec2 size = ImVec2(static_cast<F32>(windowComponent.m_currentResolution.y) / 2.0f, static_cast<F32>(windowComponent.m_currentResolution.x) / 2.0f);
     ImGui::SetNextWindowSize(size, ImGuiCond_Always);
 
     if (ImGui::Begin(GetName().c_str(), nullptr, windowFlags)) {

@@ -19,8 +19,7 @@ HUDSystem::HUDSystem()
 bool HUDSystem::RenderGui()
 {
     WindowComponent& windowComponent = g_game->GetWindowComponent();
-    glm::uvec2 resolution = windowComponent.GetResolution();
-    glm::vec2 proportion = static_cast<glm::vec2>(resolution) / static_cast<glm::vec2>(windowComponent.m_baseResolution);
+    glm::vec2 proportion = windowComponent.GetProportion();
 
     ImGuiWindowFlags windowFlags = 0;
     windowFlags |= ImGuiWindowFlags_NoMove;

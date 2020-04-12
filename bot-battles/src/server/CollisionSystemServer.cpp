@@ -47,8 +47,7 @@ bool CollisionSystemServer::DebugRender()
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     RendererComponent& rendererComponent = g_gameServer->GetRendererComponent();
     WindowComponent& windowComponent = g_gameServer->GetWindowComponent();
-    glm::uvec2 resolution = windowComponent.GetResolution();
-    glm::vec2 proportion = static_cast<glm::vec2>(resolution) / static_cast<glm::vec2>(windowComponent.m_baseResolution);
+    glm::vec2 proportion = windowComponent.GetProportion();
 
     rendererComponent.SetWireframe(true);
 
@@ -82,7 +81,7 @@ bool CollisionSystemServer::DebugRender()
         U32 modelLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "model");
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-        glm::mat4 projection = glm::ortho(0.0f, static_cast<F32>(resolution.x), -static_cast<F32>(resolution.y), 0.0f, static_cast<F32>(LayerType::NEAR_PLANE), -static_cast<F32>(LayerType::FAR_PLANE));
+        glm::mat4 projection = glm::ortho(0.0f, static_cast<F32>(windowComponent.m_currentResolution.x), -static_cast<F32>(windowComponent.m_currentResolution.y), 0.0f, static_cast<F32>(LayerType::NEAR_PLANE), -static_cast<F32>(LayerType::FAR_PLANE));
         U32 projectionLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "projection");
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 

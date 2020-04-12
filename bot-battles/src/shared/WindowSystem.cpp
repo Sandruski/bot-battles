@@ -17,8 +17,7 @@ bool WindowSystem::StartUp()
 
     WindowComponent& windowComponent = g_game->GetWindowComponent();
     U32 flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI;
-    glm::uvec2 resolution = windowComponent.GetResolution();
-    windowComponent.m_window = SDL_CreateWindow(g_game->GetConfig().m_name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, resolution.x, resolution.y, flags);
+    windowComponent.m_window = SDL_CreateWindow(g_game->GetConfig().m_name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowComponent.m_currentResolution.x, windowComponent.m_currentResolution.y, flags);
     if (windowComponent.m_window == nullptr) {
         ELOG("Window could not be created! SDL Error: %s", SDL_GetError());
         return false;
