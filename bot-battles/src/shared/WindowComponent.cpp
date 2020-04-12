@@ -6,6 +6,7 @@ namespace sand {
 WindowComponent::WindowComponent()
     : m_window(nullptr)
     , m_resolution(Resolution::LOW)
+    , m_baseResolution(896, 504)
     , m_displayMode(DisplayMode::WINDOWED)
     , m_fps(0.0f)
 {
@@ -93,7 +94,7 @@ glm::uvec2 WindowComponent::GetResolution() const
     switch (m_resolution) {
 
     case Resolution::LOW: {
-        resolution = glm::vec2(640, 480);
+        resolution = glm::vec2(896, 504);
         break;
     }
 

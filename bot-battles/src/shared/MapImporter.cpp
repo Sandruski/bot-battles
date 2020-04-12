@@ -60,8 +60,6 @@ MapImporter::Tilemap MapImporter::Load(const std::string& path) const
 void MapImporter::Create(const Tilemap& tilemap) const
 {
     WindowComponent& windowComponent = g_game->GetWindowComponent();
-    glm::uvec2 resolution = windowComponent.GetResolution();
-    glm::vec2 tilemapCenterPosition = glm::vec2(static_cast<F32>(tilemap.m_tileSize.x * tilemap.m_tileCount.x) / 2.0f, static_cast<F32>(tilemap.m_tileSize.y * tilemap.m_tileCount.y) / 2.0f);
 
     for (const auto& tilelayer : tilemap.m_tilelayers) {
         for (U32 i = 0; i < tilemap.m_tileCount.x; ++i) {
@@ -74,11 +72,15 @@ void MapImporter::Create(const Tilemap& tilemap) const
                 }
 
                 // Transform
-                glm::uvec2 position = tilemap.MapToWorld(i, j);
-                position += tilemap.m_tileSize / 2u;
-                glm::vec2 relativePosition = tilemapCenterPosition - glm::vec2(static_cast<F32>(position.x), static_cast<F32>(position.y));
+                glm::uvec2 tilePosition = tilemap.MapToWorld(i, j);
+                glm::vec2 worldPosition = static_cast<glm::vec2>(tilePosition);
+                worldPosition += static_cast<glm::vec2>(tilemap.m_tileSize) / 2.0f;
+                worldPosition *= 2.0f;
+                worldPosition -= static_cast<glm::vec2>(tilemap.m_tileSize * tilemap.m_tileCount);
+                worldPosition *= 0.5f;
+                worldPosition += static_cast<glm::vec2>(windowComponent.m_baseResolution) / 2.0f;
                 std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().AddComponent<TransformComponent>(entity);
-                transformComponent.lock()->m_position = relativePosition;
+                transformComponent.lock()->m_position = worldPosition;
                 transformComponent.lock()->m_layerType = LayerType::FLOOR;
 
                 // Sprite
@@ -102,12 +104,16 @@ void MapImporter::Create(const Tilemap& tilemap) const
             Entity entity = g_game->GetEntityManager().AddEntity();
 
             // Transform
-            glm::uvec2 position = object.m_position;
-            position += tilemap.m_tileSize / 2u;
-            position -= glm::uvec2(0, tilemap.m_tileSize.y);
-            glm::vec2 relativePosition = tilemapCenterPosition - glm::vec2(static_cast<F32>(position.x), static_cast<F32>(position.y));
+            glm::uvec2 objectPosition = object.m_position;
+            glm::vec2 worldPosition = static_cast<glm::vec2>(objectPosition);
+            worldPosition += static_cast<glm::vec2>(tilemap.m_tileSize) / 2.0f;
+            worldPosition -= glm::vec2(0.0f, tilemap.m_tileSize.y);
+            worldPosition *= 2.0f;
+            worldPosition -= static_cast<glm::vec2>(tilemap.m_tileSize * tilemap.m_tileCount);
+            worldPosition *= 0.5f;
+            worldPosition += static_cast<glm::vec2>(windowComponent.m_baseResolution) / 2.0f;
             std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().AddComponent<TransformComponent>(entity);
-            transformComponent.lock()->m_position = relativePosition;
+            transformComponent.lock()->m_position = worldPosition;
             transformComponent.lock()->m_layerType = LayerType::OBJECT;
             transformComponent.lock()->m_rotation = object.m_rotation;
 

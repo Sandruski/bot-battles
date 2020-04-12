@@ -18,6 +18,10 @@ HUDSystem::HUDSystem()
 //----------------------------------------------------------------------------------------------------
 bool HUDSystem::RenderGui()
 {
+    WindowComponent& windowComponent = g_game->GetWindowComponent();
+    glm::uvec2 resolution = windowComponent.GetResolution();
+    glm::vec2 proportion = static_cast<glm::vec2>(resolution) / static_cast<glm::vec2>(windowComponent.m_baseResolution);
+
     ImGuiWindowFlags windowFlags = 0;
     windowFlags |= ImGuiWindowFlags_NoMove;
     windowFlags |= ImGuiWindowFlags_NoScrollWithMouse;
@@ -38,9 +42,8 @@ bool HUDSystem::RenderGui()
         }
 
         glm::vec2 finalPosition = transformComponent.lock()->m_position + labelComponent.lock()->m_offset;
-        WindowComponent& windowComponent = g_game->GetWindowComponent();
-        glm::uvec2 resolution = windowComponent.GetResolution();
-        ImVec2 position = ImVec2(finalPosition.x + static_cast<F32>(resolution.x) / 2.0f, finalPosition.y + static_cast<F32>(resolution.y) / 2.0f);
+        finalPosition *= proportion;
+        ImVec2 position = ImVec2(finalPosition.x, finalPosition.y);
         ImGui::SetNextWindowPos(position, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 
         std::string name = "##";
