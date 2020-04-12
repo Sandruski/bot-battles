@@ -20,7 +20,6 @@ static const char* defaultFragmentShaderSource = "#version 330 core\n"
                                                  "out vec4 FragColor;\n"
 
                                                  "in vec2 TextureCoords;\n"
-
                                                  "uniform sampler2D sprite;\n"
                                                  "uniform vec4 color;\n"
                                                  "uniform float pct;\n"

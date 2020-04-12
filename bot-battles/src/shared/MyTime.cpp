@@ -24,13 +24,7 @@ MyTime::MyTime()
     , m_frame(0)
 {
     m_timer.Start();
-}
-
-//----------------------------------------------------------------------------------------------------
-void MyTime::Init()
-{
-    WindowComponent& windowComponent = g_game->GetWindowComponent();
-    m_fpsTrack.resize(static_cast<std::size_t>(windowComponent.m_fps));
+    m_fpsTrack.resize(60);
 }
 
 //----------------------------------------------------------------------------------------------------

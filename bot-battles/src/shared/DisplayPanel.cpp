@@ -26,11 +26,14 @@ bool DisplayPanel::RenderBody() const
     ImGui::Spacing();
 
     WindowComponent& windowComponent = g_game->GetWindowComponent();
-    const char* resolutions[] = { "640x480", "1280x720", "1920x1080" };
-    I32 currentResolution = windowComponent.m_resolution;
-    if (ImGui::Combo("Resolution", &currentResolution, resolutions, IM_ARRAYSIZE(resolutions))) {
-        windowComponent.m_resolution = static_cast<WindowComponent::Resolution>(currentResolution);
-        windowComponent.UpdateResolution();
+    if (windowComponent.m_displayMode != WindowComponent::DisplayMode::FULLSCREEN) {
+        const char* resolutions[] = { "896x504", "1280x720", "1920x1080" };
+        I32 currentResolution = windowComponent.m_resolution;
+        if (ImGui::Combo("Resolution", &currentResolution, resolutions, IM_ARRAYSIZE(resolutions))) {
+            windowComponent.m_resolution = static_cast<WindowComponent::Resolution>(currentResolution);
+            windowComponent.UpdateCurrentResolution();
+            windowComponent.UpdateResolution();
+        }
     }
 
     const char* displayModes[] = { "Fullscreen", "Windowed", "Borderless" };

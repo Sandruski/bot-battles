@@ -6,6 +6,8 @@ namespace sand {
 WindowComponent::WindowComponent()
     : m_window(nullptr)
     , m_resolution(Resolution::LOW)
+    , m_currentResolution(0, 0)
+    , m_baseResolution(896, 504)
     , m_displayMode(DisplayMode::WINDOWED)
     , m_fps(0.0f)
 {
@@ -24,6 +26,8 @@ void WindowComponent::LoadFromConfig(const rapidjson::Value& value)
         m_resolution = Resolution::HIGH;
     }
 
+    UpdateCurrentResolution();
+
     assert(value.HasMember("displayMode"));
     std::string displayMode = value["displayMode"].GetString();
     if (displayMode == "fullscreen") {
@@ -39,23 +43,57 @@ void WindowComponent::LoadFromConfig(const rapidjson::Value& value)
 }
 
 //----------------------------------------------------------------------------------------------------
-void WindowComponent::UpdateResolution() const
+void WindowComponent::UpdateCurrentResolution()
 {
-    glm::uvec2 resolution = GetResolution();
-    SDL_SetWindowSize(m_window, resolution.x, resolution.y);
-    glViewport(0, 0, resolution.x, resolution.y);
+    switch (m_resolution) {
+
+    case Resolution::LOW: {
+        m_currentResolution = glm::vec2(896, 504);
+        break;
+    }
+
+    case Resolution::MEDIUM: {
+        m_currentResolution = glm::vec2(1280, 720);
+        break;
+    }
+
+    case Resolution::HIGH: {
+        m_currentResolution = glm::vec2(1920, 1080);
+        break;
+    }
+
+    default: {
+        break;
+    }
+    }
 }
 
 //----------------------------------------------------------------------------------------------------
-bool WindowComponent::UpdateDisplayMode() const
+void WindowComponent::UpdateResolution() const
+{
+    SDL_SetWindowSize(m_window, m_currentResolution.x, m_currentResolution.y);
+    glViewport(0, 0, m_currentResolution.x, m_currentResolution.y);
+}
+
+//----------------------------------------------------------------------------------------------------
+bool WindowComponent::UpdateDisplayMode()
 {
     switch (m_displayMode) {
 
     case DisplayMode::FULLSCREEN: {
-        if (SDL_SetWindowFullscreen(m_window, SDL_WINDOW_FULLSCREEN) == -1) {
+        if (SDL_SetWindowFullscreen(m_window, SDL_WINDOW_FULLSCREEN_DESKTOP) == -1) {
             ELOG("Fullscreen could not be set");
             return false;
         }
+
+        SDL_DisplayMode dm;
+        if (SDL_GetDesktopDisplayMode(0, &dm) == -1) {
+            ELOG("Fullscreen could not be set");
+            return false;
+        }
+
+        m_currentResolution = glm::uvec2(dm.w, dm.h);
+        UpdateResolution();
         break;
     }
 
@@ -65,6 +103,9 @@ bool WindowComponent::UpdateDisplayMode() const
             return false;
         }
         SDL_SetWindowBordered(m_window, SDL_TRUE);
+
+        UpdateCurrentResolution();
+        UpdateResolution();
         break;
     }
 
@@ -74,6 +115,9 @@ bool WindowComponent::UpdateDisplayMode() const
             return false;
         }
         SDL_SetWindowBordered(m_window, SDL_FALSE);
+
+        UpdateCurrentResolution();
+        UpdateResolution();
         break;
     }
 
@@ -86,32 +130,8 @@ bool WindowComponent::UpdateDisplayMode() const
 }
 
 //----------------------------------------------------------------------------------------------------
-glm::uvec2 WindowComponent::GetResolution() const
+glm::vec2 WindowComponent::GetProportion() const
 {
-    glm::vec2 resolution = glm::vec2(0, 0);
-
-    switch (m_resolution) {
-
-    case Resolution::LOW: {
-        resolution = glm::vec2(640, 480);
-        break;
-    }
-
-    case Resolution::MEDIUM: {
-        resolution = glm::vec2(1280, 720);
-        break;
-    }
-
-    case Resolution::HIGH: {
-        resolution = glm::vec2(1920, 1080);
-        break;
-    }
-
-    default: {
-        break;
-    }
-    }
-
-    return resolution;
+    return static_cast<glm::vec2>(m_currentResolution) / static_cast<glm::vec2>(m_baseResolution);
 }
 }

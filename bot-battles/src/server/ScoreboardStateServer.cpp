@@ -6,6 +6,7 @@
 #include "EntityManager.h"
 #include "FSM.h"
 #include "GameServer.h"
+#include "GuiComponent.h"
 #include "RestartStateServer.h"
 #include "ResultsStateServer.h"
 #include "ScoreboardComponent.h"
@@ -47,10 +48,15 @@ bool ScoreboardStateServer::Enter() const
     // Scene
     Entity background = g_gameServer->GetEntityManager().AddEntity();
     std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().AddComponent<TransformComponent>(background);
+    WindowComponent& windowComponent = g_gameServer->GetWindowComponent();
+    transformComponent.lock()->m_position += static_cast<glm::vec2>(windowComponent.m_baseResolution) / 2.0f;
     transformComponent.lock()->m_layerType = LayerType::BACKGROUND;
     std::weak_ptr<SpriteResource> spriteResource = g_gameServer->GetResourceManager().AddResource<SpriteResource>("scoreboardBackground.png", TEXTURES_DIR, true);
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().AddComponent<SpriteComponent>(background);
     spriteComponent.lock()->m_spriteResource = spriteResource;
+
+    GuiComponent& guiComponent = g_gameServer->GetGuiComponent();
+    guiComponent.m_isSettings = false;
 
     ScoreboardComponent& scoreboardComponent = g_gameServer->GetScoreboardComponent();
     ++scoreboardComponent.m_gameCount;

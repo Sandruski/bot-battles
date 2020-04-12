@@ -75,8 +75,7 @@ bool WeaponSystemServer::Update()
                 F32 y = std::sin(glm::radians(transform.m_rotation));
                 glm::vec2 rotation = glm::vec2(x, y);
                 WindowComponent& windowComponent = g_gameServer->GetWindowComponent();
-                glm::uvec2 resolution = windowComponent.GetResolution();
-                F32 maxLength = static_cast<F32>(std::max(resolution.x, resolution.y));
+                F32 maxLength = static_cast<F32>(std::max(windowComponent.m_currentResolution.x, windowComponent.m_currentResolution.y));
                 std::pair<Entity, std::weak_ptr<ColliderComponent>> object;
                 glm::vec2 intersection;
                 const bool hasIntersected = Raycast(position, rotation, maxLength, object, intersection);
@@ -130,7 +129,7 @@ bool WeaponSystemServer::Render()
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     RendererComponent& rendererComponent = g_gameServer->GetRendererComponent();
     WindowComponent& windowComponent = g_gameServer->GetWindowComponent();
-    glm::uvec2 resolution = windowComponent.GetResolution();
+    glm::vec2 proportion = windowComponent.GetProportion();
 
     for (auto& entity : m_entities) {
         PlayerID playerID = serverComponent.GetPlayerID(entity);
@@ -160,22 +159,26 @@ bool WeaponSystemServer::Render()
         }
 
         glm::mat4 model = glm::mat4(1.0f);
-        glm::vec3 position = transformComponent.lock()->GetDebugPosition();
-        position.x = resolution.x / 2.0f;
-        position.y = resolution.y / 2.0f;
-        model = glm::translate(model, position);
 
         std::array<MeshResource::Vertex, 4> vertices = MeshResource::GetQuadVertices();
         // From
-        vertices[0].m_position = weaponComponent.lock()->m_origin;
+        glm::vec2 from = weaponComponent.lock()->m_origin;
+        from.x *= proportion.x;
+        from.y *= proportion.y;
+        from.y *= -1.0f;
+        vertices[0].m_position = from;
         // To
-        vertices[2].m_position = weaponComponent.lock()->m_destination;
+        glm::vec2 to = weaponComponent.lock()->m_destination;
+        to.x *= proportion.x;
+        to.y *= proportion.y;
+        to.y *= -1.0f;
+        vertices[2].m_position = to;
         rendererComponent.m_meshResource.lock()->ReLoad(vertices);
 
         U32 modelLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "model");
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-        glm::mat4 projection = glm::ortho(0.0f, static_cast<F32>(resolution.x), static_cast<F32>(resolution.y), 0.0f, -static_cast<F32>(LayerType::NEAR_PLANE), -static_cast<F32>(LayerType::FAR_PLANE));
+        glm::mat4 projection = glm::ortho(0.0f, static_cast<F32>(windowComponent.m_currentResolution.x), -static_cast<F32>(windowComponent.m_currentResolution.y), 0.0f, static_cast<F32>(LayerType::NEAR_PLANE), -static_cast<F32>(LayerType::FAR_PLANE));
         U32 projectionLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "projection");
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
