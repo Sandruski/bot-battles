@@ -195,6 +195,9 @@
     <ClCompile Include="ScoreboardStateClient.cpp">
       <Filter>Source Files\States\Scoreboard States</Filter>
     </ClCompile>
+    <ClCompile Include="ScriptingSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientSystem.h">
@@ -271,6 +274,9 @@
     </ClInclude>
     <ClInclude Include="ScoreboardStateClient.h">
       <Filter>Header Files\States\Scoreboard States</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptingSystem.h">
+      <Filter>Header Files\Systems</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

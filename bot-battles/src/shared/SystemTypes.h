@@ -15,6 +15,7 @@ enum class SystemType : U16 {
 
     REMOTE_PLAYER_MOVEMENT,
 
+    SCRIPTING,
     INPUT,
 
     MOVEMENT,

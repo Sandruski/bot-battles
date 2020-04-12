@@ -14,6 +14,7 @@
 #include "RemotePlayerComponent.h"
 #include "RemotePlayerMovementSystem.h"
 #include "ScoreboardStateClient.h"
+#include "ScriptingSystem.h"
 #include "SystemManager.h"
 #include "WeaponSystemClient.h"
 
@@ -59,6 +60,10 @@ bool GameClient::Init()
         return ret;
     }
     ret = m_systemManager->RegisterSystem<OutputSystemClient>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_systemManager->RegisterSystem<ScriptingSystemClient>();
     if (!ret) {
         return ret;
     }

@@ -225,6 +225,7 @@
     <ClCompile Include="RestartStateClient.cpp" />
     <ClCompile Include="ResultsStateClient.cpp" />
     <ClCompile Include="ScoreboardStateClient.cpp" />
+    <ClCompile Include="ScriptingSystem.cpp" />
     <ClCompile Include="SetupStateClient.cpp" />
     <ClCompile Include="StartStateClient.cpp" />
     <ClCompile Include="StatesPanelClient.cpp" />
@@ -257,6 +258,7 @@
     <ClInclude Include="RestartStateClient.h" />
     <ClInclude Include="ResultsStateClient.h" />
     <ClInclude Include="ScoreboardStateClient.h" />
+    <ClInclude Include="ScriptingSystem.h" />
     <ClInclude Include="SetupStateClient.h" />
     <ClInclude Include="StartStateClient.h" />
     <ClInclude Include="WeaponSystemClient.h" />
