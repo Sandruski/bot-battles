@@ -47,4 +47,10 @@ void InputComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U32 /*
         inputStream.Read(m_isShooting);
     }
 }
+
+//----------------------------------------------------------------------------------------------------
+void InputComponent::SetAngularAcceleration()
+{
+    m_angularAcceleration = 1000.0f;
+}
 }

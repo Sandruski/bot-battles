@@ -3,6 +3,11 @@
 
 #include "System.h"
 
+#include <embed.h>
+#include <pybind11.h>
+
+namespace py = pybind11;
+
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
@@ -16,6 +21,7 @@ public:
 public:
     bool StartUp() override;
     bool Update() override;
+    bool ShutDown() override;
 };
 }
 

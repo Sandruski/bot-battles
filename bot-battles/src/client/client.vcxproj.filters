@@ -85,6 +85,12 @@
     <Filter Include="Source Files\Components\System Components">
       <UniqueIdentifier>{871b5168-7097-48e3-b146-4c774134c399}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Scripting">
+      <UniqueIdentifier>{e7ea7c87-e6f1-4dcf-a1b7-6f8e1c8a0a99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting">
+      <UniqueIdentifier>{77062f35-bbce-44a6-ac93-b6135ceb1f73}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -197,6 +203,9 @@
     </ClCompile>
     <ClCompile Include="ScriptingSystem.cpp">
       <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="BotModule.cpp">
+      <Filter>Source Files\Scripting</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
