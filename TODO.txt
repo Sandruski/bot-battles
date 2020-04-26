@@ -1,3 +1,6 @@
+SCRIPTING:
+-Check BUG: the client executed from the exe takes no time to connect and the one just compiled takes a lot. Why???
+
 NETWORKING:
 -Cap MAX_INPUTS_PER_PACKET/similar also for State packets (already doing it for Input packets).
 -Remove Networking inheritance for those components that are actually not being networked or do not need to be networked (see MAX_NETWORK_COMPONENTS). E.g. if Health is not printed then why would the player want it?
@@ -11,10 +14,6 @@ ENGINE:
 
 PLAYLIST:
 -Check that 2 players can connect to the game from different computers with/without different routers.
-
-NOTES:
--Be careful with the Tile object y position!
--Health bars or points or life or insta kill?
 
 KNOWN ISSUES (Will Not Fix):
 -EXPLOIT: remote entities are replicated (updated) when the state is Start. When state is Play and local entity is updated, remote entities are not at the spawn position anymore -> Remote entity shoots at you when you cannot move yet and kills you.

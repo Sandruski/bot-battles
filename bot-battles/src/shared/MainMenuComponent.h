@@ -12,6 +12,7 @@ struct MainMenuComponent {
     MainMenuComponent();
 
     FSM m_fsm;
+    std::pair<std::string, LogTypes> m_log;
 #ifdef _CLIENT
     MyTimer m_helloTimer;
     MyTimer m_guiTimer;

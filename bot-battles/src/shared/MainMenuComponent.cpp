@@ -7,6 +7,7 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 MainMenuComponent::MainMenuComponent()
     : m_fsm()
+    , m_log()
 #ifdef _CLIENT
     , m_helloTimer()
     , m_guiTimer()

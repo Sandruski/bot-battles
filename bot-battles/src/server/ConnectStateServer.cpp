@@ -36,6 +36,9 @@ bool ConnectStateServer::Exit() const
 {
     ILOG("Exiting %s...", GetName().c_str());
 
+    MainMenuComponent& mainMenuComponent = g_gameServer->GetMainMenuComponent();
+    mainMenuComponent.m_log = std::pair<std::string, LogTypes>();
+
     return true;
 }
 

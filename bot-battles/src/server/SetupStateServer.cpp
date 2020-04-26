@@ -53,6 +53,28 @@ bool SetupStateServer::RenderGui() const
             ImGui::EndCombo();
         }
 
+        MainMenuComponent& mainMenuComponent = g_gameServer->GetMainMenuComponent();
+        LogTypes logType = mainMenuComponent.m_log.second;
+        ImVec4 color;
+        switch (logType) {
+        case LogTypes::ILOG: {
+            color = ImVec4(Green.r, Green.g, Green.b, Green.a);
+            break;
+        }
+        case LogTypes::WLOG: {
+            color = ImVec4(Yellow.r, Yellow.g, Yellow.b, Yellow.a);
+            break;
+        }
+        case LogTypes::ELOG: {
+            color = ImVec4(Red.r, Red.g, Red.b, Red.a);
+            break;
+        }
+        default: {
+            break;
+        }
+        }
+        ImGui::TextColored(color, mainMenuComponent.m_log.first.c_str());
+
         const char* start = "Start";
         ImVec2 textSize = ImGui::CalcTextSize(start);
         ImVec2 framePadding = ImGui::GetStyle().FramePadding;
@@ -78,6 +100,9 @@ bool SetupStateServer::Exit() const
 {
     ILOG("Exiting %s...", GetName().c_str());
 
+    MainMenuComponent& mainMenuComponent = g_gameServer->GetMainMenuComponent();
+    mainMenuComponent.m_log = std::pair<std::string, LogTypes>();
+
     return true;
 }
 
@@ -97,8 +122,8 @@ void SetupStateServer::OnNotify(const Event& event)
     }
 
     case EventType::CONNECT_FAILED: {
-        // TODO
-        ELOG("CONNECT_FAILED");
+        MainMenuComponent& mainMenuComponent = g_gameServer->GetMainMenuComponent();
+        mainMenuComponent.m_log = std::make_pair("Map failed", LogTypes::ELOG);
         break;
     }
 
