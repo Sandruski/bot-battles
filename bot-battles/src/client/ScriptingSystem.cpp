@@ -1,5 +1,8 @@
 #include "ScriptingSystem.h"
 
+#include "GameClient.h"
+#include "InputComponent.h"
+
 namespace sand {
 
 /*       
@@ -11,11 +14,11 @@ bool ScriptingSystemClient::StartUp()
 {
     py::initialize_interpreter();
 
+    InputComponent& inputComponent = g_gameClient->GetInputComponent();
+
     try {
         pybind11::module botModule = py::module::import("botCharacter");
-        auto result = botModule.attr("add")(3, 3);
-        int ree = result.cast<int>();
-        assert(ree == 6);
+        botModule.attr("add")(&inputComponent);
     } catch (const std::runtime_error& re) {
         OutputDebugStringA(re.what());
         ::MessageBoxA(NULL, re.what(), "Error initializing sample", MB_OK);
