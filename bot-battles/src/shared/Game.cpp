@@ -173,6 +173,10 @@ bool Game::Init()
     if (!ret) {
         return ret;
     }
+    ret = m_fsm->AddObserver(std::weak_ptr<Observer>(m_fsm));
+    if (!ret) {
+        return ret;
+    }
 
     m_config->LoadFromJson();
 

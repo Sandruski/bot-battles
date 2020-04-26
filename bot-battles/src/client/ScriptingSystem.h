@@ -26,7 +26,7 @@ public:
     void OnNotify(const Event& event) override;
 
 private:
-    void ImportModule() const;
+    void ImportScript() const;
 };
 }
 

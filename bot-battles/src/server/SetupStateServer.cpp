@@ -1,5 +1,6 @@
 #include "SetupStateServer.h"
 
+#include "FSM.h"
 #include "GameServer.h"
 #include "MainMenuComponent.h"
 #include "ServerComponent.h"
@@ -61,7 +62,9 @@ bool SetupStateServer::RenderGui() const
         ImGui::SetCursorPosY(contentRegionMax.y - buttonSize.y);
         // V
         if (ImGui::Button(start)) {
-            ChangeToConnect();
+            Event newEvent;
+            newEvent.eventType = EventType::TRY_CONNECT;
+            g_gameServer->GetFSM().NotifyEvent(newEvent);
         }
 
         ImGui::End();
@@ -79,9 +82,55 @@ bool SetupStateServer::Exit() const
 }
 
 //----------------------------------------------------------------------------------------------------
+void SetupStateServer::OnNotify(const Event& event)
+{
+    switch (event.eventType) {
+
+    case EventType::TRY_CONNECT: {
+        ImportMap();
+        break;
+    }
+
+    case EventType::CONNECT_SUCCESSFUL: {
+        ChangeToConnect();
+        break;
+    }
+
+    case EventType::CONNECT_FAILED: {
+        // TODO
+        ELOG("CONNECT_FAILED");
+        break;
+    }
+
+    default: {
+        break;
+    }
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
 void SetupStateServer::ChangeToConnect() const
 {
     MainMenuComponent& mainMenuComponent = g_gameServer->GetMainMenuComponent();
     mainMenuComponent.m_fsm.ChangeState("Connect");
+}
+
+//----------------------------------------------------------------------------------------------------
+void SetupStateServer::ImportMap() const
+{
+    std::string path = MAPS_DIR;
+    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
+    path.append(serverComponent.m_map);
+    path.append(MAPS_EXTENSION);
+    MapImporter::Tilemap tilemap;
+    const bool result = g_gameServer->GetMapImporter().Load(path, tilemap);
+
+    Event newEvent;
+    if (result) {
+        newEvent.eventType = EventType::CONNECT_SUCCESSFUL;
+    } else {
+        newEvent.eventType = EventType::CONNECT_FAILED;
+    }
+    g_gameServer->GetFSM().NotifyEvent(newEvent);
 }
 }

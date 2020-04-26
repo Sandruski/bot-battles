@@ -38,19 +38,27 @@ bool GameplayStateServer::Create() const
 //----------------------------------------------------------------------------------------------------
 bool GameplayStateServer::Enter() const
 {
+    bool ret = false;
+
     // Scene
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     std::string path = MAPS_DIR;
     path.append(serverComponent.m_map);
     path.append(MAPS_EXTENSION);
-    MapImporter::Tilemap tilemap = g_gameServer->GetMapImporter().Load(path);
+    MapImporter::Tilemap tilemap;
+    ret = g_gameServer->GetMapImporter().Load(path, tilemap);
+    if (!ret) {
+        return ret;
+    }
     g_gameServer->GetMapImporter().Create(tilemap);
 
     GuiComponent& guiComponent = g_gameServer->GetGuiComponent();
     guiComponent.m_isSettings = false;
 
     GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
-    return gameplayComponent.m_fsm.ChangeState("Start");
+    ret = gameplayComponent.m_fsm.ChangeState("Start");
+
+    return ret;
 }
 
 //----------------------------------------------------------------------------------------------------

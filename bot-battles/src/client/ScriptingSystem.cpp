@@ -60,7 +60,7 @@ void ScriptingSystemClient::OnNotify(const Event& event)
     switch (event.eventType) {
 
     case EventType::TRY_CONNECT: {
-        ImportModule();
+        ImportScript();
         break;
     }
 
@@ -71,12 +71,12 @@ void ScriptingSystemClient::OnNotify(const Event& event)
 }
 
 //----------------------------------------------------------------------------------------------------
-void ScriptingSystemClient::ImportModule() const
+void ScriptingSystemClient::ImportScript() const
 {
-    ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();
-    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     Event newEvent;
     try {
+        ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();
+        ClientComponent& clientComponent = g_gameClient->GetClientComponent();
         scriptingComponent.m_botModule = py::module::import(clientComponent.m_script.c_str());
         newEvent.eventType = EventType::CONNECT_SUCCESSFUL;
     } catch (const std::runtime_error& /*re*/) {

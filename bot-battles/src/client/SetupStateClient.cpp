@@ -78,6 +78,7 @@ void SetupStateClient::OnNotify(const Event& event)
 
     case EventType::CONNECT_FAILED: {
         // TODO
+        ELOG("CONNECT_FAILED");
         break;
     }
 
