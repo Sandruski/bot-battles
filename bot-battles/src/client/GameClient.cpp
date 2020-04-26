@@ -101,6 +101,19 @@ bool GameClient::Init()
     if (!ret) {
         return ret;
     }
+    std::weak_ptr<ScriptingSystemClient> scriptingSystem = m_systemManager->GetSystem<ScriptingSystemClient>();
+    ret = clientSystem.lock()->AddObserver(scriptingSystem);
+    if (!ret) {
+        return ret;
+    }
+    ret = m_fsm->AddObserver(scriptingSystem);
+    if (!ret) {
+        return ret;
+    }
+    ret = scriptingSystem.lock()->AddObserver(std::weak_ptr<Observer>(m_fsm));
+    if (!ret) {
+        return ret;
+    }
 
     ret = Game::Init();
 

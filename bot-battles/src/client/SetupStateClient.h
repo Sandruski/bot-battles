@@ -20,6 +20,8 @@ public:
     bool RenderGui() const override;
     bool Exit() const override;
 
+    void OnNotify(const Event& event) override;
+
 private:
     void ChangeToConnect() const; // if button
 };

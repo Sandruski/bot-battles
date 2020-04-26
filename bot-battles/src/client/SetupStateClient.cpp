@@ -30,6 +30,17 @@ bool SetupStateClient::RenderGui() const
 
     ImGui::InputText("Name", &clientComponent.m_name);
 
+    if (ImGui::BeginCombo("Script", clientComponent.m_script.c_str())) {
+        std::vector<std::string> entries = g_gameClient->GetFileSystem().GetFilesFromDirectory(SCRIPTS_DIR, SCRIPTS_EXTENSION);
+        for (const auto& entry : entries) {
+            std::string name = g_gameClient->GetFileSystem().GetName(entry);
+            if (ImGui::Selectable(name.c_str())) {
+                clientComponent.m_script = name;
+            }
+        }
+        ImGui::EndCombo();
+    }
+
     const char* start = "Start";
     ImVec2 textSize = ImGui::CalcTextSize(start);
     ImVec2 framePadding = ImGui::GetStyle().FramePadding;
@@ -39,7 +50,9 @@ bool SetupStateClient::RenderGui() const
     ImGui::SetCursorPosY(contentRegionMax.y - buttonSize.y);
     // V
     if (ImGui::Button(start)) {
-        ChangeToConnect();
+        Event newEvent;
+        newEvent.eventType = EventType::TRY_CONNECT;
+        g_gameClient->GetFSM().NotifyEvent(newEvent);
     }
 
     return true;
@@ -51,6 +64,27 @@ bool SetupStateClient::Exit() const
     ILOG("Exiting %s...", GetName().c_str());
 
     return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+void SetupStateClient::OnNotify(const Event& event)
+{
+    switch (event.eventType) {
+
+    case EventType::CONNECT_SUCCESSFUL: {
+        ChangeToConnect();
+        break;
+    }
+
+    case EventType::CONNECT_FAILED: {
+        // TODO
+        break;
+    }
+
+    default: {
+        break;
+    }
+    }
 }
 
 //----------------------------------------------------------------------------------------------------

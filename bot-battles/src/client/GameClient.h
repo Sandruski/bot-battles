@@ -4,6 +4,7 @@
 #include "ClientComponent.h"
 #include "Game.h"
 #include "InputComponent.h"
+#include "ScriptingComponent.h"
 
 namespace sand {
 
@@ -18,12 +19,14 @@ public:
     bool Update() override;
 
     ClientComponent& GetClientComponent() { return m_clientComponent; }
+    ScriptingComponent& GetScriptingComponent() { return m_scriptingComponent; }
     InputComponent& GetInputComponent() { return m_inputComponent; }
 
 private:
     std::shared_ptr<ConfigClient> m_configClient;
 
     ClientComponent m_clientComponent;
+    ScriptingComponent m_scriptingComponent;
     InputComponent m_inputComponent;
 };
 

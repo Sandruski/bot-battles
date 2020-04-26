@@ -207,6 +207,9 @@
     <ClCompile Include="BotModule.cpp">
       <Filter>Source Files\Scripting</Filter>
     </ClCompile>
+    <ClCompile Include="ScriptingComponent.cpp">
+      <Filter>Source Files\Components\System Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientSystem.h">
@@ -286,6 +289,9 @@
     </ClInclude>
     <ClInclude Include="ScriptingSystem.h">
       <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptingComponent.h">
+      <Filter>Header Files\Components\System Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

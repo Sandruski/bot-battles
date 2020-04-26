@@ -39,9 +39,9 @@ bool GameplayStateClient::Enter() const
 {
     // Scene
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    std::string path;
-    path.append(MAPS_DIR);
+    std::string path = MAPS_DIR;
     path.append(clientComponent.m_map);
+    path.append(MAPS_EXTENSION);
     MapImporter::Tilemap tilemap = g_gameClient->GetMapImporter().Load(path);
     g_gameClient->GetMapImporter().Create(tilemap);
 

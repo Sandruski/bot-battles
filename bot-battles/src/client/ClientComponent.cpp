@@ -1,5 +1,7 @@
 #include "ClientComponent.h"
 
+#include "GameClient.h"
+
 namespace sand {
 
 /* 
@@ -26,6 +28,7 @@ ClientComponent::ClientComponent()
     , m_port()
     , m_map()
     , m_name()
+    , m_script()
     , m_playerID(INVALID_PLAYER_ID)
     , m_entity(INVALID_ENTITY)
     , m_lastPacketTime(0.0f)
@@ -62,6 +65,26 @@ void ClientComponent::LoadFromConfig(const rapidjson::Value& value)
 
     assert(value.HasMember("defaultName"));
     m_name = value["defaultName"].GetString();
+
+    assert(value.HasMember("defaultScript"));
+    m_script = value["defaultScript"].GetString();
+    std::vector<std::string> entries = g_gameClient->GetFileSystem().GetFilesFromDirectory(SCRIPTS_DIR, SCRIPTS_EXTENSION);
+    bool hasScript = false;
+    for (const auto& entry : entries) {
+        std::string name = g_gameClient->GetFileSystem().GetName(entry);
+        if (name == m_script) {
+            hasScript = true;
+            break;
+        }
+    }
+    if (!hasScript) {
+        if (!entries.empty()) {
+            std::string name = g_gameClient->GetFileSystem().GetName(entries.front());
+            m_script = name;
+        } else {
+            m_script = "";
+        }
+    }
 
     assert(value.HasMember("serverFps"));
     F32 serverFps = value["serverFps"].GetFloat();

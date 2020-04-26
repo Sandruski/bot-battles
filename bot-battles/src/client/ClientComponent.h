@@ -41,6 +41,7 @@ struct ClientComponent : public Component {
     std::string m_map;
 
     std::string m_name;
+    std::string m_script;
 
     PlayerID m_playerID;
     Entity m_entity;

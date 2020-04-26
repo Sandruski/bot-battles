@@ -28,23 +28,36 @@ bool FileSystem::ParseJsonFromFile(const std::string& path, rapidjson::Document&
 }
 
 //----------------------------------------------------------------------------------------------------
-std::vector<std::string> FileSystem::GetFilesFromDirectory(const std::string& path) const
+std::vector<std::string> FileSystem::GetFilesFromDirectory(const std::string& path, const std::string& extension) const
 {
     std::vector<std::string> entries;
 
     for (const auto& entry : std::filesystem::recursive_directory_iterator(path)) {
         std::string entryPath = entry.path().string();
-        std::string extension = GetExtension(entryPath);
-        if (extension == DEFAULT_EXTENSION) {
-            std::size_t i = entryPath.find(MAPS_DIR);
+        std::string entryExtension = GetExtension(entryPath);
+        if (entryExtension == extension) {
+            std::size_t i = entryPath.find(path);
             if (i != std::string::npos) {
-                entryPath.erase(i, strlen(MAPS_DIR));
+                entryPath.erase(i, path.size());
                 entries.emplace_back(entryPath);
             }
         }
     }
 
     return entries;
+}
+
+//----------------------------------------------------------------------------------------------------
+std::string FileSystem::GetName(const std::string& path) const
+{
+    std::string name;
+
+    std::size_t i = path.find_last_of(".");
+    if (i != std::string::npos) {
+        name = path.substr(0, i);
+    }
+
+    return name;
 }
 
 //----------------------------------------------------------------------------------------------------

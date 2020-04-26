@@ -6,4 +6,9 @@
 
 #include "pch.h"
 
+#include <embed.h>
+#include <pybind11.h>
+
+namespace py = pybind11;
+
 #endif

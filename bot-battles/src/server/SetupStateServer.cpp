@@ -42,10 +42,11 @@ bool SetupStateServer::RenderGui() const
         ImGui::InputText("Port", &serverComponent.m_port);
 
         if (ImGui::BeginCombo("Map", serverComponent.m_map.c_str())) {
-            std::vector<std::string> entries = g_gameServer->GetFileSystem().GetFilesFromDirectory(MAPS_DIR);
+            std::vector<std::string> entries = g_gameServer->GetFileSystem().GetFilesFromDirectory(MAPS_DIR, MAPS_EXTENSION);
             for (const auto& entry : entries) {
-                if (ImGui::Selectable(entry.c_str())) {
-                    serverComponent.m_map = entry;
+                std::string name = g_gameServer->GetFileSystem().GetName(entry);
+                if (ImGui::Selectable(name.c_str())) {
+                    serverComponent.m_map = name;
                 }
             }
             ImGui::EndCombo();

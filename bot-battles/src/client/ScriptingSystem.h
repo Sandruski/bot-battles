@@ -11,7 +11,7 @@ namespace py = pybind11;
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class ScriptingSystemClient : public System {
+class ScriptingSystemClient : public System, public Subject, public Observer {
 public:
     static SystemType GetType()
     {
@@ -22,6 +22,11 @@ public:
     bool StartUp() override;
     bool Update() override;
     bool ShutDown() override;
+
+    void OnNotify(const Event& event) override;
+
+private:
+    void ImportModule() const;
 };
 }
 

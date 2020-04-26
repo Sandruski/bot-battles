@@ -1,13 +1,7 @@
 #ifndef __BOT_MODULE_H__
 #define __BOT_MODULE_H__
 
-#include <embed.h>
-#include <numpy.h>
-#include <pybind11.h>
-
 #include "InputComponent.h"
-
-namespace py = pybind11;
 
 namespace sand {
 
@@ -15,7 +9,6 @@ PYBIND11_EMBEDDED_MODULE(bot, m)
 {
     m.doc() = "my module";
 
-    //PYBIND11_NUMPY_DTYPE(glm::vec2, x, y);
     py::class_<glm::vec2>(m, "vec2", py::buffer_protocol())
         .def_buffer([](glm::vec2& m) -> py::buffer_info {
             return py::buffer_info(
@@ -29,7 +22,6 @@ PYBIND11_EMBEDDED_MODULE(bot, m)
         });
 
     py::class_<InputComponent>(m, "InputComponent")
-        //.def(py::init())
         .def_readwrite("acceleration", &InputComponent::m_acceleration)
         .def_readwrite("angularAcceleration", &InputComponent::m_angularAcceleration);
 }

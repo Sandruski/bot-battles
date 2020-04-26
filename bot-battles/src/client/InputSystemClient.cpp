@@ -18,13 +18,13 @@ bool InputSystemClient::Update()
     }
 
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    const bool hasPlayer = clientComponent.m_playerID < INVALID_PLAYER_ID;
     const bool hasEntity = clientComponent.m_entity < INVALID_ENTITY;
-    if (!hasEntity) {
-        ILOG("Input could not be get because entity is not created");
+    if (!hasPlayer || !hasEntity) {
         return true;
     }
 
-    InputComponent& inputComponent = g_gameClient->GetInputComponent();
+    /*
     inputComponent.m_acceleration = glm::vec2(0.0f, 0.0f);
     inputComponent.m_angularAcceleration = 0.0f;
     inputComponent.m_isShooting = false;
@@ -53,8 +53,10 @@ bool InputSystemClient::Update()
     glm::normalize(inputComponent.m_acceleration);
     inputComponent.m_acceleration *= inputComponent.m_maxAcceleration;
     inputComponent.m_angularAcceleration *= inputComponent.m_maxAngularAcceleration;
+    */
 
     if (!clientComponent.m_inputBuffer.IsFull()) {
+        InputComponent& inputComponent = g_gameClient->GetInputComponent();
         U32 dirtyState = 0;
 
         if (!clientComponent.m_isLastInputTransformPending && !clientComponent.m_isLastInputWeaponPending) {
@@ -77,7 +79,6 @@ bool InputSystemClient::Update()
         if (dirtyState != 0) {
             F32 dt = MyTime::GetInstance().GetDt();
             Input input = Input(inputComponent, dirtyState, dt, clientComponent.m_inputBuffer.m_back, clientComponent.m_interpolationFromFrame, clientComponent.m_interpolationToFrame, clientComponent.m_interpolationPercentage);
-            ILOG("NEW FRAME %u", clientComponent.m_inputBuffer.m_back);
             clientComponent.m_inputBuffer.Add(input);
         }
     }

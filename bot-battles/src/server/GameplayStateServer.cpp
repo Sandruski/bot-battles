@@ -40,9 +40,9 @@ bool GameplayStateServer::Enter() const
 {
     // Scene
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
-    std::string path;
-    path.append(MAPS_DIR);
+    std::string path = MAPS_DIR;
     path.append(serverComponent.m_map);
+    path.append(MAPS_EXTENSION);
     MapImporter::Tilemap tilemap = g_gameServer->GetMapImporter().Load(path);
     g_gameServer->GetMapImporter().Create(tilemap);
 

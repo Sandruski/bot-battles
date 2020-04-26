@@ -25,6 +25,10 @@ enum class EventType {
     CONNECT_SOCKETS,
     SOCKETS_CONNECTED,
 
+    TRY_CONNECT,
+    CONNECT_SUCCESSFUL,
+    CONNECT_FAILED,
+
 #ifdef _CLIENT
     CHECK_CONNECT,
 

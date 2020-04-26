@@ -1,6 +1,7 @@
 #include "ServerComponent.h"
 
 #include "ClientProxy.h"
+#include "GameServer.h"
 #include "SocketAddress.h"
 #include "TCPSocket.h"
 
@@ -38,6 +39,23 @@ void ServerComponent::LoadFromConfig(const rapidjson::Value& value)
 
     assert(value.HasMember("defaultMap"));
     m_map = value["defaultMap"].GetString();
+    std::vector<std::string> entries = g_gameServer->GetFileSystem().GetFilesFromDirectory(MAPS_DIR, MAPS_EXTENSION);
+    bool hasMap = false;
+    for (const auto& entry : entries) {
+        std::string name = g_gameServer->GetFileSystem().GetName(entry);
+        if (name == m_map) {
+            hasMap = true;
+            break;
+        }
+    }
+    if (!hasMap) {
+        if (!entries.empty()) {
+            std::string name = g_gameServer->GetFileSystem().GetName(entries.front());
+            m_map = name;
+        } else {
+            m_map = "";
+        }
+    }
 }
 
 //----------------------------------------------------------------------------------------------------

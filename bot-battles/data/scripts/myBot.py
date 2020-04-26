@@ -2,7 +2,7 @@
 import bot
 import numpy as np
 
-def add(input):
+def tick(input):
     acceleration = np.array(input.acceleration, copy=False)
     acceleration[:] = [5,10]
     input.angularAcceleration = 8
