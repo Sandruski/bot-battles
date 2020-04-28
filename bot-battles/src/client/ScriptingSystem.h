@@ -23,12 +23,12 @@ public:
 
     bool StartUp() override;
     bool Update() override;
-    bool ShutDown() override;
 
     void OnNotify(const Event& event) override;
 
 private:
-    void ImportScript() const;
+    void ImportScripts() const;
+    void InitScripts() const;
 };
 }
 

@@ -20,6 +20,8 @@ enum class EventType {
     PLAYER_READDED,
     PLAYER_REMOVED,
 
+    PLAYER_ENTITY_ADDED,
+
     HEALTH_EMPTIED,
 
     CONNECT_SOCKETS,

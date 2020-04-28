@@ -4,7 +4,9 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 ScriptingComponent::ScriptingComponent()
-    : m_botModule()
+    : m_scopedInterpreter()
+    , m_mainModule()
+    , m_myBotModule()
 {
 }
 }

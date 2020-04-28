@@ -11,7 +11,10 @@ struct ScriptingComponent : public Component {
 
     ScriptingComponent();
 
-    py::module m_botModule;
+    py::scoped_interpreter m_scopedInterpreter;
+    py::module m_mainModule;
+    ;
+    py::module m_myBotModule;
 };
 }
 

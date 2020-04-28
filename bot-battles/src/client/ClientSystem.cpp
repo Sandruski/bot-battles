@@ -425,7 +425,13 @@ void ClientSystem::ReceiveStatePacket(ClientComponent& clientComponent, InputMem
     inputStream.Read(clientComponent.m_lastAckdFrame);
     ILOG("Last ackd %u", clientComponent.m_lastAckdFrame);
 
+    Entity entity = clientComponent.m_entity;
     clientComponent.m_replicationManager.Read(inputStream);
+    if (clientComponent.m_entity != entity) {
+        Event newEvent;
+        newEvent.eventType = EventType::PLAYER_ENTITY_ADDED;
+        NotifyEvent(newEvent);
+    }
 }
 
 //----------------------------------------------------------------------------------------------------
