@@ -64,7 +64,7 @@ bool CollisionSystemServer::DebugRender()
         }
 
         glm::mat4 model = glm::mat4(1.0f);
-        glm::vec3 position = transformComponent.lock()->GetDebugPosition();
+        glm::vec3 position = transformComponent.lock()->GetDebugPositionAndLayer();
         position.x *= proportion.x;
         position.y *= proportion.y;
         position.y *= -1.0f;

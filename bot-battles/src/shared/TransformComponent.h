@@ -39,9 +39,12 @@ struct TransformComponent : public Component
     void UpdatePosition(const glm::vec2& acceleration, F32 dt);
     void UpdateRotation(F32 angularAcceleration, F32 dt);
 
-    glm::vec3 GetPosition() const;
-    glm::vec3 GetDebugPosition() const;
-    glm::vec2 GetRotation() const;
+    glm::vec3 GetPositionAndLayer() const;
+    glm::vec3 GetDebugPositionAndLayer() const;
+    glm::vec2 GetRotationVector() const;
+
+    glm::vec2 GetPosition() const;
+    F32 GetRotation() const;
 
     // Networked
     glm::vec2 m_position;

@@ -1,5 +1,5 @@
-#ifndef __COLLIDER_COMPONENT_H__
-#define __COLLIDER_COMPONENT_H__
+#ifndef __BOT_COMPONENT_H__
+#define __BOT_COMPONENT_H__
 
 #include "Component.h"
 #ifdef _CLIENT
@@ -12,31 +12,24 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 // Entity Component
-struct ColliderComponent : public Component
+struct BotComponent : public Component
 #ifdef _CLIENT
     ,
-                           public NetworkableReadObject
+                      public NetworkableReadObject
 #elif defined(_SERVER)
     ,
-                           public NetworkableWriteObject
+                      public NetworkableWriteObject
 #endif
 {
-    static ComponentType GetType() { return ComponentType::COLLIDER; }
+    static ComponentType GetType() { return ComponentType::BOT; }
 
-    ColliderComponent();
+    BotComponent();
 
 #ifdef _CLIENT
     void Read(InputMemoryStream& inputStream, U32 dirtyState, U32 frame, ReplicationActionType replicationActionType, Entity entity) override;
 #elif defined(_SERVER)
     U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override;
 #endif
-
-    // Networked
-    glm::vec2 m_size;
-
-    // Local
-    glm::vec2 m_position;
 };
 }
-
 #endif

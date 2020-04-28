@@ -1,7 +1,6 @@
 #include "ColliderComponent.h"
 
 #include "ComponentMemberTypes.h"
-#include "TransformComponent.h"
 
 namespace sand {
 

@@ -103,7 +103,7 @@ bool RendererSystem::Render()
         }
 
         glm::mat4 model = glm::mat4(1.0f);
-        glm::vec3 position = transformComponent.lock()->GetPosition();
+        glm::vec3 position = transformComponent.lock()->GetPositionAndLayer();
         position.x *= proportion.x;
         position.y *= proportion.y;
         position.y *= -1.0f;

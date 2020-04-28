@@ -52,7 +52,7 @@ bool WeaponSystemClient::Update()
                 std::weak_ptr<WeaponComponent> weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(entity);
                 std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
                 glm::vec2 position = transformComponent.lock()->m_position;
-                glm::vec2 rotation = transformComponent.lock()->GetRotation();
+                glm::vec2 rotation = transformComponent.lock()->GetRotationVector();
                 weaponComponent.lock()->m_origin = position;
                 WindowComponent& windowComponent = g_gameClient->GetWindowComponent();
                 F32 maxLength = static_cast<F32>(std::max(windowComponent.m_currentResolution.x, windowComponent.m_currentResolution.y));

@@ -384,6 +384,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)WorkingDirDefs.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)BotComponent.h">
+      <Filter>Header Files\Components\Entity Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp">
@@ -565,6 +568,9 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)WindowSystem.cpp">
       <Filter>Source Files\Systems\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)BotComponent.cpp">
+      <Filter>Source Files\Components\Entity Components</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

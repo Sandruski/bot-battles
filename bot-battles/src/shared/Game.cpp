@@ -1,5 +1,6 @@
 #include "Game.h"
 
+#include "BotComponent.h"
 #include "ColliderComponent.h"
 #include "ComponentManager.h"
 #include "Config.h"
@@ -116,6 +117,10 @@ bool Game::Init()
         return ret;
     }
     ret = m_componentManager->RegisterComponent<SpawnComponent>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_componentManager->RegisterComponent<BotComponent>();
     if (!ret) {
         return ret;
     }

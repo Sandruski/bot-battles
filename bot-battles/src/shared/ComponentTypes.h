@@ -10,6 +10,7 @@ enum class ComponentType : U16 {
     COLLIDER,
     HEALTH,
     SPAWN,
+    BOT,
 
 #ifdef _DRAW
     LABEL,

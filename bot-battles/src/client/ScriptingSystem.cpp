@@ -1,13 +1,23 @@
 #include "ScriptingSystem.h"
 
 #include "ClientComponent.h"
+#include "ComponentManager.h"
 #include "GameClient.h"
 #include "GameplayComponent.h"
 #include "InputComponent.h"
+#include "LinkingContext.h"
 #include "ScriptingComponent.h"
 #include "State.h"
+#include "TransformComponent.h"
 
 namespace sand {
+
+//----------------------------------------------------------------------------------------------------
+ScriptingSystemClient::ScriptingSystemClient()
+{
+    m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
+    m_signature |= 1 << static_cast<U16>(ComponentType::LOCAL_PLAYER);
+}
 
 //----------------------------------------------------------------------------------------------------
 bool ScriptingSystemClient::StartUp()
@@ -41,7 +51,13 @@ bool ScriptingSystemClient::Update()
 
     ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();
     InputComponent& inputComponent = g_gameClient->GetInputComponent();
-    scriptingComponent.m_botModule.attr("tick")(&inputComponent);
+
+    try {
+        scriptingComponent.m_botModule.attr("update")(&inputComponent);
+    } catch (const std::runtime_error& re) {
+        OutputDebugStringA(re.what());
+        ::MessageBoxA(NULL, re.what(), "Error initializing sample", MB_OK);
+    }
 
     return true;
 }
@@ -74,14 +90,28 @@ void ScriptingSystemClient::OnNotify(const Event& event)
 void ScriptingSystemClient::ImportScript() const
 {
     Event newEvent;
-    try {
-        ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();
-        ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-        scriptingComponent.m_botModule = py::module::import(clientComponent.m_script.c_str());
-        newEvent.eventType = EventType::CONNECT_SUCCESSFUL;
-    } catch (const std::runtime_error& /*re*/) {
-        newEvent.eventType = EventType::CONNECT_FAILED;
+    newEvent.eventType = EventType::CONNECT_FAILED;
+
+    for (auto& entity : m_entities) {
+        if (g_gameClient->GetLinkingContext().GetNetworkID(entity) >= INVALID_NETWORK_ID) {
+            continue;
+        }
+
+        try {
+            ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();
+            ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+            scriptingComponent.m_botModule = py::module::import(clientComponent.m_script.c_str());
+
+            std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
+            scriptingComponent.m_botModule.attr("init")(transformComponent.lock());
+
+            newEvent.eventType = EventType::CONNECT_SUCCESSFUL;
+        } catch (const std::runtime_error& /*re*/) {
+        }
+
+        break;
     }
+
     NotifyEvent(newEvent);
 }
 }

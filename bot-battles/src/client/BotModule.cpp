@@ -2,6 +2,13 @@
 #define __BOT_MODULE_H__
 
 #include "InputComponent.h"
+#include "TransformComponent.h"
+
+// TODO: remove this. We already have it in the pchClient.h
+#include <embed.h>
+#include <pybind11.h>
+
+namespace py = pybind11;
 
 namespace sand {
 
@@ -24,6 +31,10 @@ PYBIND11_EMBEDDED_MODULE(bot, m)
     py::class_<InputComponent>(m, "InputComponent")
         .def_readwrite("acceleration", &InputComponent::m_acceleration)
         .def_readwrite("angularAcceleration", &InputComponent::m_angularAcceleration);
+
+    py::class_<TransformComponent>(m, "TransformComponent")
+        .def_property_readonly("position", &TransformComponent::GetPosition)
+        .def_property_readonly("rotation", &TransformComponent::GetRotation);
 }
 }
 

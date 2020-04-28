@@ -19,6 +19,8 @@ public:
     }
 
 public:
+    ScriptingSystemClient();
+
     bool StartUp() override;
     bool Update() override;
     bool ShutDown() override;
