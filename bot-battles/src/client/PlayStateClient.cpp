@@ -5,6 +5,7 @@
 #include "FSM.h"
 #include "GameClient.h"
 #include "LinkingContext.h"
+#include "WindowComponent.h"
 
 namespace sand {
 
@@ -18,6 +19,55 @@ std::string PlayStateClient::GetName() const
 bool PlayStateClient::Enter() const
 {
     ILOG("Entering %s...", GetName().c_str());
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool PlayStateClient::RenderGui() const
+{
+    ImGuiWindowFlags windowFlags = 0;
+    windowFlags |= ImGuiWindowFlags_NoResize;
+    windowFlags |= ImGuiWindowFlags_NoMove;
+    windowFlags |= ImGuiWindowFlags_NoScrollbar;
+    windowFlags |= ImGuiWindowFlags_NoCollapse;
+    windowFlags |= ImGuiWindowFlags_NoSavedSettings;
+
+    WindowComponent& windowComponent = g_gameClient->GetWindowComponent();
+    ImVec2 position = ImVec2(static_cast<F32>(windowComponent.m_currentResolution.x) / 2.0f, static_cast<F32>(windowComponent.m_currentResolution.y) / 1.15f);
+    ImGui::SetNextWindowPos(position, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+    ImVec2 size = ImVec2(static_cast<F32>(windowComponent.m_currentResolution.y), static_cast<F32>(windowComponent.m_currentResolution.x) / 8.0f);
+    ImGui::SetNextWindowSize(size, ImGuiCond_Always);
+
+    if (ImGui::Begin("Output", nullptr, windowFlags)) {
+        if (ImGui::BeginChild("##console", ImVec2(0, 0), false, windowFlags)) {
+            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
+
+            GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+            const char* bufBegin = gameplayComponent.m_buf.begin();
+            const char* bufEnd = gameplayComponent.m_buf.end();
+            ImGuiListClipper clipper;
+            clipper.Begin(gameplayComponent.m_lineOffsets.Size);
+            while (clipper.Step()) {
+                for (I32 lineNumber = clipper.DisplayStart; lineNumber < clipper.DisplayEnd; ++lineNumber) {
+                    const char* lineStart = bufBegin + gameplayComponent.m_lineOffsets[lineNumber];
+                    const char* lineEnd = (lineNumber + 1 < gameplayComponent.m_lineOffsets.Size) ? (bufBegin + gameplayComponent.m_lineOffsets[lineNumber + 1] - 1) : bufEnd;
+                    ImGui::TextUnformatted(lineStart, lineEnd);
+                }
+            }
+            clipper.End();
+
+            ImGui::PopStyleVar();
+
+            if (ImGui::GetScrollY() >= ImGui::GetScrollMaxY()) {
+                ImGui::SetScrollHereY(1.0f);
+            }
+
+            ImGui::EndChild();
+        }
+
+        ImGui::End();
+    }
 
     return true;
 }

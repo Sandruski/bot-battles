@@ -3,6 +3,7 @@
 
 #include "InputComponent.h"
 #include "TransformComponent.h"
+#include "UtilsClient.h"
 
 // TODO: remove this. We already have it in the pchClient.h
 #include <embed.h>
@@ -15,6 +16,8 @@ namespace sand {
 PYBIND11_EMBEDDED_MODULE(bot, m)
 {
     m.doc() = "my module";
+
+    m.def("log", &PyLog);
 
     py::class_<glm::vec2>(m, "vec2", py::buffer_protocol())
         .def_buffer([](glm::vec2& m) -> py::buffer_info {

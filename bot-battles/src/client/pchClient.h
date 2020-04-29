@@ -11,4 +11,6 @@
 
 namespace py = pybind11;
 
+#include "UtilsClient.h"
+
 #endif

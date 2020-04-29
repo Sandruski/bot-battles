@@ -11,6 +11,7 @@
 #define ELOG(format, ...) LOG(sand::LogTypes::ELOG, format, __VA_ARGS__)
 
 #define NETLOG(format, ...) sand::NetLog(__FILE__, __LINE__, __FUNCTION__, format, __VA_ARGS__)
+#define PYLOG(format, ...) sand::Log(__FILE__, __LINE__, __FUNCTION__, sand::LogTypes::PLOG, format, __VA_ARGS__)
 
 namespace sand {
 
@@ -18,7 +19,8 @@ enum class LogTypes {
 
     ILOG,
     WLOG,
-    ELOG
+    ELOG,
+    PLOG
 };
 
 void Log(const char* file, int line, const char* function, LogTypes type, const char* format, ...);

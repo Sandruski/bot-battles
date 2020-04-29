@@ -91,6 +91,12 @@
     <Filter Include="Source Files\Scripting">
       <UniqueIdentifier>{77062f35-bbce-44a6-ac93-b6135ceb1f73}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Utils">
+      <UniqueIdentifier>{f3b40dd5-5045-4985-8815-2f06b5cf8995}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utils">
+      <UniqueIdentifier>{67f23cbf-b8ee-4937-8579-ab78d5c59de9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -210,6 +216,9 @@
     <ClCompile Include="ScriptingComponent.cpp">
       <Filter>Source Files\Components\System Components</Filter>
     </ClCompile>
+    <ClCompile Include="UtilsClient.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientSystem.h">
@@ -292,6 +301,9 @@
     </ClInclude>
     <ClInclude Include="ScriptingComponent.h">
       <Filter>Header Files\Components\System Components</Filter>
+    </ClInclude>
+    <ClInclude Include="UtilsClient.h">
+      <Filter>Header Files\Utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

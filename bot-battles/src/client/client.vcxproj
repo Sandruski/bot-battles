@@ -235,6 +235,7 @@
     <ClCompile Include="InputSystemClient.cpp" />
     <ClCompile Include="ReplicationManagerClient.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="UtilsClient.cpp" />
     <ClCompile Include="WeaponSystemClient.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -264,6 +265,7 @@
     <ClInclude Include="ScriptingSystem.h" />
     <ClInclude Include="SetupStateClient.h" />
     <ClInclude Include="StartStateClient.h" />
+    <ClInclude Include="UtilsClient.h" />
     <ClInclude Include="WeaponSystemClient.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

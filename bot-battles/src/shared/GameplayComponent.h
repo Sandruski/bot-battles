@@ -11,7 +11,16 @@ struct GameplayComponent {
 
     GameplayComponent();
 
+#ifdef _CLIENT
+    void AddLog(const char* log);
+    void ClearLogs();
+#endif
+
     FSM m_fsm;
+#ifdef _CLIENT
+    ImGuiTextBuffer m_buf;
+    ImVector<I32> m_lineOffsets;
+#endif
 };
 }
 

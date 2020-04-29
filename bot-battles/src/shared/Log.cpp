@@ -25,6 +25,10 @@ void Log(const char* file, int line, const char* function, LogTypes type, const 
         sprintf_s(tmp_string2, 4096, "%s(%d)%s [ERROR]: %s\n", file, line, function, tmp_string);
         break;
     }
+    case LogTypes::PLOG: {
+        sprintf_s(tmp_string2, 4096, "%s\n", tmp_string);
+        break;
+    }
     }
     OutputDebugString(tmp_string2);
 }

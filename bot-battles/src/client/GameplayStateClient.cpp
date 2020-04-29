@@ -61,6 +61,13 @@ bool GameplayStateClient::Enter() const
 }
 
 //----------------------------------------------------------------------------------------------------
+bool GameplayStateClient::RenderGui() const
+{
+    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+    return gameplayComponent.m_fsm.RenderGui();
+}
+
+//----------------------------------------------------------------------------------------------------
 bool GameplayStateClient::Exit() const
 {
     // Scene
