@@ -68,7 +68,7 @@ void ClientComponent::LoadFromConfig(const rapidjson::Value& value)
 
     assert(value.HasMember("defaultScript"));
     m_script = value["defaultScript"].GetString();
-    std::vector<std::string> entries = g_gameClient->GetFileSystem().GetFilesFromDirectory(SCRIPTS_DIR, SCRIPTS_EXTENSION);
+    std::vector<std::string> entries = g_gameClient->GetFileSystem().GetFilesFromDirectory(ROBOTS_SCRIPTS_DIR, SCRIPTS_EXTENSION);
     bool hasScript = false;
     for (const auto& entry : entries) {
         std::string name = g_gameClient->GetFileSystem().GetName(entry);

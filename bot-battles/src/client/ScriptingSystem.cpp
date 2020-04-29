@@ -24,9 +24,15 @@ bool ScriptingSystemClient::StartUp()
 {
     std::string scriptsDir = "import sys\n";
     scriptsDir.append("sys.path.append(\"");
-    scriptsDir.append(SCRIPTS_DIR);
+    scriptsDir.append(ROBOTS_SCRIPTS_DIR);
     scriptsDir.append("\")\n");
     py::exec(scriptsDir);
+
+    std::string internalScriptsDir = "import sys\n";
+    internalScriptsDir.append("sys.path.append(\"");
+    internalScriptsDir.append(INTERNAL_SCRIPTS_DIR);
+    internalScriptsDir.append("\")\n");
+    py::exec(internalScriptsDir);
 
     return true;
 }

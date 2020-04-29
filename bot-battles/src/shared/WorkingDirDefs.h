@@ -8,7 +8,8 @@ static const char* CONFIG_DIR = "../../data/config/";
 static const char* TEXTURES_DIR = "../../data/textures/";
 static const char* MAPS_DIR = "../../data/maps/";
 static const char* TILESETS_DIR = "../../data/tilesets/";
-static const char* SCRIPTS_DIR = "../../data/scripts/";
+static const char* ROBOTS_SCRIPTS_DIR = "../../data/scripts/robots/";
+static const char* INTERNAL_SCRIPTS_DIR = "../../data/scripts/internal/";
 
 static const char* MAPS_EXTENSION = ".json";
 static const char* SCRIPTS_EXTENSION = ".py";
