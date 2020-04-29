@@ -77,6 +77,9 @@ bool PlayStateClient::Exit() const
 {
     ILOG("Exiting %s...", GetName().c_str());
 
+    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+    gameplayComponent.ClearLogs();
+
     return true;
 }
 
