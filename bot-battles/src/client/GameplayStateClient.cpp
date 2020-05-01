@@ -61,6 +61,13 @@ bool GameplayStateClient::Enter() const
 }
 
 //----------------------------------------------------------------------------------------------------
+bool GameplayStateClient::Update() const
+{
+    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+    return gameplayComponent.m_fsm.Update();
+}
+
+//----------------------------------------------------------------------------------------------------
 bool GameplayStateClient::RenderGui() const
 {
     GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();

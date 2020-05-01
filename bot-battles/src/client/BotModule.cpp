@@ -31,11 +31,12 @@ PYBIND11_EMBEDDED_MODULE(bot, m)
             );
         });
 
-    py::class_<InputComponent>(m, "InputComponent")
+    py::class_<InputComponent, std::unique_ptr<InputComponent, py::nodelete>>(m, "InputComponent")
         .def_readwrite("acceleration", &InputComponent::m_acceleration)
-        .def_readwrite("angularAcceleration", &InputComponent::m_angularAcceleration);
+        .def_readwrite("angularAcceleration", &InputComponent::m_angularAcceleration)
+        .def("shoot", &InputComponent::Shoot);
 
-    py::class_<TransformComponent>(m, "TransformComponent")
+    py::class_<TransformComponent, std::unique_ptr<TransformComponent, py::nodelete>>(m, "TransformComponent")
         .def_property_readonly("position", &TransformComponent::GetPosition)
         .def_property_readonly("rotation", &TransformComponent::GetRotation);
 }

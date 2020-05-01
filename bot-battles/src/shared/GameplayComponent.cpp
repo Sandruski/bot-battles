@@ -8,6 +8,7 @@ GameplayComponent::GameplayComponent()
 #ifdef _CLIENT
     , m_buf()
     , m_lineOffsets()
+    , m_isLog(true)
 #endif
 {
 }

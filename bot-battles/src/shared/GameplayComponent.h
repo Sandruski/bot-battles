@@ -20,6 +20,7 @@ struct GameplayComponent {
 #ifdef _CLIENT
     ImGuiTextBuffer m_buf;
     ImVector<I32> m_lineOffsets;
+    bool m_isLog;
 #endif
 };
 }

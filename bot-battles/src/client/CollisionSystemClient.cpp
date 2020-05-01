@@ -35,8 +35,7 @@ bool CollisionSystemClient::Update()
         std::weak_ptr<ColliderComponent> colliderComponent = g_gameClient->GetComponentManager().GetComponent<ColliderComponent>(entity);
         std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
 
-        colliderComponent.lock()->m_position.x = transformComponent.lock()->m_position.x;
-        colliderComponent.lock()->m_position.y = transformComponent.lock()->m_position.y;
+        colliderComponent.lock()->m_position = transformComponent.lock()->m_position;
     }
 
     return true;

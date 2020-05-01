@@ -94,8 +94,10 @@ void ScriptingSystemClient::ImportScripts() const
     try {
         ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();
         ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+
         scriptingComponent.m_myBotModule = py::module::import(clientComponent.m_script.c_str());
         scriptingComponent.m_mainModule = py::module::import("main");
+        //scriptingComponent.m_myBotModule.reload();
 
         newEvent.eventType = EventType::CONNECT_SUCCESSFUL;
     } catch (const std::runtime_error& re) {

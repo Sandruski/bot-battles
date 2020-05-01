@@ -38,6 +38,20 @@ bool CollisionSystemServer::Update()
         colliderComponent.lock()->m_position = transformComponent.lock()->m_position;
     }
 
+    for (U32 i = 0; i < m_entities.size(); ++i) {
+        Entity entityA = m_entities.at(i);
+        std::weak_ptr<ColliderComponent> colliderComponentA = g_gameServer->GetComponentManager().GetComponent<ColliderComponent>(entityA);
+
+        for (U32 j = i; j < m_entities.size(); ++j) {
+            Entity entityB = m_entities.at(j);
+            std::weak_ptr<ColliderComponent> colliderComponentB = g_gameServer->GetComponentManager().GetComponent<ColliderComponent>(entityB);
+
+            const bool areColliding = colliderComponentA.lock()->IsColliding(*colliderComponentB.lock());
+            if (areColliding) {
+            }
+        }
+    }
+
     return true;
 }
 

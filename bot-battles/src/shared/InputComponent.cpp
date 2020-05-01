@@ -49,8 +49,8 @@ void InputComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U32 /*
 }
 
 //----------------------------------------------------------------------------------------------------
-void InputComponent::Run()
+void InputComponent::Shoot()
 {
-    ILOG("Running");
+    m_isShooting = true;
 }
 }

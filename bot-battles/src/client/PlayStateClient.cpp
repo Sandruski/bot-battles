@@ -24,8 +24,25 @@ bool PlayStateClient::Enter() const
 }
 
 //----------------------------------------------------------------------------------------------------
+bool PlayStateClient::Update() const
+{
+    EventComponent& eventComponent = g_game->GetEventComponent();
+    if (eventComponent.m_keyboard.at(SDL_SCANCODE_D) == EventComponent::KeyState::DOWN) {
+        GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+        gameplayComponent.m_isLog = !gameplayComponent.m_isLog;
+    }
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
 bool PlayStateClient::RenderGui() const
 {
+    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+    if (!gameplayComponent.m_isLog) {
+        return true;
+    }
+
     ImGuiWindowFlags windowFlags = 0;
     windowFlags |= ImGuiWindowFlags_NoResize;
     windowFlags |= ImGuiWindowFlags_NoMove;
@@ -43,7 +60,6 @@ bool PlayStateClient::RenderGui() const
         if (ImGui::BeginChild("##console", ImVec2(0, 0), false, windowFlags)) {
             ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
 
-            GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
             const char* bufBegin = gameplayComponent.m_buf.begin();
             const char* bufEnd = gameplayComponent.m_buf.end();
             ImGuiListClipper clipper;
