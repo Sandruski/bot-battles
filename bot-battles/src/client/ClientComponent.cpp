@@ -46,7 +46,7 @@ ClientComponent::ClientComponent()
     , m_RTT(0.0f)
     , m_disconnectTimeout(15.0f) // 5.0f
     , m_maxPacketsPerFrame(10)
-    , m_maxInputsPerPaquet(30)
+    , m_maxInputsPerPaquet(1) // 30
     , m_isClientPredictionServerReconciliation(true)
     , m_isClientPrediction(true)
     , m_isServerReconciliation(true)

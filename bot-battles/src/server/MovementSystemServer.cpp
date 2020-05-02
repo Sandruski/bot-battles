@@ -58,6 +58,8 @@ bool MovementSystemServer::PreUpdate()
             const InputComponent& inputComponent = input.GetInputComponent();
             U32 dirtyState = input.GetDirtyState();
 
+            // TODO: cap acceleration to max acceleration and angular acceleration to max angular acceleration
+
             const bool hasAcceleration = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_ACCELERATION);
             if (hasAcceleration) {
                 velocity += inputComponent.m_acceleration;
@@ -74,8 +76,6 @@ bool MovementSystemServer::PreUpdate()
             ILOG("Server position at frame %u: %f %f", transform.GetFrame(), transform.m_position.x, transform.m_position.y);
             ILOG("With acceleration: %f %f", inputComponent.m_acceleration.x, inputComponent.m_acceleration.y);
         }
-
-        // TODO: cap velocity and angular velocity to max before setting them
 
         rigidbodyComponent.lock()->m_body->SetLinearVelocity(b2Vec2(PIXELS_TO_METERS(velocity.x), PIXELS_TO_METERS(velocity.y)));
         rigidbodyComponent.lock()->m_body->SetAngularVelocity(glm::radians(angularVelocity));
@@ -108,18 +108,36 @@ bool MovementSystemServer::PostUpdate()
             continue;
         }
 
+        bool hasChanged = false;
+        std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
+        for (U32 i = clientProxy.lock()->m_inputBuffer.m_front; i < clientProxy.lock()->m_inputBuffer.m_back; ++i) {
+            const Input& input = clientProxy.lock()->m_inputBuffer.Get(i);
+            U32 dirtyState = input.GetDirtyState();
+
+            const bool hasAcceleration = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_ACCELERATION);
+            if (hasAcceleration) {
+                hasChanged = true;
+                break;
+            }
+            const bool hasAngularAcceleration = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_ACCELERATION);
+            if (hasAngularAcceleration) {
+                hasChanged = true;
+                break;
+            }
+        }
+
         b2Vec2 physicsPosition = rigidbodyComponent.lock()->m_body->GetPosition();
         transformComponent.lock()->m_position = glm::vec2(METERS_TO_PIXELS(physicsPosition.x), METERS_TO_PIXELS(physicsPosition.y));
         float32 physicsRotation = rigidbodyComponent.lock()->m_body->GetAngle();
         transformComponent.lock()->m_rotation = glm::degrees(physicsRotation);
 
-        // TODO: is this better here than down below?
-        Event newEvent;
-        newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
-        newEvent.component.entity = entity;
-        newEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::TRANSFORM_ALL);
-        NotifyEvent(newEvent);
-        // END TODO
+        if (hasChanged) {
+            Event newEvent;
+            newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
+            newEvent.component.entity = entity;
+            newEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::TRANSFORM_ALL);
+            NotifyEvent(newEvent);
+        }
 
         if (serverComponent.m_isServerRewind) {
             Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, frame);

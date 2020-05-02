@@ -41,7 +41,7 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U3
             if (hasRotation) {
                 m_rotation = newRotation;
             }
-        } else {
+        } /*else {
             if (!hasPosition) {
                 if (!m_inputTransformBuffer.IsEmpty()) {
                     newPosition = m_inputTransformBuffer.GetLast().m_position;
@@ -58,7 +58,7 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U3
             }
 
             Replay(hasPosition, hasRotation, newPosition, newRotation);
-        }
+        }*/
     } else {
         if (clientComponent.m_isEntityInterpolation) {
             if (replicationActionType == ReplicationActionType::CREATE) {

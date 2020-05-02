@@ -48,16 +48,16 @@ bool MovementSystemClient::PreUpdate()
         glm::vec2 position = transformComponent.lock()->m_position;
         F32 rotation = transformComponent.lock()->m_rotation;
         rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(position.x), PIXELS_TO_METERS(position.y)), glm::radians(rotation));
-        b2Vec2 newPos = rigidbodyComponent.lock()->m_body->GetPosition();
-        position = glm::vec2(newPos.x, newPos.y);
-
-        glm::vec2 velocity = glm::vec2(0.0f, 0.0f);
-        F32 angularVelocity = 0.0f;
 
         if (clientComponent.m_isLastInputTransformPending) {
+            glm::vec2 velocity = glm::vec2(0.0f, 0.0f);
+            F32 angularVelocity = 0.0f;
+
             const Input& input = clientComponent.m_inputBuffer.GetLast();
             const InputComponent& inputComponent = input.GetInputComponent();
             U32 dirtyState = input.GetDirtyState();
+
+            // TODO: cap acceleration to max acceleration and angular acceleration to max angular acceleration
 
             const bool hasAcceleration = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_ACCELERATION);
             if (hasAcceleration) {
@@ -67,12 +67,10 @@ bool MovementSystemClient::PreUpdate()
             if (hasAngularAcceleration) {
                 angularVelocity += inputComponent.m_angularAcceleration;
             }
+
+            rigidbodyComponent.lock()->m_body->SetLinearVelocity(b2Vec2(PIXELS_TO_METERS(velocity.x), PIXELS_TO_METERS(velocity.y)));
+            rigidbodyComponent.lock()->m_body->SetAngularVelocity(glm::radians(angularVelocity));
         }
-
-        // TODO: cap velocity and angular velocity to max before setting them
-
-        rigidbodyComponent.lock()->m_body->SetLinearVelocity(b2Vec2(PIXELS_TO_METERS(velocity.x), PIXELS_TO_METERS(velocity.y)));
-        rigidbodyComponent.lock()->m_body->SetAngularVelocity(glm::radians(angularVelocity));
     }
 
     return true;
@@ -103,12 +101,17 @@ bool MovementSystemClient::PostUpdate()
             continue;
         }
 
-        b2Vec2 physicsPosition = rigidbodyComponent.lock()->m_body->GetPosition();
-        transformComponent.lock()->m_position = glm::vec2(METERS_TO_PIXELS(physicsPosition.x), METERS_TO_PIXELS(physicsPosition.y));
-        float32 physicsRotation = rigidbodyComponent.lock()->m_body->GetAngle();
-        transformComponent.lock()->m_rotation = glm::degrees(physicsRotation);
-
         if (clientComponent.m_isLastInputTransformPending || clientComponent.m_isLastInputWeaponPending) {
+
+            if (clientComponent.m_isLastInputTransformPending) {
+                b2Vec2 physicsPosition = rigidbodyComponent.lock()->m_body->GetPosition();
+                transformComponent.lock()->m_position = glm::vec2(METERS_TO_PIXELS(physicsPosition.x), METERS_TO_PIXELS(physicsPosition.y));
+                float32 physicsRotation = rigidbodyComponent.lock()->m_body->GetAngle();
+                transformComponent.lock()->m_rotation = glm::degrees(physicsRotation);
+
+                clientComponent.m_isLastInputTransformPending = false;
+            }
+
             const Input& input = clientComponent.m_inputBuffer.GetLast();
             const InputComponent& inputComponent = input.GetInputComponent();
 
@@ -117,8 +120,6 @@ bool MovementSystemClient::PostUpdate()
             ILOG("Client position at frame %u: %f %f", transform.GetFrame(), transform.m_position.x, transform.m_position.y);
             ILOG("With acceleration: %f %f", inputComponent.m_acceleration.x, inputComponent.m_acceleration.y);
         }
-
-        clientComponent.m_isLastInputTransformPending = false;
     }
 
     return true;
