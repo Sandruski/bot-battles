@@ -5,7 +5,7 @@
 namespace sand {
 //----------------------------------------------------------------------------------------------------
 InputComponent::InputComponent()
-    : m_maxAcceleration(5.0f)
+    : m_maxAcceleration(300.0f)
     , m_maxAngularAcceleration(90.0f)
     , m_acceleration(0.0f, 0.0f)
     , m_angularAcceleration(0.0f)
