@@ -47,6 +47,7 @@ bool PhysicsComponent::Raycast(const glm::vec2& origin, const glm::vec2& destina
     RayCastCallback rayCastCallback;
     m_world.RayCast(&rayCastCallback, b2Vec2(origin.x, origin.y), b2Vec2(destination.x, destination.y));
     if (rayCastCallback.m_body != nullptr) {
+        /*
         std::vector<std::pair<Entity, std::weak_ptr<RigidbodyComponent>>> rigidbodyComponents = g_game->GetComponentManager().GetComponents<RigidbodyComponent>();
         for (const auto& pair : rigidbodyComponents) {
             std::weak_ptr<RigidbodyComponent> rigidbodyComponent = pair.second;
@@ -55,7 +56,8 @@ bool PhysicsComponent::Raycast(const glm::vec2& origin, const glm::vec2& destina
                 hitInfo.m_entity = entity;
                 break;
             }
-        }
+        }*/
+        hitInfo.m_entity = *static_cast<Entity*>(rayCastCallback.m_body->GetUserData());
         hitInfo.m_point = glm::vec2(rayCastCallback.m_point.x, rayCastCallback.m_point.y);
         hitInfo.m_normal = glm::vec2(rayCastCallback.m_normal.x, rayCastCallback.m_normal.y);
 

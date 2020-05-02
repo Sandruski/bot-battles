@@ -39,8 +39,8 @@ struct RigidbodyComponent : public Component
     U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override;
 #endif
 
-    void SetAsCircle(glm::vec2 position, F32 rotation, F32 radius);
-    void SetAsBox(glm::vec2 position, F32 rotation, glm::vec2 halfSize);
+    void SetAsCircle(glm::vec2 position, F32 rotation, F32 radius, const Entity& entity);
+    void SetAsBox(glm::vec2 position, F32 rotation, glm::vec2 halfSize, const Entity& entity);
 
     void UpdateBodyType() const;
     void UpdateGroupIndex() const;

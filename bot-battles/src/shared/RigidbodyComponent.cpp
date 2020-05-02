@@ -63,13 +63,14 @@ U32 RigidbodyComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) 
 #endif
 
 //----------------------------------------------------------------------------------------------------
-void RigidbodyComponent::SetAsCircle(glm::vec2 position, F32 rotation, F32 radius)
+void RigidbodyComponent::SetAsCircle(glm::vec2 position, F32 rotation, F32 radius, const Entity& entity)
 {
     if (m_body != nullptr) {
         return;
     }
 
     b2BodyDef bodyDef;
+    bodyDef.userData = const_cast<Entity*>(&entity);
     bodyDef.position.Set(PIXELS_TO_METERS(position.x), PIXELS_TO_METERS(position.y));
     bodyDef.angle = glm::radians(rotation);
     PhysicsComponent& physicsComponent = g_game->GetPhysicsComponent();
@@ -86,13 +87,14 @@ void RigidbodyComponent::SetAsCircle(glm::vec2 position, F32 rotation, F32 radiu
 }
 
 //----------------------------------------------------------------------------------------------------
-void RigidbodyComponent::SetAsBox(glm::vec2 position, F32 rotation, glm::vec2 halfSize)
+void RigidbodyComponent::SetAsBox(glm::vec2 position, F32 rotation, glm::vec2 halfSize, const Entity& entity)
 {
     if (m_body != nullptr) {
         return;
     }
 
     b2BodyDef bodyDef;
+    bodyDef.userData = const_cast<Entity*>(&entity);
     bodyDef.position.Set(PIXELS_TO_METERS(position.x), PIXELS_TO_METERS(position.y));
     bodyDef.angle = glm::radians(rotation);
     PhysicsComponent& physicsComponent = g_game->GetPhysicsComponent();

@@ -12,10 +12,12 @@ public:
 
     bool PreUpdate();
 
-    Entity AddEntity();
-    Signature GetSignature(Entity entity);
+    const Entity& AddEntity();
     bool RemoveEntity(Entity entity);
     void ClearEntities();
+
+    const Signature& GetSignature(Entity entity);
+    const Entity& GetEntity(Entity entity);
 
 private:
     bool KillEntity(Entity entity);

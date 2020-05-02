@@ -52,7 +52,7 @@ bool EntityManager::PreUpdate()
 }
 
 //----------------------------------------------------------------------------------------------------
-Entity EntityManager::AddEntity()
+const Entity& EntityManager::AddEntity()
 {
     Entity entity = m_availableEntities.front();
     m_availableEntities.pop();
@@ -68,14 +68,7 @@ Entity EntityManager::AddEntity()
     newEvent.entity.entity = entity;
     NotifyEvent(newEvent);
 
-    return entity;
-}
-
-//----------------------------------------------------------------------------------------------------
-Signature EntityManager::GetSignature(Entity entity)
-{
-    U32 signatureIndex = m_entitiesToSignatures.at(entity);
-    return m_signatures.at(signatureIndex);
+    return GetEntity(entity);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -102,6 +95,19 @@ void EntityManager::ClearEntities()
         Entity entity = pair.first;
         RemoveEntity(entity);
     }
+}
+
+//----------------------------------------------------------------------------------------------------
+const Signature& EntityManager::GetSignature(Entity entity)
+{
+    U32 signatureIndex = m_entitiesToSignatures.at(entity);
+    return m_signatures.at(signatureIndex);
+}
+
+//----------------------------------------------------------------------------------------------------
+const Entity& EntityManager::GetEntity(Entity entity)
+{
+    return m_entitiesToSignatures.find(entity)->first;
 }
 
 //----------------------------------------------------------------------------------------------------
