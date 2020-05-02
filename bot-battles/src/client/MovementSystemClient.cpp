@@ -105,12 +105,17 @@ bool MovementSystemClient::PostUpdate()
 
         b2Vec2 physicsPosition = rigidbodyComponent.lock()->m_body->GetPosition();
         transformComponent.lock()->m_position = glm::vec2(METERS_TO_PIXELS(physicsPosition.x), METERS_TO_PIXELS(physicsPosition.y));
+        float32 physicsRotation = rigidbodyComponent.lock()->m_body->GetAngle();
+        transformComponent.lock()->m_rotation = glm::degrees(physicsRotation);
 
         if (clientComponent.m_isLastInputTransformPending || clientComponent.m_isLastInputWeaponPending) {
             const Input& input = clientComponent.m_inputBuffer.GetLast();
+            const InputComponent& inputComponent = input.GetInputComponent();
 
             Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, input.GetFrame());
             transformComponent.lock()->m_inputTransformBuffer.Add(transform);
+            ILOG("Client position at frame %u: %f %f", transform.GetFrame(), transform.m_position.x, transform.m_position.y);
+            ILOG("With acceleration: %f %f", inputComponent.m_acceleration.x, inputComponent.m_acceleration.y);
         }
 
         clientComponent.m_isLastInputTransformPending = false;

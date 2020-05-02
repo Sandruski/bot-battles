@@ -127,11 +127,28 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::v
     glm::vec2& position = firstTransform.m_position;
     F32& rotation = firstTransform.m_rotation;
 
-    const bool replayPosition = updatePosition ? position != newPosition : false;
-    const bool replayRotation = updateRotation ? rotation != newRotation : false;
+    glm::vec2 minNewPosition = newPosition - PHYSICS_THRESHOLD;
+    glm::vec2 maxNewPosition = newPosition + PHYSICS_THRESHOLD;
+    bool replayPosition = false;
+    if (updatePosition) {
+        if ((position.x < minNewPosition.x || position.y < minNewPosition.y)
+            || (position.x > maxNewPosition.x || position.y > maxNewPosition.y)) {
+            replayPosition = true;
+        }
+    }
+    F32 minNewRotation = newRotation - PHYSICS_THRESHOLD;
+    F32 maxNewRotation = newRotation + PHYSICS_THRESHOLD;
+    bool replayRotation = false;
+    if (updateRotation) {
+        if (rotation < minNewRotation
+            || rotation > maxNewRotation) {
+            replayPosition = true;
+        }
+    }
 
     if (replayPosition || replayRotation) {
         ILOG("REPLAY");
+        ILOG("Current vs new positions at frame %u is %f %f and %f %f", clientComponent.m_lastAckdFrame, position.x, position.y, newPosition.x, newPosition.y);
 
         if (replayPosition) {
             position = newPosition;

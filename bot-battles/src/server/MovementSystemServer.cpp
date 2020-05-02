@@ -7,6 +7,7 @@
 #include "Input.h"
 #include "InputComponent.h"
 #include "LinkingContext.h"
+#include "PhysicsComponent.h"
 #include "RigidbodyComponent.h"
 #include "State.h"
 #include "TransformComponent.h"
@@ -47,6 +48,10 @@ bool MovementSystemServer::PreUpdate()
         glm::vec2 velocity = glm::vec2(0.0f, 0.0f);
         F32 angularVelocity = 0.0f;
 
+        glm::vec2 position = transformComponent.lock()->m_position;
+        F32 rotation = transformComponent.lock()->m_rotation;
+
+        PhysicsComponent& physicsComponent = g_gameServer->GetPhysicsComponent();
         std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
         for (U32 i = clientProxy.lock()->m_inputBuffer.m_front; i < clientProxy.lock()->m_inputBuffer.m_back; ++i) {
             const Input& input = clientProxy.lock()->m_inputBuffer.Get(i);
@@ -56,11 +61,18 @@ bool MovementSystemServer::PreUpdate()
             const bool hasAcceleration = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_ACCELERATION);
             if (hasAcceleration) {
                 velocity += inputComponent.m_acceleration;
+                position += inputComponent.m_acceleration * physicsComponent.m_timeStep;
             }
             const bool hasAngularAcceleration = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_ACCELERATION);
             if (hasAngularAcceleration) {
                 angularVelocity += inputComponent.m_angularAcceleration;
+                rotation += inputComponent.m_angularAcceleration * physicsComponent.m_timeStep;
             }
+
+            Transform transform = Transform(position, rotation, input.GetFrame());
+            transformComponent.lock()->m_inputTransformBuffer.Add(transform);
+            ILOG("Server position at frame %u: %f %f", transform.GetFrame(), transform.m_position.x, transform.m_position.y);
+            ILOG("With acceleration: %f %f", inputComponent.m_acceleration.x, inputComponent.m_acceleration.y);
         }
 
         // TODO: cap velocity and angular velocity to max before setting them
@@ -98,6 +110,8 @@ bool MovementSystemServer::PostUpdate()
 
         b2Vec2 physicsPosition = rigidbodyComponent.lock()->m_body->GetPosition();
         transformComponent.lock()->m_position = glm::vec2(METERS_TO_PIXELS(physicsPosition.x), METERS_TO_PIXELS(physicsPosition.y));
+        float32 physicsRotation = rigidbodyComponent.lock()->m_body->GetAngle();
+        transformComponent.lock()->m_rotation = glm::degrees(physicsRotation);
 
         // TODO: is this better here than down below?
         Event newEvent;
@@ -106,22 +120,6 @@ bool MovementSystemServer::PostUpdate()
         newEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::TRANSFORM_ALL);
         NotifyEvent(newEvent);
         // END TODO
-
-        std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
-        for (U32 i = clientProxy.lock()->m_inputBuffer.m_front; i < clientProxy.lock()->m_inputBuffer.m_back; ++i) {
-            const Input& input = clientProxy.lock()->m_inputBuffer.Get(i);
-
-            Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, input.GetFrame());
-            transformComponent.lock()->m_inputTransformBuffer.Add(transform);
-
-            /*
-            Event newEvent;
-            newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
-            newEvent.component.entity = entity;
-            newEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::TRANSFORM_ALL);
-            NotifyEvent(newEvent);
-            */
-        }
 
         if (serverComponent.m_isServerRewind) {
             Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, frame);
