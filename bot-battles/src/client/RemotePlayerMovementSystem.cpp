@@ -3,6 +3,7 @@
 #include "ComponentManager.h"
 #include "GameClient.h"
 #include "LinkingContext.h"
+#include "RigidbodyComponent.h"
 #include "State.h"
 #include "TransformComponent.h"
 
@@ -12,6 +13,7 @@ namespace sand {
 RemotePlayerMovementSystem::RemotePlayerMovementSystem()
 {
     m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
+    m_signature |= 1 << static_cast<U16>(ComponentType::RIGIDBODY);
     m_signature |= 1 << static_cast<U16>(ComponentType::REMOTE_PLAYER);
 }
 
@@ -50,6 +52,15 @@ bool RemotePlayerMovementSystem::PreUpdate()
         }
 
         std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
+        std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameClient->GetComponentManager().GetComponent<RigidbodyComponent>(entity);
+        if (!transformComponent.lock()->m_isEnabled || !rigidbodyComponent.lock()->m_isEnabled) {
+            continue;
+        }
+
+        glm::vec2 position = transformComponent.lock()->m_position;
+        F32 rotation = transformComponent.lock()->m_rotation;
+        rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(position.x), PIXELS_TO_METERS(position.y)), glm::radians(rotation));
+
         if (!transformComponent.lock()->m_transformBuffer.IsEmpty()) {
             U32 indexFrom = transformComponent.lock()->m_transformBuffer.m_front;
             bool isFoundFrom = false;
@@ -79,6 +90,7 @@ bool RemotePlayerMovementSystem::PreUpdate()
                     Transform toTransform = transformComponent.lock()->m_transformBuffer.Get(indexTo);
                     transformComponent.lock()->m_position = Lerp(fromTransform.m_position, toTransform.m_position, clientComponent.m_interpolationPercentage);
                     transformComponent.lock()->m_rotation = Lerp(fromTransform.m_rotation, toTransform.m_rotation, clientComponent.m_interpolationPercentage);
+                    rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(transformComponent.lock()->m_position.x, transformComponent.lock()->m_position.y), transformComponent.lock()->m_rotation);
                 }
             }
 

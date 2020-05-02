@@ -43,12 +43,14 @@ struct RigidbodyComponent : public Component
     void SetAsBox(glm::vec2 position, F32 rotation, glm::vec2 halfSize);
 
     void UpdateBodyType() const;
+    void UpdateGroupIndex() const;
 
     // Local
     b2Body* m_body;
 
     // Networked
     BodyType m_bodyType;
+    I16 m_groupIndex;
 };
 }
 

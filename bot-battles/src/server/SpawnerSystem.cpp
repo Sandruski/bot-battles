@@ -129,6 +129,8 @@ Entity SpawnerSystem::Spawn(U32 playerNumber) const
     std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameServer->GetComponentManager().AddComponent<RigidbodyComponent>(character);
     rigidbodyComponent.lock()->m_bodyType = RigidbodyComponent::BodyType::DYNAMIC;
     rigidbodyComponent.lock()->UpdateBodyType();
+    rigidbodyComponent.lock()->m_groupIndex = -1;
+    rigidbodyComponent.lock()->UpdateGroupIndex();
 
     g_gameServer->GetComponentManager().AddComponent<WeaponComponent>(character);
 

@@ -10,6 +10,7 @@ namespace sand {
 RigidbodyComponent::RigidbodyComponent()
     : m_body(nullptr)
     , m_bodyType(BodyType::NONE)
+    , m_groupIndex(0)
 {
 }
 
@@ -33,6 +34,10 @@ void RigidbodyComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U3
         inputStream.Read(m_bodyType);
         UpdateBodyType();
     }
+    if (dirtyState & static_cast<U32>(ComponentMemberType::RIGIDBODY_GROUP_INDEX)) {
+        inputStream.Read(m_groupIndex);
+        UpdateGroupIndex();
+    }
 }
 #elif defined(_SERVER)
 //----------------------------------------------------------------------------------------------------
@@ -47,6 +52,10 @@ U32 RigidbodyComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) 
     if (dirtyState & static_cast<U32>(ComponentMemberType::RIGIDBODY_BODY_TYPE)) {
         outputStream.Write(m_bodyType);
         writtenState |= static_cast<U32>(ComponentMemberType::RIGIDBODY_BODY_TYPE);
+    }
+    if (dirtyState & static_cast<U32>(ComponentMemberType::RIGIDBODY_GROUP_INDEX)) {
+        outputStream.Write(m_groupIndex);
+        writtenState |= static_cast<U32>(ComponentMemberType::RIGIDBODY_GROUP_INDEX);
     }
 
     return writtenState;
@@ -130,5 +139,17 @@ void RigidbodyComponent::UpdateBodyType() const
     }
 
     m_body->SetType(bodyType);
+}
+
+//----------------------------------------------------------------------------------------------------
+void RigidbodyComponent::UpdateGroupIndex() const
+{
+    if (m_body == nullptr) {
+        return;
+    }
+
+    b2Filter filter;
+    filter.groupIndex = m_groupIndex;
+    m_body->GetFixtureList()->SetFilterData(filter);
 }
 }
