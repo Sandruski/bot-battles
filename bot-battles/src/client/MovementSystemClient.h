@@ -16,7 +16,8 @@ public:
 public:
     MovementSystemClient();
 
-    bool Update() override;
+    bool PreUpdate() override;
+    bool PostUpdate() override;
 };
 }
 

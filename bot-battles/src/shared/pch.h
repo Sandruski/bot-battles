@@ -58,6 +58,9 @@
 #include <document.h>
 #include <filereadstream.h>
 
+// Box2D
+#include <Box2D/Box2D.h>
+
 //----------------------------------------------------------------------------------------------------
 // Utils
 #include "Log.h"

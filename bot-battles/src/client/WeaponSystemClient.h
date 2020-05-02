@@ -16,7 +16,7 @@ public:
 public:
     WeaponSystemClient();
 
-    bool Update() override;
+    bool PostUpdate() override;
     bool Render() override;
 };
 }

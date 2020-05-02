@@ -18,7 +18,7 @@ HealthSystem::HealthSystem()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool HealthSystem::Update()
+bool HealthSystem::PostUpdate()
 {
     // TODO: do we really need this system with insta kill?
     GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();

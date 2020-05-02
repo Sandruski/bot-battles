@@ -19,11 +19,11 @@ struct InputComponent : public Component,
 
     void Shoot();
 
-    F32 m_maxAcceleration;
-    F32 m_maxAngularAcceleration;
+    F32 m_maxAcceleration; // pixels
+    F32 m_maxAngularAcceleration; // degrees
 
-    glm::vec2 m_acceleration;
-    F32 m_angularAcceleration;
+    glm::vec2 m_acceleration; // pixels
+    F32 m_angularAcceleration; // degrees
     bool m_isShooting;
 };
 }

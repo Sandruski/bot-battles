@@ -15,26 +15,6 @@ TransformComponent::TransformComponent()
 }
 
 //----------------------------------------------------------------------------------------------------
-void TransformComponent::UpdateTransform(const glm::vec2& acceleration, F32 angularAcceleration, F32 dt)
-{
-    UpdatePosition(acceleration, dt);
-    UpdateRotation(angularAcceleration, dt);
-}
-
-//----------------------------------------------------------------------------------------------------
-void TransformComponent::UpdatePosition(const glm::vec2& acceleration, F32 dt)
-{
-    m_position.x += acceleration.x * dt;
-    m_position.y += acceleration.y * dt;
-}
-
-//----------------------------------------------------------------------------------------------------
-void TransformComponent::UpdateRotation(F32 angularAcceleration, F32 dt)
-{
-    m_rotation += angularAcceleration * dt;
-}
-
-//----------------------------------------------------------------------------------------------------
 glm::vec3 TransformComponent::GetPositionAndLayer() const
 {
     return glm::vec3(m_position.x, m_position.y, static_cast<F32>(m_layerType));

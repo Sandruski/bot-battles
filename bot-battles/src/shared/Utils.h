@@ -28,6 +28,18 @@ inline bool COMPARE_STRINGS(const char* str1, const char* str2)
     return false;
 }
 
+static const F32 PIXELS_PER_METER = 50.0f;
+
+inline F32 PIXELS_TO_METERS(F32 pixels)
+{
+    return pixels / PIXELS_PER_METER;
+}
+
+inline F32 METERS_TO_PIXELS(F32 meters)
+{
+    return meters * PIXELS_PER_METER;
+}
+
 static const I32 SDL_ERROR = -1;
 static const I32 SDL_KEY_PRESSED = 1;
 

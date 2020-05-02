@@ -3,12 +3,13 @@
 #include "ClientComponent.h"
 #include "ColliderComponent.h"
 #include "ComponentManager.h"
+#include "ComponentMemberTypes.h"
 #include "DebugDrawer.h"
 #include "GameClient.h"
 #include "HealthComponent.h"
-#include "Intersection.h"
 #include "LinkingContext.h"
 #include "MeshResource.h"
+#include "PhysicsComponent.h"
 #include "RendererComponent.h"
 #include "ShaderResource.h"
 #include "State.h"
@@ -18,6 +19,7 @@
 #include "WindowComponent.h"
 
 namespace sand {
+
 //----------------------------------------------------------------------------------------------------
 WeaponSystemClient::WeaponSystemClient()
 {
@@ -26,13 +28,15 @@ WeaponSystemClient::WeaponSystemClient()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool WeaponSystemClient::Update()
+bool WeaponSystemClient::PostUpdate()
 {
     GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
     std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
     if (currentState.expired()) {
         return true;
     }
+
+    // TODO: immediately return if !isClientPrediction?
 
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     for (auto& entity : m_entities) {
@@ -44,43 +48,39 @@ bool WeaponSystemClient::Update()
             continue;
         }
 
+        std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
+        std::weak_ptr<WeaponComponent> weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(entity);
+        if (!transformComponent.lock()->m_isEnabled || !weaponComponent.lock()->m_isEnabled) {
+            continue;
+        }
+
         if (clientComponent.m_isLastInputWeaponPending) {
             const Input& input = clientComponent.m_inputBuffer.GetLast();
             const InputComponent& inputComponent = input.GetInputComponent();
 
             if (inputComponent.m_isShooting) {
-                std::weak_ptr<WeaponComponent> weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(entity);
-                std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
                 glm::vec2 position = transformComponent.lock()->m_position;
                 glm::vec2 rotation = transformComponent.lock()->GetRotationVector();
+
                 weaponComponent.lock()->m_origin = position;
                 WindowComponent& windowComponent = g_gameClient->GetWindowComponent();
                 F32 maxLength = static_cast<F32>(std::max(windowComponent.m_currentResolution.x, windowComponent.m_currentResolution.y));
-                std::pair<Entity, std::weak_ptr<ColliderComponent>> object;
-                glm::vec2 intersection;
-                const bool hasIntersected = Raycast(position, rotation, maxLength, object, intersection);
-                if (hasIntersected) {
-                    Entity hitEntity = object.first;
+                weaponComponent.lock()->m_destination = position + rotation * maxLength;
+                weaponComponent.lock()->m_hasHit = false;
 
-                    std::weak_ptr<TransformComponent> hitEntityTransformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(hitEntity);
+                PhysicsComponent& physicsComponent = g_gameClient->GetPhysicsComponent();
+                PhysicsComponent::RaycastHit hitInfo;
+                const bool hasIntersected = physicsComponent.Raycast(weaponComponent.lock()->m_origin, weaponComponent.lock()->m_destination, hitInfo);
+                if (hasIntersected) {
+                    std::weak_ptr<TransformComponent> hitEntityTransformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(hitInfo.m_entity);
                     if (!hitEntityTransformComponent.expired()) {
-                        weaponComponent.lock()->m_destination = intersection;
+                        weaponComponent.lock()->m_destination = hitInfo.m_point;
                     }
 
-                    std::weak_ptr<HealthComponent> hitEntityHealthComponent = g_gameClient->GetComponentManager().GetComponent<HealthComponent>(hitEntity);
+                    std::weak_ptr<HealthComponent> hitEntityHealthComponent = g_gameClient->GetComponentManager().GetComponent<HealthComponent>(hitInfo.m_entity);
                     if (!hitEntityHealthComponent.expired()) {
                         weaponComponent.lock()->m_hasHit = true;
-                    } else {
-                        weaponComponent.lock()->m_hasHit = false;
                     }
-                } else {
-                    weaponComponent.lock()->m_destination = position + rotation * maxLength;
-                    weaponComponent.lock()->m_hasHit = false;
-                }
-
-                if (clientComponent.m_isClientPrediction) {
-                    Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, input.GetFrame());
-                    transformComponent.lock()->m_inputTransformBuffer.Add(transform);
                 }
             }
 

@@ -246,9 +246,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Transform.h">
       <Filter>Header Files\Networking</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Intersection.h">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Random.h">
       <Filter>Header Files\Math</Filter>
     </ClInclude>
@@ -385,6 +382,15 @@
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)BotComponent.h">
+      <Filter>Header Files\Components\Entity Components</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)PhysicsSystem.h">
+      <Filter>Header Files\Systems\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)PhysicsComponent.h">
+      <Filter>Header Files\Components\System Components</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)RigidbodyComponent.h">
       <Filter>Header Files\Components\Entity Components</Filter>
     </ClInclude>
   </ItemGroup>
@@ -570,6 +576,15 @@
       <Filter>Source Files\Systems\Systems</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)BotComponent.cpp">
+      <Filter>Source Files\Components\Entity Components</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)PhysicsSystem.cpp">
+      <Filter>Source Files\Systems\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)PhysicsComponent.cpp">
+      <Filter>Source Files\Components\System Components</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)RigidbodyComponent.cpp">
       <Filter>Source Files\Components\Entity Components</Filter>
     </ClCompile>
   </ItemGroup>

@@ -25,6 +25,7 @@ CollisionSystemServer::CollisionSystemServer()
 //----------------------------------------------------------------------------------------------------
 bool CollisionSystemServer::Update()
 {
+    /*
     GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
     std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
     if (currentState.expired()) {
@@ -51,6 +52,7 @@ bool CollisionSystemServer::Update()
             }
         }
     }
+    */
 
     return true;
 }
@@ -58,6 +60,7 @@ bool CollisionSystemServer::Update()
 //----------------------------------------------------------------------------------------------------
 bool CollisionSystemServer::DebugRender()
 {
+    /*
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     RendererComponent& rendererComponent = g_gameServer->GetRendererComponent();
     WindowComponent& windowComponent = g_gameServer->GetWindowComponent();
@@ -113,7 +116,7 @@ bool CollisionSystemServer::DebugRender()
     }
 
     rendererComponent.SetWireframe(false);
-
+    */
     return true;
 }
 }

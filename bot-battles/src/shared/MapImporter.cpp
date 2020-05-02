@@ -6,6 +6,7 @@
 #include "FileSystem.h"
 #include "Game.h"
 #include "ResourceManager.h"
+#include "RigidbodyComponent.h"
 #include "SpawnComponent.h"
 #include "SpriteComponent.h"
 #include "SpriteResource.h"
@@ -127,6 +128,11 @@ void MapImporter::Create(const Tilemap& tilemap) const
                 if (tilelayer.m_name == "collision") {
                     std::weak_ptr<ColliderComponent> colliderComponent = g_game->GetComponentManager().AddComponent<ColliderComponent>(entity);
                     colliderComponent.lock()->m_size = tilemap.m_tileSize;
+                    colliderComponent.lock()->m_shapeType = ColliderComponent::ShapeType::BOX;
+
+                    std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_game->GetComponentManager().AddComponent<RigidbodyComponent>(entity);
+                    rigidbodyComponent.lock()->m_bodyType = RigidbodyComponent::BodyType::STATIC;
+                    rigidbodyComponent.lock()->UpdateBodyType();
                 }
             }
         }
@@ -164,6 +170,11 @@ void MapImporter::Create(const Tilemap& tilemap) const
             if (objectlayer.m_name == "collision") {
                 std::weak_ptr<ColliderComponent> colliderComponent = g_game->GetComponentManager().AddComponent<ColliderComponent>(entity);
                 colliderComponent.lock()->m_size = object.m_size;
+                colliderComponent.lock()->m_shapeType = ColliderComponent::ShapeType::BOX;
+
+                std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_game->GetComponentManager().AddComponent<RigidbodyComponent>(entity);
+                rigidbodyComponent.lock()->m_bodyType = RigidbodyComponent::BodyType::STATIC;
+                rigidbodyComponent.lock()->UpdateBodyType();
             }
 
             // Spawn

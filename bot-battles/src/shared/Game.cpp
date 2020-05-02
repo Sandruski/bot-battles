@@ -10,6 +10,8 @@
 #include "HealthComponent.h"
 #include "InputComponent.h"
 #include "LinkingContext.h"
+#include "PhysicsSystem.h"
+#include "RigidbodyComponent.h"
 #include "SpawnComponent.h"
 #include "SystemManager.h"
 #include "TransformComponent.h"
@@ -88,6 +90,10 @@ bool Game::Init()
     if (!ret) {
         return ret;
     }
+    ret = m_systemManager->RegisterSystem<PhysicsSystem>();
+    if (!ret) {
+        return ret;
+    }
 
     // Components
 #ifdef _DRAW
@@ -105,6 +111,10 @@ bool Game::Init()
         return ret;
     }
     ret = m_componentManager->RegisterComponent<ColliderComponent>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_componentManager->RegisterComponent<RigidbodyComponent>();
     if (!ret) {
         return ret;
     }
@@ -175,6 +185,11 @@ bool Game::Init()
         return ret;
     }
     ret = m_componentManager->AddObserver(std::weak_ptr<Observer>(m_componentManager));
+    if (!ret) {
+        return ret;
+    }
+    std::weak_ptr<PhysicsSystem> physicsSystem = m_systemManager->GetSystem<PhysicsSystem>();
+    ret = m_componentManager->AddObserver(physicsSystem.lock());
     if (!ret) {
         return ret;
     }

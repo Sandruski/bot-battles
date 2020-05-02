@@ -38,7 +38,7 @@ bool ScriptingSystemClient::StartUp()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool ScriptingSystemClient::Update()
+bool ScriptingSystemClient::PreUpdate()
 {
     GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
     std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
@@ -53,10 +53,10 @@ bool ScriptingSystemClient::Update()
         return true;
     }
 
-    ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();
-    InputComponent& inputComponent = g_gameClient->GetInputComponent();
+    //ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();
+    //InputComponent& inputComponent = g_gameClient->GetInputComponent();
     try {
-        scriptingComponent.m_mainModule.attr("update")(&inputComponent);
+        //scriptingComponent.m_mainModule.attr("update")(&inputComponent);
     } catch (const std::runtime_error& re) {
         ELOG("%s", re.what());
         return false;
@@ -76,7 +76,7 @@ void ScriptingSystemClient::OnNotify(const Event& event)
     }
 
     case EventType::PLAYER_ENTITY_ADDED: {
-        InitScripts();
+        //InitScripts();
         break;
     }
 
@@ -92,11 +92,11 @@ void ScriptingSystemClient::ImportScripts() const
     Event newEvent;
 
     try {
-        ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();
-        ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+        //ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();
+        //ClientComponent& clientComponent = g_gameClient->GetClientComponent();
 
-        scriptingComponent.m_myBotModule = py::module::import(clientComponent.m_script.c_str());
-        scriptingComponent.m_mainModule = py::module::import("main");
+        //scriptingComponent.m_myBotModule = py::module::import(clientComponent.m_script.c_str());
+        //scriptingComponent.m_mainModule = py::module::import("main");
         //scriptingComponent.m_myBotModule.reload();
 
         newEvent.eventType = EventType::CONNECT_SUCCESSFUL;

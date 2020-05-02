@@ -27,7 +27,7 @@ bool PlayStateClient::Enter() const
 bool PlayStateClient::Update() const
 {
     EventComponent& eventComponent = g_game->GetEventComponent();
-    if (eventComponent.m_keyboard.at(SDL_SCANCODE_D) == EventComponent::KeyState::DOWN) {
+    if (eventComponent.m_keyboard.at(SDL_SCANCODE_O) == EventComponent::KeyState::DOWN) {
         GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
         gameplayComponent.m_isLog = !gameplayComponent.m_isLog;
     }
@@ -49,6 +49,7 @@ bool PlayStateClient::RenderGui() const
     windowFlags |= ImGuiWindowFlags_NoScrollbar;
     windowFlags |= ImGuiWindowFlags_NoCollapse;
     windowFlags |= ImGuiWindowFlags_NoSavedSettings;
+    windowFlags |= ImGuiWindowFlags_NoBringToFrontOnFocus;
 
     WindowComponent& windowComponent = g_gameClient->GetWindowComponent();
     ImVec2 position = ImVec2(static_cast<F32>(windowComponent.m_currentResolution.x) / 2.0f, static_cast<F32>(windowComponent.m_currentResolution.y) / 1.15f);

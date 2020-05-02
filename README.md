@@ -15,6 +15,9 @@ Have fun!
 - WASD: move character
 - Left and right arrows: rotate character
 - Spacebar: shoot
+- O: toggle Log output
+- Esc: toggle Settings menu
+- F1: toggle Debug Options menu
 
 # Versions
 ## Vertical Slice
@@ -37,6 +40,7 @@ The code is written in C++ and follows the ISO C++ 17 Standard.
 - Dear ImGui
 - RapidJSON
 - Winsock
+- Box2D
 
 ## Assets
 - [Kenney's Topdown Shooter pack](https://www.kenney.nl/assets/topdown-shooter)

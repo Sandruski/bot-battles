@@ -19,7 +19,7 @@ OutputSystemClient::OutputSystemClient()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool OutputSystemClient::Update()
+bool OutputSystemClient::PostUpdate()
 {
     GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
     std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
@@ -65,8 +65,9 @@ bool OutputSystemClient::Update()
         clientComponent.m_inputBuffer.Remove(index);
     }
 
-    clientComponent.m_isLastInputTransformPending = false;
-    clientComponent.m_isLastInputWeaponPending = false;
+    // TODO: do we really need to uncomment this two variables?
+    //clientComponent.m_isLastInputTransformPending = false;
+    //clientComponent.m_isLastInputWeaponPending = false;
 
     return true;
 }

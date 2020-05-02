@@ -6,6 +6,7 @@
 #include "GameClient.h"
 #include "Input.h"
 #include "InputComponent.h"
+#include "PhysicsComponent.h"
 
 namespace sand {
 
@@ -130,7 +131,8 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::v
     const bool replayRotation = updateRotation ? rotation != newRotation : false;
 
     if (replayPosition || replayRotation) {
-        ILOG("REPLAY MOVES");
+        ILOG("REPLAY");
+
         if (replayPosition) {
             position = newPosition;
         }
@@ -138,17 +140,17 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::v
             rotation = newRotation;
         }
 
+        PhysicsComponent& physicsComponent = g_gameClient->GetPhysicsComponent();
         for (U32 i = clientComponent.m_inputBuffer.m_front; i < clientComponent.m_inputBuffer.m_back; ++i) {
             Transform& transform = m_inputTransformBuffer.Get(i);
             const Input& input = clientComponent.m_inputBuffer.Get(i);
             const InputComponent& inputComponent = input.GetInputComponent();
-            F32 dt = input.GetDt();
 
             if (replayPosition) {
-                transform.UpdatePosition(inputComponent.m_acceleration, dt);
+                transform.m_position += inputComponent.m_acceleration * physicsComponent.m_timeStep;
             }
             if (replayRotation) {
-                transform.UpdateRotation(inputComponent.m_angularAcceleration, dt);
+                transform.m_rotation += inputComponent.m_angularAcceleration * physicsComponent.m_timeStep;
             }
         }
 

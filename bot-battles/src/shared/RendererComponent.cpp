@@ -11,7 +11,7 @@ RendererComponent::RendererComponent()
     , m_meshResource()
     , m_backgroundColor(0.0f, 0.0f, 0.0f, 0.0f)
     , m_isVSync(true)
-    , m_isDebugDraw(false)
+    , m_isDebugDraw(true)
 {
 }
 

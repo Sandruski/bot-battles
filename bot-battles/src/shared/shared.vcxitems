@@ -44,7 +44,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)HUDSystem.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)InputComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Interpolation.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Intersection.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)LabelComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Layers.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)LinkingContext.h" />
@@ -70,6 +69,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)PanelDefs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)PanelTypes.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)pch.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)PhysicsComponent.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)PhysicsSystem.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Random.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GraphicsPanel.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)RendererSystem.h" />
@@ -78,6 +79,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Resource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ResourceDefs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ResourceManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)RigidbodyComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ScoreboardComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ShaderImporter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ShaderResource.h" />
@@ -144,11 +146,14 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)OutputMemoryStream.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Panel.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GraphicsPanel.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)PhysicsComponent.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)PhysicsSystem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)RendererSystem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ReplicationCommand.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Resource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ResourceManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)RendererComponent.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)RigidbodyComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ScoreboardComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ShaderImporter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ShaderResource.cpp" />

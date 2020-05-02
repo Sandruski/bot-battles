@@ -16,7 +16,7 @@ RemotePlayerMovementSystem::RemotePlayerMovementSystem()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool RemotePlayerMovementSystem::Update()
+bool RemotePlayerMovementSystem::PreUpdate()
 {
     GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
     std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();

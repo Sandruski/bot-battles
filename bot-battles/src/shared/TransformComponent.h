@@ -35,10 +35,6 @@ struct TransformComponent : public Component
     U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override;
 #endif
 
-    void UpdateTransform(const glm::vec2& acceleration, F32 angularAcceleration, F32 dt);
-    void UpdatePosition(const glm::vec2& acceleration, F32 dt);
-    void UpdateRotation(F32 angularAcceleration, F32 dt);
-
     glm::vec3 GetPositionAndLayer() const;
     glm::vec3 GetDebugPositionAndLayer() const;
     glm::vec2 GetRotationVector() const;

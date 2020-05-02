@@ -9,7 +9,7 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-bool InputSystemClient::Update()
+bool InputSystemClient::PreUpdate()
 {
     GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
     std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
@@ -24,7 +24,7 @@ bool InputSystemClient::Update()
         return true;
     }
 
-    /*
+    InputComponent& inputComponent = g_gameClient->GetInputComponent();
     inputComponent.m_acceleration = glm::vec2(0.0f, 0.0f);
     inputComponent.m_angularAcceleration = 0.0f;
     inputComponent.m_isShooting = false;
@@ -53,10 +53,9 @@ bool InputSystemClient::Update()
     glm::normalize(inputComponent.m_acceleration);
     inputComponent.m_acceleration *= inputComponent.m_maxAcceleration;
     inputComponent.m_angularAcceleration *= inputComponent.m_maxAngularAcceleration;
-    */
 
     if (!clientComponent.m_inputBuffer.IsFull()) {
-        InputComponent& inputComponent = g_gameClient->GetInputComponent();
+        //InputComponent& inputComponent = g_gameClient->GetInputComponent();
         U32 dirtyState = 0;
 
         if (!clientComponent.m_isLastInputTransformPending && !clientComponent.m_isLastInputWeaponPending) {
@@ -77,8 +76,7 @@ bool InputSystemClient::Update()
         }
 
         if (dirtyState != 0) {
-            F32 dt = MyTime::GetInstance().GetDt();
-            Input input = Input(inputComponent, dirtyState, dt, clientComponent.m_inputBuffer.m_back, clientComponent.m_interpolationFromFrame, clientComponent.m_interpolationToFrame, clientComponent.m_interpolationPercentage);
+            Input input = Input(inputComponent, dirtyState, clientComponent.m_inputBuffer.m_back, clientComponent.m_interpolationFromFrame, clientComponent.m_interpolationToFrame, clientComponent.m_interpolationPercentage);
             clientComponent.m_inputBuffer.Add(input);
         }
     }

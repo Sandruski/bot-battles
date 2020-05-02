@@ -121,7 +121,7 @@ bool GameClient::Init()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool GameClient::Update()
+bool GameClient::DoFrame()
 {
     bool ret = false;
 
@@ -131,7 +131,7 @@ bool GameClient::Update()
     clientSystem.lock()->ReceiveIncomingPackets(m_clientComponent);
     //}
 
-    ret = Game::Update();
+    ret = Game::DoFrame();
 
     //if (m_mainMenuComponent.m_phase != MainMenuComponent::MainMenuPhase::SETUP) {
     clientSystem.lock()->SendOutgoingPackets(m_clientComponent);

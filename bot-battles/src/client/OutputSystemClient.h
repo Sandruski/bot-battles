@@ -16,7 +16,7 @@ public:
 public:
     OutputSystemClient();
 
-    bool Update() override;
+    bool PostUpdate() override;
 };
 }
 

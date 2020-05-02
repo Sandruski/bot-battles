@@ -14,6 +14,7 @@
 #include "GameplayComponent.h"
 #include "MainMenuComponent.h"
 #include "MapImporter.h"
+#include "PhysicsComponent.h"
 #include "ResourceManager.h"
 #include "ScoreboardComponent.h"
 
@@ -35,7 +36,7 @@ public:
 
     virtual bool Init();
     void InitFrame();
-    bool DoFrame();
+    virtual bool DoFrame();
     void EndFrame();
     bool End();
 
@@ -75,6 +76,10 @@ public:
     {
         return m_eventComponent;
     }
+    PhysicsComponent& GetPhysicsComponent()
+    {
+        return m_physicsComponent;
+    }
     MainMenuComponent& GetMainMenuComponent()
     {
         return m_mainMenuComponent;
@@ -88,11 +93,9 @@ public:
         return m_scoreboardComponent;
     }
 
-protected:
-    virtual bool Update();
-
 private:
     bool PreUpdate();
+    bool Update();
     bool PostUpdate();
     bool PreRender();
     bool Render();
@@ -120,6 +123,7 @@ protected:
     ResourceManager m_resourceManager;
     MapImporter m_mapImporter;
     EventComponent m_eventComponent;
+    PhysicsComponent m_physicsComponent;
     MainMenuComponent m_mainMenuComponent;
     GameplayComponent m_gameplayComponent;
     ScoreboardComponent m_scoreboardComponent;

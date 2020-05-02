@@ -132,7 +132,7 @@ bool GameServer::Init()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool GameServer::Update()
+bool GameServer::DoFrame()
 {
     bool ret = false;
 
@@ -142,7 +142,7 @@ bool GameServer::Update()
     serverSystem.lock()->ReceiveIncomingPackets(m_serverComponent);
     //}
 
-    ret = Game::Update();
+    ret = Game::DoFrame();
 
     //if (m_mainMenuComponent.m_phase != MainMenuComponent::MainMenuPhase::SETUP) {
     serverSystem.lock()->SendOutgoingPackets(m_serverComponent);
