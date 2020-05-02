@@ -70,14 +70,14 @@ void RigidbodyComponent::SetAsCircle(glm::vec2 position, F32 rotation, F32 radiu
     b2CircleShape shape;
     shape.m_radius = PIXELS_TO_METERS(radius);
     fixtureDef.shape = &shape;
-    //if (m_bodyType == BodyType::DYNAMIC) {
-    fixtureDef.density = 1.0f;
-    //}
+    if (m_bodyType == BodyType::DYNAMIC) {
+        fixtureDef.density = 1.0f;
+    }
     m_body->CreateFixture(&fixtureDef);
 }
 
 //----------------------------------------------------------------------------------------------------
-void RigidbodyComponent::SetAsBox(glm::vec2 position, F32 rotation, glm::vec2 size)
+void RigidbodyComponent::SetAsBox(glm::vec2 position, F32 rotation, glm::vec2 halfSize)
 {
     if (m_body != nullptr) {
         return;
@@ -86,17 +86,16 @@ void RigidbodyComponent::SetAsBox(glm::vec2 position, F32 rotation, glm::vec2 si
     b2BodyDef bodyDef;
     bodyDef.position.Set(PIXELS_TO_METERS(position.x), PIXELS_TO_METERS(position.y));
     bodyDef.angle = glm::radians(rotation);
-    //body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
     PhysicsComponent& physicsComponent = g_game->GetPhysicsComponent();
     m_body = physicsComponent.m_world.CreateBody(&bodyDef);
 
     b2FixtureDef fixtureDef;
     b2PolygonShape shape;
-    shape.SetAsBox(PIXELS_TO_METERS(size.x), PIXELS_TO_METERS(size.y));
+    shape.SetAsBox(PIXELS_TO_METERS(halfSize.x), PIXELS_TO_METERS(halfSize.y));
     fixtureDef.shape = &shape;
-    //if (m_bodyType == BodyType::DYNAMIC) {
-    fixtureDef.density = 1.0f;
-    //}
+    if (m_bodyType == BodyType::DYNAMIC) {
+        fixtureDef.density = 1.0f;
+    }
     m_body->CreateFixture(&fixtureDef);
 }
 

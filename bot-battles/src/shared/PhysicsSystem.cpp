@@ -53,12 +53,12 @@ void PhysicsSystem::OnRigidbodyComponentAdded(Entity entity) const
     std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_game->GetComponentManager().GetComponent<RigidbodyComponent>(entity);
     switch (colliderComponent.lock()->m_shapeType) {
     case ColliderComponent::ShapeType::CIRCLE: {
-        rigidbodyComponent.lock()->SetAsCircle(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, colliderComponent.lock()->m_size.x);
+        rigidbodyComponent.lock()->SetAsCircle(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, colliderComponent.lock()->m_size.x / 2.0f);
         break;
     }
 
     case ColliderComponent::ShapeType::BOX: {
-        rigidbodyComponent.lock()->SetAsBox(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, colliderComponent.lock()->m_size);
+        rigidbodyComponent.lock()->SetAsBox(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, colliderComponent.lock()->m_size / 2.0f);
         break;
     }
 

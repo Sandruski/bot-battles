@@ -40,7 +40,7 @@ struct RigidbodyComponent : public Component
 #endif
 
     void SetAsCircle(glm::vec2 position, F32 rotation, F32 radius);
-    void SetAsBox(glm::vec2 position, F32 rotation, glm::vec2 size);
+    void SetAsBox(glm::vec2 position, F32 rotation, glm::vec2 halfSize);
 
     void UpdateBodyType() const;
 

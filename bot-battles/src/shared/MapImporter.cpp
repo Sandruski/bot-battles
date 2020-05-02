@@ -127,7 +127,7 @@ void MapImporter::Create(const Tilemap& tilemap) const
                 // Collider
                 if (tilelayer.m_name == "collision") {
                     std::weak_ptr<ColliderComponent> colliderComponent = g_game->GetComponentManager().AddComponent<ColliderComponent>(entity);
-                    colliderComponent.lock()->m_size = tilemap.m_tileSize;
+                    colliderComponent.lock()->m_size = static_cast<glm::vec2>(tilemap.m_tileSize);
                     colliderComponent.lock()->m_shapeType = ColliderComponent::ShapeType::BOX;
 
                     std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_game->GetComponentManager().AddComponent<RigidbodyComponent>(entity);

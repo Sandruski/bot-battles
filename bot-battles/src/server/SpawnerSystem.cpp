@@ -123,10 +123,11 @@ Entity SpawnerSystem::Spawn(U32 playerNumber) const
     std::weak_ptr<ColliderComponent> colliderComponent = g_gameServer->GetComponentManager().AddComponent<ColliderComponent>(character);
     const glm::uvec4 spriteTextureCoords = spriteComponent.lock()->GetSpriteTextureCoords();
     colliderComponent.lock()->m_size = glm::vec2(30.0f, 30.0f);
-    colliderComponent.lock()->m_shapeType = ColliderComponent::ShapeType::CIRCLE;
+    colliderComponent.lock()->m_shapeType = ColliderComponent::ShapeType::BOX;
+    //colliderComponent.lock()->m_shapeType = ColliderComponent::ShapeType::CIRCLE;
 
     std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameServer->GetComponentManager().AddComponent<RigidbodyComponent>(character);
-    rigidbodyComponent.lock()->m_bodyType = RigidbodyComponent::BodyType::KINEMATIC;
+    rigidbodyComponent.lock()->m_bodyType = RigidbodyComponent::BodyType::DYNAMIC;
     rigidbodyComponent.lock()->UpdateBodyType();
 
     g_gameServer->GetComponentManager().AddComponent<WeaponComponent>(character);
