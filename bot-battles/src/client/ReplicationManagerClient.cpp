@@ -88,7 +88,6 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream) const
                     F32 rotation = !transformComponent.lock()->m_transformBuffer.IsEmpty() ? transformComponent.lock()->m_transformBuffer.GetLast().m_rotation : transformComponent.lock()->m_rotation;
                     Transform transform = Transform(position, rotation, frame);
                     transformComponent.lock()->m_transformBuffer.Add(transform);
-                    ILOG("Added frame %u", frame);
                 }
             }
         }

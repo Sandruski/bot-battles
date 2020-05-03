@@ -88,7 +88,6 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U3
             if (hasPosition || hasRotation) {
                 Transform transform = Transform(newPosition, newRotation, frame);
                 m_transformBuffer.Add(transform);
-                ILOG("Added frame %u", frame);
             }
         } else {
             if (hasPosition) {
@@ -159,9 +158,10 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::v
 
         PhysicsComponent& physicsComponent = g_gameClient->GetPhysicsComponent();
         for (U32 i = clientComponent.m_inputBuffer.m_front; i < clientComponent.m_inputBuffer.m_back; ++i) {
-            Transform& transform = m_inputTransformBuffer.Get(i);
             const Input& input = clientComponent.m_inputBuffer.Get(i);
             const InputComponent& inputComponent = input.GetInputComponent();
+
+            Transform& transform = m_inputTransformBuffer.Get(i);
 
             if (replayPosition) {
                 transform.m_position += inputComponent.m_linearVelocity * physicsComponent.m_timeStep;
