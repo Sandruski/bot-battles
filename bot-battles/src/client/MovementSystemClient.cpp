@@ -6,6 +6,7 @@
 #include "GameClient.h"
 #include "InputComponent.h"
 #include "LinkingContext.h"
+#include "PhysicsComponent.h"
 #include "RigidbodyComponent.h"
 #include "State.h"
 #include "TransformComponent.h"
@@ -34,6 +35,8 @@ bool MovementSystemClient::PreUpdate()
         return true;
     }
 
+    PhysicsComponent& physicsComponent = g_gameClient->GetPhysicsComponent();
+
     for (auto& entity : m_entities) {
         if (g_gameClient->GetLinkingContext().GetNetworkID(entity) >= INVALID_NETWORK_ID) {
             continue;
@@ -59,19 +62,21 @@ bool MovementSystemClient::PreUpdate()
 
             // TODO: cap acceleration to max acceleration and angular acceleration to max angular acceleration
 
-            const bool hasAcceleration = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_ACCELERATION);
-            if (hasAcceleration) {
-                velocity += inputComponent.m_acceleration;
+            const bool hasLinearVelocity = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
+            if (hasLinearVelocity) {
+                velocity += inputComponent.m_linearVelocity;
             }
-            const bool hasAngularAcceleration = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_ACCELERATION);
-            if (hasAngularAcceleration) {
-                angularVelocity += inputComponent.m_angularAcceleration;
+            const bool hasAngularVelocity = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
+            if (hasAngularVelocity) {
+                angularVelocity += inputComponent.m_angularVelocity;
             }
 
             rigidbodyComponent.lock()->m_body->SetLinearVelocity(b2Vec2(PIXELS_TO_METERS(velocity.x), PIXELS_TO_METERS(velocity.y)));
             rigidbodyComponent.lock()->m_body->SetAngularVelocity(glm::radians(angularVelocity));
         }
     }
+
+    physicsComponent.Step();
 
     return true;
 }
@@ -113,12 +118,10 @@ bool MovementSystemClient::PostUpdate()
             }
 
             const Input& input = clientComponent.m_inputBuffer.GetLast();
-            const InputComponent& inputComponent = input.GetInputComponent();
 
             Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, input.GetFrame());
             transformComponent.lock()->m_inputTransformBuffer.Add(transform);
             ILOG("Client position at frame %u: %f %f", transform.GetFrame(), transform.m_position.x, transform.m_position.y);
-            ILOG("With acceleration: %f %f", inputComponent.m_acceleration.x, inputComponent.m_acceleration.y);
         }
     }
 

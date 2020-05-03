@@ -12,7 +12,7 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-bool OutputSystemServer::PostUpdate()
+bool OutputSystemServer::Update()
 {
     GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
     std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();

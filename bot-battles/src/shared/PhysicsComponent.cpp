@@ -42,6 +42,12 @@ PhysicsComponent::PhysicsComponent()
 }
 
 //----------------------------------------------------------------------------------------------------
+void PhysicsComponent::Step()
+{
+    m_world.Step(m_timeStep, m_velocityIterations, m_positionIterations);
+}
+
+//----------------------------------------------------------------------------------------------------
 bool PhysicsComponent::Raycast(const glm::vec2& origin, const glm::vec2& destination, RaycastHit& hitInfo) const
 {
     RayCastCallback rayCastCallback;

@@ -14,10 +14,6 @@ public:
     }
 
 public:
-    PhysicsSystem();
-
-    bool Update() override;
-
     void OnNotify(const Event& event) override;
 
 private:

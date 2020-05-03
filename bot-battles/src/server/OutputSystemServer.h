@@ -14,7 +14,7 @@ public:
     }
 
 public:
-    bool PostUpdate() override;
+    bool Update() override;
 };
 }
 

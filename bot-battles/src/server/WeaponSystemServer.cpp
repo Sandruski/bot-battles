@@ -29,7 +29,7 @@ WeaponSystemServer::WeaponSystemServer()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool WeaponSystemServer::PostUpdate()
+bool WeaponSystemServer::Update()
 {
     GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
     std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();

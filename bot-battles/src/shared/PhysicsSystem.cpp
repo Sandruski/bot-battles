@@ -11,24 +11,6 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-PhysicsSystem::PhysicsSystem()
-{
-    m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
-    m_signature |= 1 << static_cast<U16>(ComponentType::COLLIDER);
-    m_signature |= 1 << static_cast<U16>(ComponentType::RIGIDBODY);
-}
-
-//----------------------------------------------------------------------------------------------------
-bool PhysicsSystem::Update()
-{
-    PhysicsComponent& physicsComponent = g_game->GetPhysicsComponent();
-
-    physicsComponent.m_world.Step(physicsComponent.m_timeStep, physicsComponent.m_velocityIterations, physicsComponent.m_positionIterations);
-
-    return true;
-}
-
-//----------------------------------------------------------------------------------------------------
 void PhysicsSystem::OnNotify(const Event& event)
 {
     switch (event.eventType) {

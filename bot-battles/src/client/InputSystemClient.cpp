@@ -25,59 +25,59 @@ bool InputSystemClient::PreUpdate()
     }
 
     InputComponent& inputComponent = g_gameClient->GetInputComponent();
-    inputComponent.m_acceleration = glm::vec2(0.0f, 0.0f);
-    inputComponent.m_angularAcceleration = 0.0f;
+    inputComponent.m_linearVelocity = glm::vec2(0.0f, 0.0f);
+    inputComponent.m_angularVelocity = 0.0f;
     inputComponent.m_isShooting = false;
     EventComponent& eventComponent = g_game->GetEventComponent();
     U32 dirtyState = 0;
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_A) == EventComponent::KeyState::REPEAT) {
-        inputComponent.m_acceleration.x = -1.0f;
-        dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_ACCELERATION);
+        inputComponent.m_linearVelocity.x = -1.0f;
+        dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
         clientComponent.m_isLastInputTransformPending = true;
     }
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_A) == EventComponent::KeyState::UP) {
-        inputComponent.m_acceleration.x = 0.0f;
-        dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_ACCELERATION);
+        inputComponent.m_linearVelocity.x = 0.0f;
+        dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
         clientComponent.m_isLastInputTransformPending = true;
     }
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_D) == EventComponent::KeyState::REPEAT) {
-        inputComponent.m_acceleration.x = 1.0f;
-        dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_ACCELERATION);
+        inputComponent.m_linearVelocity.x = 1.0f;
+        dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
         clientComponent.m_isLastInputTransformPending = true;
     }
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_D) == EventComponent::KeyState::UP) {
-        inputComponent.m_acceleration.x = 0.0f;
-        dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_ACCELERATION);
+        inputComponent.m_linearVelocity.x = 0.0f;
+        dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
         clientComponent.m_isLastInputTransformPending = true;
     }
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_W) == EventComponent::KeyState::REPEAT) {
-        inputComponent.m_acceleration.y = -1.0f;
-        dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_ACCELERATION);
+        inputComponent.m_linearVelocity.y = -1.0f;
+        dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
         clientComponent.m_isLastInputTransformPending = true;
     }
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_W) == EventComponent::KeyState::UP) {
-        inputComponent.m_acceleration.y = 0.0f;
-        dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_ACCELERATION);
+        inputComponent.m_linearVelocity.y = 0.0f;
+        dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
         clientComponent.m_isLastInputTransformPending = true;
     }
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_S) == EventComponent::KeyState::REPEAT) {
-        inputComponent.m_acceleration.y = 1.0f;
-        dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_ACCELERATION);
+        inputComponent.m_linearVelocity.y = 1.0f;
+        dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
         clientComponent.m_isLastInputTransformPending = true;
     }
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_S) == EventComponent::KeyState::UP) {
-        inputComponent.m_acceleration.y = 0.0f;
-        dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_ACCELERATION);
+        inputComponent.m_linearVelocity.y = 0.0f;
+        dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
         clientComponent.m_isLastInputTransformPending = true;
     }
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_LEFT) == EventComponent::KeyState::REPEAT) {
-        inputComponent.m_angularAcceleration = -1.0f;
-        dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_ACCELERATION);
+        inputComponent.m_angularVelocity = -1.0f;
+        dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
         clientComponent.m_isLastInputTransformPending = true;
     }
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_RIGHT) == EventComponent::KeyState::REPEAT) {
-        inputComponent.m_angularAcceleration = 1.0f;
-        dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_ACCELERATION);
+        inputComponent.m_angularVelocity = 1.0f;
+        dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
         clientComponent.m_isLastInputTransformPending = true;
     }
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_SPACE) == EventComponent::KeyState::DOWN) {
@@ -86,9 +86,9 @@ bool InputSystemClient::PreUpdate()
         clientComponent.m_isLastInputWeaponPending = true;
     }
 
-    glm::normalize(inputComponent.m_acceleration);
-    inputComponent.m_acceleration *= inputComponent.m_maxAcceleration;
-    inputComponent.m_angularAcceleration *= inputComponent.m_maxAngularAcceleration;
+    glm::normalize(inputComponent.m_linearVelocity);
+    inputComponent.m_linearVelocity *= inputComponent.m_maxLinearVelocity;
+    inputComponent.m_angularVelocity *= inputComponent.m_maxAngularVelocity;
 
     if (!clientComponent.m_inputBuffer.IsFull()) {
         //InputComponent& inputComponent = g_gameClient->GetInputComponent();

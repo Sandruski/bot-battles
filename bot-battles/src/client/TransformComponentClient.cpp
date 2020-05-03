@@ -164,10 +164,10 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::v
             const InputComponent& inputComponent = input.GetInputComponent();
 
             if (replayPosition) {
-                transform.m_position += inputComponent.m_acceleration * physicsComponent.m_timeStep;
+                transform.m_position += inputComponent.m_linearVelocity * physicsComponent.m_timeStep;
             }
             if (replayRotation) {
-                transform.m_rotation += inputComponent.m_angularAcceleration * physicsComponent.m_timeStep;
+                transform.m_rotation += inputComponent.m_angularVelocity * physicsComponent.m_timeStep;
             }
         }
 
