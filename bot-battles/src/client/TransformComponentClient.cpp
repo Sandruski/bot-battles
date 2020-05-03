@@ -63,7 +63,7 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U3
                 }
             }
 
-            Replay(hasPosition, hasRotation, newPosition, newRotation);
+            Replay(hasPosition, hasRotation, newPosition, newRotation, entity);
         }
     } else {
         if (clientComponent.m_isEntityInterpolation) {
@@ -117,10 +117,15 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U3
 }
 
 //----------------------------------------------------------------------------------------------------
-void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::vec2 newPosition, F32 newRotation)
+void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::vec2 newPosition, F32 newRotation, Entity entity)
 {
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     if (m_inputTransformBuffer.IsEmpty() || clientComponent.m_inputBuffer.IsEmpty()) {
+        return;
+    }
+
+    std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameClient->GetComponentManager().GetComponent<RigidbodyComponent>(entity);
+    if (rigidbodyComponent.expired()) {
         return;
     }
 
@@ -177,20 +182,30 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::v
         }
 
         for (U32 i = clientComponent.m_inputBuffer.m_front; i < clientComponent.m_inputBuffer.m_back; ++i) {
+            Transform& transform = m_inputTransformBuffer.Get(i);
+            rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(transform.m_position.x), PIXELS_TO_METERS(transform.m_position.y)), glm::radians(transform.m_rotation));
+
+            glm::vec2 linearVelocity = glm::vec2(0.0f, 0.0f);
+            F32 angularVelocity = 0.0f;
+
             const Input& input = clientComponent.m_inputBuffer.Get(i);
             const InputComponent& inputComponent = input.GetInputComponent();
 
-            Transform& transform = m_inputTransformBuffer.Get(i);
-
             if (replayPosition) {
-                transform.m_position += inputComponent.m_linearVelocity * physicsComponent.m_timeStep;
+                linearVelocity += inputComponent.m_linearVelocity;
             }
             if (replayRotation) {
-                transform.m_rotation += inputComponent.m_angularVelocity * physicsComponent.m_timeStep;
+                angularVelocity += inputComponent.m_angularVelocity;
             }
+
+            physicsComponent.Step();
+
+            b2Vec2 physicsPosition = rigidbodyComponent.lock()->m_body->GetPosition();
+            transform.m_position = glm::vec2(METERS_TO_PIXELS(physicsPosition.x), METERS_TO_PIXELS(physicsPosition.y));
+            float32 physicsRotation = rigidbodyComponent.lock()->m_body->GetAngle();
+            transform.m_rotation = glm::degrees(physicsRotation);
         }
 
-        // TODO: move towards m_position and m_rotation with LINEAR_VELOCITY and ANGULAR_VELOCITY from current m_position and m_rotation?
         Transform& lastTransform = m_inputTransformBuffer.GetLast();
         if (replayPosition) {
             m_position = lastTransform.m_position;

@@ -75,8 +75,18 @@ bool InputSystemClient::Update()
         dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
         clientComponent.m_isLastInputTransformPending = true;
     }
+    if (eventComponent.m_keyboard.at(SDL_SCANCODE_LEFT) == EventComponent::KeyState::UP) {
+        inputComponent.m_angularVelocity = 0.0f;
+        dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
+        clientComponent.m_isLastInputTransformPending = true;
+    }
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_RIGHT) == EventComponent::KeyState::REPEAT) {
         inputComponent.m_angularVelocity = 1.0f;
+        dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
+        clientComponent.m_isLastInputTransformPending = true;
+    }
+    if (eventComponent.m_keyboard.at(SDL_SCANCODE_RIGHT) == EventComponent::KeyState::UP) {
+        inputComponent.m_angularVelocity = 0.0f;
         dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
         clientComponent.m_isLastInputTransformPending = true;
     }

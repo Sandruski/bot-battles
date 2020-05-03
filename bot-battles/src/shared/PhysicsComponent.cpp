@@ -35,7 +35,7 @@ PhysicsComponent::RaycastHit::RaycastHit()
 //----------------------------------------------------------------------------------------------------
 PhysicsComponent::PhysicsComponent()
     : m_world(b2Vec2(0.0f, 0.0f))
-    , m_timeStep(1.0f) // 1.0f / 60.0f
+    , m_timeStep(1.0f / 60.0f)
     , m_velocityIterations(6)
     , m_positionIterations(2)
     , m_epsilon(b2_epsilon)

@@ -52,7 +52,7 @@ bool MovementSystemClient::Update()
             const Input& input = clientComponent.m_inputBuffer.GetLast();
 
             if (clientComponent.m_isLastInputTransformPending) {
-                glm::vec2 velocity = glm::vec2(0.0f, 0.0f);
+                glm::vec2 linearVelocity = glm::vec2(0.0f, 0.0f);
                 F32 angularVelocity = 0.0f;
 
                 const InputComponent& inputComponent = input.GetInputComponent();
@@ -61,7 +61,7 @@ bool MovementSystemClient::Update()
                 const bool hasLinearVelocity = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
                 if (hasLinearVelocity) {
                     // TODO: cap m_acceleration to m_maxAcceleration
-                    velocity += inputComponent.m_linearVelocity;
+                    linearVelocity += inputComponent.m_linearVelocity;
                 }
                 const bool hasAngularVelocity = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
                 if (hasAngularVelocity) {
@@ -69,7 +69,7 @@ bool MovementSystemClient::Update()
                     angularVelocity += inputComponent.m_angularVelocity;
                 }
 
-                rigidbodyComponent.lock()->m_body->SetLinearVelocity(b2Vec2(PIXELS_TO_METERS(velocity.x), PIXELS_TO_METERS(velocity.y)));
+                rigidbodyComponent.lock()->m_body->SetLinearVelocity(b2Vec2(PIXELS_TO_METERS(linearVelocity.x), PIXELS_TO_METERS(linearVelocity.y)));
                 rigidbodyComponent.lock()->m_body->SetAngularVelocity(glm::radians(angularVelocity));
 
                 physicsComponent.Step();

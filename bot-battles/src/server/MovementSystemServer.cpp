@@ -57,7 +57,7 @@ bool MovementSystemServer::Update()
                 continue;
             }
 
-            glm::vec2 velocity = glm::vec2(0.0f, 0.0f);
+            glm::vec2 linearVelocity = glm::vec2(0.0f, 0.0f);
             F32 angularVelocity = 0.0f;
 
             std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
@@ -71,18 +71,18 @@ bool MovementSystemServer::Update()
                 const bool hasLinearVelocity = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
                 if (hasLinearVelocity) {
                     // TODO: cap m_acceleration to m_maxAcceleration
-                    velocity += inputComponent.m_linearVelocity;
+                    linearVelocity += inputComponent.m_linearVelocity;
                     hasInput = true;
                 }
                 const bool hasAngularVelocity = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
                 if (hasAngularVelocity) {
                     // TODO: cap m_angularAcceleration to m_maxAngularAcceleration
-                    velocity += inputComponent.m_angularVelocity;
+                    angularVelocity += inputComponent.m_angularVelocity;
                     hasInput = true;
                 }
             }
 
-            rigidbodyComponent.lock()->m_body->SetLinearVelocity(b2Vec2(PIXELS_TO_METERS(velocity.x), PIXELS_TO_METERS(velocity.y)));
+            rigidbodyComponent.lock()->m_body->SetLinearVelocity(b2Vec2(PIXELS_TO_METERS(linearVelocity.x), PIXELS_TO_METERS(linearVelocity.y)));
             rigidbodyComponent.lock()->m_body->SetAngularVelocity(glm::radians(angularVelocity));
         }
 
