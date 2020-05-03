@@ -40,7 +40,7 @@ inline F32 METERS_TO_PIXELS(F32 meters)
     return meters * PIXELS_PER_METER;
 }
 
-static const F32 PHYSICS_THRESHOLD = 0.1f;
+static const F32 PHYSICS_THRESHOLD = 0.0f;
 
 static const I32 SDL_ERROR = -1;
 static const I32 SDL_KEY_PRESSED = 1;

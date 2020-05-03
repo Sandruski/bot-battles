@@ -57,10 +57,6 @@ bool RemotePlayerMovementSystem::Update()
             continue;
         }
 
-        glm::vec2 authoritativePosition = transformComponent.lock()->m_position;
-        F32 authoritativeRotation = transformComponent.lock()->m_rotation;
-        rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(authoritativePosition.x), PIXELS_TO_METERS(authoritativePosition.y)), glm::radians(authoritativeRotation));
-
         if (!transformComponent.lock()->m_transformBuffer.IsEmpty()) {
             U32 indexFrom = transformComponent.lock()->m_transformBuffer.m_front;
             bool isFoundFrom = false;

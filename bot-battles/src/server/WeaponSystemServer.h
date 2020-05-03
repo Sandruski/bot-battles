@@ -18,6 +18,7 @@ public:
 public:
     WeaponSystemServer();
 
+    bool PreUpdate() override;
     bool Update() override;
     bool Render() override;
 

@@ -7,6 +7,7 @@
 #include "Input.h"
 #include "InputComponent.h"
 #include "PhysicsComponent.h"
+#include "RigidbodyComponent.h"
 
 namespace sand {
 
@@ -41,6 +42,11 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U3
             if (hasRotation) {
                 m_rotation = newRotation;
             }
+
+            std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameClient->GetComponentManager().GetComponent<RigidbodyComponent>(entity);
+            if (!rigidbodyComponent.expired()) {
+                rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(m_position.x), PIXELS_TO_METERS(m_position.y)), glm::radians(m_rotation));
+            }
         } else {
             if (!hasPosition) {
                 if (!m_inputTransformBuffer.IsEmpty()) {
@@ -67,6 +73,11 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U3
                 }
                 if (hasRotation) {
                     m_rotation = newRotation;
+                }
+
+                std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameClient->GetComponentManager().GetComponent<RigidbodyComponent>(entity);
+                if (!rigidbodyComponent.expired()) {
+                    rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(m_position.x), PIXELS_TO_METERS(m_position.y)), glm::radians(m_rotation));
                 }
             } else {
                 if (!hasPosition) {
@@ -95,6 +106,11 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U3
             }
             if (hasRotation) {
                 m_rotation = newRotation;
+            }
+
+            std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameClient->GetComponentManager().GetComponent<RigidbodyComponent>(entity);
+            if (!rigidbodyComponent.expired()) {
+                rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(m_position.x), PIXELS_TO_METERS(m_position.y)), glm::radians(m_rotation));
             }
         }
     }
@@ -146,6 +162,7 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::v
     }
 
     if (replayPosition || replayRotation) {
+        assert(false); // TODO: remove this once the networking is finished :)
         ILOG("REPLAY");
         ILOG("Current vs new positions at frame %u is %f %f and %f %f", clientComponent.m_lastAckdFrame, position.x, position.y, newPosition.x, newPosition.y);
 
@@ -171,6 +188,7 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::v
             }
         }
 
+        // TODO: move towards m_position and m_rotation with LINEAR_VELOCITY and ANGULAR_VELOCITY from current m_position and m_rotation?
         Transform& lastTransform = m_inputTransformBuffer.GetLast();
         if (replayPosition) {
             m_position = lastTransform.m_position;

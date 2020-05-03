@@ -38,6 +38,14 @@ bool ScriptingSystemClient::StartUp()
 }
 
 //----------------------------------------------------------------------------------------------------
+bool ScriptingSystemClient::PreUpdate()
+{
+    NotifyEvents();
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
 bool ScriptingSystemClient::Update()
 {
     GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();

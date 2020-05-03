@@ -13,6 +13,7 @@ public:
     void OnNotify(const Event& event) override;
 
     bool StartUp();
+    bool PreUpdate();
     bool Update();
     bool RenderGui();
     bool ShutDown();

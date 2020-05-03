@@ -23,6 +23,14 @@ MovementSystemServer::MovementSystemServer()
 }
 
 //----------------------------------------------------------------------------------------------------
+bool MovementSystemServer::PreUpdate()
+{
+    NotifyEvents();
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
 bool MovementSystemServer::Update()
 {
     GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
@@ -99,12 +107,14 @@ bool MovementSystemServer::Update()
             std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
             U32 inputCount = clientProxy.lock()->m_inputBuffer.Count();
             if (i < inputCount) {
-                const Input& input = clientProxy.lock()->m_inputBuffer.Get(i);
+                U32 inputIndex = clientProxy.lock()->m_inputBuffer.m_front + i;
+                const Input& input = clientProxy.lock()->m_inputBuffer.Get(inputIndex);
 
                 b2Vec2 physicsPosition = rigidbodyComponent.lock()->m_body->GetPosition();
                 transformComponent.lock()->m_position = glm::vec2(METERS_TO_PIXELS(physicsPosition.x), METERS_TO_PIXELS(physicsPosition.y));
                 float32 physicsRotation = rigidbodyComponent.lock()->m_body->GetAngle();
                 transformComponent.lock()->m_rotation = glm::degrees(physicsRotation);
+                ILOG("Server position at frame %u is %f %f with velocity %f %f", input.GetFrame(), transformComponent.lock()->m_position.x, transformComponent.lock()->m_position.y, input.GetInputComponent().m_linearVelocity.x, input.GetInputComponent().m_linearVelocity.y);
 
                 Event newEvent;
                 newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;

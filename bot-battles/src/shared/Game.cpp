@@ -320,6 +320,10 @@ bool Game::PreUpdate()
     if (!ret) {
         return ret;
     }
+    ret = m_fsm->PreUpdate();
+    if (!ret) {
+        return ret;
+    }
 
     return ret;
 }

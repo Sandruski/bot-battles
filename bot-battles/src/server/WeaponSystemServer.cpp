@@ -29,6 +29,14 @@ WeaponSystemServer::WeaponSystemServer()
 }
 
 //----------------------------------------------------------------------------------------------------
+bool WeaponSystemServer::PreUpdate()
+{
+    NotifyEvents();
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
 bool WeaponSystemServer::Update()
 {
     GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();

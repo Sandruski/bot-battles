@@ -48,10 +48,6 @@ bool MovementSystemClient::Update()
             continue;
         }
 
-        glm::vec2 authoritativePosition = transformComponent.lock()->m_position;
-        F32 authoritativeRotation = transformComponent.lock()->m_rotation;
-        rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(authoritativePosition.x), PIXELS_TO_METERS(authoritativePosition.y)), glm::radians(authoritativeRotation));
-
         if (clientComponent.m_isLastInputTransformPending || clientComponent.m_isLastInputWeaponPending) {
             const Input& input = clientComponent.m_inputBuffer.GetLast();
 
@@ -82,6 +78,7 @@ bool MovementSystemClient::Update()
                 transformComponent.lock()->m_position = glm::vec2(METERS_TO_PIXELS(physicsPosition.x), METERS_TO_PIXELS(physicsPosition.y));
                 float32 physicsRotation = rigidbodyComponent.lock()->m_body->GetAngle();
                 transformComponent.lock()->m_rotation = glm::degrees(physicsRotation);
+                ILOG("Client position at frame %u is %f %f with velocity %f %f", input.GetFrame(), transformComponent.lock()->m_position.x, transformComponent.lock()->m_position.y, inputComponent.m_linearVelocity.x, inputComponent.m_linearVelocity.y);
 
                 clientComponent.m_isLastInputTransformPending = false;
             }

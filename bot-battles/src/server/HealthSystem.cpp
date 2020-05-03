@@ -18,6 +18,14 @@ HealthSystem::HealthSystem()
 }
 
 //----------------------------------------------------------------------------------------------------
+bool HealthSystem::PreUpdate()
+{
+    NotifyEvents();
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
 bool HealthSystem::Update()
 {
     // TODO: do we really need this system with insta kill?

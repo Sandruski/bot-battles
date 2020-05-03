@@ -16,6 +16,7 @@ public:
 public:
     HealthSystem();
 
+    bool PreUpdate() override;
     bool Update() override;
 };
 }
