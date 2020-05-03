@@ -52,21 +52,11 @@ void PhysicsComponent::Step()
 bool PhysicsComponent::Raycast(const glm::vec2& origin, const glm::vec2& destination, RaycastHit& hitInfo) const
 {
     RayCastCallback rayCastCallback;
-    m_world.RayCast(&rayCastCallback, b2Vec2(origin.x, origin.y), b2Vec2(destination.x, destination.y));
+    m_world.RayCast(&rayCastCallback, b2Vec2(PIXELS_TO_METERS(origin.x), PIXELS_TO_METERS(origin.y)), b2Vec2(PIXELS_TO_METERS(destination.x), PIXELS_TO_METERS(destination.y)));
     if (rayCastCallback.m_body != nullptr) {
-        /*
-        std::vector<std::pair<Entity, std::weak_ptr<RigidbodyComponent>>> rigidbodyComponents = g_game->GetComponentManager().GetComponents<RigidbodyComponent>();
-        for (const auto& pair : rigidbodyComponents) {
-            std::weak_ptr<RigidbodyComponent> rigidbodyComponent = pair.second;
-            if (rayCastCallback.m_body == rigidbodyComponent.lock()->m_body) {
-                Entity entity = pair.first;
-                hitInfo.m_entity = entity;
-                break;
-            }
-        }*/
         hitInfo.m_entity = *static_cast<Entity*>(rayCastCallback.m_body->GetUserData());
-        hitInfo.m_point = glm::vec2(rayCastCallback.m_point.x, rayCastCallback.m_point.y);
-        hitInfo.m_normal = glm::vec2(rayCastCallback.m_normal.x, rayCastCallback.m_normal.y);
+        hitInfo.m_point = glm::vec2(METERS_TO_PIXELS(rayCastCallback.m_point.x), METERS_TO_PIXELS(rayCastCallback.m_point.y));
+        hitInfo.m_normal = glm::vec2(METERS_TO_PIXELS(rayCastCallback.m_normal.x), METERS_TO_PIXELS(rayCastCallback.m_normal.y));
 
         return true;
     }

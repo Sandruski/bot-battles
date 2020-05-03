@@ -101,9 +101,8 @@ bool InputSystemClient::Update()
     inputComponent.m_angularVelocity *= inputComponent.m_maxAngularVelocity;
 
     if (!clientComponent.m_inputBuffer.IsFull()) {
-        //InputComponent& inputComponent = g_gameClient->GetInputComponent();
-
         if (dirtyState != 0) {
+            //InputComponent& inputComponent = g_gameClient->GetInputComponent();
             Input input = Input(inputComponent, dirtyState, clientComponent.m_inputBuffer.m_back, clientComponent.m_interpolationFromFrame, clientComponent.m_interpolationToFrame, clientComponent.m_interpolationPercentage);
             clientComponent.m_inputBuffer.Add(input);
         }

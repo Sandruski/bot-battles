@@ -66,7 +66,7 @@ bool WeaponSystemServer::Update()
 
             if (inputComponent.m_isShooting) {
                 if (serverComponent.m_isServerRewind) {
-                    Rewind(weaponComponent, entity, input.m_interpolationFromFrame, input.m_interpolationToFrame, input.m_interpolationPercentage);
+                    Rewind(entity, input.m_interpolationFromFrame, input.m_interpolationToFrame, input.m_interpolationPercentage);
                 }
 
                 U32 index = transformComponent.lock()->m_inputTransformBuffer.m_front;
@@ -206,7 +206,7 @@ bool WeaponSystemServer::Render()
 }
 
 //----------------------------------------------------------------------------------------------------
-void WeaponSystemServer::Rewind(std::weak_ptr<WeaponComponent> weaponComponent, Entity localEntity, U32 from, U32 to, F32 percentage)
+void WeaponSystemServer::Rewind(Entity localEntity, U32 from, U32 to, F32 percentage)
 {
     LinkingContext& linkingContext = g_gameServer->GetLinkingContext();
     const std::unordered_map<NetworkID, Entity>& newtorkIDToEntity = linkingContext.GetNetworkIDToEntityMap();
@@ -242,8 +242,11 @@ void WeaponSystemServer::Rewind(std::weak_ptr<WeaponComponent> weaponComponent, 
                 }
             }
 
-            glm::vec2 position = Lerp(fromTransform.m_position, toTransform.m_position, percentage);
-            rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(position.x, position.y), fromTransform.m_rotation);
+            rigidbodyComponent.lock()->m_position = rigidbodyComponent.lock()->m_body->GetPosition();
+            rigidbodyComponent.lock()->m_rotation = rigidbodyComponent.lock()->m_body->GetAngle();
+            glm::vec2 interpolatedPosition = Lerp(fromTransform.m_position, toTransform.m_position, percentage);
+            F32 interpolatedRotation = Lerp(fromTransform.m_rotation, toTransform.m_rotation, percentage);
+            rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(interpolatedPosition.x), PIXELS_TO_METERS(interpolatedPosition.y)), glm::radians(interpolatedRotation));
         }
     }
 }
@@ -260,13 +263,12 @@ void WeaponSystemServer::Revert(Entity localEntity)
             continue;
         }
 
-        std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(remoteEntity);
         std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameServer->GetComponentManager().GetComponent<RigidbodyComponent>(remoteEntity);
-        if (transformComponent.expired() || rigidbodyComponent.expired()) {
+        if (rigidbodyComponent.expired()) {
             continue;
         }
 
-        rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(transformComponent.lock()->m_position.x, transformComponent.lock()->m_position.y), transformComponent.lock()->m_rotation);
+        rigidbodyComponent.lock()->m_body->SetTransform(rigidbodyComponent.lock()->m_position, rigidbodyComponent.lock()->m_rotation);
     }
 }
 }

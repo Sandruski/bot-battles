@@ -63,6 +63,8 @@ bool MovementSystemServer::Update()
             std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
             U32 inputCount = clientProxy.lock()->m_inputBuffer.Count();
             if (i < inputCount) {
+                hasInput = true;
+
                 U32 inputIndex = clientProxy.lock()->m_inputBuffer.m_front + i;
                 const Input& input = clientProxy.lock()->m_inputBuffer.Get(inputIndex);
                 const InputComponent& inputComponent = input.GetInputComponent();
@@ -72,13 +74,11 @@ bool MovementSystemServer::Update()
                 if (hasLinearVelocity) {
                     // TODO: cap m_acceleration to m_maxAcceleration
                     linearVelocity += inputComponent.m_linearVelocity;
-                    hasInput = true;
                 }
                 const bool hasAngularVelocity = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
                 if (hasAngularVelocity) {
                     // TODO: cap m_angularAcceleration to m_maxAngularAcceleration
                     angularVelocity += inputComponent.m_angularVelocity;
-                    hasInput = true;
                 }
             }
 
@@ -109,18 +109,23 @@ bool MovementSystemServer::Update()
             if (i < inputCount) {
                 U32 inputIndex = clientProxy.lock()->m_inputBuffer.m_front + i;
                 const Input& input = clientProxy.lock()->m_inputBuffer.Get(inputIndex);
+                U32 dirtyState = input.GetDirtyState();
 
-                b2Vec2 physicsPosition = rigidbodyComponent.lock()->m_body->GetPosition();
-                transformComponent.lock()->m_position = glm::vec2(METERS_TO_PIXELS(physicsPosition.x), METERS_TO_PIXELS(physicsPosition.y));
-                float32 physicsRotation = rigidbodyComponent.lock()->m_body->GetAngle();
-                transformComponent.lock()->m_rotation = glm::degrees(physicsRotation);
-                ILOG("Server position at frame %u is %f %f with velocity %f %f", input.GetFrame(), transformComponent.lock()->m_position.x, transformComponent.lock()->m_position.y, input.GetInputComponent().m_linearVelocity.x, input.GetInputComponent().m_linearVelocity.y);
+                const bool hasLinearVelocity = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
+                const bool hasAngularVelocity = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
+                if (hasLinearVelocity || hasAngularVelocity) {
+                    b2Vec2 physicsPosition = rigidbodyComponent.lock()->m_body->GetPosition();
+                    transformComponent.lock()->m_position = glm::vec2(METERS_TO_PIXELS(physicsPosition.x), METERS_TO_PIXELS(physicsPosition.y));
+                    float32 physicsRotation = rigidbodyComponent.lock()->m_body->GetAngle();
+                    transformComponent.lock()->m_rotation = glm::degrees(physicsRotation);
+                    ILOG("Server position at frame %u is %f %f with velocity %f %f", input.GetFrame(), transformComponent.lock()->m_position.x, transformComponent.lock()->m_position.y, input.GetInputComponent().m_linearVelocity.x, input.GetInputComponent().m_linearVelocity.y);
 
-                Event newEvent;
-                newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
-                newEvent.component.entity = entity;
-                newEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::TRANSFORM_ALL);
-                NotifyEvent(newEvent);
+                    Event newEvent;
+                    newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
+                    newEvent.component.entity = entity;
+                    newEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::TRANSFORM_ALL);
+                    NotifyEvent(newEvent);
+                }
 
                 Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, input.GetFrame());
                 transformComponent.lock()->m_inputTransformBuffer.Add(transform);

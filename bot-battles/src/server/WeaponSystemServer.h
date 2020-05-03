@@ -5,8 +5,6 @@
 
 namespace sand {
 
-struct WeaponComponent;
-
 //----------------------------------------------------------------------------------------------------
 class WeaponSystemServer : public System, public Subject {
 public:
@@ -23,7 +21,7 @@ public:
     bool Render() override;
 
 private:
-    void Rewind(std::weak_ptr<WeaponComponent> weaponComponent, Entity localEntity, U32 from, U32 to, F32 percentage);
+    void Rewind(Entity localEntity, U32 from, U32 to, F32 percentage);
     void Revert(Entity localEntity);
 };
 }

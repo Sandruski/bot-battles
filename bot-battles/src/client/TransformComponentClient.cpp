@@ -170,9 +170,9 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::v
     }
 
     if (replayPosition || replayRotation) {
-        assert(false); // TODO: remove this once the networking is finished :)
         ILOG("REPLAY");
         ILOG("Current vs new positions at frame %u is %f %f and %f %f", clientComponent.m_lastAckdFrame, position.x, position.y, newPosition.x, newPosition.y);
+        assert(false); // TODO: remove this once the networking is finished :)
 
         if (replayPosition) {
             position = newPosition;

@@ -9,6 +9,10 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 RigidbodyComponent::RigidbodyComponent()
     : m_body(nullptr)
+#ifdef _SERVER
+    , m_position(0.0f, 0.0f)
+    , m_rotation(0.0f)
+#endif
     , m_bodyType(BodyType::NONE)
     , m_groupIndex(0)
 {

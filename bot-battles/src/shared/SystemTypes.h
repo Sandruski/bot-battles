@@ -18,8 +18,8 @@ enum class SystemType : U16 {
     SCRIPTING,
     INPUT,
 
-    //
     PHYSICS,
+    //
     MOVEMENT,
     WEAPON,
     //
@@ -42,8 +42,8 @@ enum class SystemType : U16 {
     SERVER,
 
     SPAWNER,
-    //
     PHYSICS,
+    //
     MOVEMENT,
     WEAPON,
     HEALTH,
