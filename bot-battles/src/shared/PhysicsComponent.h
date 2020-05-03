@@ -39,6 +39,7 @@ struct PhysicsComponent {
     F32 m_timeStep;
     I32 m_velocityIterations;
     I32 m_positionIterations;
+    F32 m_epsilon;
 };
 }
 

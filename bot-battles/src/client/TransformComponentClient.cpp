@@ -138,23 +138,26 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::v
         return;
     }
 
+    PhysicsComponent& physicsComponent = g_gameClient->GetPhysicsComponent();
+
     Transform& firstTransform = m_inputTransformBuffer.Get(index);
     glm::vec2& position = firstTransform.m_position;
     F32& rotation = firstTransform.m_rotation;
 
-    glm::vec2 minNewPosition = newPosition - PHYSICS_THRESHOLD;
-    glm::vec2 maxNewPosition = newPosition + PHYSICS_THRESHOLD;
     bool replayPosition = false;
     if (updatePosition) {
+        glm::vec2 minNewPosition = newPosition - physicsComponent.m_epsilon;
+        glm::vec2 maxNewPosition = newPosition + physicsComponent.m_epsilon;
         if ((position.x < minNewPosition.x || position.y < minNewPosition.y)
             || (position.x > maxNewPosition.x || position.y > maxNewPosition.y)) {
             replayPosition = true;
         }
     }
-    F32 minNewRotation = newRotation - PHYSICS_THRESHOLD;
-    F32 maxNewRotation = newRotation + PHYSICS_THRESHOLD;
+
     bool replayRotation = false;
     if (updateRotation) {
+        F32 minNewRotation = newRotation - physicsComponent.m_epsilon;
+        F32 maxNewRotation = newRotation + physicsComponent.m_epsilon;
         if (rotation < minNewRotation
             || rotation > maxNewRotation) {
             replayPosition = true;
@@ -173,7 +176,6 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::v
             rotation = newRotation;
         }
 
-        PhysicsComponent& physicsComponent = g_gameClient->GetPhysicsComponent();
         for (U32 i = clientComponent.m_inputBuffer.m_front; i < clientComponent.m_inputBuffer.m_back; ++i) {
             const Input& input = clientComponent.m_inputBuffer.Get(i);
             const InputComponent& inputComponent = input.GetInputComponent();
