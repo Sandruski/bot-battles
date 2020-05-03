@@ -38,7 +38,7 @@ bool ScriptingSystemClient::StartUp()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool ScriptingSystemClient::PreUpdate()
+bool ScriptingSystemClient::Update()
 {
     GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
     std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();

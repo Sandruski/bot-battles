@@ -16,7 +16,7 @@ public:
 public:
     RemotePlayerMovementSystem();
 
-    bool PreUpdate() override;
+    bool Update() override;
 };
 }
 

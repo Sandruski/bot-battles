@@ -22,7 +22,7 @@ MovementSystemClient::MovementSystemClient()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool MovementSystemClient::PreUpdate()
+bool MovementSystemClient::Update()
 {
     GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
     std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
@@ -48,67 +48,37 @@ bool MovementSystemClient::PreUpdate()
             continue;
         }
 
-        glm::vec2 position = transformComponent.lock()->m_position;
-        F32 rotation = transformComponent.lock()->m_rotation;
-        rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(position.x), PIXELS_TO_METERS(position.y)), glm::radians(rotation));
-
-        if (clientComponent.m_isLastInputTransformPending) {
-            glm::vec2 velocity = glm::vec2(0.0f, 0.0f);
-            F32 angularVelocity = 0.0f;
-
-            const Input& input = clientComponent.m_inputBuffer.GetLast();
-            const InputComponent& inputComponent = input.GetInputComponent();
-            U32 dirtyState = input.GetDirtyState();
-
-            // TODO: cap acceleration to max acceleration and angular acceleration to max angular acceleration
-
-            const bool hasLinearVelocity = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
-            if (hasLinearVelocity) {
-                velocity += inputComponent.m_linearVelocity;
-            }
-            const bool hasAngularVelocity = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
-            if (hasAngularVelocity) {
-                angularVelocity += inputComponent.m_angularVelocity;
-            }
-
-            rigidbodyComponent.lock()->m_body->SetLinearVelocity(b2Vec2(PIXELS_TO_METERS(velocity.x), PIXELS_TO_METERS(velocity.y)));
-            rigidbodyComponent.lock()->m_body->SetAngularVelocity(glm::radians(angularVelocity));
-        }
-    }
-
-    physicsComponent.Step();
-
-    return true;
-}
-
-//----------------------------------------------------------------------------------------------------
-bool MovementSystemClient::PostUpdate()
-{
-    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-    std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
-    if (currentState.expired()) {
-        return true;
-    }
-
-    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    if (!clientComponent.m_isClientPrediction) {
-        return true;
-    }
-
-    for (auto& entity : m_entities) {
-        if (g_gameClient->GetLinkingContext().GetNetworkID(entity) >= INVALID_NETWORK_ID) {
-            continue;
-        }
-
-        std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
-        std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameClient->GetComponentManager().GetComponent<RigidbodyComponent>(entity);
-        if (!transformComponent.lock()->m_isEnabled || !rigidbodyComponent.lock()->m_isEnabled) {
-            continue;
-        }
+        //TODO: From transformComponent replay
+        //glm::vec2 position = transformComponent.lock()->m_position;
+        //F32 rotation = transformComponent.lock()->m_rotation;
+        //rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(position.x), PIXELS_TO_METERS(position.y)), glm::radians(rotation));
 
         if (clientComponent.m_isLastInputTransformPending || clientComponent.m_isLastInputWeaponPending) {
+            const Input& input = clientComponent.m_inputBuffer.GetLast();
 
             if (clientComponent.m_isLastInputTransformPending) {
+                glm::vec2 velocity = glm::vec2(0.0f, 0.0f);
+                F32 angularVelocity = 0.0f;
+
+                const InputComponent& inputComponent = input.GetInputComponent();
+                U32 dirtyState = input.GetDirtyState();
+
+                const bool hasLinearVelocity = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
+                if (hasLinearVelocity) {
+                    // TODO: cap m_acceleration to m_maxAcceleration
+                    velocity += inputComponent.m_linearVelocity;
+                }
+                const bool hasAngularVelocity = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
+                if (hasAngularVelocity) {
+                    // TODO: cap m_angularAcceleration to m_maxAngularAcceleration
+                    angularVelocity += inputComponent.m_angularVelocity;
+                }
+
+                rigidbodyComponent.lock()->m_body->SetLinearVelocity(b2Vec2(PIXELS_TO_METERS(velocity.x), PIXELS_TO_METERS(velocity.y)));
+                rigidbodyComponent.lock()->m_body->SetAngularVelocity(glm::radians(angularVelocity));
+
+                physicsComponent.Step();
+
                 b2Vec2 physicsPosition = rigidbodyComponent.lock()->m_body->GetPosition();
                 transformComponent.lock()->m_position = glm::vec2(METERS_TO_PIXELS(physicsPosition.x), METERS_TO_PIXELS(physicsPosition.y));
                 float32 physicsRotation = rigidbodyComponent.lock()->m_body->GetAngle();
@@ -117,11 +87,8 @@ bool MovementSystemClient::PostUpdate()
                 clientComponent.m_isLastInputTransformPending = false;
             }
 
-            const Input& input = clientComponent.m_inputBuffer.GetLast();
-
             Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, input.GetFrame());
             transformComponent.lock()->m_inputTransformBuffer.Add(transform);
-            ILOG("Client position at frame %u: %f %f", transform.GetFrame(), transform.m_position.x, transform.m_position.y);
         }
     }
 

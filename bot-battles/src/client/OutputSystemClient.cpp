@@ -19,7 +19,7 @@ OutputSystemClient::OutputSystemClient()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool OutputSystemClient::PostUpdate()
+bool OutputSystemClient::Update()
 {
     GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
     std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();

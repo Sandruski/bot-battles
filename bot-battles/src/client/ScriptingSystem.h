@@ -22,7 +22,7 @@ public:
     ScriptingSystemClient();
 
     bool StartUp() override;
-    bool PreUpdate() override;
+    bool Update() override;
 
     void OnNotify(const Event& event) override;
 

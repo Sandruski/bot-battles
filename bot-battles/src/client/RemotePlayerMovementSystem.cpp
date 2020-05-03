@@ -18,7 +18,7 @@ RemotePlayerMovementSystem::RemotePlayerMovementSystem()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool RemotePlayerMovementSystem::PreUpdate()
+bool RemotePlayerMovementSystem::Update()
 {
     GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
     std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
@@ -57,9 +57,10 @@ bool RemotePlayerMovementSystem::PreUpdate()
             continue;
         }
 
-        glm::vec2 position = transformComponent.lock()->m_position;
-        F32 rotation = transformComponent.lock()->m_rotation;
-        rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(position.x), PIXELS_TO_METERS(position.y)), glm::radians(rotation));
+        //TODO: From transformComponent replay
+        //glm::vec2 position = transformComponent.lock()->m_position;
+        //F32 rotation = transformComponent.lock()->m_rotation;
+        //rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(position.x), PIXELS_TO_METERS(position.y)), glm::radians(rotation));
 
         if (!transformComponent.lock()->m_transformBuffer.IsEmpty()) {
             U32 indexFrom = transformComponent.lock()->m_transformBuffer.m_front;
@@ -88,9 +89,14 @@ bool RemotePlayerMovementSystem::PreUpdate()
                 if (isFoundFrom && isFoundTo) {
                     Transform fromTransform = transformComponent.lock()->m_transformBuffer.Get(indexFrom);
                     Transform toTransform = transformComponent.lock()->m_transformBuffer.Get(indexTo);
-                    transformComponent.lock()->m_position = Lerp(fromTransform.m_position, toTransform.m_position, clientComponent.m_interpolationPercentage);
-                    transformComponent.lock()->m_rotation = Lerp(fromTransform.m_rotation, toTransform.m_rotation, clientComponent.m_interpolationPercentage);
-                    rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(transformComponent.lock()->m_position.x, transformComponent.lock()->m_position.y), transformComponent.lock()->m_rotation);
+                    glm::vec2 interpolatedPosition = Lerp(fromTransform.m_position, toTransform.m_position, clientComponent.m_interpolationPercentage);
+                    F32 interpolatedRotation = Lerp(fromTransform.m_rotation, toTransform.m_rotation, clientComponent.m_interpolationPercentage);
+                    rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(interpolatedPosition.x), PIXELS_TO_METERS(interpolatedPosition.y)), glm::degrees(interpolatedRotation));
+
+                    b2Vec2 physicsPosition = rigidbodyComponent.lock()->m_body->GetPosition();
+                    transformComponent.lock()->m_position = glm::vec2(METERS_TO_PIXELS(physicsPosition.x), METERS_TO_PIXELS(physicsPosition.y));
+                    float32 physicsRotation = rigidbodyComponent.lock()->m_body->GetAngle();
+                    transformComponent.lock()->m_rotation = glm::degrees(physicsRotation);
                 }
             }
 
