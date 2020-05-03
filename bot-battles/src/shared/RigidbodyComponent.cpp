@@ -158,4 +158,30 @@ void RigidbodyComponent::UpdateGroupIndex() const
     filter.groupIndex = m_groupIndex;
     m_body->GetFixtureList()->SetFilterData(filter);
 }
+
+//----------------------------------------------------------------------------------------------------
+glm::vec2 RigidbodyComponent::GetLinearVelocity() const
+{
+    glm::vec2 linearVelocity = glm::vec2(0.0f, 0.0f);
+
+    if (m_body != nullptr) {
+        b2Vec2 physicsLinearVelocity = m_body->GetLinearVelocity();
+        linearVelocity = glm::vec2(METERS_TO_PIXELS(physicsLinearVelocity.x), METERS_TO_PIXELS(physicsLinearVelocity.y));
+    }
+
+    return linearVelocity;
+}
+
+//----------------------------------------------------------------------------------------------------
+F32 RigidbodyComponent::GetAngularVelocity() const
+{
+    F32 angularVelocity = 0.0f;
+
+    if (m_body != nullptr) {
+        F32 physicsAngularVelocity = m_body->GetAngularVelocity();
+        angularVelocity = glm::degrees(physicsAngularVelocity);
+    }
+
+    return angularVelocity;
+}
 }

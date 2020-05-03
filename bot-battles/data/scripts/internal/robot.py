@@ -1,8 +1,9 @@
 # coding: utf-8
 
 class Robot:
-    def __init__(self, transformComponent):
+    def __init__(self, transformComponent, rigidbodyComponent):
         self.transformComponent = transformComponent
+        self.rigidbodyComponent = rigidbodyComponent
 
     def tick(self, input):
         pass

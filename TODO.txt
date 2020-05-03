@@ -14,15 +14,13 @@ Divendres:
 ->shoot()
 ->reload()
 
-
-
 *Turns. How do we handle them?
-
 
 -Add animations to every action that the bot can perform.
 ->interact() ? with the sprite with the hands forward
 -Add hints to Python bindings, so players know what they are writing.
 -Capture the flag? :)
+
 -Sandbots
 
 
@@ -50,6 +48,11 @@ ENGINE:
 
 PLAYLIST:
 -Check that 2 players can connect to the game from different computers with/without different routers.
+
+BUGS (Should Fix):
+-ReHello arrives to the server.
+-Server replies with ReWelcome.
+-ReWecome does not reach client.
 
 KNOWN ISSUES (Will Not Fix):
 -EXPLOIT: remote entities are replicated (updated) when the state is Start. When state is Play and local entity is updated, remote entities are not at the spawn position anymore -> Remote entity shoots at you when you cannot move yet and kills you.

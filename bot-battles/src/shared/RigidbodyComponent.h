@@ -45,10 +45,12 @@ struct RigidbodyComponent : public Component
     void UpdateBodyType() const;
     void UpdateGroupIndex() const;
 
-    // Local
-    b2Body* m_body;
+    // Bot
+    glm::vec2 GetLinearVelocity() const;
+    F32 GetAngularVelocity() const;
 
     // Local
+    b2Body* m_body;
 #ifdef _SERVER
     b2Vec2 m_position;
     float32 m_rotation;

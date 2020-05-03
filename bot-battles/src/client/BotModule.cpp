@@ -2,6 +2,7 @@
 #define __BOT_MODULE_H__
 
 #include "InputComponent.h"
+#include "RigidbodyComponent.h"
 #include "TransformComponent.h"
 #include "UtilsClient.h"
 
@@ -39,8 +40,10 @@ PYBIND11_EMBEDDED_MODULE(bot, m)
     py::class_<TransformComponent, std::unique_ptr<TransformComponent, py::nodelete>>(m, "TransformComponent")
         .def_property_readonly("position", &TransformComponent::GetPosition)
         .def_property_readonly("rotation", &TransformComponent::GetRotation);
-    // .def_property_readonly("linearVelocity", &TransformComponent::GetLinearVelocity)
-    // .def_property_readonly("angularVelocity", &TransformComponent::GetAngularVelocity)
+
+    py::class_<RigidbodyComponent, std::unique_ptr<RigidbodyComponent, py::nodelete>>(m, "RigidbodyComponent")
+        .def_property_readonly("linearVelocity", &RigidbodyComponent::GetLinearVelocity)
+        .def_property_readonly("angularVelocity", &RigidbodyComponent::GetAngularVelocity);
 }
 }
 

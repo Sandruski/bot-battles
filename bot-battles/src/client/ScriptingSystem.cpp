@@ -6,6 +6,7 @@
 #include "GameplayComponent.h"
 #include "InputComponent.h"
 #include "LinkingContext.h"
+#include "RigidbodyComponent.h"
 #include "ScriptingComponent.h"
 #include "State.h"
 #include "TransformComponent.h"
@@ -16,6 +17,7 @@ namespace sand {
 ScriptingSystemClient::ScriptingSystemClient()
 {
     m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
+    m_signature |= 1 << static_cast<U16>(ComponentType::RIGIDBODY);
     m_signature |= 1 << static_cast<U16>(ComponentType::LOCAL_PLAYER);
 }
 
@@ -128,8 +130,9 @@ void ScriptingSystemClient::InitScripts() const
         }
 
         std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
+        std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameClient->GetComponentManager().GetComponent<RigidbodyComponent>(entity);
         try {
-            scriptingComponent.m_mainModule.attr("init")(clientComponent.m_script.c_str(), transformComponent.lock());
+            scriptingComponent.m_mainModule.attr("init")(clientComponent.m_script.c_str(), transformComponent.lock(), rigidbodyComponent.lock());
         } catch (const std::runtime_error& re) {
             ELOG("%s", re.what());
         }

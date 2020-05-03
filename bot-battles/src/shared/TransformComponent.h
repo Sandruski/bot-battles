@@ -39,6 +39,7 @@ struct TransformComponent : public Component
     glm::vec3 GetDebugPositionAndLayer() const;
     glm::vec2 GetRotationVector() const;
 
+    // Bot
     glm::vec2 GetPosition() const;
     F32 GetRotation() const;
 
@@ -46,8 +47,6 @@ struct TransformComponent : public Component
     glm::vec2 m_position;
     LayerType m_layerType;
     F32 m_rotation;
-    //glm::vec2 m_velocity;
-    //F32 m_angularVelocity;
 
     // Local
     CircularBuffer<Transform, MAX_TRANSFORMS> m_transformBuffer;
