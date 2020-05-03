@@ -46,6 +46,11 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U3
             std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameClient->GetComponentManager().GetComponent<RigidbodyComponent>(entity);
             if (!rigidbodyComponent.expired()) {
                 rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(m_position.x), PIXELS_TO_METERS(m_position.y)), glm::radians(m_rotation));
+
+                b2Vec2 physicsPosition = rigidbodyComponent.lock()->m_body->GetPosition();
+                m_position = glm::vec2(METERS_TO_PIXELS(physicsPosition.x), METERS_TO_PIXELS(physicsPosition.y));
+                float32 physicsRotation = rigidbodyComponent.lock()->m_body->GetAngle();
+                m_rotation = glm::degrees(physicsRotation);
             }
         } else {
             if (!hasPosition) {
@@ -78,6 +83,11 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U3
                 std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameClient->GetComponentManager().GetComponent<RigidbodyComponent>(entity);
                 if (!rigidbodyComponent.expired()) {
                     rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(m_position.x), PIXELS_TO_METERS(m_position.y)), glm::radians(m_rotation));
+
+                    b2Vec2 physicsPosition = rigidbodyComponent.lock()->m_body->GetPosition();
+                    m_position = glm::vec2(METERS_TO_PIXELS(physicsPosition.x), METERS_TO_PIXELS(physicsPosition.y));
+                    float32 physicsRotation = rigidbodyComponent.lock()->m_body->GetAngle();
+                    m_rotation = glm::degrees(physicsRotation);
                 }
             } else {
                 if (!hasPosition) {
@@ -111,6 +121,11 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U3
             std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameClient->GetComponentManager().GetComponent<RigidbodyComponent>(entity);
             if (!rigidbodyComponent.expired()) {
                 rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(m_position.x), PIXELS_TO_METERS(m_position.y)), glm::radians(m_rotation));
+
+                b2Vec2 physicsPosition = rigidbodyComponent.lock()->m_body->GetPosition();
+                m_position = glm::vec2(METERS_TO_PIXELS(physicsPosition.x), METERS_TO_PIXELS(physicsPosition.y));
+                float32 physicsRotation = rigidbodyComponent.lock()->m_body->GetAngle();
+                m_rotation = glm::degrees(physicsRotation);
             }
         }
     }

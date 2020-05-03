@@ -34,62 +34,62 @@ bool InputSystemClient::Update()
         inputComponent.m_linearVelocity.x = -1.0f;
         dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
         clientComponent.m_isLastInputTransformPending = true;
-    }
+    } /*
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_A) == EventComponent::KeyState::UP) {
         inputComponent.m_linearVelocity.x = 0.0f;
         dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
         clientComponent.m_isLastInputTransformPending = true;
-    }
+    }*/
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_D) == EventComponent::KeyState::REPEAT) {
         inputComponent.m_linearVelocity.x = 1.0f;
         dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
         clientComponent.m_isLastInputTransformPending = true;
-    }
+    } /*
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_D) == EventComponent::KeyState::UP) {
         inputComponent.m_linearVelocity.x = 0.0f;
         dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
         clientComponent.m_isLastInputTransformPending = true;
-    }
+    }*/
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_W) == EventComponent::KeyState::REPEAT) {
         inputComponent.m_linearVelocity.y = -1.0f;
         dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
         clientComponent.m_isLastInputTransformPending = true;
-    }
+    } /*
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_W) == EventComponent::KeyState::UP) {
         inputComponent.m_linearVelocity.y = 0.0f;
         dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
         clientComponent.m_isLastInputTransformPending = true;
-    }
+    }*/
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_S) == EventComponent::KeyState::REPEAT) {
         inputComponent.m_linearVelocity.y = 1.0f;
         dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
         clientComponent.m_isLastInputTransformPending = true;
-    }
+    } /*
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_S) == EventComponent::KeyState::UP) {
         inputComponent.m_linearVelocity.y = 0.0f;
         dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
         clientComponent.m_isLastInputTransformPending = true;
-    }
+    }*/
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_LEFT) == EventComponent::KeyState::REPEAT) {
         inputComponent.m_angularVelocity = -1.0f;
         dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
         clientComponent.m_isLastInputTransformPending = true;
-    }
+    } /*
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_LEFT) == EventComponent::KeyState::UP) {
         inputComponent.m_angularVelocity = 0.0f;
         dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
         clientComponent.m_isLastInputTransformPending = true;
-    }
+    }*/
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_RIGHT) == EventComponent::KeyState::REPEAT) {
         inputComponent.m_angularVelocity = 1.0f;
         dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
         clientComponent.m_isLastInputTransformPending = true;
-    }
+    } /*
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_RIGHT) == EventComponent::KeyState::UP) {
         inputComponent.m_angularVelocity = 0.0f;
         dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
         clientComponent.m_isLastInputTransformPending = true;
-    }
+    }*/
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_SPACE) == EventComponent::KeyState::DOWN) {
         inputComponent.m_isShooting = true;
         dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_SHOOTING);
