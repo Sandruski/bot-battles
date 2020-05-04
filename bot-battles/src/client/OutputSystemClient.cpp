@@ -65,10 +65,6 @@ bool OutputSystemClient::Update()
         clientComponent.m_inputBuffer.Remove(index);
     }
 
-    // TODO: do we really need to uncomment this two variables?
-    //clientComponent.m_isLastInputTransformPending = false;
-    //clientComponent.m_isLastInputWeaponPending = false;
-
     return true;
 }
 }

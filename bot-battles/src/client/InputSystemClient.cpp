@@ -33,6 +33,8 @@ bool InputSystemClient::Update()
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_A) == EventComponent::KeyState::REPEAT) {
         inputComponent.m_linearVelocity.x = -1.0f;
         dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
+        dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
+
         clientComponent.m_isLastInputTransformPending = true;
     } /*
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_A) == EventComponent::KeyState::UP) {
@@ -43,6 +45,8 @@ bool InputSystemClient::Update()
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_D) == EventComponent::KeyState::REPEAT) {
         inputComponent.m_linearVelocity.x = 1.0f;
         dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
+        dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
+
         clientComponent.m_isLastInputTransformPending = true;
     } /*
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_D) == EventComponent::KeyState::UP) {
@@ -53,6 +57,8 @@ bool InputSystemClient::Update()
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_W) == EventComponent::KeyState::REPEAT) {
         inputComponent.m_linearVelocity.y = -1.0f;
         dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
+        dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
+
         clientComponent.m_isLastInputTransformPending = true;
     } /*
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_W) == EventComponent::KeyState::UP) {
@@ -63,6 +69,8 @@ bool InputSystemClient::Update()
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_S) == EventComponent::KeyState::REPEAT) {
         inputComponent.m_linearVelocity.y = 1.0f;
         dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
+        dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
+
         clientComponent.m_isLastInputTransformPending = true;
     } /*
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_S) == EventComponent::KeyState::UP) {

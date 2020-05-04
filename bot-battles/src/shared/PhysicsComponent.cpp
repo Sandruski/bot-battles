@@ -38,7 +38,7 @@ PhysicsComponent::PhysicsComponent()
     , m_timeStep(1.0f / 60.0f)
     , m_velocityIterations(6)
     , m_positionIterations(2)
-    , m_epsilon(0.0f)
+    , m_epsilon(0.0001f)
 {
 }
 

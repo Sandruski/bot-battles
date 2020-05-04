@@ -52,10 +52,6 @@ struct RigidbodyComponent : public Component
 
     // Local
     b2Body* m_body;
-#ifdef _SERVER
-    b2Vec2 m_position;
-    float32 m_rotation;
-#endif
 
     // Networked
     BodyType m_bodyType;

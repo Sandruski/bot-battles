@@ -100,17 +100,19 @@ bool WeaponSystemServer::Update()
                         weaponComponent.lock()->m_destination = hitInfo.m_point;
                     }
 
-                    std::weak_ptr<HealthComponent> hitEntityHealthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(hitInfo.m_entity);
-                    if (!hitEntityHealthComponent.expired()) {
-                        weaponComponent.lock()->m_hasHit = true;
+                    if (hitInfo.m_entity != entity) {
+                        std::weak_ptr<HealthComponent> hitEntityHealthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(hitInfo.m_entity);
+                        if (!hitEntityHealthComponent.expired()) {
+                            weaponComponent.lock()->m_hasHit = true;
 
-                        hitEntityHealthComponent.lock()->m_health -= 100;
+                            hitEntityHealthComponent.lock()->m_health -= 100;
 
-                        Event newEvent;
-                        newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
-                        newEvent.component.entity = entity;
-                        newEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::HEALTH_HEALTH);
-                        NotifyEvent(newEvent);
+                            Event newEvent;
+                            newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
+                            newEvent.component.entity = entity;
+                            newEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::HEALTH_HEALTH);
+                            NotifyEvent(newEvent);
+                        }
                     }
                 }
 
@@ -242,8 +244,6 @@ void WeaponSystemServer::Rewind(Entity localEntity, U32 from, U32 to, F32 percen
                 }
             }
 
-            rigidbodyComponent.lock()->m_position = rigidbodyComponent.lock()->m_body->GetPosition();
-            rigidbodyComponent.lock()->m_rotation = rigidbodyComponent.lock()->m_body->GetAngle();
             glm::vec2 interpolatedPosition = Lerp(fromTransform.m_position, toTransform.m_position, percentage);
             F32 interpolatedRotation = Lerp(fromTransform.m_rotation, toTransform.m_rotation, percentage);
             rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(interpolatedPosition.x), PIXELS_TO_METERS(interpolatedPosition.y)), glm::radians(interpolatedRotation));
@@ -263,12 +263,15 @@ void WeaponSystemServer::Revert(Entity localEntity)
             continue;
         }
 
+        std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(remoteEntity);
         std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameServer->GetComponentManager().GetComponent<RigidbodyComponent>(remoteEntity);
-        if (rigidbodyComponent.expired()) {
+        if (transformComponent.expired() || rigidbodyComponent.expired()) {
             continue;
         }
 
-        rigidbodyComponent.lock()->m_body->SetTransform(rigidbodyComponent.lock()->m_position, rigidbodyComponent.lock()->m_rotation);
+        glm::vec2 position = transformComponent.lock()->m_position;
+        F32 rotation = transformComponent.lock()->m_rotation;
+        rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(position.x), PIXELS_TO_METERS(position.y)), glm::radians(rotation));
     }
 }
 }

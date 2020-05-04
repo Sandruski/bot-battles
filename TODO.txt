@@ -10,6 +10,7 @@
 
 
 *How do we handle turns?
+-Test game between two computers. Test for physics floating point errors.
 -Sandbots
 -Capture the flag? :)
 -Reload the script when Play Again or it does not make any sense to do it?
