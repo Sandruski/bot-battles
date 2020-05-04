@@ -8,6 +8,7 @@
 #include "LinkingContext.h"
 #include "MeshResource.h"
 #include "RendererComponent.h"
+#include "RigidbodyComponent.h"
 #include "ShaderResource.h"
 #include "State.h"
 #include "TransformComponent.h"
@@ -19,6 +20,7 @@ namespace sand {
 CollisionSystemClient::CollisionSystemClient()
 {
     m_signature |= 1 << static_cast<U16>(ComponentType::COLLIDER);
+    m_signature |= 1 << static_cast<U16>(ComponentType::RIGIDBODY);
     m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
 }
 
@@ -54,12 +56,16 @@ bool CollisionSystemClient::DebugRender()
     for (auto& entity : m_entities) {
         std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
         std::weak_ptr<ColliderComponent> colliderComponent = g_gameClient->GetComponentManager().GetComponent<ColliderComponent>(entity);
-        if (!transformComponent.lock()->m_isEnabled || !colliderComponent.lock()->m_isEnabled) {
+        std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameClient->GetComponentManager().GetComponent<RigidbodyComponent>(entity);
+        if (!transformComponent.lock()->m_isEnabled || !colliderComponent.lock()->m_isEnabled || !rigidbodyComponent.lock()->m_isEnabled) {
             continue;
         }
 
         glm::mat4 model = glm::mat4(1.0f);
         glm::vec3 position = transformComponent.lock()->GetDebugPositionAndLayer();
+        b2Vec2 pos = rigidbodyComponent.lock()->m_body->GetPosition();
+        position.x = METERS_TO_PIXELS(pos.x);
+        position.y = METERS_TO_PIXELS(pos.y);
         position.x *= proportion.x;
         position.y *= proportion.y;
         position.y *= -1.0f;

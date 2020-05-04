@@ -1,35 +1,17 @@
-SCRIPTING:
+-OnCollision + Raycast
+-Perception (sight): I see you, you see me
+-Pathfinding: navigation grid component
+-Shooting: rotate gun, cooldowns, and reload
+-Pick guns from floor: interact() ? with the sprite with the hands forward
+-Add animations to every action that the bot can perform
+-Add hints to Python bindings, so players know what they are writing
 
-Perception:
-Dijous:
-*MOVEMENT. Collision System. Move and collide with walls. Notify when collide and return struct with useful info so players can implement steering behaviors.
-*Pathfinding.
-*Tile-based movement?
 
-Divendres:
-*PERCEPTION. Sight. Last known position, etc.
 
-Divendres:
-*SHOOTING. Rotate gun, cooldown and shoot.
-->shoot()
-->reload()
 
-*Turns. How do we handle them?
-
--Add animations to every action that the bot can perform.
-->interact() ? with the sprite with the hands forward
--Add hints to Python bindings, so players know what they are writing.
--Capture the flag? :)
-
+*How do we handle turns?
 -Sandbots
-
-
-
-
-
-
-
-
+-Capture the flag? :)
 -Reload the script when Play Again or it does not make any sense to do it?
 -Check BUG: the client executed from the exe takes no time to connect and the one just compiled takes a lot. Why???
 -Add the ImGui code editor in the client Main Menu to open the selected script, edit it and compile it.

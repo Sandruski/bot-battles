@@ -53,7 +53,12 @@ bool PhysicsComponent::Raycast(const glm::vec2& origin, const glm::vec2& destina
 {
     bool ret = false;
 
-    m_world.GetBodyList()->SetActive(true);
+    for (b2Body* body = m_world.GetBodyList(); body != nullptr; body = body->GetNext()) {
+        b2BodyType type = body->GetType();
+        if (type == b2BodyType::b2_dynamicBody) {
+            body->SetActive(true);
+        }
+    }
 
     RayCastCallback rayCastCallback;
     m_world.RayCast(&rayCastCallback, b2Vec2(PIXELS_TO_METERS(origin.x), PIXELS_TO_METERS(origin.y)), b2Vec2(PIXELS_TO_METERS(destination.x), PIXELS_TO_METERS(destination.y)));
@@ -65,7 +70,12 @@ bool PhysicsComponent::Raycast(const glm::vec2& origin, const glm::vec2& destina
         ret = true;
     }
 
-    m_world.GetBodyList()->SetActive(false);
+    for (b2Body* body = m_world.GetBodyList(); body != nullptr; body = body->GetNext()) {
+        b2BodyType type = body->GetType();
+        if (type == b2BodyType::b2_dynamicBody) {
+            body->SetActive(false);
+        }
+    }
 
     return ret;
 }
