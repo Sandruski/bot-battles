@@ -41,6 +41,7 @@ struct RigidbodyComponent : public Component
 
     void SetAsCircle(glm::vec2 position, F32 rotation, F32 radius, const Entity& entity);
     void SetAsBox(glm::vec2 position, F32 rotation, glm::vec2 halfSize, const Entity& entity);
+    void SetAsBullet(bool isBullet);
 
     void UpdateBodyType() const;
     void UpdateGroupIndex() const;

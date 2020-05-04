@@ -74,6 +74,10 @@ void RigidbodyComponent::SetAsCircle(glm::vec2 position, F32 rotation, F32 radiu
     }
 
     b2BodyDef bodyDef;
+    bodyDef.linearDamping = 0.0f;
+    bodyDef.angularDamping = 0.0f;
+    bodyDef.gravityScale = 0.0f;
+    bodyDef.fixedRotation = true;
     bodyDef.userData = const_cast<Entity*>(&entity);
     bodyDef.position.Set(PIXELS_TO_METERS(position.x), PIXELS_TO_METERS(position.y));
     bodyDef.angle = glm::radians(rotation);
@@ -84,6 +88,8 @@ void RigidbodyComponent::SetAsCircle(glm::vec2 position, F32 rotation, F32 radiu
     b2CircleShape shape;
     shape.m_radius = PIXELS_TO_METERS(radius);
     fixtureDef.shape = &shape;
+    fixtureDef.restitution = 0.0f;
+    fixtureDef.friction = 0.0f;
     if (m_bodyType == BodyType::DYNAMIC) {
         fixtureDef.density = 1.0f;
     }
@@ -98,6 +104,10 @@ void RigidbodyComponent::SetAsBox(glm::vec2 position, F32 rotation, glm::vec2 ha
     }
 
     b2BodyDef bodyDef;
+    bodyDef.linearDamping = 0.0f;
+    bodyDef.angularDamping = 0.0f;
+    bodyDef.gravityScale = 0.0f;
+    bodyDef.fixedRotation = true;
     bodyDef.userData = const_cast<Entity*>(&entity);
     bodyDef.position.Set(PIXELS_TO_METERS(position.x), PIXELS_TO_METERS(position.y));
     bodyDef.angle = glm::radians(rotation);
@@ -108,10 +118,22 @@ void RigidbodyComponent::SetAsBox(glm::vec2 position, F32 rotation, glm::vec2 ha
     b2PolygonShape shape;
     shape.SetAsBox(PIXELS_TO_METERS(halfSize.x), PIXELS_TO_METERS(halfSize.y));
     fixtureDef.shape = &shape;
+    fixtureDef.restitution = 0.0f;
+    fixtureDef.friction = 0.0f;
     if (m_bodyType == BodyType::DYNAMIC) {
         fixtureDef.density = 1.0f;
     }
     m_body->CreateFixture(&fixtureDef);
+}
+
+//----------------------------------------------------------------------------------------------------
+void RigidbodyComponent::SetAsBullet(bool isBullet)
+{
+    if (m_body == nullptr) {
+        return;
+    }
+
+    m_body->SetBullet(isBullet);
 }
 
 //----------------------------------------------------------------------------------------------------

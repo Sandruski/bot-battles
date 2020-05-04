@@ -80,10 +80,14 @@ bool MovementSystemServer::Update()
                     // TODO: cap m_angularAcceleration to m_maxAngularAcceleration
                     angularVelocity += inputComponent.m_angularVelocity;
                 }
-            }
 
-            rigidbodyComponent.lock()->m_body->SetLinearVelocity(b2Vec2(PIXELS_TO_METERS(linearVelocity.x), PIXELS_TO_METERS(linearVelocity.y)));
-            rigidbodyComponent.lock()->m_body->SetAngularVelocity(glm::radians(angularVelocity));
+                if (hasLinearVelocity || hasAngularVelocity) {
+                    rigidbodyComponent.lock()->m_body->SetLinearVelocity(b2Vec2(PIXELS_TO_METERS(linearVelocity.x), PIXELS_TO_METERS(linearVelocity.y)));
+                    rigidbodyComponent.lock()->m_body->SetAngularVelocity(glm::radians(angularVelocity));
+
+                    rigidbodyComponent.lock()->m_body->SetActive(true);
+                }
+            }
         }
 
         if (!hasInput) {
@@ -130,6 +134,8 @@ bool MovementSystemServer::Update()
                 Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, input.GetFrame());
                 transformComponent.lock()->m_inputTransformBuffer.Add(transform);
             }
+
+            rigidbodyComponent.lock()->m_body->SetActive(false);
         }
     }
 

@@ -38,7 +38,7 @@ PhysicsComponent::PhysicsComponent()
     , m_timeStep(1.0f / 60.0f)
     , m_velocityIterations(6)
     , m_positionIterations(2)
-    , m_epsilon(b2_epsilon)
+    , m_epsilon(0.0f)
 {
 }
 
@@ -49,8 +49,12 @@ void PhysicsComponent::Step()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool PhysicsComponent::Raycast(const glm::vec2& origin, const glm::vec2& destination, RaycastHit& hitInfo) const
+bool PhysicsComponent::Raycast(const glm::vec2& origin, const glm::vec2& destination, RaycastHit& hitInfo)
 {
+    bool ret = false;
+
+    m_world.GetBodyList()->SetActive(true);
+
     RayCastCallback rayCastCallback;
     m_world.RayCast(&rayCastCallback, b2Vec2(PIXELS_TO_METERS(origin.x), PIXELS_TO_METERS(origin.y)), b2Vec2(PIXELS_TO_METERS(destination.x), PIXELS_TO_METERS(destination.y)));
     if (rayCastCallback.m_body != nullptr) {
@@ -58,9 +62,11 @@ bool PhysicsComponent::Raycast(const glm::vec2& origin, const glm::vec2& destina
         hitInfo.m_point = glm::vec2(METERS_TO_PIXELS(rayCastCallback.m_point.x), METERS_TO_PIXELS(rayCastCallback.m_point.y));
         hitInfo.m_normal = glm::vec2(METERS_TO_PIXELS(rayCastCallback.m_normal.x), METERS_TO_PIXELS(rayCastCallback.m_normal.y));
 
-        return true;
+        ret = true;
     }
 
-    return false;
+    m_world.GetBodyList()->SetActive(false);
+
+    return ret;
 }
 }

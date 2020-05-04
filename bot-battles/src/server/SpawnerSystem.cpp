@@ -130,6 +130,7 @@ Entity SpawnerSystem::Spawn(U32 playerNumber) const
     rigidbodyComponent.lock()->UpdateBodyType();
     rigidbodyComponent.lock()->m_groupIndex = -1;
     rigidbodyComponent.lock()->UpdateGroupIndex();
+    rigidbodyComponent.lock()->SetAsBullet(true);
 
     g_gameServer->GetComponentManager().AddComponent<WeaponComponent>(character);
 

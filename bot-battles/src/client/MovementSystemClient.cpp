@@ -69,16 +69,22 @@ bool MovementSystemClient::Update()
                     angularVelocity += inputComponent.m_angularVelocity;
                 }
 
-                rigidbodyComponent.lock()->m_body->SetLinearVelocity(b2Vec2(PIXELS_TO_METERS(linearVelocity.x), PIXELS_TO_METERS(linearVelocity.y)));
-                rigidbodyComponent.lock()->m_body->SetAngularVelocity(glm::radians(angularVelocity));
+                if (hasLinearVelocity || hasAngularVelocity) {
+                    rigidbodyComponent.lock()->m_body->SetLinearVelocity(b2Vec2(PIXELS_TO_METERS(linearVelocity.x), PIXELS_TO_METERS(linearVelocity.y)));
+                    rigidbodyComponent.lock()->m_body->SetAngularVelocity(glm::radians(angularVelocity));
 
-                physicsComponent.Step();
+                    rigidbodyComponent.lock()->m_body->SetActive(true);
 
-                b2Vec2 physicsPosition = rigidbodyComponent.lock()->m_body->GetPosition();
-                transformComponent.lock()->m_position = glm::vec2(METERS_TO_PIXELS(physicsPosition.x), METERS_TO_PIXELS(physicsPosition.y));
-                float32 physicsRotation = rigidbodyComponent.lock()->m_body->GetAngle();
-                transformComponent.lock()->m_rotation = glm::degrees(physicsRotation);
-                ILOG("Client position at frame %u is %f %f with velocity %f %f", input.GetFrame(), transformComponent.lock()->m_position.x, transformComponent.lock()->m_position.y, inputComponent.m_linearVelocity.x, inputComponent.m_linearVelocity.y);
+                    physicsComponent.Step();
+
+                    b2Vec2 physicsPosition = rigidbodyComponent.lock()->m_body->GetPosition();
+                    transformComponent.lock()->m_position = glm::vec2(METERS_TO_PIXELS(physicsPosition.x), METERS_TO_PIXELS(physicsPosition.y));
+                    float32 physicsRotation = rigidbodyComponent.lock()->m_body->GetAngle();
+                    transformComponent.lock()->m_rotation = glm::degrees(physicsRotation);
+                    ILOG("Client position at frame %u is %f %f with velocity %f %f", input.GetFrame(), transformComponent.lock()->m_position.x, transformComponent.lock()->m_position.y, inputComponent.m_linearVelocity.x, inputComponent.m_linearVelocity.y);
+
+                    rigidbodyComponent.lock()->m_body->SetActive(false);
+                }
 
                 clientComponent.m_isLastInputTransformPending = false;
             }

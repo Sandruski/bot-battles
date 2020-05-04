@@ -33,7 +33,7 @@ struct PhysicsComponent {
     PhysicsComponent();
 
     void Step();
-    bool Raycast(const glm::vec2& origin, const glm::vec2& destination, RaycastHit& hitInfo) const;
+    bool Raycast(const glm::vec2& origin, const glm::vec2& destination, RaycastHit& hitInfo);
 
     b2World m_world;
     F32 m_timeStep;
