@@ -66,7 +66,7 @@ bool WeaponSystemServer::Update()
 
             if (inputComponent.m_isShooting) {
                 if (serverComponent.m_isServerRewind) {
-                    //Rewind(entity, input.m_interpolationFromFrame, input.m_interpolationToFrame, input.m_interpolationPercentage);
+                    Rewind(entity, input.m_interpolationFromFrame, input.m_interpolationToFrame, input.m_interpolationPercentage);
                 }
 
                 U32 index = transformComponent.lock()->m_inputTransformBuffer.m_front;
@@ -123,7 +123,7 @@ bool WeaponSystemServer::Update()
                 NotifyEvent(newEvent);
 
                 if (serverComponent.m_isServerRewind) {
-                    //Revert(entity);
+                    Revert(entity);
                 }
             }
         }
