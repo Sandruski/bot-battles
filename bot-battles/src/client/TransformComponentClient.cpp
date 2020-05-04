@@ -216,12 +216,16 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::v
             rigidbodyComponent.lock()->m_body->SetLinearVelocity(b2Vec2(PIXELS_TO_METERS(linearVelocity.x), PIXELS_TO_METERS(linearVelocity.y)));
             rigidbodyComponent.lock()->m_body->SetAngularVelocity(glm::radians(angularVelocity));
 
+            rigidbodyComponent.lock()->m_body->SetActive(true);
+
             physicsComponent.Step();
 
             b2Vec2 physicsPosition = rigidbodyComponent.lock()->m_body->GetPosition();
             transform.m_position = glm::vec2(METERS_TO_PIXELS(physicsPosition.x), METERS_TO_PIXELS(physicsPosition.y));
             float32 physicsRotation = rigidbodyComponent.lock()->m_body->GetAngle();
             transform.m_rotation = glm::degrees(physicsRotation);
+
+            rigidbodyComponent.lock()->m_body->SetActive(false);
         }
 
         Transform& lastTransform = m_inputTransformBuffer.GetLast();
