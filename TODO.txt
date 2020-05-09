@@ -1,3 +1,7 @@
+-Handle floating-point issues (comparing positions and move replay).
+-Implement oncollision enter and exit.
+-Fix networking bug where player wants to replay but then it goes back to main menu and tries to connect again but the server won't allow player because it is already registered in the server map of players.
+
 -OnCollision + Raycast
 -Perception (sight): I see you, you see me
 -Pathfinding: navigation grid component
@@ -16,6 +20,7 @@
 -Reload the script when Play Again or it does not make any sense to do it?
 -Check BUG: the client executed from the exe takes no time to connect and the one just compiled takes a lot. Why???
 -Add the ImGui code editor in the client Main Menu to open the selected script, edit it and compile it.
+-Posar a la build final la Changelist de cada versió.
 
 NETWORKING:
 -Cap MAX_INPUTS_PER_PACKET/similar also for State packets (already doing it for Input packets).

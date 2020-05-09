@@ -36,6 +36,7 @@ PYBIND11_EMBEDDED_MODULE(bot, m)
         .def_readwrite("linearVelocity", &InputComponent::m_linearVelocity)
         .def_readwrite("angularVelocity", &InputComponent::m_angularVelocity)
         .def("shoot", &InputComponent::Shoot);
+    // TODO: add max linear velocity and max angular velocity
 
     py::class_<TransformComponent, std::unique_ptr<TransformComponent, py::nodelete>>(m, "TransformComponent")
         .def_property_readonly("position", &TransformComponent::GetPosition)
@@ -44,6 +45,7 @@ PYBIND11_EMBEDDED_MODULE(bot, m)
     py::class_<RigidbodyComponent, std::unique_ptr<RigidbodyComponent, py::nodelete>>(m, "RigidbodyComponent")
         .def_property_readonly("linearVelocity", &RigidbodyComponent::GetLinearVelocity)
         .def_property_readonly("angularVelocity", &RigidbodyComponent::GetAngularVelocity);
+    // TOWRITE: we need to read the velocity here besides from the input component because the one from the input component may be capped to max but we may be collisioning with a wall and the one from here will be 0
 }
 }
 

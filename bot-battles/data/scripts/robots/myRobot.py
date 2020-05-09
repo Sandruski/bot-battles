@@ -2,13 +2,12 @@
 
 import numpy as np
 import logging
-
-import bot
-
 import robot
 
 class MyRobot(robot.Robot):
+
     def tick(self, input):
-        position = np.array(self.transformComponent.position, copy=False)
-        input.angularAcceleration = position[0]
+        input.linearVelocity = np.array(100, 100)
+        input.angularVelocity = 45
         input.shoot()
+        logging.info('tick')
