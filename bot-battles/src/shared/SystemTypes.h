@@ -7,9 +7,9 @@ enum class SystemType : U16 {
 
 #ifdef _CLIENT
 #ifdef _DRAW
+    EVENT,
     WINDOW,
     RENDERER,
-    EVENT,
 #endif
     CLIENT,
 
@@ -35,9 +35,9 @@ enum class SystemType : U16 {
 
 #elif defined(_SERVER)
 #ifdef _DRAW
+    EVENT,
     WINDOW,
     RENDERER,
-    EVENT,
 #endif
     SERVER,
 
