@@ -11,6 +11,7 @@
 #include "SpriteComponent.h"
 #include "SpriteResource.h"
 #include "TransformComponent.h"
+#include "WallComponent.h"
 #include "WindowComponent.h"
 
 namespace sand {
@@ -124,8 +125,10 @@ void MapImporter::Create(const Tilemap& tilemap) const
                 spriteComponent.lock()->m_spriteResource = g_game->GetResourceManager().AddResource<SpriteResource>(tileset.m_spriteFile.c_str(), TEXTURES_DIR, true);
                 spriteComponent.lock()->AddSprite("default", textureCoords);
 
-                // Collider
-                if (tilelayer.m_name == "collision") {
+                // Wall
+                if (tilelayer.m_name == "wall") {
+                    g_game->GetComponentManager().AddComponent<WallComponent>(entity);
+
                     std::weak_ptr<ColliderComponent> colliderComponent = g_game->GetComponentManager().AddComponent<ColliderComponent>(entity);
                     colliderComponent.lock()->m_size = static_cast<glm::vec2>(tilemap.m_tileSize);
                     colliderComponent.lock()->m_shapeType = ColliderComponent::ShapeType::BOX;
@@ -168,8 +171,10 @@ void MapImporter::Create(const Tilemap& tilemap) const
                 spriteComponent.lock()->AddSprite("default", textureCoords);
             }
 
-            // Collider
-            if (objectlayer.m_name == "collision") {
+            // Wall
+            if (objectlayer.m_name == "wall") {
+                g_game->GetComponentManager().AddComponent<WallComponent>(entity);
+
                 std::weak_ptr<ColliderComponent> colliderComponent = g_game->GetComponentManager().AddComponent<ColliderComponent>(entity);
                 colliderComponent.lock()->m_size = object.m_size;
                 colliderComponent.lock()->m_shapeType = ColliderComponent::ShapeType::BOX;

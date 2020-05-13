@@ -7,7 +7,9 @@ import robot
 class MyRobot(robot.Robot):
 
     def tick(self, input):
-        input.linearVelocity = np.array(100, 100)
+        #input.linearVelocity = np.array([3, 5])
         input.angularVelocity = 45
-        input.shoot()
-        logging.info('tick')
+        #input.shoot()
+    
+    def onHitWall(hitInfo):
+        logging.info('Wall hit!')

@@ -12,11 +12,11 @@ import robot
 stream = None
 myRobot = None
 
-def init(scriptName, transformComponent):
+def init(scriptName, transformComponent, rigidbodyComponent):
     for name, obj in inspect.getmembers(sys.modules[scriptName]):
         if inspect.isclass(obj) and issubclass(obj, robot.Robot):
             global myRobot
-            myRobot = obj(transformComponent)
+            myRobot = obj(transformComponent, rigidbodyComponent)
             break
 
     logger = logging.getLogger('')
@@ -30,9 +30,13 @@ def init(scriptName, transformComponent):
     handler.setFormatter(formatter)
     logger.addHandler(handler)
 
-def update(input):
+def tick(input):
     myRobot.tick(input)
 
+def onHitWall(input):
+    myRobot.onHitWall(input)
+
+def log():
     content = stream.getvalue()
     for line in content.splitlines(True):
         bot.log(line)

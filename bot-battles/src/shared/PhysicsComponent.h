@@ -18,8 +18,15 @@ public:
 };
 
 //----------------------------------------------------------------------------------------------------
+class ContactListener : public b2ContactListener {
+public:
+    void BeginContact(b2Contact* contact) override;
+    void EndContact(b2Contact* contact) override;
+};
+
+//----------------------------------------------------------------------------------------------------
 // System Component
-struct PhysicsComponent {
+struct PhysicsComponent : public Subject {
 
     struct RaycastHit {
 
@@ -30,12 +37,25 @@ struct PhysicsComponent {
         glm::vec2 m_normal;
     };
 
+    struct Collision {
+
+        Collision();
+
+        glm::vec2 m_relativeLinearVelocity;
+    };
+
     PhysicsComponent();
+
+    bool PreUpdate();
 
     void Step();
     bool Raycast(const glm::vec2& origin, const glm::vec2& destination, RaycastHit& hitInfo);
 
+    void OnCollisionEnter(Entity entityA, Entity entityB);
+    void OnCollisionExit(Entity entityA, Entity entityB);
+
     b2World m_world;
+    ContactListener m_contactListener;
     F32 m_timeStep;
     I32 m_velocityIterations;
     I32 m_positionIterations;

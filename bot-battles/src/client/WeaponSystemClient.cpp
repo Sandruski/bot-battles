@@ -56,9 +56,10 @@ bool WeaponSystemClient::Update()
 
         if (clientComponent.m_isLastInputWeaponPending) {
             const Input& input = clientComponent.m_inputBuffer.GetLast();
-            const InputComponent& inputComponent = input.GetInputComponent();
+            U32 dirtyState = input.GetDirtyState();
 
-            if (inputComponent.m_isShooting) {
+            const bool hasShooting = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_SHOOTING);
+            if (hasShooting) {
                 glm::vec2 position = transformComponent.lock()->m_position;
                 glm::vec2 rotation = transformComponent.lock()->GetRotationVector();
 

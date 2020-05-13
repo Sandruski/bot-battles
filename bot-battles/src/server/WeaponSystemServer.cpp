@@ -62,9 +62,10 @@ bool WeaponSystemServer::Update()
         std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
         for (U32 i = clientProxy.lock()->m_inputBuffer.m_front; i < clientProxy.lock()->m_inputBuffer.m_back; ++i) {
             const Input& input = clientProxy.lock()->m_inputBuffer.Get(i);
-            const InputComponent& inputComponent = input.GetInputComponent();
+            U32 dirtyState = input.GetDirtyState();
 
-            if (inputComponent.m_isShooting) {
+            const bool hasShooting = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_SHOOTING);
+            if (hasShooting) {
                 if (serverComponent.m_isServerRewind) {
                     Rewind(entity, input.m_interpolationFromFrame, input.m_interpolationToFrame, input.m_interpolationPercentage);
                 }

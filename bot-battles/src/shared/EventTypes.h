@@ -24,6 +24,9 @@ enum class EventType {
 
     HEALTH_EMPTIED,
 
+    COLLISION_ENTER,
+    COLLISION_EXIT,
+
     CONNECT_SOCKETS,
     SOCKETS_CONNECTED,
 

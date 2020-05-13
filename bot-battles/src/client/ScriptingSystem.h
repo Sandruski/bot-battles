@@ -30,6 +30,9 @@ public:
 private:
     void ImportScripts() const;
     void InitScripts() const;
+
+    void OnCollisionEnter(Entity entityA, Entity entityB) const;
+    void OnCollisionExit(Entity entityA, Entity entityB) const;
 };
 }
 

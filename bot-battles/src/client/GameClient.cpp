@@ -114,6 +114,10 @@ bool GameClient::Init()
     if (!ret) {
         return ret;
     }
+    ret = g_game->GetPhysicsComponent().AddObserver(scriptingSystem);
+    if (!ret) {
+        return ret;
+    }
 
     ret = Game::Init();
 

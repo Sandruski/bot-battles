@@ -33,10 +33,11 @@ PYBIND11_EMBEDDED_MODULE(bot, m)
         });
 
     py::class_<InputComponent, std::unique_ptr<InputComponent, py::nodelete>>(m, "InputComponent")
-        .def_readwrite("linearVelocity", &InputComponent::m_linearVelocity)
-        .def_readwrite("angularVelocity", &InputComponent::m_angularVelocity)
+        .def_property_readonly("maxLinearVelocity", &InputComponent::GetMaxLinearVelocity)
+        .def_property_readonly("maxAngularVelocity", &InputComponent::GetMaxAngularVelocity)
+        .def_property("linearVelocity", &InputComponent::GetLinearVelocity, &InputComponent::SetLinearVelocity)
+        .def_property("angularVelocity", &InputComponent::GetAngularVelocity, &InputComponent::SetAngularVelocity)
         .def("shoot", &InputComponent::Shoot);
-    // TODO: add max linear velocity and max angular velocity
 
     py::class_<TransformComponent, std::unique_ptr<TransformComponent, py::nodelete>>(m, "TransformComponent")
         .def_property_readonly("position", &TransformComponent::GetPosition)

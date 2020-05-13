@@ -92,6 +92,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)StateTypes.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TCPSocket.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Transform.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)WallComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)WeaponComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)WindowComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SocketAddress.h" />
@@ -161,6 +162,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)StatesPanel.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TCPSocket.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Transform.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)WallComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)WeaponComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)WindowComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SpriteComponent.cpp" />

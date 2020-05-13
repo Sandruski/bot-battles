@@ -28,12 +28,19 @@ struct NetworkingEvent {
     NetworkID networkID;
 };
 
+struct CollisionEvent {
+    EventType eventType;
+    Entity entityA;
+    Entity entityB;
+};
+
 //----------------------------------------------------------------------------------------------------
 union Event {
     EventType eventType;
     EntityEvent entity;
     ComponentEvent component;
     NetworkingEvent networking;
+    CollisionEvent collision;
 };
 }
 

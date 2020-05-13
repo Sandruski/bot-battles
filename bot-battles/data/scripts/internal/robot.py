@@ -7,3 +7,6 @@ class Robot:
 
     def tick(self, input):
         pass
+
+    def onHitWall(self, input):
+        pass

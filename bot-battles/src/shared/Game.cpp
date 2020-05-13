@@ -15,6 +15,7 @@
 #include "SpawnComponent.h"
 #include "SystemManager.h"
 #include "TransformComponent.h"
+#include "WallComponent.h"
 #include "WeaponComponent.h"
 #ifdef _DRAW
 #include "DisplayPanel.h"
@@ -131,6 +132,10 @@ bool Game::Init()
         return ret;
     }
     ret = m_componentManager->RegisterComponent<BotComponent>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_componentManager->RegisterComponent<WallComponent>();
     if (!ret) {
         return ret;
     }
@@ -304,6 +309,10 @@ bool Game::PreUpdate()
 {
     bool ret = false;
 
+    ret = m_physicsComponent.PreUpdate();
+    if (!ret) {
+        return ret;
+    }
     ret = m_entityManager->PreUpdate();
     if (!ret) {
         return ret;

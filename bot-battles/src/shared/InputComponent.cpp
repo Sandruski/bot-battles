@@ -9,7 +9,7 @@ InputComponent::InputComponent()
     , m_maxAngularVelocity(120.0f)
     , m_linearVelocity(0.0f, 0.0f)
     , m_angularVelocity(0.0f)
-    , m_isShooting(false)
+    , m_dirtyState(0)
 {
 }
 
@@ -26,10 +26,6 @@ U32 InputComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) cons
         outputStream.Write(m_angularVelocity);
         writtenState |= static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
     }
-    if (dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_SHOOTING)) {
-        outputStream.Write(m_isShooting);
-        writtenState |= static_cast<U32>(InputComponentMemberType::INPUT_SHOOTING);
-    }
 
     return writtenState;
 }
@@ -43,14 +39,49 @@ void InputComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U32 /*
     if (dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY)) {
         inputStream.Read(m_angularVelocity);
     }
-    if (dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_SHOOTING)) {
-        inputStream.Read(m_isShooting);
-    }
+}
+
+//----------------------------------------------------------------------------------------------------
+F32 InputComponent::GetMaxLinearVelocity() const
+{
+    return m_maxLinearVelocity;
+}
+
+//----------------------------------------------------------------------------------------------------
+F32 InputComponent::GetMaxAngularVelocity() const
+{
+    return m_maxAngularVelocity;
+}
+
+//----------------------------------------------------------------------------------------------------
+void InputComponent::SetLinearVelocity(const glm::vec2& linearVelocity)
+{
+    m_linearVelocity = linearVelocity;
+    m_dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
+}
+
+//----------------------------------------------------------------------------------------------------
+glm::vec2 InputComponent::GetLinearVelocity() const
+{
+    return m_linearVelocity;
+}
+
+//----------------------------------------------------------------------------------------------------
+void InputComponent::SetAngularVelocity(F32 angularVelocity)
+{
+    m_angularVelocity = angularVelocity;
+    m_dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
+}
+
+//----------------------------------------------------------------------------------------------------
+F32 InputComponent::GetAngularVelocity() const
+{
+    return m_angularVelocity;
 }
 
 //----------------------------------------------------------------------------------------------------
 void InputComponent::Shoot()
 {
-    m_isShooting = true;
+    m_dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_SHOOTING);
 }
 }

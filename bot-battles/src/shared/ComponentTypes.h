@@ -12,6 +12,7 @@ enum class ComponentType : U16 {
     HEALTH,
     SPAWN,
     BOT,
+    WALL,
 
 #ifdef _DRAW
     LABEL,

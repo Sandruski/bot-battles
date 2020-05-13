@@ -10,6 +10,7 @@
 #include "ScriptingComponent.h"
 #include "State.h"
 #include "TransformComponent.h"
+#include "WallComponent.h"
 
 namespace sand {
 
@@ -63,10 +64,11 @@ bool ScriptingSystemClient::Update()
         return true;
     }
 
-    //ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();
-    //InputComponent& inputComponent = g_gameClient->GetInputComponent();
+    ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();
+    InputComponent& inputComponent = g_gameClient->GetInputComponent();
     try {
-        //scriptingComponent.m_mainModule.attr("update")(&inputComponent);
+        scriptingComponent.m_mainModule.attr("tick")(&inputComponent);
+        scriptingComponent.m_mainModule.attr("log")();
     } catch (const std::runtime_error& re) {
         ELOG("%s", re.what());
         return false;
@@ -86,7 +88,17 @@ void ScriptingSystemClient::OnNotify(const Event& event)
     }
 
     case EventType::PLAYER_ENTITY_ADDED: {
-        //InitScripts();
+        InitScripts();
+        break;
+    }
+
+    case EventType::COLLISION_ENTER: {
+        OnCollisionEnter(event.collision.entityA, event.collision.entityB);
+        break;
+    }
+
+    case EventType::COLLISION_EXIT: {
+        OnCollisionExit(event.collision.entityA, event.collision.entityB);
         break;
     }
 
@@ -102,12 +114,12 @@ void ScriptingSystemClient::ImportScripts() const
     Event newEvent;
 
     try {
-        //ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();
-        //ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+        ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();
+        ClientComponent& clientComponent = g_gameClient->GetClientComponent();
 
-        //scriptingComponent.m_myBotModule = py::module::import(clientComponent.m_script.c_str());
-        //scriptingComponent.m_mainModule = py::module::import("main");
-        //scriptingComponent.m_myBotModule.reload();
+        scriptingComponent.m_myBotModule = py::module::import(clientComponent.m_script.c_str());
+        scriptingComponent.m_mainModule = py::module::import("main");
+        //scriptingComponent.m_myBotModule.reload(); // TODO
 
         newEvent.eventType = EventType::CONNECT_SUCCESSFUL;
     } catch (const std::runtime_error& re) {
@@ -139,5 +151,40 @@ void ScriptingSystemClient::InitScripts() const
 
         break;
     }
+}
+
+//----------------------------------------------------------------------------------------------------
+void ScriptingSystemClient::OnCollisionEnter(Entity entityA, Entity entityB) const
+{
+    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    Entity entity = INVALID_ENTITY;
+    if (entityA == clientComponent.m_entity) {
+        entity = entityB;
+    } else if (entityB == clientComponent.m_entity) {
+        entity = entityA;
+    }
+
+    if (entity >= INVALID_ENTITY) {
+        return;
+    }
+
+    std::weak_ptr<WallComponent> wallComponent = g_gameClient->GetComponentManager().GetComponent<WallComponent>(entity);
+    if (wallComponent.expired()) {
+        return;
+    }
+
+    ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();
+    InputComponent& inputComponent = g_gameClient->GetInputComponent();
+    try {
+        scriptingComponent.m_mainModule.attr("onHitWall")(&inputComponent);
+    } catch (const std::runtime_error& re) {
+        ELOG("%s", re.what());
+        return;
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
+void ScriptingSystemClient::OnCollisionExit(Entity /*entityA*/, Entity /*entityB*/) const
+{
 }
 }

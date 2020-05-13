@@ -25,6 +25,31 @@ float32 RayCastCallback::ReportFixture(b2Fixture* fixture, const b2Vec2& point, 
 }
 
 //----------------------------------------------------------------------------------------------------
+void ContactListener::BeginContact(b2Contact* contact)
+{
+    b2Body* bodyA = contact->GetFixtureA()->GetBody();
+    b2Body* bodyB = contact->GetFixtureB()->GetBody();
+    Entity entityA = *static_cast<Entity*>(bodyA->GetUserData());
+    Entity entityB = *static_cast<Entity*>(bodyB->GetUserData());
+
+    //b2WorldManifold worldManifold;
+    //contact->GetWorldManifold(&worldManifold);
+    //b2Vec2 linearVelocityA = bodyA->GetLinearVelocityFromWorldPoint(worldManifold.points[0]);
+    //b2Vec2 linearVelocityB = bodyB->GetLinearVelocityFromWorldPoint(worldManifold.points[0]);
+    //b2Vec2 relativeLinearVelocity = linearVelocityA - linearVelocityB;
+
+    g_game->GetPhysicsComponent().OnCollisionEnter(entityA, entityB);
+}
+
+//----------------------------------------------------------------------------------------------------
+void ContactListener::EndContact(b2Contact* /*contact*/)
+{
+    //Entity entityA = *static_cast<Entity*>(contact->GetFixtureA()->GetBody()->GetUserData());
+    //Entity entityB = *static_cast<Entity*>(contact->GetFixtureB()->GetBody()->GetUserData());
+    //g_game->GetPhysicsComponent().OnCollisionExit();
+}
+
+//----------------------------------------------------------------------------------------------------
 PhysicsComponent::RaycastHit::RaycastHit()
     : m_entity(INVALID_ENTITY)
     , m_point(0.0f, 0.0f)
@@ -33,13 +58,29 @@ PhysicsComponent::RaycastHit::RaycastHit()
 }
 
 //----------------------------------------------------------------------------------------------------
+PhysicsComponent::Collision::Collision()
+    : m_relativeLinearVelocity(0.0f, 0.0f)
+{
+}
+
+//----------------------------------------------------------------------------------------------------
 PhysicsComponent::PhysicsComponent()
     : m_world(b2Vec2(0.0f, 0.0f))
+    , m_contactListener()
     , m_timeStep(1.0f / 60.0f)
     , m_velocityIterations(6)
     , m_positionIterations(2)
     , m_epsilon(0.0001f)
 {
+    m_world.SetContactListener(&m_contactListener);
+}
+
+//----------------------------------------------------------------------------------------------------
+bool PhysicsComponent::PreUpdate()
+{
+    NotifyEvents();
+
+    return true;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -78,5 +119,25 @@ bool PhysicsComponent::Raycast(const glm::vec2& origin, const glm::vec2& destina
     }
 
     return ret;
+}
+
+//----------------------------------------------------------------------------------------------------
+void PhysicsComponent::OnCollisionEnter(Entity entityA, Entity entityB)
+{
+    Event newEvent;
+    newEvent.eventType = EventType::COLLISION_ENTER;
+    newEvent.collision.entityA = entityA;
+    newEvent.collision.entityB = entityB;
+    PushEvent(newEvent);
+}
+
+//----------------------------------------------------------------------------------------------------
+void PhysicsComponent::OnCollisionExit(Entity entityA, Entity entityB)
+{
+    Event newEvent;
+    newEvent.eventType = EventType::COLLISION_EXIT;
+    newEvent.collision.entityA = entityA;
+    newEvent.collision.entityB = entityB;
+    PushEvent(newEvent);
 }
 }
