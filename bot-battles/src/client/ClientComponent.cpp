@@ -39,8 +39,8 @@ ClientComponent::ClientComponent()
     , m_entityInterpolationPeriod(0.0f)
     , m_frameBuffer()
     , m_inputBuffer()
-    , m_isLastInputTransformPending(false)
-    , m_isLastInputWeaponPending(false)
+    , m_isLastMoveInputPending(false)
+    , m_isLastShootInputPending(false)
     , m_secondsBetweenConnect(5.0f)
     , m_connectTimer()
     , m_RTT(0.0f)
@@ -120,8 +120,8 @@ void ClientComponent::Reset()
     m_interpolationPercentage = 0.0f;
     m_frameBuffer.Clear();
     m_inputBuffer.Clear();
-    m_isLastInputTransformPending = false;
-    m_isLastInputWeaponPending = false;
+    m_isLastMoveInputPending = false;
+    m_isLastShootInputPending = false;
     m_RTT = 0.0f;
 }
 }

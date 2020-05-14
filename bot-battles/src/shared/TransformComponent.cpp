@@ -36,9 +36,15 @@ glm::vec2 TransformComponent::GetRotationVector() const
 }
 
 //----------------------------------------------------------------------------------------------------
-glm::vec2 TransformComponent::GetPosition() const
+F32 TransformComponent::GetPositionX() const
 {
-    return m_position;
+    return m_position.x;
+}
+
+//----------------------------------------------------------------------------------------------------
+F32 TransformComponent::GetPositionY() const
+{
+    return m_position.y;
 }
 
 //----------------------------------------------------------------------------------------------------

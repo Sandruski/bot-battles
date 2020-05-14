@@ -79,18 +79,16 @@ bool InputSystemClient::Update()
     */
 
     InputComponent& inputComponent = g_gameClient->GetInputComponent();
+    if (inputComponent.m_dirtyState != 0) {
+        if (!clientComponent.m_inputBuffer.IsFull()) {
+            clientComponent.m_isLastMoveInputPending = (inputComponent.m_dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_LINEAR_VELOCITY)) || (inputComponent.m_dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY));
+            clientComponent.m_isLastShootInputPending = inputComponent.m_dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_SHOOTING);
 
-    if (!clientComponent.m_inputBuffer.IsFull()) {
-        if (inputComponent.m_dirtyState != 0) {
             Input input = Input(inputComponent, inputComponent.m_dirtyState, clientComponent.m_inputBuffer.m_back, clientComponent.m_interpolationFromFrame, clientComponent.m_interpolationToFrame, clientComponent.m_interpolationPercentage);
             clientComponent.m_inputBuffer.Add(input);
         }
-    } else {
-        clientComponent.m_isLastInputTransformPending = false;
-        clientComponent.m_isLastInputWeaponPending = false;
+        inputComponent.m_dirtyState = 0;
     }
-
-    inputComponent.m_dirtyState = 0;
 
     return true;
 }

@@ -17,11 +17,14 @@ struct InputComponent : public Component,
     U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override;
     void Read(InputMemoryStream& inputStream, U32 dirtyState, U32 frame, ReplicationActionType replicationActionType, Entity entity) override;
 
+    // Bot
     F32 GetMaxLinearVelocity() const;
     F32 GetMaxAngularVelocity() const;
 
-    void SetLinearVelocity(const glm::vec2& linearVelocity);
-    glm::vec2 GetLinearVelocity() const;
+    void SetLinearVelocityX(F32 linearVelocityX);
+    void SetLinearVelocityY(F32 linearVelocityY);
+    F32 GetLinearVelocityX() const;
+    F32 GetLinearVelocityY() const;
     void SetAngularVelocity(F32 angularVelocity);
     F32 GetAngularVelocity() const;
     void Shoot();

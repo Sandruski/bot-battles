@@ -40,7 +40,8 @@ struct TransformComponent : public Component
     glm::vec2 GetRotationVector() const;
 
     // Bot
-    glm::vec2 GetPosition() const;
+    F32 GetPositionX() const;
+    F32 GetPositionY() const;
     F32 GetRotation() const;
 
     // Networked

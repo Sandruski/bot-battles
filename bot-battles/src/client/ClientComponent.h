@@ -66,8 +66,8 @@ struct ClientComponent : public Component {
     -Add: InputSystemClient
     -Remove: OutputSystemClient
     */
-    bool m_isLastInputTransformPending;
-    bool m_isLastInputWeaponPending;
+    bool m_isLastMoveInputPending;
+    bool m_isLastShootInputPending;
 
     F32 m_secondsBetweenConnect;
     MyTimer m_connectTimer;

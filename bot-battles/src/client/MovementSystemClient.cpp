@@ -48,10 +48,10 @@ bool MovementSystemClient::Update()
             continue;
         }
 
-        if (clientComponent.m_isLastInputTransformPending || clientComponent.m_isLastInputWeaponPending) {
+        if (clientComponent.m_isLastMoveInputPending || clientComponent.m_isLastShootInputPending) {
             const Input& input = clientComponent.m_inputBuffer.GetLast();
 
-            if (clientComponent.m_isLastInputTransformPending) {
+            if (clientComponent.m_isLastMoveInputPending) {
                 glm::vec2 linearVelocity = glm::vec2(0.0f, 0.0f);
                 F32 angularVelocity = 0.0f;
 
@@ -86,7 +86,7 @@ bool MovementSystemClient::Update()
                     rigidbodyComponent.lock()->m_body->SetActive(false);
                 }
 
-                clientComponent.m_isLastInputTransformPending = false;
+                clientComponent.m_isLastMoveInputPending = false;
             }
 
             Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, input.GetFrame());

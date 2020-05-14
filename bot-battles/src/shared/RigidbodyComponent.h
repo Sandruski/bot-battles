@@ -46,8 +46,11 @@ struct RigidbodyComponent : public Component
     void UpdateBodyType() const;
     void UpdateGroupIndex() const;
 
-    // Bot
     glm::vec2 GetLinearVelocity() const;
+
+    // Bot
+    F32 GetLinearVelocityX() const;
+    F32 GetLinearVelocityY() const;
     F32 GetAngularVelocity() const;
 
     // Local

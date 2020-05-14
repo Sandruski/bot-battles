@@ -54,7 +54,7 @@ bool WeaponSystemClient::Update()
             continue;
         }
 
-        if (clientComponent.m_isLastInputWeaponPending) {
+        if (clientComponent.m_isLastShootInputPending) {
             const Input& input = clientComponent.m_inputBuffer.GetLast();
             U32 dirtyState = input.GetDirtyState();
 
@@ -85,7 +85,7 @@ bool WeaponSystemClient::Update()
                 }
             }
 
-            clientComponent.m_isLastInputWeaponPending = false;
+            clientComponent.m_isLastShootInputPending = false;
         }
     }
 

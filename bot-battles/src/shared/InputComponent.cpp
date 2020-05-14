@@ -54,16 +54,29 @@ F32 InputComponent::GetMaxAngularVelocity() const
 }
 
 //----------------------------------------------------------------------------------------------------
-void InputComponent::SetLinearVelocity(const glm::vec2& linearVelocity)
+void InputComponent::SetLinearVelocityX(F32 linearVelocityX)
 {
-    m_linearVelocity = linearVelocity;
+    m_linearVelocity.x = linearVelocityX;
     m_dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
 }
 
 //----------------------------------------------------------------------------------------------------
-glm::vec2 InputComponent::GetLinearVelocity() const
+void InputComponent::SetLinearVelocityY(F32 linearVelocityY)
 {
-    return m_linearVelocity;
+    m_linearVelocity.y = linearVelocityY;
+    m_dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
+}
+
+//----------------------------------------------------------------------------------------------------
+F32 InputComponent::GetLinearVelocityX() const
+{
+    return m_linearVelocity.x;
+}
+
+//----------------------------------------------------------------------------------------------------
+F32 InputComponent::GetLinearVelocityY() const
+{
+    return m_linearVelocity.y;
 }
 
 //----------------------------------------------------------------------------------------------------

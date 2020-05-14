@@ -191,6 +191,18 @@ glm::vec2 RigidbodyComponent::GetLinearVelocity() const
 }
 
 //----------------------------------------------------------------------------------------------------
+F32 RigidbodyComponent::GetLinearVelocityX() const
+{
+    return GetLinearVelocity().x;
+}
+
+//----------------------------------------------------------------------------------------------------
+F32 RigidbodyComponent::GetLinearVelocityY() const
+{
+    return GetLinearVelocity().y;
+}
+
+//----------------------------------------------------------------------------------------------------
 F32 RigidbodyComponent::GetAngularVelocity() const
 {
     F32 angularVelocity = 0.0f;
