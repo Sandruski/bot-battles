@@ -42,11 +42,20 @@ void ContactListener::BeginContact(b2Contact* contact)
 }
 
 //----------------------------------------------------------------------------------------------------
-void ContactListener::EndContact(b2Contact* /*contact*/)
+void ContactListener::EndContact(b2Contact* contact)
 {
-    //Entity entityA = *static_cast<Entity*>(contact->GetFixtureA()->GetBody()->GetUserData());
-    //Entity entityB = *static_cast<Entity*>(contact->GetFixtureB()->GetBody()->GetUserData());
-    //g_game->GetPhysicsComponent().OnCollisionExit();
+    b2Body* bodyA = contact->GetFixtureA()->GetBody();
+    b2Body* bodyB = contact->GetFixtureB()->GetBody();
+    Entity entityA = *static_cast<Entity*>(bodyA->GetUserData());
+    Entity entityB = *static_cast<Entity*>(bodyB->GetUserData());
+
+    //b2WorldManifold worldManifold;
+    //contact->GetWorldManifold(&worldManifold);
+    //b2Vec2 linearVelocityA = bodyA->GetLinearVelocityFromWorldPoint(worldManifold.points[0]);
+    //b2Vec2 linearVelocityB = bodyB->GetLinearVelocityFromWorldPoint(worldManifold.points[0]);
+    //b2Vec2 relativeLinearVelocity = linearVelocityA - linearVelocityB;
+
+    g_game->GetPhysicsComponent().OnCollisionExit(entityA, entityB);
 }
 
 //----------------------------------------------------------------------------------------------------

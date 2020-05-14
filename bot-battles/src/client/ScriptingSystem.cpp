@@ -97,11 +97,6 @@ void ScriptingSystemClient::OnNotify(const Event& event)
         break;
     }
 
-    case EventType::COLLISION_EXIT: {
-        OnCollisionExit(event.collision.entityA, event.collision.entityB);
-        break;
-    }
-
     default: {
         break;
     }
@@ -181,10 +176,5 @@ void ScriptingSystemClient::OnCollisionEnter(Entity entityA, Entity entityB) con
         ELOG("%s", re.what());
         return;
     }
-}
-
-//----------------------------------------------------------------------------------------------------
-void ScriptingSystemClient::OnCollisionExit(Entity /*entityA*/, Entity /*entityB*/) const
-{
 }
 }

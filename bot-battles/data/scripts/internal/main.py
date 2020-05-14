@@ -6,7 +6,6 @@ import logging
 import io
 
 import bot
-
 import robot
 
 stream = None
