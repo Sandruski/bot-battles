@@ -24,10 +24,13 @@ def init(scriptName, transformComponent, rigidbodyComponent):
 
     global stream
     stream = io.StringIO()
-    handler = logging.StreamHandler(stream)
+    streamHandler = logging.StreamHandler(stream)
+    fileHandler = logging.FileHandler('%s.log' % myRobot.__class__.__name__)
     formatter = logging.Formatter('[%(levelname)s] %(message)s')
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
+    streamHandler.setFormatter(formatter)
+    fileHandler.setFormatter(formatter)
+    logger.addHandler(streamHandler)
+    logger.addHandler(fileHandler)
 
 def tick(input):
     myRobot.tick(input)

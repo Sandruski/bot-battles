@@ -87,7 +87,6 @@ bool InputSystemClient::Update()
             Input input = Input(inputComponent, inputComponent.m_dirtyState, clientComponent.m_inputBuffer.m_back, clientComponent.m_interpolationFromFrame, clientComponent.m_interpolationToFrame, clientComponent.m_interpolationPercentage);
             clientComponent.m_inputBuffer.Add(input);
         }
-        inputComponent.m_dirtyState = 0;
     }
 
     return true;

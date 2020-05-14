@@ -65,6 +65,9 @@ bool OutputSystemClient::Update()
         clientComponent.m_inputBuffer.Remove(index);
     }
 
+    InputComponent& inputComponent = g_gameClient->GetInputComponent();
+    inputComponent.Reset();
+
     return true;
 }
 }
