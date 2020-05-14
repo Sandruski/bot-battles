@@ -8,5 +8,5 @@ class Robot:
     def tick(self, input):
         pass
 
-    def onHitWall(self, input):
+    def onHitWall(self, input, collisionEvent):
         pass

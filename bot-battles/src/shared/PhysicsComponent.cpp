@@ -32,13 +32,14 @@ void ContactListener::BeginContact(b2Contact* contact)
     Entity entityA = *static_cast<Entity*>(bodyA->GetUserData());
     Entity entityB = *static_cast<Entity*>(bodyB->GetUserData());
 
-    //b2WorldManifold worldManifold;
-    //contact->GetWorldManifold(&worldManifold);
-    //b2Vec2 linearVelocityA = bodyA->GetLinearVelocityFromWorldPoint(worldManifold.points[0]);
-    //b2Vec2 linearVelocityB = bodyB->GetLinearVelocityFromWorldPoint(worldManifold.points[0]);
-    //b2Vec2 relativeLinearVelocity = linearVelocityA - linearVelocityB;
+    b2WorldManifold worldManifold;
+    contact->GetWorldManifold(&worldManifold);
+    b2Vec2 linearVelocityA = bodyA->GetLinearVelocityFromWorldPoint(worldManifold.points[0]);
+    b2Vec2 linearVelocityB = bodyB->GetLinearVelocityFromWorldPoint(worldManifold.points[0]);
+    b2Vec2 physicsRelativeLinearVelocity = linearVelocityA - linearVelocityB;
+    glm::vec2 relativeLinearVelocity = glm::vec2(METERS_TO_PIXELS(physicsRelativeLinearVelocity.x), METERS_TO_PIXELS(physicsRelativeLinearVelocity.y));
 
-    g_game->GetPhysicsComponent().OnCollisionEnter(entityA, entityB);
+    g_game->GetPhysicsComponent().OnCollisionEnter(entityA, entityB, relativeLinearVelocity);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -70,6 +71,18 @@ PhysicsComponent::RaycastHit::RaycastHit()
 PhysicsComponent::Collision::Collision()
     : m_relativeLinearVelocity(0.0f, 0.0f)
 {
+}
+
+//----------------------------------------------------------------------------------------------------
+F32 PhysicsComponent::Collision::GetRelativeLinearVelocityX() const
+{
+    return m_relativeLinearVelocity.x;
+}
+
+//----------------------------------------------------------------------------------------------------
+F32 PhysicsComponent::Collision::GetRelativeLinearVelocityY() const
+{
+    return m_relativeLinearVelocity.y;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -131,12 +144,13 @@ bool PhysicsComponent::Raycast(const glm::vec2& origin, const glm::vec2& destina
 }
 
 //----------------------------------------------------------------------------------------------------
-void PhysicsComponent::OnCollisionEnter(Entity entityA, Entity entityB)
+void PhysicsComponent::OnCollisionEnter(Entity entityA, Entity entityB, glm::vec2 relativeLinearVelocity)
 {
     Event newEvent;
     newEvent.eventType = EventType::COLLISION_ENTER;
     newEvent.collision.entityA = entityA;
     newEvent.collision.entityB = entityB;
+    newEvent.collision.relativeLinearVelocity = relativeLinearVelocity;
     PushEvent(newEvent);
 }
 

@@ -2,6 +2,7 @@
 #define __BOT_MODULE_H__
 
 #include "InputComponent.h"
+#include "PhysicsComponent.h"
 #include "RigidbodyComponent.h"
 #include "TransformComponent.h"
 #include "UtilsClient.h"
@@ -37,6 +38,10 @@ PYBIND11_EMBEDDED_MODULE(bot, m)
         .def_property_readonly("linearVelocityX", &RigidbodyComponent::GetLinearVelocityX)
         .def_property_readonly("linearVelocityY", &RigidbodyComponent::GetLinearVelocityY)
         .def_property_readonly("angularVelocity", &RigidbodyComponent::GetAngularVelocity);
+
+    py::class_<PhysicsComponent::Collision>(m, "CollisionEvent")
+        .def_property_readonly("relativeLinearVelocityX", &PhysicsComponent::Collision::GetRelativeLinearVelocityX)
+        .def_property_readonly("relativeLinearVelocityY", &PhysicsComponent::Collision::GetRelativeLinearVelocityY);
 }
 }
 

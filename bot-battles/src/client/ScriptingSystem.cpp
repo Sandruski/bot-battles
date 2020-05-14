@@ -93,7 +93,7 @@ void ScriptingSystemClient::OnNotify(const Event& event)
     }
 
     case EventType::COLLISION_ENTER: {
-        OnCollisionEnter(event.collision.entityA, event.collision.entityB);
+        OnCollisionEnter(event.collision.entityA, event.collision.entityB, event.collision.relativeLinearVelocity);
         break;
     }
 
@@ -149,7 +149,7 @@ void ScriptingSystemClient::InitScripts() const
 }
 
 //----------------------------------------------------------------------------------------------------
-void ScriptingSystemClient::OnCollisionEnter(Entity entityA, Entity entityB) const
+void ScriptingSystemClient::OnCollisionEnter(Entity entityA, Entity entityB, glm::vec2 relativeLinearVelocity) const
 {
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     Entity entity = INVALID_ENTITY;
@@ -168,10 +168,13 @@ void ScriptingSystemClient::OnCollisionEnter(Entity entityA, Entity entityB) con
         return;
     }
 
+    PhysicsComponent::Collision collision;
+    collision.m_relativeLinearVelocity = relativeLinearVelocity;
+
     ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();
     InputComponent& inputComponent = g_gameClient->GetInputComponent();
     try {
-        scriptingComponent.m_mainModule.attr("onHitWall")(&inputComponent);
+        scriptingComponent.m_mainModule.attr("onHitWall")(&inputComponent, collision);
     } catch (const std::runtime_error& re) {
         ELOG("%s", re.what());
         return;

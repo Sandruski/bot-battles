@@ -12,5 +12,7 @@ class MyRobot(robot.Robot):
         input.angularVelocity = 45
         #input.shoot()
     
-    def onHitWall(self, hitInfo):
-        logging.info('Wall hit!')
+    def onHitWall(self, input, collisionEvent):
+        input.linearVelocityX = collisionEvent.relativeLinearVelocityX
+        input.linearVelocityY = collisionEvent.relativeLinearVelocityY
+        logging.info('Wall hit! %f %f', collisionEvent.relativeLinearVelocityX, collisionEvent.relativeLinearVelocityY)

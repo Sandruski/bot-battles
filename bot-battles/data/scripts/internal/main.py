@@ -32,8 +32,8 @@ def init(scriptName, transformComponent, rigidbodyComponent):
 def tick(input):
     myRobot.tick(input)
 
-def onHitWall(input):
-    myRobot.onHitWall(input)
+def onHitWall(input, collisionEvent):
+    myRobot.onHitWall(input, collisionEvent)
 
 def log():
     content = stream.getvalue()
