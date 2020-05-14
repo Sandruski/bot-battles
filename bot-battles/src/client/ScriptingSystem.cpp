@@ -27,7 +27,7 @@ bool ScriptingSystemClient::StartUp()
 {
     std::string scriptsDir = "import sys\n";
     scriptsDir.append("sys.path.append(\"");
-    scriptsDir.append(ROBOTS_SCRIPTS_DIR);
+    scriptsDir.append(BOTS_SCRIPTS_DIR);
     scriptsDir.append("\")\n");
     py::exec(scriptsDir);
 

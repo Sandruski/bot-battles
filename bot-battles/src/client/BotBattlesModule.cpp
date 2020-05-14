@@ -1,5 +1,5 @@
-#ifndef __BOT_MODULE_H__
-#define __BOT_MODULE_H__
+#ifndef __BOT_BATTLES_MODULE_H__
+#define __BOT_BATTLES_MODULE_H__
 
 #include "InputComponent.h"
 #include "PhysicsComponent.h"
@@ -15,7 +15,7 @@ namespace py = pybind11;
 
 namespace sand {
 
-PYBIND11_EMBEDDED_MODULE(bot, m)
+PYBIND11_EMBEDDED_MODULE(botbattles, m)
 {
     m.doc() = "my module";
 

@@ -2,9 +2,9 @@
 
 import numpy as np
 import logging
-import robot
+import bot
 
-class MyRobot(robot.Robot):
+class MyBot(bot.Bot):
 
     def tick(self, input):
         input.linearVelocityX = 100

@@ -210,14 +210,14 @@
     <ClCompile Include="ScriptingSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="BotModule.cpp">
-      <Filter>Source Files\Scripting</Filter>
-    </ClCompile>
     <ClCompile Include="ScriptingComponent.cpp">
       <Filter>Source Files\Components\System Components</Filter>
     </ClCompile>
     <ClCompile Include="UtilsClient.cpp">
       <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="BotBattlesModule.cpp">
+      <Filter>Source Files\Scripting</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

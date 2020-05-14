@@ -1,6 +1,6 @@
 # coding: utf-8
 
-class Robot:
+class Bot:
     def __init__(self, transformComponent, rigidbodyComponent):
         self.transformComponent = transformComponent
         self.rigidbodyComponent = rigidbodyComponent

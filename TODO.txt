@@ -1,6 +1,8 @@
 -Handle floating-point issues (comparing positions and move replay).
 -Implement oncollision enter and exit.
 
+-Debug draw for AI stuff (gameplay): raycasts, etc.
+
 -Fix networking bug where player wants to replay but then it goes back to main menu and tries to connect again but the server won't allow player because it is already registered in the server map of players.
 ->Fix the previous point by sending regular "ping" udp packets.
 
