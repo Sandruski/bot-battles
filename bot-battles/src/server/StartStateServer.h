@@ -17,6 +17,7 @@ public:
     std::string GetName() const override;
 
     bool Enter() const override;
+    bool RenderGui() const override;
     bool Exit() const override;
 
     void OnNotify(const Event& event) override;
@@ -25,6 +26,7 @@ private:
     void OnPlayerAdded() const;
 
     void ChangeToPlay() const; // OnPlayerAdded (== all players added)
+    void ChangeToMainMenu() const; // if button
 };
 }
 

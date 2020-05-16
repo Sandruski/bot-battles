@@ -62,6 +62,13 @@ bool GameplayStateServer::Enter() const
 }
 
 //----------------------------------------------------------------------------------------------------
+bool GameplayStateServer::RenderGui() const
+{
+    GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
+    return gameplayComponent.m_fsm.RenderGui();
+}
+
+//----------------------------------------------------------------------------------------------------
 bool GameplayStateServer::Exit() const
 {
     // Scene

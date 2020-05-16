@@ -13,7 +13,7 @@ ScoreboardComponent::ScoreboardComponent()
     , m_mainMenuTimer()
     , m_reHelloTimer()
     , m_guiTimer()
-    , m_mainMenuTimeout(15.0f)
+    , m_mainMenuTimeout(30.0f)
     , m_secondsBetweenReHello(1.0f)
 #endif
 {

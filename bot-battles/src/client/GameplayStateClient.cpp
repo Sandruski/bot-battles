@@ -55,6 +55,7 @@ bool GameplayStateClient::Enter() const
     guiComponent.m_isSettings = false;
 
     GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+    gameplayComponent.m_mainMenuTimer.Start();
     ret = gameplayComponent.m_fsm.ChangeState("Start");
 
     return ret;
