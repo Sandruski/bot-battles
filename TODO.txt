@@ -1,3 +1,6 @@
+-Client hits and server says no.
+-Every game is different but there are 3 or 4 combinations that repeat.
+
 -Debug draw for AI stuff (gameplay): raycasts, etc.
 
 /////

@@ -99,7 +99,10 @@ bool WeaponSystemServer::Update()
                     std::weak_ptr<TransformComponent> hitEntityTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(hitInfo.m_entity);
                     if (!hitEntityTransformComponent.expired()) {
                         weaponComponent.lock()->m_destination = hitInfo.m_point;
+                        ILOG("SERVER POS %f %f", hitEntityTransformComponent.lock()->m_position.x, hitEntityTransformComponent.lock()->m_position.y);
                     }
+
+                    ILOG("Input %u", input.GetFrame());
 
                     if (hitInfo.m_entity != entity) {
                         std::weak_ptr<HealthComponent> hitEntityHealthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(hitInfo.m_entity);
@@ -248,7 +251,7 @@ void WeaponSystemServer::Rewind(Entity localEntity, U32 from, U32 to, F32 percen
             glm::vec2 interpolatedPosition = Lerp(fromTransform.m_position, toTransform.m_position, percentage);
             F32 interpolatedRotation = Lerp(fromTransform.m_rotation, toTransform.m_rotation, percentage);
             rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(interpolatedPosition.x), PIXELS_TO_METERS(interpolatedPosition.y)), glm::radians(interpolatedRotation));
-            ILOG("REWIND POS %f %f and %f %f", transformComponent.lock()->m_position.x, transformComponent.lock()->m_position.y, interpolatedPosition.x, interpolatedPosition.y);
+            ILOG("SERVER REWIND POS %f %f", interpolatedPosition.x, interpolatedPosition.y);
         }
     }
 }
