@@ -26,34 +26,6 @@ bool OutputSystemServer::Update()
         PlayerID playerID = pair.first;
         std::shared_ptr<ClientProxy> clientProxy = pair.second;
 
-        if (serverComponent.m_isServerRewind) {
-            if (!clientProxy->m_inputBuffer.IsEmpty()) {
-                Entity entity = serverComponent.GetEntity(playerID);
-                if (entity >= INVALID_ENTITY) {
-                    continue;
-                }
-                std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
-                if (transformComponent.expired()) {
-                    continue;
-                }
-
-                Input& input = clientProxy->m_inputBuffer.GetLast();
-                U32 index = transformComponent.lock()->m_transformBuffer.m_front;
-                bool isFound = false;
-                while (index < transformComponent.lock()->m_transformBuffer.m_back) {
-                    const Transform& transform = transformComponent.lock()->m_transformBuffer.Get(index);
-                    if (transform.GetFrame() == input.m_interpolationFromFrame) {
-                        isFound = true;
-                        break;
-                    }
-                    ++index;
-                }
-                if (isFound) {
-                    transformComponent.lock()->m_transformBuffer.Remove(index);
-                }
-            }
-        }
-
         clientProxy->m_inputBuffer.Clear();
 
         Entity entity = serverComponent.GetEntity(playerID);

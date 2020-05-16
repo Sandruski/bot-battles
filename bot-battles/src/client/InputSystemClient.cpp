@@ -79,6 +79,12 @@ bool InputSystemClient::Update()
     */
 
     InputComponent& inputComponent = g_gameClient->GetInputComponent();
+    // ***
+    EventComponent& eventComponent = g_game->GetEventComponent();
+    if (eventComponent.m_keyboard.at(SDL_SCANCODE_SPACE) == EventComponent::KeyState::DOWN) {
+        inputComponent.m_dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_SHOOTING);
+    }
+    // ***
     if (inputComponent.m_dirtyState != 0) {
         if (!clientComponent.m_inputBuffer.IsFull()) {
             clientComponent.m_isLastMoveInputPending = (inputComponent.m_dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_LINEAR_VELOCITY)) || (inputComponent.m_dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY));
