@@ -50,7 +50,7 @@ void SpawnerSystem::OnNotify(const Event& event)
 }
 
 //----------------------------------------------------------------------------------------------------
-Entity SpawnerSystem::Spawn(U32 playerNumber) const
+Entity SpawnerSystem::Spawn(PlayerID playerID) const
 {
     Entity character = g_gameServer->GetEntityManager().AddEntity();
     g_gameServer->GetLinkingContext().AddEntity(character);
@@ -58,9 +58,7 @@ Entity SpawnerSystem::Spawn(U32 playerNumber) const
     std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().AddComponent<TransformComponent>(character);
     for (const auto& spawner : m_entities) {
         std::weak_ptr<SpawnComponent> spawnerSpawnComponent = g_gameServer->GetComponentManager().GetComponent<SpawnComponent>(spawner);
-        if (spawnerSpawnComponent.lock()->m_entity == INVALID_ENTITY) {
-            spawnerSpawnComponent.lock()->m_entity = character;
-
+        if (spawnerSpawnComponent.lock()->m_playerID == playerID) {
             std::weak_ptr<TransformComponent> spawnerTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(spawner);
             transformComponent.lock()->m_position = glm::vec2(spawnerTransformComponent.lock()->m_position.x, spawnerTransformComponent.lock()->m_position.y);
             transformComponent.lock()->m_layerType = LayerType::PLAYER;
@@ -71,6 +69,7 @@ Entity SpawnerSystem::Spawn(U32 playerNumber) const
     std::weak_ptr<SpriteResource> charactersSpriteResource = g_game->GetResourceManager().AddResource<SpriteResource>("characters.png", TEXTURES_DIR, true);
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().AddComponent<SpriteComponent>(character);
     spriteComponent.lock()->m_spriteResource = charactersSpriteResource;
+    U32 playerNumber = playerID + 1;
     switch (playerNumber) {
     case 1: {
         glm::vec4 standTextureCoords = glm::vec4(1.0f, 1.0f, 36.0f, 43.0f);
@@ -146,14 +145,6 @@ Entity SpawnerSystem::Spawn(U32 playerNumber) const
 //----------------------------------------------------------------------------------------------------
 void SpawnerSystem::Despawn(Entity entity) const
 {
-    for (const auto& spawner : m_entities) {
-        std::weak_ptr<SpawnComponent> spawnerSpawnComponent = g_gameServer->GetComponentManager().GetComponent<SpawnComponent>(spawner);
-        if (spawnerSpawnComponent.lock()->m_entity == entity) {
-            spawnerSpawnComponent.lock()->m_entity = INVALID_ENTITY;
-            break;
-        }
-    }
-
     g_gameServer->GetLinkingContext().RemoveEntity(entity);
     g_gameServer->GetEntityManager().RemoveEntity(entity);
 }
@@ -168,8 +159,7 @@ void SpawnerSystem::OnPlayerAdded(PlayerID playerID) const
         return;
     }
 
-    U32 playerNumber = playerID + 1;
-    entity = Spawn(playerNumber);
+    entity = Spawn(playerID);
     serverComponent.AddEntity(entity, playerID);
 }
 

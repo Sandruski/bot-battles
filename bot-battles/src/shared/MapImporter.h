@@ -59,21 +59,42 @@ public:
         U32 m_spacing;
     };
 
+    struct Property {
+
+        union Value {
+            bool boolValue;
+            int intValue;
+            float floatValue;
+        };
+
+        Property()
+            : m_name()
+            , m_value()
+        {
+        }
+
+        std::string m_name;
+        Value m_value;
+    };
+
     struct Object {
 
         Object()
             : m_position(0.0f, 0.0f)
             , m_size(0.0f, 0.0f)
             , m_rotation(0.0f)
+            , m_name()
             , m_gid(0)
+            , m_properties()
         {
         }
 
         glm::vec2 m_position;
         glm::vec2 m_size;
         F32 m_rotation;
-
+        std::string m_name;
         U32 m_gid;
+        std::vector<Property> m_properties;
     };
 
     struct Objectlayer {
@@ -157,6 +178,7 @@ private:
     bool LoadTilelayer(const rapidjson::Value& value, Tilelayer& tileLayer) const;
     bool LoadObjectLayer(const rapidjson::Value& value, Objectlayer& objectLayer) const;
     bool LoadObject(const rapidjson::Value& value, Object& object) const;
+    bool LoadProperty(const rapidjson::Value& value, Property& property) const;
 };
 }
 

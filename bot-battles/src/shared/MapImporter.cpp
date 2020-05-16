@@ -188,7 +188,8 @@ void MapImporter::Create(const Tilemap& tilemap) const
 
             // Spawn
             if (objectlayer.m_name == "spawner") {
-                g_game->GetComponentManager().AddComponent<SpawnComponent>(entity);
+                std::weak_ptr<SpawnComponent> spawnComponent = g_game->GetComponentManager().AddComponent<SpawnComponent>(entity);
+                spawnComponent.lock()->m_playerID = object.m_properties.front().m_value.intValue;
             }
         }
     }
@@ -349,8 +350,56 @@ bool MapImporter::LoadObject(const rapidjson::Value& value, Object& object) cons
         return ret;
     }
     object.m_rotation = value["rotation"].GetFloat();
-    if (value.HasMember("gid")) {
-        object.m_gid = value["gid"].GetUint();
+    ret = value.HasMember("name");
+    if (!ret) {
+        return ret;
+    }
+    object.m_name = value["name"].GetString();
+    ret = value.HasMember("gid");
+    if (!ret) {
+        return ret;
+    }
+    object.m_gid = value["gid"].GetUint();
+    ret = value.HasMember("properties");
+    if (!ret) {
+        return ret;
+    }
+    object.m_properties.reserve(value["properties"].Size());
+    for (rapidjson::Value::ConstValueIterator it = value["properties"].Begin(); it != value["properties"].End(); ++it) {
+        Property property;
+        ret = LoadProperty(*it, property);
+        if (!ret) {
+            return ret;
+        }
+        object.m_properties.emplace_back(property);
+    }
+
+    return ret;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool MapImporter::LoadProperty(const rapidjson::Value& value, Property& property) const
+{
+    bool ret = value.HasMember("name");
+    if (!ret) {
+        return ret;
+    }
+    property.m_name = value["name"].GetString();
+    ret = value.HasMember("value");
+    if (!ret) {
+        return ret;
+    }
+    ret = value.HasMember("type");
+    if (!ret) {
+        return ret;
+    }
+    std::string type = value["type"].GetString();
+    if (type == "bool") {
+        property.m_value.boolValue = value["value"].GetBool();
+    } else if (type == "int") {
+        property.m_value.intValue = value["value"].GetInt();
+    } else if (type == "float") {
+        property.m_value.floatValue = value["value"].GetFloat();
     }
 
     return ret;

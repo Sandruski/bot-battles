@@ -32,7 +32,7 @@ struct SpawnComponent : public Component
 #endif
 
     // Local
-    Entity m_entity;
+    PlayerID m_playerID;
 };
 }
 

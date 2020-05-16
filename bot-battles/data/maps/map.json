@@ -44,6 +44,12 @@
                  "height":64,
                  "id":17,
                  "name":"spawner2",
+                 "properties":[
+                        {
+                         "name":"player",
+                         "type":"int",
+                         "value":0
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -56,6 +62,12 @@
                  "height":64,
                  "id":18,
                  "name":"spawner1",
+                 "properties":[
+                        {
+                         "name":"player",
+                         "type":"int",
+                         "value":1
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,

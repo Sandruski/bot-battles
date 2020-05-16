@@ -6,7 +6,7 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 SpawnComponent::SpawnComponent()
-    : m_entity(INVALID_ENTITY)
+    : m_playerID(INVALID_PLAYER_ID)
 {
 }
 

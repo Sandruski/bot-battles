@@ -19,7 +19,7 @@ public:
     void OnNotify(const Event& event) override;
 
 private:
-    Entity Spawn(U32 playerNumber) const;
+    Entity Spawn(PlayerID playerID) const;
     void Despawn(Entity entity) const;
 
     void OnPlayerAdded(PlayerID playerID) const;
