@@ -1,5 +1,4 @@
--Handle floating-point issues (comparing positions and move replay).
--Implement oncollision enter and exit.
+FIX DIVERGENCES BETWEEN CLIENT AND SERVER WHEN SHOOTING! :(
 
 -Debug draw for AI stuff (gameplay): raycasts, etc.
 

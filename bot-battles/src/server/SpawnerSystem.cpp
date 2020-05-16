@@ -128,9 +128,10 @@ Entity SpawnerSystem::Spawn(U32 playerNumber) const
     std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameServer->GetComponentManager().AddComponent<RigidbodyComponent>(character);
     rigidbodyComponent.lock()->m_bodyType = RigidbodyComponent::BodyType::DYNAMIC;
     rigidbodyComponent.lock()->UpdateBodyType();
-    rigidbodyComponent.lock()->m_groupIndex = -1;
+    rigidbodyComponent.lock()->m_groupIndex = 1; // -1 = not collide
     rigidbodyComponent.lock()->UpdateGroupIndex();
-    rigidbodyComponent.lock()->SetAsBullet(true);
+    rigidbodyComponent.lock()->m_isBullet = true;
+    rigidbodyComponent.lock()->UpdateBullet();
 
     g_gameServer->GetComponentManager().AddComponent<WeaponComponent>(character);
 

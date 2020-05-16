@@ -192,7 +192,7 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::v
     if (replayPosition || replayRotation) {
         ILOG("REPLAY");
         ILOG("Current vs new positions at frame %u is %f %f and %f %f", clientComponent.m_lastAckdFrame, position.x, position.y, newPosition.x, newPosition.y);
-        assert(false);
+        //assert(false);
 
         rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(position.x), PIXELS_TO_METERS(position.y)), glm::radians(rotation));
         if (replayPosition) {
@@ -245,17 +245,10 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::v
         Transform& lastTransform = m_inputTransformBuffer.GetLast();
         if (replayPosition) {
             ILOG("My position is %f %f compared to %f %f", m_position.x, m_position.y, lastTransform.m_position.x, lastTransform.m_position.y);
-
-            glm::vec2 minNewPosition = lastTransform.m_position - 0.001f;
-            glm::vec2 maxNewPosition = lastTransform.m_position + 0.001f;
-            assert((m_position.x > minNewPosition.x && m_position.y > minNewPosition.y)
-                && (m_position.x < maxNewPosition.x && m_position.y < maxNewPosition.y));
-
             m_position = lastTransform.m_position;
         }
         if (replayRotation) {
             ILOG("My rotation is %f compared to %f", m_rotation, lastTransform.m_rotation);
-            assert(m_rotation == lastTransform.m_rotation);
             m_rotation = lastTransform.m_rotation;
         }
     }
