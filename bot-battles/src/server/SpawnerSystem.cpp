@@ -168,7 +168,7 @@ void SpawnerSystem::OnPlayerAdded(PlayerID playerID) const
         return;
     }
 
-    U32 playerNumber = serverComponent.GetPlayerCount();
+    U32 playerNumber = playerID + 1;
     entity = Spawn(playerNumber);
     serverComponent.AddEntity(entity, playerID);
 }

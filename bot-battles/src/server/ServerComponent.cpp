@@ -73,7 +73,7 @@ PlayerID ServerComponent::AddPlayer(const SocketAddress& socketAddress, const ch
         return playerID;
     }
 
-    playerID = m_availablePlayerIDs.front();
+    playerID = m_availablePlayerIDs.top();
     m_availablePlayerIDs.pop();
 
     std::shared_ptr<ClientProxy> clientProxy = std::make_shared<ClientProxy>(socketAddress, name);

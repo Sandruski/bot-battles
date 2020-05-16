@@ -10,7 +10,7 @@ class MyBot(bot.Bot):
         input.linearVelocityX = 100
         input.linearVelocityY = 30
         input.angularVelocity = 45
-        # input.shoot()
+        input.shoot()
     
     def onHitWall(self, input, collisionEvent):
         input.linearVelocityX = collisionEvent.relativeLinearVelocityX

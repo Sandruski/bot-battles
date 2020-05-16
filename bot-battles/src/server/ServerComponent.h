@@ -47,7 +47,7 @@ struct ServerComponent : public Component {
 
     std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>> m_playerIDToClientProxy;
     std::unordered_map<Entity, PlayerID> m_entityToPlayerID;
-    std::queue<PlayerID> m_availablePlayerIDs;
+    std::priority_queue<PlayerID, std::vector<PlayerID>, std::greater<PlayerID>> m_availablePlayerIDs;
 
     F32 m_disconnectTimeout;
     F32 m_ackTimeout;

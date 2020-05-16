@@ -84,7 +84,7 @@ inline void CircularBuffer<T, size>::RemoveLast()
 template <class T, U32 size>
 inline void CircularBuffer<T, size>::Clear()
 {
-    m_front = m_back;
+    m_front = m_back = 1;
 }
 
 //----------------------------------------------------------------------------------------------------

@@ -139,11 +139,6 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::v
         return;
     }
 
-    if (m_inputTransformBuffer.Count() != clientComponent.m_inputBuffer.Count()) {
-        assert(false);
-        return;
-    }
-
     std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameClient->GetComponentManager().GetComponent<RigidbodyComponent>(entity);
     if (rigidbodyComponent.expired()) {
         return;
@@ -185,50 +180,30 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::v
         F32 maxNewRotation = newRotation + physicsComponent.m_epsilon;
         if (rotation < minNewRotation
             || rotation > maxNewRotation) {
-            replayPosition = true;
+            replayRotation = true;
         }
     }
 
     if (replayPosition || replayRotation) {
         ILOG("REPLAY");
         ILOG("Current vs new positions at frame %u is %f %f and %f %f", clientComponent.m_lastAckdFrame, position.x, position.y, newPosition.x, newPosition.y);
-        //assert(false);
 
+        position = newPosition;
+        rotation = newRotation;
         rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(position.x), PIXELS_TO_METERS(position.y)), glm::radians(rotation));
-        if (replayPosition) {
-            position = newPosition;
-        }
-        if (replayRotation) {
-            rotation = newRotation;
-        }
 
         ILOG("We loop %u transforms", clientComponent.m_inputBuffer.m_back - index - 1);
         for (U32 i = index + 1; i < clientComponent.m_inputBuffer.m_back; ++i) {
-            Transform& transform = m_inputTransformBuffer.Get(i);
-
-            glm::vec2 linearVelocity = glm::vec2(0.0f, 0.0f);
-            F32 angularVelocity = 0.0f;
-
             const Input& input = clientComponent.m_inputBuffer.Get(i);
             const InputComponent& inputComponent = input.GetInputComponent();
-
-            if (replayPosition) {
-                linearVelocity += inputComponent.m_linearVelocity;
-            }
-
-            if (replayRotation) {
-                angularVelocity += inputComponent.m_angularVelocity;
-            }
-
-            ILOG("Vel is %f %f", inputComponent.m_linearVelocity.x, inputComponent.m_linearVelocity.y);
-
-            rigidbodyComponent.lock()->m_body->SetLinearVelocity(b2Vec2(PIXELS_TO_METERS(linearVelocity.x), PIXELS_TO_METERS(linearVelocity.y)));
-            rigidbodyComponent.lock()->m_body->SetAngularVelocity(glm::radians(angularVelocity));
+            rigidbodyComponent.lock()->m_body->SetLinearVelocity(b2Vec2(PIXELS_TO_METERS(inputComponent.m_linearVelocity.x), PIXELS_TO_METERS(inputComponent.m_linearVelocity.y)));
+            rigidbodyComponent.lock()->m_body->SetAngularVelocity(glm::radians(inputComponent.m_angularVelocity));
 
             rigidbodyComponent.lock()->m_body->SetActive(true);
 
             physicsComponent.Step();
 
+            Transform& transform = m_inputTransformBuffer.Get(i);
             if (replayPosition) {
                 b2Vec2 physicsPosition = rigidbodyComponent.lock()->m_body->GetPosition();
                 ILOG("Position at frame %u %u was %f %f and now is %f %f", input.GetFrame(), transform.GetFrame(), transform.m_position.x, transform.m_position.y, METERS_TO_PIXELS(physicsPosition.x), METERS_TO_PIXELS(physicsPosition.y));
@@ -243,14 +218,10 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::v
         }
 
         Transform& lastTransform = m_inputTransformBuffer.GetLast();
-        if (replayPosition) {
-            ILOG("My position is %f %f compared to %f %f", m_position.x, m_position.y, lastTransform.m_position.x, lastTransform.m_position.y);
-            m_position = lastTransform.m_position;
-        }
-        if (replayRotation) {
-            ILOG("My rotation is %f compared to %f", m_rotation, lastTransform.m_rotation);
-            m_rotation = lastTransform.m_rotation;
-        }
+        ILOG("My position is %f %f compared to %f %f", m_position.x, m_position.y, lastTransform.m_position.x, lastTransform.m_position.y);
+        m_position = lastTransform.m_position;
+        ILOG("My rotation is %f compared to %f", m_rotation, lastTransform.m_rotation);
+        m_rotation = lastTransform.m_rotation;
     }
 }
 }
