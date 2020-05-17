@@ -69,8 +69,7 @@ bool ScriptingSystemClient::Update()
     try {
         scriptingComponent.m_mainModule.attr("tick")(&inputComponent);
         scriptingComponent.m_mainModule.attr("log")();
-    } catch (const std::runtime_error& re) {
-        ELOG("%s", re.what());
+    } catch (const std::runtime_error& /*re*/) {
         return false;
     }
 
@@ -117,9 +116,8 @@ void ScriptingSystemClient::ImportScripts() const
         //scriptingComponent.m_myBotModule.reload(); // TODO
 
         newEvent.eventType = EventType::CONNECT_SUCCESSFUL;
-    } catch (const std::runtime_error& re) {
+    } catch (const std::runtime_error& /*re*/) {
         newEvent.eventType = EventType::CONNECT_FAILED;
-        ELOG("%s", re.what());
     }
 
     NotifyEvent(newEvent);
@@ -140,8 +138,7 @@ void ScriptingSystemClient::InitScripts() const
         std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameClient->GetComponentManager().GetComponent<RigidbodyComponent>(entity);
         try {
             scriptingComponent.m_mainModule.attr("init")(clientComponent.m_script.c_str(), transformComponent.lock(), rigidbodyComponent.lock());
-        } catch (const std::runtime_error& re) {
-            ELOG("%s", re.what());
+        } catch (const std::runtime_error& /*re*/) {
         }
 
         break;
@@ -178,9 +175,7 @@ void ScriptingSystemClient::OnCollisionEnter(Entity entityA, Entity entityB, glm
         try {
             scriptingComponent.m_mainModule.attr("onHitWall")(&inputComponent, collision);
             scriptingComponent.m_mainModule.attr("log")();
-        } catch (const std::runtime_error& re) {
-            ELOG("%s", re.what());
-            return;
+        } catch (const std::runtime_error& /*re*/) {
         }
     }
 }

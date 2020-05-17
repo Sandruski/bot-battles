@@ -1,7 +1,7 @@
 # Bot Battles
 [Bot Battles](https://github.com/Sandruski/bot-battles) is a 2D multiplayer game about programming your own bot and battling against others.
 
-The project is in the Vertical Slice stage.
+The project is in the Alpha stage.
 
 # Installation
 1. Go to the Releases section of the repository.
@@ -18,11 +18,11 @@ Have fun!
 - O: toggle Log output
 - Esc: toggle Settings menu
 - F1: toggle Debug Options menu
-- Left Shift + W: force end match
+- Left Shift + W: end the match
 
 # Versions
 ## Vertical Slice
-
+## Alpha
 
 # About
 The code is written in C++ and follows the ISO C++ 17 Standard.
@@ -32,16 +32,18 @@ The code is written in C++ and follows the ISO C++ 17 Standard.
 - Tiled Map Editor
 - Aseprite
 - Clumsy
+- Brofiler
 
 ## Libraries
 - SDL
+- RapidJSON
 - gl3w
 - OpenGL Mathematics (GLM)
 - STB Image
 - Dear ImGui
-- RapidJSON
-- Winsock
 - Box2D
+- Winsock
+- pybind11
 
 ## Assets
 - [Kenney's Topdown Shooter pack](https://www.kenney.nl/assets/topdown-shooter)

@@ -1,5 +1,6 @@
--Client hits and server says no.
--Every game is different but there are 3 or 4 combinations that repeat.
+-Create Location struct and Bot struct for scripting purposes.
+-Pathfinding stuff, mapping Location from world to map positions.
+-Send onCollision Entity struct to scripting. E.g. if it is a wall, the properties. If it is an entity, the position.
 
 -Debug draw for AI stuff (gameplay): raycasts, etc.
 
