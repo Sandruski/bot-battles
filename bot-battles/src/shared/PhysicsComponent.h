@@ -41,10 +41,10 @@ struct PhysicsComponent : public Subject {
 
         Collision();
 
-        F32 GetRelativeLinearVelocityX() const;
-        F32 GetRelativeLinearVelocityY() const;
+        F32 GetNormalX() const;
+        F32 GetNormalY() const;
 
-        glm::vec2 m_relativeLinearVelocity;
+        glm::vec2 m_normal;
     };
 
     PhysicsComponent();
@@ -54,7 +54,7 @@ struct PhysicsComponent : public Subject {
     void Step();
     bool Raycast(const glm::vec2& origin, const glm::vec2& destination, RaycastHit& hitInfo);
 
-    void OnCollisionEnter(Entity entityA, Entity entityB, glm::vec2 relativeLinearVelocity);
+    void OnCollisionEnter(Entity entityA, Entity entityB, glm::vec2 normal);
     void OnCollisionExit(Entity entityA, Entity entityB);
 
     b2World m_world;

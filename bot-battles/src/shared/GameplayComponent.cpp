@@ -13,6 +13,9 @@ GameplayComponent::GameplayComponent()
     , m_isLog(true)
 #endif
 {
+#ifdef _CLIENT
+    m_lineOffsets.push_back(0);
+#endif
 }
 
 #ifdef _CLIENT
@@ -33,6 +36,7 @@ void GameplayComponent::ClearLogs()
 {
     m_buf.clear();
     m_lineOffsets.clear();
+    m_lineOffsets.push_back(0);
 }
 #endif
 }

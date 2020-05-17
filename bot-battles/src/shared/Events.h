@@ -32,7 +32,7 @@ struct CollisionEvent {
     EventType eventType;
     Entity entityA;
     Entity entityB;
-    glm::vec2 relativeLinearVelocity;
+    glm::vec2 normal;
 };
 
 //----------------------------------------------------------------------------------------------------

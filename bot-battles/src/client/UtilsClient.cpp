@@ -8,7 +8,7 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 void PyLog(const char* log)
 {
-    //PYLOG(log);
+    PYLOG(log);
 
     GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
     gameplayComponent.AddLog(log);

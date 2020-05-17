@@ -40,8 +40,8 @@ PYBIND11_EMBEDDED_MODULE(botbattles, m)
         .def_property_readonly("angularVelocity", &RigidbodyComponent::GetAngularVelocity);
 
     py::class_<PhysicsComponent::Collision>(m, "CollisionEvent")
-        .def_property_readonly("relativeLinearVelocityX", &PhysicsComponent::Collision::GetRelativeLinearVelocityX)
-        .def_property_readonly("relativeLinearVelocityY", &PhysicsComponent::Collision::GetRelativeLinearVelocityY);
+        .def_property_readonly("normalX", &PhysicsComponent::Collision::GetNormalX)
+        .def_property_readonly("normalY", &PhysicsComponent::Collision::GetNormalY);
 }
 }
 

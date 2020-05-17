@@ -31,7 +31,7 @@ private:
     void ImportScripts() const;
     void InitScripts() const;
 
-    void OnCollisionEnter(Entity entityA, Entity entityB, glm::vec2 relativeLinearVelocity) const;
+    void OnCollisionEnter(Entity entityA, Entity entityB, glm::vec2 normal) const;
 };
 }
 

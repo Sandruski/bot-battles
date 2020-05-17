@@ -17,6 +17,6 @@ class MyBot(bot.Bot):
     
     def onHitWall(self, input, collisionEvent):
         self.wallHit = True
-        input.linearVelocityX = collisionEvent.relativeLinearVelocityX
-        input.linearVelocityY = collisionEvent.relativeLinearVelocityY
-        logging.info('Wall hit! %f %f', collisionEvent.relativeLinearVelocityX, collisionEvent.relativeLinearVelocityY)
+        input.linearVelocityX = collisionEvent.normalX * 100
+        input.linearVelocityY = collisionEvent.normalY * 30
+        logging.info('Wall hit! %f %f', collisionEvent.normalX, collisionEvent.normalY)

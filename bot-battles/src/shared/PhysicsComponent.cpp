@@ -34,12 +34,9 @@ void ContactListener::BeginContact(b2Contact* contact)
 
     b2WorldManifold worldManifold;
     contact->GetWorldManifold(&worldManifold);
-    b2Vec2 linearVelocityA = bodyA->GetLinearVelocityFromWorldPoint(worldManifold.points[0]);
-    b2Vec2 linearVelocityB = bodyB->GetLinearVelocityFromWorldPoint(worldManifold.points[0]);
-    b2Vec2 physicsRelativeLinearVelocity = linearVelocityA - linearVelocityB;
-    glm::vec2 relativeLinearVelocity = glm::vec2(METERS_TO_PIXELS(physicsRelativeLinearVelocity.x), METERS_TO_PIXELS(physicsRelativeLinearVelocity.y));
+    glm::vec2 normal = glm::vec2(worldManifold.normal.x, worldManifold.normal.y);
 
-    g_game->GetPhysicsComponent().OnCollisionEnter(entityA, entityB, relativeLinearVelocity);
+    g_game->GetPhysicsComponent().OnCollisionEnter(entityA, entityB, normal);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -69,20 +66,20 @@ PhysicsComponent::RaycastHit::RaycastHit()
 
 //----------------------------------------------------------------------------------------------------
 PhysicsComponent::Collision::Collision()
-    : m_relativeLinearVelocity(0.0f, 0.0f)
+    : m_normal(0.0f, 0.0f)
 {
 }
 
 //----------------------------------------------------------------------------------------------------
-F32 PhysicsComponent::Collision::GetRelativeLinearVelocityX() const
+F32 PhysicsComponent::Collision::GetNormalX() const
 {
-    return m_relativeLinearVelocity.x;
+    return m_normal.x;
 }
 
 //----------------------------------------------------------------------------------------------------
-F32 PhysicsComponent::Collision::GetRelativeLinearVelocityY() const
+F32 PhysicsComponent::Collision::GetNormalY() const
 {
-    return m_relativeLinearVelocity.y;
+    return m_normal.y;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -144,13 +141,13 @@ bool PhysicsComponent::Raycast(const glm::vec2& origin, const glm::vec2& destina
 }
 
 //----------------------------------------------------------------------------------------------------
-void PhysicsComponent::OnCollisionEnter(Entity entityA, Entity entityB, glm::vec2 relativeLinearVelocity)
+void PhysicsComponent::OnCollisionEnter(Entity entityA, Entity entityB, glm::vec2 normal)
 {
     Event newEvent;
     newEvent.eventType = EventType::COLLISION_ENTER;
     newEvent.collision.entityA = entityA;
     newEvent.collision.entityB = entityB;
-    newEvent.collision.relativeLinearVelocity = relativeLinearVelocity;
+    newEvent.collision.normal = normal;
     PushEvent(newEvent);
 }
 
