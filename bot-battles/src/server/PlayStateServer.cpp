@@ -27,18 +27,6 @@ bool PlayStateServer::Enter() const
 }
 
 //----------------------------------------------------------------------------------------------------
-bool PlayStateServer::Update() const
-{
-    EventComponent& eventComponent = g_game->GetEventComponent();
-    if (eventComponent.m_keyboard.at(SDL_SCANCODE_LSHIFT) == EventComponent::KeyState::REPEAT
-        && eventComponent.m_keyboard.at(SDL_SCANCODE_W) == EventComponent::KeyState::DOWN) {
-        OnPlayerRemoved();
-    }
-
-    return true;
-}
-
-//----------------------------------------------------------------------------------------------------
 bool PlayStateServer::Exit() const
 {
     ILOG("Exiting %s...", GetName().c_str());
@@ -52,12 +40,12 @@ void PlayStateServer::OnNotify(const Event& event)
     switch (event.eventType) {
 
     case EventType::HEALTH_EMPTIED: {
-        OnHealthEmptied();
+        OnHealthEmptied(event.health.entity);
         break;
     }
 
     case EventType::PLAYER_REMOVED: {
-        OnPlayerRemoved();
+        OnHealthEmptied(event.networking.entity);
         break;
     }
 
@@ -68,38 +56,37 @@ void PlayStateServer::OnNotify(const Event& event)
 }
 
 //----------------------------------------------------------------------------------------------------
-void PlayStateServer::OnHealthEmptied() const
+void PlayStateServer::OnHealthEmptied(Entity entity) const
 {
     U32 aliveCount = 0;
     Entity winnerEntity = INVALID_ENTITY;
     std::vector<std::pair<Entity, std::weak_ptr<HealthComponent>>> healthComponents = g_gameServer->GetComponentManager().GetComponents<HealthComponent>();
     for (const auto& pair : healthComponents) {
+        Entity ownerEntity = pair.first;
+        if (ownerEntity == entity) {
+            continue;
+        }
+
         std::weak_ptr<HealthComponent> healthComponent = pair.second;
-        if (!healthComponent.lock()->m_isDead) {
+        if (healthComponent.expired() || !healthComponent.lock()->m_isEnabled) {
+            continue;
+        }
+
+        const bool isAlive = healthComponent.lock()->IsAlive();
+        if (isAlive) {
             ++aliveCount;
-            Entity entity = pair.first;
-            winnerEntity = entity;
+            winnerEntity = ownerEntity;
         }
     }
 
-    // V
-    if (aliveCount == 1) {
+    // V X
+    if (aliveCount == 0 || aliveCount == 1) {
         ScoreboardComponent& scoreboardComponent = g_gameServer->GetScoreboardComponent();
         ServerComponent& serverComponent = g_gameServer->GetServerComponent();
         scoreboardComponent.m_winnerPlayerID = serverComponent.GetPlayerID(winnerEntity);
 
         ChangeToScoreboard();
     }
-}
-
-//----------------------------------------------------------------------------------------------------
-void PlayStateServer::OnPlayerRemoved() const
-{
-    ScoreboardComponent& scoreboardComponent = g_gameServer->GetScoreboardComponent();
-    scoreboardComponent.m_winnerPlayerID = INVALID_PLAYER_ID;
-
-    // X
-    ChangeToScoreboard();
 }
 
 //----------------------------------------------------------------------------------------------------

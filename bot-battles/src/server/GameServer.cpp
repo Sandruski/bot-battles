@@ -11,6 +11,7 @@
 #include "MainMenuStateServer.h"
 #include "MovementSystemServer.h"
 #include "OutputSystemServer.h"
+#include "PhysicsComponent.h"
 #include "PlayerComponent.h"
 #include "ScoreboardStateServer.h"
 #include "ServerComponent.h"
@@ -122,6 +123,10 @@ bool GameServer::Init()
         return ret;
     }
     ret = healthSystem.lock()->AddObserver(std::weak_ptr<Observer>(m_fsm));
+    if (!ret) {
+        return ret;
+    }
+    ret = m_physicsComponent.AddObserver(healthSystem);
     if (!ret) {
         return ret;
     }

@@ -45,7 +45,7 @@ bool ResultsStateServer::RenderGui() const
     if (ImGui::Begin("Scoreboard", nullptr, windowFlags)) {
         ScoreboardComponent& scoreboardComponent = g_gameServer->GetScoreboardComponent();
         if (scoreboardComponent.m_winnerPlayerID == INVALID_PLAYER_ID) {
-            ImGui::Text("Match interrupted...");
+            ImGui::Text("Tie!");
         } else {
             U32 playerNumber = scoreboardComponent.m_winnerPlayerID + 1;
             ImGui::Text("Player %u wins :)", playerNumber);

@@ -32,6 +32,7 @@ struct WeaponComponent : public Component
 #endif
 
     // TODO: dps?
+    U32 m_damage;
 
     // Debug
     glm::vec2 m_origin;

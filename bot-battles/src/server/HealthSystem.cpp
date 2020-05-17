@@ -28,33 +28,121 @@ bool HealthSystem::PreUpdate()
 //----------------------------------------------------------------------------------------------------
 bool HealthSystem::Update()
 {
-    // TODO: do we really need this system with insta kill?
     GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
     std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
     if (currentState.expired()) {
         return true;
     }
 
-    for (auto& entity : m_entities) {
-        std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(entity);
-        if (!healthComponent.lock()->m_isDead && healthComponent.lock()->m_health <= 0) {
-            healthComponent.lock()->m_isDead = true;
+    EventComponent& eventComponent = g_game->GetEventComponent();
+    if (eventComponent.m_keyboard.at(SDL_SCANCODE_LSHIFT) == EventComponent::KeyState::REPEAT
+        && eventComponent.m_keyboard.at(SDL_SCANCODE_W) == EventComponent::KeyState::DOWN) {
+        for (auto& entity : m_entities) {
+            std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(entity);
+            if (healthComponent.expired() || !healthComponent.lock()->m_isEnabled) {
+                continue;
+            }
+
             healthComponent.lock()->m_health = 0;
+        }
 
-            std::weak_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().GetComponent<SpriteComponent>(entity);
-            spriteComponent.lock()->m_isEnabled = false;
+        for (auto& entity : m_entities) {
+            std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(entity);
+            if (healthComponent.expired() || !healthComponent.lock()->m_isEnabled) {
+                continue;
+            }
 
-            Event newEvent;
-            newEvent.eventType = EventType::HEALTH_EMPTIED;
-            newEvent.component.entity = entity;
-            NotifyEvent(newEvent);
-
-            newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
-            newEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::HEALTH_HEALTH) | static_cast<U32>(ComponentMemberType::HEALTH_DEAD) | static_cast<U32>(ComponentMemberType::SPRITE_ENABLED);
-            NotifyEvent(newEvent);
+            Event newHealthEvent;
+            newHealthEvent.eventType = EventType::HEALTH_EMPTIED;
+            newHealthEvent.health.entity = entity;
+            NotifyEvent(newHealthEvent);
         }
     }
 
     return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+void HealthSystem::OnNotify(const Event& event)
+{
+    switch (event.eventType) {
+
+    case EventType::COLLISION_ENTER: {
+        OnCollisionEnter(event.collision.entityA, event.collision.entityB, event.collision.normal);
+        break;
+    }
+
+    case EventType::WEAPON_HIT: {
+        OnWeaponHit(event.weapon.entity, event.weapon.damage);
+        break;
+    }
+
+    default: {
+        break;
+    }
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
+void HealthSystem::OnCollisionEnter(Entity entityA, Entity entityB, glm::vec2 /*normal*/) const
+{
+    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
+    PlayerID playerIDA = serverComponent.GetPlayerID(entityA);
+    PlayerID playerIDB = serverComponent.GetPlayerID(entityB);
+    if (playerIDA >= INVALID_PLAYER_ID || playerIDB >= INVALID_PLAYER_ID) {
+        return;
+    }
+
+    std::weak_ptr<HealthComponent> healthComponentA = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(entityA);
+    std::weak_ptr<HealthComponent> healthComponentB = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(entityB);
+    if (healthComponentA.expired() || healthComponentB.expired()) {
+        return;
+    }
+    if (!healthComponentA.lock()->m_isEnabled || !healthComponentB.lock()->m_isEnabled) {
+        return;
+    }
+
+    healthComponentA.lock()->m_health = 0;
+    healthComponentB.lock()->m_health = 0;
+
+    Event newHealthEvent;
+    newHealthEvent.eventType = EventType::HEALTH_EMPTIED;
+    newHealthEvent.health.entity = entityA;
+    NotifyEvent(newHealthEvent);
+    newHealthEvent.health.entity = entityB;
+    NotifyEvent(newHealthEvent);
+
+    Event newComponentEvent;
+    newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
+    newComponentEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::HEALTH_HEALTH);
+    newComponentEvent.component.entity = entityA;
+    NotifyEvent(newComponentEvent);
+    newComponentEvent.component.entity = entityB;
+    NotifyEvent(newComponentEvent);
+}
+
+//----------------------------------------------------------------------------------------------------
+void HealthSystem::OnWeaponHit(Entity entity, U32 damage) const
+{
+    std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(entity);
+    if (healthComponent.expired() || !healthComponent.lock()->m_isEnabled) {
+        return;
+    }
+
+    healthComponent.lock()->m_health -= damage;
+    if (healthComponent.lock()->m_health <= 0) {
+        healthComponent.lock()->m_health = 0;
+
+        Event newHealthEvent;
+        newHealthEvent.eventType = EventType::HEALTH_EMPTIED;
+        newHealthEvent.health.entity = entity;
+        NotifyEvent(newHealthEvent);
+    }
+
+    Event newComponentEvent;
+    newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
+    newComponentEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::HEALTH_HEALTH);
+    newComponentEvent.component.entity = entity;
+    NotifyEvent(newComponentEvent);
 }
 }

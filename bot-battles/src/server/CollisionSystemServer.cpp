@@ -25,41 +25,6 @@ CollisionSystemServer::CollisionSystemServer()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool CollisionSystemServer::Update()
-{
-    /*
-    GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
-    std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
-    if (currentState.expired()) {
-        return true;
-    }
-
-    for (auto& entity : m_entities) {
-        std::weak_ptr<ColliderComponent> colliderComponent = g_gameServer->GetComponentManager().GetComponent<ColliderComponent>(entity);
-        std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
-
-        colliderComponent.lock()->m_position = transformComponent.lock()->m_position;
-    }
-
-    for (U32 i = 0; i < m_entities.size(); ++i) {
-        Entity entityA = m_entities.at(i);
-        std::weak_ptr<ColliderComponent> colliderComponentA = g_gameServer->GetComponentManager().GetComponent<ColliderComponent>(entityA);
-
-        for (U32 j = i; j < m_entities.size(); ++j) {
-            Entity entityB = m_entities.at(j);
-            std::weak_ptr<ColliderComponent> colliderComponentB = g_gameServer->GetComponentManager().GetComponent<ColliderComponent>(entityB);
-
-            const bool areColliding = colliderComponentA.lock()->IsColliding(*colliderComponentB.lock());
-            if (areColliding) {
-            }
-        }
-    }
-    */
-
-    return true;
-}
-
-//----------------------------------------------------------------------------------------------------
 bool CollisionSystemServer::DebugRender()
 {
     RendererComponent& rendererComponent = g_gameServer->GetRendererComponent();

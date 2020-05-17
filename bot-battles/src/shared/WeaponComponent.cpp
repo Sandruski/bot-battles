@@ -6,7 +6,8 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 WeaponComponent::WeaponComponent()
-    : m_origin(0.0f, 0.0f)
+    : m_damage(100)
+    , m_origin(0.0f, 0.0f)
     , m_destination(0.0f, 0.0f)
     , m_hasHit(false)
 {
@@ -18,6 +19,9 @@ void WeaponComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U32 /
 {
     if (dirtyState & static_cast<U32>(ComponentMemberType::WEAPON_ENABLED)) {
         inputStream.Read(m_isEnabled);
+    }
+    if (dirtyState & static_cast<U32>(ComponentMemberType::WEAPON_DAMAGE)) {
+        inputStream.Read(m_damage);
     }
     if (dirtyState & static_cast<U32>(ComponentMemberType::WEAPON_ORIGIN)) {
         inputStream.Read(m_origin);
@@ -38,6 +42,10 @@ U32 WeaponComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) con
     if (dirtyState & static_cast<U32>(ComponentMemberType::WEAPON_ENABLED)) {
         outputStream.Write(m_isEnabled);
         writtenState |= static_cast<U32>(ComponentMemberType::WEAPON_ENABLED);
+    }
+    if (dirtyState & static_cast<U32>(ComponentMemberType::WEAPON_DAMAGE)) {
+        outputStream.Write(m_damage);
+        writtenState |= static_cast<U32>(ComponentMemberType::WEAPON_DAMAGE);
     }
     if (dirtyState & static_cast<U32>(ComponentMemberType::WEAPON_ORIGIN)) {
         outputStream.Write(m_origin);

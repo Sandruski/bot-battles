@@ -5,27 +5,28 @@ namespace sand {
 
 enum class EventType {
 
+    // ENGINE
+    // Non-networking
     ENTITY_ADDED,
     ENTITY_REMOVED,
     ENTITY_SIGNATURE_CHANGED,
 
-    NETWORK_ENTITY_ADDED,
-    NETWORK_ENTITY_REMOVED,
-
     COMPONENT_ADDED,
     COMPONENT_REMOVED,
     COMPONENT_MEMBER_CHANGED,
+
+    COLLISION_ENTER,
+    COLLISION_EXIT,
+
+    // Networking
+    NETWORK_ENTITY_ADDED,
+    NETWORK_ENTITY_REMOVED,
 
     PLAYER_ADDED,
     PLAYER_READDED,
     PLAYER_REMOVED,
 
     PLAYER_ENTITY_ADDED,
-
-    HEALTH_EMPTIED,
-
-    COLLISION_ENTER,
-    COLLISION_EXIT,
 
     CONNECT_SOCKETS,
     SOCKETS_CONNECTED,
@@ -58,6 +59,13 @@ enum class EventType {
 #endif
 
     SEND_BYE,
+
+    // GAMEPLAY
+    // Weapon
+    WEAPON_HIT,
+
+    // Health
+    HEALTH_EMPTIED,
 
     COUNT
 };

@@ -17,14 +17,12 @@ public:
     std::string GetName() const override;
 
     bool Enter() const override;
-    bool Update() const override;
     bool Exit() const override;
 
     void OnNotify(const Event& event) override;
 
 private:
-    void OnHealthEmptied() const;
-    void OnPlayerRemoved() const;
+    void OnHealthEmptied(Entity entity) const;
 
     void ChangeToScoreboard() const; // OnHealthEmptied (== 1 player alive) or player disconnected
 };

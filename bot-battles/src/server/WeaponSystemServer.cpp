@@ -106,20 +106,16 @@ bool WeaponSystemServer::Update()
                         weaponComponent.lock()->m_destination = hitInfo.m_point;
                     }
 
-                    ILOG("Input %u", input.GetFrame());
-
                     if (hitInfo.m_entity != entity) {
                         std::weak_ptr<HealthComponent> hitEntityHealthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(hitInfo.m_entity);
                         if (!hitEntityHealthComponent.expired()) {
                             weaponComponent.lock()->m_hasHit = true;
 
-                            hitEntityHealthComponent.lock()->m_health -= 100;
-
                             Event newEvent;
-                            newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
-                            newEvent.component.entity = entity;
-                            newEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::HEALTH_HEALTH);
-                            NotifyEvent(newEvent);
+                            newEvent.eventType = EventType::WEAPON_HIT;
+                            newEvent.weapon.entity = entity;
+                            newEvent.weapon.damage = weaponComponent.lock()->m_damage;
+                            PushEvent(newEvent);
                         }
                     }
                 }

@@ -8,6 +8,8 @@
 
 namespace sand {
 
+// ENGINE
+// Non-networking
 struct EntityEvent {
     EventType eventType;
     Entity entity;
@@ -21,6 +23,14 @@ struct ComponentEvent {
     Entity entity;
 };
 
+struct CollisionEvent {
+    EventType eventType;
+    Entity entityA;
+    Entity entityB;
+    glm::vec2 normal;
+};
+
+// Networking
 struct NetworkingEvent {
     EventType eventType;
     PlayerID playerID;
@@ -28,11 +38,18 @@ struct NetworkingEvent {
     NetworkID networkID;
 };
 
-struct CollisionEvent {
+// GAMEPLAY
+// Weapon
+struct WeaponEvent {
     EventType eventType;
-    Entity entityA;
-    Entity entityB;
-    glm::vec2 normal;
+    Entity entity;
+    U32 damage;
+};
+
+// Health
+struct HealthEvent {
+    EventType eventType;
+    Entity entity;
 };
 
 //----------------------------------------------------------------------------------------------------
@@ -42,6 +59,8 @@ union Event {
     ComponentEvent component;
     NetworkingEvent networking;
     CollisionEvent collision;
+    WeaponEvent weapon;
+    HealthEvent health;
 };
 }
 

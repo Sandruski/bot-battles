@@ -47,13 +47,11 @@ void ContactListener::EndContact(b2Contact* contact)
     Entity entityA = *static_cast<Entity*>(bodyA->GetUserData());
     Entity entityB = *static_cast<Entity*>(bodyB->GetUserData());
 
-    //b2WorldManifold worldManifold;
-    //contact->GetWorldManifold(&worldManifold);
-    //b2Vec2 linearVelocityA = bodyA->GetLinearVelocityFromWorldPoint(worldManifold.points[0]);
-    //b2Vec2 linearVelocityB = bodyB->GetLinearVelocityFromWorldPoint(worldManifold.points[0]);
-    //b2Vec2 relativeLinearVelocity = linearVelocityA - linearVelocityB;
+    b2WorldManifold worldManifold;
+    contact->GetWorldManifold(&worldManifold);
+    glm::vec2 normal = glm::vec2(worldManifold.normal.x, worldManifold.normal.y);
 
-    g_game->GetPhysicsComponent().OnCollisionExit(entityA, entityB);
+    g_game->GetPhysicsComponent().OnCollisionExit(entityA, entityB, normal);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -152,12 +150,13 @@ void PhysicsComponent::OnCollisionEnter(Entity entityA, Entity entityB, glm::vec
 }
 
 //----------------------------------------------------------------------------------------------------
-void PhysicsComponent::OnCollisionExit(Entity entityA, Entity entityB)
+void PhysicsComponent::OnCollisionExit(Entity entityA, Entity entityB, glm::vec2 normal)
 {
     Event newEvent;
     newEvent.eventType = EventType::COLLISION_EXIT;
     newEvent.collision.entityA = entityA;
     newEvent.collision.entityB = entityB;
+    newEvent.collision.normal = normal;
     PushEvent(newEvent);
 }
 }

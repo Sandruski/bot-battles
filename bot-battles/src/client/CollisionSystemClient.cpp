@@ -25,26 +25,6 @@ CollisionSystemClient::CollisionSystemClient()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool CollisionSystemClient::Update()
-{
-    /*
-    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-    std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
-    if (currentState.expired()) {
-        return true;
-    }
-
-    for (auto& entity : m_entities) {
-        std::weak_ptr<ColliderComponent> colliderComponent = g_gameClient->GetComponentManager().GetComponent<ColliderComponent>(entity);
-        std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
-
-        colliderComponent.lock()->m_position = transformComponent.lock()->m_position;
-    }*/
-
-    return true;
-}
-
-//----------------------------------------------------------------------------------------------------
 bool CollisionSystemClient::DebugRender()
 {
     RendererComponent& rendererComponent = g_gameClient->GetRendererComponent();

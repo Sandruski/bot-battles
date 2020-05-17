@@ -55,7 +55,7 @@ struct PhysicsComponent : public Subject {
     bool Raycast(const glm::vec2& origin, const glm::vec2& destination, RaycastHit& hitInfo);
 
     void OnCollisionEnter(Entity entityA, Entity entityB, glm::vec2 normal);
-    void OnCollisionExit(Entity entityA, Entity entityB);
+    void OnCollisionExit(Entity entityA, Entity entityB, glm::vec2 normal);
 
     b2World m_world;
     ContactListener m_contactListener;

@@ -163,22 +163,20 @@ void ScriptingSystemClient::OnCollisionEnter(Entity entityA, Entity entityB, glm
         return;
     }
 
-    std::weak_ptr<WallComponent> wallComponent = g_gameClient->GetComponentManager().GetComponent<WallComponent>(entity);
-    if (wallComponent.expired()) {
-        return;
-    }
-
     PhysicsComponent::Collision collision;
     collision.m_normal = normal;
 
-    ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();
-    InputComponent& inputComponent = g_gameClient->GetInputComponent();
-    try {
-        scriptingComponent.m_mainModule.attr("onHitWall")(&inputComponent, collision);
-        scriptingComponent.m_mainModule.attr("log")();
-    } catch (const std::runtime_error& re) {
-        ELOG("%s", re.what());
-        return;
+    std::weak_ptr<WallComponent> wallComponent = g_gameClient->GetComponentManager().GetComponent<WallComponent>(entity);
+    if (!wallComponent.expired()) {
+        ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();
+        InputComponent& inputComponent = g_gameClient->GetInputComponent();
+        try {
+            scriptingComponent.m_mainModule.attr("onHitWall")(&inputComponent, collision);
+            scriptingComponent.m_mainModule.attr("log")();
+        } catch (const std::runtime_error& re) {
+            ELOG("%s", re.what());
+            return;
+        }
     }
 }
 }

@@ -7,7 +7,6 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 HealthComponent::HealthComponent()
     : m_health(0)
-    , m_isDead(false)
 {
 }
 
@@ -20,9 +19,6 @@ void HealthComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U32 /
     }
     if (dirtyState & static_cast<U32>(ComponentMemberType::HEALTH_HEALTH)) {
         inputStream.Read(m_health);
-    }
-    if (dirtyState & static_cast<U32>(ComponentMemberType::HEALTH_DEAD)) {
-        inputStream.Read(m_isDead);
     }
 }
 #elif defined(_SERVER)
@@ -39,12 +35,14 @@ U32 HealthComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) con
         outputStream.Write(m_health);
         writtenState |= static_cast<U32>(ComponentMemberType::HEALTH_HEALTH);
     }
-    if (dirtyState & static_cast<U32>(ComponentMemberType::HEALTH_DEAD)) {
-        outputStream.Write(m_isDead);
-        writtenState |= static_cast<U32>(ComponentMemberType::HEALTH_DEAD);
-    }
 
     return writtenState;
 }
 #endif
+
+//----------------------------------------------------------------------------------------------------
+bool HealthComponent::IsAlive() const
+{
+    return m_health > 0;
+}
 }
