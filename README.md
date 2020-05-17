@@ -18,6 +18,7 @@ Have fun!
 - O: toggle Log output
 - Esc: toggle Settings menu
 - F1: toggle Debug Options menu
+- Left Shift + W: force end match
 
 # Versions
 ## Vertical Slice

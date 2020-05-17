@@ -2,6 +2,7 @@
 
 #include "ComponentManager.h"
 #include "ConfigServer.h"
+#include "EventComponent.h"
 #include "GameServer.h"
 #include "HealthComponent.h"
 
@@ -21,6 +22,18 @@ bool PlayStateServer::Enter() const
     Event newEvent;
     newEvent.eventType = EventType::SEND_PLAY;
     g_gameServer->GetFSM().NotifyEvent(newEvent);
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool PlayStateServer::Update() const
+{
+    EventComponent& eventComponent = g_game->GetEventComponent();
+    if (eventComponent.m_keyboard.at(SDL_SCANCODE_LSHIFT) == EventComponent::KeyState::REPEAT
+        && eventComponent.m_keyboard.at(SDL_SCANCODE_W) == EventComponent::KeyState::DOWN) {
+        OnPlayerRemoved();
+    }
 
     return true;
 }

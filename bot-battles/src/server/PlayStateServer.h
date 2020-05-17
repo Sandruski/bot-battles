@@ -17,6 +17,7 @@ public:
     std::string GetName() const override;
 
     bool Enter() const override;
+    bool Update() const override;
     bool Exit() const override;
 
     void OnNotify(const Event& event) override;

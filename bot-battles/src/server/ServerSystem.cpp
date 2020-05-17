@@ -187,6 +187,8 @@ void ServerSystem::ReceiveIncomingPackets(ServerComponent& serverComponent)
                             ConnectionReset(serverComponent, TCPSock->GetRemoteSocketAddress());
                         } else if (readByteCount == -WSAEWOULDBLOCK) {
                             continue;
+                        } else {
+                            assert(false);
                         }
                     }
                 }
