@@ -46,7 +46,6 @@ bool PlayStateClient::RenderGui() const
     ImGuiWindowFlags windowFlags = 0;
     windowFlags |= ImGuiWindowFlags_NoResize;
     windowFlags |= ImGuiWindowFlags_NoMove;
-    windowFlags |= ImGuiWindowFlags_NoScrollbar;
     windowFlags |= ImGuiWindowFlags_NoCollapse;
     windowFlags |= ImGuiWindowFlags_NoSavedSettings;
 

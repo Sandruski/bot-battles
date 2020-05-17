@@ -13,9 +13,6 @@ GameplayComponent::GameplayComponent()
     , m_isLog(true)
 #endif
 {
-#ifdef _CLIENT
-    m_lineOffsets.push_back(0);
-#endif
 }
 
 #ifdef _CLIENT
@@ -23,6 +20,8 @@ GameplayComponent::GameplayComponent()
 void GameplayComponent::AddLog(const char* log)
 {
     I32 oldSize = m_buf.size();
+    m_lineOffsets.push_back(oldSize + 1);
+
     m_buf.appendf(log);
     for (int newSize = m_buf.size(); oldSize < newSize; ++oldSize) {
         if (m_buf[oldSize] == '\n') {
@@ -36,7 +35,6 @@ void GameplayComponent::ClearLogs()
 {
     m_buf.clear();
     m_lineOffsets.clear();
-    m_lineOffsets.push_back(0);
 }
 #endif
 }

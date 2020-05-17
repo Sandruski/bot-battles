@@ -40,7 +40,7 @@ def onHitWall(input, collisionEvent):
 
 def log():
     content = stream.getvalue()
-    for line in content.splitlines(True):
+    for line in content.splitlines(False):
         botbattles.log(line)
     stream.seek(0)
     stream.truncate(0)

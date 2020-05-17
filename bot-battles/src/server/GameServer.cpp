@@ -118,6 +118,10 @@ bool GameServer::Init()
         return ret;
     }
     std::weak_ptr<HealthSystem> healthSystem = m_systemManager->GetSystem<HealthSystem>();
+    ret = weaponSystemServer.lock()->AddObserver(healthSystem);
+    if (!ret) {
+        return ret;
+    }
     ret = healthSystem.lock()->AddObserver(serverSystem);
     if (!ret) {
         return ret;
