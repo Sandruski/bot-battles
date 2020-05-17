@@ -37,6 +37,14 @@ bool StartStateServer::RenderGui() const
     ImGui::SetNextWindowSize(size, ImGuiCond_Always);
 
     if (ImGui::Begin(GetName().c_str(), nullptr, windowFlags)) {
+        ServerComponent& serverComponent = g_gameServer->GetServerComponent();
+        const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.GetPlayerIDToClientProxyMap();
+        for (const auto& pair : playerIDToClientProxy) {
+            PlayerID playerID = pair.first;
+            U32 playerNumber = playerID + 1;
+            ImGui::Text("Player %u", playerNumber);
+        }
+
         const char* mainMenu = "Main menu";
         ImVec2 mainMenuTextSize = ImGui::CalcTextSize(mainMenu);
         ImVec2 framePadding = ImGui::GetStyle().FramePadding;

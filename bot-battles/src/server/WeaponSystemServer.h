@@ -21,8 +21,8 @@ public:
     bool Render() override;
 
 private:
-    void Rewind(Entity localEntity, U32 from, U32 to, F32 percentage);
-    void Revert(Entity localEntity);
+    void Rewind(Entity localEntity, U32 from, U32 to, F32 percentage) const;
+    void Revert(Entity localEntity) const;
 };
 }
 

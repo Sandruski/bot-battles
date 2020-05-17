@@ -7,7 +7,7 @@ GameplayComponent::GameplayComponent()
     : m_fsm()
 #ifdef _CLIENT
     , m_mainMenuTimer()
-    , m_mainMenuTimeout(30.0f)
+    , m_mainMenuTimeout(60.0f)
     , m_buf()
     , m_lineOffsets()
     , m_isLog(true)

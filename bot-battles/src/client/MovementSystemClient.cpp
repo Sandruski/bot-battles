@@ -81,7 +81,7 @@ bool MovementSystemClient::Update()
                     transformComponent.lock()->m_position = glm::vec2(METERS_TO_PIXELS(physicsPosition.x), METERS_TO_PIXELS(physicsPosition.y));
                     float32 physicsRotation = rigidbodyComponent.lock()->m_body->GetAngle();
                     transformComponent.lock()->m_rotation = glm::degrees(physicsRotation);
-                    ILOG("Client position at frame %u is %f %f with velocity %f %f", input.GetFrame(), transformComponent.lock()->m_position.x, transformComponent.lock()->m_position.y, inputComponent.m_linearVelocity.x, inputComponent.m_linearVelocity.y);
+                    ILOG("Client position at frame %u is %f %f rot %f", input.GetFrame(), transformComponent.lock()->m_position.x, transformComponent.lock()->m_position.y, transformComponent.lock()->m_rotation);
 
                     rigidbodyComponent.lock()->m_body->SetActive(false);
                 }

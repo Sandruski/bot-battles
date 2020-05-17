@@ -122,7 +122,7 @@ bool MovementSystemServer::Update()
                     transformComponent.lock()->m_position = glm::vec2(METERS_TO_PIXELS(physicsPosition.x), METERS_TO_PIXELS(physicsPosition.y));
                     float32 physicsRotation = rigidbodyComponent.lock()->m_body->GetAngle();
                     transformComponent.lock()->m_rotation = glm::degrees(physicsRotation);
-                    ILOG("Server position at frame %u is %f %f with velocity %f %f", input.GetFrame(), transformComponent.lock()->m_position.x, transformComponent.lock()->m_position.y, input.GetInputComponent().m_linearVelocity.x, input.GetInputComponent().m_linearVelocity.y);
+                    ILOG("Server position at frame %u is %f %f rotation %f", input.GetFrame(), transformComponent.lock()->m_position.x, transformComponent.lock()->m_position.y, transformComponent.lock()->m_rotation);
 
                     Event newEvent;
                     newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;

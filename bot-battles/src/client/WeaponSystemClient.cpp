@@ -64,8 +64,7 @@ bool WeaponSystemClient::Update()
                 glm::vec2 rotation = transformComponent.lock()->GetRotationVector();
 
                 weaponComponent.lock()->m_origin = position;
-                ILOG("Origin: %f %f Rotation: %f", position.x, position.y, rotation);
-
+                ILOG("Origin: %f %f Rotation: %f", position.x, position.y, transformComponent.lock()->m_rotation);
                 WindowComponent& windowComponent = g_gameClient->GetWindowComponent();
                 F32 maxLength = static_cast<F32>(std::max(windowComponent.m_currentResolution.x, windowComponent.m_currentResolution.y));
                 weaponComponent.lock()->m_destination = position + rotation * maxLength;
@@ -78,7 +77,7 @@ bool WeaponSystemClient::Update()
                     std::weak_ptr<TransformComponent> hitEntityTransformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(hitInfo.m_entity);
                     if (!hitEntityTransformComponent.expired()) {
                         weaponComponent.lock()->m_destination = hitInfo.m_point;
-                        ILOG("CLIENT POS %f %f", hitEntityTransformComponent.lock()->m_position.x, hitEntityTransformComponent.lock()->m_position.y);
+                        ILOG("CLIENT POS %f %f ROT %f", hitEntityTransformComponent.lock()->m_position.x, hitEntityTransformComponent.lock()->m_position.y, hitEntityTransformComponent.lock()->m_rotation);
                     }
 
                     ILOG("Input %u", input.GetFrame());
