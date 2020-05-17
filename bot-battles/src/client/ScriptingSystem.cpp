@@ -93,7 +93,7 @@ void ScriptingSystemClient::OnNotify(const Event& event)
     }
 
     case EventType::COLLISION_ENTER: {
-        OnCollisionEnter(event.collision.entityA, event.collision.entityB, event.collision.normal);
+        OnCollisionEnter(event.collision.entityA, event.collision.entityB, event.collision.linearVelocityA, event.collision.linearVelocityB, event.collision.normal);
         break;
     }
 
@@ -149,7 +149,7 @@ void ScriptingSystemClient::InitScripts() const
 }
 
 //----------------------------------------------------------------------------------------------------
-void ScriptingSystemClient::OnCollisionEnter(Entity entityA, Entity entityB, glm::vec2 normal) const
+void ScriptingSystemClient::OnCollisionEnter(Entity entityA, Entity entityB, glm::vec2 linearVelocityA, glm::vec2 linearVelocityB, glm::vec2 normal) const
 {
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     Entity entity = INVALID_ENTITY;
@@ -165,6 +165,11 @@ void ScriptingSystemClient::OnCollisionEnter(Entity entityA, Entity entityB, glm
 
     PhysicsComponent::Collision collision;
     collision.m_normal = normal;
+    if (entity == entityA) {
+        collision.m_relativeVelocity = linearVelocityA - linearVelocityB;
+    } else if (entity == entityB) {
+        collision.m_relativeVelocity = linearVelocityB - linearVelocityA;
+    }
 
     std::weak_ptr<WallComponent> wallComponent = g_gameClient->GetComponentManager().GetComponent<WallComponent>(entity);
     if (!wallComponent.expired()) {

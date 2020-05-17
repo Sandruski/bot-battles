@@ -34,9 +34,13 @@ void ContactListener::BeginContact(b2Contact* contact)
 
     b2WorldManifold worldManifold;
     contact->GetWorldManifold(&worldManifold);
+    b2Vec2 physicsLinearVelocityA = bodyA->GetLinearVelocityFromWorldPoint(worldManifold.points[0]);
+    b2Vec2 physicsLinearVelocityB = bodyB->GetLinearVelocityFromWorldPoint(worldManifold.points[0]);
+    glm::vec2 linearVelocityA = glm::vec2(METERS_TO_PIXELS(physicsLinearVelocityA.x), METERS_TO_PIXELS(physicsLinearVelocityA.y));
+    glm::vec2 linearVelocityB = glm::vec2(METERS_TO_PIXELS(physicsLinearVelocityB.x), METERS_TO_PIXELS(physicsLinearVelocityB.y));
     glm::vec2 normal = glm::vec2(worldManifold.normal.x, worldManifold.normal.y);
 
-    g_game->GetPhysicsComponent().OnCollisionEnter(entityA, entityB, normal);
+    g_game->GetPhysicsComponent().OnCollisionEnter(entityA, entityB, linearVelocityA, linearVelocityB, normal);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -49,9 +53,13 @@ void ContactListener::EndContact(b2Contact* contact)
 
     b2WorldManifold worldManifold;
     contact->GetWorldManifold(&worldManifold);
+    b2Vec2 physicsLinearVelocityA = bodyA->GetLinearVelocityFromWorldPoint(worldManifold.points[0]);
+    b2Vec2 physicsLinearVelocityB = bodyB->GetLinearVelocityFromWorldPoint(worldManifold.points[0]);
+    glm::vec2 linearVelocityA = glm::vec2(METERS_TO_PIXELS(physicsLinearVelocityA.x), METERS_TO_PIXELS(physicsLinearVelocityA.y));
+    glm::vec2 linearVelocityB = glm::vec2(METERS_TO_PIXELS(physicsLinearVelocityB.x), METERS_TO_PIXELS(physicsLinearVelocityB.y));
     glm::vec2 normal = glm::vec2(worldManifold.normal.x, worldManifold.normal.y);
 
-    g_game->GetPhysicsComponent().OnCollisionExit(entityA, entityB, normal);
+    g_game->GetPhysicsComponent().OnCollisionExit(entityA, entityB, linearVelocityA, linearVelocityB, normal);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -78,6 +86,18 @@ F32 PhysicsComponent::Collision::GetNormalX() const
 F32 PhysicsComponent::Collision::GetNormalY() const
 {
     return m_normal.y;
+}
+
+//----------------------------------------------------------------------------------------------------
+F32 PhysicsComponent::Collision::GetRelativeVelocityX() const
+{
+    return m_relativeVelocity.x;
+}
+
+//----------------------------------------------------------------------------------------------------
+F32 PhysicsComponent::Collision::GetRelativeVelocityY() const
+{
+    return m_relativeVelocity.y;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -139,23 +159,27 @@ bool PhysicsComponent::Raycast(const glm::vec2& origin, const glm::vec2& destina
 }
 
 //----------------------------------------------------------------------------------------------------
-void PhysicsComponent::OnCollisionEnter(Entity entityA, Entity entityB, glm::vec2 normal)
+void PhysicsComponent::OnCollisionEnter(Entity entityA, Entity entityB, glm::vec2 linearVelocityA, glm::vec2 linearVelocityB, glm::vec2 normal)
 {
     Event newEvent;
     newEvent.eventType = EventType::COLLISION_ENTER;
     newEvent.collision.entityA = entityA;
     newEvent.collision.entityB = entityB;
+    newEvent.collision.linearVelocityA = linearVelocityA;
+    newEvent.collision.linearVelocityB = linearVelocityB;
     newEvent.collision.normal = normal;
     PushEvent(newEvent);
 }
 
 //----------------------------------------------------------------------------------------------------
-void PhysicsComponent::OnCollisionExit(Entity entityA, Entity entityB, glm::vec2 normal)
+void PhysicsComponent::OnCollisionExit(Entity entityA, Entity entityB, glm::vec2 linearVelocityA, glm::vec2 linearVelocityB, glm::vec2 normal)
 {
     Event newEvent;
     newEvent.eventType = EventType::COLLISION_EXIT;
     newEvent.collision.entityA = entityA;
     newEvent.collision.entityB = entityB;
+    newEvent.collision.linearVelocityA = linearVelocityA;
+    newEvent.collision.linearVelocityB = linearVelocityB;
     newEvent.collision.normal = normal;
     PushEvent(newEvent);
 }
