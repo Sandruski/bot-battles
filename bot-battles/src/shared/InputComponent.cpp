@@ -44,10 +44,7 @@ void InputComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U32 /*
 //----------------------------------------------------------------------------------------------------
 void InputComponent::Reset()
 {
-    m_linearVelocity = glm::vec2(0.0f, 0.0f);
-    m_angularVelocity = 0.0f;
-
-    m_dirtyState = 0;
+    m_dirtyState &= ~static_cast<U32>(InputComponentMemberType::INPUT_SHOOTING);
 }
 
 //----------------------------------------------------------------------------------------------------
