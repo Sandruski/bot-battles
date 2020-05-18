@@ -20,8 +20,6 @@ GameplayComponent::GameplayComponent()
 void GameplayComponent::AddLog(const char* log)
 {
     I32 oldSize = m_buf.size();
-    m_lineOffsets.push_back(oldSize + 1);
-
     m_buf.appendf(log);
     for (int newSize = m_buf.size(); oldSize < newSize; ++oldSize) {
         if (m_buf[oldSize] == '\n') {

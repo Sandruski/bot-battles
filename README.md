@@ -3,6 +3,13 @@
 
 The project is in the Alpha stage.
 
+# Requirements
+- Python 3.8
+
+To import the example script:
+- PyGLM
+- NumPy
+
 # Installation
 1. Go to the Releases section of the repository.
 2. Download any release of the game.
