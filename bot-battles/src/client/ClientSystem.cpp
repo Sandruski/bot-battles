@@ -26,10 +26,6 @@ bool ClientSystem::StartUp()
         return false;
     }
 
-    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    clientComponent.m_socketAddress = SocketAddress::CreateIPv4(clientComponent.m_ip.c_str(), clientComponent.m_port.c_str());
-    assert(clientComponent.m_socketAddress != nullptr);
-
     return true;
 }
 
@@ -558,6 +554,9 @@ bool ClientSystem::SendTCPPacket(const ClientComponent& clientComponent, const O
 bool ClientSystem::ConnectSockets(ClientComponent& clientComponent)
 {
     bool ret = true;
+
+    clientComponent.m_socketAddress = SocketAddress::CreateIPv4(clientComponent.m_ip.c_str(), clientComponent.m_port.c_str());
+    assert(clientComponent.m_socketAddress != nullptr);
 
     clientComponent.m_TCPSocket = TCPSocket::CreateIPv4();
     assert(clientComponent.m_TCPSocket != nullptr);

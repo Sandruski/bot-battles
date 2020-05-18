@@ -28,10 +28,6 @@ bool ServerSystem::StartUp()
         return false;
     }
 
-    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
-    serverComponent.m_socketAddress = SocketAddress::CreateIPv4(INADDR_ANY, static_cast<U16>(atoi(serverComponent.m_port.c_str())));
-    assert(serverComponent.m_socketAddress != nullptr);
-
     return true;
 }
 
@@ -623,6 +619,9 @@ bool ServerSystem::SendTCPPacket(const ServerComponent& serverComponent, const O
 bool ServerSystem::ConnectSockets(ServerComponent& serverComponent)
 {
     bool ret = true;
+
+    serverComponent.m_socketAddress = SocketAddress::CreateIPv4(INADDR_ANY, static_cast<U16>(atoi(serverComponent.m_port.c_str())));
+    assert(serverComponent.m_socketAddress != nullptr);
 
     serverComponent.m_UDPSocket = UDPSocket::CreateIPv4();
     assert(serverComponent.m_UDPSocket != nullptr);
