@@ -42,6 +42,18 @@ bool ClientSystem::PreUpdate()
 }
 
 //----------------------------------------------------------------------------------------------------
+bool ClientSystem::ShutDown()
+{
+    int iResult = WSACleanup();
+    if (iResult == SOCKET_ERROR) {
+        NETLOG("WSACleanup");
+        return false;
+    }
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
 void ClientSystem::OnNotify(const Event& event)
 {
     switch (event.eventType) {

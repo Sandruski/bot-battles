@@ -20,6 +20,7 @@ public:
 public:
     bool StartUp() override;
     bool PreUpdate() override;
+    bool ShutDown() override;
 
     void OnNotify(const Event& event) override;
 
