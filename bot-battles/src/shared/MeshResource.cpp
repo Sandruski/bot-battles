@@ -6,39 +6,46 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-const std::array<MeshResource::Vertex, 4> MeshResource::GetQuadVertices()
+const std::vector<MeshResource::Vertex> MeshResource::GetQuadVertices()
 {
-    std::array<MeshResource::Vertex, 4> vertices;
+    std::vector<MeshResource::Vertex> vertices;
+    vertices.reserve(4);
 
+    MeshResource::Vertex vertex;
     // Top-left
-    vertices[0].m_position = glm::vec2(-0.5f, 0.5f);
-    vertices[0].m_textureCoords = glm::vec2(0.0f, 1.0f);
+    vertex.m_position = glm::vec2(-0.5f, 0.5f);
+    vertex.m_textureCoords = glm::vec2(0.0f, 1.0f);
+    vertices.emplace_back(vertex);
     // Top-right
-    vertices[1].m_position = glm::vec2(0.5f, 0.5f);
-    vertices[1].m_textureCoords = glm::vec2(1.0f, 1.0f);
+    vertex.m_position = glm::vec2(0.5f, 0.5f);
+    vertex.m_textureCoords = glm::vec2(1.0f, 1.0f);
+    vertices.emplace_back(vertex);
     // Bottom-left
-    vertices[2].m_position = glm::vec2(-0.5f, -0.5f);
-    vertices[2].m_textureCoords = glm::vec2(0.0f, 0.0f);
+    vertex.m_position = glm::vec2(-0.5f, -0.5f);
+    vertex.m_textureCoords = glm::vec2(0.0f, 0.0f);
+    vertices.emplace_back(vertex);
     // Bottom-right
-    vertices[3].m_position = glm::vec2(0.5f, -0.5f);
-    vertices[3].m_textureCoords = glm::vec2(1.0f, 0.0f);
+    vertex.m_position = glm::vec2(0.5f, -0.5f);
+    vertex.m_textureCoords = glm::vec2(1.0f, 0.0f);
+    vertices.emplace_back(vertex);
 
     return vertices;
 }
 
 //----------------------------------------------------------------------------------------------------
-const std::array<U32, 6> MeshResource::GetQuadIndices()
+const std::vector<U32> MeshResource::GetQuadIndices()
 {
-    std::array<U32, 6> indices;
+    std::vector<U32> indices;
+    indices.reserve(6);
 
     // First triangle
-    indices[0] = 0;
-    indices[1] = 2;
-    indices[2] = 3;
+    indices.emplace_back(0);
+    indices.emplace_back(2);
+    indices.emplace_back(3);
     // Second triangle
-    indices[3] = 3;
-    indices[4] = 1;
-    indices[5] = 0;
+    indices.emplace_back(3);
+    indices.emplace_back(1);
+    indices.emplace_back(0);
 
     return indices;
 }
@@ -71,7 +78,7 @@ bool MeshResource::UnLoad()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool MeshResource::ForceLoad(const std::array<Vertex, 4>& vertices, const std::array<U32, 6>& indices)
+bool MeshResource::ForceLoad(const std::vector<Vertex>& vertices, const std::vector<U32>& indices)
 {
     UnLoad();
 
@@ -87,7 +94,7 @@ bool MeshResource::ForceLoad(const std::array<Vertex, 4>& vertices, const std::a
 }
 
 //----------------------------------------------------------------------------------------------------
-bool MeshResource::ReLoad(const std::array<Vertex, 4>& vertices)
+bool MeshResource::ReLoad(const std::vector<Vertex>& vertices)
 {
     assert(m_VAO > 0 && m_VBO > 0 && m_EBO > 0);
 

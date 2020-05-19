@@ -72,8 +72,8 @@ bool RendererSystem::StartUp()
     glUseProgram(rendererComponent.m_shaderResource.lock()->GetProgram());
 
     rendererComponent.m_meshResource = g_game->GetResourceManager().AddResource<MeshResource>("", "", false);
-    const std::array<MeshResource::Vertex, 4> vertices = MeshResource::GetQuadVertices();
-    const std::array<U32, 6> indices = MeshResource::GetQuadIndices();
+    const std::vector<MeshResource::Vertex> vertices = MeshResource::GetQuadVertices();
+    const std::vector<U32> indices = MeshResource::GetQuadIndices();
     rendererComponent.m_meshResource.lock()->ForceLoad(vertices, indices);
 
     return true;
@@ -116,7 +116,7 @@ bool RendererSystem::Render()
         model = glm::scale(model, scale);
 
         glm::uvec2 size = spriteComponent.lock()->m_spriteResource.lock()->GetSize();
-        std::array<MeshResource::Vertex, 4> vertices = MeshResource::GetQuadVertices();
+        std::vector<MeshResource::Vertex> vertices = MeshResource::GetQuadVertices();
         // Top-left
         vertices[0].m_textureCoords = glm::vec2(textureCoords.x / static_cast<F32>(size.x), 1.0f - textureCoords.y / static_cast<F32>(size.y));
         // Top-right

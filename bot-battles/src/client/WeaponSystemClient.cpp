@@ -151,7 +151,7 @@ bool WeaponSystemClient::Render()
 
         glm::mat4 model = glm::mat4(1.0f);
 
-        std::array<MeshResource::Vertex, 4> vertices = MeshResource::GetQuadVertices();
+        std::vector<MeshResource::Vertex> vertices = MeshResource::GetQuadVertices();
         // From
         glm::vec2 from = weaponComponent.lock()->m_origin;
         from.x *= proportion.x;

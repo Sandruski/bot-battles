@@ -1,5 +1,6 @@
 #include "SightSystemClient.h"
 
+#include "BotComponent.h"
 #include "ClientComponent.h"
 #include "ComponentManager.h"
 #include "GameClient.h"
@@ -20,7 +21,7 @@ namespace sand {
 SightSystemClient::SightSystemClient()
 {
     m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
-    //m_signature |= 1 << static_cast<U16>(ComponentType::BOT); // TODO: since all remote players are bots, do we really need this?
+    m_signature |= 1 << static_cast<U16>(ComponentType::BOT); // TODO: since all remote players are bots, do we really need this?
     m_signature |= 1 << static_cast<U16>(ComponentType::REMOTE_PLAYER);
 }
 
@@ -122,7 +123,7 @@ bool SightSystemClient::DebugRender()
         scale.y *= proportion.y;
         model = glm::scale(model, scale);
 
-        std::array<MeshResource::Vertex, 4> vertices = MeshResource::GetQuadVertices();
+        std::vector<MeshResource::Vertex> vertices = MeshResource::GetQuadVertices();
         rendererComponent.m_meshResource.lock()->ReLoad(vertices);
 
         U32 modelLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "model");
@@ -167,6 +168,13 @@ bool SightSystemClient::IsInLoS(PhysicsComponent& physicsComponent, glm::vec2 po
     glm::vec2 distanceToTarget = directionToTarget * distance;
 
     PhysicsComponent::RaycastHit raycastHit;
-    return physicsComponent.Raycast(position, distanceToTarget, raycastHit);
+    if (physicsComponent.Raycast(position, distanceToTarget, raycastHit)) {
+        std::weak_ptr<BotComponent> botComponent = g_gameClient->GetComponentManager().GetComponent<BotComponent>(raycastHit.m_entity);
+        if (!botComponent.expired()) {
+            return true;
+        }
+    }
+
+    return false;
 }
 }

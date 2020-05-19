@@ -20,22 +20,22 @@ public:
         glm::vec2 m_textureCoords;
     };
 
-    static const std::array<Vertex, 4> GetQuadVertices();
-    static const std::array<U32, 6> GetQuadIndices();
+    static const std::vector<Vertex> GetQuadVertices();
+    static const std::vector<U32> GetQuadIndices();
 
 public:
     MeshResource(U32 id, const char* dir, const char* file);
 
     bool Load() override;
     bool UnLoad() override;
-    bool ForceLoad(const std::array<Vertex, 4>& vertices, const std::array<U32, 6>& indices);
-    bool ReLoad(const std::array<Vertex, 4>& vertices);
+    bool ForceLoad(const std::vector<Vertex>& vertices, const std::vector<U32>& indices);
+    bool ReLoad(const std::vector<Vertex>& vertices);
 
     U32 GetVAO() const;
 
 private:
-    std::array<Vertex, 4> m_vertices;
-    std::array<U32, 6> m_indices;
+    std::vector<Vertex> m_vertices;
+    std::vector<U32> m_indices;
     U32 m_VAO;
     U32 m_VBO;
     U32 m_EBO;

@@ -1,5 +1,6 @@
 #include "SpawnerSystem.h"
 
+#include "BotComponent.h"
 #include "ClientProxy.h"
 #include "ColliderComponent.h"
 #include "ComponentManager.h"
@@ -142,6 +143,8 @@ Entity SpawnerSystem::Spawn(PlayerID playerID) const
     std::weak_ptr<SightComponent> sightComponent = g_gameServer->GetComponentManager().AddComponent<SightComponent>(character);
     sightComponent.lock()->m_angle = 220.0f;
     sightComponent.lock()->m_distance = 50.0f;
+
+    g_gameServer->GetComponentManager().AddComponent<BotComponent>(character);
 
     g_gameServer->GetComponentManager().AddComponent<PlayerComponent>(character);
 

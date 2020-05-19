@@ -56,7 +56,7 @@ bool CollisionSystemServer::DebugRender()
         scale.y *= proportion.y;
         model = glm::scale(model, scale);
 
-        std::array<MeshResource::Vertex, 4> vertices = MeshResource::GetQuadVertices();
+        std::vector<MeshResource::Vertex> vertices = MeshResource::GetQuadVertices();
         rendererComponent.m_meshResource.lock()->ReLoad(vertices);
 
         U32 modelLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "model");
