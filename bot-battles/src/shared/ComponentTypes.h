@@ -13,6 +13,7 @@ enum class ComponentType : U16 {
     SPAWN,
     BOT,
     WALL,
+    SIGHT,
 
 #ifdef _DRAW
     LABEL,

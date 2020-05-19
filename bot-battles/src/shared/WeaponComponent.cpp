@@ -6,7 +6,7 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 WeaponComponent::WeaponComponent()
-    : m_damage(100)
+    : m_damage(0)
     , m_origin(0.0f, 0.0f)
     , m_destination(0.0f, 0.0f)
     , m_hasHit(false)

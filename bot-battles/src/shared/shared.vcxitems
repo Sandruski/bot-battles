@@ -84,6 +84,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)ShaderImporter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ShaderResource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Shaders.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)SightComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SpawnComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SpriteResource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)RendererComponent.h" />
@@ -158,6 +159,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)ScoreboardComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ShaderImporter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ShaderResource.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)SightComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SpawnComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)StatesPanel.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TCPSocket.cpp" />

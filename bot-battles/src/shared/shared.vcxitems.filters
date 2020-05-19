@@ -396,6 +396,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)WallComponent.h">
       <Filter>Header Files\Components\Entity Components</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)SightComponent.h">
+      <Filter>Header Files\Components\Entity Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp">
@@ -591,6 +594,9 @@
       <Filter>Source Files\Components\Entity Components</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)WallComponent.cpp">
+      <Filter>Source Files\Components\Entity Components</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)SightComponent.cpp">
       <Filter>Source Files\Components\Entity Components</Filter>
     </ClCompile>
   </ItemGroup>

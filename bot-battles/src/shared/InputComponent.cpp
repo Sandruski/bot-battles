@@ -5,8 +5,8 @@
 namespace sand {
 //----------------------------------------------------------------------------------------------------
 InputComponent::InputComponent()
-    : m_maxLinearVelocity(300.0f)
-    , m_maxAngularVelocity(120.0f)
+    : m_maxLinearVelocity(100.0f)
+    , m_maxAngularVelocity(45.0f)
     , m_linearVelocity(0.0f, 0.0f)
     , m_angularVelocity(0.0f)
     , m_dirtyState(0)

@@ -32,7 +32,9 @@ PYBIND11_EMBEDDED_MODULE(botbattles, m)
     py::class_<TransformComponent, std::unique_ptr<TransformComponent, py::nodelete>>(m, "TransformComponent")
         .def_property_readonly("positionX", &TransformComponent::GetPositionX)
         .def_property_readonly("positionY", &TransformComponent::GetPositionY)
-        .def_property_readonly("rotation", &TransformComponent::GetRotation);
+        .def_property_readonly("rotation", &TransformComponent::GetRotation)
+        .def_property_readonly("directionX", &TransformComponent::GetDirectionX)
+        .def_property_readonly("directionY", &TransformComponent::GetDirectionY);
 
     py::class_<RigidbodyComponent, std::unique_ptr<RigidbodyComponent, py::nodelete>>(m, "RigidbodyComponent")
         .def_property_readonly("linearVelocityX", &RigidbodyComponent::GetLinearVelocityX)

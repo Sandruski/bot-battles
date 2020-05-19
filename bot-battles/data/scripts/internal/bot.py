@@ -8,5 +8,16 @@ class Bot:
     def tick(self, input):
         pass
 
-    def onHitWall(self, input, collisionEvent):
+    def onHitWallEnter(self, input, collisionEvent):
         pass
+
+    def onHitWallExit(self, input, collisionEvent):
+        pass
+
+    def onSeenBotEnter(self, input):
+        pass
+
+    def onSeenBotExit(self, input):
+        pass
+
+    #def onHitByBullet(self, input):

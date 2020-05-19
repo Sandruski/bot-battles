@@ -96,6 +96,21 @@ void ScriptingSystemClient::OnNotify(const Event& event)
         break;
     }
 
+    case EventType::COLLISION_EXIT: {
+        OnCollisionExit(event.collision.entityA, event.collision.entityB, event.collision.linearVelocityA, event.collision.linearVelocityB, event.collision.normal);
+        break;
+    }
+
+    case EventType::SEEN_BOT_ENTER: {
+        OnSeenBotEnter();
+        break;
+    }
+
+    case EventType::SEEN_BOT_EXIT: {
+        OnSeenBotExit();
+        break;
+    }
+
     default: {
         break;
     }
@@ -180,10 +195,69 @@ void ScriptingSystemClient::OnCollisionEnter(Entity entityA, Entity entityB, glm
         ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();
         InputComponent& inputComponent = g_gameClient->GetInputComponent();
         try {
-            scriptingComponent.m_mainModule.attr("onHitWall")(&inputComponent, collision);
+            scriptingComponent.m_mainModule.attr("onHitWallEnter")(&inputComponent, collision);
             scriptingComponent.m_mainModule.attr("log")();
         } catch (const std::runtime_error& /*re*/) {
         }
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
+void ScriptingSystemClient::OnCollisionExit(Entity entityA, Entity entityB, glm::vec2 linearVelocityA, glm::vec2 linearVelocityB, glm::vec2 normal) const
+{
+    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    Entity entity = INVALID_ENTITY;
+    if (entityA == clientComponent.m_entity) {
+        entity = entityB;
+    } else if (entityB == clientComponent.m_entity) {
+        entity = entityA;
+    }
+
+    if (entity >= INVALID_ENTITY) {
+        return;
+    }
+
+    PhysicsComponent::Collision collision;
+    collision.m_normal = normal;
+    if (entity == entityA) {
+        collision.m_relativeVelocity = linearVelocityA - linearVelocityB;
+    } else if (entity == entityB) {
+        collision.m_relativeVelocity = linearVelocityB - linearVelocityA;
+    }
+
+    std::weak_ptr<WallComponent> wallComponent = g_gameClient->GetComponentManager().GetComponent<WallComponent>(entity);
+    if (!wallComponent.expired()) {
+        ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();
+        InputComponent& inputComponent = g_gameClient->GetInputComponent();
+        try {
+            scriptingComponent.m_mainModule.attr("onHitWallExit")(&inputComponent, collision);
+            scriptingComponent.m_mainModule.attr("log")();
+        } catch (const std::runtime_error& /*re*/) {
+        }
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
+void ScriptingSystemClient::OnSeenBotEnter() const
+{
+    ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();
+    InputComponent& inputComponent = g_gameClient->GetInputComponent();
+    try {
+        scriptingComponent.m_mainModule.attr("onSeenBotEnter")(&inputComponent);
+        scriptingComponent.m_mainModule.attr("log")();
+    } catch (const std::runtime_error& /*re*/) {
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
+void ScriptingSystemClient::OnSeenBotExit() const
+{
+    ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();
+    InputComponent& inputComponent = g_gameClient->GetInputComponent();
+    try {
+        scriptingComponent.m_mainModule.attr("onSeenBotExit")(&inputComponent);
+        scriptingComponent.m_mainModule.attr("log")();
+    } catch (const std::runtime_error& /*re*/) {
     }
 }
 }

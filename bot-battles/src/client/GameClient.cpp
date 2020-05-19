@@ -15,6 +15,7 @@
 #include "RemotePlayerMovementSystem.h"
 #include "ScoreboardStateClient.h"
 #include "ScriptingSystem.h"
+#include "SightSystemClient.h"
 #include "SystemManager.h"
 #include "WeaponSystemClient.h"
 
@@ -67,6 +68,10 @@ bool GameClient::Init()
     if (!ret) {
         return ret;
     }
+    ret = m_systemManager->RegisterSystem<SightSystemClient>();
+    if (!ret) {
+        return ret;
+    }
 
     // Components
     ret = m_componentManager->RegisterComponent<LocalPlayerComponent>();
@@ -115,6 +120,11 @@ bool GameClient::Init()
         return ret;
     }
     ret = m_physicsComponent.AddObserver(scriptingSystem);
+    if (!ret) {
+        return ret;
+    }
+    std::weak_ptr<SightSystemClient> sightSystem = m_systemManager->GetSystem<SightSystemClient>();
+    ret = sightSystem.lock()->AddObserver(scriptingSystem);
     if (!ret) {
         return ret;
     }

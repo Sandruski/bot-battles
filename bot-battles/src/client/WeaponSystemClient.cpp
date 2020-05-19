@@ -63,7 +63,7 @@ bool WeaponSystemClient::Update()
             const bool hasShooting = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_SHOOTING);
             if (hasShooting) {
                 glm::vec2 position = transformComponent.lock()->m_position;
-                glm::vec2 rotation = transformComponent.lock()->GetRotationVector();
+                glm::vec2 rotation = transformComponent.lock()->GetDirection();
 
                 weaponComponent.lock()->m_origin = position;
                 ILOG("Origin: %f %f Rotation: %f", position.x, position.y, transformComponent.lock()->m_rotation);

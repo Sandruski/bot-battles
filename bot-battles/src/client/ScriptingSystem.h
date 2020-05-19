@@ -32,6 +32,9 @@ private:
     void InitScripts() const;
 
     void OnCollisionEnter(Entity entityA, Entity entityB, glm::vec2 linearVelocityA, glm::vec2 linearVelocityB, glm::vec2 normal) const;
+    void OnCollisionExit(Entity entityA, Entity entityB, glm::vec2 linearVelocityA, glm::vec2 linearVelocityB, glm::vec2 normal) const;
+    void OnSeenBotEnter() const;
+    void OnSeenBotExit() const;
 };
 }
 

@@ -1,4 +1,9 @@
--Create Location struct and Bot struct for scripting purposes.
+-Sight.
+-OnCollisionExit.
+-Bots die in more than one shot.
+-Ammo on floor and pick up ammo.
+
+-Create Location struct (for a tile) and Bot struct (for an enemy bot object?) for scripting purposes.
 -Pathfinding stuff, mapping Location from world to map positions.
 -Send onCollision Entity struct to scripting. E.g. if it is a wall, the properties. If it is an entity, the position.
 

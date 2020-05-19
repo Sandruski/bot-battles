@@ -67,6 +67,10 @@ enum class EventType {
     // Health
     HEALTH_EMPTIED,
 
+    // Sight
+    SEEN_BOT_ENTER,
+    SEEN_BOT_EXIT,
+
     COUNT
 };
 }

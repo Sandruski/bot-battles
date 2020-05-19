@@ -54,6 +54,11 @@ struct HealthEvent {
     Entity entity;
 };
 
+// Sight
+struct SightEvent {
+    EventType eventType;
+};
+
 //----------------------------------------------------------------------------------------------------
 union Event {
     EventType eventType;
@@ -63,6 +68,7 @@ union Event {
     CollisionEvent collision;
     WeaponEvent weapon;
     HealthEvent health;
+    SightEvent sight;
 };
 }
 

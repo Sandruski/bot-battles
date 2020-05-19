@@ -37,12 +37,14 @@ struct TransformComponent : public Component
 
     glm::vec3 GetPositionAndLayer() const;
     glm::vec3 GetDebugPositionAndLayer() const;
-    glm::vec2 GetRotationVector() const;
+    glm::vec2 GetDirection() const;
 
     // Bot
     F32 GetPositionX() const;
     F32 GetPositionY() const;
     F32 GetRotation() const;
+    F32 GetDirectionX() const;
+    F32 GetDirectionY() const;
 
     // Networked
     glm::vec2 m_position;

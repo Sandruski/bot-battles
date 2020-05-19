@@ -13,6 +13,7 @@
 #include "ResourceManager.h"
 #include "RigidbodyComponent.h"
 #include "ServerComponent.h"
+#include "SightComponent.h"
 #include "SpawnComponent.h"
 #include "SpriteComponent.h"
 #include "SpriteResource.h"
@@ -132,10 +133,15 @@ Entity SpawnerSystem::Spawn(PlayerID playerID) const
     rigidbodyComponent.lock()->m_isBullet = true;
     rigidbodyComponent.lock()->UpdateBullet();
 
-    g_gameServer->GetComponentManager().AddComponent<WeaponComponent>(character);
+    std::weak_ptr<WeaponComponent> weaponComponent = g_gameServer->GetComponentManager().AddComponent<WeaponComponent>(character);
+    weaponComponent.lock()->m_damage = 20;
 
     std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().AddComponent<HealthComponent>(character);
     healthComponent.lock()->m_health = 100;
+
+    std::weak_ptr<SightComponent> sightComponent = g_gameServer->GetComponentManager().AddComponent<SightComponent>(character);
+    sightComponent.lock()->m_angle = 220.0f;
+    sightComponent.lock()->m_distance = 50.0f;
 
     g_gameServer->GetComponentManager().AddComponent<PlayerComponent>(character);
 

@@ -11,14 +11,23 @@ class MyBot(bot.Bot):
 
     def tick(self, input):
         if self.wallHit == False:
-            input.linearVelocityX = 50
-            input.linearVelocityY = 50
-        input.angularVelocity = 45
-        input.shoot()
+            input.linearVelocityX = input.maxLinearVelocity
+            input.linearVelocityY = input.maxLinearVelocity
+        input.angularVelocity = input.maxAngularVelocity
+        #input.shoot()
     
-    def onHitWall(self, input, collisionEvent):
+    def onHitWallEnter(self, input, collisionEvent):
         self.wallHit = True
-        reflectionDirection = glm.reflect(glm.vec2(-collisionEvent.relativeVelocityX, -collisionEvent.relativeVelocityY), glm.vec2(collisionEvent.normalX, collisionEvent.normalY))
-        input.linearVelocityX = reflectionDirection.x
-        input.linearVelocityY = reflectionDirection.y
-        logging.info('Wall hit!')
+        reflectionVector = glm.reflect(glm.vec2(-collisionEvent.relativeVelocityX, -collisionEvent.relativeVelocityY), glm.vec2(collisionEvent.normalX, collisionEvent.normalY))
+        input.linearVelocityX = reflectionVector.x
+        input.linearVelocityY = reflectionVector.y
+        logging.info('Wall hit enter')
+
+    def onHitWallExit(self, input, collisionEvent):
+        logging.info('Wall hit exit')
+
+    def onSeenBotEnter(self, input):
+        logging.info('Bot seen enter')
+
+    def onSeenBotExit(self, input):
+        logging.info('Bot seen exit')

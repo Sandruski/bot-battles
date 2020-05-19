@@ -12,6 +12,7 @@
 #include "LinkingContext.h"
 #include "PhysicsSystem.h"
 #include "RigidbodyComponent.h"
+#include "SightComponent.h"
 #include "SpawnComponent.h"
 #include "SystemManager.h"
 #include "TransformComponent.h"
@@ -136,6 +137,10 @@ bool Game::Init()
         return ret;
     }
     ret = m_componentManager->RegisterComponent<WallComponent>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_componentManager->RegisterComponent<SightComponent>();
     if (!ret) {
         return ret;
     }

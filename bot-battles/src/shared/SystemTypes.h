@@ -22,6 +22,7 @@ enum class SystemType : U16 {
     //
     MOVEMENT,
     WEAPON,
+    SIGHT,
     //
 
     COLLISION, // TODO

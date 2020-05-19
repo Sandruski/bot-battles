@@ -27,7 +27,7 @@ glm::vec3 TransformComponent::GetDebugPositionAndLayer() const
 }
 
 //----------------------------------------------------------------------------------------------------
-glm::vec2 TransformComponent::GetRotationVector() const
+glm::vec2 TransformComponent::GetDirection() const
 {
     F32 x = std::cos(glm::radians(m_rotation));
     F32 y = std::sin(glm::radians(m_rotation));
@@ -51,5 +51,17 @@ F32 TransformComponent::GetPositionY() const
 F32 TransformComponent::GetRotation() const
 {
     return m_rotation;
+}
+
+//----------------------------------------------------------------------------------------------------
+F32 TransformComponent::GetDirectionX() const
+{
+    return GetDirection().x;
+}
+
+//----------------------------------------------------------------------------------------------------
+F32 TransformComponent::GetDirectionY() const
+{
+    return GetDirection().y;
 }
 }
