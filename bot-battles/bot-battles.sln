@@ -35,6 +35,32 @@ Project("{911E67C6-3D85-4FCE-B560-20A9C3E3FF48}") = "clientRelease32", "Win32\Re
 		AttachLaunchAction = No
 	EndProjectSection
 EndProject
+Project("{911E67C6-3D85-4FCE-B560-20A9C3E3FF48}") = "clientRelease64", "x64\Release\clientRelease64.exe", "{35FB6D83-6A27-447E-90B0-615A3027DE15}"
+	ProjectSection(DebuggerProjectSystem) = preProject
+		PortSupplier = 00000000-0000-0000-0000-000000000000
+		Executable = C:\Projects\bot-battles\bot-battles\x64\Release\client.exe
+		RemoteMachine = DESKTOP-4UN85KP
+		StartingDirectory = C:\Projects\bot-battles\bot-battles\bin\bin64
+		Environment = Default
+		LaunchingEngine = 00000000-0000-0000-0000-000000000000
+		UseLegacyDebugEngines = No
+		LaunchSQLEngine = No
+		AttachLaunchAction = No
+	EndProjectSection
+EndProject
+Project("{911E67C6-3D85-4FCE-B560-20A9C3E3FF48}") = "clientDebug64", "x64\Debug\clientDebug64.exe", "{D542F605-A600-46CD-8E68-1A2AF755CC89}"
+	ProjectSection(DebuggerProjectSystem) = preProject
+		PortSupplier = 00000000-0000-0000-0000-000000000000
+		Executable = C:\Projects\bot-battles\bot-battles\x64\Debug\client.exe
+		RemoteMachine = DESKTOP-4UN85KP
+		StartingDirectory = C:\Projects\bot-battles\bot-battles\bin\bin64
+		Environment = Default
+		LaunchingEngine = 00000000-0000-0000-0000-000000000000
+		UseLegacyDebugEngines = No
+		LaunchSQLEngine = No
+		AttachLaunchAction = No
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\shared\shared.vcxitems*{3226a0ae-857c-4ee5-b27b-5219157789cc}*SharedItemsImports = 4
@@ -72,6 +98,14 @@ Global
 		{87091BE7-2245-447E-A9BA-CB5CE7124A90}.Debug|x86.ActiveCfg = Release|x86
 		{87091BE7-2245-447E-A9BA-CB5CE7124A90}.Release|x64.ActiveCfg = Release|x86
 		{87091BE7-2245-447E-A9BA-CB5CE7124A90}.Release|x86.ActiveCfg = Release|x86
+		{35FB6D83-6A27-447E-90B0-615A3027DE15}.Debug|x64.ActiveCfg = Release|x64
+		{35FB6D83-6A27-447E-90B0-615A3027DE15}.Debug|x86.ActiveCfg = Release|x64
+		{35FB6D83-6A27-447E-90B0-615A3027DE15}.Release|x64.ActiveCfg = Release|x64
+		{35FB6D83-6A27-447E-90B0-615A3027DE15}.Release|x86.ActiveCfg = Release|x64
+		{D542F605-A600-46CD-8E68-1A2AF755CC89}.Debug|x64.ActiveCfg = Release|x64
+		{D542F605-A600-46CD-8E68-1A2AF755CC89}.Debug|x86.ActiveCfg = Release|x64
+		{D542F605-A600-46CD-8E68-1A2AF755CC89}.Release|x64.ActiveCfg = Release|x64
+		{D542F605-A600-46CD-8E68-1A2AF755CC89}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
