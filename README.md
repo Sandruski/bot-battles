@@ -39,7 +39,7 @@ The code is written in C++ and follows the ISO C++ 17 Standard.
 - Tiled Map Editor
 - Aseprite
 - Clumsy
-- Brofiler
+- Optick
 
 ## Libraries
 - SDL

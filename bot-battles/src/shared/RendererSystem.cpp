@@ -88,6 +88,8 @@ bool RendererSystem::PreRender()
 //----------------------------------------------------------------------------------------------------
 bool RendererSystem::Render()
 {
+    OPTICK_EVENT();
+
     RendererComponent& rendererComponent = g_game->GetRendererComponent();
 
     for (auto& entity : m_entities) {

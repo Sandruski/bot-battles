@@ -110,7 +110,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\disob\AppData\Local\Programs\Python\Python38\include;..\dependencies\include\Box2D;..\dependencies\include\pybind11;..\dependencies\include\glm;..\dependencies\include\stb;..\dependencies\include\imgui;..\dependencies\include\gl3w;..\dependencies\include\rapidjson;..\dependencies\include\SDL2;..\shared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\disob\AppData\Local\Programs\Python\Python38\include;..\dependencies\include\Optick;..\dependencies\include\Box2D;..\dependencies\include\pybind11;..\dependencies\include\glm;..\dependencies\include\stb;..\dependencies\include\imgui;..\dependencies\include\gl3w;..\dependencies\include\rapidjson;..\dependencies\include\SDL2;..\shared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -120,7 +120,7 @@
       </PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>C:\Users\disob\AppData\Local\Programs\Python\Python38\libs\python38.lib;Box2D.lib;Ws2_32.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib</AdditionalDependencies>
+      <AdditionalDependencies>C:\Users\disob\AppData\Local\Programs\Python\Python38\libs\python38.lib;OptickCore.lib;Box2D.lib;Ws2_32.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\dependencies\lib\lib64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SubSystem>Windows</SubSystem>
     </Link>
@@ -160,7 +160,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\disob\AppData\Local\Programs\Python\Python38\include;..\dependencies\include\Box2D;..\dependencies\include\pybind11;..\dependencies\include\glm;..\dependencies\include\stb;..\dependencies\include\imgui;..\dependencies\include\gl3w;..\dependencies\include\rapidjson;..\dependencies\include\SDL2;..\shared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\disob\AppData\Local\Programs\Python\Python38\include;..\dependencies\include\Optick;..\dependencies\include\Box2D;..\dependencies\include\pybind11;..\dependencies\include\glm;..\dependencies\include\stb;..\dependencies\include\imgui;..\dependencies\include\gl3w;..\dependencies\include\rapidjson;..\dependencies\include\SDL2;..\shared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -174,7 +174,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>C:\Users\disob\AppData\Local\Programs\Python\Python38\libs\python38.lib;Box2D.lib;Ws2_32.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib</AdditionalDependencies>
+      <AdditionalDependencies>C:\Users\disob\AppData\Local\Programs\Python\Python38\libs\python38.lib;OptickCore.lib;Box2D.lib;Ws2_32.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\dependencies\lib\lib64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SubSystem>Windows</SubSystem>
     </Link>

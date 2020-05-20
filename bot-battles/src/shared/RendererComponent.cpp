@@ -78,7 +78,7 @@ void RendererComponent::DrawLine(glm::vec3 fromPosition, glm::vec3 toPosition, g
     glUniform1f(pctLoc, 1.0f);
 
     glBindVertexArray(m_meshResource.lock()->GetVAO());
-    glDrawArrays(GL_LINES, 0, vertices.size());
+    glDrawArrays(GL_LINES, 0, static_cast<GLsizei>(vertices.size()));
 
     glBindTexture(GL_TEXTURE_2D, 0);
     glBindVertexArray(0);
@@ -121,7 +121,7 @@ void RendererComponent::DrawCircle(glm::vec3 position, F32 rotation, glm::vec3 s
     glUniform1f(pctLoc, 1.0f);
 
     glBindVertexArray(m_meshResource.lock()->GetVAO());
-    glDrawArrays(GL_TRIANGLE_FAN, 0, vertices.size());
+    glDrawArrays(GL_TRIANGLE_FAN, 0, static_cast<GLsizei>(vertices.size()));
 
     glBindTexture(GL_TEXTURE_2D, 0);
     glBindVertexArray(0);
@@ -168,7 +168,7 @@ void RendererComponent::DrawQuad(glm::vec3 position, F32 rotation, glm::vec3 sca
     glUniform1f(pctLoc, 1.0f);
 
     glBindVertexArray(m_meshResource.lock()->GetVAO());
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, vertices.size());
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, static_cast<GLsizei>(vertices.size()));
 
     glBindTexture(GL_TEXTURE_2D, 0);
     glBindVertexArray(0);
@@ -215,7 +215,7 @@ void RendererComponent::DrawTexturedQuad(glm::vec3 position, F32 rotation, glm::
     glBindTexture(GL_TEXTURE_2D, texture);
 
     glBindVertexArray(m_meshResource.lock()->GetVAO());
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, vertices.size());
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, static_cast<GLsizei>(vertices.size()));
 
     glBindTexture(GL_TEXTURE_2D, 0);
     glBindVertexArray(0);

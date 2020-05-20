@@ -55,6 +55,7 @@ int main(int /*argc*/, char* /*args*/[])
         }
 
         case MainState::UPDATE: {
+            OPTICK_FRAME("MainThread");
             bool isUpdateOk = sand::g_gameClient->DoFrame();
             if (!isUpdateOk) {
                 mainState = MainState::END;

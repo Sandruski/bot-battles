@@ -122,7 +122,7 @@
       <ConformanceMode>true</ConformanceMode>
       <TreatWarningAsError>true</TreatWarningAsError>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\dependencies\include\Box2D;..\dependencies\include\glm;..\dependencies\include\stb;..\dependencies\include\imgui;..\dependencies\include\gl3w;..\dependencies\include\rapidjson;..\dependencies\include\SDL2;..\shared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\dependencies\include\Optick;..\dependencies\include\Box2D;..\dependencies\include\glm;..\dependencies\include\stb;..\dependencies\include\imgui;..\dependencies\include\gl3w;..\dependencies\include\rapidjson;..\dependencies\include\SDL2;..\shared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
       <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
@@ -131,7 +131,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Box2D.lib;Ws2_32.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib</AdditionalDependencies>
+      <AdditionalDependencies>OptickCore.lib;Box2D.lib;Ws2_32.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\dependencies\lib\lib64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -176,7 +176,7 @@
       <ConformanceMode>true</ConformanceMode>
       <TreatWarningAsError>true</TreatWarningAsError>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\dependencies\include\Box2D;..\dependencies\include\glm;..\dependencies\include\stb;..\dependencies\include\imgui;..\dependencies\include\gl3w;..\dependencies\include\rapidjson;..\dependencies\include\SDL2;..\shared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\dependencies\include\Optick;..\dependencies\include\Box2D;..\dependencies\include\glm;..\dependencies\include\stb;..\dependencies\include\imgui;..\dependencies\include\gl3w;..\dependencies\include\rapidjson;..\dependencies\include\SDL2;..\shared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
       <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
@@ -187,7 +187,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Box2D.lib;Ws2_32.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib</AdditionalDependencies>
+      <AdditionalDependencies>OptickCore.lib;Box2D.lib;Ws2_32.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\dependencies\lib\lib64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
