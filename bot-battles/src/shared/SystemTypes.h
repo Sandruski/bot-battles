@@ -15,6 +15,8 @@ enum class SystemType : U16 {
 
     REMOTE_PLAYER_MOVEMENT,
 
+    SIGHT,
+
     SCRIPTING,
     INPUT,
 
@@ -22,7 +24,6 @@ enum class SystemType : U16 {
     //
     MOVEMENT,
     WEAPON,
-    SIGHT,
     //
 
     COLLISION, // TODO

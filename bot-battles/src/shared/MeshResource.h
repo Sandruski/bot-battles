@@ -16,12 +16,19 @@ public:
         {
         }
 
+        Vertex(glm::vec2 position, glm::vec2 textureCoords)
+            : m_position(position)
+            , m_textureCoords(textureCoords)
+        {
+        }
+
         glm::vec2 m_position;
         glm::vec2 m_textureCoords;
     };
 
     static const std::vector<Vertex> GetQuadVertices();
     static const std::vector<U32> GetQuadIndices();
+    static const std::vector<Vertex> GetCircleVertices();
 
 public:
     MeshResource(U32 id, const char* dir, const char* file);
@@ -32,6 +39,7 @@ public:
     bool ReLoad(const std::vector<Vertex>& vertices);
 
     U32 GetVAO() const;
+    U32 GetEBO() const;
 
 private:
     std::vector<Vertex> m_vertices;

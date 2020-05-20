@@ -119,11 +119,12 @@ bool SightSystemClient::DebugRender()
         model = glm::translate(model, position);
         model = glm::rotate(model, glm::radians(transformComponent.lock()->m_rotation), glm::vec3(0.0f, 0.0f, -1.0f));
         glm::vec3 scale = glm::vec3(sightComponent.lock()->m_distance, sightComponent.lock()->m_distance, 0.0f);
+        //glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
         scale.x *= proportion.x;
         scale.y *= proportion.y;
         model = glm::scale(model, scale);
 
-        std::vector<MeshResource::Vertex> vertices = MeshResource::GetQuadVertices();
+        std::vector<MeshResource::Vertex> vertices = MeshResource::GetCircleVertices();
         rendererComponent.m_meshResource.lock()->ReLoad(vertices);
 
         U32 modelLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "model");
@@ -134,13 +135,13 @@ bool SightSystemClient::DebugRender()
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
         U32 colorLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "color");
-        glUniform4fv(colorLoc, 1, glm::value_ptr(Green));
+        glUniform4fv(colorLoc, 1, glm::value_ptr(Red));
 
         U32 pctLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "pct");
         glUniform1f(pctLoc, 1.0f);
 
         glBindVertexArray(rendererComponent.m_meshResource.lock()->GetVAO());
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glDrawArrays(GL_TRIANGLE_FAN, 0, vertices.size());
 
         glBindTexture(GL_TEXTURE_2D, 0);
         glBindVertexArray(0);
