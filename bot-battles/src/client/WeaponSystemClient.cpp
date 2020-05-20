@@ -4,7 +4,6 @@
 #include "ColliderComponent.h"
 #include "ComponentManager.h"
 #include "ComponentMemberTypes.h"
-#include "DebugDrawer.h"
 #include "GameClient.h"
 #include "HealthComponent.h"
 #include "LinkingContext.h"
@@ -16,7 +15,6 @@
 #include "SystemManager.h"
 #include "TransformComponent.h"
 #include "WeaponComponent.h"
-#include "WindowComponent.h"
 
 namespace sand {
 
@@ -104,8 +102,6 @@ bool WeaponSystemClient::Render()
 {
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     RendererComponent& rendererComponent = g_gameClient->GetRendererComponent();
-    WindowComponent& windowComponent = g_gameClient->GetWindowComponent();
-    glm::vec2 proportion = windowComponent.GetProportion();
 
     for (auto& entity : m_entities) {
         if (g_gameClient->GetLinkingContext().GetNetworkID(entity) >= INVALID_NETWORK_ID) {
@@ -118,6 +114,8 @@ bool WeaponSystemClient::Render()
             continue;
         }
 
+        glm::vec3 fromPosition = glm::vec3(weaponComponent.lock()->m_origin.x, weaponComponent.lock()->m_origin.y, 0.0f);
+        glm::vec3 toPosition = glm::vec3(weaponComponent.lock()->m_destination.x, weaponComponent.lock()->m_destination.y, 0.0f);
         glm::vec4 color = White;
         if (clientComponent.IsLocalEntity(entity)) {
             switch (clientComponent.m_playerID) {
@@ -148,42 +146,7 @@ bool WeaponSystemClient::Render()
             }
             }
         }
-
-        glm::mat4 model = glm::mat4(1.0f);
-
-        std::vector<MeshResource::Vertex> vertices = MeshResource::GetQuadVertices();
-        // From
-        glm::vec2 from = weaponComponent.lock()->m_origin;
-        from.x *= proportion.x;
-        from.y *= proportion.y;
-        from.y *= -1.0f;
-        vertices[0].m_position = from;
-        // To
-        glm::vec2 to = weaponComponent.lock()->m_destination;
-        to.x *= proportion.x;
-        to.y *= proportion.y;
-        to.y *= -1.0f;
-        vertices[2].m_position = to;
-        rendererComponent.m_meshResource.lock()->ReLoad(vertices);
-
-        U32 modelLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "model");
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-
-        glm::mat4 projection = glm::ortho(0.0f, static_cast<F32>(windowComponent.m_currentResolution.x), -static_cast<F32>(windowComponent.m_currentResolution.y), 0.0f, static_cast<F32>(LayerType::NEAR_PLANE), -static_cast<F32>(LayerType::FAR_PLANE));
-        U32 projectionLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "projection");
-        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
-
-        U32 colorLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "color");
-        glUniform4fv(colorLoc, 1, glm::value_ptr(weaponComponent.lock()->m_hasHit ? Yellow : color));
-
-        U32 pctLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "pct");
-        glUniform1f(pctLoc, 1.0f);
-
-        glBindVertexArray(rendererComponent.m_meshResource.lock()->GetVAO());
-        glDrawElements(GL_LINES, 2, GL_UNSIGNED_INT, 0);
-
-        glBindTexture(GL_TEXTURE_2D, 0);
-        glBindVertexArray(0);
+        rendererComponent.DrawLine(fromPosition, toPosition, color);
     }
 
     return true;

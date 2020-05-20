@@ -195,9 +195,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Colors.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)DebugDrawer.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -441,9 +438,6 @@
       <Filter>Source Files\States</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Colors.cpp">
-      <Filter>Source Files\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)DebugDrawer.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Game.cpp">

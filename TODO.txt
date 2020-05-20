@@ -1,6 +1,5 @@
--Sight.
--OnCollisionExit.
--Bots die in more than one shot.
+-Vision (perception), memory (world knowledge).
+-Pathfinding.
 -Ammo on floor and pick up ammo.
 
 -Create Location struct (for a tile) and Bot struct (for an enemy bot object?) for scripting purposes.

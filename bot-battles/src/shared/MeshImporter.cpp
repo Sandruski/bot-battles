@@ -3,7 +3,7 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-void MeshImporter::Load(const std::vector<MeshResource::Vertex>& vertices, const std::vector<U32>& indices, U32& VAO, U32& VBO, U32& EBO) const
+void MeshImporter::Load(const std::vector<MeshResource::Vertex>& vertices, U32& VAO, U32& VBO) const
 {
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
@@ -20,10 +20,6 @@ void MeshImporter::Load(const std::vector<MeshResource::Vertex>& vertices, const
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(MeshResource::Vertex), (void*)(offsetof(MeshResource::Vertex, MeshResource::Vertex::m_textureCoords)));
     glEnableVertexAttribArray(1);
 
-    glGenBuffers(1, &EBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(U32) * indices.size(), &indices.at(0), GL_STATIC_DRAW);
-
     glBindVertexArray(0);
 }
 
@@ -35,10 +31,8 @@ void MeshImporter::ReLoad(const std::vector<MeshResource::Vertex>& vertices, U32
 }
 
 //----------------------------------------------------------------------------------------------------
-void MeshImporter::UnLoad(U32& VAO, U32& VBO, U32& EBO) const
+void MeshImporter::UnLoad(U32& VAO, U32& VBO) const
 {
-    glDeleteBuffers(1, &EBO);
-    EBO = 0;
     glDeleteBuffers(1, &VBO);
     VBO = 0;
     glDeleteVertexArrays(1, &VAO);

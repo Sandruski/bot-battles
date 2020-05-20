@@ -18,6 +18,11 @@ struct RendererComponent {
     bool UpdateVSync() const;
     void UpdateBackgroundColor() const;
 
+    void DrawLine(glm::vec3 fromPosition, glm::vec3 toPosition, glm::vec4 color);
+    void DrawCircle(glm::vec3 position, F32 rotation, glm::vec3 scale, F32 angle, F32 radius, glm::vec4 color, bool filled);
+    void DrawQuad(glm::vec3 position, F32 rotation, glm::vec3 scale, glm::vec4 color, bool filled);
+    void DrawTexturedQuad(glm::vec3 position, F32 rotation, glm::vec3 scale, U32 texture, glm::uvec4 textureCoords, glm::uvec2 textureSize);
+
     std::weak_ptr<ShaderResource> m_shaderResource;
     std::weak_ptr<MeshResource> m_meshResource;
 
