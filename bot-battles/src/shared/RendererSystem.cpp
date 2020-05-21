@@ -91,23 +91,67 @@ bool RendererSystem::Render()
     OPTICK_EVENT();
 
     RendererComponent& rendererComponent = g_game->GetRendererComponent();
+    WindowComponent& windowComponent = g_game->GetWindowComponent();
+    glm::vec2 proportion = windowComponent.GetProportion();
 
-    for (auto& entity : m_entities) {
+    std::sort(m_entities.begin(), m_entities.end(),
+        [](const Entity& entityA, const Entity& entityB) -> bool {
+            std::weak_ptr<SpriteComponent> spriteComponentA = g_game->GetComponentManager().GetComponent<SpriteComponent>(entityA);
+            std::weak_ptr<SpriteComponent> spriteComponentB = g_game->GetComponentManager().GetComponent<SpriteComponent>(entityB);
+            return spriteComponentA.lock()->m_spriteResource.lock()->GetTexture() < spriteComponentB.lock()->m_spriteResource.lock()->GetTexture();
+        });
 
-        std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
-        std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
+    ILOG("Loop");
+    for (std::vector<Entity>::iterator it = m_entities.begin(); it != m_entities.end();) {
+
+        std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(*it);
+        std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().GetComponent<SpriteComponent>(*it);
         if (!transformComponent.lock()->m_isEnabled || !spriteComponent.lock()->m_isEnabled) {
             continue;
         }
 
-        glm::vec3 position = transformComponent.lock()->GetDebugPositionAndLayer();
-        F32 rotation = transformComponent.lock()->m_rotation;
-        glm::uvec4 textureCoords = spriteComponent.lock()->GetSpriteTextureCoords();
-        glm::vec3 scale = glm::vec3(static_cast<F32>(textureCoords.z), static_cast<F32>(textureCoords.w), 0.0f);
         U32 texture = spriteComponent.lock()->m_spriteResource.lock()->GetTexture();
-        glm::uvec2 textureSize = spriteComponent.lock()->m_spriteResource.lock()->GetSize();
-        rendererComponent.DrawTexturedQuad(position, rotation, scale, texture, textureCoords, textureSize);
+
+        std::vector<glm::mat4> models;
+
+        for (std::vector<Entity>::iterator it2 = it; it2 != m_entities.end();) {
+            std::weak_ptr<TransformComponent> transformComponent2 = g_game->GetComponentManager().GetComponent<TransformComponent>(*it2);
+            std::weak_ptr<SpriteComponent> spriteComponent2 = g_game->GetComponentManager().GetComponent<SpriteComponent>(*it2);
+            if (!transformComponent2.lock()->m_isEnabled || !spriteComponent2.lock()->m_isEnabled) {
+                continue;
+            }
+
+            U32 texture2 = spriteComponent2.lock()->m_spriteResource.lock()->GetTexture();
+            if (texture != texture2) {
+                break;
+            }
+
+            glm::vec3 position = transformComponent2.lock()->GetDebugPositionAndLayer();
+            F32 rotation = transformComponent2.lock()->m_rotation;
+            glm::uvec4 textureCoords = spriteComponent2.lock()->GetSpriteTextureCoords();
+            glm::vec3 scale = glm::vec3(static_cast<F32>(textureCoords.z), static_cast<F32>(textureCoords.w), 0.0f);
+
+            glm::mat4 model = glm::mat4(1.0f);
+            position.x *= proportion.x;
+            position.y *= proportion.y;
+            position.y *= -1.0f;
+            model = glm::translate(model, position);
+            model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, -1.0f));
+            scale.x *= proportion.x;
+            scale.y *= proportion.y;
+            model = glm::scale(model, scale);
+
+            models.emplace_back(model);
+
+            ++it;
+            ++it2;
+        }
+
+        //glm::uvec2 textureSize = spriteComponent.lock()->m_spriteResource.lock()->GetSize();
+        rendererComponent.DrawTexturedQuad(models, texture);
+        ILOG("Draw call");
     }
+    ILOG("End loop");
 
     return true;
 }

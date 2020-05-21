@@ -236,7 +236,6 @@ bool MapImporter::LoadTilesets(const rapidjson::Value& value, std::vector<Tilese
         std::string image = document["image"].GetString();
         image = image.substr(image.find_last_of("/") + 1, image.size());
         tileset.m_spriteFile = image;
-        //tileset.m_spriteResource = g_game->GetResourceManager().AddResource<SpriteResource>(image.c_str(), TEXTURES_DIR, true);
         ret = document.HasMember("tilewidth");
         if (!ret) {
             return ret;

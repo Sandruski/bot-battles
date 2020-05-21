@@ -32,6 +32,7 @@ public:
     bool ForceLoad(const std::vector<Vertex>& vertices);
     bool ReLoad(const std::vector<Vertex>& vertices);
 
+    const std::vector<Vertex>& GetVertices() const;
     U32 GetVAO() const;
 
 private:

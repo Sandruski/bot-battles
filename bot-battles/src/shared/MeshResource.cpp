@@ -136,6 +136,12 @@ bool MeshResource::ReLoad(const std::vector<Vertex>& vertices)
 }
 
 //----------------------------------------------------------------------------------------------------
+const std::vector<MeshResource::Vertex>& MeshResource::GetVertices() const
+{
+    return m_vertices;
+}
+
+//----------------------------------------------------------------------------------------------------
 U32 MeshResource::GetVAO() const
 {
     return m_VAO;

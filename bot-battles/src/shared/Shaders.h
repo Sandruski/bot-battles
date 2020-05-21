@@ -7,12 +7,12 @@ static const char* defaultVertexShaderSource = "#version 330 core\n"
 
                                                "out vec2 TextureCoords;\n"
 
-                                               "uniform mat4 model;\n"
+                                               "uniform mat4 model[200];\n"
                                                "uniform mat4 projection;\n"
 
                                                "void main()\n"
                                                "{\n"
-                                               "gl_Position = projection * model * vec4(position, 0.0, 1.0);\n"
+                                               "gl_Position = projection * model[gl_InstanceID] * vec4(position, 0.0, 1.0);\n"
                                                "TextureCoords = textureCoords;\n"
                                                "}\0";
 

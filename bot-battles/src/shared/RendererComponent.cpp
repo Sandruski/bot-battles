@@ -179,30 +179,31 @@ void RendererComponent::DrawQuad(glm::vec3 position, F32 rotation, glm::vec3 sca
 }
 
 //----------------------------------------------------------------------------------------------------
-void RendererComponent::DrawTexturedQuad(glm::vec3 position, F32 rotation, glm::vec3 scale, U32 texture, glm::uvec4 textureCoords, glm::uvec2 textureSize)
+void RendererComponent::DrawTexturedQuad(const std::vector<glm::mat4>& models, U32 texture)
 {
     WindowComponent& windowComponent = g_game->GetWindowComponent();
     glm::vec2 proportion = windowComponent.GetProportion();
 
-    glm::mat4 model = glm::mat4(1.0f);
-    position.x *= proportion.x;
-    position.y *= proportion.y;
-    position.y *= -1.0f;
-    model = glm::translate(model, position);
-    model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, -1.0f));
-    scale.x *= proportion.x;
-    scale.y *= proportion.y;
-    model = glm::scale(model, scale);
-
     std::vector<MeshResource::Vertex> vertices = MeshResource::GetQuadVertices();
-    vertices.at(0).m_textureCoords = glm::vec2(textureCoords.x / static_cast<F32>(textureSize.x), 1.0f - textureCoords.y / static_cast<F32>(textureSize.y));
-    vertices.at(1).m_textureCoords = glm::vec2((textureCoords.x + textureCoords.z) / static_cast<F32>(textureSize.x), 1.0f - textureCoords.y / static_cast<F32>(textureSize.y));
-    vertices.at(2).m_textureCoords = glm::vec2(textureCoords.x / static_cast<F32>(textureSize.x), 1.0f - (textureCoords.y + textureCoords.w) / static_cast<F32>(textureSize.y));
-    vertices.at(3).m_textureCoords = glm::vec2((textureCoords.x + textureCoords.z) / static_cast<F32>(textureSize.x), 1.0f - (textureCoords.y + textureCoords.w) / static_cast<F32>(textureSize.y));
     m_meshResource.lock()->ReLoad(vertices);
 
-    U32 modelLoc = glGetUniformLocation(m_shaderResource.lock()->GetProgram(), "model");
-    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+    //std::vector<MeshResource::Vertex> vertices = MeshResource::GetQuadVertices();
+    //vertices.at(0).m_textureCoords = glm::vec2(textureCoords.x / static_cast<F32>(textureSize.x), 1.0f - textureCoords.y / static_cast<F32>(textureSize.y));
+    //vertices.at(1).m_textureCoords = glm::vec2((textureCoords.x + textureCoords.z) / static_cast<F32>(textureSize.x), 1.0f - textureCoords.y / static_cast<F32>(textureSize.y));
+    //vertices.at(2).m_textureCoords = glm::vec2(textureCoords.x / static_cast<F32>(textureSize.x), 1.0f - (textureCoords.y + textureCoords.w) / static_cast<F32>(textureSize.y));
+    //vertices.at(3).m_textureCoords = glm::vec2((textureCoords.x + textureCoords.z) / static_cast<F32>(textureSize.x), 1.0f - (textureCoords.y + textureCoords.w) / static_cast<F32>(textureSize.y));
+    //m_meshResource.lock()->ReLoad(vertices);
+    std::string modelName;
+    for (U32 i = 0; i < models.size(); ++i) {
+        modelName = "model[";
+        modelName.append(std::to_string(i));
+        modelName.append("]");
+        U32 modelLoc = glGetUniformLocation(m_shaderResource.lock()->GetProgram(), modelName.c_str());
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(models.at(i)));
+    }
+
+    //U32 modelLoc = glGetUniformLocation(m_shaderResource.lock()->GetProgram(), "models");
+    //glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(models));
 
     glm::mat4 projection = glm::ortho(0.0f, static_cast<F32>(windowComponent.m_currentResolution.x), -static_cast<F32>(windowComponent.m_currentResolution.y), 0.0f, static_cast<F32>(LayerType::NEAR_PLANE), -static_cast<F32>(LayerType::FAR_PLANE));
     U32 projectionLoc = glGetUniformLocation(m_shaderResource.lock()->GetProgram(), "projection");
@@ -215,7 +216,7 @@ void RendererComponent::DrawTexturedQuad(glm::vec3 position, F32 rotation, glm::
     glBindTexture(GL_TEXTURE_2D, texture);
 
     glBindVertexArray(m_meshResource.lock()->GetVAO());
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, static_cast<GLsizei>(vertices.size()));
+    glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, static_cast<GLsizei>(m_meshResource.lock()->GetVertices().size()), static_cast<GLsizei>(models.size()));
 
     glBindTexture(GL_TEXTURE_2D, 0);
     glBindVertexArray(0);
