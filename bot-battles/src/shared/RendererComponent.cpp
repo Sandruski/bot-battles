@@ -11,7 +11,9 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 RendererComponent::RendererComponent()
     : m_shaderResource()
-    , m_meshResource()
+    , m_lineMeshResource()
+    , m_circleMeshResource()
+    , m_quadMeshResource()
     , m_backgroundColor(0.0f, 0.0f, 0.0f, 0.0f)
     , m_isVSync(true)
     , m_isDebugDraw(true)
@@ -61,8 +63,8 @@ void RendererComponent::DrawLine(glm::vec3 fromPosition, glm::vec3 toPosition, g
 
     glm::mat4 model = glm::mat4(1.0f);
 
-    std::vector<MeshResource::Vertex> vertices = MeshResource::GetLineVertices(fromPosition, toPosition);
-    m_meshResource.lock()->ReLoad(vertices);
+    std::vector<MeshResource::Vertex> lineVertices = MeshResource::GetLineVertices(fromPosition, toPosition);
+    m_lineMeshResource.lock()->ReLoad(lineVertices);
 
     U32 modelLoc = glGetUniformLocation(m_shaderResource.lock()->GetProgram(), "model");
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
@@ -77,8 +79,8 @@ void RendererComponent::DrawLine(glm::vec3 fromPosition, glm::vec3 toPosition, g
     U32 pctLoc = glGetUniformLocation(m_shaderResource.lock()->GetProgram(), "pct");
     glUniform1f(pctLoc, 1.0f);
 
-    glBindVertexArray(m_meshResource.lock()->GetVAO());
-    glDrawArrays(GL_LINES, 0, static_cast<GLsizei>(vertices.size()));
+    glBindVertexArray(m_lineMeshResource.lock()->GetVAO());
+    glDrawArrays(GL_LINES, 0, static_cast<GLsizei>(m_lineMeshResource.lock()->GetVertices().size()));
 
     glBindTexture(GL_TEXTURE_2D, 0);
     glBindVertexArray(0);
@@ -104,8 +106,8 @@ void RendererComponent::DrawCircle(glm::vec3 position, F32 rotation, glm::vec3 s
     scale.y *= proportion.y;
     model = glm::scale(model, scale);
 
-    std::vector<MeshResource::Vertex> vertices = MeshResource::GetCircleVertices(angle, radius);
-    m_meshResource.lock()->ReLoad(vertices);
+    std::vector<MeshResource::Vertex> circleVertices = MeshResource::GetCircleVertices(angle, radius);
+    m_circleMeshResource.lock()->ReLoad(circleVertices);
 
     U32 modelLoc = glGetUniformLocation(m_shaderResource.lock()->GetProgram(), "model");
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
@@ -120,8 +122,8 @@ void RendererComponent::DrawCircle(glm::vec3 position, F32 rotation, glm::vec3 s
     U32 pctLoc = glGetUniformLocation(m_shaderResource.lock()->GetProgram(), "pct");
     glUniform1f(pctLoc, 1.0f);
 
-    glBindVertexArray(m_meshResource.lock()->GetVAO());
-    glDrawArrays(GL_TRIANGLE_FAN, 0, static_cast<GLsizei>(vertices.size()));
+    glBindVertexArray(m_circleMeshResource.lock()->GetVAO());
+    glDrawArrays(GL_TRIANGLE_FAN, 0, static_cast<GLsizei>(m_circleMeshResource.lock()->GetVertices().size()));
 
     glBindTexture(GL_TEXTURE_2D, 0);
     glBindVertexArray(0);
@@ -151,9 +153,6 @@ void RendererComponent::DrawQuad(glm::vec3 position, F32 rotation, glm::vec3 sca
     scale.y *= proportion.y;
     model = glm::scale(model, scale);
 
-    std::vector<MeshResource::Vertex> vertices = MeshResource::GetQuadVertices();
-    m_meshResource.lock()->ReLoad(vertices);
-
     U32 modelLoc = glGetUniformLocation(m_shaderResource.lock()->GetProgram(), "model");
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
@@ -167,8 +166,8 @@ void RendererComponent::DrawQuad(glm::vec3 position, F32 rotation, glm::vec3 sca
     U32 pctLoc = glGetUniformLocation(m_shaderResource.lock()->GetProgram(), "pct");
     glUniform1f(pctLoc, 1.0f);
 
-    glBindVertexArray(m_meshResource.lock()->GetVAO());
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, static_cast<GLsizei>(vertices.size()));
+    glBindVertexArray(m_quadMeshResource.lock()->GetVAO());
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, static_cast<GLsizei>(m_quadMeshResource.lock()->GetVertices().size()));
 
     glBindTexture(GL_TEXTURE_2D, 0);
     glBindVertexArray(0);
@@ -179,31 +178,15 @@ void RendererComponent::DrawQuad(glm::vec3 position, F32 rotation, glm::vec3 sca
 }
 
 //----------------------------------------------------------------------------------------------------
-void RendererComponent::DrawTexturedQuad(
-    const std::vector<glm::mat4>& models,
-    const std::vector<glm::vec2>& textureCoords0,
-    const std::vector<glm::vec2>& textureCoords1,
-    const std::vector<glm::vec2>& textureCoords2,
-    const std::vector<glm::vec2>& textureCoords3,
-    U32 texture)
+void RendererComponent::DrawTexturedQuad(const std::vector<glm::mat4>& models, const std::vector<glm::vec2>& texCoords, U32 texture)
 {
     WindowComponent& windowComponent = g_game->GetWindowComponent();
-    glm::vec2 proportion = windowComponent.GetProportion();
 
     U32 modelLoc = glGetUniformLocation(m_shaderResource.lock()->GetProgram(), "model[0]");
     glUniformMatrix4fv(modelLoc, static_cast<GLsizei>(models.size()), GL_FALSE, glm::value_ptr(models.at(0)));
 
-    U32 textureCoords0Loc = glGetUniformLocation(m_shaderResource.lock()->GetProgram(), "textureCoords0[0]");
-    glUniform2fv(textureCoords0Loc, static_cast<GLsizei>(textureCoords0.size()), glm::value_ptr(textureCoords0.at(0)));
-
-    U32 textureCoords1Loc = glGetUniformLocation(m_shaderResource.lock()->GetProgram(), "textureCoords1[0]");
-    glUniform2fv(textureCoords1Loc, static_cast<GLsizei>(textureCoords1.size()), glm::value_ptr(textureCoords1.at(0)));
-
-    U32 textureCoords2Loc = glGetUniformLocation(m_shaderResource.lock()->GetProgram(), "textureCoords2[0]");
-    glUniform2fv(textureCoords2Loc, static_cast<GLsizei>(textureCoords2.size()), glm::value_ptr(textureCoords2.at(0)));
-
-    U32 textureCoords3Loc = glGetUniformLocation(m_shaderResource.lock()->GetProgram(), "textureCoords3[0]");
-    glUniform2fv(textureCoords3Loc, static_cast<GLsizei>(textureCoords3.size()), glm::value_ptr(textureCoords3.at(0)));
+    U32 texCoordsLoc = glGetUniformLocation(m_shaderResource.lock()->GetProgram(), "texCoords[0]");
+    glUniform2fv(texCoordsLoc, static_cast<GLsizei>(texCoords.size()), glm::value_ptr(texCoords.at(0)));
 
     glm::mat4 projection = glm::ortho(0.0f, static_cast<F32>(windowComponent.m_currentResolution.x), -static_cast<F32>(windowComponent.m_currentResolution.y), 0.0f, static_cast<F32>(LayerType::NEAR_PLANE), -static_cast<F32>(LayerType::FAR_PLANE));
     U32 projectionLoc = glGetUniformLocation(m_shaderResource.lock()->GetProgram(), "projection");
@@ -215,8 +198,8 @@ void RendererComponent::DrawTexturedQuad(
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture);
 
-    glBindVertexArray(m_meshResource.lock()->GetVAO());
-    glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, static_cast<GLsizei>(m_meshResource.lock()->GetVertices().size()), static_cast<GLsizei>(models.size()));
+    glBindVertexArray(m_quadMeshResource.lock()->GetVAO());
+    glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, static_cast<GLsizei>(m_quadMeshResource.lock()->GetVertices().size()), static_cast<GLsizei>(models.size()));
 
     glBindTexture(GL_TEXTURE_2D, 0);
     glBindVertexArray(0);

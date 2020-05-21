@@ -70,9 +70,15 @@ bool RendererSystem::StartUp()
     rendererComponent.m_shaderResource.lock()->ForceLoad(defaultVertexShaderSource, defaultFragmentShaderSource);
     glUseProgram(rendererComponent.m_shaderResource.lock()->GetProgram());
 
-    rendererComponent.m_meshResource = g_game->GetResourceManager().AddResource<MeshResource>("", "", false);
-    const std::vector<MeshResource::Vertex> vertices = MeshResource::GetQuadVertices();
-    rendererComponent.m_meshResource.lock()->ForceLoad(vertices);
+    rendererComponent.m_lineMeshResource = g_game->GetResourceManager().AddResource<MeshResource>("", "", false);
+    const std::vector<MeshResource::Vertex> lineVertices = MeshResource::GetLineVertices(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+    rendererComponent.m_lineMeshResource.lock()->ForceLoad(lineVertices);
+    rendererComponent.m_circleMeshResource = g_game->GetResourceManager().AddResource<MeshResource>("", "", false);
+    const std::vector<MeshResource::Vertex> circleVertices = MeshResource::GetCircleVertices(0.0f, 0.0f);
+    rendererComponent.m_circleMeshResource.lock()->ForceLoad(circleVertices);
+    rendererComponent.m_quadMeshResource = g_game->GetResourceManager().AddResource<MeshResource>("", "", false);
+    const std::vector<MeshResource::Vertex> quadVertices = MeshResource::GetQuadVertices();
+    rendererComponent.m_quadMeshResource.lock()->ForceLoad(quadVertices);
 
     return true;
 }
@@ -88,12 +94,9 @@ bool RendererSystem::PreRender()
 //----------------------------------------------------------------------------------------------------
 bool RendererSystem::Render()
 {
-    RendererComponent& rendererComponent = g_game->GetRendererComponent();
-    std::vector<MeshResource::Vertex> vertices = MeshResource::GetQuadVertices();
-    rendererComponent.m_meshResource.lock()->ReLoad(vertices);
-
     OPTICK_EVENT();
 
+    RendererComponent& rendererComponent = g_game->GetRendererComponent();
     WindowComponent& windowComponent = g_game->GetWindowComponent();
     glm::vec2 proportion = windowComponent.GetProportion();
 
@@ -116,10 +119,7 @@ bool RendererSystem::Render()
         glm::uvec2 textureSize = spriteComponent.lock()->m_spriteResource.lock()->GetSize();
 
         std::vector<glm::mat4> models;
-        std::vector<glm::vec2> textureCoords0;
-        std::vector<glm::vec2> textureCoords1;
-        std::vector<glm::vec2> textureCoords2;
-        std::vector<glm::vec2> textureCoords3;
+        std::vector<glm::vec2> texCoords;
 
         while (i < m_entities.size()) {
             Entity entity2 = m_entities.at(i);
@@ -136,8 +136,8 @@ bool RendererSystem::Render()
 
             glm::vec3 position = transformComponent2.lock()->GetDebugPositionAndLayer();
             F32 rotation = transformComponent2.lock()->m_rotation;
-            glm::uvec4 texCoords = spriteComponent2.lock()->GetSpriteTextureCoords();
-            glm::vec3 scale = glm::vec3(static_cast<F32>(texCoords.z), static_cast<F32>(texCoords.w), 0.0f);
+            glm::uvec4 textureCoords = spriteComponent2.lock()->GetSpriteTextureCoords();
+            glm::vec3 scale = glm::vec3(static_cast<F32>(textureCoords.z), static_cast<F32>(textureCoords.w), 0.0f);
 
             glm::mat4 model = glm::mat4(1.0f);
             position.x *= proportion.x;
@@ -150,19 +150,19 @@ bool RendererSystem::Render()
             model = glm::scale(model, scale);
             models.emplace_back(model);
 
-            glm::vec2 texCoords0 = glm::vec2(texCoords.x / static_cast<F32>(textureSize.x), 1.0f - texCoords.y / static_cast<F32>(textureSize.y));
-            textureCoords0.emplace_back(texCoords0);
-            glm::vec2 texCoords1 = glm::vec2((texCoords.x + texCoords.z) / static_cast<F32>(textureSize.x), 1.0f - texCoords.y / static_cast<F32>(textureSize.y));
-            textureCoords1.emplace_back(texCoords1);
-            glm::vec2 texCoords2 = glm::vec2(texCoords.x / static_cast<F32>(textureSize.x), 1.0f - (texCoords.y + texCoords.w) / static_cast<F32>(textureSize.y));
-            textureCoords2.emplace_back(texCoords2);
-            glm::vec2 texCoords3 = glm::vec2((texCoords.x + texCoords.z) / static_cast<F32>(textureSize.x), 1.0f - (texCoords.y + texCoords.w) / static_cast<F32>(textureSize.y));
-            textureCoords3.emplace_back(texCoords3);
+            glm::vec2 texCoords0 = glm::vec2(textureCoords.x / static_cast<F32>(textureSize.x), 1.0f - textureCoords.y / static_cast<F32>(textureSize.y));
+            texCoords.emplace_back(texCoords0);
+            glm::vec2 texCoords1 = glm::vec2((textureCoords.x + textureCoords.z) / static_cast<F32>(textureSize.x), 1.0f - textureCoords.y / static_cast<F32>(textureSize.y));
+            texCoords.emplace_back(texCoords1);
+            glm::vec2 texCoords2 = glm::vec2(textureCoords.x / static_cast<F32>(textureSize.x), 1.0f - (textureCoords.y + textureCoords.w) / static_cast<F32>(textureSize.y));
+            texCoords.emplace_back(texCoords2);
+            glm::vec2 texCoords3 = glm::vec2((textureCoords.x + textureCoords.z) / static_cast<F32>(textureSize.x), 1.0f - (textureCoords.y + textureCoords.w) / static_cast<F32>(textureSize.y));
+            texCoords.emplace_back(texCoords3);
 
             ++i;
         }
 
-        rendererComponent.DrawTexturedQuad(models, textureCoords0, textureCoords1, textureCoords2, textureCoords3, texture);
+        rendererComponent.DrawTexturedQuad(models, texCoords, texture);
     }
 
     return true;
