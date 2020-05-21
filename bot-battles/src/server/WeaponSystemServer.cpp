@@ -38,6 +38,8 @@ bool WeaponSystemServer::PreUpdate()
 //----------------------------------------------------------------------------------------------------
 bool WeaponSystemServer::Update()
 {
+    OPTICK_EVENT();
+
     GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
     std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
     if (currentState.expired()) {
@@ -139,6 +141,8 @@ bool WeaponSystemServer::Update()
 //----------------------------------------------------------------------------------------------------
 bool WeaponSystemServer::Render()
 {
+    OPTICK_EVENT();
+
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     RendererComponent& rendererComponent = g_gameServer->GetRendererComponent();
 

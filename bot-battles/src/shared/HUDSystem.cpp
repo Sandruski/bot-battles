@@ -18,6 +18,8 @@ HUDSystem::HUDSystem()
 //----------------------------------------------------------------------------------------------------
 bool HUDSystem::RenderGui()
 {
+    OPTICK_EVENT();
+
     WindowComponent& windowComponent = g_game->GetWindowComponent();
     glm::vec2 proportion = windowComponent.GetProportion();
 

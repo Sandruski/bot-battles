@@ -28,6 +28,8 @@ SightSystemClient::SightSystemClient()
 //----------------------------------------------------------------------------------------------------
 bool SightSystemClient::Update()
 {
+    OPTICK_EVENT();
+
     GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
     std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
     if (currentState.expired()) {
@@ -92,6 +94,8 @@ bool SightSystemClient::Update()
 //----------------------------------------------------------------------------------------------------
 bool SightSystemClient::DebugRender()
 {
+    OPTICK_EVENT();
+
     RendererComponent& rendererComponent = g_gameClient->GetRendererComponent();
 
     for (auto& entity : m_entities) {

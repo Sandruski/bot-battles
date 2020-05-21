@@ -99,6 +99,8 @@ void ClientSystem::OnNotify(const Event& event)
 //----------------------------------------------------------------------------------------------------
 void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent)
 {
+    OPTICK_EVENT();
+
     InputMemoryStream packet;
     U32 byteCapacity = packet.GetByteCapacity();
 
@@ -174,6 +176,8 @@ void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent)
 //----------------------------------------------------------------------------------------------------
 void ClientSystem::SendOutgoingPackets(ClientComponent& clientComponent)
 {
+    OPTICK_EVENT();
+
     if (clientComponent.m_UDPSocket != nullptr) {
         // Only Gameplay
         GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();

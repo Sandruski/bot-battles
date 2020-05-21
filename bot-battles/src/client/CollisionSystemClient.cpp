@@ -19,6 +19,8 @@ CollisionSystemClient::CollisionSystemClient()
 //----------------------------------------------------------------------------------------------------
 bool CollisionSystemClient::DebugRender()
 {
+    OPTICK_EVENT();
+
     RendererComponent& rendererComponent = g_gameClient->GetRendererComponent();
 
     for (auto& entity : m_entities) {

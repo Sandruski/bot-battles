@@ -56,6 +56,8 @@ bool GuiSystem::PreRender()
 //----------------------------------------------------------------------------------------------------
 bool GuiSystem::RenderGui()
 {
+    OPTICK_EVENT();
+
     GuiComponent& guiComponent = g_game->GetGuiComponent();
     if (guiComponent.m_isSettings) {
         ImGuiWindowFlags windowFlags = 0;

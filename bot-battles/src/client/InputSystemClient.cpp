@@ -11,6 +11,8 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 bool InputSystemClient::Update()
 {
+    OPTICK_EVENT();
+
     GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
     std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
     if (currentState.expired() || currentState.lock()->GetName() != "Play") {

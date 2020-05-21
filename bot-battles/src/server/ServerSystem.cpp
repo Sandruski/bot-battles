@@ -141,6 +141,8 @@ void ServerSystem::OnNotify(const Event& event)
 //----------------------------------------------------------------------------------------------------
 void ServerSystem::ReceiveIncomingPackets(ServerComponent& serverComponent)
 {
+    OPTICK_EVENT();
+
     InputMemoryStream packet;
     U32 byteCapacity = packet.GetByteCapacity();
 
@@ -253,6 +255,8 @@ void ServerSystem::ReceiveIncomingPackets(ServerComponent& serverComponent)
 //----------------------------------------------------------------------------------------------------
 void ServerSystem::SendOutgoingPackets(ServerComponent& serverComponent)
 {
+    OPTICK_EVENT();
+
     if (serverComponent.m_UDPSocket != nullptr) {
         const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.GetPlayerIDToClientProxyMap();
         for (const auto& pair : playerIDToClientProxy) {

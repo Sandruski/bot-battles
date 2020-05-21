@@ -19,6 +19,8 @@ CollisionSystemServer::CollisionSystemServer()
 //----------------------------------------------------------------------------------------------------
 bool CollisionSystemServer::DebugRender()
 {
+    OPTICK_EVENT();
+
     RendererComponent& rendererComponent = g_gameServer->GetRendererComponent();
 
     for (auto& entity : m_entities) {
