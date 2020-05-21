@@ -160,7 +160,69 @@ bool RendererSystem::Render()
             ++i;
         }
 
-        rendererComponent.DrawTexturedQuad(models, textureCoords0, textureCoords1, textureCoords2, textureCoords3, texture);
+        std::vector<MeshResource::Vertex> vertices = MeshResource::GetQuadVertices();
+        rendererComponent.m_meshResource.lock()->ReLoad(vertices);
+
+        std::string modelName;
+        for (U32 j = 0; j < models.size(); ++j) {
+            modelName = "model[";
+            modelName.append(std::to_string(j));
+            modelName.append("]");
+            U32 modelLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), modelName.c_str());
+            glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(models.at(j)));
+        }
+
+        std::string textureCoords0Name;
+        for (U32 j = 0; j < textureCoords0.size(); ++j) {
+            textureCoords0Name = "textureCoords0[";
+            textureCoords0Name.append(std::to_string(j));
+            textureCoords0Name.append("]");
+            U32 textureCoords0Loc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), textureCoords0Name.c_str());
+            glUniform2fv(textureCoords0Loc, 1, glm::value_ptr(textureCoords0.at(j)));
+        }
+
+        std::string textureCoords1Name;
+        for (U32 j = 0; j < textureCoords1.size(); ++j) {
+            textureCoords1Name = "textureCoords1[";
+            textureCoords1Name.append(std::to_string(j));
+            textureCoords1Name.append("]");
+            U32 textureCoords1Loc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), textureCoords1Name.c_str());
+            glUniform2fv(textureCoords1Loc, 1, glm::value_ptr(textureCoords1.at(j)));
+        }
+
+        std::string textureCoords2Name;
+        for (U32 j = 0; j < textureCoords2.size(); ++j) {
+            textureCoords2Name = "textureCoords2[";
+            textureCoords2Name.append(std::to_string(j));
+            textureCoords2Name.append("]");
+            U32 textureCoords2Loc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), textureCoords2Name.c_str());
+            glUniform2fv(textureCoords2Loc, 1, glm::value_ptr(textureCoords2.at(j)));
+        }
+
+        std::string textureCoords3Name;
+        for (U32 j = 0; j < textureCoords3.size(); ++j) {
+            textureCoords3Name = "textureCoords3[";
+            textureCoords3Name.append(std::to_string(j));
+            textureCoords3Name.append("]");
+            U32 textureCoords3Loc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), textureCoords3Name.c_str());
+            glUniform2fv(textureCoords3Loc, 1, glm::value_ptr(textureCoords3.at(j)));
+        }
+
+        glm::mat4 projection = glm::ortho(0.0f, static_cast<F32>(windowComponent.m_currentResolution.x), -static_cast<F32>(windowComponent.m_currentResolution.y), 0.0f, static_cast<F32>(LayerType::NEAR_PLANE), -static_cast<F32>(LayerType::FAR_PLANE));
+        U32 projectionLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "projection");
+        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+        U32 pctLoc = glGetUniformLocation(rendererComponent.m_shaderResource.lock()->GetProgram(), "pct");
+        glUniform1f(pctLoc, 0.0f);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture);
+
+        glBindVertexArray(rendererComponent.m_meshResource.lock()->GetVAO());
+        glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, static_cast<GLsizei>(rendererComponent.m_meshResource.lock()->GetVertices().size()), static_cast<GLsizei>(models.size()));
+
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glBindVertexArray(0);
         ILOG("Draw call");
     }
     ILOG("End loop");
