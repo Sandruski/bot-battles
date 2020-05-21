@@ -24,10 +24,10 @@ void MeshImporter::Load(const std::vector<MeshResource::Vertex>& vertices, U32& 
 }
 
 //----------------------------------------------------------------------------------------------------
-void MeshImporter::ReLoad(const std::vector<MeshResource::Vertex>& /*vertices*/, U32 /*VBO*/) const
+void MeshImporter::ReLoad(const std::vector<MeshResource::Vertex>& vertices, U32 VBO) const
 {
-    //glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    //glBufferData(GL_ARRAY_BUFFER, sizeof(MeshResource::Vertex) * vertices.size(), &vertices.at(0), GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(MeshResource::Vertex) * vertices.size(), &vertices.at(0), GL_DYNAMIC_DRAW);
 }
 
 //----------------------------------------------------------------------------------------------------
