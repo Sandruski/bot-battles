@@ -26,6 +26,14 @@ SightSystemClient::SightSystemClient()
 }
 
 //----------------------------------------------------------------------------------------------------
+bool SightSystemClient::PreUpdate()
+{
+    NotifyEvents();
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
 bool SightSystemClient::Update()
 {
     OPTICK_EVENT();
@@ -66,25 +74,32 @@ bool SightSystemClient::Update()
         }
 
         const bool isInFoV = IsInFoV(localTransformComponent.lock()->m_position, remoteTransformComponent.lock()->m_position, direction, localSightComponent.lock()->m_angle);
-        if (!isInFoV && localSightComponent.lock()->m_target < INVALID_ENTITY) {
-            localSightComponent.lock()->m_target = INVALID_ENTITY;
-            Event newSightEvent;
-            newSightEvent.eventType = EventType::SEEN_BOT_ENTER;
+        if (!isInFoV) {
+            if (localSightComponent.lock()->m_target < INVALID_ENTITY) {
+                localSightComponent.lock()->m_target = INVALID_ENTITY;
+                Event newSightEvent;
+                newSightEvent.eventType = EventType::SEEN_BOT_EXIT;
+                PushEvent(newSightEvent);
+            }
             continue;
         }
 
         const bool isInLoS = IsInLoS(physicsComponent, localTransformComponent.lock()->m_position, remoteTransformComponent.lock()->m_position, localSightComponent.lock()->m_distance);
-        if (!isInLoS && localSightComponent.lock()->m_target < INVALID_ENTITY) {
-            localSightComponent.lock()->m_target = INVALID_ENTITY;
-            Event newSightEvent;
-            newSightEvent.eventType = EventType::SEEN_BOT_ENTER;
+        if (!isInLoS) {
+            if (localSightComponent.lock()->m_target < INVALID_ENTITY) {
+                localSightComponent.lock()->m_target = INVALID_ENTITY;
+                Event newSightEvent;
+                newSightEvent.eventType = EventType::SEEN_BOT_EXIT;
+                PushEvent(newSightEvent);
+            }
             continue;
         }
 
         if (localSightComponent.lock()->m_target >= INVALID_ENTITY) {
             localSightComponent.lock()->m_target = entity;
             Event newSightEvent;
-            newSightEvent.eventType = EventType::SEEN_BOT_EXIT;
+            newSightEvent.eventType = EventType::SEEN_BOT_ENTER;
+            PushEvent(newSightEvent);
         }
     }
 

@@ -18,6 +18,7 @@ public:
 public:
     SightSystemClient();
 
+    bool PreUpdate() override;
     bool Update() override;
     bool DebugRender() override;
 

@@ -21,10 +21,11 @@ class MyBot(bot.Bot):
         reflectionVector = glm.reflect(glm.vec2(-collisionEvent.relativeVelocityX, -collisionEvent.relativeVelocityY), glm.vec2(collisionEvent.normalX, collisionEvent.normalY))
         input.linearVelocityX = reflectionVector.x
         input.linearVelocityY = reflectionVector.y
-        logging.info('Wall hit enter')
+        #logging.info('Wall hit enter')
 
     def onHitWallExit(self, input, collisionEvent):
-        logging.info('Wall hit exit')
+        #logging.info('Wall hit exit')
+        pass
 
     def onSeenBotEnter(self, input):
         logging.info('Bot seen enter')
