@@ -88,9 +88,12 @@ bool RendererSystem::PreRender()
 //----------------------------------------------------------------------------------------------------
 bool RendererSystem::Render()
 {
+    RendererComponent& rendererComponent = g_game->GetRendererComponent();
+    std::vector<MeshResource::Vertex> vertices = MeshResource::GetQuadVertices();
+    rendererComponent.m_meshResource.lock()->ReLoad(vertices);
+
     OPTICK_EVENT();
 
-    RendererComponent& rendererComponent = g_game->GetRendererComponent();
     WindowComponent& windowComponent = g_game->GetWindowComponent();
     glm::vec2 proportion = windowComponent.GetProportion();
 
@@ -101,7 +104,6 @@ bool RendererSystem::Render()
             return spriteComponentA.lock()->m_spriteResource.lock()->GetTexture() < spriteComponentB.lock()->m_spriteResource.lock()->GetTexture();
         });
 
-    ILOG("Loop");
     for (U32 i = 0; i < m_entities.size();) {
         Entity entity = m_entities.at(i);
         std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
@@ -161,9 +163,7 @@ bool RendererSystem::Render()
         }
 
         rendererComponent.DrawTexturedQuad(models, textureCoords0, textureCoords1, textureCoords2, textureCoords3, texture);
-        ILOG("Draw call");
     }
-    ILOG("End loop");
 
     return true;
 }
