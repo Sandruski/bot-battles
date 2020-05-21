@@ -102,10 +102,10 @@ bool RendererSystem::Render()
         });
 
     ILOG("Loop");
-    for (std::vector<Entity>::iterator it = m_entities.begin(); it != m_entities.end();) {
-
-        std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(*it);
-        std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().GetComponent<SpriteComponent>(*it);
+    for (U32 i = 0; i < m_entities.size();) {
+        Entity entity = m_entities.at(i);
+        std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
+        std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
         if (!transformComponent.lock()->m_isEnabled || !spriteComponent.lock()->m_isEnabled) {
             continue;
         }
@@ -119,11 +119,12 @@ bool RendererSystem::Render()
         std::vector<glm::vec2> textureCoords2;
         std::vector<glm::vec2> textureCoords3;
 
-        for (std::vector<Entity>::iterator it2 = it; it2 != m_entities.end();) {
-            std::weak_ptr<TransformComponent> transformComponent2 = g_game->GetComponentManager().GetComponent<TransformComponent>(*it2);
-            std::weak_ptr<SpriteComponent> spriteComponent2 = g_game->GetComponentManager().GetComponent<SpriteComponent>(*it2);
+        while (i < m_entities.size()) {
+            Entity entity2 = m_entities.at(i);
+            std::weak_ptr<TransformComponent> transformComponent2 = g_game->GetComponentManager().GetComponent<TransformComponent>(entity2);
+            std::weak_ptr<SpriteComponent> spriteComponent2 = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity2);
             if (!transformComponent2.lock()->m_isEnabled || !spriteComponent2.lock()->m_isEnabled) {
-                continue;
+                break;
             }
 
             U32 texture2 = spriteComponent2.lock()->m_spriteResource.lock()->GetTexture();
@@ -156,8 +157,7 @@ bool RendererSystem::Render()
             glm::vec2 texCoords3 = glm::vec2((texCoords.x + texCoords.z) / static_cast<F32>(textureSize.x), 1.0f - (texCoords.y + texCoords.w) / static_cast<F32>(textureSize.y));
             textureCoords3.emplace_back(texCoords3);
 
-            ++it;
-            ++it2;
+            ++i;
         }
 
         rendererComponent.DrawTexturedQuad(models, textureCoords0, textureCoords1, textureCoords2, textureCoords3, texture);
