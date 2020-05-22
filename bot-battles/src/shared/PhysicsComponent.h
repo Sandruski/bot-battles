@@ -4,6 +4,24 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
+class ContactListener : public b2ContactListener {
+public:
+    void BeginContact(b2Contact* contact) override;
+    void EndContact(b2Contact* contact) override;
+};
+
+//----------------------------------------------------------------------------------------------------
+class QueryCallback : public b2QueryCallback {
+public:
+    QueryCallback();
+
+    bool ReportFixture(b2Fixture* fixture) override;
+
+public:
+    std::vector<b2Body*> m_bodies;
+};
+
+//----------------------------------------------------------------------------------------------------
 class RayCastCallback : public b2RayCastCallback {
 public:
     RayCastCallback();
@@ -15,13 +33,6 @@ public:
     b2Body* m_body;
     b2Vec2 m_point;
     b2Vec2 m_normal;
-};
-
-//----------------------------------------------------------------------------------------------------
-class ContactListener : public b2ContactListener {
-public:
-    void BeginContact(b2Contact* contact) override;
-    void EndContact(b2Contact* contact) override;
 };
 
 //----------------------------------------------------------------------------------------------------
@@ -57,6 +68,7 @@ struct PhysicsComponent : public Subject {
 
     void Step();
     bool Raycast(const glm::vec2& origin, const glm::vec2& destination, RaycastHit& hitInfo);
+    bool Overlap(const glm::vec2& center, const glm::vec2& extents, std::vector<Entity>& entities);
 
     void OnCollisionEnter(Entity entityA, Entity entityB, glm::vec2 linearVelocityA, glm::vec2 linearVelocityB, glm::vec2 normal);
     void OnCollisionExit(Entity entityA, Entity entityB, glm::vec2 linearVelocityA, glm::vec2 linearVelocityB, glm::vec2 normal);

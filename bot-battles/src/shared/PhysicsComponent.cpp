@@ -7,24 +7,6 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-RayCastCallback::RayCastCallback()
-    : m_body(nullptr)
-    , m_point(0.0f, 0.0f)
-    , m_normal(0.0f, 0.0f)
-{
-}
-
-//----------------------------------------------------------------------------------------------------
-float32 RayCastCallback::ReportFixture(b2Fixture* fixture, const b2Vec2& point, const b2Vec2& normal, float32 fraction)
-{
-    m_body = fixture->GetBody();
-    m_point = point;
-    m_normal = normal;
-
-    return fraction;
-}
-
-//----------------------------------------------------------------------------------------------------
 void ContactListener::BeginContact(b2Contact* contact)
 {
     b2Body* bodyA = contact->GetFixtureA()->GetBody();
@@ -60,6 +42,38 @@ void ContactListener::EndContact(b2Contact* contact)
     glm::vec2 normal = glm::vec2(worldManifold.normal.x, worldManifold.normal.y);
 
     g_game->GetPhysicsComponent().OnCollisionExit(entityA, entityB, linearVelocityA, linearVelocityB, normal);
+}
+
+//----------------------------------------------------------------------------------------------------
+RayCastCallback::RayCastCallback()
+    : m_body(nullptr)
+    , m_point(0.0f, 0.0f)
+    , m_normal(0.0f, 0.0f)
+{
+}
+
+//----------------------------------------------------------------------------------------------------
+float32 RayCastCallback::ReportFixture(b2Fixture* fixture, const b2Vec2& point, const b2Vec2& normal, float32 fraction)
+{
+    m_body = fixture->GetBody();
+    m_point = point;
+    m_normal = normal;
+
+    return fraction;
+}
+
+//----------------------------------------------------------------------------------------------------
+QueryCallback::QueryCallback()
+    : m_bodies()
+{
+}
+
+//----------------------------------------------------------------------------------------------------
+bool QueryCallback::ReportFixture(b2Fixture* fixture)
+{
+    b2Body* body = fixture->GetBody();
+    m_bodies.emplace_back(body);
+    return true;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -144,6 +158,45 @@ bool PhysicsComponent::Raycast(const glm::vec2& origin, const glm::vec2& destina
         hitInfo.m_entity = *static_cast<Entity*>(rayCastCallback.m_body->GetUserData());
         hitInfo.m_point = glm::vec2(METERS_TO_PIXELS(rayCastCallback.m_point.x), METERS_TO_PIXELS(rayCastCallback.m_point.y));
         hitInfo.m_normal = glm::vec2(METERS_TO_PIXELS(rayCastCallback.m_normal.x), METERS_TO_PIXELS(rayCastCallback.m_normal.y));
+
+        ret = true;
+    }
+
+    for (b2Body* body = m_world.GetBodyList(); body != nullptr; body = body->GetNext()) {
+        b2BodyType type = body->GetType();
+        if (type == b2BodyType::b2_dynamicBody) {
+            body->SetActive(false);
+        }
+    }
+
+    return ret;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool PhysicsComponent::Overlap(const glm::vec2& center, const glm::vec2& extents, std::vector<Entity>& entities)
+{
+    bool ret = false;
+
+    for (b2Body* body = m_world.GetBodyList(); body != nullptr; body = body->GetNext()) {
+        b2BodyType type = body->GetType();
+        if (type == b2BodyType::b2_dynamicBody) {
+            body->SetActive(true);
+        }
+    }
+
+    b2AABB aabb;
+    glm::vec2 lowerBound = center - extents;
+    aabb.lowerBound = b2Vec2(PIXELS_TO_METERS(lowerBound.x), PIXELS_TO_METERS(lowerBound.y));
+    glm::vec2 upperBound = center + extents;
+    aabb.upperBound = b2Vec2(PIXELS_TO_METERS(upperBound.x), PIXELS_TO_METERS(upperBound.y));
+
+    QueryCallback queryCallback;
+    m_world.QueryAABB(&queryCallback, aabb);
+    if (!queryCallback.m_bodies.empty()) {
+        for (const auto& body : queryCallback.m_bodies) {
+            Entity entity = *static_cast<Entity*>(body->GetUserData());
+            entities.push_back(entity);
+        }
 
         ret = true;
     }

@@ -16,6 +16,7 @@
 #include "ScoreboardStateServer.h"
 #include "ServerComponent.h"
 #include "ServerSystem.h"
+#include "SightSystemServer.h"
 #include "SpawnerSystem.h"
 #include "SystemManager.h"
 #include "WeaponSystemServer.h"
@@ -61,6 +62,10 @@ bool GameServer::Init()
         return ret;
     }
     ret = m_systemManager->RegisterSystem<OutputSystemServer>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_systemManager->RegisterSystem<SightSystemServer>();
     if (!ret) {
         return ret;
     }

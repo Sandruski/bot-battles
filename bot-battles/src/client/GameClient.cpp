@@ -123,11 +123,6 @@ bool GameClient::Init()
     if (!ret) {
         return ret;
     }
-    std::weak_ptr<SightSystemClient> sightSystem = m_systemManager->GetSystem<SightSystemClient>();
-    ret = sightSystem.lock()->AddObserver(scriptingSystem);
-    if (!ret) {
-        return ret;
-    }
 
     ret = Game::Init();
 

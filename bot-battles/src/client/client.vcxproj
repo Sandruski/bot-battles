@@ -221,7 +221,6 @@
       <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pchClient.h</ForcedIncludeFiles>
       <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pchClient.h</ForcedIncludeFiles>
     </ClCompile>
-    <ClCompile Include="SightSystemClient.cpp" />
     <ClCompile Include="PlayStateClient.cpp" />
     <ClCompile Include="RemotePlayerMovementSystem.cpp" />
     <ClCompile Include="RestartStateClient.cpp" />
@@ -230,6 +229,7 @@
     <ClCompile Include="ScriptingComponent.cpp" />
     <ClCompile Include="ScriptingSystem.cpp" />
     <ClCompile Include="SetupStateClient.cpp" />
+    <ClCompile Include="SightSystemClient.cpp" />
     <ClCompile Include="StartStateClient.cpp" />
     <ClCompile Include="StatesPanelClient.cpp" />
     <ClCompile Include="TransformComponentClient.cpp" />
@@ -253,7 +253,6 @@
     <ClInclude Include="MovementSystemClient.h" />
     <ClInclude Include="OutputSystemClient.h" />
     <ClInclude Include="pchClient.h" />
-    <ClInclude Include="SightSystemClient.h" />
     <ClInclude Include="PlayStateClient.h" />
     <ClInclude Include="RemotePlayerComponent.h" />
     <ClInclude Include="RemotePlayerMovementSystem.h" />
@@ -266,6 +265,7 @@
     <ClInclude Include="ScriptingComponent.h" />
     <ClInclude Include="ScriptingSystem.h" />
     <ClInclude Include="SetupStateClient.h" />
+    <ClInclude Include="SightSystemClient.h" />
     <ClInclude Include="StartStateClient.h" />
     <ClInclude Include="UtilsClient.h" />
     <ClInclude Include="WeaponSystemClient.h" />

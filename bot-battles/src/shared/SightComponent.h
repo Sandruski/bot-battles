@@ -36,7 +36,7 @@ struct SightComponent : public Component
     F32 m_distance;
 
     // Local
-#ifdef _CLIENT
+#ifdef _SERVER
     Entity m_target;
 #endif
 };

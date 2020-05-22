@@ -15,13 +15,12 @@ enum class SystemType : U16 {
 
     REMOTE_PLAYER_MOVEMENT,
 
-    SIGHT,
-
     SCRIPTING,
     INPUT,
 
     PHYSICS,
     //
+    SIGHT,
     MOVEMENT,
     WEAPON,
     //
@@ -46,6 +45,7 @@ enum class SystemType : U16 {
     SPAWNER,
     PHYSICS,
     //
+    SIGHT,
     MOVEMENT,
     WEAPON,
     HEALTH,

@@ -201,6 +201,9 @@
     <ClCompile Include="ScoreboardStateServer.cpp">
       <Filter>Source Files\States\Scoreboard States</Filter>
     </ClCompile>
+    <ClCompile Include="SightSystemServer.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientProxy.h">
@@ -280,6 +283,9 @@
     </ClInclude>
     <ClInclude Include="ScoreboardStateServer.h">
       <Filter>Header Files\States\Scoreboard States</Filter>
+    </ClInclude>
+    <ClInclude Include="SightSystemServer.h">
+      <Filter>Header Files\Systems</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

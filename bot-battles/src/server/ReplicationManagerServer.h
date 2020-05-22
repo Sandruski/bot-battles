@@ -12,12 +12,13 @@ class ReplicationManagerServer {
 public:
     ReplicationManagerServer();
 
-    bool AddCommand(NetworkID networkID, U32 dirtyState);
+    bool AddCommand(NetworkID networkID, bool isReplicated, U32 dirtyState);
     bool RemoveCommand(NetworkID networkID);
 
     void SetCreate(NetworkID networkID, U32 dirtyState);
     void SetUpdate(NetworkID networkID);
     void SetRemove(NetworkID networkID);
+    void SetIsReplicated(NetworkID networkID, bool isReplicated);
     void AddDirtyState(NetworkID networkID, U32 dirtyState);
 
     void Write(OutputMemoryStream& outputStream, ReplicationResultManager& replicationResultManager);

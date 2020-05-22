@@ -18,7 +18,7 @@ ReplicationManagerServer::ReplicationManagerServer()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool ReplicationManagerServer::AddCommand(NetworkID networkID, U32 dirtyState)
+bool ReplicationManagerServer::AddCommand(NetworkID networkID, bool isReplicated, U32 dirtyState)
 {
     auto it = m_networkIDToReplicationCommand.find(networkID);
     if (it != m_networkIDToReplicationCommand.end()) {
@@ -26,7 +26,7 @@ bool ReplicationManagerServer::AddCommand(NetworkID networkID, U32 dirtyState)
         return false;
     }
 
-    m_networkIDToReplicationCommand[networkID] = ReplicationCommand(ReplicationActionType::CREATE, dirtyState);
+    m_networkIDToReplicationCommand[networkID] = ReplicationCommand(ReplicationActionType::CREATE, isReplicated, dirtyState);
 
     return true;
 }
@@ -71,6 +71,12 @@ void ReplicationManagerServer::SetRemove(NetworkID networkID)
 }
 
 //----------------------------------------------------------------------------------------------------
+void ReplicationManagerServer::SetIsReplicated(NetworkID networkID, bool isReplicated)
+{
+    m_networkIDToReplicationCommand.at(networkID).m_isReplicated = isReplicated;
+}
+
+//----------------------------------------------------------------------------------------------------
 void ReplicationManagerServer::AddDirtyState(NetworkID networkID, U32 dirtyState)
 {
     m_networkIDToReplicationCommand.at(networkID).AddDirtyState(dirtyState);
@@ -86,6 +92,10 @@ void ReplicationManagerServer::Write(OutputMemoryStream& outputStream, Replicati
     for (auto& pair : m_networkIDToReplicationCommand) {
 
         ReplicationCommand& replicationCommand = pair.second;
+        if (!replicationCommand.m_isReplicated) {
+            continue;
+        }
+
         const bool hasDirtyState = replicationCommand.HasDirtyState();
         const bool hasReplicationAction = replicationCommand.m_replicationActionType != ReplicationActionType::NONE;
 

@@ -247,6 +247,7 @@
     <ClCompile Include="ScoreboardStateServer.cpp" />
     <ClCompile Include="ServerSystem.cpp" />
     <ClCompile Include="ServerComponent.cpp" />
+    <ClCompile Include="SightSystemServer.cpp" />
     <ClCompile Include="SpawnerSystem.cpp" />
     <ClCompile Include="StartStateServer.cpp" />
     <ClCompile Include="StatesPanelServer.cpp" />
@@ -276,6 +277,7 @@
     <ClInclude Include="ServerComponent.h" />
     <ClCompile Include="SetupStateServer.cpp" />
     <ClInclude Include="SetupStateServer.h" />
+    <ClInclude Include="SightSystemServer.h" />
     <ClInclude Include="SpawnerSystem.h" />
     <ClInclude Include="StartStateServer.h" />
     <ClInclude Include="WeaponSystemServer.h" />

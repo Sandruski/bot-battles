@@ -8,7 +8,7 @@ namespace sand {
 SightComponent::SightComponent()
     : m_angle(0.0f)
     , m_distance(0.0f)
-#ifdef _CLIENT
+#ifdef _SERVER
     , m_target(INVALID_ENTITY)
 #endif
 {

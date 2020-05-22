@@ -727,7 +727,7 @@ void ServerSystem::OnPlayerAdded(PlayerID playerID) const
     std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
     const std::unordered_map<NetworkID, Entity>& networkIDToEntity = g_gameServer->GetLinkingContext().GetNetworkIDToEntityMap();
     for (const auto& pair : networkIDToEntity) {
-        clientProxy.lock()->m_replicationManager->AddCommand(pair.first, static_cast<U32>(ComponentMemberType::ALL));
+        clientProxy.lock()->m_replicationManager->AddCommand(pair.first, true, static_cast<U32>(ComponentMemberType::ALL));
     }
 }
 
@@ -739,7 +739,7 @@ void ServerSystem::OnNetworkEntityAdded(NetworkID networkID) const
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.GetPlayerIDToClientProxyMap();
     for (const auto& pair : playerIDToClientProxy) {
-        pair.second->m_replicationManager->AddCommand(networkID, static_cast<U32>(ComponentMemberType::ALL));
+        pair.second->m_replicationManager->AddCommand(networkID, true, static_cast<U32>(ComponentMemberType::ALL));
     }
 }
 
