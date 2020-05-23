@@ -6,7 +6,7 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class SightSystemClient : public SightSystem, public Subject {
+class SightSystemClient : public SightSystem, public Subject, public Observer {
 public:
     static SystemType GetType()
     {
@@ -17,6 +17,12 @@ public:
     SightSystemClient();
 
     bool DebugRender() override;
+
+    void OnNotify(const Event& event) override;
+
+private:
+    void OnSeenNewEntity(Entity seenEntity) const;
+    void OnSeenLostEntity(Entity seenEntity) const;
 };
 }
 

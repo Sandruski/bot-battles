@@ -127,6 +127,11 @@ bool GameClient::Init()
     if (!ret) {
         return ret;
     }
+    std::weak_ptr<SightSystemClient> sightSystemClient = m_systemManager->GetSystem<SightSystemClient>();
+    ret = m_clientComponent.m_replicationManager.AddObserver(sightSystemClient);
+    if (!ret) {
+        return ret;
+    }
 
     ret = Game::Init();
 

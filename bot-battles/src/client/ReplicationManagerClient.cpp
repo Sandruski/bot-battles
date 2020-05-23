@@ -38,47 +38,50 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream) const
         inputStream.Read(isReplicated);
         bool wasReplicated = false;
         inputStream.Read(wasReplicated);
+
+        if (isReplicated) {
+            ReplicationActionType replicationActionType = ReplicationActionType::NONE;
+            inputStream.Read(replicationActionType, 2);
+
+            switch (replicationActionType) {
+
+            case ReplicationActionType::CREATE: {
+                ILOG("CREATE RECEIVED");
+                ReadCreateAction(inputStream, networkID, frame);
+                break;
+            }
+
+            case ReplicationActionType::UPDATE: {
+                ILOG("UPDATE RECEIVED");
+                ReadUpdateAction(inputStream, networkID, frame);
+                break;
+            }
+
+            case ReplicationActionType::REMOVE: {
+                ReadRemoveAction(networkID);
+                ILOG("REMOVE RECEIVED");
+                break;
+            }
+
+            default: {
+                WLOG("Unknown replication action received from networkID %u", networkID);
+                break;
+            }
+            }
+        }
+
         if (!isReplicated && wasReplicated) {
             Event newEvent;
             newEvent.eventType = EventType::SEEN_LOST_ENTITY;
             Entity entity = linkingContext.GetEntity(networkID);
             newEvent.sight.entity = entity;
             NotifyEvent(newEvent);
-            continue;
         } else if (isReplicated && !wasReplicated) {
             Event newEvent;
             newEvent.eventType = EventType::SEEN_NEW_ENTITY;
             Entity entity = linkingContext.GetEntity(networkID);
             newEvent.sight.entity = entity;
             NotifyEvent(newEvent);
-        }
-        ReplicationActionType replicationActionType = ReplicationActionType::NONE;
-        inputStream.Read(replicationActionType, 2);
-
-        switch (replicationActionType) {
-
-        case ReplicationActionType::CREATE: {
-            ILOG("CREATE RECEIVED");
-            ReadCreateAction(inputStream, networkID, frame);
-            break;
-        }
-
-        case ReplicationActionType::UPDATE: {
-            ILOG("UPDATE RECEIVED");
-            ReadUpdateAction(inputStream, networkID, frame);
-            break;
-        }
-
-        case ReplicationActionType::REMOVE: {
-            ReadRemoveAction(networkID);
-            ILOG("REMOVE RECEIVED");
-            break;
-        }
-
-        default: {
-            WLOG("Unknown replication action received from networkID %u", networkID);
-            break;
-        }
         }
     }
 
