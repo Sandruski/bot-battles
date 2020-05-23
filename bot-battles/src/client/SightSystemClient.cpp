@@ -5,7 +5,6 @@
 #include "LinkingContext.h"
 #include "RendererComponent.h"
 #include "SightComponent.h"
-#include "SpriteComponent.h"
 #include "TransformComponent.h"
 
 namespace sand {
@@ -19,7 +18,7 @@ SightSystemClient::SightSystemClient()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool SightSystemClient::Render()
+bool SightSystemClient::DebugRender()
 {
     OPTICK_EVENT();
 
@@ -85,9 +84,6 @@ void SightSystemClient::OnSeenNewEntity(Entity seenEntity) const
 
         sightComponent.lock()->m_seenEntities.emplace_back(seenEntity);
     }
-
-    std::weak_ptr<SpriteComponent> spriteComponent = g_gameClient->GetComponentManager().GetComponent<SpriteComponent>(seenEntity);
-    spriteComponent.lock()->m_pct = 0.0f;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -110,8 +106,5 @@ void SightSystemClient::OnSeenLostEntity(Entity seenEntity) const
         std::vector<Entity>::const_iterator it = std::find(sightComponent.lock()->m_seenEntities.begin(), sightComponent.lock()->m_seenEntities.end(), seenEntity);
         sightComponent.lock()->m_seenEntities.erase(it);
     }
-
-    std::weak_ptr<SpriteComponent> spriteComponent = g_gameClient->GetComponentManager().GetComponent<SpriteComponent>(seenEntity);
-    spriteComponent.lock()->m_pct = 0.4f;
 }
 }

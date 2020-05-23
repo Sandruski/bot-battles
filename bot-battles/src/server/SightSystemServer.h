@@ -20,7 +20,7 @@ public:
 
     bool PreUpdate() override;
     bool Update() override;
-    bool Render() override;
+    bool DebugRender() override;
 
 private:
     bool IsInFoV(glm::vec2 position, glm::vec2 targetPosition, glm::vec2 direction, F32 angle) const;

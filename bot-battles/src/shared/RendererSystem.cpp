@@ -62,7 +62,7 @@ bool RendererSystem::StartUp()
     rendererComponent.UpdateBackgroundColor();
     glClearDepth(1.0f);
     glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_ALWAYS);
+    glDepthFunc(GL_LEQUAL);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -135,11 +135,10 @@ bool RendererSystem::Render()
                 break;
             }
 
-            glm::vec3 position = transformComponent2.lock()->GetPositionAndLayer();
-            ILOG("Layer is %u", transformComponent2.lock()->m_layerType);
+            glm::vec3 position = transformComponent2.lock()->GetDebugPositionAndLayer();
             F32 rotation = transformComponent2.lock()->m_rotation;
             glm::uvec4 textureCoords = spriteComponent2.lock()->GetSpriteTextureCoords();
-            glm::vec3 scale = glm::vec3(static_cast<F32>(textureCoords.z), static_cast<F32>(textureCoords.w), 1.0f);
+            glm::vec3 scale = glm::vec3(static_cast<F32>(textureCoords.z), static_cast<F32>(textureCoords.w), 0.0f);
 
             glm::mat4 model = glm::mat4(1.0f);
             position.x *= proportion.x;
@@ -164,9 +163,7 @@ bool RendererSystem::Render()
             ++i;
         }
 
-        glm::vec4 color = spriteComponent.lock()->m_color;
-        F32 pct = spriteComponent.lock()->m_pct;
-        rendererComponent.DrawTexturedQuad(models, texCoords, texture, color, pct);
+        rendererComponent.DrawTexturedQuad(models, texCoords, texture);
     }
 
     return true;

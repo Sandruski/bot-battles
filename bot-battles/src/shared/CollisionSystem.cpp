@@ -11,7 +11,7 @@ void CollisionSystem::DebugDraw(RendererComponent& rendererComponent, std::weak_
 {
     glm::vec3 position = transformComponent.lock()->GetDebugPositionAndLayer();
     F32 rotation = transformComponent.lock()->m_rotation;
-    glm::vec3 scale = glm::vec3(colliderComponent.lock()->m_size.x, colliderComponent.lock()->m_size.y, 1.0f);
+    glm::vec3 scale = glm::vec3(colliderComponent.lock()->m_size.x, colliderComponent.lock()->m_size.y, 0.0f);
 
     switch (colliderComponent.lock()->m_shapeType) {
 

@@ -42,10 +42,6 @@ struct SpriteComponent : public Component
     std::weak_ptr<SpriteResource> m_spriteResource;
     std::unordered_map<std::string, glm::uvec4> m_spriteNameToTextureCoords;
     std::string m_spriteName;
-
-    // Local
-    glm::vec4 m_color;
-    F32 m_pct;
 };
 }
 

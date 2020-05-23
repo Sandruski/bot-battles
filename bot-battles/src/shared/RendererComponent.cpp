@@ -56,7 +56,7 @@ void RendererComponent::UpdateBackgroundColor() const
 }
 
 //----------------------------------------------------------------------------------------------------
-void RendererComponent::DrawLine(const glm::vec3& fromPosition, const glm::vec3& toPosition, const glm::vec4& color)
+void RendererComponent::DrawLine(glm::vec3 fromPosition, glm::vec3 toPosition, glm::vec4 color)
 {
     WindowComponent& windowComponent = g_game->GetWindowComponent();
     glm::vec2 proportion = windowComponent.GetProportion();
@@ -87,7 +87,7 @@ void RendererComponent::DrawLine(const glm::vec3& fromPosition, const glm::vec3&
 }
 
 //----------------------------------------------------------------------------------------------------
-void RendererComponent::DrawCircle(glm::vec3& position, F32 rotation, glm::vec3& scale, U32 sides, F32 angle, F32 radius, const glm::vec4& color, bool filled)
+void RendererComponent::DrawCircle(glm::vec3 position, F32 rotation, glm::vec3 scale, U32 sides, F32 angle, F32 radius, glm::vec4 color, bool filled)
 {
     if (!filled) {
         SetWireframe(true);
@@ -134,7 +134,7 @@ void RendererComponent::DrawCircle(glm::vec3& position, F32 rotation, glm::vec3&
 }
 
 //----------------------------------------------------------------------------------------------------
-void RendererComponent::DrawQuad(glm::vec3& position, F32 rotation, glm::vec3& scale, const glm::vec4& color, bool filled)
+void RendererComponent::DrawQuad(glm::vec3 position, F32 rotation, glm::vec3 scale, glm::vec4 color, bool filled)
 {
     if (!filled) {
         SetWireframe(true);
@@ -178,7 +178,7 @@ void RendererComponent::DrawQuad(glm::vec3& position, F32 rotation, glm::vec3& s
 }
 
 //----------------------------------------------------------------------------------------------------
-void RendererComponent::DrawTexturedQuad(const std::vector<glm::mat4>& models, const std::vector<glm::vec2>& texCoords, U32 texture, const glm::vec4& color, F32 pct)
+void RendererComponent::DrawTexturedQuad(const std::vector<glm::mat4>& models, const std::vector<glm::vec2>& texCoords, U32 texture)
 {
     WindowComponent& windowComponent = g_game->GetWindowComponent();
 
@@ -192,11 +192,8 @@ void RendererComponent::DrawTexturedQuad(const std::vector<glm::mat4>& models, c
     U32 projectionLoc = glGetUniformLocation(m_shaderResource.lock()->GetProgram(), "projection");
     glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
-    U32 colorLoc = glGetUniformLocation(m_shaderResource.lock()->GetProgram(), "color");
-    glUniform4fv(colorLoc, 1, glm::value_ptr(color));
-
     U32 pctLoc = glGetUniformLocation(m_shaderResource.lock()->GetProgram(), "pct");
-    glUniform1f(pctLoc, pct);
+    glUniform1f(pctLoc, 0.0f);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture);
