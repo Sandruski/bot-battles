@@ -41,11 +41,11 @@ def onHitWallEnter(input, collisionEvent):
 def onHitWallExit(input, collisionEvent):
     myBot.onHitWallExit(input, collisionEvent)
 
-def onSeenBotEnter(input):
-    myBot.onSeenBotEnter(input)
+def onSeenNewBot(input):
+    myBot.onSeenNewBot(input)
 
-def onSeenBotExit(input):
-    myBot.onSeenBotExit(input)
+def onSeenLostBot(input):
+    myBot.onSeenLostBot(input)
 
 def log():
     content = stream.getvalue()

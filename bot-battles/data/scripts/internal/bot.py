@@ -14,10 +14,10 @@ class Bot:
     def onHitWallExit(self, input, collisionEvent):
         pass
 
-    def onSeenBotEnter(self, input):
+    def onSeenNewBot(self, input):
         pass
 
-    def onSeenBotExit(self, input):
+    def onSeenLostBot(self, input):
         pass
 
     #def onHitByBullet(self, input):

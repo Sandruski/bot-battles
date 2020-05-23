@@ -123,6 +123,10 @@ bool GameClient::Init()
     if (!ret) {
         return ret;
     }
+    ret = m_clientComponent.m_replicationManager.AddObserver(scriptingSystem);
+    if (!ret) {
+        return ret;
+    }
 
     ret = Game::Init();
 

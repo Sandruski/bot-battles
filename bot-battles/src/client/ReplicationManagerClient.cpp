@@ -28,11 +28,30 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream) const
         clientComponent.m_frameBuffer.Add(Frame(frame, startFrameTime));
     }
 
+    LinkingContext& linkingContext = g_gameClient->GetLinkingContext();
+
     while (inputStream.GetRemainingBitCount() >= 8) {
 
         NetworkID networkID = INVALID_NETWORK_ID;
         inputStream.Read(networkID);
-
+        bool isReplicated = false;
+        inputStream.Read(isReplicated);
+        bool wasReplicated = false;
+        inputStream.Read(wasReplicated);
+        if (!isReplicated && wasReplicated) {
+            Event newEvent;
+            newEvent.eventType = EventType::SEEN_LOST_ENTITY;
+            Entity entity = linkingContext.GetEntity(networkID);
+            newEvent.sight.entity = entity;
+            NotifyEvent(newEvent);
+            continue;
+        } else if (isReplicated && !wasReplicated) {
+            Event newEvent;
+            newEvent.eventType = EventType::SEEN_NEW_ENTITY;
+            Entity entity = linkingContext.GetEntity(networkID);
+            newEvent.sight.entity = entity;
+            NotifyEvent(newEvent);
+        }
         ReplicationActionType replicationActionType = ReplicationActionType::NONE;
         inputStream.Read(replicationActionType, 2);
 
@@ -64,7 +83,6 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream) const
     }
 
     if (clientComponent.m_isEntityInterpolation) {
-        LinkingContext& linkingContext = g_gameClient->GetLinkingContext();
         const std::unordered_map<NetworkID, Entity>& networkIDToEntityMap = linkingContext.GetNetworkIDToEntityMap();
         for (const auto& pair : networkIDToEntityMap) {
             Entity entity = pair.second;

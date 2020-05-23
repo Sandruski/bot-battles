@@ -26,7 +26,7 @@ bool ReplicationManagerServer::AddCommand(NetworkID networkID, U32 dirtyState, b
         return false;
     }
 
-    m_networkIDToReplicationCommand[networkID] = ReplicationCommand(ReplicationActionType::CREATE, isReplicated, dirtyState);
+    m_networkIDToReplicationCommand[networkID] = ReplicationCommand(ReplicationActionType::CREATE, dirtyState, isReplicated);
 
     return true;
 }
@@ -73,7 +73,7 @@ void ReplicationManagerServer::SetRemove(NetworkID networkID)
 //----------------------------------------------------------------------------------------------------
 void ReplicationManagerServer::SetIsReplicated(NetworkID networkID, bool isReplicated)
 {
-    m_networkIDToReplicationCommand.at(networkID).m_isReplicated = isReplicated;
+    m_networkIDToReplicationCommand.at(networkID).SetIsReplicated(isReplicated);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -92,7 +92,9 @@ void ReplicationManagerServer::Write(OutputMemoryStream& outputStream, Replicati
     for (auto& pair : m_networkIDToReplicationCommand) {
 
         ReplicationCommand& replicationCommand = pair.second;
-        if (!replicationCommand.m_isReplicated) {
+        const bool isReplicated = replicationCommand.GetIsReplicated();
+        const bool wasReplicated = replicationCommand.GetWasReplicated();
+        if (!isReplicated && !wasReplicated) {
             continue;
         }
 
@@ -103,43 +105,56 @@ void ReplicationManagerServer::Write(OutputMemoryStream& outputStream, Replicati
 
             NetworkID networkID = pair.first;
             outputStream.Write(networkID);
-            outputStream.Write(replicationCommand.m_replicationActionType, 2);
+            outputStream.Write(isReplicated);
+            outputStream.Write(wasReplicated);
 
-            U32 writtenState = 0;
+            if (isReplicated) {
+                outputStream.Write(replicationCommand.m_replicationActionType, 2);
 
-            switch (replicationCommand.m_replicationActionType) {
+                U32 writtenState = 0;
 
-            case ReplicationActionType::CREATE: {
-                ILOG("CREATE SENT");
-                writtenState = WriteCreateAction(outputStream, networkID, replicationCommand.GetDirtyState());
-                break;
-            }
+                switch (replicationCommand.m_replicationActionType) {
 
-            case ReplicationActionType::UPDATE: {
-                ILOG("UPDATE SENT");
-                writtenState = WriteUpdateAction(outputStream, networkID, replicationCommand.GetDirtyState());
-                break;
-            }
+                case ReplicationActionType::CREATE: {
+                    ILOG("CREATE SENT");
+                    writtenState = WriteCreateAction(outputStream, networkID, replicationCommand.GetDirtyState());
+                    break;
+                }
 
-            case ReplicationActionType::REMOVE: {
-                ILOG("REMOVE SENT");
-                break;
-            }
+                case ReplicationActionType::UPDATE: {
+                    ILOG("UPDATE SENT");
+                    writtenState = WriteUpdateAction(outputStream, networkID, replicationCommand.GetDirtyState());
+                    break;
+                }
 
-            default: {
-                WLOG("Unknown replication action received from networkID %u", networkID);
-                break;
-            }
+                case ReplicationActionType::REMOVE: {
+                    ILOG("REMOVE SENT");
+                    break;
+                }
+
+                default: {
+                    WLOG("Unknown replication action received from networkID %u", networkID);
+                    break;
+                }
+                }
             }
 
             replicationResultManager.AddDelivery(networkID, replicationCommand);
 
-            replicationCommand.RemoveDirtyState(static_cast<U32>(ComponentMemberType::ALL));
-            //replicationCommand.RemoveDirtyState(writtenState);
+            if (isReplicated) {
+                replicationCommand.RemoveDirtyState(static_cast<U32>(ComponentMemberType::ALL));
+                //replicationCommand.RemoveDirtyState(writtenState);
 
-            if (replicationCommand.m_replicationActionType == ReplicationActionType::CREATE
-                || replicationCommand.m_replicationActionType == ReplicationActionType::REMOVE) {
-                replicationCommand.m_replicationActionType = ReplicationActionType::NONE;
+                if (replicationCommand.m_replicationActionType == ReplicationActionType::CREATE
+                    || replicationCommand.m_replicationActionType == ReplicationActionType::REMOVE) {
+                    replicationCommand.m_replicationActionType = ReplicationActionType::NONE;
+                }
+            }
+
+            if (!isReplicated && wasReplicated) {
+                replicationCommand.SetWasReplicated(false);
+            } else if (isReplicated && !wasReplicated) {
+                replicationCommand.SetWasReplicated(true);
             }
         }
     }

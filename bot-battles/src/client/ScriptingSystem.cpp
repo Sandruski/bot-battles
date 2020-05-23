@@ -104,14 +104,12 @@ void ScriptingSystemClient::OnNotify(const Event& event)
     }
 
     case EventType::SEEN_NEW_ENTITY: {
-        // TODO
-        OnSeenBotEnter();
+        OnSeenNewEntity(event.sight.entity);
         break;
     }
 
     case EventType::SEEN_LOST_ENTITY: {
-        // TODO
-        OnSeenBotExit();
+        OnSeenLostEntity(event.sight.entity);
         break;
     }
 
@@ -242,24 +240,26 @@ void ScriptingSystemClient::OnCollisionExit(Entity entityA, Entity entityB, glm:
 }
 
 //----------------------------------------------------------------------------------------------------
-void ScriptingSystemClient::OnSeenBotEnter() const
+void ScriptingSystemClient::OnSeenNewEntity(Entity /*entity*/) const
 {
+    // TODO: call different methods for different components
     ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();
     InputComponent& inputComponent = g_gameClient->GetInputComponent();
     try {
-        scriptingComponent.m_mainModule.attr("onSeenBotEnter")(&inputComponent);
+        scriptingComponent.m_mainModule.attr("onSeenNewBot")(&inputComponent);
         scriptingComponent.m_mainModule.attr("log")();
     } catch (const std::runtime_error& /*re*/) {
     }
 }
 
 //----------------------------------------------------------------------------------------------------
-void ScriptingSystemClient::OnSeenBotExit() const
+void ScriptingSystemClient::OnSeenLostEntity(Entity /*entity*/) const
 {
+    // TODO: call different methods for different components
     ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();
     InputComponent& inputComponent = g_gameClient->GetInputComponent();
     try {
-        scriptingComponent.m_mainModule.attr("onSeenBotExit")(&inputComponent);
+        scriptingComponent.m_mainModule.attr("onSeenLostBot")(&inputComponent);
         scriptingComponent.m_mainModule.attr("log")();
     } catch (const std::runtime_error& /*re*/) {
     }

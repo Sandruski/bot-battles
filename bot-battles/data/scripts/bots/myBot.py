@@ -27,8 +27,8 @@ class MyBot(bot.Bot):
         #logging.info('Wall hit exit')
         pass
 
-    def onSeenBotEnter(self, input):
-        logging.info('Bot seen enter')
+    def onSeenNewBot(self, input):
+        logging.info('Seen NEW bot')
 
-    def onSeenBotExit(self, input):
-        logging.info('Bot seen exit')
+    def onSeenLostBot(self, input):
+        logging.info('Seen LOST bot')
