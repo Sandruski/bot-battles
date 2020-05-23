@@ -1,12 +1,12 @@
 #ifndef __WEAPON_SYSTEM_CLIENT_H__
 #define __WEAPON_SYSTEM_CLIENT_H__
 
-#include "System.h"
+#include "WeaponSystem.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class WeaponSystemClient : public System {
+class WeaponSystemClient : public WeaponSystem {
 public:
     static SystemType GetType()
     {

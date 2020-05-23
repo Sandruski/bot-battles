@@ -1,12 +1,12 @@
 #ifndef __MOVEMENT_SYSTEM_CLIENT_H__
 #define __MOVEMENT_SYSTEM_CLIENT_H__
 
-#include "System.h"
+#include "MovementSystem.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class MovementSystemClient : public System {
+class MovementSystemClient : public MovementSystem {
 public:
     static SystemType GetType()
     {
@@ -17,6 +17,7 @@ public:
     MovementSystemClient();
 
     bool Update() override;
+    bool DebugRender() override;
 };
 }
 

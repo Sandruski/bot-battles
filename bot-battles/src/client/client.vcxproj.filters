@@ -97,13 +97,22 @@
     <Filter Include="Source Files\Utils">
       <UniqueIdentifier>{67f23cbf-b8ee-4937-8579-ab78d5c59de9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Systems\Unique">
+      <UniqueIdentifier>{f0dbb705-2a37-44c1-bb4c-f7f65661600e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Systems\Shared">
+      <UniqueIdentifier>{df0aa16b-c584-4104-8c76-2465266b9048}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Systems\Unique">
+      <UniqueIdentifier>{d4c11f9e-1ed4-4d43-9fd2-81447475becf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Systems\Shared">
+      <UniqueIdentifier>{d4369e05-5a15-45e3-9c1d-c0fa4fc3e987}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ClientSystem.cpp">
-      <Filter>Source Files\Systems</Filter>
     </ClCompile>
     <ClCompile Include="ReplicationManagerClient.cpp">
       <Filter>Source Files\Networking</Filter>
@@ -120,23 +129,8 @@
     <ClCompile Include="pchClient.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WeaponSystemClient.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="CollisionSystemClient.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="InputSystemClient.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
     <ClCompile Include="Frame.cpp">
       <Filter>Source Files\Networking</Filter>
-    </ClCompile>
-    <ClCompile Include="MovementSystemClient.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="RemotePlayerMovementSystem.cpp">
-      <Filter>Source Files\Systems</Filter>
     </ClCompile>
     <ClCompile Include="..\dependencies\source\imgui\imgui.cpp">
       <Filter>Dependencies\imgui</Filter>
@@ -189,9 +183,6 @@
     <ClCompile Include="StatesPanelClient.cpp">
       <Filter>Source Files\Panels\Debug Options</Filter>
     </ClCompile>
-    <ClCompile Include="OutputSystemClient.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
     <ClCompile Include="ClientComponent.cpp">
       <Filter>Source Files\Components\System Components</Filter>
     </ClCompile>
@@ -207,9 +198,6 @@
     <ClCompile Include="ScoreboardStateClient.cpp">
       <Filter>Source Files\States\Scoreboard States</Filter>
     </ClCompile>
-    <ClCompile Include="ScriptingSystem.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
     <ClCompile Include="ScriptingComponent.cpp">
       <Filter>Source Files\Components\System Components</Filter>
     </ClCompile>
@@ -219,14 +207,35 @@
     <ClCompile Include="BotBattlesModule.cpp">
       <Filter>Source Files\Scripting</Filter>
     </ClCompile>
+    <ClCompile Include="CollisionSystemClient.cpp">
+      <Filter>Source Files\Systems\Shared</Filter>
+    </ClCompile>
+    <ClCompile Include="MovementSystemClient.cpp">
+      <Filter>Source Files\Systems\Shared</Filter>
+    </ClCompile>
+    <ClCompile Include="RemotePlayerMovementSystem.cpp">
+      <Filter>Source Files\Systems\Shared</Filter>
+    </ClCompile>
     <ClCompile Include="SightSystemClient.cpp">
-      <Filter>Source Files\Systems</Filter>
+      <Filter>Source Files\Systems\Shared</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponSystemClient.cpp">
+      <Filter>Source Files\Systems\Shared</Filter>
+    </ClCompile>
+    <ClCompile Include="InputSystemClient.cpp">
+      <Filter>Source Files\Systems\Unique</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptingSystem.cpp">
+      <Filter>Source Files\Systems\Unique</Filter>
+    </ClCompile>
+    <ClCompile Include="OutputSystemClient.cpp">
+      <Filter>Source Files\Systems\Unique</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientSystem.cpp">
+      <Filter>Source Files\Systems\Unique</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ClientSystem.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
     <ClInclude Include="ReplicationManagerClient.h">
       <Filter>Header Files\Networking</Filter>
     </ClInclude>
@@ -242,23 +251,8 @@
     <ClInclude Include="pchClient.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WeaponSystemClient.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="CollisionSystemClient.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="InputSystemClient.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
     <ClInclude Include="Frame.h">
       <Filter>Header Files\Networking</Filter>
-    </ClInclude>
-    <ClInclude Include="MovementSystemClient.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="RemotePlayerMovementSystem.h">
-      <Filter>Header Files\Systems</Filter>
     </ClInclude>
     <ClInclude Include="SetupStateClient.h">
       <Filter>Header Files\States\Main Menu States</Filter>
@@ -278,9 +272,6 @@
     <ClInclude Include="RestartStateClient.h">
       <Filter>Header Files\States\Scoreboard States</Filter>
     </ClInclude>
-    <ClInclude Include="OutputSystemClient.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
     <ClInclude Include="ClientComponent.h">
       <Filter>Header Files\Components\System Components</Filter>
     </ClInclude>
@@ -299,17 +290,38 @@
     <ClInclude Include="ScoreboardStateClient.h">
       <Filter>Header Files\States\Scoreboard States</Filter>
     </ClInclude>
-    <ClInclude Include="ScriptingSystem.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
     <ClInclude Include="ScriptingComponent.h">
       <Filter>Header Files\Components\System Components</Filter>
     </ClInclude>
     <ClInclude Include="UtilsClient.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="CollisionSystemClient.h">
+      <Filter>Header Files\Systems\Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="MovementSystemClient.h">
+      <Filter>Header Files\Systems\Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="RemotePlayerMovementSystem.h">
+      <Filter>Header Files\Systems\Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponSystemClient.h">
+      <Filter>Header Files\Systems\Shared</Filter>
+    </ClInclude>
     <ClInclude Include="SightSystemClient.h">
-      <Filter>Header Files\Systems</Filter>
+      <Filter>Header Files\Systems\Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptingSystem.h">
+      <Filter>Header Files\Systems\Unique</Filter>
+    </ClInclude>
+    <ClInclude Include="InputSystemClient.h">
+      <Filter>Header Files\Systems\Unique</Filter>
+    </ClInclude>
+    <ClInclude Include="OutputSystemClient.h">
+      <Filter>Header Files\Systems\Unique</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientSystem.h">
+      <Filter>Header Files\Systems\Unique</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,12 +1,12 @@
 #ifndef __SIGHT_SYSTEM_CLIENT_H__
 #define __SIGHT_SYSTEM_CLIENT_H__
 
-#include "System.h"
+#include "SightSystem.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class SightSystemClient : public System, public Subject {
+class SightSystemClient : public SightSystem, public Subject {
 public:
     static SystemType GetType()
     {

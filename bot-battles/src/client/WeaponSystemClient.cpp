@@ -104,22 +104,20 @@ bool WeaponSystemClient::Render()
 {
     OPTICK_EVENT();
 
-    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     RendererComponent& rendererComponent = g_gameClient->GetRendererComponent();
-
-    for (auto& entity : m_entities) {
-        if (g_gameClient->GetLinkingContext().GetNetworkID(entity) >= INVALID_NETWORK_ID) {
+    LinkingContext& linkingContext = g_gameClient->GetLinkingContext();
+    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    for (const auto& entity : m_entities) {
+        NetworkID networkID = linkingContext.GetNetworkID(entity);
+        if (networkID >= INVALID_NETWORK_ID) {
             continue;
         }
 
-        std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
         std::weak_ptr<WeaponComponent> weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(entity);
-        if (!transformComponent.lock()->m_isEnabled || !weaponComponent.lock()->m_isEnabled) {
+        if (!weaponComponent.lock()->m_isEnabled) {
             continue;
         }
 
-        glm::vec3 fromPosition = glm::vec3(weaponComponent.lock()->m_origin.x, weaponComponent.lock()->m_origin.y, 0.0f);
-        glm::vec3 toPosition = glm::vec3(weaponComponent.lock()->m_destination.x, weaponComponent.lock()->m_destination.y, 0.0f);
         glm::vec4 color = White;
         if (clientComponent.IsLocalEntity(entity)) {
             switch (clientComponent.m_playerID) {
@@ -150,7 +148,8 @@ bool WeaponSystemClient::Render()
             }
             }
         }
-        rendererComponent.DrawLine(fromPosition, toPosition, color);
+
+        DebugDraw(rendererComponent, weaponComponent, color);
     }
 
     return true;

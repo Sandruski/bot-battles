@@ -85,13 +85,22 @@
     <Filter Include="Source Files\Components\System Components">
       <UniqueIdentifier>{9e5cc5ac-e959-4a0b-837e-c0839032b7f0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Systems\Unique">
+      <UniqueIdentifier>{44374029-af8e-4091-acba-b353bffc1901}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Systems\Shared">
+      <UniqueIdentifier>{300b6353-be94-4569-9068-10cdd21ded44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Systems\Unique">
+      <UniqueIdentifier>{84335d6d-4416-4a2b-af99-fd69c5a3ac8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Systems\Shared">
+      <UniqueIdentifier>{492c5ee0-2d9c-4715-aa40-f80bfd4a2dec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ServerSystem.cpp">
-      <Filter>Source Files\Systems</Filter>
     </ClCompile>
     <ClCompile Include="ClientProxy.cpp">
       <Filter>Source Files\Networking</Filter>
@@ -116,21 +125,6 @@
     </ClCompile>
     <ClCompile Include="pchServer.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="WeaponSystemServer.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="CollisionSystemServer.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="HealthSystem.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="SpawnerSystem.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="MovementSystemServer.cpp">
-      <Filter>Source Files\Systems</Filter>
     </ClCompile>
     <ClCompile Include="..\dependencies\source\imgui\imgui.cpp">
       <Filter>Dependencies\imgui</Filter>
@@ -183,9 +177,6 @@
     <ClCompile Include="NetworkingPanelServer.cpp">
       <Filter>Source Files\Panels\Debug Options</Filter>
     </ClCompile>
-    <ClCompile Include="OutputSystemServer.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
     <ClCompile Include="ServerComponent.cpp">
       <Filter>Source Files\Components\System Components</Filter>
     </ClCompile>
@@ -201,8 +192,29 @@
     <ClCompile Include="ScoreboardStateServer.cpp">
       <Filter>Source Files\States\Scoreboard States</Filter>
     </ClCompile>
+    <ClCompile Include="CollisionSystemServer.cpp">
+      <Filter>Source Files\Systems\Shared</Filter>
+    </ClCompile>
+    <ClCompile Include="MovementSystemServer.cpp">
+      <Filter>Source Files\Systems\Shared</Filter>
+    </ClCompile>
     <ClCompile Include="SightSystemServer.cpp">
-      <Filter>Source Files\Systems</Filter>
+      <Filter>Source Files\Systems\Shared</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponSystemServer.cpp">
+      <Filter>Source Files\Systems\Shared</Filter>
+    </ClCompile>
+    <ClCompile Include="HealthSystem.cpp">
+      <Filter>Source Files\Systems\Unique</Filter>
+    </ClCompile>
+    <ClCompile Include="SpawnerSystem.cpp">
+      <Filter>Source Files\Systems\Unique</Filter>
+    </ClCompile>
+    <ClCompile Include="OutputSystemServer.cpp">
+      <Filter>Source Files\Systems\Unique</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerSystem.cpp">
+      <Filter>Source Files\Systems\Unique</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -227,24 +239,6 @@
     <ClInclude Include="pchServer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WeaponSystemServer.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="CollisionSystemServer.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="HealthSystem.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="ServerSystem.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="SpawnerSystem.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="MovementSystemServer.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
     <ClInclude Include="StartStateServer.h">
       <Filter>Header Files\States\Gameplay States</Filter>
     </ClInclude>
@@ -266,9 +260,6 @@
     <ClInclude Include="PlayStateServer.h">
       <Filter>Header Files\States\Gameplay States</Filter>
     </ClInclude>
-    <ClInclude Include="OutputSystemServer.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
     <ClInclude Include="PlayerComponent.h">
       <Filter>Header Files\Components\Entity Components</Filter>
     </ClInclude>
@@ -284,8 +275,29 @@
     <ClInclude Include="ScoreboardStateServer.h">
       <Filter>Header Files\States\Scoreboard States</Filter>
     </ClInclude>
+    <ClInclude Include="CollisionSystemServer.h">
+      <Filter>Header Files\Systems\Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="MovementSystemServer.h">
+      <Filter>Header Files\Systems\Shared</Filter>
+    </ClInclude>
     <ClInclude Include="SightSystemServer.h">
-      <Filter>Header Files\Systems</Filter>
+      <Filter>Header Files\Systems\Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponSystemServer.h">
+      <Filter>Header Files\Systems\Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="HealthSystem.h">
+      <Filter>Header Files\Systems\Unique</Filter>
+    </ClInclude>
+    <ClInclude Include="SpawnerSystem.h">
+      <Filter>Header Files\Systems\Unique</Filter>
+    </ClInclude>
+    <ClInclude Include="OutputSystemServer.h">
+      <Filter>Header Files\Systems\Unique</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerSystem.h">
+      <Filter>Header Files\Systems\Unique</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

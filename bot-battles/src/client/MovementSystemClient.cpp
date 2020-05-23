@@ -98,4 +98,28 @@ bool MovementSystemClient::Update()
 
     return true;
 }
+
+//----------------------------------------------------------------------------------------------------
+bool MovementSystemClient::DebugRender()
+{
+    OPTICK_EVENT();
+
+    RendererComponent& rendererComponent = g_gameClient->GetRendererComponent();
+    LinkingContext& linkingContext = g_gameClient->GetLinkingContext();
+    for (const auto& entity : m_entities) {
+        NetworkID networkID = linkingContext.GetNetworkID(entity);
+        if (networkID >= INVALID_NETWORK_ID) {
+            continue;
+        }
+
+        std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
+        if (!transformComponent.lock()->m_isEnabled) {
+            continue;
+        }
+
+        DebugDraw(rendererComponent, transformComponent);
+    }
+
+    return true;
+}
 }

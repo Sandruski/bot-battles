@@ -166,24 +166,24 @@ bool MovementSystemServer::Update()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool MovementSystemServer::RenderGui()
+bool MovementSystemServer::DebugRender()
 {
     OPTICK_EVENT();
 
     RendererComponent& rendererComponent = g_gameServer->GetRendererComponent();
+    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
+    for (const auto& entity : m_entities) {
+        PlayerID playerID = serverComponent.GetPlayerID(entity);
+        if (playerID >= INVALID_PLAYER_ID) {
+            continue;
+        }
 
-    for (auto& entity : m_entities) {
         std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
         if (!transformComponent.lock()->m_isEnabled) {
             continue;
         }
 
-        glm::vec3 fromPosition = transformComponent.lock()->GetDebugPositionAndLayer();
-        glm::vec2 direction = transformComponent.lock()->GetDirection();
-        glm::vec3 toPosition = fromPosition + glm::vec3(direction.x, direction.y, 0.0f) * 40.0f;
-        glm::vec4 color = Green;
-        color.a = 0.5f;
-        rendererComponent.DrawLine(fromPosition, toPosition, color);
+        DebugDraw(rendererComponent, transformComponent);
     }
 
     return true;

@@ -19,6 +19,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)ByteSwap.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)CircularBuffer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ColliderComponent.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)CollisionSystem.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Colors.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Component.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ComponentDefs.h" />
@@ -55,6 +56,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)MeshResource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MessageTypes.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Input.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MovementSystem.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MyTime.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MyTimer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)NetDefs.h" />
@@ -84,6 +86,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)ShaderResource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Shaders.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SightComponent.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)SightSystem.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SpawnComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SpriteResource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)RendererComponent.h" />
@@ -94,6 +97,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Transform.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)WallComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)WeaponComponent.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)WeaponSystem.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)WindowComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SocketAddress.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SpriteComponent.h" />
@@ -115,6 +119,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)AckRange.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)BotComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ColliderComponent.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)CollisionSystem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Colors.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Component.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ComponentManager.cpp" />
@@ -141,6 +146,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)MapImporter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MeshImporter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MeshResource.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)MovementSystem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MyTimer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)NetworkingPanel.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)OutputMemoryStream.cpp" />
@@ -158,12 +164,14 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)ShaderImporter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ShaderResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SightComponent.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)SightSystem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SpawnComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)StatesPanel.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TCPSocket.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Transform.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)WallComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)WeaponComponent.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)WeaponSystem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)WindowComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SpriteComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SpriteResource.cpp" />

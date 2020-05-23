@@ -1,12 +1,12 @@
 #ifndef __REMOTE_PLAYER_MOVEMENT_SYSTEM_H__
 #define __REMOTE_PLAYER_MOVEMENT_SYSTEM_H__
 
-#include "System.h"
+#include "MovementSystem.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class RemotePlayerMovementSystem : public System {
+class RemotePlayerMovementSystem : public MovementSystem {
 public:
     static SystemType GetType()
     {
@@ -17,6 +17,7 @@ public:
     RemotePlayerMovementSystem();
 
     bool Update() override;
+    bool DebugRender() override;
 };
 }
 

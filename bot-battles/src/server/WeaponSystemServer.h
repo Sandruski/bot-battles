@@ -1,12 +1,12 @@
 #ifndef __WEAPON_SYSTEM_SERVER_H__
 #define __WEAPON_SYSTEM_SERVER_H__
 
-#include "System.h"
+#include "WeaponSystem.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class WeaponSystemServer : public System, public Subject {
+class WeaponSystemServer : public WeaponSystem, public Subject {
 public:
     static SystemType GetType()
     {

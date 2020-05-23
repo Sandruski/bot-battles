@@ -1,12 +1,12 @@
 #ifndef __MOVEMENT_SYSTEM_SERVER_H__
 #define __MOVEMENT_SYSTEM_SERVER_H__
 
-#include "System.h"
+#include "MovementSystem.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class MovementSystemServer : public System, public Subject {
+class MovementSystemServer : public MovementSystem, public Subject {
 public:
     static SystemType GetType()
     {
@@ -18,7 +18,7 @@ public:
 
     bool PreUpdate() override;
     bool Update() override;
-    bool RenderGui() override;
+    bool DebugRender() override;
 };
 }
 

@@ -88,9 +88,6 @@
     <Filter Include="Header Files\Resources\Importers">
       <UniqueIdentifier>{0972d3bd-9d44-4252-9ed0-33be6aaf602b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Systems\Systems">
-      <UniqueIdentifier>{ed66fbfb-2826-4b73-9c4c-c2d97d76c26d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Components\Entity Components">
       <UniqueIdentifier>{8b345871-9048-4fc2-8c14-39bb784c2338}</UniqueIdentifier>
     </Filter>
@@ -103,8 +100,17 @@
     <Filter Include="Source Files\Resources\Resources">
       <UniqueIdentifier>{14465402-cfbe-491b-aa1c-27abadb67d1f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Systems\Systems">
+    <Filter Include="Source Files\Systems\Unique">
       <UniqueIdentifier>{82e15572-71c6-433f-b938-603525e98917}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Systems\Shared">
+      <UniqueIdentifier>{a715b053-dc8a-4fad-b774-846d6837a826}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Systems\Unique">
+      <UniqueIdentifier>{ed66fbfb-2826-4b73-9c4c-c2d97d76c26d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Systems\Shared">
+      <UniqueIdentifier>{1ff7f8a8-7c98-49aa-b596-a4acff2b692d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -361,19 +367,19 @@
       <Filter>Header Files\Resources\Importers</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)EventSystem.h">
-      <Filter>Header Files\Systems\Systems</Filter>
+      <Filter>Header Files\Systems\Unique</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)GuiSystem.h">
-      <Filter>Header Files\Systems\Systems</Filter>
+      <Filter>Header Files\Systems\Unique</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)HUDSystem.h">
-      <Filter>Header Files\Systems\Systems</Filter>
+      <Filter>Header Files\Systems\Unique</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)RendererSystem.h">
-      <Filter>Header Files\Systems\Systems</Filter>
+      <Filter>Header Files\Systems\Unique</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)WindowSystem.h">
-      <Filter>Header Files\Systems\Systems</Filter>
+      <Filter>Header Files\Systems\Unique</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)WorkingDirDefs.h">
       <Filter>Header Files\Resources</Filter>
@@ -382,7 +388,7 @@
       <Filter>Header Files\Components\Entity Components</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)PhysicsSystem.h">
-      <Filter>Header Files\Systems\Systems</Filter>
+      <Filter>Header Files\Systems\Unique</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)PhysicsComponent.h">
       <Filter>Header Files\Components\System Components</Filter>
@@ -395,6 +401,18 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)SightComponent.h">
       <Filter>Header Files\Components\Entity Components</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)CollisionSystem.h">
+      <Filter>Header Files\Systems\Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)MovementSystem.h">
+      <Filter>Header Files\Systems\Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)WeaponSystem.h">
+      <Filter>Header Files\Systems\Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)SightSystem.h">
+      <Filter>Header Files\Systems\Shared</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -561,25 +579,25 @@
       <Filter>Source Files\Resources\Importers</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)EventSystem.cpp">
-      <Filter>Source Files\Systems\Systems</Filter>
+      <Filter>Source Files\Systems\Unique</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)GuiSystem.cpp">
-      <Filter>Source Files\Systems\Systems</Filter>
+      <Filter>Source Files\Systems\Unique</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)HUDSystem.cpp">
-      <Filter>Source Files\Systems\Systems</Filter>
+      <Filter>Source Files\Systems\Unique</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)RendererSystem.cpp">
-      <Filter>Source Files\Systems\Systems</Filter>
+      <Filter>Source Files\Systems\Unique</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)WindowSystem.cpp">
-      <Filter>Source Files\Systems\Systems</Filter>
+      <Filter>Source Files\Systems\Unique</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)BotComponent.cpp">
       <Filter>Source Files\Components\Entity Components</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)PhysicsSystem.cpp">
-      <Filter>Source Files\Systems\Systems</Filter>
+      <Filter>Source Files\Systems\Unique</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)PhysicsComponent.cpp">
       <Filter>Source Files\Components\System Components</Filter>
@@ -592,6 +610,18 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)SightComponent.cpp">
       <Filter>Source Files\Components\Entity Components</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)SightSystem.cpp">
+      <Filter>Source Files\Systems\Shared</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)MovementSystem.cpp">
+      <Filter>Source Files\Systems\Shared</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)WeaponSystem.cpp">
+      <Filter>Source Files\Systems\Shared</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)CollisionSystem.cpp">
+      <Filter>Source Files\Systems\Shared</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

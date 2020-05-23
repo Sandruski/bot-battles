@@ -143,23 +143,19 @@ bool WeaponSystemServer::Render()
 {
     OPTICK_EVENT();
 
-    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     RendererComponent& rendererComponent = g_gameServer->GetRendererComponent();
-
-    for (auto& entity : m_entities) {
+    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
+    for (const auto& entity : m_entities) {
         PlayerID playerID = serverComponent.GetPlayerID(entity);
         if (playerID >= INVALID_PLAYER_ID) {
             continue;
         }
 
-        std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
         std::weak_ptr<WeaponComponent> weaponComponent = g_gameServer->GetComponentManager().GetComponent<WeaponComponent>(entity);
-        if (!transformComponent.lock()->m_isEnabled || !weaponComponent.lock()->m_isEnabled) {
+        if (!weaponComponent.lock()->m_isEnabled) {
             continue;
         }
 
-        glm::vec3 fromPosition = glm::vec3(weaponComponent.lock()->m_origin.x, weaponComponent.lock()->m_origin.y, 0.0f);
-        glm::vec3 toPosition = glm::vec3(weaponComponent.lock()->m_destination.x, weaponComponent.lock()->m_destination.y, 0.0f);
         glm::vec4 color = White;
         switch (playerID) {
         case 0: {
@@ -174,7 +170,8 @@ bool WeaponSystemServer::Render()
             break;
         }
         }
-        rendererComponent.DrawLine(fromPosition, toPosition, color);
+
+        DebugDraw(rendererComponent, weaponComponent, color);
     }
 
     return true;

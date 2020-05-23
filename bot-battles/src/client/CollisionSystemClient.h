@@ -1,12 +1,12 @@
 #ifndef __COLLISION_SYSTEM_CLIENT_H__
 #define __COLLISION_SYSTEM_CLIENT_H__
 
-#include "System.h"
+#include "CollisionSystem.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class CollisionSystemClient : public System {
+class CollisionSystemClient : public CollisionSystem {
 public:
     static SystemType GetType()
     {

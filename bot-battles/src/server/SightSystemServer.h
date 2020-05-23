@@ -1,14 +1,14 @@
 #ifndef __SIGHT_SYSTEM_SERVER_H__
 #define __SIGHT_SYSTEM_SERVER_H__
 
-#include "System.h"
+#include "SightSystem.h"
 
 namespace sand {
 
 struct PhysicsComponent;
 
 //----------------------------------------------------------------------------------------------------
-class SightSystemServer : public System, public Subject {
+class SightSystemServer : public SightSystem, public Subject {
 public:
     static SystemType GetType()
     {
