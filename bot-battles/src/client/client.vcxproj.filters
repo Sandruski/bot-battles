@@ -222,9 +222,6 @@
     <ClCompile Include="WeaponSystemClient.cpp">
       <Filter>Source Files\Systems\Shared</Filter>
     </ClCompile>
-    <ClCompile Include="InputSystemClient.cpp">
-      <Filter>Source Files\Systems\Unique</Filter>
-    </ClCompile>
     <ClCompile Include="ScriptingSystem.cpp">
       <Filter>Source Files\Systems\Unique</Filter>
     </ClCompile>
@@ -232,6 +229,9 @@
       <Filter>Source Files\Systems\Unique</Filter>
     </ClCompile>
     <ClCompile Include="ClientSystem.cpp">
+      <Filter>Source Files\Systems\Unique</Filter>
+    </ClCompile>
+    <ClCompile Include="InputSystem.cpp">
       <Filter>Source Files\Systems\Unique</Filter>
     </ClCompile>
   </ItemGroup>
@@ -314,13 +314,13 @@
     <ClInclude Include="ScriptingSystem.h">
       <Filter>Header Files\Systems\Unique</Filter>
     </ClInclude>
-    <ClInclude Include="InputSystemClient.h">
-      <Filter>Header Files\Systems\Unique</Filter>
-    </ClInclude>
     <ClInclude Include="OutputSystemClient.h">
       <Filter>Header Files\Systems\Unique</Filter>
     </ClInclude>
     <ClInclude Include="ClientSystem.h">
+      <Filter>Header Files\Systems\Unique</Filter>
+    </ClInclude>
+    <ClInclude Include="InputSystem.h">
       <Filter>Header Files\Systems\Unique</Filter>
     </ClInclude>
   </ItemGroup>

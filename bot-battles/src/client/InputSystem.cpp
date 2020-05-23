@@ -1,4 +1,4 @@
-#include "InputSystemClient.h"
+#include "InputSystem.h"
 
 #include "ComponentManager.h"
 #include "ComponentMemberTypes.h"
@@ -9,7 +9,7 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-bool InputSystemClient::Update()
+bool InputSystem::Update()
 {
     OPTICK_EVENT();
 

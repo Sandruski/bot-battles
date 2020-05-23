@@ -63,7 +63,7 @@ struct ClientComponent : public Component {
 
     CircularBuffer<Input, MAX_INPUTS> m_inputBuffer;
     /*
-    -Add: InputSystemClient
+    -Add: InputSystem
     -Remove: OutputSystemClient
     */
     bool m_isLastMoveInputPending;

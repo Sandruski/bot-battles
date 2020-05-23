@@ -1,5 +1,5 @@
-#ifndef __SCRIPTING_SYSTEM_CLIENT_H__
-#define __SCRIPTING_SYSTEM_CLIENT_H__
+#ifndef __SCRIPTING_SYSTEM_H__
+#define __SCRIPTING_SYSTEM_H__
 
 #include "System.h"
 
@@ -11,7 +11,7 @@ namespace py = pybind11;
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class ScriptingSystemClient : public System, public Subject, public Observer {
+class ScriptingSystem : public System, public Subject, public Observer {
 public:
     static SystemType GetType()
     {
@@ -19,7 +19,7 @@ public:
     }
 
 public:
-    ScriptingSystemClient();
+    ScriptingSystem();
 
     bool StartUp() override;
     bool PreUpdate() override;

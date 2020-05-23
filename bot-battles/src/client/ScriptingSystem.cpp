@@ -15,7 +15,7 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-ScriptingSystemClient::ScriptingSystemClient()
+ScriptingSystem::ScriptingSystem()
 {
     m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
     m_signature |= 1 << static_cast<U16>(ComponentType::RIGIDBODY);
@@ -23,7 +23,7 @@ ScriptingSystemClient::ScriptingSystemClient()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool ScriptingSystemClient::StartUp()
+bool ScriptingSystem::StartUp()
 {
     std::string scriptsDir = "import sys\n";
     scriptsDir.append("sys.path.append(\"");
@@ -41,7 +41,7 @@ bool ScriptingSystemClient::StartUp()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool ScriptingSystemClient::PreUpdate()
+bool ScriptingSystem::PreUpdate()
 {
     NotifyEvents();
 
@@ -49,7 +49,7 @@ bool ScriptingSystemClient::PreUpdate()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool ScriptingSystemClient::Update()
+bool ScriptingSystem::Update()
 {
     OPTICK_EVENT();
 
@@ -79,7 +79,7 @@ bool ScriptingSystemClient::Update()
 }
 
 //----------------------------------------------------------------------------------------------------
-void ScriptingSystemClient::OnNotify(const Event& event)
+void ScriptingSystem::OnNotify(const Event& event)
 {
     switch (event.eventType) {
 
@@ -120,7 +120,7 @@ void ScriptingSystemClient::OnNotify(const Event& event)
 }
 
 //----------------------------------------------------------------------------------------------------
-void ScriptingSystemClient::ImportScripts() const
+void ScriptingSystem::ImportScripts() const
 {
     Event newEvent;
 
@@ -148,7 +148,7 @@ void ScriptingSystemClient::ImportScripts() const
 }
 
 //----------------------------------------------------------------------------------------------------
-void ScriptingSystemClient::InitScripts() const
+void ScriptingSystem::InitScripts() const
 {
     ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
@@ -170,7 +170,7 @@ void ScriptingSystemClient::InitScripts() const
 }
 
 //----------------------------------------------------------------------------------------------------
-void ScriptingSystemClient::OnCollisionEnter(Entity entityA, Entity entityB, glm::vec2 linearVelocityA, glm::vec2 linearVelocityB, glm::vec2 normal) const
+void ScriptingSystem::OnCollisionEnter(Entity entityA, Entity entityB, glm::vec2 linearVelocityA, glm::vec2 linearVelocityB, glm::vec2 normal) const
 {
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     Entity entity = INVALID_ENTITY;
@@ -205,7 +205,7 @@ void ScriptingSystemClient::OnCollisionEnter(Entity entityA, Entity entityB, glm
 }
 
 //----------------------------------------------------------------------------------------------------
-void ScriptingSystemClient::OnCollisionExit(Entity entityA, Entity entityB, glm::vec2 linearVelocityA, glm::vec2 linearVelocityB, glm::vec2 normal) const
+void ScriptingSystem::OnCollisionExit(Entity entityA, Entity entityB, glm::vec2 linearVelocityA, glm::vec2 linearVelocityB, glm::vec2 normal) const
 {
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     Entity entity = INVALID_ENTITY;
@@ -240,7 +240,7 @@ void ScriptingSystemClient::OnCollisionExit(Entity entityA, Entity entityB, glm:
 }
 
 //----------------------------------------------------------------------------------------------------
-void ScriptingSystemClient::OnSeenNewEntity(Entity /*entity*/) const
+void ScriptingSystem::OnSeenNewEntity(Entity /*entity*/) const
 {
     // TODO: call different methods for different components
     ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();
@@ -253,7 +253,7 @@ void ScriptingSystemClient::OnSeenNewEntity(Entity /*entity*/) const
 }
 
 //----------------------------------------------------------------------------------------------------
-void ScriptingSystemClient::OnSeenLostEntity(Entity /*entity*/) const
+void ScriptingSystem::OnSeenLostEntity(Entity /*entity*/) const
 {
     // TODO: call different methods for different components
     ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();

@@ -233,7 +233,7 @@
     <ClCompile Include="StartStateClient.cpp" />
     <ClCompile Include="StatesPanelClient.cpp" />
     <ClCompile Include="TransformComponentClient.cpp" />
-    <ClCompile Include="InputSystemClient.cpp" />
+    <ClCompile Include="InputSystem.cpp" />
     <ClCompile Include="ReplicationManagerClient.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="UtilsClient.cpp" />
@@ -247,7 +247,7 @@
     <ClInclude Include="DeliveryManagerClient.h" />
     <ClInclude Include="Frame.h" />
     <ClInclude Include="GameplayStateClient.h" />
-    <ClInclude Include="InputSystemClient.h" />
+    <ClInclude Include="InputSystem.h" />
     <ClInclude Include="LocalPlayerComponent.h" />
     <ClInclude Include="MainMenuStateClient.h" />
     <ClInclude Include="MovementSystemClient.h" />

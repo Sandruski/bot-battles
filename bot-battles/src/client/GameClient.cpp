@@ -6,7 +6,7 @@
 #include "ConfigClient.h"
 #include "FSM.h"
 #include "GameplayStateClient.h"
-#include "InputSystemClient.h"
+#include "InputSystem.h"
 #include "LocalPlayerComponent.h"
 #include "MainMenuStateClient.h"
 #include "MovementSystemClient.h"
@@ -44,7 +44,7 @@ bool GameClient::Init()
     if (!ret) {
         return ret;
     }
-    ret = m_systemManager->RegisterSystem<InputSystemClient>();
+    ret = m_systemManager->RegisterSystem<InputSystem>();
     if (!ret) {
         return ret;
     }
@@ -64,7 +64,7 @@ bool GameClient::Init()
     if (!ret) {
         return ret;
     }
-    ret = m_systemManager->RegisterSystem<ScriptingSystemClient>();
+    ret = m_systemManager->RegisterSystem<ScriptingSystem>();
     if (!ret) {
         return ret;
     }
@@ -106,7 +106,7 @@ bool GameClient::Init()
     if (!ret) {
         return ret;
     }
-    std::weak_ptr<ScriptingSystemClient> scriptingSystem = m_systemManager->GetSystem<ScriptingSystemClient>();
+    std::weak_ptr<ScriptingSystem> scriptingSystem = m_systemManager->GetSystem<ScriptingSystem>();
     ret = clientSystem.lock()->AddObserver(scriptingSystem);
     if (!ret) {
         return ret;
