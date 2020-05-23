@@ -149,6 +149,7 @@ bool SightSystemServer::DebugRender()
         color.a = 0.5f;
         rendererComponent.DrawCircle(position, rotation, scale, 16, sightComponent.lock()->m_angle, sightComponent.lock()->m_distance, color, true);
 
+        /*
         for (const auto& seenEntity : sightComponent.lock()->m_seenEntities) {
             if (seenEntity == entity) {
                 continue;
@@ -162,11 +163,12 @@ bool SightSystemServer::DebugRender()
 
             glm::vec3 seenPosition = seenTransformComponent.lock()->GetDebugPositionAndLayer();
             F32 seenRotation = seenTransformComponent.lock()->m_rotation;
-            glm::vec3 seenScale = glm::vec3(seenColliderComponent.lock()->m_size.x * 2.0f, seenColliderComponent.lock()->m_size.y * 2.0f, 0.0f);
+            glm::vec3 seenScale = glm::vec3(seenColliderComponent.lock()->m_size.x * 1.5f, seenColliderComponent.lock()->m_size.y * 2.0f, 0.0f);
             glm::vec4 seenColor = Blue;
             seenColor.a = 0.5f;
             rendererComponent.DrawCircle(seenPosition, seenRotation, seenScale, 36, 360.0f, 0.5f, seenColor, true);
         }
+        */
     }
 
     return true;
