@@ -139,6 +139,11 @@ bool GameServer::Init()
     if (!ret) {
         return ret;
     }
+    std::weak_ptr<SightSystemServer> sightSystemServer = m_systemManager->GetSystem<SightSystemServer>();
+    ret = sightSystemServer.lock()->AddObserver(serverSystem);
+    if (!ret) {
+        return ret;
+    }
 
     ret = Game::Init();
 

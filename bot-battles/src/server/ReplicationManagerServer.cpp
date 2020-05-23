@@ -18,7 +18,7 @@ ReplicationManagerServer::ReplicationManagerServer()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool ReplicationManagerServer::AddCommand(NetworkID networkID, bool isReplicated, U32 dirtyState)
+bool ReplicationManagerServer::AddCommand(NetworkID networkID, U32 dirtyState, bool isReplicated)
 {
     auto it = m_networkIDToReplicationCommand.find(networkID);
     if (it != m_networkIDToReplicationCommand.end()) {

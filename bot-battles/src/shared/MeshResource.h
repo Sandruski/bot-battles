@@ -21,7 +21,7 @@ public:
     };
 
     static const std::vector<Vertex> GetLineVertices(glm::vec3 fromPosition, glm::vec3 toPosition);
-    static const std::vector<Vertex> GetCircleVertices(F32 angle, F32 radius);
+    static const std::vector<Vertex> GetCircleVertices(U32 sides, F32 angle, F32 radius);
     static const std::vector<Vertex> GetQuadVertices();
 
 public:

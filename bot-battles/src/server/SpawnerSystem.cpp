@@ -141,8 +141,8 @@ Entity SpawnerSystem::Spawn(PlayerID playerID) const
     healthComponent.lock()->m_health = 100;
 
     std::weak_ptr<SightComponent> sightComponent = g_gameServer->GetComponentManager().AddComponent<SightComponent>(character);
-    sightComponent.lock()->m_angle = 80.0f;
-    sightComponent.lock()->m_distance = 200.0f;
+    sightComponent.lock()->m_angle = 90.0f;
+    sightComponent.lock()->m_distance = 250.0f;
 
     g_gameServer->GetComponentManager().AddComponent<BotComponent>(character);
 

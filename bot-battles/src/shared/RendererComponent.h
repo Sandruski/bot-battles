@@ -19,7 +19,7 @@ struct RendererComponent {
     void UpdateBackgroundColor() const;
 
     void DrawLine(glm::vec3 fromPosition, glm::vec3 toPosition, glm::vec4 color);
-    void DrawCircle(glm::vec3 position, F32 rotation, glm::vec3 scale, F32 angle, F32 radius, glm::vec4 color, bool filled);
+    void DrawCircle(glm::vec3 position, F32 rotation, glm::vec3 scale, U32 sides, F32 angle, F32 radius, glm::vec4 color, bool filled);
     void DrawQuad(glm::vec3 position, F32 rotation, glm::vec3 scale, glm::vec4 color, bool filled);
     void DrawTexturedQuad(const std::vector<glm::mat4>& models, const std::vector<glm::vec2>& texCoords, U32 texture);
 

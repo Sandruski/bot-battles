@@ -74,7 +74,7 @@ bool RendererSystem::StartUp()
     const std::vector<MeshResource::Vertex> lineVertices = MeshResource::GetLineVertices(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
     rendererComponent.m_lineMeshResource.lock()->ForceLoad(lineVertices);
     rendererComponent.m_circleMeshResource = g_game->GetResourceManager().AddResource<MeshResource>("", "", false);
-    const std::vector<MeshResource::Vertex> circleVertices = MeshResource::GetCircleVertices(0.0f, 0.0f);
+    const std::vector<MeshResource::Vertex> circleVertices = MeshResource::GetCircleVertices(0, 0.0f, 0.0f);
     rendererComponent.m_circleMeshResource.lock()->ForceLoad(circleVertices);
     rendererComponent.m_quadMeshResource = g_game->GetResourceManager().AddResource<MeshResource>("", "", false);
     const std::vector<MeshResource::Vertex> quadVertices = MeshResource::GetQuadVertices();
@@ -121,7 +121,7 @@ bool RendererSystem::Render()
         std::vector<glm::mat4> models;
         std::vector<glm::vec2> texCoords;
 
-        while (i < m_entities.size()) {
+        for (; i < m_entities.size();) {
             Entity entity2 = m_entities.at(i);
             std::weak_ptr<TransformComponent> transformComponent2 = g_game->GetComponentManager().GetComponent<TransformComponent>(entity2);
             std::weak_ptr<SpriteComponent> spriteComponent2 = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity2);

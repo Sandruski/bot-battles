@@ -39,7 +39,7 @@ bool CollisionSystemClient::DebugRender()
         switch (colliderComponent.lock()->m_shapeType) {
 
         case ColliderComponent::ShapeType::CIRCLE: {
-            rendererComponent.DrawCircle(position, rotation, scale, 360.0f, 0.5f, color, false);
+            rendererComponent.DrawCircle(position, rotation, scale, 36, 360.0f, 0.5f, color, false);
             break;
         }
 

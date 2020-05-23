@@ -12,7 +12,7 @@ class ReplicationManagerServer {
 public:
     ReplicationManagerServer();
 
-    bool AddCommand(NetworkID networkID, bool isReplicated, U32 dirtyState);
+    bool AddCommand(NetworkID networkID, U32 dirtyState, bool isReplicated);
     bool RemoveCommand(NetworkID networkID);
 
     void SetCreate(NetworkID networkID, U32 dirtyState);

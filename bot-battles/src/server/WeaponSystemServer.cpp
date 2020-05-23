@@ -3,7 +3,6 @@
 #include "ClientProxy.h"
 #include "ComponentManager.h"
 #include "ComponentMemberTypes.h"
-#include "EventComponent.h"
 #include "GameServer.h"
 #include "HealthComponent.h"
 #include "LinkingContext.h"
@@ -49,21 +48,6 @@ bool WeaponSystemServer::Update()
     }
 
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
-    EventComponent& eventComponent = g_game->GetEventComponent();
-    if (eventComponent.m_keyboard.at(SDL_SCANCODE_R) == EventComponent::KeyState::DOWN) {
-        std::weak_ptr<ClientProxy> clientProxy0 = serverComponent.GetClientProxy(0);
-        Entity entity1 = serverComponent.GetEntity(1);
-        LinkingContext& linkingContext = g_game->GetLinkingContext();
-        NetworkID networkID1 = linkingContext.GetNetworkID(entity1);
-        clientProxy0.lock()->m_replicationManager->SetIsReplicated(networkID1, false);
-    } else if (eventComponent.m_keyboard.at(SDL_SCANCODE_T) == EventComponent::KeyState::DOWN) {
-        std::weak_ptr<ClientProxy> clientProxy0 = serverComponent.GetClientProxy(0);
-        Entity entity1 = serverComponent.GetEntity(1);
-        LinkingContext& linkingContext = g_game->GetLinkingContext();
-        NetworkID networkID1 = linkingContext.GetNetworkID(entity1);
-        clientProxy0.lock()->m_replicationManager->SetIsReplicated(networkID1, true);
-    }
-
     for (auto& entity : m_entities) {
         PlayerID playerID = serverComponent.GetPlayerID(entity);
         if (playerID >= INVALID_PLAYER_ID) {

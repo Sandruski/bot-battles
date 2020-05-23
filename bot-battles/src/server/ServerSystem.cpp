@@ -1,6 +1,8 @@
 #include "ServerSystem.h"
 
+#include "BotComponent.h"
 #include "ClientProxy.h"
+#include "ComponentManager.h"
 #include "ComponentMemberTypes.h"
 #include "DeliveryManagerServer.h"
 #include "EntityManager.h"
@@ -11,6 +13,7 @@
 #include "ReplicationManagerServer.h"
 #include "ReplicationResultManager.h"
 #include "ServerComponent.h"
+#include "SightComponent.h"
 #include "State.h"
 #include "TCPSocket.h"
 #include "UDPSocket.h"
@@ -73,6 +76,16 @@ void ServerSystem::OnNotify(const Event& event)
 
     case EventType::COMPONENT_MEMBER_CHANGED: {
         OnComponentMemberChanged(event.component.dirtyState, event.component.entity);
+        break;
+    }
+
+    case EventType::SEEN_NEW_ENTITY: {
+        OnSeenNewEntity(event.sight.playerID, event.sight.entity);
+        break;
+    }
+
+    case EventType::SEEN_LOST_ENTITY: {
+        OnSeenLostEntity(event.sight.playerID, event.sight.entity);
         break;
     }
 
@@ -727,7 +740,7 @@ void ServerSystem::OnPlayerAdded(PlayerID playerID) const
     std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
     const std::unordered_map<NetworkID, Entity>& networkIDToEntity = g_gameServer->GetLinkingContext().GetNetworkIDToEntityMap();
     for (const auto& pair : networkIDToEntity) {
-        clientProxy.lock()->m_replicationManager->AddCommand(pair.first, true, static_cast<U32>(ComponentMemberType::ALL));
+        clientProxy.lock()->m_replicationManager->AddCommand(pair.first, static_cast<U32>(ComponentMemberType::ALL), false);
     }
 }
 
@@ -739,7 +752,8 @@ void ServerSystem::OnNetworkEntityAdded(NetworkID networkID) const
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.GetPlayerIDToClientProxyMap();
     for (const auto& pair : playerIDToClientProxy) {
-        pair.second->m_replicationManager->AddCommand(networkID, true, static_cast<U32>(ComponentMemberType::ALL));
+        std::shared_ptr<ClientProxy> clientProxy = pair.second;
+        clientProxy->m_replicationManager->AddCommand(networkID, static_cast<U32>(ComponentMemberType::ALL), false);
     }
 }
 
@@ -760,7 +774,8 @@ void ServerSystem::OnComponentMemberChanged(U32 dirtyState, Entity entity) const
 {
     assert(entity < INVALID_ENTITY);
 
-    NetworkID networkID = g_gameServer->GetLinkingContext().GetNetworkID(entity);
+    LinkingContext& linkingContext = g_gameServer->GetLinkingContext();
+    NetworkID networkID = linkingContext.GetNetworkID(entity);
     if (networkID >= INVALID_NETWORK_ID) {
         return;
     }
@@ -770,5 +785,37 @@ void ServerSystem::OnComponentMemberChanged(U32 dirtyState, Entity entity) const
     for (const auto& pair : playerIDToClientProxy) {
         pair.second->m_replicationManager->AddDirtyState(networkID, dirtyState);
     }
+}
+
+//----------------------------------------------------------------------------------------------------
+void ServerSystem::OnSeenNewEntity(PlayerID playerID, Entity entity) const
+{
+    assert(playerID < INVALID_PLAYER_ID && entity < INVALID_ENTITY);
+
+    LinkingContext& linkingContext = g_gameServer->GetLinkingContext();
+    NetworkID networkID = linkingContext.GetNetworkID(entity);
+    if (networkID >= INVALID_NETWORK_ID) {
+        return;
+    }
+
+    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
+    std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
+    clientProxy.lock()->m_replicationManager->SetIsReplicated(networkID, true);
+}
+
+//----------------------------------------------------------------------------------------------------
+void ServerSystem::OnSeenLostEntity(PlayerID playerID, Entity entity) const
+{
+    assert(playerID < INVALID_PLAYER_ID && entity < INVALID_ENTITY);
+
+    LinkingContext& linkingContext = g_gameServer->GetLinkingContext();
+    NetworkID networkID = linkingContext.GetNetworkID(entity);
+    if (networkID >= INVALID_NETWORK_ID) {
+        return;
+    }
+
+    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
+    std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
+    clientProxy.lock()->m_replicationManager->SetIsReplicated(networkID, false);
 }
 }

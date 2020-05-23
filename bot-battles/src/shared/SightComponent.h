@@ -31,14 +31,14 @@ struct SightComponent : public Component
     U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override;
 #endif
 
+    bool IsSeen(Entity entity);
+
     // Networked
     F32 m_angle;
     F32 m_distance;
 
     // Local
-#ifdef _SERVER
-    Entity m_target;
-#endif
+    std::vector<Entity> m_seenEntities;
 };
 }
 

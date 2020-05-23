@@ -8,9 +8,7 @@ namespace sand {
 SightComponent::SightComponent()
     : m_angle(0.0f)
     , m_distance(0.0f)
-#ifdef _SERVER
-    , m_target(INVALID_ENTITY)
-#endif
+    , m_seenEntities()
 {
 }
 
@@ -50,4 +48,10 @@ U32 SightComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) cons
     return writtenState;
 }
 #endif
+
+//----------------------------------------------------------------------------------------------------
+bool SightComponent::IsSeen(Entity entity)
+{
+    return std::find(m_seenEntities.begin(), m_seenEntities.end(), entity) != m_seenEntities.end();
+}
 }

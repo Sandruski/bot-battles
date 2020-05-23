@@ -87,7 +87,7 @@ void RendererComponent::DrawLine(glm::vec3 fromPosition, glm::vec3 toPosition, g
 }
 
 //----------------------------------------------------------------------------------------------------
-void RendererComponent::DrawCircle(glm::vec3 position, F32 rotation, glm::vec3 scale, F32 angle, F32 radius, glm::vec4 color, bool filled)
+void RendererComponent::DrawCircle(glm::vec3 position, F32 rotation, glm::vec3 scale, U32 sides, F32 angle, F32 radius, glm::vec4 color, bool filled)
 {
     if (!filled) {
         SetWireframe(true);
@@ -106,7 +106,7 @@ void RendererComponent::DrawCircle(glm::vec3 position, F32 rotation, glm::vec3 s
     scale.y *= proportion.y;
     model = glm::scale(model, scale);
 
-    std::vector<MeshResource::Vertex> circleVertices = MeshResource::GetCircleVertices(angle, radius);
+    std::vector<MeshResource::Vertex> circleVertices = MeshResource::GetCircleVertices(sides, angle, radius);
     m_circleMeshResource.lock()->ReLoad(circleVertices);
 
     U32 modelLoc = glGetUniformLocation(m_shaderResource.lock()->GetProgram(), "model");

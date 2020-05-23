@@ -103,12 +103,14 @@ void ScriptingSystemClient::OnNotify(const Event& event)
         break;
     }
 
-    case EventType::SEEN_BOT_ENTER: {
+    case EventType::SEEN_NEW_ENTITY: {
+        // TODO
         OnSeenBotEnter();
         break;
     }
 
-    case EventType::SEEN_BOT_EXIT: {
+    case EventType::SEEN_LOST_ENTITY: {
+        // TODO
         OnSeenBotExit();
         break;
     }

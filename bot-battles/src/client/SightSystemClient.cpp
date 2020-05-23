@@ -13,6 +13,7 @@ SightSystemClient::SightSystemClient()
 {
     m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
     m_signature |= 1 << static_cast<U16>(ComponentType::SIGHT);
+    m_signature |= 1 << static_cast<U16>(ComponentType::LOCAL_PLAYER);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -34,7 +35,7 @@ bool SightSystemClient::DebugRender()
         glm::vec3 scale = glm::vec3(1.0f, 1.0f, 0.0f);
         glm::vec4 color = Red;
         color.a = 0.5f;
-        rendererComponent.DrawCircle(position, rotation, scale, sightComponent.lock()->m_angle, sightComponent.lock()->m_distance, color, true);
+        rendererComponent.DrawCircle(position, rotation, scale, 16, sightComponent.lock()->m_angle, sightComponent.lock()->m_distance, color, true);
     }
 
     return true;

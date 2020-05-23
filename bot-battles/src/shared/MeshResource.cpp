@@ -34,10 +34,9 @@ const std::vector<MeshResource::Vertex> MeshResource::GetLineVertices(glm::vec3 
 }
 
 //----------------------------------------------------------------------------------------------------
-const std::vector<MeshResource::Vertex> MeshResource::GetCircleVertices(F32 angle, F32 radius)
+const std::vector<MeshResource::Vertex> MeshResource::GetCircleVertices(U32 sides, F32 angle, F32 radius)
 {
-    U32 sidesCount = 16;
-    U32 verticesCount = sidesCount + 2;
+    U32 verticesCount = sides + 2;
 
     std::vector<Vertex> vertices;
     vertices.reserve(verticesCount);
@@ -45,7 +44,7 @@ const std::vector<MeshResource::Vertex> MeshResource::GetCircleVertices(F32 angl
     Vertex vertex = Vertex();
     vertices.emplace_back(vertex);
 
-    F32 increment = glm::radians(angle) / static_cast<F32>(sidesCount);
+    F32 increment = glm::radians(angle) / static_cast<F32>(sides);
     for (U32 i = 0; i < verticesCount - 1; ++i) {
         vertex.m_position.x = radius * glm::cos(i * increment);
         vertex.m_position.y = radius * glm::sin(i * increment);
