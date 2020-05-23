@@ -36,7 +36,9 @@ bool SightSystemClient::DebugRender()
             continue;
         }
 
-        DebugDraw(rendererComponent, transformComponent, sightComponent);
+        glm::vec4 color = Red;
+        color.a = 0.5f;
+        DebugDraw(rendererComponent, transformComponent, sightComponent, color);
     }
 
     return true;

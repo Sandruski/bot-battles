@@ -148,7 +148,6 @@ bool WeaponSystemClient::Render()
             }
             }
         }
-
         DebugDraw(rendererComponent, weaponComponent, color);
     }
 

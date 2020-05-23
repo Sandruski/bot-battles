@@ -17,7 +17,7 @@ public:
     }
 
 public:
-    void DebugDraw(RendererComponent& rendererComponent, std::weak_ptr<TransformComponent> transformComponent) const;
+    void DebugDraw(RendererComponent& rendererComponent, std::weak_ptr<TransformComponent> transformComponent, const glm::vec4& color) const;
 };
 }
 

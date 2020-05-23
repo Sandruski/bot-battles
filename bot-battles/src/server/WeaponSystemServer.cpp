@@ -170,7 +170,6 @@ bool WeaponSystemServer::Render()
             break;
         }
         }
-
         DebugDraw(rendererComponent, weaponComponent, color);
     }
 

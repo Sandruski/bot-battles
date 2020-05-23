@@ -29,7 +29,9 @@ bool CollisionSystemClient::DebugRender()
             continue;
         }
 
-        DebugDraw(rendererComponent, transformComponent, colliderComponent);
+        glm::vec4 color = Green;
+        color.a = 0.5f;
+        DebugDraw(rendererComponent, transformComponent, colliderComponent, color);
     }
 
     return true;

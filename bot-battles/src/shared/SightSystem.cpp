@@ -7,13 +7,11 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-void SightSystem::DebugDraw(RendererComponent& rendererComponent, std::weak_ptr<TransformComponent> transformComponent, std::weak_ptr<SightComponent> sightComponent) const
+void SightSystem::DebugDraw(RendererComponent& rendererComponent, std::weak_ptr<TransformComponent> transformComponent, std::weak_ptr<SightComponent> sightComponent, const glm::vec4& color) const
 {
     glm::vec3 position = transformComponent.lock()->GetDebugPositionAndLayer();
     F32 rotation = transformComponent.lock()->m_rotation + sightComponent.lock()->m_angle / 2.0f;
     glm::vec3 scale = glm::vec3(1.0f, 1.0f, 0.0f);
-    glm::vec4 color = Red;
-    color.a = 0.5f;
     rendererComponent.DrawCircle(position, rotation, scale, 16, sightComponent.lock()->m_angle, sightComponent.lock()->m_distance, color, true);
 
     /*

@@ -183,7 +183,9 @@ bool MovementSystemServer::DebugRender()
             continue;
         }
 
-        DebugDraw(rendererComponent, transformComponent);
+        glm::vec4 color = Green;
+        color.a = 0.5f;
+        DebugDraw(rendererComponent, transformComponent, color);
     }
 
     return true;
