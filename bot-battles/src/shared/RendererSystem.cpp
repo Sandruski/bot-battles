@@ -7,6 +7,7 @@
 #include "RendererComponent.h"
 #include "ResourceManager.h"
 #include "ShaderResource.h"
+#include "SightComponent.h"
 #include "SpriteComponent.h"
 #include "SpriteResource.h"
 #include "TransformComponent.h"

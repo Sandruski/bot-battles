@@ -68,12 +68,13 @@ Entity SpawnerSystem::Spawn(PlayerID playerID) const
         }
     }
 
-    std::weak_ptr<SpriteResource> charactersSpriteResource = g_game->GetResourceManager().AddResource<SpriteResource>("characters.png", TEXTURES_DIR, true);
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().AddComponent<SpriteComponent>(character);
-    spriteComponent.lock()->m_spriteResource = charactersSpriteResource;
     U32 playerNumber = playerID + 1;
     switch (playerNumber) {
     case 1: {
+        std::weak_ptr<SpriteResource> charactersSpriteResource = g_game->GetResourceManager().AddResource<SpriteResource>("greenCharacter.png", TEXTURES_DIR, true);
+        spriteComponent.lock()->m_spriteResource = charactersSpriteResource;
+
         glm::vec4 standTextureCoords = glm::vec4(1.0f, 1.0f, 36.0f, 43.0f);
         spriteComponent.lock()->AddSprite("stand", standTextureCoords);
         glm::vec4 holdTextureCoords = glm::vec4(38.0f, 1.0f, 38.0f, 43.0f);
@@ -86,13 +87,16 @@ Entity SpawnerSystem::Spawn(PlayerID playerID) const
         break;
     }
     case 2: {
-        glm::vec4 standTextureCoords = glm::vec4(1.0f, 45.0f, 35.0f, 43.0f);
+        std::weak_ptr<SpriteResource> charactersSpriteResource = g_game->GetResourceManager().AddResource<SpriteResource>("blueCharacter.png", TEXTURES_DIR, true);
+        spriteComponent.lock()->m_spriteResource = charactersSpriteResource;
+
+        glm::vec4 standTextureCoords = glm::vec4(1.0f, 1.0f, 36.0f, 43.0f);
         spriteComponent.lock()->AddSprite("stand", standTextureCoords);
-        glm::vec4 holdTextureCoords = glm::vec4(37.0f, 45.0f, 37.0f, 43.0f);
+        glm::vec4 holdTextureCoords = glm::vec4(38.0f, 1.0f, 38.0f, 43.0f);
         spriteComponent.lock()->AddSprite("hold", holdTextureCoords);
-        glm::vec4 shootTextureCoords = glm::vec4(75.0f, 45.0f, 51.0f, 43.0f);
+        glm::vec4 shootTextureCoords = glm::vec4(77.0f, 1.0f, 52.0f, 43.0f);
         spriteComponent.lock()->AddSprite("shoot", shootTextureCoords);
-        glm::vec4 realoadTextureCoords = glm::vec4(127.0f, 45.0f, 42.0f, 43.0f);
+        glm::vec4 realoadTextureCoords = glm::vec4(130.0f, 1.0f, 42.0f, 43.0f);
         spriteComponent.lock()->AddSprite("reaload", realoadTextureCoords);
         spriteComponent.lock()->m_spriteName = "stand";
         break;
