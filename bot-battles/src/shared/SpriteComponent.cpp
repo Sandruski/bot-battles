@@ -11,6 +11,8 @@ SpriteComponent::SpriteComponent()
     : m_spriteResource()
     , m_spriteNameToTextureCoords()
     , m_spriteName("default")
+    , m_color(Black)
+    , m_pct(0.0f)
 {
 }
 

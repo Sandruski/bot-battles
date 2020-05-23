@@ -129,7 +129,7 @@ bool SightSystemServer::Update()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool SightSystemServer::DebugRender()
+bool SightSystemServer::Render()
 {
     OPTICK_EVENT();
 

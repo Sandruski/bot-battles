@@ -46,10 +46,12 @@ static const char* defaultFragmentShaderSource = "#version 330 core\n"
 
                                                  "void main()\n"
                                                  "{\n"
-                                                 "FragColor = mix(texture(sprite, TextureCoords), color, pct);\n"
+                                                 "vec4 textureColor = texture(sprite, TextureCoords);\n"
+                                                 "FragColor = textureColor;\n"
                                                  "if (FragColor.a == 0.0)\n"
                                                  "{\n"
                                                  "discard;\n"
                                                  "}\n"
+                                                 "FragColor = mix(textureColor, color, pct);\n"
                                                  "}\0";
 #endif
