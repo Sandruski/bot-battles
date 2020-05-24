@@ -11,6 +11,7 @@ enum class LayerType : U16 {
     DEBUG,
 
     PLAYER,
+    WEAPON,
     OBJECT,
     FLOOR,
     BACKGROUND,
