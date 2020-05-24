@@ -18,6 +18,7 @@ struct InputComponent : public Component,
     void Read(InputMemoryStream& inputStream, U32 dirtyState, U32 frame, ReplicationActionType replicationActionType, Entity entity) override;
 
     void Reset();
+    void FullReset();
 
     // Bot
     F32 GetMaxLinearVelocity() const;

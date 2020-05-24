@@ -9,6 +9,7 @@
 #include "GameplayComponent.h"
 #include "LinkingContext.h"
 #include "SpriteComponent.h"
+#include "State.h"
 #include "TransformComponent.h"
 #include "WeaponComponent.h"
 

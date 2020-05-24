@@ -33,3 +33,9 @@ class MyBot(bot.Bot):
 
     def onSeenLostBot(self, input):
         logging.info('Seen LOST bot')
+
+    def onSeenNewAmmo(self, input):
+        logging.info('Seen NEW ammo')
+
+    def onSeenLostAmmo(self, input):
+        logging.info('Seen LOST ammo')

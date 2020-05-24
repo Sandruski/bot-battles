@@ -15,6 +15,7 @@
 #include "SystemManager.h"
 #include "TransformComponent.h"
 #include "WeaponComponent.h"
+#include "WindowComponent.h"
 
 namespace sand {
 

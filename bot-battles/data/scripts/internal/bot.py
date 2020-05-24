@@ -20,4 +20,10 @@ class Bot:
     def onSeenLostBot(self, input):
         pass
 
+    def onSeenNewAmmo(self, input):
+        pass
+
+    def onSeenLostAmmo(self, input):
+        pass
+
     #def onHitByBullet(self, input):

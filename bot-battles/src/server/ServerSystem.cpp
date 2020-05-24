@@ -432,7 +432,7 @@ void ServerSystem::ReceiveInputPacket(ServerComponent& serverComponent, InputMem
     // Only Gameplay
     GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
     std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
-    if (currentState.expired()) {
+    if (currentState.expired() || currentState.lock()->GetName() != "Play") {
         ELOG("Input packet received but skipped because at incorrect state");
         return;
     }

@@ -91,6 +91,9 @@ bool GameplayStateClient::Exit() const
     std::weak_ptr<State> emptyState = std::weak_ptr<State>();
     gameplayComponent.m_fsm.ChangeState(emptyState);
 
+    InputComponent& inputComponent = g_gameClient->GetInputComponent();
+    inputComponent.FullReset();
+
     return true;
 }
 

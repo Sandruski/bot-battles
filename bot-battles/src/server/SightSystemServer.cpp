@@ -13,6 +13,7 @@
 #include "ServerComponent.h"
 #include "ShaderResource.h"
 #include "SightComponent.h"
+#include "State.h"
 #include "TransformComponent.h"
 #include "WindowComponent.h"
 

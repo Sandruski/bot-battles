@@ -47,6 +47,12 @@ def onSeenNewBot(input):
 def onSeenLostBot(input):
     myBot.onSeenLostBot(input)
 
+def onSeenNewAmmo(input):
+    myBot.onSeenNewAmmo(input)
+
+def onSeenLostAmmo(input):
+    myBot.onSeenLostAmmo(input)
+
 def log():
     content = stream.getvalue()
     for line in content.splitlines(False):

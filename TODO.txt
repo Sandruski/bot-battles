@@ -17,7 +17,7 @@
 -Add animations to every action that the bot can perform
 -Add hints to Python bindings, so players know what they are writing
 
-
+NOTES: COLLISION events per LOCAL entities i SIGHT events per REMOTE entities (AKA NETWORKED)
 
 
 *How do we handle turns?

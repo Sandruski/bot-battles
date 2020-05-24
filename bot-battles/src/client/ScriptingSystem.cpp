@@ -1,5 +1,7 @@
 #include "ScriptingSystem.h"
 
+#include "AmmoSpawnerComponent.h"
+#include "BotComponent.h"
 #include "ClientComponent.h"
 #include "ComponentManager.h"
 #include "GameClient.h"
@@ -102,13 +104,6 @@ void ScriptingSystem::OnNotify(const Event& event)
         OnCollisionExit(event.collision.entityA, event.collision.entityB, event.collision.linearVelocityA, event.collision.linearVelocityB, event.collision.normal);
         break;
     }
-
-        // TODO: onTriggerEnter & onTriggerExit for ammo pickups (set as sensors)
-        // TODO: network ammo tiles. What happens with current spawner component. Is it being networked?
-        // TODO: don't create ammo tiles on client when loading the map, only on server
-        // we could create objects on server and tile layers on client?
-        // Ammo tiles must be networked because we don't know if another entity has already picked them. Maybe if we see them again they have been picked by another entity
-        // TODO: potser no cal el trigger. COLLISION per LOCAL entities; SIGHT per REMOTE entities (AKA NETWORKED)
 
     case EventType::SEEN_NEW_ENTITY: {
         OnSeenNewEntity(event.sight.entity);
@@ -247,28 +242,52 @@ void ScriptingSystem::OnCollisionExit(Entity entityA, Entity entityB, glm::vec2 
 }
 
 //----------------------------------------------------------------------------------------------------
-void ScriptingSystem::OnSeenNewEntity(Entity /*entity*/) const
+void ScriptingSystem::OnSeenNewEntity(Entity entity) const
 {
-    // TODO: call different methods for different components
     ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();
     InputComponent& inputComponent = g_gameClient->GetInputComponent();
-    try {
-        scriptingComponent.m_mainModule.attr("onSeenNewBot")(&inputComponent);
-        scriptingComponent.m_mainModule.attr("log")();
-    } catch (const std::runtime_error& /*re*/) {
+
+    std::weak_ptr<BotComponent> botComponent = g_gameClient->GetComponentManager().GetComponent<BotComponent>(entity);
+    if (!botComponent.expired()) {
+        try {
+            scriptingComponent.m_mainModule.attr("onSeenNewBot")(&inputComponent);
+            scriptingComponent.m_mainModule.attr("log")();
+        } catch (const std::runtime_error& /*re*/) {
+        }
+        return;
+    }
+    std::weak_ptr<AmmoSpawnerComponent> ammoSpawnerComponent = g_gameClient->GetComponentManager().GetComponent<AmmoSpawnerComponent>(entity);
+    if (!ammoSpawnerComponent.expired()) {
+        try {
+            scriptingComponent.m_mainModule.attr("onSeenNewAmmo")(&inputComponent);
+            scriptingComponent.m_mainModule.attr("log")();
+        } catch (const std::runtime_error& /*re*/) {
+        }
+        return;
     }
 }
 
 //----------------------------------------------------------------------------------------------------
-void ScriptingSystem::OnSeenLostEntity(Entity /*entity*/) const
+void ScriptingSystem::OnSeenLostEntity(Entity entity) const
 {
-    // TODO: call different methods for different components
     ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();
     InputComponent& inputComponent = g_gameClient->GetInputComponent();
-    try {
-        scriptingComponent.m_mainModule.attr("onSeenLostBot")(&inputComponent);
-        scriptingComponent.m_mainModule.attr("log")();
-    } catch (const std::runtime_error& /*re*/) {
+
+    std::weak_ptr<BotComponent> botComponent = g_gameClient->GetComponentManager().GetComponent<BotComponent>(entity);
+    if (!botComponent.expired()) {
+        try {
+            scriptingComponent.m_mainModule.attr("onSeenLostBot")(&inputComponent);
+            scriptingComponent.m_mainModule.attr("log")();
+        } catch (const std::runtime_error& /*re*/) {
+        }
+    }
+    std::weak_ptr<AmmoSpawnerComponent> ammoSpawnerComponent = g_gameClient->GetComponentManager().GetComponent<AmmoSpawnerComponent>(entity);
+    if (!ammoSpawnerComponent.expired()) {
+        try {
+            scriptingComponent.m_mainModule.attr("onSeenLostAmmo")(&inputComponent);
+            scriptingComponent.m_mainModule.attr("log")();
+        } catch (const std::runtime_error& /*re*/) {
+        }
     }
 }
 }

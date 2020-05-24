@@ -49,6 +49,12 @@ void InputComponent::Reset()
 }
 
 //----------------------------------------------------------------------------------------------------
+void InputComponent::FullReset()
+{
+    m_dirtyState = 0;
+}
+
+//----------------------------------------------------------------------------------------------------
 F32 InputComponent::GetMaxLinearVelocity() const
 {
     return m_maxLinearVelocity;
