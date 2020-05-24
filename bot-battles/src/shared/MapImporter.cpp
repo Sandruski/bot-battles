@@ -1,5 +1,7 @@
 #include "MapImporter.h"
 
+#include "AmmoSpawnerComponent.h"
+#include "BotSpawnerComponent.h"
 #include "ColliderComponent.h"
 #include "ComponentManager.h"
 #include "EntityManager.h"
@@ -7,7 +9,6 @@
 #include "Game.h"
 #include "ResourceManager.h"
 #include "RigidbodyComponent.h"
-#include "SpawnComponent.h"
 #include "SpriteComponent.h"
 #include "SpriteResource.h"
 #include "TransformComponent.h"
@@ -106,6 +107,7 @@ void MapImporter::Create(const Tilemap& tilemap) const
                     continue;
                 }
 
+                // SHARED
                 // Transform
                 glm::uvec2 tilePosition = tilemap.MapToWorld(i, j);
                 glm::vec2 worldPosition = static_cast<glm::vec2>(tilePosition);
@@ -125,6 +127,7 @@ void MapImporter::Create(const Tilemap& tilemap) const
                 spriteComponent.lock()->m_spriteResource = g_game->GetResourceManager().AddResource<SpriteResource>(tileset.m_spriteFile.c_str(), TEXTURES_DIR, true);
                 spriteComponent.lock()->AddSprite("default", textureCoords);
 
+                // UNIQUE
                 // Wall
                 if (tilelayer.m_name == "wall") {
                     g_game->GetComponentManager().AddComponent<WallComponent>(entity);
@@ -147,6 +150,7 @@ void MapImporter::Create(const Tilemap& tilemap) const
         for (const auto& object : objectlayer.m_objects) {
             Entity entity = g_game->GetEntityManager().AddEntity();
 
+            // SHARED
             // Transform
             glm::uvec2 objectPosition = object.m_position;
             glm::vec2 worldPosition = static_cast<glm::vec2>(objectPosition);
@@ -171,25 +175,17 @@ void MapImporter::Create(const Tilemap& tilemap) const
                 spriteComponent.lock()->AddSprite("default", textureCoords);
             }
 
-            // Wall
-            if (objectlayer.m_name == "wall") {
-                g_game->GetComponentManager().AddComponent<WallComponent>(entity);
-
-                std::weak_ptr<ColliderComponent> colliderComponent = g_game->GetComponentManager().AddComponent<ColliderComponent>(entity);
-                colliderComponent.lock()->m_size = object.m_size;
-                colliderComponent.lock()->m_shapeType = ColliderComponent::ShapeType::BOX;
-
-                std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_game->GetComponentManager().AddComponent<RigidbodyComponent>(entity);
-                rigidbodyComponent.lock()->m_bodyType = RigidbodyComponent::BodyType::STATIC;
-                rigidbodyComponent.lock()->UpdateBodyType();
-                rigidbodyComponent.lock()->m_groupIndex = 0;
-                rigidbodyComponent.lock()->UpdateGroupIndex();
+            // UNIQUE
+            // BotSpawner
+            if (object.m_type == "BotSpawner") {
+                std::weak_ptr<BotSpawnerComponent> botSpawnerComponent = g_game->GetComponentManager().AddComponent<BotSpawnerComponent>(entity);
+                botSpawnerComponent.lock()->m_playerID = object.m_properties.front().m_value.intValue;
             }
 
-            // Spawn
-            if (objectlayer.m_name == "spawner") {
-                std::weak_ptr<SpawnComponent> spawnComponent = g_game->GetComponentManager().AddComponent<SpawnComponent>(entity);
-                spawnComponent.lock()->m_playerID = object.m_properties.front().m_value.intValue;
+            // AmmoSpawner
+            if (object.m_type == "AmmoSpawner") {
+                std::weak_ptr<AmmoSpawnerComponent> ammoSpawnerComponent = g_game->GetComponentManager().AddComponent<AmmoSpawnerComponent>(entity);
+                ammoSpawnerComponent.lock()->m_ammo = object.m_properties.front().m_value.intValue;
             }
         }
     }
@@ -354,6 +350,11 @@ bool MapImporter::LoadObject(const rapidjson::Value& value, Object& object) cons
         return ret;
     }
     object.m_name = value["name"].GetString();
+    ret = value.HasMember("type");
+    if (!ret) {
+        return ret;
+    }
+    object.m_type = value["type"].GetString();
     ret = value.HasMember("gid");
     if (!ret) {
         return ret;

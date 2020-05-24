@@ -37,31 +37,13 @@
         {
          "draworder":"index",
          "id":6,
-         "name":"spawner",
+         "name":"botSpawner",
          "objects":[
                 {
                  "gid":198,
                  "height":64,
-                 "id":17,
-                 "name":"spawner2",
-                 "properties":[
-                        {
-                         "name":"player",
-                         "type":"int",
-                         "value":0
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":64,
-                 "x":768,
-                 "y":448
-                }, 
-                {
-                 "gid":198,
-                 "height":64,
                  "id":18,
-                 "name":"spawner1",
+                 "name":"bot1",
                  "properties":[
                         {
                          "name":"player",
@@ -69,10 +51,111 @@
                          "value":1
                         }],
                  "rotation":0,
-                 "type":"",
+                 "type":"BotSpawner",
                  "visible":true,
                  "width":64,
                  "x":64,
+                 "y":128
+                }, 
+                {
+                 "gid":198,
+                 "height":64,
+                 "id":17,
+                 "name":"bot0",
+                 "properties":[
+                        {
+                         "name":"player",
+                         "type":"int",
+                         "value":0
+                        }],
+                 "rotation":0,
+                 "type":"BotSpawner",
+                 "visible":true,
+                 "width":64,
+                 "x":768,
+                 "y":448
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":8,
+         "name":"ammoSpawner",
+         "objects":[
+                {
+                 "gid":262,
+                 "height":64,
+                 "id":19,
+                 "name":"multipleAmmo",
+                 "properties":[
+                        {
+                         "name":"ammo",
+                         "type":"int",
+                         "value":20
+                        }],
+                 "rotation":0,
+                 "type":"AmmoSpawner",
+                 "visible":true,
+                 "width":64,
+                 "x":512,
+                 "y":320
+                }, 
+                {
+                 "gid":262,
+                 "height":64,
+                 "id":20,
+                 "name":"multipleAmmo",
+                 "properties":[
+                        {
+                         "name":"ammo",
+                         "type":"int",
+                         "value":20
+                        }],
+                 "rotation":0,
+                 "type":"AmmoSpawner",
+                 "visible":true,
+                 "width":64,
+                 "x":192,
+                 "y":384
+                }, 
+                {
+                 "gid":263,
+                 "height":64,
+                 "id":21,
+                 "name":"singleAmmo",
+                 "properties":[
+                        {
+                         "name":"ammo",
+                         "type":"int",
+                         "value":10
+                        }],
+                 "rotation":0,
+                 "type":"AmmoSpawner",
+                 "visible":true,
+                 "width":64,
+                 "x":704,
+                 "y":256
+                }, 
+                {
+                 "gid":263,
+                 "height":64,
+                 "id":24,
+                 "name":"singleAmmo",
+                 "properties":[
+                        {
+                         "name":"ammo",
+                         "type":"int",
+                         "value":10
+                        }],
+                 "rotation":0,
+                 "type":"AmmoSpawner",
+                 "visible":true,
+                 "width":64,
+                 "x":256,
                  "y":128
                 }],
          "opacity":1,
@@ -81,11 +164,11 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":8,
- "nextobjectid":19,
+ "nextlayerid":9,
+ "nextobjectid":25,
  "orientation":"orthogonal",
  "renderorder":"left-down",
- "tiledversion":"1.3.3",
+ "tiledversion":"1.3.4",
  "tileheight":64,
  "tilesets":[
         {

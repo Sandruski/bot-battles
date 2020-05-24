@@ -42,7 +42,8 @@ enum class SystemType : U16 {
 #endif
     SERVER,
 
-    SPAWNER,
+    BOT_SPAWNER,
+    //AMMO_SPAWNER,
     PHYSICS,
     //
     SIGHT,

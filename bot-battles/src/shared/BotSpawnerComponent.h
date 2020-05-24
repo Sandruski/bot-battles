@@ -1,5 +1,5 @@
-#ifndef __SPAWN_COMPONENT_H__
-#define __SPAWN_COMPONENT_H__
+#ifndef __BOT_SPAWNER_COMPONENT_H__
+#define __BOT_SPAWNER_COMPONENT_H__
 
 #include "Component.h"
 #ifdef _CLIENT
@@ -12,18 +12,18 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 // Entity Component
-struct SpawnComponent : public Component
+struct BotSpawnerComponent : public Component
 #ifdef _CLIENT
     ,
-                        public NetworkableReadObject
+                             public NetworkableReadObject
 #elif defined(_SERVER)
     ,
-                        public NetworkableWriteObject
+                             public NetworkableWriteObject
 #endif
 {
-    static ComponentType GetType() { return ComponentType::SPAWN; }
+    static ComponentType GetType() { return ComponentType::BOT_SPAWNER; }
 
-    SpawnComponent();
+    BotSpawnerComponent();
 
 #ifdef _CLIENT
     void Read(InputMemoryStream& inputStream, U32 dirtyState, U32 frame, ReplicationActionType replicationActionType, Entity entity) override;

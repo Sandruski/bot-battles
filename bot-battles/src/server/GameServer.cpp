@@ -1,5 +1,6 @@
 #include "GameServer.h"
 
+#include "BotSpawnerSystem.h"
 #include "CollisionSystemServer.h"
 #include "ComponentManager.h"
 #include "ConfigServer.h"
@@ -17,7 +18,6 @@
 #include "ServerComponent.h"
 #include "ServerSystem.h"
 #include "SightSystemServer.h"
-#include "SpawnerSystem.h"
 #include "SystemManager.h"
 #include "WeaponSystemServer.h"
 
@@ -41,7 +41,7 @@ bool GameServer::Init()
     if (!ret) {
         return ret;
     }
-    ret = m_systemManager->RegisterSystem<SpawnerSystem>();
+    ret = m_systemManager->RegisterSystem<BotSpawnerSystem>();
     if (!ret) {
         return ret;
     }
@@ -99,8 +99,8 @@ bool GameServer::Init()
     if (!ret) {
         return ret;
     }
-    std::weak_ptr<SpawnerSystem> spawnerSystem = m_systemManager->GetSystem<SpawnerSystem>();
-    ret = serverSystem.lock()->AddObserver(spawnerSystem);
+    std::weak_ptr<BotSpawnerSystem> botSpawnerSystem = m_systemManager->GetSystem<BotSpawnerSystem>();
+    ret = serverSystem.lock()->AddObserver(botSpawnerSystem);
     if (!ret) {
         return ret;
     }

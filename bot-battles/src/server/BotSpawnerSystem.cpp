@@ -1,6 +1,7 @@
-#include "SpawnerSystem.h"
+#include "BotSpawnerSystem.h"
 
 #include "BotComponent.h"
+#include "BotSpawnerComponent.h"
 #include "ClientProxy.h"
 #include "ColliderComponent.h"
 #include "ComponentManager.h"
@@ -15,7 +16,6 @@
 #include "RigidbodyComponent.h"
 #include "ServerComponent.h"
 #include "SightComponent.h"
-#include "SpawnComponent.h"
 #include "SpriteComponent.h"
 #include "SpriteResource.h"
 #include "TransformComponent.h"
@@ -24,14 +24,14 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-SpawnerSystem::SpawnerSystem()
+BotSpawnerSystem::BotSpawnerSystem()
 {
     m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
-    m_signature |= 1 << static_cast<U16>(ComponentType::SPAWN);
+    m_signature |= 1 << static_cast<U16>(ComponentType::BOT_SPAWNER);
 }
 
 //----------------------------------------------------------------------------------------------------
-void SpawnerSystem::OnNotify(const Event& event)
+void BotSpawnerSystem::OnNotify(const Event& event)
 {
     switch (event.eventType) {
 
@@ -52,17 +52,17 @@ void SpawnerSystem::OnNotify(const Event& event)
 }
 
 //----------------------------------------------------------------------------------------------------
-Entity SpawnerSystem::Spawn(PlayerID playerID) const
+Entity BotSpawnerSystem::Spawn(PlayerID playerID) const
 {
     Entity character = g_gameServer->GetEntityManager().AddEntity();
     g_gameServer->GetLinkingContext().AddEntity(character);
 
     std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().AddComponent<TransformComponent>(character);
-    for (const auto& spawner : m_entities) {
-        std::weak_ptr<SpawnComponent> spawnerSpawnComponent = g_gameServer->GetComponentManager().GetComponent<SpawnComponent>(spawner);
-        if (spawnerSpawnComponent.lock()->m_playerID == playerID) {
-            std::weak_ptr<TransformComponent> spawnerTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(spawner);
-            transformComponent.lock()->m_position = glm::vec2(spawnerTransformComponent.lock()->m_position.x, spawnerTransformComponent.lock()->m_position.y);
+    for (const auto& entity : m_entities) {
+        std::weak_ptr<BotSpawnerComponent> botSpawnerComponent = g_gameServer->GetComponentManager().GetComponent<BotSpawnerComponent>(entity);
+        if (botSpawnerComponent.lock()->m_playerID == playerID) {
+            std::weak_ptr<TransformComponent> botSpawnerTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
+            transformComponent.lock()->m_position = botSpawnerTransformComponent.lock()->m_position;
             transformComponent.lock()->m_layerType = LayerType::PLAYER;
             break;
         }
@@ -156,14 +156,14 @@ Entity SpawnerSystem::Spawn(PlayerID playerID) const
 }
 
 //----------------------------------------------------------------------------------------------------
-void SpawnerSystem::Despawn(Entity entity) const
+void BotSpawnerSystem::Despawn(Entity entity) const
 {
     g_gameServer->GetLinkingContext().RemoveEntity(entity);
     g_gameServer->GetEntityManager().RemoveEntity(entity);
 }
 
 //----------------------------------------------------------------------------------------------------
-void SpawnerSystem::OnPlayerAdded(PlayerID playerID) const
+void BotSpawnerSystem::OnPlayerAdded(PlayerID playerID) const
 {
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     Entity entity = serverComponent.GetEntity(playerID);
@@ -177,7 +177,7 @@ void SpawnerSystem::OnPlayerAdded(PlayerID playerID) const
 }
 
 //----------------------------------------------------------------------------------------------------
-void SpawnerSystem::OnPlayerRemoved(Entity entity) const
+void BotSpawnerSystem::OnPlayerRemoved(Entity entity) const
 {
     Despawn(entity);
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();

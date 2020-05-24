@@ -93,6 +93,7 @@ public:
         glm::vec2 m_size;
         F32 m_rotation;
         std::string m_name;
+        std::string m_type;
         U32 m_gid;
         std::vector<Property> m_properties;
     };

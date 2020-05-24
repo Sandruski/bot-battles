@@ -1,6 +1,8 @@
 #include "Game.h"
 
+#include "AmmoSpawnerComponent.h"
 #include "BotComponent.h"
+#include "BotSpawnerComponent.h"
 #include "ColliderComponent.h"
 #include "ComponentManager.h"
 #include "Config.h"
@@ -13,7 +15,6 @@
 #include "PhysicsSystem.h"
 #include "RigidbodyComponent.h"
 #include "SightComponent.h"
-#include "SpawnComponent.h"
 #include "SystemManager.h"
 #include "TransformComponent.h"
 #include "WallComponent.h"
@@ -128,7 +129,11 @@ bool Game::Init()
     if (!ret) {
         return ret;
     }
-    ret = m_componentManager->RegisterComponent<SpawnComponent>();
+    ret = m_componentManager->RegisterComponent<BotSpawnerComponent>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_componentManager->RegisterComponent<AmmoSpawnerComponent>();
     if (!ret) {
         return ret;
     }

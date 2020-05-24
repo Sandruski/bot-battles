@@ -15,6 +15,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)AckRange.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)AmmoSpawnerComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)BotComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ByteSwap.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)CircularBuffer.h" />
@@ -87,7 +88,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Shaders.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SightComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SightSystem.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)SpawnComponent.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)BotSpawnerComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SpriteResource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)RendererComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StateDefs.h" />
@@ -117,6 +118,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)AckRange.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)AmmoSpawnerComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)BotComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ColliderComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)CollisionSystem.cpp" />
@@ -165,7 +167,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)ShaderResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SightComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SightSystem.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)SpawnComponent.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)BotSpawnerComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)StatesPanel.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TCPSocket.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Transform.cpp" />
