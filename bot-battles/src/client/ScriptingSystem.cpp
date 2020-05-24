@@ -105,6 +105,9 @@ void ScriptingSystem::OnNotify(const Event& event)
 
         // TODO: onTriggerEnter & onTriggerExit for ammo pickups
         // TODO: network ammo tiles. What happens with current spawner component. Is it being networked?
+        // TODO: don't create ammo tiles on client when loading the map, only on server
+        // we could create objects on server and tile layers on client?
+        // Ammo tiles must be networked because we don't know if another entity has already picked them. Maybe if we see them again they have been picked by another entity
 
     case EventType::SEEN_NEW_ENTITY: {
         OnSeenNewEntity(event.sight.entity);

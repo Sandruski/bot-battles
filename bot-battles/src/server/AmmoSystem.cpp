@@ -5,6 +5,7 @@
 #include "ColliderComponent.h"
 #include "ComponentManager.h"
 #include "ComponentMemberTypes.h"
+#include "EntityManager.h"
 #include "GameServer.h"
 #include "GameplayComponent.h"
 #include "LinkingContext.h"
@@ -34,7 +35,7 @@ bool AmmoSystem::Update()
     }
 
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
-    LinkingContext& linkingContext = g_gameServer->GetLinkingContext();
+    //LinkingContext& linkingContext = g_gameServer->GetLinkingContext();
     PhysicsComponent& physicsComponent = g_gameServer->GetPhysicsComponent();
     for (auto& entity : m_entities) {
         PlayerID playerID = serverComponent.GetPlayerID(entity);
@@ -62,18 +63,21 @@ bool AmmoSystem::Update()
                 const bool isOverlap = physicsComponent.Overlap(center, extents, overlapEntities);
                 if (isOverlap) {
                     for (const auto& overlapEntity : overlapEntities) {
+                        /*
                         NetworkID networkID = linkingContext.GetNetworkID(overlapEntity);
                         if (networkID >= INVALID_NETWORK_ID) {
                             continue;
                         }
+                        */
 
                         std::weak_ptr<AmmoSpawnerComponent> ammoSpawnerComponent = g_gameServer->GetComponentManager().GetComponent<AmmoSpawnerComponent>(overlapEntity);
-                        if (!ammoSpawnerComponent.lock()->m_isEnabled) {
+                        if (ammoSpawnerComponent.expired() || !ammoSpawnerComponent.lock()->m_isEnabled) {
                             continue;
                         }
 
                         U32 ammo = ammoSpawnerComponent.lock()->PickUp();
                         weaponComponent.lock()->Reload(ammo);
+                        g_gameServer->GetEntityManager().RemoveEntity(overlapEntity);
                     }
                 }
             }

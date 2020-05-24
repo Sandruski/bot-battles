@@ -132,10 +132,12 @@ void MapImporter::Create(const Tilemap& tilemap) const
                 if (tilelayer.m_name == "wall") {
                     g_game->GetComponentManager().AddComponent<WallComponent>(entity);
 
+                    // Collider
                     std::weak_ptr<ColliderComponent> colliderComponent = g_game->GetComponentManager().AddComponent<ColliderComponent>(entity);
                     colliderComponent.lock()->m_size = static_cast<glm::vec2>(tilemap.m_tileSize);
                     colliderComponent.lock()->m_shapeType = ColliderComponent::ShapeType::BOX;
 
+                    // Rigidbody
                     std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_game->GetComponentManager().AddComponent<RigidbodyComponent>(entity);
                     rigidbodyComponent.lock()->m_bodyType = RigidbodyComponent::BodyType::STATIC;
                     rigidbodyComponent.lock()->UpdateBodyType();
@@ -186,6 +188,18 @@ void MapImporter::Create(const Tilemap& tilemap) const
             if (object.m_type == "AmmoSpawner") {
                 std::weak_ptr<AmmoSpawnerComponent> ammoSpawnerComponent = g_game->GetComponentManager().AddComponent<AmmoSpawnerComponent>(entity);
                 ammoSpawnerComponent.lock()->m_ammo = object.m_properties.front().m_value.intValue;
+
+                // Collider
+                std::weak_ptr<ColliderComponent> colliderComponent = g_game->GetComponentManager().AddComponent<ColliderComponent>(entity);
+                colliderComponent.lock()->m_size = static_cast<glm::vec2>(tilemap.m_tileSize);
+                colliderComponent.lock()->m_shapeType = ColliderComponent::ShapeType::BOX;
+
+                // Rigidbody
+                std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_game->GetComponentManager().AddComponent<RigidbodyComponent>(entity);
+                rigidbodyComponent.lock()->m_bodyType = RigidbodyComponent::BodyType::STATIC;
+                rigidbodyComponent.lock()->UpdateBodyType();
+                rigidbodyComponent.lock()->m_groupIndex = 0;
+                rigidbodyComponent.lock()->UpdateGroupIndex();
             }
         }
     }
