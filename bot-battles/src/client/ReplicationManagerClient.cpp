@@ -135,7 +135,7 @@ void ReplicationManagerClient::ReadCreateAction(InputMemoryStream& inputStream, 
             g_gameClient->GetComponentManager().AddComponent<LocalPlayerComponent>(entity);
         }
     } else /*if (playerID != INVALID_PLAYER_ID)*/ {
-        const bool hasRemotePlayer = signature & static_cast<U16>(ComponentType::REMOTE_PLAYER);
+        const bool hasRemotePlayer = signature & static_cast<U16>(ComponentType::REMOTE_PLAYER); // TODO: remote players are bots and ammo
         if (!hasRemotePlayer) {
             g_gameClient->GetComponentManager().AddComponent<RemotePlayerComponent>(entity);
         }
