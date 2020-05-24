@@ -244,6 +244,13 @@ void ScriptingSystem::OnCollisionExit(Entity entityA, Entity entityB, glm::vec2 
 //----------------------------------------------------------------------------------------------------
 void ScriptingSystem::OnSeenNewEntity(Entity entity) const
 {
+    assert(entity < INVALID_ENTITY);
+
+    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    if (entity == clientComponent.m_entity) {
+        return;
+    }
+
     ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();
     InputComponent& inputComponent = g_gameClient->GetInputComponent();
 
@@ -270,6 +277,13 @@ void ScriptingSystem::OnSeenNewEntity(Entity entity) const
 //----------------------------------------------------------------------------------------------------
 void ScriptingSystem::OnSeenLostEntity(Entity entity) const
 {
+    assert(entity < INVALID_ENTITY);
+
+    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    if (entity == clientComponent.m_entity) {
+        return;
+    }
+
     ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();
     InputComponent& inputComponent = g_gameClient->GetInputComponent();
 

@@ -16,7 +16,7 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-void ReplicationManagerClient::Read(InputMemoryStream& inputStream) const
+void ReplicationManagerClient::Read(InputMemoryStream& inputStream)
 {
     U32 frame = 0;
     inputStream.Read(frame);
@@ -75,13 +75,13 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream) const
             newEvent.eventType = EventType::SEEN_LOST_ENTITY;
             Entity entity = linkingContext.GetEntity(networkID);
             newEvent.sight.entity = entity;
-            NotifyEvent(newEvent);
+            PushEvent(newEvent);
         } else if (isReplicated && !wasReplicated) {
             Event newEvent;
             newEvent.eventType = EventType::SEEN_NEW_ENTITY;
             Entity entity = linkingContext.GetEntity(networkID);
             newEvent.sight.entity = entity;
-            NotifyEvent(newEvent);
+            PushEvent(newEvent);
         }
     }
 

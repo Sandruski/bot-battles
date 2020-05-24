@@ -6,7 +6,7 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 class ReplicationManagerClient : public Subject {
 public:
-    void Read(InputMemoryStream& inputStream) const;
+    void Read(InputMemoryStream& inputStream);
     void ReadCreateAction(InputMemoryStream& inputStream, NetworkID networkID, U32 frame) const;
     void ReadUpdateAction(InputMemoryStream& inputStream, NetworkID networkID, U32 frame) const;
     void ReadRemoveAction(NetworkID networkID) const;

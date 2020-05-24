@@ -34,6 +34,9 @@ bool ClientSystem::PreUpdate()
 {
     NotifyEvents();
 
+    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    clientComponent.m_replicationManager.NotifyEvents();
+
     return true;
 }
 
