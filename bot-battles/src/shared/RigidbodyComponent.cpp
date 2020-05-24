@@ -11,6 +11,7 @@ RigidbodyComponent::RigidbodyComponent()
     : m_body(nullptr)
     , m_bodyType(BodyType::NONE)
     , m_groupIndex(0)
+    , m_isSensor(false)
     , m_isBullet(false)
 {
 }
@@ -39,6 +40,10 @@ void RigidbodyComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U3
         inputStream.Read(m_groupIndex);
         UpdateGroupIndex();
     }
+    if (dirtyState & static_cast<U32>(ComponentMemberType::RIGIDBODY_SENSOR)) {
+        inputStream.Read(m_isSensor);
+        UpdateSensor();
+    }
     if (dirtyState & static_cast<U32>(ComponentMemberType::RIGIDBODY_BULLET)) {
         inputStream.Read(m_isBullet);
         UpdateBullet();
@@ -61,6 +66,10 @@ U32 RigidbodyComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) 
     if (dirtyState & static_cast<U32>(ComponentMemberType::RIGIDBODY_GROUP_INDEX)) {
         outputStream.Write(m_groupIndex);
         writtenState |= static_cast<U32>(ComponentMemberType::RIGIDBODY_GROUP_INDEX);
+    }
+    if (dirtyState & static_cast<U32>(ComponentMemberType::RIGIDBODY_SENSOR)) {
+        outputStream.Write(m_isSensor);
+        writtenState |= static_cast<U32>(ComponentMemberType::RIGIDBODY_SENSOR);
     }
     if (dirtyState & static_cast<U32>(ComponentMemberType::RIGIDBODY_BULLET)) {
         outputStream.Write(m_isBullet);
@@ -174,6 +183,16 @@ void RigidbodyComponent::UpdateGroupIndex() const
     b2Filter filter;
     filter.groupIndex = m_groupIndex;
     m_body->GetFixtureList()->SetFilterData(filter);
+}
+
+//----------------------------------------------------------------------------------------------------
+void RigidbodyComponent::UpdateSensor() const
+{
+    if (m_body == nullptr) {
+        return;
+    }
+
+    m_body->GetFixtureList()->SetSensor(m_isSensor);
 }
 
 //----------------------------------------------------------------------------------------------------

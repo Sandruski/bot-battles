@@ -200,6 +200,8 @@ void MapImporter::Create(const Tilemap& tilemap) const
                 rigidbodyComponent.lock()->UpdateBodyType();
                 rigidbodyComponent.lock()->m_groupIndex = 0;
                 rigidbodyComponent.lock()->UpdateGroupIndex();
+                rigidbodyComponent.lock()->m_isSensor = true;
+                rigidbodyComponent.lock()->UpdateSensor();
             }
         }
     }

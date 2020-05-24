@@ -44,6 +44,7 @@ struct RigidbodyComponent : public Component
 
     void UpdateBodyType() const;
     void UpdateGroupIndex() const;
+    void UpdateSensor() const;
     void UpdateBullet() const;
 
     glm::vec2 GetLinearVelocity() const;
@@ -59,6 +60,7 @@ struct RigidbodyComponent : public Component
     // Networked
     BodyType m_bodyType;
     I16 m_groupIndex;
+    bool m_isSensor;
     bool m_isBullet;
 };
 }

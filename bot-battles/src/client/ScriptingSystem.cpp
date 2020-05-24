@@ -103,7 +103,7 @@ void ScriptingSystem::OnNotify(const Event& event)
         break;
     }
 
-        // TODO: onTriggerEnter & onTriggerExit for ammo pickups
+        // TODO: onTriggerEnter & onTriggerExit for ammo pickups (set as sensors)
         // TODO: network ammo tiles. What happens with current spawner component. Is it being networked?
         // TODO: don't create ammo tiles on client when loading the map, only on server
         // we could create objects on server and tile layers on client?
