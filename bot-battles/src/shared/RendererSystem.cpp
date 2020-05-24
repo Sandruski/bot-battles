@@ -135,7 +135,7 @@ bool RendererSystem::Render()
                 break;
             }
 
-            glm::vec3 position = transformComponent2.lock()->GetDebugPositionAndLayer();
+            glm::vec3 position = transformComponent2.lock()->GetPositionAndLayer();
             F32 rotation = transformComponent2.lock()->m_rotation;
             glm::uvec4 textureCoords = spriteComponent2.lock()->GetSpriteTextureCoords();
             glm::vec3 scale = glm::vec3(static_cast<F32>(textureCoords.z), static_cast<F32>(textureCoords.w), 0.0f);
