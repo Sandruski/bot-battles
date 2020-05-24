@@ -16,7 +16,7 @@ public:
 public:
     SightSystemClient();
 
-    bool DebugRender() override;
+    bool Render() override;
 
     void OnNotify(const Event& event) override;
 

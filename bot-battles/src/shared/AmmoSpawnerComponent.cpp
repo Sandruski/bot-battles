@@ -22,4 +22,13 @@ U32 AmmoSpawnerComponent::Write(OutputMemoryStream& /*outputStream*/, U32 /*dirt
     return writtenState;
 }
 #endif
+
+//----------------------------------------------------------------------------------------------------
+U32 AmmoSpawnerComponent::PickUp()
+{
+    U32 ammo = m_ammo;
+    m_ammo = 0;
+
+    return ammo;
+}
 }

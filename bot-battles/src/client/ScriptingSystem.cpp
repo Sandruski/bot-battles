@@ -103,6 +103,9 @@ void ScriptingSystem::OnNotify(const Event& event)
         break;
     }
 
+        // TODO: onTriggerEnter & onTriggerExit for ammo pickups
+        // TODO: network ammo tiles. What happens with current spawner component. Is it being networked?
+
     case EventType::SEEN_NEW_ENTITY: {
         OnSeenNewEntity(event.sight.entity);
         break;

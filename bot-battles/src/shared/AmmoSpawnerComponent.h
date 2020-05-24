@@ -31,6 +31,8 @@ struct AmmoSpawnerComponent : public Component
     U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override;
 #endif
 
+    U32 PickUp();
+
     // Local
     U32 m_ammo;
 };

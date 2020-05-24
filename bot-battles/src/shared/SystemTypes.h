@@ -41,12 +41,12 @@ enum class SystemType : U16 {
 #endif
     SERVER,
 
-    BOT_SPAWNER,
-    //AMMO_SPAWNER,
+    SPAWNER,
     PHYSICS,
     //
     SIGHT,
     MOVEMENT,
+    AMMO,
     WEAPON,
     HEALTH,
     //

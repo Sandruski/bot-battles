@@ -1,20 +1,20 @@
-#ifndef __BOT_SPAWNER_SYSTEM_H__
-#define __BOT_SPAWNER_SYSTEM_H__
+#ifndef __SPAWNER_SYSTEM_H__
+#define __SPAWNER_SYSTEM_H__
 
 #include "System.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class BotSpawnerSystem : public System, public Observer {
+class SpawnerSystem : public System, public Observer {
 public:
     static SystemType GetType()
     {
-        return SystemType::BOT_SPAWNER;
+        return SystemType::SPAWNER;
     }
 
 public:
-    BotSpawnerSystem();
+    SpawnerSystem();
 
     void OnNotify(const Event& event) override;
 

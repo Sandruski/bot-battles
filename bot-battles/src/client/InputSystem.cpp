@@ -71,7 +71,7 @@ bool InputSystem::Update()
         clientComponent.m_isLastInputTransformPending = true;
     }
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_SPACE) == EventComponent::KeyState::DOWN) {
-        dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_SHOOTING);
+        dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_SHOOT);
         clientComponent.m_isLastInputWeaponPending = true;
     }
 
@@ -84,13 +84,13 @@ bool InputSystem::Update()
     // ***
     EventComponent& eventComponent = g_game->GetEventComponent();
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_SPACE) == EventComponent::KeyState::DOWN) {
-        inputComponent.m_dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_SHOOTING);
+        inputComponent.m_dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_SHOOT);
     }
     // ***
     if (inputComponent.m_dirtyState != 0) {
         if (!clientComponent.m_inputBuffer.IsFull()) {
             clientComponent.m_isLastMoveInputPending = (inputComponent.m_dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_LINEAR_VELOCITY)) || (inputComponent.m_dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY));
-            clientComponent.m_isLastShootInputPending = inputComponent.m_dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_SHOOTING);
+            clientComponent.m_isLastShootInputPending = inputComponent.m_dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_SHOOT);
 
             Input input = Input(inputComponent, inputComponent.m_dirtyState, clientComponent.m_inputBuffer.m_back, clientComponent.m_interpolationFromFrame, clientComponent.m_interpolationToFrame, clientComponent.m_interpolationPercentage);
             clientComponent.m_inputBuffer.Add(input);

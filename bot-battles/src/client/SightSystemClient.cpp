@@ -18,7 +18,7 @@ SightSystemClient::SightSystemClient()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool SightSystemClient::DebugRender()
+bool SightSystemClient::Render()
 {
     OPTICK_EVENT();
 

@@ -66,8 +66,8 @@ bool WeaponSystemServer::Update()
             const Input& input = clientProxy.lock()->m_inputBuffer.Get(i);
             U32 dirtyState = input.GetDirtyState();
 
-            const bool hasShooting = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_SHOOTING);
-            if (hasShooting) {
+            const bool hasShoot = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_SHOOT);
+            if (hasShoot) {
                 if (serverComponent.m_isServerRewind) {
                     Rewind(entity, input.m_interpolationFromFrame, input.m_interpolationToFrame, input.m_interpolationPercentage);
                 }

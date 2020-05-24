@@ -31,7 +31,11 @@ struct WeaponComponent : public Component
     U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override;
 #endif
 
+    U32 Reload(U32 ammo);
+
+    // Networked
     U32 m_damage;
+    U32 m_ammo;
 
     // Debug
     glm::vec2 m_origin;
