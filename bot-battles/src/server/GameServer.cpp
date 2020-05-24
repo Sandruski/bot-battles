@@ -149,6 +149,11 @@ bool GameServer::Init()
     if (!ret) {
         return ret;
     }
+    std::weak_ptr<AmmoSystem> ammoSystem = m_systemManager->GetSystem<AmmoSystem>();
+    ret = ammoSystem.lock()->AddObserver(serverSystem);
+    if (!ret) {
+        return ret;
+    }
 
     ret = Game::Init();
 

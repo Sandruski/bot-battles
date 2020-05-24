@@ -68,7 +68,7 @@ void PlayStateServer::OnHealthEmptied(Entity entity) const
         }
 
         std::weak_ptr<HealthComponent> healthComponent = pair.second;
-        if (healthComponent.expired() || !healthComponent.lock()->m_isEnabled) {
+        if (healthComponent.expired()) {
             continue;
         }
 

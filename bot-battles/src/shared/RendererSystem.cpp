@@ -112,7 +112,8 @@ bool RendererSystem::Render()
         Entity entity = m_entities.at(i);
         std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
         std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
-        if (!transformComponent.lock()->m_isEnabled || !spriteComponent.lock()->m_isEnabled) {
+        if (!spriteComponent.lock()->m_isVisible) {
+            ++i;
             continue;
         }
 
@@ -126,8 +127,9 @@ bool RendererSystem::Render()
             Entity entity2 = m_entities.at(i);
             std::weak_ptr<TransformComponent> transformComponent2 = g_game->GetComponentManager().GetComponent<TransformComponent>(entity2);
             std::weak_ptr<SpriteComponent> spriteComponent2 = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity2);
-            if (!transformComponent2.lock()->m_isEnabled || !spriteComponent2.lock()->m_isEnabled) {
-                break;
+            if (!spriteComponent2.lock()->m_isVisible) {
+                ++i;
+                continue;
             }
 
             U32 texture2 = spriteComponent2.lock()->m_spriteResource.lock()->GetTexture();

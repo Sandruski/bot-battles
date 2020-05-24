@@ -56,9 +56,6 @@ bool SightSystemServer::Update()
 
         std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
         std::weak_ptr<SightComponent> sightComponent = g_gameServer->GetComponentManager().GetComponent<SightComponent>(entity);
-        if (!transformComponent.lock()->m_isEnabled || !sightComponent.lock()->m_isEnabled) {
-            continue;
-        }
 
         std::vector<Entity> seenEntities;
 
@@ -75,9 +72,6 @@ bool SightSystemServer::Update()
                 }
 
                 std::weak_ptr<TransformComponent> overlapTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(overlapEntity);
-                if (!overlapTransformComponent.lock()->m_isEnabled) {
-                    continue;
-                }
 
                 if (overlapEntity == entity) {
                     seenEntities.emplace_back(overlapEntity);
@@ -143,9 +137,6 @@ bool SightSystemServer::Render()
 
         std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
         std::weak_ptr<SightComponent> sightComponent = g_gameServer->GetComponentManager().GetComponent<SightComponent>(entity);
-        if (!transformComponent.lock()->m_isEnabled || !sightComponent.lock()->m_isEnabled) {
-            continue;
-        }
 
         glm::vec4 color = Red;
         color.a = 0.5f;

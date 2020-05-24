@@ -6,7 +6,7 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class AmmoSystem : public System {
+class AmmoSystem : public System, public Subject {
 public:
     static SystemType GetType()
     {

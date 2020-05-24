@@ -32,9 +32,6 @@ bool SightSystemClient::Render()
 
         std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
         std::weak_ptr<SightComponent> sightComponent = g_gameClient->GetComponentManager().GetComponent<SightComponent>(entity);
-        if (!transformComponent.lock()->m_isEnabled || !sightComponent.lock()->m_isEnabled) {
-            continue;
-        }
 
         glm::vec4 color = Red;
         color.a = 0.5f;
@@ -78,9 +75,6 @@ void SightSystemClient::OnSeenNewEntity(Entity seenEntity) const
         }
 
         std::weak_ptr<SightComponent> sightComponent = g_gameClient->GetComponentManager().GetComponent<SightComponent>(entity);
-        if (!sightComponent.lock()->m_isEnabled) {
-            continue;
-        }
 
         sightComponent.lock()->m_seenEntities.emplace_back(seenEntity);
     }
@@ -99,9 +93,6 @@ void SightSystemClient::OnSeenLostEntity(Entity seenEntity) const
         }
 
         std::weak_ptr<SightComponent> sightComponent = g_gameClient->GetComponentManager().GetComponent<SightComponent>(entity);
-        if (!sightComponent.lock()->m_isEnabled) {
-            continue;
-        }
 
         std::vector<Entity>::const_iterator it = std::find(sightComponent.lock()->m_seenEntities.begin(), sightComponent.lock()->m_seenEntities.end(), seenEntity);
         sightComponent.lock()->m_seenEntities.erase(it);

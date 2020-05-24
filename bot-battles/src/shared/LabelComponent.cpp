@@ -16,9 +16,6 @@ LabelComponent::LabelComponent()
 //----------------------------------------------------------------------------------------------------
 void LabelComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U32 /*frame*/, ReplicationActionType /*replicationActionType*/, Entity /*entity*/)
 {
-    if (dirtyState & static_cast<U32>(ComponentMemberType::LABEL_ENABLED)) {
-        inputStream.Read(m_isEnabled);
-    }
     if (dirtyState & static_cast<U32>(ComponentMemberType::LABEL_OFFSET)) {
         inputStream.Read(m_offset);
     }
@@ -35,10 +32,6 @@ U32 LabelComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) cons
 {
     U32 writtenState = 0;
 
-    if (dirtyState & static_cast<U32>(ComponentMemberType::LABEL_ENABLED)) {
-        outputStream.Write(m_isEnabled);
-        writtenState |= static_cast<U32>(ComponentMemberType::LABEL_ENABLED);
-    }
     if (dirtyState & static_cast<U32>(ComponentMemberType::LABEL_OFFSET)) {
         outputStream.Write(m_offset);
         writtenState |= static_cast<U32>(ComponentMemberType::LABEL_OFFSET);

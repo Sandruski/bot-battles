@@ -22,9 +22,6 @@ for (const auto& seenEntity : sightComponent.lock()->m_seenEntities) {
 
     std::weak_ptr<TransformComponent> seenTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(seenEntity);
     std::weak_ptr<ColliderComponent> seenColliderComponent = g_gameServer->GetComponentManager().GetComponent<ColliderComponent>(seenEntity);
-    if (!seenTransformComponent.lock()->m_isEnabled) {
-        continue;
-    }
 
     glm::vec3 seenPosition = seenTransformComponent.lock()->GetDebugPositionAndLayer();
     F32 seenRotation = seenTransformComponent.lock()->m_rotation;

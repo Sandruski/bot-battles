@@ -123,7 +123,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)ColliderComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)CollisionSystem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Colors.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Component.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ComponentManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Config.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)EntityManager.cpp" />

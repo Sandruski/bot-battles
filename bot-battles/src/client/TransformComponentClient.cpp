@@ -14,9 +14,6 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U32 frame, ReplicationActionType replicationActionType, Entity entity)
 {
-    if (dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_ENABLED)) {
-        inputStream.Read(m_isEnabled);
-    }
     glm::vec2 newPosition = glm::vec2(0.0f, 0.0f);
     const bool hasPosition = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION);
     if (hasPosition) {

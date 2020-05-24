@@ -11,6 +11,7 @@ SpriteComponent::SpriteComponent()
     : m_spriteResource()
     , m_spriteNameToTextureCoords()
     , m_spriteName("default")
+    , m_isVisible(true)
 {
 }
 
@@ -18,9 +19,6 @@ SpriteComponent::SpriteComponent()
 //----------------------------------------------------------------------------------------------------
 void SpriteComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U32 /*frame*/, ReplicationActionType /*replicationActionType*/, Entity /*entity*/)
 {
-    if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_ENABLED)) {
-        inputStream.Read(m_isEnabled);
-    }
     if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_FILE)) {
         std::string file;
         inputStream.Read(file);
@@ -32,6 +30,9 @@ void SpriteComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U32 /
     if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_SPRITE_NAME)) {
         inputStream.Read(m_spriteName);
     }
+    if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_VISIBLE)) {
+        inputStream.Read(m_isVisible);
+    }
 }
 #elif defined(_SERVER)
 //----------------------------------------------------------------------------------------------------
@@ -39,10 +40,6 @@ U32 SpriteComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) con
 {
     U32 writtenState = 0;
 
-    if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_ENABLED)) {
-        outputStream.Write(m_isEnabled);
-        writtenState |= static_cast<U32>(ComponentMemberType::SPRITE_ENABLED);
-    }
     if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_FILE)) {
         std::string file = m_spriteResource.lock()->GetFile();
         outputStream.Write(file);
@@ -55,6 +52,10 @@ U32 SpriteComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) con
     if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_SPRITE_NAME)) {
         outputStream.Write(m_spriteName);
         writtenState |= static_cast<U32>(ComponentMemberType::SPRITE_SPRITE_NAME);
+    }
+    if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_VISIBLE)) {
+        outputStream.Write(m_isVisible);
+        writtenState |= static_cast<U32>(ComponentMemberType::SPRITE_VISIBLE);
     }
 
     return writtenState;

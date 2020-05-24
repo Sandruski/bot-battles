@@ -38,9 +38,6 @@ bool HUDSystem::RenderGui()
     for (auto& entity : m_entities) {
         std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
         std::weak_ptr<LabelComponent> labelComponent = g_game->GetComponentManager().GetComponent<LabelComponent>(entity);
-        if (!transformComponent.lock()->m_isEnabled || !labelComponent.lock()->m_isEnabled) {
-            continue;
-        }
 
         glm::vec2 finalPosition = transformComponent.lock()->m_position + labelComponent.lock()->m_offset;
         finalPosition *= proportion;

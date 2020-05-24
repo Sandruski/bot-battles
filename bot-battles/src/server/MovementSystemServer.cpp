@@ -56,9 +56,6 @@ bool MovementSystemServer::Update()
 
             std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
             std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameServer->GetComponentManager().GetComponent<RigidbodyComponent>(entity);
-            if (!transformComponent.lock()->m_isEnabled || !rigidbodyComponent.lock()->m_isEnabled) {
-                continue;
-            }
 
             glm::vec2 linearVelocity = glm::vec2(0.0f, 0.0f);
             F32 angularVelocity = 0.0f;
@@ -107,9 +104,6 @@ bool MovementSystemServer::Update()
 
             std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
             std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameServer->GetComponentManager().GetComponent<RigidbodyComponent>(entity);
-            if (!transformComponent.lock()->m_isEnabled || !rigidbodyComponent.lock()->m_isEnabled) {
-                continue;
-            }
 
             std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
             U32 inputCount = clientProxy.lock()->m_inputBuffer.Count();
@@ -152,9 +146,6 @@ bool MovementSystemServer::Update()
 
         std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
         std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameServer->GetComponentManager().GetComponent<RigidbodyComponent>(entity);
-        if (!transformComponent.lock()->m_isEnabled || !rigidbodyComponent.lock()->m_isEnabled) {
-            continue;
-        }
 
         if (serverComponent.m_isServerRewind) {
             Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, frame);
@@ -179,9 +170,6 @@ bool MovementSystemServer::DebugRender()
         }
 
         std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
-        if (!transformComponent.lock()->m_isEnabled) {
-            continue;
-        }
 
         glm::vec4 color = Green;
         color.a = 0.5f;

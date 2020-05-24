@@ -7,6 +7,7 @@
 #include "EntityManager.h"
 #include "FileSystem.h"
 #include "Game.h"
+#include "LinkingContext.h"
 #include "ResourceManager.h"
 #include "RigidbodyComponent.h"
 #include "SpriteComponent.h"
@@ -150,6 +151,12 @@ void MapImporter::Create(const Tilemap& tilemap) const
 
     for (const auto& objectlayer : tilemap.m_objectlayers) {
         for (const auto& object : objectlayer.m_objects) {
+#ifdef _CLIENT
+            if (object.m_type == "AmmoSpawner") {
+                continue;
+            }
+#endif
+
             Entity entity = g_game->GetEntityManager().AddEntity();
 
             // SHARED
@@ -186,6 +193,8 @@ void MapImporter::Create(const Tilemap& tilemap) const
 
             // AmmoSpawner
             if (object.m_type == "AmmoSpawner") {
+                g_game->GetLinkingContext().AddEntity(entity);
+
                 std::weak_ptr<AmmoSpawnerComponent> ammoSpawnerComponent = g_game->GetComponentManager().AddComponent<AmmoSpawnerComponent>(entity);
                 ammoSpawnerComponent.lock()->m_ammo = object.m_properties.front().m_value.intValue;
 

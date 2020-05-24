@@ -55,9 +55,6 @@ bool RemotePlayerMovementSystem::Update()
 
         std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
         std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameClient->GetComponentManager().GetComponent<RigidbodyComponent>(entity);
-        if (!transformComponent.lock()->m_isEnabled || !rigidbodyComponent.lock()->m_isEnabled) {
-            continue;
-        }
 
         if (!transformComponent.lock()->m_transformBuffer.IsEmpty()) {
             U32 indexFrom = transformComponent.lock()->m_transformBuffer.m_front;
@@ -122,9 +119,6 @@ bool RemotePlayerMovementSystem::DebugRender()
         }
 
         std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
-        if (!transformComponent.lock()->m_isEnabled) {
-            continue;
-        }
 
         glm::vec4 color = Green;
         color.a = 0.5f;

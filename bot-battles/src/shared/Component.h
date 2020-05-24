@@ -5,10 +5,7 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 struct Component {
-    Component();
     virtual ~Component() = default;
-
-    bool m_isEnabled;
 };
 }
 

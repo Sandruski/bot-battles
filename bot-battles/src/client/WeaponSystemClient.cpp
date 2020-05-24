@@ -52,9 +52,6 @@ bool WeaponSystemClient::Update()
 
         std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
         std::weak_ptr<WeaponComponent> weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(entity);
-        if (!transformComponent.lock()->m_isEnabled || !weaponComponent.lock()->m_isEnabled) {
-            continue;
-        }
 
         if (clientComponent.m_isLastShootInputPending) {
             const Input& input = clientComponent.m_inputBuffer.GetLast();
@@ -114,9 +111,6 @@ bool WeaponSystemClient::Render()
         }
 
         std::weak_ptr<WeaponComponent> weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(entity);
-        if (!weaponComponent.lock()->m_isEnabled) {
-            continue;
-        }
 
         glm::vec4 color = White;
         if (clientComponent.IsLocalEntity(entity)) {

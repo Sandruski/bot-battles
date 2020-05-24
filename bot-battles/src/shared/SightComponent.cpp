@@ -16,9 +16,6 @@ SightComponent::SightComponent()
 //----------------------------------------------------------------------------------------------------
 void SightComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U32 /*frame*/, ReplicationActionType /*replicationActionType*/, Entity /*entity*/)
 {
-    if (dirtyState & static_cast<U32>(ComponentMemberType::SIGHT_ENABLED)) {
-        inputStream.Read(m_isEnabled);
-    }
     if (dirtyState & static_cast<U32>(ComponentMemberType::SIGHT_ANGLE)) {
         inputStream.Read(m_angle);
     }
@@ -32,10 +29,6 @@ U32 SightComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) cons
 {
     U32 writtenState = 0;
 
-    if (dirtyState & static_cast<U32>(ComponentMemberType::SIGHT_ENABLED)) {
-        outputStream.Write(m_isEnabled);
-        writtenState |= static_cast<U32>(ComponentMemberType::SIGHT_ENABLED);
-    }
     if (dirtyState & static_cast<U32>(ComponentMemberType::SIGHT_ANGLE)) {
         outputStream.Write(m_angle);
         writtenState |= static_cast<U32>(ComponentMemberType::SIGHT_ANGLE);

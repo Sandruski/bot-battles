@@ -41,7 +41,7 @@ bool HealthSystem::Update()
         && eventComponent.m_keyboard.at(SDL_SCANCODE_W) == EventComponent::KeyState::DOWN) {
         for (auto& entity : m_entities) {
             std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(entity);
-            if (healthComponent.expired() || !healthComponent.lock()->m_isEnabled) {
+            if (healthComponent.expired()) {
                 continue;
             }
 
@@ -50,7 +50,7 @@ bool HealthSystem::Update()
 
         for (auto& entity : m_entities) {
             std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(entity);
-            if (healthComponent.expired() || !healthComponent.lock()->m_isEnabled) {
+            if (healthComponent.expired()) {
                 continue;
             }
 
@@ -100,9 +100,6 @@ void HealthSystem::OnCollisionEnter(Entity entityA, Entity entityB, glm::vec2 /*
     if (healthComponentA.expired() || healthComponentB.expired()) {
         return;
     }
-    if (!healthComponentA.lock()->m_isEnabled || !healthComponentB.lock()->m_isEnabled) {
-        return;
-    }
 
     healthComponentA.lock()->m_health = 0;
     healthComponentB.lock()->m_health = 0;
@@ -127,7 +124,7 @@ void HealthSystem::OnCollisionEnter(Entity entityA, Entity entityB, glm::vec2 /*
 void HealthSystem::OnWeaponHit(Entity entity, U32 damage) const
 {
     std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(entity);
-    if (healthComponent.expired() || !healthComponent.lock()->m_isEnabled) {
+    if (healthComponent.expired()) {
         return;
     }
 

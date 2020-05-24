@@ -46,9 +46,6 @@ bool MovementSystemClient::Update()
 
         std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
         std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameClient->GetComponentManager().GetComponent<RigidbodyComponent>(entity);
-        if (!transformComponent.lock()->m_isEnabled || !rigidbodyComponent.lock()->m_isEnabled) {
-            continue;
-        }
 
         if (clientComponent.m_isLastMoveInputPending || clientComponent.m_isLastShootInputPending) {
             const Input& input = clientComponent.m_inputBuffer.GetLast();
@@ -113,9 +110,6 @@ bool MovementSystemClient::DebugRender()
         }
 
         std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
-        if (!transformComponent.lock()->m_isEnabled) {
-            continue;
-        }
 
         glm::vec4 color = Green;
         color.a = 0.5f;

@@ -57,9 +57,6 @@ bool WeaponSystemServer::Update()
         std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
         std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameServer->GetComponentManager().GetComponent<RigidbodyComponent>(entity);
         std::weak_ptr<WeaponComponent> weaponComponent = g_gameServer->GetComponentManager().GetComponent<WeaponComponent>(entity);
-        if (!transformComponent.lock()->m_isEnabled || !rigidbodyComponent.lock()->m_isEnabled || !weaponComponent.lock()->m_isEnabled) {
-            continue;
-        }
 
         std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
         for (U32 i = clientProxy.lock()->m_inputBuffer.m_front; i < clientProxy.lock()->m_inputBuffer.m_back; ++i) {
@@ -152,9 +149,6 @@ bool WeaponSystemServer::Render()
         }
 
         std::weak_ptr<WeaponComponent> weaponComponent = g_gameServer->GetComponentManager().GetComponent<WeaponComponent>(entity);
-        if (!weaponComponent.lock()->m_isEnabled) {
-            continue;
-        }
 
         glm::vec4 color = White;
         switch (playerID) {

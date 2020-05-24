@@ -29,9 +29,6 @@ RigidbodyComponent::~RigidbodyComponent()
 //----------------------------------------------------------------------------------------------------
 void RigidbodyComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U32 /*frame*/, ReplicationActionType /*replicationActionType*/, Entity /*entity*/)
 {
-    if (dirtyState & static_cast<U32>(ComponentMemberType::RIGIDBODY_ENABLED)) {
-        inputStream.Read(m_isEnabled);
-    }
     if (dirtyState & static_cast<U32>(ComponentMemberType::RIGIDBODY_BODY_TYPE)) {
         inputStream.Read(m_bodyType);
         UpdateBodyType();
@@ -55,10 +52,6 @@ U32 RigidbodyComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) 
 {
     U32 writtenState = 0;
 
-    if (dirtyState & static_cast<U32>(ComponentMemberType::RIGIDBODY_ENABLED)) {
-        outputStream.Write(m_isEnabled);
-        writtenState |= static_cast<U32>(ComponentMemberType::RIGIDBODY_ENABLED);
-    }
     if (dirtyState & static_cast<U32>(ComponentMemberType::RIGIDBODY_BODY_TYPE)) {
         outputStream.Write(m_bodyType);
         writtenState |= static_cast<U32>(ComponentMemberType::RIGIDBODY_BODY_TYPE);
