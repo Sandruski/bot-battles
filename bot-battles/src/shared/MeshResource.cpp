@@ -88,6 +88,7 @@ MeshResource::MeshResource(U32 id, const char* dir, const char* file)
     , m_vertices()
     , m_VAO(0)
     , m_VBO(0)
+    , m_instanceVBO(0)
 {
 }
 
@@ -101,7 +102,7 @@ bool MeshResource::Load()
 bool MeshResource::UnLoad()
 {
     if (m_VAO > 0 && m_VBO > 0) {
-        g_game->GetMeshImporter().UnLoad(m_VAO, m_VBO);
+        g_game->GetMeshImporter().UnLoad(m_VAO, m_VBO, m_instanceVBO);
     }
 
     return (m_VAO == 0 && m_VBO == 0);
@@ -112,7 +113,7 @@ bool MeshResource::ForceLoad(const std::vector<Vertex>& vertices)
 {
     UnLoad();
 
-    g_game->GetMeshImporter().Load(vertices, m_VAO, m_VBO);
+    g_game->GetMeshImporter().Load(vertices, m_VAO, m_VBO, m_instanceVBO);
 
     const bool isLoaded = (m_VAO > 0 && m_VBO > 0);
     if (isLoaded) {
@@ -132,6 +133,16 @@ bool MeshResource::ReLoad(const std::vector<Vertex>& vertices)
     g_game->GetMeshImporter().ReLoad(vertices, m_VBO);
 
     return (m_VAO > 0 && m_VBO > 0);
+}
+
+//----------------------------------------------------------------------------------------------------
+bool MeshResource::ReLoadInstance(const std::vector<Instance>& instances)
+{
+    assert(m_VAO > 0 && m_instanceVBO > 0);
+
+    g_game->GetMeshImporter().ReLoadInstance(instances, m_instanceVBO);
+
+    return (m_VAO > 0 && m_instanceVBO > 0);
 }
 
 //----------------------------------------------------------------------------------------------------

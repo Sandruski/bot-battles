@@ -71,6 +71,9 @@ enum class EventType {
     SEEN_NEW_ENTITY,
     SEEN_LOST_ENTITY,
 
+    // GAME-SPECIFIC
+    STATE_CHANGED,
+
     COUNT
 };
 }

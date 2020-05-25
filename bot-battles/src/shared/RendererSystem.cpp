@@ -118,10 +118,6 @@ bool RendererSystem::Render()
         }
 
         U32 texture = spriteComponent.lock()->m_spriteResource.lock()->GetTexture();
-        glm::uvec2 textureSize = spriteComponent.lock()->m_spriteResource.lock()->GetSize();
-
-        std::vector<glm::mat4> models;
-        std::vector<glm::vec2> texCoords;
 
         for (; i < m_entities.size();) {
             Entity entity2 = m_entities.at(i);
@@ -137,36 +133,10 @@ bool RendererSystem::Render()
                 break;
             }
 
-            glm::vec3 position = transformComponent2.lock()->GetPositionAndLayer();
-            F32 rotation = transformComponent2.lock()->m_rotation;
-            glm::uvec4 textureCoords = spriteComponent2.lock()->GetSpriteTextureCoords();
-            glm::vec3 scale = glm::vec3(static_cast<F32>(textureCoords.z), static_cast<F32>(textureCoords.w), 0.0f);
-            scale *= transformComponent.lock()->m_scale;
-
-            glm::mat4 model = glm::mat4(1.0f);
-            position.x *= proportion.x;
-            position.y *= proportion.y;
-            position.y *= -1.0f;
-            model = glm::translate(model, position);
-            model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, -1.0f));
-            scale.x *= proportion.x;
-            scale.y *= proportion.y;
-            model = glm::scale(model, scale);
-            models.emplace_back(model);
-
-            glm::vec2 texCoords0 = glm::vec2(textureCoords.x / static_cast<F32>(textureSize.x), 1.0f - textureCoords.y / static_cast<F32>(textureSize.y));
-            texCoords.emplace_back(texCoords0);
-            glm::vec2 texCoords1 = glm::vec2((textureCoords.x + textureCoords.z) / static_cast<F32>(textureSize.x), 1.0f - textureCoords.y / static_cast<F32>(textureSize.y));
-            texCoords.emplace_back(texCoords1);
-            glm::vec2 texCoords2 = glm::vec2(textureCoords.x / static_cast<F32>(textureSize.x), 1.0f - (textureCoords.y + textureCoords.w) / static_cast<F32>(textureSize.y));
-            texCoords.emplace_back(texCoords2);
-            glm::vec2 texCoords3 = glm::vec2((textureCoords.x + textureCoords.z) / static_cast<F32>(textureSize.x), 1.0f - (textureCoords.y + textureCoords.w) / static_cast<F32>(textureSize.y));
-            texCoords.emplace_back(texCoords3);
-
             ++i;
         }
 
-        rendererComponent.DrawTexturedQuad(models, texCoords, texture);
+        rendererComponent.DrawTexturedQuad(i, texture);
     }
 
     return true;
@@ -187,5 +157,72 @@ bool RendererSystem::ShutDown()
     SDL_GL_DeleteContext(SDL_GL_GetCurrentContext());
 
     return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+void RendererSystem::OnNotify(const Event& event)
+{
+    switch (event.eventType) {
+
+    case EventType::STATE_CHANGED: {
+        OnStateChanged();
+        break;
+    }
+
+    default: {
+        break;
+    }
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
+void RendererSystem::OnStateChanged() const
+{
+    RendererComponent& rendererComponent = g_game->GetRendererComponent();
+    WindowComponent& windowComponent = g_game->GetWindowComponent();
+    glm::vec2 proportion = windowComponent.GetProportion();
+
+    std::vector<MeshResource::Instance> instances;
+    for (const auto& entity : m_entities) {
+        std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
+        std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
+        if (!spriteComponent.lock()->m_isVisible) {
+            continue;
+        }
+
+        MeshResource::Instance instance;
+
+        glm::vec3 position = transformComponent.lock()->GetPositionAndLayer();
+        F32 rotation = transformComponent.lock()->m_rotation;
+        glm::uvec4 textureCoords = spriteComponent.lock()->GetSpriteTextureCoords();
+        glm::vec3 scale = glm::vec3(static_cast<F32>(textureCoords.z), static_cast<F32>(textureCoords.w), 0.0f);
+        scale *= transformComponent.lock()->m_scale;
+
+        glm::mat4 model = glm::mat4(1.0f);
+        position.x *= proportion.x;
+        position.y *= proportion.y;
+        position.y *= -1.0f;
+        model = glm::translate(model, position);
+        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, -1.0f));
+        scale.x *= proportion.x;
+        scale.y *= proportion.y;
+        model = glm::scale(model, scale);
+        instance.m_model = model;
+
+        glm::uvec2 textureSize = spriteComponent.lock()->m_spriteResource.lock()->GetSize();
+        glm::vec2 texCoords0 = glm::vec2(textureCoords.x / static_cast<F32>(textureSize.x), 1.0f - textureCoords.y / static_cast<F32>(textureSize.y));
+        instance.m_spriteCoords[0] = texCoords0;
+        glm::vec2 texCoords1 = glm::vec2((textureCoords.x + textureCoords.z) / static_cast<F32>(textureSize.x), 1.0f - textureCoords.y / static_cast<F32>(textureSize.y));
+        instance.m_spriteCoords[1] = texCoords1;
+        glm::vec2 texCoords2 = glm::vec2(textureCoords.x / static_cast<F32>(textureSize.x), 1.0f - (textureCoords.y + textureCoords.w) / static_cast<F32>(textureSize.y));
+        instance.m_spriteCoords[2] = texCoords2;
+        glm::vec2 texCoords3 = glm::vec2((textureCoords.x + textureCoords.z) / static_cast<F32>(textureSize.x), 1.0f - (textureCoords.y + textureCoords.w) / static_cast<F32>(textureSize.y));
+        instance.m_spriteCoords[3] = texCoords3;
+
+        instances.emplace_back(instance);
+    }
+
+    rendererComponent.m_quadMeshResource.lock()->ReLoad(MeshResource::GetQuadVertices());
+    rendererComponent.m_quadMeshResource.lock()->ReLoadInstance(instances);
 }
 }

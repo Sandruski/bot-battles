@@ -154,8 +154,6 @@ bool GameClient::DoFrame()
 
     EndFrame();
 
-    ILOG("Fps %f", MyTime::GetInstance().GetFps());
-
     return ret;
 }
 }

@@ -178,15 +178,9 @@ void RendererComponent::DrawQuad(glm::vec3 position, F32 rotation, glm::vec3 sca
 }
 
 //----------------------------------------------------------------------------------------------------
-void RendererComponent::DrawTexturedQuad(const std::vector<glm::mat4>& models, const std::vector<glm::vec2>& texCoords, U32 texture)
+void RendererComponent::DrawTexturedQuad(U32 i, U32 texture)
 {
     WindowComponent& windowComponent = g_game->GetWindowComponent();
-
-    U32 modelLoc = glGetUniformLocation(m_shaderResource.lock()->GetProgram(), "model[0]");
-    glUniformMatrix4fv(modelLoc, static_cast<GLsizei>(models.size()), GL_FALSE, glm::value_ptr(models.at(0)));
-
-    U32 texCoordsLoc = glGetUniformLocation(m_shaderResource.lock()->GetProgram(), "texCoords[0]");
-    glUniform2fv(texCoordsLoc, static_cast<GLsizei>(texCoords.size()), glm::value_ptr(texCoords.at(0)));
 
     glm::mat4 projection = glm::ortho(0.0f, static_cast<F32>(windowComponent.m_currentResolution.x), -static_cast<F32>(windowComponent.m_currentResolution.y), 0.0f, static_cast<F32>(LayerType::NEAR_PLANE), -static_cast<F32>(LayerType::FAR_PLANE));
     U32 projectionLoc = glGetUniformLocation(m_shaderResource.lock()->GetProgram(), "projection");
@@ -199,7 +193,7 @@ void RendererComponent::DrawTexturedQuad(const std::vector<glm::mat4>& models, c
     glBindTexture(GL_TEXTURE_2D, texture);
 
     glBindVertexArray(m_quadMeshResource.lock()->GetVAO());
-    glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, static_cast<GLsizei>(m_quadMeshResource.lock()->GetVertices().size()), static_cast<GLsizei>(models.size()));
+    glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, static_cast<GLsizei>(m_quadMeshResource.lock()->GetVertices().size()), static_cast<GLsizei>(i));
 
     glBindTexture(GL_TEXTURE_2D, 0);
     glBindVertexArray(0);

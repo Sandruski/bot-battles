@@ -6,7 +6,7 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class RendererSystem : public System {
+class RendererSystem : public System, public Observer {
 public:
     static SystemType GetType()
     {
@@ -21,6 +21,11 @@ public:
     bool Render() override;
     bool PostRender() override;
     bool ShutDown() override;
+
+    void OnNotify(const Event& event) override;
+
+private:
+    void OnStateChanged() const;
 };
 }
 

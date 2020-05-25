@@ -208,6 +208,13 @@ bool Game::Init()
     if (!ret) {
         return ret;
     }
+#ifdef _DRAW
+    std::weak_ptr<RendererSystem> rendererSystem = m_systemManager->GetSystem<RendererSystem>();
+    ret = m_fsm->AddObserver(rendererSystem.lock());
+    if (!ret) {
+        return ret;
+    }
+#endif
     ret = m_fsm->AddObserver(std::weak_ptr<Observer>(m_fsm));
     if (!ret) {
         return ret;
