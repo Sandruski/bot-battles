@@ -9,6 +9,7 @@ enum class SystemType : U16 {
 #ifdef _DRAW
     EVENT,
     WINDOW,
+    RENDERER,
 #endif
     CLIENT,
 
@@ -29,7 +30,6 @@ enum class SystemType : U16 {
     OUTPUT,
 
 #ifdef _DRAW
-    RENDERER,
     HUD,
     GUI,
 #endif
@@ -38,6 +38,7 @@ enum class SystemType : U16 {
 #ifdef _DRAW
     EVENT,
     WINDOW,
+    RENDERER,
 #endif
     SERVER,
 
@@ -56,7 +57,6 @@ enum class SystemType : U16 {
     OUTPUT,
 
 #ifdef _DRAW
-    RENDERER,
     HUD,
     GUI,
 #endif
