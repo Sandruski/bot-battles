@@ -5,6 +5,7 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 BotSpawnerComponent::BotSpawnerComponent()
     : m_playerID(INVALID_PLAYER_ID)
+    , m_facing(0.0f)
 {
 }
 

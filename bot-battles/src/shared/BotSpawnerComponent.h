@@ -33,6 +33,7 @@ struct BotSpawnerComponent : public Component
 
     // Local
     PlayerID m_playerID;
+    F32 m_facing;
 };
 }
 

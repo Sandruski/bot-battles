@@ -64,6 +64,7 @@ Entity SpawnerSystem::Spawn(PlayerID playerID) const
             std::weak_ptr<TransformComponent> botSpawnerTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
             transformComponent.lock()->m_position = botSpawnerTransformComponent.lock()->m_position;
             transformComponent.lock()->m_layerType = LayerType::PLAYER;
+            transformComponent.lock()->m_rotation = botSpawnerComponent.lock()->m_facing;
             break;
         }
     }

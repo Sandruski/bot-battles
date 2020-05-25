@@ -8,6 +8,7 @@
 #include "FileSystem.h"
 #include "Game.h"
 #include "LinkingContext.h"
+#include "RendererComponent.h"
 #include "ResourceManager.h"
 #include "RigidbodyComponent.h"
 #include "SpriteComponent.h"
@@ -97,7 +98,6 @@ bool MapImporter::Load(const std::string& path, Tilemap& tilemap) const
 void MapImporter::Create(const Tilemap& tilemap) const
 {
     WindowComponent& windowComponent = g_game->GetWindowComponent();
-
     for (const auto& tilelayer : tilemap.m_tilelayers) {
         for (U32 i = 0; i < tilemap.m_tileCount.x; ++i) {
             for (U32 j = 0; j < tilemap.m_tileCount.y; ++j) {
@@ -188,7 +188,13 @@ void MapImporter::Create(const Tilemap& tilemap) const
             // BotSpawner
             if (object.m_type == "BotSpawner") {
                 std::weak_ptr<BotSpawnerComponent> botSpawnerComponent = g_game->GetComponentManager().AddComponent<BotSpawnerComponent>(entity);
-                botSpawnerComponent.lock()->m_playerID = object.m_properties.front().m_value.intValue;
+                for (const auto& property : object.m_properties) {
+                    if (property.m_name == "player") {
+                        botSpawnerComponent.lock()->m_playerID = property.m_value.intValue;
+                    } else if (property.m_name == "facing") {
+                        botSpawnerComponent.lock()->m_facing = property.m_value.floatValue;
+                    }
+                }
             }
 
             // AmmoSpawner
