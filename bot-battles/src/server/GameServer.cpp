@@ -165,17 +165,16 @@ bool GameServer::DoFrame()
 {
     bool ret = false;
 
-    std::weak_ptr<ServerSystem> serverSystem = m_systemManager->GetSystem<ServerSystem>();
+    InitFrame();
 
-    //if (m_mainMenuComponent.m_phase != MainMenuComponent::MainMenuPhase::SETUP) {
+    std::weak_ptr<ServerSystem> serverSystem = m_systemManager->GetSystem<ServerSystem>();
     serverSystem.lock()->ReceiveIncomingPackets(m_serverComponent);
-    //}
 
     ret = Game::DoFrame();
 
-    //if (m_mainMenuComponent.m_phase != MainMenuComponent::MainMenuPhase::SETUP) {
     serverSystem.lock()->SendOutgoingPackets(m_serverComponent);
-    //}
+
+    EndFrame();
 
     return ret;
 }

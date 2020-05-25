@@ -238,8 +238,6 @@ void Game::InitFrame()
 //----------------------------------------------------------------------------------------------------
 bool Game::DoFrame()
 {
-    InitFrame();
-
     bool ret = PreUpdate();
     if (!ret) {
         return ret;
@@ -279,8 +277,6 @@ bool Game::DoFrame()
     if (!ret) {
         return ret;
     }
-
-    EndFrame();
 
     return ret;
 }
@@ -395,7 +391,7 @@ bool Game::DebugRender()
     bool ret = true;
 
     if (m_rendererComponent.m_isDebugDraw) {
-        ret = m_systemManager->DebugRender();
+        //ret = m_systemManager->DebugRender();
     }
 
     return ret;

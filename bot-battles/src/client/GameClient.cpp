@@ -143,17 +143,18 @@ bool GameClient::DoFrame()
 {
     bool ret = false;
 
-    std::weak_ptr<ClientSystem> clientSystem = m_systemManager->GetSystem<ClientSystem>();
+    InitFrame();
 
-    //if (m_mainMenuComponent.m_phase != MainMenuComponent::MainMenuPhase::SETUP) {
+    std::weak_ptr<ClientSystem> clientSystem = m_systemManager->GetSystem<ClientSystem>();
     clientSystem.lock()->ReceiveIncomingPackets(m_clientComponent);
-    //}
 
     ret = Game::DoFrame();
 
-    //if (m_mainMenuComponent.m_phase != MainMenuComponent::MainMenuPhase::SETUP) {
     clientSystem.lock()->SendOutgoingPackets(m_clientComponent);
-    //}
+
+    EndFrame();
+
+    ILOG("Fps %f", MyTime::GetInstance().GetFps());
 
     return ret;
 }

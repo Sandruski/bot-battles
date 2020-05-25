@@ -1,6 +1,7 @@
 #include "MyTime.h"
 
 #include "Game.h"
+#include "RendererComponent.h"
 #include "WindowComponent.h"
 
 namespace sand {
@@ -40,11 +41,15 @@ void MyTime::StartUpdate()
 void MyTime::FinishUpdate()
 {
     m_lastFrameMs = m_dtTimer.ReadMs();
-    WindowComponent& windowComponent = g_game->GetWindowComponent();
-    F64 desiredLastFrameMs = 1000.0 / windowComponent.m_fps;
-    if (m_lastFrameMs < desiredLastFrameMs) {
-        SDL_Delay(static_cast<U32>(desiredLastFrameMs - m_lastFrameMs));
-        m_lastFrameMs = m_dtTimer.ReadMs();
+
+    RendererComponent& rendererComponent = g_game->GetRendererComponent();
+    if (!rendererComponent.m_isVSync) {
+        WindowComponent& windowComponent = g_game->GetWindowComponent();
+        F64 desiredLastFrameMs = 1000.0 / windowComponent.m_fps;
+        if (m_lastFrameMs < desiredLastFrameMs) {
+            SDL_Delay(static_cast<U32>(desiredLastFrameMs - m_lastFrameMs));
+            m_lastFrameMs = m_dtTimer.ReadMs();
+        }
     }
 
     m_fps = 1000.0 / m_lastFrameMs;
