@@ -27,6 +27,10 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U3
     if (hasRotation) {
         inputStream.Read(newRotation);
     }
+    const bool hasScale = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_SCALE);
+    if (hasScale) {
+        inputStream.Read(m_scale);
+    }
 
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     const bool isLocalEntity = clientComponent.IsLocalEntity(entity);

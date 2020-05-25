@@ -9,6 +9,7 @@ TransformComponent::TransformComponent()
     : m_position(0.0f, 0.0f)
     , m_layerType(LayerType::NONE)
     , m_rotation(0.0f)
+    , m_scale(1.0f)
     , m_transformBuffer()
     , m_inputTransformBuffer()
 {

@@ -50,6 +50,7 @@ struct TransformComponent : public Component
     glm::vec2 m_position;
     LayerType m_layerType;
     F32 m_rotation;
+    F32 m_scale;
 
     // Local
     CircularBuffer<Transform, MAX_TRANSFORMS> m_transformBuffer;

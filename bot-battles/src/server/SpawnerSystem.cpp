@@ -58,6 +58,7 @@ Entity SpawnerSystem::Spawn(PlayerID playerID) const
     g_gameServer->GetLinkingContext().AddEntity(character);
 
     std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().AddComponent<TransformComponent>(character);
+    transformComponent.lock()->m_scale = 0.7f;
     for (const auto& entity : m_entities) {
         std::weak_ptr<BotSpawnerComponent> botSpawnerComponent = g_gameServer->GetComponentManager().GetComponent<BotSpawnerComponent>(entity);
         if (botSpawnerComponent.lock()->m_playerID == playerID) {
@@ -70,12 +71,11 @@ Entity SpawnerSystem::Spawn(PlayerID playerID) const
     }
 
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().AddComponent<SpriteComponent>(character);
+    std::weak_ptr<SpriteResource> charactersSpriteResource = g_game->GetResourceManager().AddResource<SpriteResource>("characters.png", TEXTURES_DIR, true);
+    spriteComponent.lock()->m_spriteResource = charactersSpriteResource;
     U32 playerNumber = playerID + 1;
     switch (playerNumber) {
     case 1: {
-        std::weak_ptr<SpriteResource> charactersSpriteResource = g_game->GetResourceManager().AddResource<SpriteResource>("greenCharacter.png", TEXTURES_DIR, true);
-        spriteComponent.lock()->m_spriteResource = charactersSpriteResource;
-
         glm::vec4 standTextureCoords = glm::vec4(1.0f, 1.0f, 36.0f, 43.0f);
         spriteComponent.lock()->AddSprite("stand", standTextureCoords);
         glm::vec4 holdTextureCoords = glm::vec4(38.0f, 1.0f, 38.0f, 43.0f);
@@ -88,16 +88,13 @@ Entity SpawnerSystem::Spawn(PlayerID playerID) const
         break;
     }
     case 2: {
-        std::weak_ptr<SpriteResource> charactersSpriteResource = g_game->GetResourceManager().AddResource<SpriteResource>("blueCharacter.png", TEXTURES_DIR, true);
-        spriteComponent.lock()->m_spriteResource = charactersSpriteResource;
-
-        glm::vec4 standTextureCoords = glm::vec4(1.0f, 1.0f, 36.0f, 43.0f);
+        glm::vec4 standTextureCoords = glm::vec4(1.0f, 45.0f, 35.0f, 43.0f);
         spriteComponent.lock()->AddSprite("stand", standTextureCoords);
-        glm::vec4 holdTextureCoords = glm::vec4(38.0f, 1.0f, 38.0f, 43.0f);
+        glm::vec4 holdTextureCoords = glm::vec4(37.0f, 45.0f, 37.0f, 43.0f);
         spriteComponent.lock()->AddSprite("hold", holdTextureCoords);
-        glm::vec4 shootTextureCoords = glm::vec4(77.0f, 1.0f, 52.0f, 43.0f);
+        glm::vec4 shootTextureCoords = glm::vec4(75.0f, 45.0f, 51.0f, 43.0f);
         spriteComponent.lock()->AddSprite("shoot", shootTextureCoords);
-        glm::vec4 realoadTextureCoords = glm::vec4(130.0f, 1.0f, 42.0f, 43.0f);
+        glm::vec4 realoadTextureCoords = glm::vec4(127.0f, 45.0f, 42.0f, 43.0f);
         spriteComponent.lock()->AddSprite("reaload", realoadTextureCoords);
         spriteComponent.lock()->m_spriteName = "stand";
         break;
@@ -129,6 +126,7 @@ Entity SpawnerSystem::Spawn(PlayerID playerID) const
     std::weak_ptr<ColliderComponent> colliderComponent = g_gameServer->GetComponentManager().AddComponent<ColliderComponent>(character);
     const glm::uvec4 spriteTextureCoords = spriteComponent.lock()->GetSpriteTextureCoords();
     colliderComponent.lock()->m_size = glm::vec2(30.0f, 30.0f);
+    colliderComponent.lock()->m_size *= transformComponent.lock()->m_scale;
     colliderComponent.lock()->m_shapeType = ColliderComponent::ShapeType::CIRCLE;
 
     std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameServer->GetComponentManager().AddComponent<RigidbodyComponent>(character);
@@ -147,7 +145,7 @@ Entity SpawnerSystem::Spawn(PlayerID playerID) const
 
     std::weak_ptr<SightComponent> sightComponent = g_gameServer->GetComponentManager().AddComponent<SightComponent>(character);
     sightComponent.lock()->m_angle = 90.0f;
-    sightComponent.lock()->m_distance = 250.0f;
+    sightComponent.lock()->m_distance = 100.0f;
 
     g_gameServer->GetComponentManager().AddComponent<BotComponent>(character);
 

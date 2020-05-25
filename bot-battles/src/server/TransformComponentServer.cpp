@@ -21,6 +21,10 @@ U32 TransformComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) 
         outputStream.Write(m_rotation);
         writtenState |= static_cast<U32>(ComponentMemberType::TRANSFORM_ROTATION);
     }
+    if (dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_SCALE)) {
+        outputStream.Write(m_scale);
+        writtenState |= static_cast<U32>(ComponentMemberType::TRANSFORM_SCALE);
+    }
 
     return writtenState;
 }

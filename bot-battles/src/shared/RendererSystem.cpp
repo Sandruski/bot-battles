@@ -141,6 +141,7 @@ bool RendererSystem::Render()
             F32 rotation = transformComponent2.lock()->m_rotation;
             glm::uvec4 textureCoords = spriteComponent2.lock()->GetSpriteTextureCoords();
             glm::vec3 scale = glm::vec3(static_cast<F32>(textureCoords.z), static_cast<F32>(textureCoords.w), 0.0f);
+            scale *= transformComponent.lock()->m_scale;
 
             glm::mat4 model = glm::mat4(1.0f);
             position.x *= proportion.x;

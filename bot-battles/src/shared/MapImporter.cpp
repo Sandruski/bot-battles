@@ -110,14 +110,16 @@ void MapImporter::Create(const Tilemap& tilemap) const
 
                 // SHARED
                 // Transform
+                std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().AddComponent<TransformComponent>(entity);
+                transformComponent.lock()->m_scale = 0.7f;
                 glm::uvec2 tilePosition = tilemap.MapToWorld(i, j);
                 glm::vec2 worldPosition = static_cast<glm::vec2>(tilePosition);
                 worldPosition += static_cast<glm::vec2>(tilemap.m_tileSize) / 2.0f;
                 worldPosition *= 2.0f;
                 worldPosition -= static_cast<glm::vec2>(tilemap.m_tileSize * tilemap.m_tileCount);
                 worldPosition *= 0.5f;
+                worldPosition *= transformComponent.lock()->m_scale;
                 worldPosition += static_cast<glm::vec2>(windowComponent.m_baseResolution) / 2.0f;
-                std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().AddComponent<TransformComponent>(entity);
                 transformComponent.lock()->m_position = worldPosition;
                 transformComponent.lock()->m_layerType = LayerType::FLOOR;
 
@@ -136,6 +138,7 @@ void MapImporter::Create(const Tilemap& tilemap) const
                     // Collider
                     std::weak_ptr<ColliderComponent> colliderComponent = g_game->GetComponentManager().AddComponent<ColliderComponent>(entity);
                     colliderComponent.lock()->m_size = static_cast<glm::vec2>(tilemap.m_tileSize);
+                    colliderComponent.lock()->m_size *= transformComponent.lock()->m_scale;
                     colliderComponent.lock()->m_shapeType = ColliderComponent::ShapeType::BOX;
 
                     // Rigidbody
@@ -161,6 +164,8 @@ void MapImporter::Create(const Tilemap& tilemap) const
 
             // SHARED
             // Transform
+            std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().AddComponent<TransformComponent>(entity);
+            transformComponent.lock()->m_scale = 0.7f;
             glm::uvec2 objectPosition = object.m_position;
             glm::vec2 worldPosition = static_cast<glm::vec2>(objectPosition);
             worldPosition += static_cast<glm::vec2>(tilemap.m_tileSize) / 2.0f;
@@ -168,8 +173,8 @@ void MapImporter::Create(const Tilemap& tilemap) const
             worldPosition *= 2.0f;
             worldPosition -= static_cast<glm::vec2>(tilemap.m_tileSize * tilemap.m_tileCount);
             worldPosition *= 0.5f;
+            worldPosition *= transformComponent.lock()->m_scale;
             worldPosition += static_cast<glm::vec2>(windowComponent.m_baseResolution) / 2.0f;
-            std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().AddComponent<TransformComponent>(entity);
             transformComponent.lock()->m_position = worldPosition;
             transformComponent.lock()->m_layerType = LayerType::OBJECT;
             transformComponent.lock()->m_rotation = object.m_rotation;
@@ -207,6 +212,7 @@ void MapImporter::Create(const Tilemap& tilemap) const
                 // Collider
                 std::weak_ptr<ColliderComponent> colliderComponent = g_game->GetComponentManager().AddComponent<ColliderComponent>(entity);
                 colliderComponent.lock()->m_size = static_cast<glm::vec2>(tilemap.m_tileSize);
+                colliderComponent.lock()->m_size *= transformComponent.lock()->m_scale;
                 colliderComponent.lock()->m_shapeType = ColliderComponent::ShapeType::BOX;
 
                 // Rigidbody
