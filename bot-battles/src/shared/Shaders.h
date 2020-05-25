@@ -4,7 +4,9 @@
 static const char* defaultVertexShaderSource = "#version 330 core\n"
                                                "layout(location = 0) in vec2 position;\n"
                                                "layout(location = 1) in vec2 textureCoords;\n"
-                                               "layout(location = 3) in mat4 model;\n"
+
+                                               "layout(location = 2) in vec2 spriteCoords[4];\n"
+                                               "layout(location = 6) in mat4 model;\n"
 
                                                "out vec2 TextureCoords;\n"
 
@@ -13,7 +15,7 @@ static const char* defaultVertexShaderSource = "#version 330 core\n"
                                                "void main()\n"
                                                "{\n"
                                                "gl_Position = projection * model * vec4(position, 0.0, 1.0);\n"
-                                               /*"if (position.x == -0.5 && position.y == 0.5)\n"
+                                               "if (position.x == -0.5 && position.y == 0.5)\n"
                                                "{\n"
                                                "TextureCoords = spriteCoords[0];\n"
                                                "}\n"
@@ -30,9 +32,9 @@ static const char* defaultVertexShaderSource = "#version 330 core\n"
                                                "TextureCoords = spriteCoords[3];\n"
                                                "}\n"
                                                "else\n"
-                                               "{\n"*/
+                                               "{\n"
                                                "TextureCoords = textureCoords;\n"
-                                               /*"}\n"*/
+                                               "}\n"
                                                "}\0";
 
 static const char* defaultFragmentShaderSource = "#version 330 core\n"

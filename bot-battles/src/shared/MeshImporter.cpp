@@ -24,25 +24,38 @@ void MeshImporter::Load(const std::vector<MeshResource::Vertex>& /*vertices*/, U
     glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
 
     // Sprite coords
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(MeshResource::Instance), (void*)(offsetof(MeshResource::Instance, MeshResource::Instance::m_spriteCoords)));
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(MeshResource::Instance), (void*)(offsetof(MeshResource::Instance, MeshResource::Instance::m_spriteCoords) + sizeof(float) * 0));
     glEnableVertexAttribArray(2);
+    glVertexAttribDivisor(2, 1);
 
-    // Model
-    glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(MeshResource::Instance), (void*)(offsetof(MeshResource::Instance, MeshResource::Instance::m_model) + sizeof(float) * 0));
+    glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(MeshResource::Instance), (void*)(offsetof(MeshResource::Instance, MeshResource::Instance::m_spriteCoords) + sizeof(float) * 2));
     glEnableVertexAttribArray(3);
     glVertexAttribDivisor(3, 1);
 
-    glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(MeshResource::Instance), (void*)(offsetof(MeshResource::Instance, MeshResource::Instance::m_model) + sizeof(float) * 4));
+    glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, sizeof(MeshResource::Instance), (void*)(offsetof(MeshResource::Instance, MeshResource::Instance::m_spriteCoords) + sizeof(float) * 4));
     glEnableVertexAttribArray(4);
     glVertexAttribDivisor(4, 1);
 
-    glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(MeshResource::Instance), (void*)(offsetof(MeshResource::Instance, MeshResource::Instance::m_model) + sizeof(float) * 8));
+    glVertexAttribPointer(5, 2, GL_FLOAT, GL_FALSE, sizeof(MeshResource::Instance), (void*)(offsetof(MeshResource::Instance, MeshResource::Instance::m_spriteCoords) + sizeof(float) * 6));
     glEnableVertexAttribArray(5);
     glVertexAttribDivisor(5, 1);
 
-    glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(MeshResource::Instance), (void*)(offsetof(MeshResource::Instance, MeshResource::Instance::m_model) + sizeof(float) * 12));
+    // Model
+    glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(MeshResource::Instance), (void*)(offsetof(MeshResource::Instance, MeshResource::Instance::m_model) + sizeof(float) * 0));
     glEnableVertexAttribArray(6);
     glVertexAttribDivisor(6, 1);
+
+    glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, sizeof(MeshResource::Instance), (void*)(offsetof(MeshResource::Instance, MeshResource::Instance::m_model) + sizeof(float) * 4));
+    glEnableVertexAttribArray(7);
+    glVertexAttribDivisor(7, 1);
+
+    glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, sizeof(MeshResource::Instance), (void*)(offsetof(MeshResource::Instance, MeshResource::Instance::m_model) + sizeof(float) * 8));
+    glEnableVertexAttribArray(8);
+    glVertexAttribDivisor(8, 1);
+
+    glVertexAttribPointer(9, 4, GL_FLOAT, GL_FALSE, sizeof(MeshResource::Instance), (void*)(offsetof(MeshResource::Instance, MeshResource::Instance::m_model) + sizeof(float) * 12));
+    glEnableVertexAttribArray(9);
+    glVertexAttribDivisor(9, 1);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);

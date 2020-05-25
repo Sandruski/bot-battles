@@ -25,7 +25,6 @@ public:
         Instance()
             : m_spriteCoords()
             , m_model(0.0f)
-
         {
         }
 
