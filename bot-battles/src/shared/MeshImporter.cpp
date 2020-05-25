@@ -3,14 +3,13 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-void MeshImporter::Load(const std::vector<MeshResource::Vertex>& /*vertices*/, U32& VAO, U32& VBO, U32& instanceVBO) const
+void MeshImporter::Load(U32& VAO, U32& VBO, U32& instanceVBO) const
 {
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
 
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    //glBufferData(GL_ARRAY_BUFFER, sizeof(MeshResource::Vertex) * vertices.size(), &vertices.at(0), GL_STATIC_DRAW); // TODO: remove
 
     // Positions
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(MeshResource::Vertex), (void*)(offsetof(MeshResource::Vertex, MeshResource::Vertex::m_position)));

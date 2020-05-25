@@ -113,7 +113,8 @@ bool MeshResource::ForceLoad(const std::vector<Vertex>& vertices)
 {
     UnLoad();
 
-    g_game->GetMeshImporter().Load(vertices, m_VAO, m_VBO, m_instanceVBO);
+    g_game->GetMeshImporter().Load(m_VAO, m_VBO, m_instanceVBO);
+    g_game->GetMeshImporter().ReLoad(vertices, m_VBO);
 
     const bool isLoaded = (m_VAO > 0 && m_VBO > 0);
     if (isLoaded) {
