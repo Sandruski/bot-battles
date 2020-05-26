@@ -46,6 +46,11 @@ struct ClientComponent : public Component {
     PlayerID m_playerID;
     Entity m_entity;
 
+    MyTimer m_incomingPacketsTimer;
+    MyTimer m_outgoingPacketsTimer;
+
+    F32 m_incomingPacketsTimeout;
+    F32 m_outgoingPacketsTimeout;
     F32 m_lastPacketTime;
 
     U32 m_lastAckdFrame;

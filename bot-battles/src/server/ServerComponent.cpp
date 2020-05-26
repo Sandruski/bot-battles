@@ -17,6 +17,10 @@ ServerComponent::ServerComponent()
     , m_playerIDToClientProxy()
     , m_entityToPlayerID()
     , m_availablePlayerIDs()
+    , m_incomingPacketsTimer()
+    , m_outgoingPacketsTimer()
+    , m_incomingPacketsTimeout(1.0f / 20.0f)
+    , m_outgoingPacketsTimeout(1.0f / 20.0f)
     , m_ackTimeout(5.0f) // 0.5f
     , m_disconnectTimeout(15.0f) // 5.0f
     , m_maxPacketsPerFrame(10) // same as client

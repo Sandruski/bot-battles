@@ -31,6 +31,10 @@ bool ServerSystem::StartUp()
         return false;
     }
 
+    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
+    serverComponent.m_incomingPacketsTimer.Start();
+    serverComponent.m_outgoingPacketsTimer.Start();
+
     return true;
 }
 
@@ -156,6 +160,13 @@ void ServerSystem::ReceiveIncomingPackets(ServerComponent& serverComponent)
 {
     OPTICK_EVENT();
 
+    F32 incomingPacketCurrentTime = static_cast<F32>(serverComponent.m_incomingPacketsTimer.ReadSec());
+    if (incomingPacketCurrentTime < serverComponent.m_incomingPacketsTimeout) {
+        return;
+    }
+
+    serverComponent.m_incomingPacketsTimer.Start();
+
     InputMemoryStream packet;
     U32 byteCapacity = packet.GetByteCapacity();
 
@@ -269,6 +280,13 @@ void ServerSystem::ReceiveIncomingPackets(ServerComponent& serverComponent)
 void ServerSystem::SendOutgoingPackets(ServerComponent& serverComponent)
 {
     OPTICK_EVENT();
+
+    F32 outgoingPacketCurrentTime = static_cast<F32>(serverComponent.m_outgoingPacketsTimer.ReadSec());
+    if (outgoingPacketCurrentTime < serverComponent.m_outgoingPacketsTimeout) {
+        return;
+    }
+
+    serverComponent.m_outgoingPacketsTimer.Start();
 
     if (serverComponent.m_UDPSocket != nullptr) {
         const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.GetPlayerIDToClientProxyMap();

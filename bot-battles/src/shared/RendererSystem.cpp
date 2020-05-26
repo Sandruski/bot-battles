@@ -235,6 +235,8 @@ void RendererSystem::OnComponentMemberChanged(U32 dirtyState, Entity entity) con
 //----------------------------------------------------------------------------------------------------
 void RendererSystem::RecalculateMapMesh() const
 {
+    OPTICK_EVENT();
+
     RendererComponent& rendererComponent = g_game->GetRendererComponent();
     WindowComponent& windowComponent = g_game->GetWindowComponent();
     glm::vec2 proportion = windowComponent.GetProportion();
@@ -291,6 +293,8 @@ void RendererSystem::RecalculateMapMesh() const
 //----------------------------------------------------------------------------------------------------
 void RendererSystem::RecalculateCharactersMesh() const
 {
+    OPTICK_EVENT();
+
     RendererComponent& rendererComponent = g_game->GetRendererComponent();
     WindowComponent& windowComponent = g_game->GetWindowComponent();
     glm::vec2 proportion = windowComponent.GetProportion();
@@ -347,6 +351,8 @@ void RendererSystem::RecalculateCharactersMesh() const
 //----------------------------------------------------------------------------------------------------
 void RendererSystem::RecalculateAllMeshes() const
 {
+    OPTICK_EVENT();
+
     RendererComponent& rendererComponent = g_game->GetRendererComponent();
     WindowComponent& windowComponent = g_game->GetWindowComponent();
     glm::vec2 proportion = windowComponent.GetProportion();

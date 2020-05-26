@@ -26,6 +26,10 @@ bool ClientSystem::StartUp()
         return false;
     }
 
+    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    clientComponent.m_incomingPacketsTimer.Start();
+    clientComponent.m_outgoingPacketsTimer.Start();
+
     return true;
 }
 
@@ -104,6 +108,13 @@ void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent)
 {
     OPTICK_EVENT();
 
+    F32 incomingPacketsCurrentTime = static_cast<F32>(clientComponent.m_incomingPacketsTimer.ReadSec());
+    if (incomingPacketsCurrentTime < clientComponent.m_incomingPacketsTimeout) {
+        return;
+    }
+
+    clientComponent.m_incomingPacketsTimer.Start();
+
     InputMemoryStream packet;
     U32 byteCapacity = packet.GetByteCapacity();
 
@@ -180,6 +191,13 @@ void ClientSystem::ReceiveIncomingPackets(ClientComponent& clientComponent)
 void ClientSystem::SendOutgoingPackets(ClientComponent& clientComponent)
 {
     OPTICK_EVENT();
+
+    F32 outgoingPacketsCurrentTime = static_cast<F32>(clientComponent.m_outgoingPacketsTimer.ReadSec());
+    if (outgoingPacketsCurrentTime < clientComponent.m_outgoingPacketsTimeout) {
+        return;
+    }
+
+    clientComponent.m_outgoingPacketsTimer.Start();
 
     if (clientComponent.m_UDPSocket != nullptr) {
         // Only Gameplay
