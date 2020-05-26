@@ -5,6 +5,8 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 void MeshImporter::Load(U32& VAO, U32& VBO, U32& instanceVBO) const
 {
+    OPTICK_EVENT();
+
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
 
@@ -73,6 +75,8 @@ void MeshImporter::Load(U32& VAO, U32& VBO, U32& instanceVBO) const
 //----------------------------------------------------------------------------------------------------
 void MeshImporter::ReLoadVertices(const std::vector<MeshResource::Vertex>& vertices, U32 VBO) const
 {
+    OPTICK_EVENT();
+
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(MeshResource::Vertex) * vertices.size(), &vertices.at(0), GL_STATIC_DRAW);
 
@@ -82,6 +86,8 @@ void MeshImporter::ReLoadVertices(const std::vector<MeshResource::Vertex>& verti
 //----------------------------------------------------------------------------------------------------
 void MeshImporter::ReLoadInstances(const std::vector<MeshResource::Instance>& instances, U32 instanceVBO) const
 {
+    OPTICK_EVENT();
+
     glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(MeshResource::Instance) * instances.size(), &instances.at(0), GL_STATIC_DRAW);
 
