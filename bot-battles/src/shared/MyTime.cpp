@@ -43,8 +43,8 @@ void MyTime::FinishUpdate()
     m_lastFrameMs = m_dtTimer.ReadMs();
 
     RendererComponent& rendererComponent = g_game->GetRendererComponent();
-    if (!rendererComponent.m_isVSync) {
-        WindowComponent& windowComponent = g_game->GetWindowComponent();
+    WindowComponent& windowComponent = g_game->GetWindowComponent();
+    if (!rendererComponent.m_isVSync && windowComponent.m_isCap) {
         F64 desiredLastFrameMs = 1000.0 / windowComponent.m_fps;
         if (m_lastFrameMs < desiredLastFrameMs) {
             SDL_Delay(static_cast<U32>(desiredLastFrameMs - m_lastFrameMs));

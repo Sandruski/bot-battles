@@ -37,7 +37,7 @@ struct RendererComponent {
     glm::vec4 m_backgroundColor;
 
     bool m_isVSync;
-
+    bool m_isCap;
     bool m_isDebugDraw;
 };
 }

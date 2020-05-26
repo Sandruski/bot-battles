@@ -35,6 +35,7 @@ struct WindowComponent {
     glm::uvec2 m_baseResolution;
     DisplayMode m_displayMode;
     F32 m_fps;
+    bool m_isCap;
 };
 }
 

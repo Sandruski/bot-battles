@@ -10,6 +10,7 @@ WindowComponent::WindowComponent()
     , m_baseResolution(896, 504)
     , m_displayMode(DisplayMode::WINDOWED)
     , m_fps(0.0f)
+    , m_isCap(true)
 {
 }
 
