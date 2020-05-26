@@ -6,7 +6,7 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class MovementSystemClient : public MovementSystem {
+class MovementSystemClient : public MovementSystem, public Subject {
 public:
     static SystemType GetType()
     {

@@ -14,6 +14,7 @@
 #include "OutputSystemServer.h"
 #include "PhysicsComponent.h"
 #include "PlayerComponent.h"
+#include "RendererSystem.h"
 #include "ScoreboardStateServer.h"
 #include "ServerComponent.h"
 #include "ServerSystem.h"
@@ -95,6 +96,8 @@ bool GameServer::Init()
         return ret;
     }
 
+    ret = Game::Init();
+
     std::weak_ptr<ServerSystem> serverSystem = m_systemManager->GetSystem<ServerSystem>();
     ret = m_fsm->AddObserver(serverSystem);
     if (!ret) {
@@ -154,8 +157,13 @@ bool GameServer::Init()
     if (!ret) {
         return ret;
     }
-
-    ret = Game::Init();
+#ifdef _DRAW
+    std::weak_ptr<RendererSystem> rendererSystem = m_systemManager->GetSystem<RendererSystem>();
+    ret = movementSystemServer.lock()->AddObserver(rendererSystem);
+    if (!ret) {
+        return ret;
+    }
+#endif
 
     return ret;
 }

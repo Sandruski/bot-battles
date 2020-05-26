@@ -189,6 +189,11 @@ void RendererSystem::OnNotify(const Event& event)
         break;
     }
 
+    case EventType::COMPONENT_MEMBER_CHANGED: {
+        OnComponentMemberChanged(event.component.dirtyState, event.component.entity);
+        break;
+    }
+
     default: {
         break;
     }
@@ -204,6 +209,17 @@ void RendererSystem::OnSystemEntityAdded(Entity /*entity*/) const
 //----------------------------------------------------------------------------------------------------
 void RendererSystem::OnSystemEntityRemoved(Entity /*entity*/) const
 {
+    RecalculateMesh();
+}
+
+//----------------------------------------------------------------------------------------------------
+void RendererSystem::OnComponentMemberChanged(U32 /*dirtyState*/, Entity entity) const
+{
+    std::vector<Entity>::const_iterator it = std::find(m_entities.begin(), m_entities.end(), entity);
+    if (it == m_entities.end()) {
+        return;
+    }
+
     RecalculateMesh();
 }
 

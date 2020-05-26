@@ -28,6 +28,7 @@ NOTES: COLLISION events per LOCAL entities i SIGHT events per REMOTE entities (A
 -Check BUG: the client executed from the exe takes no time to connect and the one just compiled takes a lot. Why???
 -Add the ImGui code editor in the client Main Menu to open the selected script, edit it and compile it.
 -Posar a la build final la Changelist de cada versió.
+-Els sistemes s'haurien de subscriure a events, no a altres sistemes tirant events.
 
 NETWORKING:
 -Cap MAX_INPUTS_PER_PACKET/similar also for State packets (already doing it for Input packets).

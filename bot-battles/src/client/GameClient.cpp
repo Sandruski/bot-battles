@@ -13,6 +13,7 @@
 #include "OutputSystemClient.h"
 #include "RemotePlayerComponent.h"
 #include "RemotePlayerMovementSystem.h"
+#include "RendererSystem.h"
 #include "ScoreboardStateClient.h"
 #include "ScriptingSystem.h"
 #include "SightSystemClient.h"
@@ -97,6 +98,8 @@ bool GameClient::Init()
         return ret;
     }
 
+    ret = Game::Init();
+
     std::weak_ptr<ClientSystem> clientSystem = m_systemManager->GetSystem<ClientSystem>();
     ret = m_fsm->AddObserver(clientSystem);
     if (!ret) {
@@ -132,8 +135,23 @@ bool GameClient::Init()
     if (!ret) {
         return ret;
     }
-
-    ret = Game::Init();
+#ifdef _DRAW
+    std::weak_ptr<RendererSystem> rendererSystem = m_systemManager->GetSystem<RendererSystem>();
+    ret = m_clientComponent.m_replicationManager.AddObserver(rendererSystem);
+    if (!ret) {
+        return ret;
+    }
+    std::weak_ptr<MovementSystemClient> movementSystemClient = m_systemManager->GetSystem<MovementSystemClient>();
+    ret = movementSystemClient.lock()->AddObserver(rendererSystem);
+    if (!ret) {
+        return ret;
+    }
+    std::weak_ptr<RemotePlayerMovementSystem> remotePlayerMovementSystem = m_systemManager->GetSystem<RemotePlayerMovementSystem>();
+    ret = remotePlayerMovementSystem.lock()->AddObserver(rendererSystem);
+    if (!ret) {
+        return ret;
+    }
+#endif
 
     return ret;
 }

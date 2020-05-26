@@ -27,6 +27,7 @@ public:
 private:
     void OnSystemEntityAdded(Entity entity) const;
     void OnSystemEntityRemoved(Entity entity) const;
+    void OnComponentMemberChanged(U32 dirtyState, Entity entity) const;
 
 private:
     void RecalculateMesh() const;

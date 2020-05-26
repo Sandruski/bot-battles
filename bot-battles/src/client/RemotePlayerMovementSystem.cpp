@@ -1,6 +1,7 @@
 #include "RemotePlayerMovementSystem.h"
 
 #include "ComponentManager.h"
+#include "ComponentMemberTypes.h"
 #include "GameClient.h"
 #include "LinkingContext.h"
 #include "RigidbodyComponent.h"
@@ -92,6 +93,12 @@ bool RemotePlayerMovementSystem::Update()
                     transformComponent.lock()->m_position = glm::vec2(METERS_TO_PIXELS(physicsPosition.x), METERS_TO_PIXELS(physicsPosition.y));
                     float32 physicsRotation = rigidbodyComponent.lock()->m_body->GetAngle();
                     transformComponent.lock()->m_rotation = glm::degrees(physicsRotation);
+
+                    Event newComponentEvent;
+                    newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
+                    newComponentEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::TRANSFORM_ALL);
+                    newComponentEvent.component.entity = entity;
+                    NotifyEvent(newComponentEvent);
                 }
             }
 

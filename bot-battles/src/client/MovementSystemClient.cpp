@@ -87,6 +87,12 @@ bool MovementSystemClient::Update()
                 }
 
                 clientComponent.m_isLastMoveInputPending = false;
+
+                Event newComponentEvent;
+                newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
+                newComponentEvent.component.dirtyState = dirtyState;
+                newComponentEvent.component.entity = entity;
+                NotifyEvent(newComponentEvent);
             }
 
             Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, input.GetFrame());

@@ -6,7 +6,7 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class RemotePlayerMovementSystem : public MovementSystem {
+class RemotePlayerMovementSystem : public MovementSystem, public Subject {
 public:
     static SystemType GetType()
     {
