@@ -23,13 +23,17 @@ public:
     struct Instance {
 
         Instance()
-            : m_spriteCoords()
-            , m_model(0.0f)
+            : m_model(0.0f)
+            , m_spriteCoords()
+            , m_color(White)
+            , m_pct(0.0f)
         {
         }
 
-        glm::vec2 m_spriteCoords[4];
         glm::mat4 m_model;
+        glm::vec2 m_spriteCoords[4];
+        glm::vec4 m_color;
+        F32 m_pct;
     };
 
     static const std::vector<Vertex> GetLineVertices(glm::vec3 fromPosition, glm::vec3 toPosition);

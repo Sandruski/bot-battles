@@ -137,6 +137,10 @@ bool GameClient::Init()
     }
 #ifdef _DRAW
     std::weak_ptr<RendererSystem> rendererSystem = m_systemManager->GetSystem<RendererSystem>();
+    ret = sightSystemClient.lock()->AddObserver(rendererSystem);
+    if (!ret) {
+        return ret;
+    }
     ret = m_clientComponent.m_replicationManager.AddObserver(rendererSystem);
     if (!ret) {
         return ret;

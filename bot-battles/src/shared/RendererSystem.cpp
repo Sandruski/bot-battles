@@ -230,7 +230,9 @@ void RendererSystem::OnComponentMemberChanged(U32 dirtyState, Entity entity) con
     const bool hasRotation = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_ROTATION);
     const bool hasScale = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_SCALE);
     const bool hasSpriteNameToTextureCoords = dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_SPRITE_NAME_TO_TEXTURE_COORDS);
-    if (!hasPosition && !hasRotation && !hasScale && !hasSpriteNameToTextureCoords) {
+    const bool hasColor = dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_COLOR);
+    const bool hasPct = dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_PCT);
+    if (!hasPosition && !hasRotation && !hasScale && !hasSpriteNameToTextureCoords && !hasColor && !hasPct) {
         return;
     }
 
@@ -286,6 +288,9 @@ void RendererSystem::RecalculateMapMesh() const
         glm::vec2 texCoords3 = glm::vec2((textureCoords.x + textureCoords.z) / static_cast<F32>(textureSize.x), 1.0f - (textureCoords.y + textureCoords.w) / static_cast<F32>(textureSize.y));
         instance.m_spriteCoords[3] = texCoords3;
 
+        instance.m_color = spriteComponent.lock()->m_color;
+        instance.m_pct = spriteComponent.lock()->m_pct;
+
         const std::string textureFile = spriteComponent.lock()->m_spriteResource.lock()->GetFile();
         if (textureFile == "map.png") {
             mapInstances.emplace_back(instance);
@@ -338,6 +343,9 @@ void RendererSystem::RecalculateCharactersMesh() const
         instance.m_spriteCoords[2] = texCoords2;
         glm::vec2 texCoords3 = glm::vec2((textureCoords.x + textureCoords.z) / static_cast<F32>(textureSize.x), 1.0f - (textureCoords.y + textureCoords.w) / static_cast<F32>(textureSize.y));
         instance.m_spriteCoords[3] = texCoords3;
+
+        instance.m_color = spriteComponent.lock()->m_color;
+        instance.m_pct = spriteComponent.lock()->m_pct;
 
         const std::string textureFile = spriteComponent.lock()->m_spriteResource.lock()->GetFile();
         if (textureFile == "characters.png") {
@@ -392,6 +400,9 @@ void RendererSystem::RecalculateAllMeshes() const
         instance.m_spriteCoords[2] = texCoords2;
         glm::vec2 texCoords3 = glm::vec2((textureCoords.x + textureCoords.z) / static_cast<F32>(textureSize.x), 1.0f - (textureCoords.y + textureCoords.w) / static_cast<F32>(textureSize.y));
         instance.m_spriteCoords[3] = texCoords3;
+
+        instance.m_color = spriteComponent.lock()->m_color;
+        instance.m_pct = spriteComponent.lock()->m_pct;
 
         const std::string textureFile = spriteComponent.lock()->m_spriteResource.lock()->GetFile();
         if (textureFile == "map.png") {
