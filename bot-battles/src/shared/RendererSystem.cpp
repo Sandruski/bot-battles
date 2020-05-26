@@ -164,8 +164,17 @@ void RendererSystem::OnNotify(const Event& event)
 {
     switch (event.eventType) {
 
-    case EventType::STATE_CHANGED: {
-        OnStateChanged();
+    case EventType::SYSTEM_ENTITY_ADDED: {
+        if (event.system.systemType == GetType()) {
+            OnSystemEntityAdded(event.system.entity);
+        }
+        break;
+    }
+
+    case EventType::SYSTEM_ENTITY_REMOVED: {
+        if (event.system.systemType == GetType()) {
+            OnSystemEntityRemoved(event.system.entity);
+        }
         break;
     }
 
@@ -176,7 +185,19 @@ void RendererSystem::OnNotify(const Event& event)
 }
 
 //----------------------------------------------------------------------------------------------------
-void RendererSystem::OnStateChanged() const
+void RendererSystem::OnSystemEntityAdded(Entity /*entity*/) const
+{
+    RecalculateMesh();
+}
+
+//----------------------------------------------------------------------------------------------------
+void RendererSystem::OnSystemEntityRemoved(Entity /*entity*/) const
+{
+    RecalculateMesh();
+}
+
+//----------------------------------------------------------------------------------------------------
+void RendererSystem::RecalculateMesh() const
 {
     RendererComponent& rendererComponent = g_game->GetRendererComponent();
     WindowComponent& windowComponent = g_game->GetWindowComponent();
@@ -186,7 +207,7 @@ void RendererSystem::OnStateChanged() const
     for (const auto& entity : m_entities) {
         std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
         std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
-        if (!spriteComponent.lock()->m_isVisible) {
+        if (!spriteComponent.lock()->m_isVisible || spriteComponent.lock()->m_spriteResource.expired()) {
             continue;
         }
 

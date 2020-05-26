@@ -85,10 +85,6 @@ bool FSM::ChangeState(std::weak_ptr<State> state)
 
     m_currentState.lock()->Enter();
 
-    Event newEvent;
-    newEvent.eventType = EventType::STATE_CHANGED;
-    NotifyEvent(newEvent);
-
     return true;
 }
 

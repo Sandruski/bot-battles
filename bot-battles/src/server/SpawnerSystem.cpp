@@ -58,7 +58,7 @@ Entity SpawnerSystem::Spawn(PlayerID playerID) const
     g_gameServer->GetLinkingContext().AddEntity(character);
 
     std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().AddComponent<TransformComponent>(character);
-    transformComponent.lock()->m_scale = 0.7f;
+    transformComponent.lock()->m_scale = 1.0f;
     for (const auto& entity : m_entities) {
         std::weak_ptr<BotSpawnerComponent> botSpawnerComponent = g_gameServer->GetComponentManager().GetComponent<BotSpawnerComponent>(entity);
         if (botSpawnerComponent.lock()->m_playerID == playerID) {

@@ -51,6 +51,8 @@ bool SystemManager::PreUpdate()
 {
     bool ret = true;
 
+    NotifyEvents();
+
     for (U32 i = 0; i < m_systems.size() && ret; ++i) {
         ret = m_systems[i]->PreUpdate();
     }
@@ -161,8 +163,16 @@ void SystemManager::OnEntityRemoved(Entity entity)
 {
     assert(entity < INVALID_ENTITY);
 
-    for (const auto& system : m_systems) {
-        system->DeRegisterEntity(entity);
+    for (U32 i = 0; i < m_systems.size(); ++i) {
+        std::shared_ptr<System> system = m_systems.at(i);
+        const bool ret = system->DeRegisterEntity(entity);
+        if (ret) {
+            Event newEvent;
+            newEvent.eventType = EventType::SYSTEM_ENTITY_REMOVED;
+            newEvent.system.systemType = static_cast<SystemType>(i);
+            newEvent.system.entity = entity;
+            PushEvent(newEvent);
+        }
     }
 }
 
@@ -171,12 +181,27 @@ void SystemManager::OnEntitySignatureChanged(Signature signature, Entity entity)
 {
     assert(entity < INVALID_ENTITY);
 
-    for (const auto& system : m_systems) {
+    for (U32 i = 0; i < m_systems.size(); ++i) {
+        std::shared_ptr<System> system = m_systems.at(i);
         Signature systemSignature = system->GetSignature();
         if ((systemSignature & signature) == systemSignature) {
-            system->RegisterEntity(entity);
+            const bool ret = system->RegisterEntity(entity);
+            if (ret) {
+                Event newEvent;
+                newEvent.eventType = EventType::SYSTEM_ENTITY_ADDED;
+                newEvent.system.systemType = static_cast<SystemType>(i);
+                newEvent.system.entity = entity;
+                PushEvent(newEvent);
+            }
         } else {
-            system->DeRegisterEntity(entity);
+            const bool ret = system->DeRegisterEntity(entity);
+            if (ret) {
+                Event newEvent;
+                newEvent.eventType = EventType::SYSTEM_ENTITY_REMOVED;
+                newEvent.system.systemType = static_cast<SystemType>(i);
+                newEvent.system.entity = entity;
+                PushEvent(newEvent);
+            }
         }
     }
 }

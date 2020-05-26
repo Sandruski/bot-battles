@@ -80,11 +80,13 @@ const glm::uvec4 SpriteComponent::GetSpriteTextureCoords(const std::string& name
     glm::uvec4 textureCoords = glm::uvec4(0, 0, 0, 0);
 
     auto it = m_spriteNameToTextureCoords.find(name);
-    if (it == m_spriteNameToTextureCoords.end()) {
+    if (it != m_spriteNameToTextureCoords.end()) {
+        textureCoords = it->second;
+    } else if (!m_spriteResource.expired()) {
         glm::uvec2 size = m_spriteResource.lock()->GetSize();
         textureCoords = glm::uvec4(0, 0, size.x, size.y);
     } else {
-        textureCoords = it->second;
+        textureCoords = glm::uvec4(0, 0, 0, 0);
     }
 
     return textureCoords;

@@ -10,11 +10,6 @@ struct TransformComponent;
 
 //----------------------------------------------------------------------------------------------------
 class MovementSystem : public System {
-public:
-    static SystemType GetType()
-    {
-        return SystemType::MOVEMENT;
-    }
 
 public:
     void DebugDraw(RendererComponent& rendererComponent, std::weak_ptr<TransformComponent> transformComponent, const glm::vec4& color) const;

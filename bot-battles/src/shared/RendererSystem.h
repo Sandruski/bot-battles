@@ -25,7 +25,11 @@ public:
     void OnNotify(const Event& event) override;
 
 private:
-    void OnStateChanged() const;
+    void OnSystemEntityAdded(Entity entity) const;
+    void OnSystemEntityRemoved(Entity entity) const;
+
+private:
+    void RecalculateMesh() const;
 };
 }
 

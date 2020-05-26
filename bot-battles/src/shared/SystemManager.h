@@ -6,7 +6,7 @@ namespace sand {
 class System;
 
 //----------------------------------------------------------------------------------------------------
-class SystemManager : public Observer {
+class SystemManager : public Subject, public Observer {
 public:
     SystemManager();
 

@@ -5,6 +5,7 @@
 #include "EntityDefs.h"
 #include "EventTypes.h"
 #include "NetDefs.h"
+#include "SystemDefs.h"
 
 namespace sand {
 
@@ -20,6 +21,12 @@ struct ComponentEvent {
     EventType eventType;
     ComponentType componentType;
     U32 dirtyState;
+    Entity entity;
+};
+
+struct SystemEvent {
+    EventType eventType;
+    SystemType systemType;
     Entity entity;
 };
 
@@ -66,6 +73,7 @@ union Event {
     EventType eventType;
     EntityEvent entity;
     ComponentEvent component;
+    SystemEvent system;
     NetworkingEvent networking;
     CollisionEvent collision;
     WeaponEvent weapon;

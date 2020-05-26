@@ -11,11 +11,6 @@ struct ColliderComponent;
 
 //----------------------------------------------------------------------------------------------------
 class CollisionSystem : public System {
-public:
-    static SystemType GetType()
-    {
-        return SystemType::COLLISION;
-    }
 
 public:
     void DebugDraw(RendererComponent& rendererComponent, std::weak_ptr<TransformComponent> transformComponent, std::weak_ptr<ColliderComponent> colliderComponent, const glm::vec4& color) const;

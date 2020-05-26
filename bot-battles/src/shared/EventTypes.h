@@ -15,6 +15,9 @@ enum class EventType {
     COMPONENT_REMOVED,
     COMPONENT_MEMBER_CHANGED,
 
+    SYSTEM_ENTITY_ADDED,
+    SYSTEM_ENTITY_REMOVED,
+
     COLLISION_ENTER,
     COLLISION_EXIT,
 
@@ -70,9 +73,6 @@ enum class EventType {
     // Sight
     SEEN_NEW_ENTITY,
     SEEN_LOST_ENTITY,
-
-    // GAME-SPECIFIC
-    STATE_CHANGED,
 
     COUNT
 };

@@ -129,6 +129,10 @@ bool MeshResource::ReLoad(const std::vector<Vertex>& vertices)
 {
     assert(m_VAO > 0 && m_VBO > 0);
 
+    if (vertices.empty()) {
+        return false;
+    }
+
     m_vertices = vertices;
 
     g_game->GetMeshImporter().ReLoad(vertices, m_VBO);
@@ -140,6 +144,10 @@ bool MeshResource::ReLoad(const std::vector<Vertex>& vertices)
 bool MeshResource::ReLoadInstance(const std::vector<Instance>& instances)
 {
     assert(m_VAO > 0 && m_instanceVBO > 0);
+
+    if (instances.empty()) {
+        return false;
+    }
 
     g_game->GetMeshImporter().ReLoadInstance(instances, m_instanceVBO);
 

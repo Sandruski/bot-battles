@@ -11,11 +11,6 @@ struct SightComponent;
 
 //----------------------------------------------------------------------------------------------------
 class SightSystem : public System {
-public:
-    static SystemType GetType()
-    {
-        return SystemType::SIGHT;
-    }
 
 public:
     void DebugDraw(RendererComponent& rendererComponent, std::weak_ptr<TransformComponent> transformComponent, std::weak_ptr<SightComponent> sightComponent, const glm::vec4& color) const;
