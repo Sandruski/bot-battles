@@ -170,14 +170,6 @@ void ReplicationManagerClient::ReadUpdateAction(InputMemoryStream& inputStream, 
             std::dynamic_pointer_cast<NetworkableReadObject>(component.lock())->Read(inputStream, dirtyState, frame, ReplicationActionType::CREATE, entity);
         }
     }
-
-    if (dirtyState > 0) {
-        Event newComponentEvent;
-        newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
-        newComponentEvent.component.dirtyState = dirtyState;
-        newComponentEvent.component.entity = entity;
-        NotifyEvent(newComponentEvent);
-    }
 }
 
 //----------------------------------------------------------------------------------------------------

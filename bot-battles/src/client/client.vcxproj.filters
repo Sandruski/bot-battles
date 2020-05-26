@@ -234,6 +234,9 @@
     <ClCompile Include="InputSystem.cpp">
       <Filter>Source Files\Systems\Unique</Filter>
     </ClCompile>
+    <ClCompile Include="SpriteComponentClient.cpp">
+      <Filter>Source Files\Components\Entity Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ReplicationManagerClient.h">

@@ -230,6 +230,7 @@
     <ClCompile Include="ScriptingSystem.cpp" />
     <ClCompile Include="SetupStateClient.cpp" />
     <ClCompile Include="SightSystemClient.cpp" />
+    <ClCompile Include="SpriteComponentClient.cpp" />
     <ClCompile Include="StartStateClient.cpp" />
     <ClCompile Include="StatesPanelClient.cpp" />
     <ClCompile Include="TransformComponentClient.cpp" />

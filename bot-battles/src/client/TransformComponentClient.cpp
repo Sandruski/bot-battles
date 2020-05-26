@@ -7,6 +7,7 @@
 #include "Input.h"
 #include "InputComponent.h"
 #include "PhysicsComponent.h"
+#include "ReplicationManagerClient.h"
 #include "RigidbodyComponent.h"
 
 namespace sand {
@@ -14,6 +15,9 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U32 frame, ReplicationActionType replicationActionType, Entity entity)
 {
+    U32 transformDirtyState = 0;
+
+    glm::vec2 oldPosition = m_position;
     glm::vec2 newPosition = glm::vec2(0.0f, 0.0f);
     const bool hasPosition = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION);
     if (hasPosition) {
@@ -21,15 +25,17 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U3
     }
     if (dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_LAYER_TYPE)) {
         inputStream.Read(m_layerType);
+        transformDirtyState |= static_cast<U32>(ComponentMemberType::TRANSFORM_LAYER_TYPE);
     }
+    F32 oldRotation = m_rotation;
     F32 newRotation = 0.0f;
     const bool hasRotation = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_ROTATION);
     if (hasRotation) {
         inputStream.Read(newRotation);
     }
-    const bool hasScale = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_SCALE);
-    if (hasScale) {
+    if (dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_SCALE)) {
         inputStream.Read(m_scale);
+        transformDirtyState |= static_cast<U32>(ComponentMemberType::TRANSFORM_SCALE);
     }
 
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
@@ -129,6 +135,18 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U3
                 m_rotation = glm::degrees(physicsRotation);
             }
         }
+    }
+
+    if (oldPosition != m_position || oldRotation != m_rotation) {
+        transformDirtyState |= static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION) | static_cast<U32>(ComponentMemberType::TRANSFORM_ROTATION);
+    }
+
+    if (transformDirtyState > 0) {
+        Event newComponentEvent;
+        newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
+        newComponentEvent.component.dirtyState = transformDirtyState;
+        newComponentEvent.component.entity = entity;
+        clientComponent.m_replicationManager.NotifyEvent(newComponentEvent);
     }
 }
 

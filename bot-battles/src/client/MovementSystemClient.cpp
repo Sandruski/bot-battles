@@ -84,15 +84,15 @@ bool MovementSystemClient::Update()
                     ILOG("Client position at frame %u is %f %f rot %f", input.GetFrame(), transformComponent.lock()->m_position.x, transformComponent.lock()->m_position.y, transformComponent.lock()->m_rotation);
 
                     rigidbodyComponent.lock()->m_body->SetActive(false);
+
+                    Event newComponentEvent;
+                    newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
+                    newComponentEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION) | static_cast<U32>(ComponentMemberType::TRANSFORM_ROTATION);
+                    newComponentEvent.component.entity = entity;
+                    NotifyEvent(newComponentEvent);
                 }
 
                 clientComponent.m_isLastMoveInputPending = false;
-
-                Event newComponentEvent;
-                newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
-                newComponentEvent.component.dirtyState = dirtyState;
-                newComponentEvent.component.entity = entity;
-                NotifyEvent(newComponentEvent);
             }
 
             Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, input.GetFrame());

@@ -30,7 +30,9 @@ private:
     void OnComponentMemberChanged(U32 dirtyState, Entity entity) const;
 
 private:
-    void RecalculateMesh() const;
+    void RecalculateMapMesh() const;
+    void RecalculateCharactersMesh() const;
+    void RecalculateAllMeshes() const;
 };
 }
 

@@ -251,6 +251,7 @@
     <ClCompile Include="ServerComponent.cpp" />
     <ClCompile Include="SightSystemServer.cpp" />
     <ClCompile Include="SpawnerSystem.cpp" />
+    <ClCompile Include="SpriteComponentServer.cpp" />
     <ClCompile Include="StartStateServer.cpp" />
     <ClCompile Include="StatesPanelServer.cpp" />
     <ClCompile Include="TransformComponentServer.cpp" />

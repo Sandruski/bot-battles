@@ -72,4 +72,15 @@ U32 WeaponComponent::Reload(U32 ammo)
 
     return 0;
 }
+
+//----------------------------------------------------------------------------------------------------
+bool WeaponComponent::Shoot()
+{
+    if (m_ammo > 0) {
+        m_ammo -= 1;
+        return true;
+    }
+
+    return false;
+}
 }

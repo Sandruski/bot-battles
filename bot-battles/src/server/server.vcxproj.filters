@@ -219,6 +219,9 @@
     <ClCompile Include="SpawnerSystem.cpp">
       <Filter>Source Files\Systems\Unique</Filter>
     </ClCompile>
+    <ClCompile Include="SpriteComponentServer.cpp">
+      <Filter>Source Files\Components\Entity Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientProxy.h">

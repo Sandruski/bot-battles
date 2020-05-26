@@ -65,6 +65,11 @@ bool WeaponSystemServer::Update()
 
             const bool hasShoot = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_SHOOT);
             if (hasShoot) {
+                bool isShoot = weaponComponent.lock()->Shoot();
+                if (!isShoot) {
+                    continue;
+                }
+
                 if (serverComponent.m_isServerRewind) {
                     Rewind(entity, input.m_interpolationFromFrame, input.m_interpolationToFrame, input.m_interpolationPercentage);
                 }
@@ -93,6 +98,7 @@ bool WeaponSystemServer::Update()
                 F32 maxLength = static_cast<F32>(std::max(windowComponent.m_currentResolution.x, windowComponent.m_currentResolution.y));
                 weaponComponent.lock()->m_destination = position + rotation * maxLength;
                 weaponComponent.lock()->m_hasHit = false;
+                weaponComponent.lock()->m_ammo -= 1;
 
                 PhysicsComponent& physicsComponent = g_gameServer->GetPhysicsComponent();
                 PhysicsComponent::RaycastHit hitInfo;
@@ -120,7 +126,7 @@ bool WeaponSystemServer::Update()
                 Event newEvent;
                 newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
                 newEvent.component.entity = entity;
-                newEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::WEAPON_ALL);
+                newEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::WEAPON_AMMO) | static_cast<U32>(ComponentMemberType::WEAPON_ORIGIN) | static_cast<U32>(ComponentMemberType::WEAPON_DESTINATION) | static_cast<U32>(ComponentMemberType::WEAPON_HIT);
                 NotifyEvent(newEvent);
 
                 rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(transformComponent.lock()->m_position.x), PIXELS_TO_METERS(transformComponent.lock()->m_position.y)), glm::radians(transformComponent.lock()->m_rotation));

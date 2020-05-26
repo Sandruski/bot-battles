@@ -32,6 +32,7 @@ struct WeaponComponent : public Component
 #endif
 
     U32 Reload(U32 ammo);
+    bool Shoot();
 
     // Networked
     U32 m_damage;

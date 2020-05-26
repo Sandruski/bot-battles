@@ -124,7 +124,7 @@ bool MovementSystemServer::Update()
                     Event newEvent;
                     newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
                     newEvent.component.entity = entity;
-                    newEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::TRANSFORM_ALL);
+                    newEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION) | static_cast<U32>(ComponentMemberType::TRANSFORM_ROTATION);
                     NotifyEvent(newEvent);
                 }
 
