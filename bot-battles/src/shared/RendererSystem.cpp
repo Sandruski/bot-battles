@@ -80,6 +80,13 @@ bool RendererSystem::StartUp()
     const std::vector<MeshResource::Vertex> quadVertices = MeshResource::GetQuadVertices();
     rendererComponent.m_quadMeshResource.lock()->ReLoadVertices(quadVertices);
 
+    rendererComponent.m_mapMeshResource = g_game->GetResourceManager().AddResource<MeshResource>("", "", false);
+    rendererComponent.m_mapMeshResource.lock()->ForceLoad();
+    rendererComponent.m_mapMeshResource.lock()->ReLoadVertices(quadVertices);
+    rendererComponent.m_charactersMeshResource = g_game->GetResourceManager().AddResource<MeshResource>("", "", false);
+    rendererComponent.m_charactersMeshResource.lock()->ForceLoad();
+    rendererComponent.m_charactersMeshResource.lock()->ReLoadVertices(quadVertices);
+
     return true;
 }
 
@@ -135,7 +142,12 @@ bool RendererSystem::Render()
             ++i;
         }
 
-        rendererComponent.DrawTexturedQuad(i, texture);
+        const std::string textureFile = spriteComponent.lock()->m_spriteResource.lock()->GetFile();
+        if (textureFile == "map.png") {
+            rendererComponent.DrawMapTexturedQuad(i, texture);
+        } else if (textureFile == "characters.png") {
+            rendererComponent.DrawCharactersTexturedQuad(i, texture);
+        }
     }
 
     return true;
@@ -202,7 +214,8 @@ void RendererSystem::RecalculateMesh() const
     WindowComponent& windowComponent = g_game->GetWindowComponent();
     glm::vec2 proportion = windowComponent.GetProportion();
 
-    std::vector<MeshResource::Instance> instances;
+    std::vector<MeshResource::Instance> mapInstances;
+    std::vector<MeshResource::Instance> charactersInstances;
     for (const auto& entity : m_entities) {
         std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
         std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
@@ -239,9 +252,15 @@ void RendererSystem::RecalculateMesh() const
         glm::vec2 texCoords3 = glm::vec2((textureCoords.x + textureCoords.z) / static_cast<F32>(textureSize.x), 1.0f - (textureCoords.y + textureCoords.w) / static_cast<F32>(textureSize.y));
         instance.m_spriteCoords[3] = texCoords3;
 
-        instances.emplace_back(instance);
+        const std::string textureFile = spriteComponent.lock()->m_spriteResource.lock()->GetFile();
+        if (textureFile == "map.png") {
+            mapInstances.emplace_back(instance);
+        } else if (textureFile == "characters.png") {
+            charactersInstances.emplace_back(instance);
+        }
     }
 
-    rendererComponent.m_quadMeshResource.lock()->ReLoadInstances(instances);
+    rendererComponent.m_mapMeshResource.lock()->ReLoadInstances(mapInstances);
+    rendererComponent.m_charactersMeshResource.lock()->ReLoadInstances(charactersInstances);
 }
 }
