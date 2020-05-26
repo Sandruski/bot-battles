@@ -248,61 +248,8 @@ void RendererSystem::RecalculateMapMesh() const
             continue;
         }
 
-        MeshResource::Instance instance;
-
-        std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
-        glm::vec3 position = transformComponent.lock()->GetPositionAndLayer();
-        F32 rotation = transformComponent.lock()->m_rotation;
-        glm::uvec4 textureCoords = spriteComponent.lock()->GetSpriteTextureCoords();
-        glm::vec3 scale = glm::vec3(static_cast<F32>(textureCoords.z), static_cast<F32>(textureCoords.w), 0.0f);
-        scale *= transformComponent.lock()->m_scale;
-
-        glm::mat4 model = glm::mat4(1.0f);
-        position.x *= proportion.x;
-        position.y *= proportion.y;
-        position.y *= -1.0f;
-        model = glm::translate(model, position);
-        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, -1.0f));
-        scale.x *= proportion.x;
-        scale.y *= proportion.y;
-        model = glm::scale(model, scale);
-        instance.m_model = model;
-
-        glm::uvec2 textureSize = spriteComponent.lock()->m_spriteResource.lock()->GetSize();
-        glm::vec2 texCoords0 = glm::vec2(textureCoords.x / static_cast<F32>(textureSize.x), 1.0f - textureCoords.y / static_cast<F32>(textureSize.y));
-        instance.m_spriteCoords[0] = texCoords0;
-        glm::vec2 texCoords1 = glm::vec2((textureCoords.x + textureCoords.z) / static_cast<F32>(textureSize.x), 1.0f - textureCoords.y / static_cast<F32>(textureSize.y));
-        instance.m_spriteCoords[1] = texCoords1;
-        glm::vec2 texCoords2 = glm::vec2(textureCoords.x / static_cast<F32>(textureSize.x), 1.0f - (textureCoords.y + textureCoords.w) / static_cast<F32>(textureSize.y));
-        instance.m_spriteCoords[2] = texCoords2;
-        glm::vec2 texCoords3 = glm::vec2((textureCoords.x + textureCoords.z) / static_cast<F32>(textureSize.x), 1.0f - (textureCoords.y + textureCoords.w) / static_cast<F32>(textureSize.y));
-        instance.m_spriteCoords[3] = texCoords3;
-
-        instance.m_color = spriteComponent.lock()->m_color;
-        instance.m_pct = spriteComponent.lock()->m_pct;
-
         const std::string textureFile = spriteComponent.lock()->m_spriteResource.lock()->GetFile();
-        if (textureFile == "map.png") {
-            mapInstances.emplace_back(instance);
-        }
-    }
-
-    rendererComponent.m_mapMeshResource.lock()->ReLoadInstances(mapInstances);
-}
-
-//----------------------------------------------------------------------------------------------------
-void RendererSystem::RecalculateCharactersMesh() const
-{
-    OPTICK_EVENT();
-
-    RendererComponent& rendererComponent = g_game->GetRendererComponent();
-    WindowComponent& windowComponent = g_game->GetWindowComponent();
-    glm::vec2 proportion = windowComponent.GetProportion();
-
-    std::vector<MeshResource::Instance> charactersInstances;
-    for (const auto& entity : m_entities) {
-        std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
-        if (!spriteComponent.lock()->m_isVisible || spriteComponent.lock()->m_spriteResource.expired()) {
+        if (textureFile != "map.png") {
             continue;
         }
 
@@ -339,10 +286,67 @@ void RendererSystem::RecalculateCharactersMesh() const
         instance.m_color = spriteComponent.lock()->m_color;
         instance.m_pct = spriteComponent.lock()->m_pct;
 
-        const std::string textureFile = spriteComponent.lock()->m_spriteResource.lock()->GetFile();
-        if (textureFile == "characters.png") {
-            charactersInstances.emplace_back(instance);
+        mapInstances.emplace_back(instance);
+    }
+
+    rendererComponent.m_mapMeshResource.lock()->ReLoadInstances(mapInstances);
+}
+
+//----------------------------------------------------------------------------------------------------
+void RendererSystem::RecalculateCharactersMesh() const
+{
+    OPTICK_EVENT();
+
+    RendererComponent& rendererComponent = g_game->GetRendererComponent();
+    WindowComponent& windowComponent = g_game->GetWindowComponent();
+    glm::vec2 proportion = windowComponent.GetProportion();
+
+    std::vector<MeshResource::Instance> charactersInstances;
+    for (const auto& entity : m_entities) {
+        std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
+        if (!spriteComponent.lock()->m_isVisible || spriteComponent.lock()->m_spriteResource.expired()) {
+            continue;
         }
+
+        const std::string textureFile = spriteComponent.lock()->m_spriteResource.lock()->GetFile();
+        if (textureFile != "characters.png") {
+            continue;
+        }
+
+        MeshResource::Instance instance;
+
+        std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
+        glm::vec3 position = transformComponent.lock()->GetPositionAndLayer();
+        F32 rotation = transformComponent.lock()->m_rotation;
+        glm::uvec4 textureCoords = spriteComponent.lock()->GetSpriteTextureCoords();
+        glm::vec3 scale = glm::vec3(static_cast<F32>(textureCoords.z), static_cast<F32>(textureCoords.w), 0.0f);
+        scale *= transformComponent.lock()->m_scale;
+
+        glm::mat4 model = glm::mat4(1.0f);
+        position.x *= proportion.x;
+        position.y *= proportion.y;
+        position.y *= -1.0f;
+        model = glm::translate(model, position);
+        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, -1.0f));
+        scale.x *= proportion.x;
+        scale.y *= proportion.y;
+        model = glm::scale(model, scale);
+        instance.m_model = model;
+
+        glm::uvec2 textureSize = spriteComponent.lock()->m_spriteResource.lock()->GetSize();
+        glm::vec2 texCoords0 = glm::vec2(textureCoords.x / static_cast<F32>(textureSize.x), 1.0f - textureCoords.y / static_cast<F32>(textureSize.y));
+        instance.m_spriteCoords[0] = texCoords0;
+        glm::vec2 texCoords1 = glm::vec2((textureCoords.x + textureCoords.z) / static_cast<F32>(textureSize.x), 1.0f - textureCoords.y / static_cast<F32>(textureSize.y));
+        instance.m_spriteCoords[1] = texCoords1;
+        glm::vec2 texCoords2 = glm::vec2(textureCoords.x / static_cast<F32>(textureSize.x), 1.0f - (textureCoords.y + textureCoords.w) / static_cast<F32>(textureSize.y));
+        instance.m_spriteCoords[2] = texCoords2;
+        glm::vec2 texCoords3 = glm::vec2((textureCoords.x + textureCoords.z) / static_cast<F32>(textureSize.x), 1.0f - (textureCoords.y + textureCoords.w) / static_cast<F32>(textureSize.y));
+        instance.m_spriteCoords[3] = texCoords3;
+
+        instance.m_color = spriteComponent.lock()->m_color;
+        instance.m_pct = spriteComponent.lock()->m_pct;
+
+        charactersInstances.emplace_back(instance);
     }
 
     rendererComponent.m_charactersMeshResource.lock()->ReLoadInstances(charactersInstances);
