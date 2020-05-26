@@ -50,10 +50,12 @@ public:
     bool ReLoadInstances(const std::vector<Instance>& instances);
 
     const std::vector<Vertex>& GetVertices() const;
+    const std::vector<Instance>& GetInstances() const;
     U32 GetVAO() const;
 
 private:
     std::vector<Vertex> m_vertices;
+    std::vector<Instance> m_instances;
     U32 m_VAO;
     U32 m_VBO;
     U32 m_instanceVBO;

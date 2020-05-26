@@ -12,7 +12,7 @@ struct WeaponComponent;
 class WeaponSystem : public System {
 
 public:
-    void DebugDraw(RendererComponent& rendererComponent, std::weak_ptr<WeaponComponent> weaponComponent, const glm::vec4& color) const;
+    void Draw(RendererComponent& rendererComponent, std::weak_ptr<WeaponComponent> weaponComponent, const glm::vec4& color) const;
 };
 }
 

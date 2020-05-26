@@ -21,10 +21,12 @@ struct RendererComponent {
     void DrawLine(glm::vec3 fromPosition, glm::vec3 toPosition, glm::vec4 color);
     void DrawCircle(glm::vec3 position, F32 rotation, glm::vec3 scale, U32 sides, F32 angle, F32 radius, glm::vec4 color, bool filled);
     void DrawQuad(glm::vec3 position, F32 rotation, glm::vec3 scale, glm::vec4 color, bool filled);
-    void DrawMapTexturedQuad(U32 count, U32 texture);
-    void DrawCharactersTexturedQuad(U32 count, U32 texture);
+    void DrawMapTexturedQuad(U32 texture);
+    void DrawCharactersTexturedQuad(U32 texture);
 
-    std::weak_ptr<ShaderResource> m_shaderResource;
+    std::weak_ptr<ShaderResource> m_defaultShaderResource;
+    std::weak_ptr<ShaderResource> m_instancingShaderResource;
+
     std::weak_ptr<MeshResource> m_lineMeshResource;
     std::weak_ptr<MeshResource> m_circleMeshResource;
     std::weak_ptr<MeshResource> m_quadMeshResource;

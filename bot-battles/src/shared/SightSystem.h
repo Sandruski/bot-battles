@@ -13,7 +13,7 @@ struct SightComponent;
 class SightSystem : public System {
 
 public:
-    void DebugDraw(RendererComponent& rendererComponent, std::weak_ptr<TransformComponent> transformComponent, std::weak_ptr<SightComponent> sightComponent, const glm::vec4& color) const;
+    void Draw(RendererComponent& rendererComponent, std::weak_ptr<TransformComponent> transformComponent, std::weak_ptr<SightComponent> sightComponent, const glm::vec4& color) const;
 };
 }
 

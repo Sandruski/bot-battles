@@ -398,7 +398,7 @@ bool Game::DebugRender()
     bool ret = true;
 
     if (m_rendererComponent.m_isDebugDraw) {
-        //ret = m_systemManager->DebugRender();
+        ret = m_systemManager->DebugRender();
     }
 
     return ret;

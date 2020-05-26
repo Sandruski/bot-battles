@@ -141,7 +141,7 @@ bool SightSystemServer::Render()
 
         glm::vec4 color = Red;
         color.a = 0.5f;
-        DebugDraw(rendererComponent, transformComponent, sightComponent, color);
+        Draw(rendererComponent, transformComponent, sightComponent, color);
     }
 
     return true;

@@ -86,6 +86,7 @@ const std::vector<MeshResource::Vertex> MeshResource::GetQuadVertices()
 MeshResource::MeshResource(U32 id, const char* dir, const char* file)
     : Resource(id, dir, file)
     , m_vertices()
+    , m_instances()
     , m_VAO(0)
     , m_VBO(0)
     , m_instanceVBO(0)
@@ -143,6 +144,8 @@ bool MeshResource::ReLoadInstances(const std::vector<Instance>& instances)
         return false;
     }
 
+    m_instances = instances;
+
     g_game->GetMeshImporter().ReLoadInstances(instances, m_instanceVBO);
 
     return (m_VAO > 0 && m_instanceVBO > 0);
@@ -152,6 +155,12 @@ bool MeshResource::ReLoadInstances(const std::vector<Instance>& instances)
 const std::vector<MeshResource::Vertex>& MeshResource::GetVertices() const
 {
     return m_vertices;
+}
+
+//----------------------------------------------------------------------------------------------------
+const std::vector<MeshResource::Instance>& MeshResource::GetInstances() const
+{
+    return m_instances;
 }
 
 //----------------------------------------------------------------------------------------------------

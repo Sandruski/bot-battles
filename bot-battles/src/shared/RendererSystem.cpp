@@ -68,9 +68,10 @@ bool RendererSystem::StartUp()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    rendererComponent.m_shaderResource = g_game->GetResourceManager().AddResource<ShaderResource>("", "", false);
-    rendererComponent.m_shaderResource.lock()->ForceLoad(defaultVertexShaderSource, defaultFragmentShaderSource);
-    glUseProgram(rendererComponent.m_shaderResource.lock()->GetProgram());
+    rendererComponent.m_defaultShaderResource = g_game->GetResourceManager().AddResource<ShaderResource>("", "", false);
+    rendererComponent.m_defaultShaderResource.lock()->ForceLoad(defaultVertexShaderSource, defaultFragmentShaderSource);
+    rendererComponent.m_instancingShaderResource = g_game->GetResourceManager().AddResource<ShaderResource>("", "", false);
+    rendererComponent.m_instancingShaderResource.lock()->ForceLoad(instancingVertexShaderSource, instancingFragmentShaderSource);
 
     rendererComponent.m_lineMeshResource = g_game->GetResourceManager().AddResource<MeshResource>("", "", false);
     rendererComponent.m_lineMeshResource.lock()->ForceLoad();
@@ -115,39 +116,25 @@ bool RendererSystem::Render()
             return spriteComponentA.lock()->m_spriteResource.lock()->GetTexture() < spriteComponentB.lock()->m_spriteResource.lock()->GetTexture();
         });
 
-    for (U32 i = 0; i < m_entities.size();) {
-        Entity entity = m_entities.at(i);
-        std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
+    I32 texture = -1;
+    for (const auto& entity : m_entities) {
         std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
         if (!spriteComponent.lock()->m_isVisible) {
-            ++i;
             continue;
         }
 
-        U32 texture = spriteComponent.lock()->m_spriteResource.lock()->GetTexture();
-
-        for (; i < m_entities.size();) {
-            Entity entity2 = m_entities.at(i);
-            std::weak_ptr<TransformComponent> transformComponent2 = g_game->GetComponentManager().GetComponent<TransformComponent>(entity2);
-            std::weak_ptr<SpriteComponent> spriteComponent2 = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity2);
-            if (!spriteComponent2.lock()->m_isVisible) {
-                ++i;
-                continue;
-            }
-
-            U32 texture2 = spriteComponent2.lock()->m_spriteResource.lock()->GetTexture();
-            if (texture != texture2) {
-                break;
-            }
-
-            ++i;
+        I32 newTexture = spriteComponent.lock()->m_spriteResource.lock()->GetTexture();
+        if (texture == newTexture) {
+            continue;
         }
+
+        texture = newTexture;
 
         const std::string textureFile = spriteComponent.lock()->m_spriteResource.lock()->GetFile();
         if (textureFile == "map.png") {
-            rendererComponent.DrawMapTexturedQuad(i, texture);
+            rendererComponent.DrawMapTexturedQuad(texture);
         } else if (textureFile == "characters.png") {
-            rendererComponent.DrawCharactersTexturedQuad(i, texture);
+            rendererComponent.DrawCharactersTexturedQuad(texture);
         }
     }
 
@@ -232,7 +219,8 @@ void RendererSystem::OnComponentMemberChanged(U32 dirtyState, Entity entity) con
     const bool hasSpriteNameToTextureCoords = dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_SPRITE_NAME_TO_TEXTURE_COORDS);
     const bool hasColor = dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_COLOR);
     const bool hasPct = dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_PCT);
-    if (!hasPosition && !hasRotation && !hasScale && !hasSpriteNameToTextureCoords && !hasColor && !hasPct) {
+    const bool hasIsVisible = dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_VISIBLE);
+    if (!hasPosition && !hasRotation && !hasScale && !hasSpriteNameToTextureCoords && !hasColor && !hasPct && !hasIsVisible) {
         return;
     }
 

@@ -322,7 +322,7 @@ void ServerSystem::ReceivePacket(ServerComponent& serverComponent, InputMemorySt
     }
     }
 
-    if (playerID < INVALID_PLAYER_ID && type < ClientMessageType::COUNT) {
+    if (type < ClientMessageType::COUNT) {
         std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
         if (!clientProxy.expired()) {
             clientProxy.lock()->UpdateLastPacketTime();
@@ -333,6 +333,8 @@ void ServerSystem::ReceivePacket(ServerComponent& serverComponent, InputMemorySt
 //----------------------------------------------------------------------------------------------------
 void ServerSystem::ReceiveHelloPacket(ServerComponent& serverComponent, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress, PlayerID& playerID)
 {
+    playerID = serverComponent.GetPlayerID(fromSocketAddress);
+
     // Only Gameplay
     GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
     std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
@@ -342,7 +344,6 @@ void ServerSystem::ReceiveHelloPacket(ServerComponent& serverComponent, InputMem
         ELOG("Hello packet received but skipped because at incorrect state");
         return;
     }
-    playerID = serverComponent.GetPlayerID(fromSocketAddress);
     std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
     if (!clientProxy.expired()) {
         std::string name;
@@ -374,16 +375,15 @@ void ServerSystem::ReceiveHelloPacket(ServerComponent& serverComponent, InputMem
 //----------------------------------------------------------------------------------------------------
 void ServerSystem::ReceiveReHelloPacket(ServerComponent& serverComponent, InputMemoryStream& inputStream, PlayerID& playerID) const
 {
+    inputStream.Read(playerID);
+
     // Only Start
     GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
     std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
     if (currentState.expired() || currentState.lock()->GetName() != "Start") {
-        PlayerID newPlayerID = INVALID_PLAYER_ID;
-        inputStream.Read(newPlayerID);
         ELOG("ReHello packet received but skipped because at incorrect state");
         return;
     }
-    inputStream.Read(playerID);
     std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
     if (clientProxy.expired()) {
         ELOG("ReHello packet received but skipped because unknown player");
@@ -404,16 +404,15 @@ void ServerSystem::ReceiveReHelloPacket(ServerComponent& serverComponent, InputM
 //----------------------------------------------------------------------------------------------------
 void ServerSystem::ReceiveByePacket(ServerComponent& serverComponent, InputMemoryStream& inputStream, PlayerID& playerID)
 {
+    inputStream.Read(playerID);
+
     // All except Setup
     MainMenuComponent& mainMenuComponent = g_gameServer->GetMainMenuComponent();
     std::weak_ptr<State> currentState = mainMenuComponent.m_fsm.GetCurrentState();
     if (!currentState.expired() && currentState.lock()->GetName() == "Setup") {
-        PlayerID newPlayerID = INVALID_PLAYER_ID;
-        inputStream.Read(newPlayerID);
         ELOG("Bye packet received but skipped because at incorrect state");
         return;
     }
-    inputStream.Read(playerID);
     std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
     if (clientProxy.expired()) {
         ELOG("Bye packet received because unknown player");
@@ -429,6 +428,8 @@ void ServerSystem::ReceiveByePacket(ServerComponent& serverComponent, InputMemor
 //----------------------------------------------------------------------------------------------------
 void ServerSystem::ReceiveInputPacket(ServerComponent& serverComponent, InputMemoryStream& inputStream, PlayerID& playerID) const
 {
+    inputStream.Read(playerID);
+
     // Only Gameplay
     GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
     std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
@@ -436,7 +437,6 @@ void ServerSystem::ReceiveInputPacket(ServerComponent& serverComponent, InputMem
         ELOG("Input packet received but skipped because at incorrect state");
         return;
     }
-    inputStream.Read(playerID);
     std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
     if (clientProxy.expired()) {
         ELOG("Input packet received but skipped because unknown player");
