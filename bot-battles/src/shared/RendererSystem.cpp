@@ -108,36 +108,15 @@ bool RendererSystem::Render()
     OPTICK_EVENT();
 
     RendererComponent& rendererComponent = g_game->GetRendererComponent();
-    WindowComponent& windowComponent = g_game->GetWindowComponent();
-    glm::vec2 proportion = windowComponent.GetProportion();
 
-    std::sort(m_entities.begin(), m_entities.end(),
-        [](const Entity& entityA, const Entity& entityB) -> bool {
-            std::weak_ptr<SpriteComponent> spriteComponentA = g_game->GetComponentManager().GetComponent<SpriteComponent>(entityA);
-            std::weak_ptr<SpriteComponent> spriteComponentB = g_game->GetComponentManager().GetComponent<SpriteComponent>(entityB);
-            return spriteComponentA.lock()->m_spriteResource.lock()->GetTexture() < spriteComponentB.lock()->m_spriteResource.lock()->GetTexture();
-        });
-
-    I32 texture = -1;
-    for (const auto& entity : m_entities) {
-        std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
-        if (!spriteComponent.lock()->m_isVisible) {
-            continue;
-        }
-
-        I32 newTexture = spriteComponent.lock()->m_spriteResource.lock()->GetTexture();
-        if (texture == newTexture) {
-            continue;
-        }
-
-        texture = newTexture;
-
-        const std::string textureFile = spriteComponent.lock()->m_spriteResource.lock()->GetFile();
-        if (textureFile == "map.png") {
-            rendererComponent.DrawMapTexturedQuad(texture);
-        } else if (textureFile == "characters.png") {
-            rendererComponent.DrawCharactersTexturedQuad(texture);
-        }
+    ResourceManager& resourceManager = g_game->GetResourceManager();
+    std::weak_ptr<SpriteResource> mapSpriteResource = resourceManager.GetResourceByFile<SpriteResource>("map.png");
+    if (!mapSpriteResource.expired()) {
+        rendererComponent.DrawMapTexturedQuad(mapSpriteResource.lock()->GetTexture());
+    }
+    std::weak_ptr<SpriteResource> charactersSpriteResource = resourceManager.GetResourceByFile<SpriteResource>("characters.png");
+    if (!charactersSpriteResource.expired()) {
+        rendererComponent.DrawCharactersTexturedQuad(charactersSpriteResource.lock()->GetTexture());
     }
 
     return true;

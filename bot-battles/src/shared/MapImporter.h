@@ -48,7 +48,6 @@ public:
             return world;
         }
 
-        //std::weak_ptr<SpriteResource> m_spriteResource;
         std::string m_spriteFile;
 
         glm::uvec2 m_tileCount;

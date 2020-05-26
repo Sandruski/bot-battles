@@ -11,6 +11,7 @@ class MeshResource;
 struct RendererComponent {
 
     RendererComponent();
+    ~RendererComponent();
 
     void LoadFromConfig(const rapidjson::Value& value);
 
@@ -30,7 +31,6 @@ struct RendererComponent {
     std::weak_ptr<MeshResource> m_lineMeshResource;
     std::weak_ptr<MeshResource> m_circleMeshResource;
     std::weak_ptr<MeshResource> m_quadMeshResource;
-
     std::weak_ptr<MeshResource> m_mapMeshResource;
     std::weak_ptr<MeshResource> m_charactersMeshResource;
 

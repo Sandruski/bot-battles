@@ -26,6 +26,7 @@ struct SpriteComponent : public Component
     static ComponentType GetType() { return ComponentType::SPRITE; }
 
     SpriteComponent();
+    ~SpriteComponent() override;
 
 #ifdef _CLIENT
     void Read(InputMemoryStream& inputStream, U32 dirtyState, U32 frame, ReplicationActionType replicationActionType, Entity entity) override;

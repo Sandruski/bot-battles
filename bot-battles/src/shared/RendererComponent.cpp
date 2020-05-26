@@ -24,6 +24,33 @@ RendererComponent::RendererComponent()
 }
 
 //----------------------------------------------------------------------------------------------------
+RendererComponent::~RendererComponent()
+{
+    if (!m_defaultShaderResource.expired()) {
+        g_game->GetResourceManager().RemoveResource<ShaderResource>(m_defaultShaderResource.lock()->GetID());
+    }
+    if (!m_instancingShaderResource.expired()) {
+        g_game->GetResourceManager().RemoveResource<ShaderResource>(m_instancingShaderResource.lock()->GetID());
+    }
+
+    if (!m_lineMeshResource.expired()) {
+        g_game->GetResourceManager().RemoveResource<ShaderResource>(m_lineMeshResource.lock()->GetID());
+    }
+    if (!m_circleMeshResource.expired()) {
+        g_game->GetResourceManager().RemoveResource<ShaderResource>(m_circleMeshResource.lock()->GetID());
+    }
+    if (!m_quadMeshResource.expired()) {
+        g_game->GetResourceManager().RemoveResource<ShaderResource>(m_quadMeshResource.lock()->GetID());
+    }
+    if (!m_mapMeshResource.expired()) {
+        g_game->GetResourceManager().RemoveResource<ShaderResource>(m_mapMeshResource.lock()->GetID());
+    }
+    if (!m_charactersMeshResource.expired()) {
+        g_game->GetResourceManager().RemoveResource<ShaderResource>(m_charactersMeshResource.lock()->GetID());
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
 void RendererComponent::LoadFromConfig(const rapidjson::Value& value)
 {
     assert(value.HasMember("VSync"));

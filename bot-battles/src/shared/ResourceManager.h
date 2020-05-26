@@ -68,14 +68,14 @@ inline U32 ResourceManager::RemoveResource(U32 id)
     static_assert(std::is_base_of<Resource, T>::value, "T is not derived from Resource");
 
     assert(id < INVALID_RESOURCE);
-    std::shared_ptr<T> resource = GetResourceByID<T>(id);
-    if (resource == nullptr) {
-        return -1;
+    std::weak_ptr<T> resource = GetResourceByID<T>(id);
+    if (resource.expired()) {
+        return 0;
     }
 
-    resource->DecreaseReferences();
-    if (!resource->HasReferences()) {
-        resource->UnLoad();
+    resource.lock()->DecreaseReferences();
+    if (!resource.lock()->HasReferences()) {
+        resource.lock()->UnLoad();
         m_resources.erase(id);
 
         m_availableResources.push(id);
@@ -83,7 +83,7 @@ inline U32 ResourceManager::RemoveResource(U32 id)
         return 0;
     }
 
-    return resource->GetReferences();
+    return resource.lock()->GetReferences();
 }
 
 //----------------------------------------------------------------------------------------------------

@@ -1,6 +1,8 @@
 #include "SpriteComponent.h"
 
 #include "ComponentMemberTypes.h"
+#include "Game.h"
+#include "ResourceManager.h"
 #include "SpriteResource.h"
 
 namespace sand {
@@ -13,6 +15,14 @@ SpriteComponent::SpriteComponent()
     , m_pct(0.0f)
     , m_isVisible(true)
 {
+}
+
+//----------------------------------------------------------------------------------------------------
+SpriteComponent::~SpriteComponent()
+{
+    if (!m_spriteResource.expired()) {
+        g_game->GetResourceManager().RemoveResource<SpriteResource>(m_spriteResource.lock()->GetID());
+    }
 }
 
 //----------------------------------------------------------------------------------------------------
