@@ -53,6 +53,9 @@ public:
     const std::vector<Instance>& GetInstances() const;
     U32 GetVAO() const;
 
+public:
+    bool m_isStatic;
+
 private:
     std::vector<Vertex> m_vertices;
     std::vector<Instance> m_instances;

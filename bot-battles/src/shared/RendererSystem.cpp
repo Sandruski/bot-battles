@@ -85,9 +85,11 @@ bool RendererSystem::StartUp()
     rendererComponent.m_mapMeshResource = g_game->GetResourceManager().AddResource<MeshResource>("", "", false);
     rendererComponent.m_mapMeshResource.lock()->ForceLoad();
     rendererComponent.m_mapMeshResource.lock()->ReLoadVertices(quadVertices);
+    rendererComponent.m_mapMeshResource.lock()->m_isStatic = true;
     rendererComponent.m_charactersMeshResource = g_game->GetResourceManager().AddResource<MeshResource>("", "", false);
     rendererComponent.m_charactersMeshResource.lock()->ForceLoad();
     rendererComponent.m_charactersMeshResource.lock()->ReLoadVertices(quadVertices);
+    rendererComponent.m_charactersMeshResource.lock()->m_isStatic = false;
 
     return true;
 }

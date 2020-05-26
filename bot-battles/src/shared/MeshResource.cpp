@@ -85,6 +85,7 @@ const std::vector<MeshResource::Vertex> MeshResource::GetQuadVertices()
 //----------------------------------------------------------------------------------------------------
 MeshResource::MeshResource(U32 id, const char* dir, const char* file)
     : Resource(id, dir, file)
+    , m_isStatic(true)
     , m_vertices()
     , m_instances()
     , m_VAO(0)
@@ -130,7 +131,7 @@ bool MeshResource::ReLoadVertices(const std::vector<Vertex>& vertices)
 
     m_vertices = vertices;
 
-    g_game->GetMeshImporter().ReLoadVertices(m_vertices, m_VBO);
+    g_game->GetMeshImporter().ReLoadVertices(m_vertices, m_VBO, m_isStatic);
 
     return (m_VAO > 0 && m_VBO > 0);
 }
@@ -146,7 +147,7 @@ bool MeshResource::ReLoadInstances(const std::vector<Instance>& instances)
 
     m_instances = instances;
 
-    g_game->GetMeshImporter().ReLoadInstances(instances, m_instanceVBO);
+    g_game->GetMeshImporter().ReLoadInstances(instances, m_instanceVBO, m_isStatic);
 
     return (m_VAO > 0 && m_instanceVBO > 0);
 }
