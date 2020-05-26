@@ -86,6 +86,7 @@ const std::vector<MeshResource::Vertex> MeshResource::GetQuadVertices()
 MeshResource::MeshResource(U32 id, const char* dir, const char* file)
     : Resource(id, dir, file)
     , m_vertices()
+    , m_instances()
     , m_VAO(0)
     , m_VBO(0)
     , m_instanceVBO(0)
@@ -101,31 +102,25 @@ bool MeshResource::Load()
 //----------------------------------------------------------------------------------------------------
 bool MeshResource::UnLoad()
 {
-    if (m_VAO > 0 && m_VBO > 0) {
+    if (m_VAO > 0 && m_VBO > 0 && m_instanceVBO > 0) {
         g_game->GetMeshImporter().UnLoad(m_VAO, m_VBO, m_instanceVBO);
     }
 
-    return (m_VAO == 0 && m_VBO == 0);
+    return (m_VAO == 0 && m_VBO == 0 && m_instanceVBO == 0);
 }
 
 //----------------------------------------------------------------------------------------------------
-bool MeshResource::ForceLoad(const std::vector<Vertex>& vertices)
+bool MeshResource::ForceLoad()
 {
     UnLoad();
 
     g_game->GetMeshImporter().Load(m_VAO, m_VBO, m_instanceVBO);
-    g_game->GetMeshImporter().ReLoad(vertices, m_VBO);
 
-    const bool isLoaded = (m_VAO > 0 && m_VBO > 0);
-    if (isLoaded) {
-        m_vertices = vertices;
-    }
-
-    return isLoaded;
+    return (m_VAO > 0 && m_VBO > 0 && m_instanceVBO > 0);
 }
 
 //----------------------------------------------------------------------------------------------------
-bool MeshResource::ReLoad(const std::vector<Vertex>& vertices)
+bool MeshResource::ReLoadVertices(const std::vector<Vertex>& vertices)
 {
     assert(m_VAO > 0 && m_VBO > 0);
 
@@ -135,13 +130,13 @@ bool MeshResource::ReLoad(const std::vector<Vertex>& vertices)
 
     m_vertices = vertices;
 
-    g_game->GetMeshImporter().ReLoad(vertices, m_VBO);
+    g_game->GetMeshImporter().ReLoadVertices(vertices, m_VBO);
 
     return (m_VAO > 0 && m_VBO > 0);
 }
 
 //----------------------------------------------------------------------------------------------------
-bool MeshResource::ReLoadInstance(const std::vector<Instance>& instances)
+bool MeshResource::ReLoadInstances(const std::vector<Instance>& instances)
 {
     assert(m_VAO > 0 && m_instanceVBO > 0);
 
@@ -149,7 +144,9 @@ bool MeshResource::ReLoadInstance(const std::vector<Instance>& instances)
         return false;
     }
 
-    g_game->GetMeshImporter().ReLoadInstance(instances, m_instanceVBO);
+    m_instances = instances;
+
+    g_game->GetMeshImporter().ReLoadInstances(instances, m_instanceVBO);
 
     return (m_VAO > 0 && m_instanceVBO > 0);
 }
@@ -158,6 +155,12 @@ bool MeshResource::ReLoadInstance(const std::vector<Instance>& instances)
 const std::vector<MeshResource::Vertex>& MeshResource::GetVertices() const
 {
     return m_vertices;
+}
+
+//----------------------------------------------------------------------------------------------------
+const std::vector<MeshResource::Instance>& MeshResource::GetInstances() const
+{
+    return m_instances;
 }
 
 //----------------------------------------------------------------------------------------------------

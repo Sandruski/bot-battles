@@ -72,14 +72,13 @@ bool RendererSystem::StartUp()
     glUseProgram(rendererComponent.m_shaderResource.lock()->GetProgram());
 
     rendererComponent.m_lineMeshResource = g_game->GetResourceManager().AddResource<MeshResource>("", "", false);
-    const std::vector<MeshResource::Vertex> lineVertices = MeshResource::GetLineVertices(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
-    rendererComponent.m_lineMeshResource.lock()->ForceLoad(lineVertices);
+    rendererComponent.m_lineMeshResource.lock()->ForceLoad();
     rendererComponent.m_circleMeshResource = g_game->GetResourceManager().AddResource<MeshResource>("", "", false);
-    const std::vector<MeshResource::Vertex> circleVertices = MeshResource::GetCircleVertices(0, 0.0f, 0.0f);
-    rendererComponent.m_circleMeshResource.lock()->ForceLoad(circleVertices);
+    rendererComponent.m_circleMeshResource.lock()->ForceLoad();
     rendererComponent.m_quadMeshResource = g_game->GetResourceManager().AddResource<MeshResource>("", "", false);
+    rendererComponent.m_quadMeshResource.lock()->ForceLoad();
     const std::vector<MeshResource::Vertex> quadVertices = MeshResource::GetQuadVertices();
-    rendererComponent.m_quadMeshResource.lock()->ForceLoad(quadVertices);
+    rendererComponent.m_quadMeshResource.lock()->ReLoadVertices(quadVertices);
 
     return true;
 }
@@ -243,7 +242,6 @@ void RendererSystem::RecalculateMesh() const
         instances.emplace_back(instance);
     }
 
-    rendererComponent.m_quadMeshResource.lock()->ReLoad(MeshResource::GetQuadVertices());
-    rendererComponent.m_quadMeshResource.lock()->ReLoadInstance(instances);
+    rendererComponent.m_quadMeshResource.lock()->ReLoadInstances(instances);
 }
 }

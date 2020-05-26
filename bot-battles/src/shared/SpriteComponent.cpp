@@ -17,7 +17,7 @@ SpriteComponent::SpriteComponent()
 
 #ifdef _CLIENT
 //----------------------------------------------------------------------------------------------------
-void SpriteComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U32 /*frame*/, ReplicationActionType /*replicationActionType*/, Entity /*entity*/)
+void SpriteComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U32 /*frame*/, ReplicationActionType /*replicationActionType*/, Entity entity)
 {
     if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_FILE)) {
         std::string file;
@@ -26,6 +26,11 @@ void SpriteComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U32 /
     }
     if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_SPRITE_NAME_TO_TEXTURE_COORDS)) {
         inputStream.Read(m_spriteNameToTextureCoords);
+
+        Event newComponentEvent;
+        newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
+        newComponentEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::SPRITE_SPRITE_NAME_TO_TEXTURE_COORDS);
+        newComponentEvent.component.entity = entity;
     }
     if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_SPRITE_NAME)) {
         inputStream.Read(m_spriteName);

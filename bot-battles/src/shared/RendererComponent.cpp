@@ -64,7 +64,7 @@ void RendererComponent::DrawLine(glm::vec3 fromPosition, glm::vec3 toPosition, g
     glm::mat4 model = glm::mat4(1.0f);
 
     std::vector<MeshResource::Vertex> lineVertices = MeshResource::GetLineVertices(fromPosition, toPosition);
-    m_lineMeshResource.lock()->ReLoad(lineVertices);
+    m_lineMeshResource.lock()->ReLoadVertices(lineVertices);
 
     U32 modelLoc = glGetUniformLocation(m_shaderResource.lock()->GetProgram(), "model");
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
@@ -107,7 +107,7 @@ void RendererComponent::DrawCircle(glm::vec3 position, F32 rotation, glm::vec3 s
     model = glm::scale(model, scale);
 
     std::vector<MeshResource::Vertex> circleVertices = MeshResource::GetCircleVertices(sides, angle, radius);
-    m_circleMeshResource.lock()->ReLoad(circleVertices);
+    m_circleMeshResource.lock()->ReLoadVertices(circleVertices);
 
     U32 modelLoc = glGetUniformLocation(m_shaderResource.lock()->GetProgram(), "model");
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
