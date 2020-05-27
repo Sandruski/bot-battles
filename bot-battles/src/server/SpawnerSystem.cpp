@@ -71,7 +71,7 @@ Entity SpawnerSystem::Spawn(PlayerID playerID) const
     }
 
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().AddComponent<SpriteComponent>(character);
-    std::weak_ptr<SpriteResource> charactersSpriteResource = g_game->GetResourceManager().AddResource<SpriteResource>("characters.png", TEXTURES_DIR, true);
+    std::weak_ptr<SpriteResource> charactersSpriteResource = g_gameServer->GetResourceManager().AddResource<SpriteResource>("characters.png", TEXTURES_DIR, true);
     spriteComponent.lock()->m_spriteResource = charactersSpriteResource;
     U32 playerNumber = playerID + 1;
     switch (playerNumber) {

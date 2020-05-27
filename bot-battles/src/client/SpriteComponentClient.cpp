@@ -20,7 +20,7 @@ void SpriteComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U32 /
         if (!m_spriteResource.expired()) {
             g_game->GetResourceManager().RemoveResource<SpriteResource>(m_spriteResource.lock()->GetID());
         }
-        m_spriteResource = g_game->GetResourceManager().AddResource<SpriteResource>(file.c_str(), TEXTURES_DIR, true);
+        m_spriteResource = g_gameClient->GetResourceManager().AddResource<SpriteResource>(file.c_str(), TEXTURES_DIR, true);
     }
     if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_SPRITE_NAME_TO_TEXTURE_COORDS)) {
         inputStream.Read(m_spriteNameToTextureCoords);

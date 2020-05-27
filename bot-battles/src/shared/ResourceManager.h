@@ -37,6 +37,7 @@ inline std::weak_ptr<T> ResourceManager::AddResource(const char* file, const cha
     static_assert(std::is_base_of<Resource, T>::value, "T is not derived from Resource");
 
     assert(file != nullptr && dir != nullptr);
+
     if (hasPath) {
         std::weak_ptr<T> resource = GetResourceByFile<T>(file);
         if (!resource.expired()) {
@@ -49,13 +50,13 @@ inline std::weak_ptr<T> ResourceManager::AddResource(const char* file, const cha
     m_availableResources.pop();
 
     std::shared_ptr<T> resource = std::make_shared<T>(id, file, dir);
-
     const bool isLoaded = resource->Load();
     if (!isLoaded) {
         ELOG("Resource %s%s could not be loaded", dir, file);
         return std::weak_ptr<T>();
     }
 
+    resource->IncreaseReferences();
     m_resources.insert(std::make_pair(id, resource));
 
     return std::weak_ptr<T>(resource);
@@ -68,6 +69,7 @@ inline U32 ResourceManager::RemoveResource(U32 id)
     static_assert(std::is_base_of<Resource, T>::value, "T is not derived from Resource");
 
     assert(id < INVALID_RESOURCE);
+
     std::weak_ptr<T> resource = GetResourceByID<T>(id);
     if (resource.expired()) {
         return 0;
@@ -75,9 +77,13 @@ inline U32 ResourceManager::RemoveResource(U32 id)
 
     resource.lock()->DecreaseReferences();
     if (!resource.lock()->HasReferences()) {
-        resource.lock()->UnLoad();
-        m_resources.erase(id);
+        const bool isUnLoaded = resource.lock()->UnLoad();
+        if (!isUnLoaded) {
+            ELOG("Resource %s%s could not be loaded", resource.lock()->GetDir().c_str(), resource.lock()->GetFile().c_str());
+            return 0;
+        }
 
+        m_resources.erase(id);
         m_availableResources.push(id);
 
         return 0;
