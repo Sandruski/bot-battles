@@ -20,9 +20,7 @@ SpriteComponent::SpriteComponent()
 //----------------------------------------------------------------------------------------------------
 SpriteComponent::~SpriteComponent()
 {
-    if (!m_spriteResource.expired()) {
-        g_game->GetResourceManager().RemoveResource<SpriteResource>(m_spriteResource.lock()->GetID());
-    }
+    g_game->GetResourceManager().RemoveResource<SpriteResource>(m_spriteResource.lock()->GetID());
 }
 
 //----------------------------------------------------------------------------------------------------

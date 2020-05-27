@@ -79,10 +79,26 @@ bool SightSystemServer::Update()
                 }
 
                 std::weak_ptr<TransformComponent> overlapTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(overlapEntity);
-                const bool isInFoV = IsInFoV(transformComponent.lock()->m_position, overlapTransformComponent.lock()->m_position, direction, sightComponent.lock()->m_angle);
-                if (isInFoV) {
-                    const bool isInLoS = IsInLoS(physicsComponent, transformComponent.lock()->m_position, overlapTransformComponent.lock()->m_position, sightComponent.lock()->m_distance, overlapEntity);
-                    if (isInLoS) {
+                const bool isInLoS = IsInLoS(physicsComponent, transformComponent.lock()->m_position, overlapTransformComponent.lock()->m_position, sightComponent.lock()->m_distance, overlapEntity);
+                if (isInLoS) {
+                    const bool isInFoV = IsInFoV(transformComponent.lock()->m_position, overlapTransformComponent.lock()->m_position, direction, sightComponent.lock()->m_angle);
+                    if (isInFoV) {
+                        seenEntities.emplace_back(overlapEntity);
+                        continue;
+                    }
+
+                    glm::vec2 leftDirection = glm::rotate(direction, glm::radians(sightComponent.lock()->m_angle / 2.0f));
+                    glm::vec2 leftPosition = transformComponent.lock()->m_position + leftDirection;
+                    const bool isInLeftLoS = IsInLoS(physicsComponent, transformComponent.lock()->m_position, leftPosition, sightComponent.lock()->m_distance, overlapEntity);
+                    if (isInLeftLoS) {
+                        seenEntities.emplace_back(overlapEntity);
+                        continue;
+                    }
+
+                    glm::vec2 rightDirection = glm::rotate(direction, glm::radians(-sightComponent.lock()->m_angle / 2.0f));
+                    glm::vec2 rightPosition = transformComponent.lock()->m_position + rightDirection;
+                    const bool isInRightLoS = IsInLoS(physicsComponent, transformComponent.lock()->m_position, rightPosition, sightComponent.lock()->m_distance, overlapEntity);
+                    if (isInRightLoS) {
                         seenEntities.emplace_back(overlapEntity);
                         continue;
                     }
