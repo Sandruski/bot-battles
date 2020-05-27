@@ -204,7 +204,7 @@ bool Game::Init()
         return ret;
     }
     std::weak_ptr<PhysicsSystem> physicsSystem = m_systemManager->GetSystem<PhysicsSystem>();
-    ret = m_componentManager->AddObserver(physicsSystem.lock());
+    ret = m_componentManager->AddObserver(physicsSystem);
     if (!ret) {
         return ret;
     }
@@ -214,7 +214,7 @@ bool Game::Init()
     }
 #ifdef _DRAW
     std::weak_ptr<RendererSystem> rendererSystem = m_systemManager->GetSystem<RendererSystem>();
-    ret = m_systemManager->AddObserver(rendererSystem.lock());
+    ret = m_systemManager->AddObserver(rendererSystem);
     if (!ret) {
         return ret;
     }

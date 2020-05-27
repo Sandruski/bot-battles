@@ -163,6 +163,10 @@ bool GameServer::Init()
     if (!ret) {
         return ret;
     }
+    ret = ammoSystem.lock()->AddObserver(rendererSystem);
+    if (!ret) {
+        return ret;
+    }
 #endif
 
     return ret;

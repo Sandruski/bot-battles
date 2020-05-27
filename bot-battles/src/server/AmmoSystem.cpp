@@ -73,6 +73,10 @@ bool AmmoSystem::Update()
                         }
 
                         U32 ammo = ammoSpawnerComponent.lock()->PickUp();
+                        if (ammo == 0) {
+                            continue;
+                        }
+
                         weaponComponent.lock()->Reload(ammo);
                         spriteComponent.lock()->m_isVisible = false;
 

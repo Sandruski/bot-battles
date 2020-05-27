@@ -72,13 +72,22 @@ bool SightSystemServer::Update()
                     continue;
                 }
 
-                std::weak_ptr<TransformComponent> overlapTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(overlapEntity);
-
                 if (overlapEntity == entity) {
                     seenEntities.emplace_back(overlapEntity);
                     continue;
                 }
 
+                // OVERLAP
+                /*
+                std::weak_ptr<RigidbodyComponent> overlapRigidbodyComponent = g_gameServer->GetComponentManager().GetComponent<RigidbodyComponent>(overlapEntity);
+                const bool hasCollision = overlapRigidbodyComponent.lock()->HasCollision(entity);
+                if (hasCollision) {
+                    seenEntities.emplace_back(overlapEntity);
+                    continue;
+                }
+                */
+
+                std::weak_ptr<TransformComponent> overlapTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(overlapEntity);
                 const bool isInFoV = IsInFoV(transformComponent.lock()->m_position, overlapTransformComponent.lock()->m_position, direction, sightComponent.lock()->m_angle);
                 if (isInFoV) {
                     const bool isInLoS = IsInLoS(physicsComponent, transformComponent.lock()->m_position, overlapTransformComponent.lock()->m_position, sightComponent.lock()->m_distance, overlapEntity);
