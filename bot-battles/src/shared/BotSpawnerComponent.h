@@ -32,8 +32,11 @@ struct BotSpawnerComponent : public Component
 #endif
 
     // Local
-    PlayerID m_playerID;
     F32 m_facing;
+    F32 m_sightAngle;
+    F32 m_sightDistance;
+    PlayerID m_playerID;
+    U32 m_health;
 };
 }
 

@@ -194,10 +194,16 @@ void MapImporter::Create(const Tilemap& tilemap) const
             if (object.m_type == "BotSpawner") {
                 std::weak_ptr<BotSpawnerComponent> botSpawnerComponent = g_game->GetComponentManager().AddComponent<BotSpawnerComponent>(entity);
                 for (const auto& property : object.m_properties) {
-                    if (property.m_name == "player") {
-                        botSpawnerComponent.lock()->m_playerID = property.m_value.intValue;
-                    } else if (property.m_name == "facing") {
+                    if (property.m_name == "facing") {
                         botSpawnerComponent.lock()->m_facing = property.m_value.floatValue;
+                    } else if (property.m_name == "sightAngle") {
+                        botSpawnerComponent.lock()->m_sightAngle = property.m_value.floatValue;
+                    } else if (property.m_name == "sightDistance") {
+                        botSpawnerComponent.lock()->m_sightDistance = property.m_value.floatValue;
+                    } else if (property.m_name == "player") {
+                        botSpawnerComponent.lock()->m_playerID = property.m_value.intValue;
+                    } else if (property.m_name == "health") {
+                        botSpawnerComponent.lock()->m_health = property.m_value.intValue;
                     }
                 }
             }

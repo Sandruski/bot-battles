@@ -54,21 +54,26 @@ void SpawnerSystem::OnNotify(const Event& event)
 //----------------------------------------------------------------------------------------------------
 Entity SpawnerSystem::Spawn(PlayerID playerID) const
 {
+    Entity botSpawner = INVALID_ENTITY;
+    std::weak_ptr<BotSpawnerComponent> botSpawnerComponent;
+    for (const auto& entity : m_entities) {
+        std::weak_ptr<BotSpawnerComponent> botSpawnerBotSpawnerComponent = g_gameServer->GetComponentManager().GetComponent<BotSpawnerComponent>(entity);
+        if (botSpawnerBotSpawnerComponent.lock()->m_playerID == playerID) {
+            botSpawner = entity;
+            botSpawnerComponent = botSpawnerBotSpawnerComponent;
+            break;
+        }
+    }
+
     Entity character = g_gameServer->GetEntityManager().AddEntity();
     g_gameServer->GetLinkingContext().AddEntity(character);
 
     std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().AddComponent<TransformComponent>(character);
+    std::weak_ptr<TransformComponent> botSpawnerTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(botSpawner);
+    transformComponent.lock()->m_position = botSpawnerTransformComponent.lock()->m_position;
+    transformComponent.lock()->m_layerType = LayerType::PLAYER;
+    transformComponent.lock()->m_rotation = botSpawnerComponent.lock()->m_facing;
     transformComponent.lock()->m_scale = 1.0f;
-    for (const auto& entity : m_entities) {
-        std::weak_ptr<BotSpawnerComponent> botSpawnerComponent = g_gameServer->GetComponentManager().GetComponent<BotSpawnerComponent>(entity);
-        if (botSpawnerComponent.lock()->m_playerID == playerID) {
-            std::weak_ptr<TransformComponent> botSpawnerTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
-            transformComponent.lock()->m_position = botSpawnerTransformComponent.lock()->m_position;
-            transformComponent.lock()->m_layerType = LayerType::PLAYER;
-            transformComponent.lock()->m_rotation = botSpawnerComponent.lock()->m_facing;
-            break;
-        }
-    }
 
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().AddComponent<SpriteComponent>(character);
     std::weak_ptr<SpriteResource> charactersSpriteResource = g_gameServer->GetResourceManager().AddResource<SpriteResource>("characters.png", TEXTURES_DIR, true);
@@ -84,7 +89,6 @@ Entity SpawnerSystem::Spawn(PlayerID playerID) const
         spriteComponent.lock()->AddSprite("shoot", shootTextureCoords);
         glm::vec4 realoadTextureCoords = glm::vec4(130.0f, 1.0f, 42.0f, 43.0f);
         spriteComponent.lock()->AddSprite("reaload", realoadTextureCoords);
-        spriteComponent.lock()->m_spriteName = "stand";
         break;
     }
     case 2: {
@@ -96,13 +100,13 @@ Entity SpawnerSystem::Spawn(PlayerID playerID) const
         spriteComponent.lock()->AddSprite("shoot", shootTextureCoords);
         glm::vec4 realoadTextureCoords = glm::vec4(127.0f, 45.0f, 42.0f, 43.0f);
         spriteComponent.lock()->AddSprite("reaload", realoadTextureCoords);
-        spriteComponent.lock()->m_spriteName = "stand";
         break;
     }
     default: {
         break;
     }
     }
+    spriteComponent.lock()->m_spriteName = "stand";
 
     std::weak_ptr<LabelComponent> labelComponent = g_gameServer->GetComponentManager().AddComponent<LabelComponent>(character);
     std::string playerName = "Player ";
@@ -124,7 +128,6 @@ Entity SpawnerSystem::Spawn(PlayerID playerID) const
     }
 
     std::weak_ptr<ColliderComponent> colliderComponent = g_gameServer->GetComponentManager().AddComponent<ColliderComponent>(character);
-    const glm::uvec4 spriteTextureCoords = spriteComponent.lock()->GetSpriteTextureCoords();
     colliderComponent.lock()->m_size = glm::vec2(30.0f, 30.0f);
     colliderComponent.lock()->m_size *= transformComponent.lock()->m_scale;
     colliderComponent.lock()->m_shapeType = ColliderComponent::ShapeType::CIRCLE;
@@ -138,14 +141,14 @@ Entity SpawnerSystem::Spawn(PlayerID playerID) const
     rigidbodyComponent.lock()->UpdateBullet();
 
     std::weak_ptr<WeaponComponent> weaponComponent = g_gameServer->GetComponentManager().AddComponent<WeaponComponent>(character);
-    weaponComponent.lock()->m_damage = 20;
+    weaponComponent.lock()->m_damage = 20; // TODO: not put weapon to character. They should pick it from the floor
 
     std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().AddComponent<HealthComponent>(character);
-    healthComponent.lock()->m_health = 100;
+    healthComponent.lock()->m_health = botSpawnerComponent.lock()->m_health;
 
     std::weak_ptr<SightComponent> sightComponent = g_gameServer->GetComponentManager().AddComponent<SightComponent>(character);
-    sightComponent.lock()->m_angle = 90.0f;
-    sightComponent.lock()->m_distance = 100.0f;
+    sightComponent.lock()->m_angle = botSpawnerComponent.lock()->m_sightAngle;
+    sightComponent.lock()->m_distance = botSpawnerComponent.lock()->m_sightDistance;
 
     g_gameServer->GetComponentManager().AddComponent<BotComponent>(character);
 

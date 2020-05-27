@@ -4,8 +4,11 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 BotSpawnerComponent::BotSpawnerComponent()
-    : m_playerID(INVALID_PLAYER_ID)
-    , m_facing(0.0f)
+    : m_facing(0.0f)
+    , m_sightAngle(0.0f)
+    , m_sightDistance(0.0f)
+    , m_playerID(INVALID_PLAYER_ID)
+    , m_health(0)
 {
 }
 

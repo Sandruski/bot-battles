@@ -51,9 +51,24 @@
                          "value":0
                         }, 
                         {
+                         "name":"health",
+                         "type":"int",
+                         "value":100
+                        }, 
+                        {
                          "name":"player",
                          "type":"int",
                          "value":1
+                        }, 
+                        {
+                         "name":"sightAngle",
+                         "type":"float",
+                         "value":90
+                        }, 
+                        {
+                         "name":"sightDistance",
+                         "type":"float",
+                         "value":100
                         }],
                  "rotation":0,
                  "type":"BotSpawner",
@@ -74,9 +89,24 @@
                          "value":180
                         }, 
                         {
+                         "name":"health",
+                         "type":"int",
+                         "value":100
+                        }, 
+                        {
                          "name":"player",
                          "type":"int",
                          "value":0
+                        }, 
+                        {
+                         "name":"sightAngle",
+                         "type":"float",
+                         "value":90
+                        }, 
+                        {
+                         "name":"sightDistance",
+                         "type":"float",
+                         "value":100
                         }],
                  "rotation":0,
                  "type":"BotSpawner",
