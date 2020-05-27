@@ -182,7 +182,7 @@ void RendererSystem::OnSystemEntityRemoved(Entity /*entity*/) const
 }
 
 //----------------------------------------------------------------------------------------------------
-void RendererSystem::OnComponentMemberChanged(U32 /*dirtyState*/, Entity entity) const
+void RendererSystem::OnComponentMemberChanged(U32 dirtyState, Entity entity) const
 {
     std::vector<Entity>::const_iterator it = std::find(m_entities.begin(), m_entities.end(), entity);
     if (it == m_entities.end()) {
@@ -194,7 +194,6 @@ void RendererSystem::OnComponentMemberChanged(U32 /*dirtyState*/, Entity entity)
         return;
     }
 
-    /*
     const bool hasPosition = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION);
     const bool hasRotation = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_ROTATION);
     const bool hasScale = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_SCALE);
@@ -202,10 +201,13 @@ void RendererSystem::OnComponentMemberChanged(U32 /*dirtyState*/, Entity entity)
     const bool hasColor = dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_COLOR);
     const bool hasPct = dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_PCT);
     const bool hasIsVisible = dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_VISIBLE);
+    if (hasColor || hasPct) {
+        ILOG("a");
+    }
     if (!hasPosition && !hasRotation && !hasScale && !hasSpriteNameToTextureCoords && !hasColor && !hasPct && !hasIsVisible) {
         return;
     }
-    */
+
     const std::string textureFile = spriteComponent.lock()->m_spriteResource.lock()->GetFile();
     if (textureFile == "map.png") {
         RecalculateMapMesh();

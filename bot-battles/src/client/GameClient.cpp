@@ -141,10 +141,6 @@ bool GameClient::Init()
     if (!ret) {
         return ret;
     }
-    ret = m_clientComponent.m_replicationManager.AddObserver(rendererSystem);
-    if (!ret) {
-        return ret;
-    }
     std::weak_ptr<MovementSystemClient> movementSystemClient = m_systemManager->GetSystem<MovementSystemClient>();
     ret = movementSystemClient.lock()->AddObserver(rendererSystem);
     if (!ret) {
@@ -152,6 +148,10 @@ bool GameClient::Init()
     }
     std::weak_ptr<RemotePlayerMovementSystem> remotePlayerMovementSystem = m_systemManager->GetSystem<RemotePlayerMovementSystem>();
     ret = remotePlayerMovementSystem.lock()->AddObserver(rendererSystem);
+    if (!ret) {
+        return ret;
+    }
+    ret = m_clientComponent.m_replicationManager.AddObserver(rendererSystem);
     if (!ret) {
         return ret;
     }

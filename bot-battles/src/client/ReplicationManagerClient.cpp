@@ -31,7 +31,6 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream)
     LinkingContext& linkingContext = g_gameClient->GetLinkingContext();
 
     while (inputStream.GetRemainingBitCount() >= 8) {
-
         NetworkID networkID = INVALID_NETWORK_ID;
         inputStream.Read(networkID);
         bool isReplicated = false;

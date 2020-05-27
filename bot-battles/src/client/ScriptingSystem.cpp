@@ -10,6 +10,7 @@
 #include "LinkingContext.h"
 #include "RigidbodyComponent.h"
 #include "ScriptingComponent.h"
+#include "SpriteComponent.h"
 #include "State.h"
 #include "TransformComponent.h"
 #include "WallComponent.h"

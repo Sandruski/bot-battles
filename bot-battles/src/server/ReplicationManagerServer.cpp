@@ -90,19 +90,16 @@ void ReplicationManagerServer::Write(OutputMemoryStream& outputStream, Replicati
     outputStream.Write(frame);
 
     for (auto& pair : m_networkIDToReplicationCommand) {
-
         ReplicationCommand& replicationCommand = pair.second;
-        const bool isReplicated = replicationCommand.GetIsReplicated();
-        const bool wasReplicated = replicationCommand.GetWasReplicated();
-        if (!isReplicated && !wasReplicated) {
+        const bool hasReplicationAction = replicationCommand.m_replicationActionType != ReplicationActionType::NONE;
+        if (!hasReplicationAction) {
             continue;
         }
 
+        const bool isReplicated = replicationCommand.GetIsReplicated();
+        const bool wasReplicated = replicationCommand.GetWasReplicated();
         const bool hasDirtyState = replicationCommand.HasDirtyState();
-        const bool hasReplicationAction = replicationCommand.m_replicationActionType != ReplicationActionType::NONE;
-
-        if (hasDirtyState && hasReplicationAction) {
-
+        if ((!isReplicated && wasReplicated) || (isReplicated && !wasReplicated) || (isReplicated && hasDirtyState)) {
             NetworkID networkID = pair.first;
             outputStream.Write(networkID);
             outputStream.Write(isReplicated);

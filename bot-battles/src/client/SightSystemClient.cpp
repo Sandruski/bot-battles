@@ -80,14 +80,14 @@ void SightSystemClient::OnSeenNewEntity(Entity seenEntity) const
         std::weak_ptr<SightComponent> sightComponent = g_gameClient->GetComponentManager().GetComponent<SightComponent>(entity);
         sightComponent.lock()->m_seenEntities.emplace_back(seenEntity);
 
-        std::weak_ptr<SpriteComponent> spriteComponent = g_gameClient->GetComponentManager().GetComponent<SpriteComponent>(seenEntity);
-        if (!spriteComponent.expired()) {
-            spriteComponent.lock()->m_pct = 0.0f;
+        std::weak_ptr<SpriteComponent> seenSpriteComponent = g_gameClient->GetComponentManager().GetComponent<SpriteComponent>(seenEntity);
+        if (!seenSpriteComponent.expired()) {
+            seenSpriteComponent.lock()->m_pct = 0.0f;
 
             Event newComponentEvent;
             newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
             newComponentEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::SPRITE_PCT);
-            newComponentEvent.component.entity = entity;
+            newComponentEvent.component.entity = seenEntity;
             NotifyEvent(newComponentEvent);
         }
     }
@@ -109,15 +109,15 @@ void SightSystemClient::OnSeenLostEntity(Entity seenEntity) const
         std::vector<Entity>::const_iterator it = std::find(sightComponent.lock()->m_seenEntities.begin(), sightComponent.lock()->m_seenEntities.end(), seenEntity);
         sightComponent.lock()->m_seenEntities.erase(it);
 
-        std::weak_ptr<SpriteComponent> spriteComponent = g_gameClient->GetComponentManager().GetComponent<SpriteComponent>(seenEntity);
-        if (!spriteComponent.expired()) {
-            spriteComponent.lock()->m_color = Black;
-            spriteComponent.lock()->m_pct = 0.5f;
+        std::weak_ptr<SpriteComponent> seenSpriteComponent = g_gameClient->GetComponentManager().GetComponent<SpriteComponent>(seenEntity);
+        if (!seenSpriteComponent.expired()) {
+            seenSpriteComponent.lock()->m_color = Black;
+            seenSpriteComponent.lock()->m_pct = 0.5f;
 
             Event newComponentEvent;
             newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
             newComponentEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::SPRITE_COLOR) | static_cast<U32>(ComponentMemberType::SPRITE_PCT);
-            newComponentEvent.component.entity = entity;
+            newComponentEvent.component.entity = seenEntity;
             NotifyEvent(newComponentEvent);
         }
     }
