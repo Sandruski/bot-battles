@@ -1,5 +1,5 @@
-#ifndef __WEAPON_COMPONENT_H__
-#define __WEAPON_COMPONENT_H__
+#ifndef __WEAPON_SPAWNER_COMPONENT_H__
+#define __WEAPON_SPAWNER_COMPONENT_H__
 
 #include "Component.h"
 #ifdef _CLIENT
@@ -12,18 +12,18 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 // Entity Component
-struct WeaponComponent : public Component
+struct WeaponSpawnerComponent : public Component
 #ifdef _CLIENT
     ,
-                         public NetworkableReadObject
+                                public NetworkableReadObject
 #elif defined(_SERVER)
     ,
-                         public NetworkableWriteObject
+                                public NetworkableWriteObject
 #endif
 {
-    static ComponentType GetType() { return ComponentType::WEAPON; }
+    static ComponentType GetType() { return ComponentType::SPAWNER; }
 
-    WeaponComponent();
+    WeaponSpawnerComponent();
 
 #ifdef _CLIENT
     void Read(InputMemoryStream& inputStream, U32 dirtyState, U32 frame, ReplicationActionType replicationActionType, Entity entity) override;
@@ -32,23 +32,24 @@ struct WeaponComponent : public Component
 #endif
 
     // Networked
-    U32 m_damagePrimary;
-    U32 m_damageSecondary;
-    U32 m_ammoPrimary;
-    F32 m_rangePrimary;
-    F32 m_rangeSecondary;
-    F32 m_cooldownPrimary;
-    F32 m_cooldownSecondary;
-    bool m_hasPrimary;
+    U32 m_weapon;
 
     // Local
     /// Client & Server
-    glm::vec2 m_origin;
-    glm::vec2 m_destination;
+    U32 m_damageWeapon1;
+    U32 m_damageWeapon2;
+    U32 m_ammoWeapon1;
+    U32 m_ammoWeapon2;
+    F32 m_rangeWeapon1;
+    F32 m_rangeWeapon2;
+    F32 m_cooldownWeapon1;
+    F32 m_cooldownWeapon2;
+    bool m_spawnWeapon1;
+    bool m_spawnWeapon2;
+    F32 m_timeout;
 
     /// Server
-    MyTimer m_timerPrimary;
-    MyTimer m_timerSecondary;
+    MyTimer m_timer;
 };
 }
 

@@ -37,6 +37,10 @@ struct BotSpawnerComponent : public Component
     F32 m_sightDistance;
     PlayerID m_playerID;
     U32 m_health;
+
+    U32 m_damageWeapon;
+    F32 m_rangeWeapon;
+    F32 m_cooldownWeapon;
 };
 }
 

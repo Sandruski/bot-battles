@@ -47,7 +47,7 @@ enum class SystemType : U16 {
     //
     SIGHT,
     MOVEMENT,
-    AMMO,
+    PICK_UP,
     WEAPON,
     HEALTH,
     //

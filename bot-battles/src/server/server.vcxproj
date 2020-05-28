@@ -201,7 +201,7 @@
     <ClCompile Include="..\dependencies\source\imgui\imgui_stdlib.cpp" />
     <ClCompile Include="..\dependencies\source\imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\dependencies\source\stb\stb_image.cpp" />
-    <ClCompile Include="AmmoSystem.cpp" />
+    <ClCompile Include="PickUpSystem.cpp" />
     <ClCompile Include="ClientProxy.cpp" />
     <ClCompile Include="CollisionSystemServer.cpp" />
     <ClCompile Include="ConfigServer.cpp" />
@@ -238,7 +238,7 @@
       <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pchServer.h</ForcedIncludeFiles>
     </ClCompile>
     <ClCompile Include="PlayStateServer.cpp" />
-    <ClInclude Include="AmmoSystem.h" />
+    <ClInclude Include="PickUpSystem.h" />
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="PlayStateServer.h" />
     <ClCompile Include="ReplicationResultManager.cpp" />

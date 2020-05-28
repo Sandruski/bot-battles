@@ -1,6 +1,5 @@
 #include "GameServer.h"
 
-#include "AmmoSystem.h"
 #include "CollisionSystemServer.h"
 #include "ComponentManager.h"
 #include "ConfigServer.h"
@@ -13,6 +12,7 @@
 #include "MovementSystemServer.h"
 #include "OutputSystemServer.h"
 #include "PhysicsComponent.h"
+#include "PickUpSystem.h"
 #include "PlayerComponent.h"
 #include "RendererSystem.h"
 #include "ScoreboardStateServer.h"
@@ -59,7 +59,7 @@ bool GameServer::Init()
     if (!ret) {
         return ret;
     }
-    ret = m_systemManager->RegisterSystem<AmmoSystem>();
+    ret = m_systemManager->RegisterSystem<PickUpSystem>();
     if (!ret) {
         return ret;
     }
@@ -152,8 +152,8 @@ bool GameServer::Init()
     if (!ret) {
         return ret;
     }
-    std::weak_ptr<AmmoSystem> ammoSystem = m_systemManager->GetSystem<AmmoSystem>();
-    ret = ammoSystem.lock()->AddObserver(serverSystem);
+    std::weak_ptr<PickUpSystem> pickUpSystem = m_systemManager->GetSystem<PickUpSystem>();
+    ret = pickUpSystem.lock()->AddObserver(serverSystem);
     if (!ret) {
         return ret;
     }
@@ -163,10 +163,13 @@ bool GameServer::Init()
     if (!ret) {
         return ret;
     }
+    /*
     ret = ammoSystem.lock()->AddObserver(rendererSystem);
     if (!ret) {
         return ret;
     }
+    */
+    // TODO: hide
 #endif
 
     return ret;

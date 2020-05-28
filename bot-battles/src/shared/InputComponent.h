@@ -30,8 +30,8 @@ struct InputComponent : public Component,
     F32 GetLinearVelocityY() const;
     void SetAngularVelocity(F32 angularVelocity);
     F32 GetAngularVelocity() const;
-    void Shoot();
-    void PickUpAmmo();
+    void ShootPrimaryWeapon();
+    void ShootSecondaryWeapon();
 
     F32 m_maxLinearVelocity; // pixels
     F32 m_maxAngularVelocity; // degrees

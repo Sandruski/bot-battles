@@ -1,29 +1,27 @@
-#ifndef __HEALTH_SYSTEM_H__
-#define __HEALTH_SYSTEM_H__
+#ifndef __PICK_UP_SYSTEM_H__
+#define __PICK_UP_SYSTEM_H__
 
 #include "System.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class HealthSystem : public System, public Subject, public Observer {
+class PickUpSystem : public System, public Subject, public Observer {
 public:
     static SystemType GetType()
     {
-        return SystemType::HEALTH;
+        return SystemType::PICK_UP;
     }
 
 public:
-    HealthSystem();
+    PickUpSystem();
 
-    bool PreUpdate() override;
     bool Update() override;
 
     void OnNotify(const Event& event) override;
 
 private:
     void OnCollisionEnter(Entity entityA, Entity entityB) const;
-    void OnWeaponHit(Entity entity, U32 damage) const;
 };
 }
 

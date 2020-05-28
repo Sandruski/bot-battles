@@ -213,14 +213,14 @@
     <ClCompile Include="ServerSystem.cpp">
       <Filter>Source Files\Systems\Unique</Filter>
     </ClCompile>
-    <ClCompile Include="AmmoSystem.cpp">
-      <Filter>Source Files\Systems\Unique</Filter>
-    </ClCompile>
     <ClCompile Include="SpawnerSystem.cpp">
       <Filter>Source Files\Systems\Unique</Filter>
     </ClCompile>
     <ClCompile Include="SpriteComponentServer.cpp">
       <Filter>Source Files\Components\Entity Components</Filter>
+    </ClCompile>
+    <ClCompile Include="PickUpSystem.cpp">
+      <Filter>Source Files\Systems\Unique</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -302,10 +302,10 @@
     <ClInclude Include="ServerSystem.h">
       <Filter>Header Files\Systems\Unique</Filter>
     </ClInclude>
-    <ClInclude Include="AmmoSystem.h">
+    <ClInclude Include="SpawnerSystem.h">
       <Filter>Header Files\Systems\Unique</Filter>
     </ClInclude>
-    <ClInclude Include="SpawnerSystem.h">
+    <ClInclude Include="PickUpSystem.h">
       <Filter>Header Files\Systems\Unique</Filter>
     </ClInclude>
   </ItemGroup>

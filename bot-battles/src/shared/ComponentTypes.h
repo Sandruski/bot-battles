@@ -11,7 +11,7 @@ enum class ComponentType : U16 {
     RIGIDBODY,
     HEALTH,
     BOT_SPAWNER,
-    AMMO_SPAWNER,
+    SPAWNER, // TODO: you can only be a spawner at once
     BOT,
     WALL,
     SIGHT,

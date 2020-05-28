@@ -46,6 +46,16 @@
                  "name":"bot1",
                  "properties":[
                         {
+                         "name":"cooldownWeapon",
+                         "type":"float",
+                         "value":5
+                        }, 
+                        {
+                         "name":"damageWeapon",
+                         "type":"int",
+                         "value":1
+                        }, 
+                        {
                          "name":"facing",
                          "type":"float",
                          "value":0
@@ -59,6 +69,11 @@
                          "name":"player",
                          "type":"int",
                          "value":1
+                        }, 
+                        {
+                         "name":"rangeWeapon",
+                         "type":"float",
+                         "value":10
                         }, 
                         {
                          "name":"sightAngle",
@@ -84,6 +99,16 @@
                  "name":"bot0",
                  "properties":[
                         {
+                         "name":"cooldownWeapon",
+                         "type":"float",
+                         "value":5
+                        }, 
+                        {
+                         "name":"damageWeapon",
+                         "type":"int",
+                         "value":1
+                        }, 
+                        {
                          "name":"facing",
                          "type":"float",
                          "value":180
@@ -97,6 +122,11 @@
                          "name":"player",
                          "type":"int",
                          "value":0
+                        }, 
+                        {
+                         "name":"rangeWeapon",
+                         "type":"float",
+                         "value":10
                         }, 
                         {
                          "name":"sightAngle",
@@ -123,98 +153,128 @@
         }, 
         {
          "draworder":"topdown",
-         "id":8,
-         "name":"ammoSpawner",
+         "id":9,
+         "name":"healthSpawner",
          "objects":[
                 {
-                 "gid":262,
+                 "gid":359,
                  "height":64,
-                 "id":19,
-                 "name":"multipleAmmo",
+                 "id":33,
+                 "name":"healthSpawner1",
                  "properties":[
                         {
-                         "name":"ammo",
+                         "name":"health",
                          "type":"int",
-                         "value":20
+                         "value":50
+                        }, 
+                        {
+                         "name":"spawnSeconds",
+                         "type":"float",
+                         "value":30
                         }],
                  "rotation":0,
-                 "type":"AmmoSpawner",
+                 "type":"HealthSpawner",
                  "visible":true,
                  "width":64,
                  "x":512,
-                 "y":320
-                }, 
+                 "y":384
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":8,
+         "name":"weaponSpawner",
+         "objects":[
                 {
-                 "gid":262,
+                 "gid":368,
                  "height":64,
-                 "id":20,
-                 "name":"multipleAmmo",
+                 "id":27,
+                 "name":"weaponSpawner1",
                  "properties":[
                         {
-                         "name":"ammo",
+                         "name":"ammoWeapon1",
                          "type":"int",
-                         "value":20
+                         "value":10
+                        }, 
+                        {
+                         "name":"cooldownWeapon1",
+                         "type":"float",
+                         "value":5
+                        }, 
+                        {
+                         "name":"damageWeapon1",
+                         "type":"int",
+                         "value":10
+                        }, 
+                        {
+                         "name":"rangeWeapon1",
+                         "type":"float",
+                         "value":50
+                        }, 
+                        {
+                         "name":"spawnSeconds",
+                         "type":"float",
+                         "value":10
+                        }, 
+                        {
+                         "name":"spawnWeapon1",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
-                 "type":"AmmoSpawner",
+                 "type":"WeaponSpawner",
                  "visible":true,
                  "width":64,
                  "x":192,
                  "y":384
                 }, 
                 {
-                 "gid":263,
+                 "gid":368,
                  "height":64,
-                 "id":21,
-                 "name":"singleAmmo",
+                 "id":32,
+                 "name":"weaponSpawner2",
                  "properties":[
                         {
-                         "name":"ammo",
+                         "name":"ammoWeapon2",
                          "type":"int",
-                         "value":10
-                        }],
-                 "rotation":0,
-                 "type":"AmmoSpawner",
-                 "visible":true,
-                 "width":64,
-                 "x":704,
-                 "y":256
-                }, 
-                {
-                 "gid":263,
-                 "height":64,
-                 "id":24,
-                 "name":"singleAmmo",
-                 "properties":[
+                         "value":5
+                        }, 
                         {
-                         "name":"ammo",
-                         "type":"int",
-                         "value":10
-                        }],
-                 "rotation":0,
-                 "type":"AmmoSpawner",
-                 "visible":true,
-                 "width":64,
-                 "x":256,
-                 "y":128
-                }, 
-                {
-                 "gid":263,
-                 "height":64,
-                 "id":26,
-                 "name":"singleAmmo",
-                 "properties":[
+                         "name":"cooldownWeapon2",
+                         "type":"float",
+                         "value":20
+                        }, 
                         {
-                         "name":"ammo",
+                         "name":"damageWeapon2",
                          "type":"int",
+                         "value":20
+                        }, 
+                        {
+                         "name":"rangeWeapon2",
+                         "type":"float",
+                         "value":150
+                        }, 
+                        {
+                         "name":"spawnSeconds",
+                         "type":"float",
                          "value":10
+                        }, 
+                        {
+                         "name":"spawnWeapon2",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
-                 "type":"AmmoSpawner",
+                 "type":"WeaponSpawner",
                  "visible":true,
                  "width":64,
-                 "x":576,
-                 "y":128
+                 "x":448,
+                 "y":192
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -222,8 +282,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":9,
- "nextobjectid":27,
+ "nextlayerid":10,
+ "nextobjectid":34,
  "orientation":"orthogonal",
  "renderorder":"left-down",
  "tiledversion":"1.3.4",

@@ -141,7 +141,9 @@ Entity SpawnerSystem::Spawn(PlayerID playerID) const
     rigidbodyComponent.lock()->UpdateBullet();
 
     std::weak_ptr<WeaponComponent> weaponComponent = g_gameServer->GetComponentManager().AddComponent<WeaponComponent>(character);
-    weaponComponent.lock()->m_damage = 20; // TODO: not put weapon to character. They should pick it from the floor
+    weaponComponent.lock()->m_damageSecondary = botSpawnerComponent.lock()->m_damageWeapon;
+    weaponComponent.lock()->m_rangeSecondary = botSpawnerComponent.lock()->m_rangeWeapon;
+    weaponComponent.lock()->m_cooldownSecondary = botSpawnerComponent.lock()->m_cooldownWeapon;
 
     std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().AddComponent<HealthComponent>(character);
     healthComponent.lock()->m_health = botSpawnerComponent.lock()->m_health;

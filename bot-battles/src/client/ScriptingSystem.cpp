@@ -1,6 +1,5 @@
 #include "ScriptingSystem.h"
 
-#include "AmmoSpawnerComponent.h"
 #include "BotComponent.h"
 #include "ClientComponent.h"
 #include "ComponentManager.h"
@@ -264,15 +263,15 @@ void ScriptingSystem::OnSeenNewEntity(Entity entity) const
         }
         return;
     }
-    std::weak_ptr<AmmoSpawnerComponent> ammoSpawnerComponent = g_gameClient->GetComponentManager().GetComponent<AmmoSpawnerComponent>(entity);
-    if (!ammoSpawnerComponent.expired()) {
-        try {
-            scriptingComponent.m_mainModule.attr("onSeenNewAmmo")(&inputComponent);
-            scriptingComponent.m_mainModule.attr("log")();
-        } catch (const std::runtime_error& /*re*/) {
-        }
-        return;
-    }
+    //std::weak_ptr<AmmoSpawnerComponent> ammoSpawnerComponent = g_gameClient->GetComponentManager().GetComponent<AmmoSpawnerComponent>(entity);
+    //if (!ammoSpawnerComponent.expired()) {
+    //    try {
+    //        scriptingComponent.m_mainModule.attr("onSeenNewAmmo")(&inputComponent);
+    //        scriptingComponent.m_mainModule.attr("log")();
+    //    } catch (const std::runtime_error& /*re*/) {
+    //    }
+    //    return;
+    //}
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -296,13 +295,13 @@ void ScriptingSystem::OnSeenLostEntity(Entity entity) const
         } catch (const std::runtime_error& /*re*/) {
         }
     }
-    std::weak_ptr<AmmoSpawnerComponent> ammoSpawnerComponent = g_gameClient->GetComponentManager().GetComponent<AmmoSpawnerComponent>(entity);
-    if (!ammoSpawnerComponent.expired()) {
-        try {
-            scriptingComponent.m_mainModule.attr("onSeenLostAmmo")(&inputComponent);
-            scriptingComponent.m_mainModule.attr("log")();
-        } catch (const std::runtime_error& /*re*/) {
-        }
-    }
+    //std::weak_ptr<AmmoSpawnerComponent> ammoSpawnerComponent = g_gameClient->GetComponentManager().GetComponent<AmmoSpawnerComponent>(entity);
+    //if (!ammoSpawnerComponent.expired()) {
+    //    try {
+    //        scriptingComponent.m_mainModule.attr("onSeenLostAmmo")(&inputComponent);
+    //        scriptingComponent.m_mainModule.attr("log")();
+    //    } catch (const std::runtime_error& /*re*/) {
+    //    }
+    //}
 }
 }

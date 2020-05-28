@@ -28,6 +28,8 @@ WeaponSystemServer::WeaponSystemServer()
     m_signature |= 1 << static_cast<U16>(ComponentType::PLAYER);
 }
 
+// TODO: in init start timers:) or whenever you take a new weapon
+
 //----------------------------------------------------------------------------------------------------
 bool WeaponSystemServer::PreUpdate()
 {
@@ -63,11 +65,30 @@ bool WeaponSystemServer::Update()
             const Input& input = clientProxy.lock()->m_inputBuffer.Get(i);
             U32 dirtyState = input.GetDirtyState();
 
-            const bool hasShoot = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_SHOOT);
-            if (hasShoot) {
-                bool isShoot = weaponComponent.lock()->Shoot();
-                if (!isShoot) {
-                    continue;
+            const bool hasShootPrimaryWeapon = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_SHOOT_PRIMARY_WEAPON);
+            const bool hasShootSecondaryWeapon = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_SHOOT_SECONDARY_WEAPON);
+            if (hasShootPrimaryWeapon || hasShootSecondaryWeapon) {
+                U32 weaponDirtyState = 0;
+
+                // TODO: put these conditions on client too for local prediction
+                if (hasShootPrimaryWeapon) {
+                    if (!weaponComponent.lock()->m_hasPrimary) {
+                        continue;
+                    }
+                    if (weaponComponent.lock()->m_timerPrimary.ReadSec() < weaponComponent.lock()->m_cooldownPrimary) {
+                        continue;
+                    }
+                    if (weaponComponent.lock()->m_ammoPrimary == 0) {
+                        continue;
+                    }
+                    weaponComponent.lock()->m_timerPrimary.Start();
+                    weaponComponent.lock()->m_ammoPrimary -= 1;
+                    weaponDirtyState |= static_cast<U32>(ComponentMemberType::WEAPON_AMMO_PRIMARY);
+                } else if (hasShootSecondaryWeapon) {
+                    if (weaponComponent.lock()->m_timerSecondary.ReadSec() < weaponComponent.lock()->m_cooldownSecondary) {
+                        continue;
+                    }
+                    weaponComponent.lock()->m_timerSecondary.Start();
                 }
 
                 if (serverComponent.m_isServerRewind) {
@@ -86,7 +107,6 @@ bool WeaponSystemServer::Update()
                 }
                 Transform& transform = isFound ? transformComponent.lock()->m_inputTransformBuffer.Get(index) : transformComponent.lock()->m_inputTransformBuffer.GetLast();
                 rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(transform.m_position.x), PIXELS_TO_METERS(transform.m_position.y)), glm::radians(transform.m_rotation));
-                ILOG("SERVER LOCAL REWIND POS %f %f ROT %f", transform.m_position.x, transform.m_position.y, transform.m_rotation);
 
                 glm::vec2 position = transform.m_position;
                 F32 x = std::cos(glm::radians(transform.m_rotation));
@@ -94,11 +114,8 @@ bool WeaponSystemServer::Update()
                 glm::vec2 rotation = glm::vec2(x, y);
 
                 weaponComponent.lock()->m_origin = position;
-                WindowComponent& windowComponent = g_gameServer->GetWindowComponent();
-                F32 maxLength = static_cast<F32>(std::max(windowComponent.m_currentResolution.x, windowComponent.m_currentResolution.y));
+                F32 maxLength = hasShootPrimaryWeapon ? weaponComponent.lock()->m_rangePrimary : weaponComponent.lock()->m_rangeSecondary;
                 weaponComponent.lock()->m_destination = position + rotation * maxLength;
-                weaponComponent.lock()->m_hasHit = false;
-                weaponComponent.lock()->m_ammo -= 1;
 
                 PhysicsComponent& physicsComponent = g_gameServer->GetPhysicsComponent();
                 PhysicsComponent::RaycastHit hitInfo;
@@ -112,22 +129,22 @@ bool WeaponSystemServer::Update()
                     if (hitInfo.m_entity != entity) {
                         std::weak_ptr<HealthComponent> hitEntityHealthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(hitInfo.m_entity);
                         if (!hitEntityHealthComponent.expired()) {
-                            weaponComponent.lock()->m_hasHit = true;
-
                             Event newEvent;
                             newEvent.eventType = EventType::WEAPON_HIT;
                             newEvent.weapon.entity = entity;
-                            newEvent.weapon.damage = weaponComponent.lock()->m_damage;
+                            newEvent.weapon.damage = hasShootPrimaryWeapon ? weaponComponent.lock()->m_damagePrimary : weaponComponent.lock()->m_damageSecondary;
                             PushEvent(newEvent);
                         }
                     }
                 }
 
-                Event newEvent;
-                newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
-                newEvent.component.entity = entity;
-                newEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::WEAPON_AMMO) | static_cast<U32>(ComponentMemberType::WEAPON_ORIGIN) | static_cast<U32>(ComponentMemberType::WEAPON_DESTINATION) | static_cast<U32>(ComponentMemberType::WEAPON_HIT);
-                NotifyEvent(newEvent);
+                if (weaponDirtyState > 0) {
+                    Event newEvent;
+                    newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
+                    newEvent.component.entity = entity;
+                    newEvent.component.dirtyState = weaponDirtyState;
+                    NotifyEvent(newEvent);
+                }
 
                 rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(transformComponent.lock()->m_position.x), PIXELS_TO_METERS(transformComponent.lock()->m_position.y)), glm::radians(transformComponent.lock()->m_rotation));
 

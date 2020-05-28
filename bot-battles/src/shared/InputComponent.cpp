@@ -44,8 +44,8 @@ void InputComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U32 /*
 //----------------------------------------------------------------------------------------------------
 void InputComponent::Reset()
 {
-    m_dirtyState &= ~static_cast<U32>(InputComponentMemberType::INPUT_SHOOT);
-    m_dirtyState &= ~static_cast<U32>(InputComponentMemberType::INPUT_PICK_UP_AMMO);
+    m_dirtyState &= ~static_cast<U32>(InputComponentMemberType::INPUT_SHOOT_PRIMARY_WEAPON);
+    m_dirtyState &= ~static_cast<U32>(InputComponentMemberType::INPUT_SHOOT_SECONDARY_WEAPON);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -106,14 +106,14 @@ F32 InputComponent::GetAngularVelocity() const
 }
 
 //----------------------------------------------------------------------------------------------------
-void InputComponent::Shoot()
+void InputComponent::ShootPrimaryWeapon()
 {
-    m_dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_SHOOT);
+    m_dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_SHOOT_PRIMARY_WEAPON);
 }
 
 //----------------------------------------------------------------------------------------------------
-void InputComponent::PickUpAmmo()
+void InputComponent::ShootSecondaryWeapon()
 {
-    m_dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_PICK_UP_AMMO);
+    m_dirtyState |= static_cast<U32>(InputComponentMemberType::INPUT_SHOOT_SECONDARY_WEAPON);
 }
 }

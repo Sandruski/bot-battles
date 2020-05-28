@@ -411,10 +411,10 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)SightSystem.h">
       <Filter>Header Files\Systems\Shared</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)AmmoSpawnerComponent.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)BotSpawnerComponent.h">
       <Filter>Header Files\Components\Entity Components</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)BotSpawnerComponent.h">
+    <ClInclude Include="C:\Projects\bot-battles\bot-battles\src\shared\WeaponSpawnerComponent.h">
       <Filter>Header Files\Components\Entity Components</Filter>
     </ClInclude>
   </ItemGroup>
@@ -620,10 +620,10 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)CollisionSystem.cpp">
       <Filter>Source Files\Systems\Shared</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)AmmoSpawnerComponent.cpp">
+    <ClCompile Include="$(MSBuildThisFileDirectory)BotSpawnerComponent.cpp">
       <Filter>Source Files\Components\Entity Components</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)BotSpawnerComponent.cpp">
+    <ClCompile Include="C:\Projects\bot-battles\bot-battles\src\shared\WeaponSpawnerComponent.cpp">
       <Filter>Source Files\Components\Entity Components</Filter>
     </ClCompile>
   </ItemGroup>

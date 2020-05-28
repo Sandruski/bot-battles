@@ -1,6 +1,5 @@
 #include "Game.h"
 
-#include "AmmoSpawnerComponent.h"
 #include "BotComponent.h"
 #include "BotSpawnerComponent.h"
 #include "ColliderComponent.h"
@@ -19,6 +18,7 @@
 #include "TransformComponent.h"
 #include "WallComponent.h"
 #include "WeaponComponent.h"
+#include "WeaponSpawnerComponent.h"
 #ifdef _DRAW
 #include "DisplayPanel.h"
 #include "GamePanel.h"
@@ -133,7 +133,7 @@ bool Game::Init()
     if (!ret) {
         return ret;
     }
-    ret = m_componentManager->RegisterComponent<AmmoSpawnerComponent>();
+    ret = m_componentManager->RegisterComponent<WeaponSpawnerComponent>();
     if (!ret) {
         return ret;
     }

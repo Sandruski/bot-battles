@@ -70,7 +70,7 @@ void HealthSystem::OnNotify(const Event& event)
     switch (event.eventType) {
 
     case EventType::COLLISION_ENTER: {
-        OnCollisionEnter(event.collision.entityA, event.collision.entityB, event.collision.normal);
+        OnCollisionEnter(event.collision.entityA, event.collision.entityB);
         break;
     }
 
@@ -86,7 +86,7 @@ void HealthSystem::OnNotify(const Event& event)
 }
 
 //----------------------------------------------------------------------------------------------------
-void HealthSystem::OnCollisionEnter(Entity entityA, Entity entityB, glm::vec2 /*normal*/) const
+void HealthSystem::OnCollisionEnter(Entity entityA, Entity entityB) const
 {
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     PlayerID playerIDA = serverComponent.GetPlayerID(entityA);

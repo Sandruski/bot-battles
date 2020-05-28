@@ -1,6 +1,5 @@
 #include "MapImporter.h"
 
-#include "AmmoSpawnerComponent.h"
 #include "BotSpawnerComponent.h"
 #include "ColliderComponent.h"
 #include "ComponentManager.h"
@@ -15,6 +14,7 @@
 #include "SpriteResource.h"
 #include "TransformComponent.h"
 #include "WallComponent.h"
+#include "WeaponSpawnerComponent.h"
 #include "WindowComponent.h"
 
 namespace sand {
@@ -204,16 +204,45 @@ void MapImporter::Create(const Tilemap& tilemap) const
                         botSpawnerComponent.lock()->m_playerID = property.m_value.intValue;
                     } else if (property.m_name == "health") {
                         botSpawnerComponent.lock()->m_health = property.m_value.intValue;
+                    } else if (property.m_name == "damageWeapon") {
+                        botSpawnerComponent.lock()->m_damageWeapon = property.m_value.intValue;
+                    } else if (property.m_name == "rangeWeapon") {
+                        botSpawnerComponent.lock()->m_rangeWeapon = property.m_value.floatValue;
+                    } else if (property.m_name == "cooldownWeapon") {
+                        botSpawnerComponent.lock()->m_cooldownWeapon = property.m_value.floatValue;
                     }
                 }
             }
 
-            // AmmoSpawner
-            if (object.m_type == "AmmoSpawner") {
+            // WeaponSpawner
+            if (object.m_type == "WeaponSpawner") {
                 g_game->GetLinkingContext().AddEntity(entity);
-
-                std::weak_ptr<AmmoSpawnerComponent> ammoSpawnerComponent = g_game->GetComponentManager().AddComponent<AmmoSpawnerComponent>(entity);
-                ammoSpawnerComponent.lock()->m_ammo = object.m_properties.front().m_value.intValue;
+                std::weak_ptr<WeaponSpawnerComponent> weaponSpawnerComponent = g_game->GetComponentManager().AddComponent<WeaponSpawnerComponent>(entity);
+                for (const auto& property : object.m_properties) {
+                    if (property.m_name == "damageWeapon1") {
+                        weaponSpawnerComponent.lock()->m_damageWeapon1 = property.m_value.intValue;
+                    } else if (property.m_name == "damageWeapon2") {
+                        weaponSpawnerComponent.lock()->m_damageWeapon2 = property.m_value.intValue;
+                    } else if (property.m_name == "ammoWeapon1") {
+                        weaponSpawnerComponent.lock()->m_ammoWeapon1 = property.m_value.intValue;
+                    } else if (property.m_name == "ammoWeapon2") {
+                        weaponSpawnerComponent.lock()->m_ammoWeapon2 = property.m_value.intValue;
+                    } else if (property.m_name == "rangeWeapon1") {
+                        weaponSpawnerComponent.lock()->m_rangeWeapon1 = property.m_value.floatValue;
+                    } else if (property.m_name == "rangeWeapon2") {
+                        weaponSpawnerComponent.lock()->m_rangeWeapon2 = property.m_value.floatValue;
+                    } else if (property.m_name == "cooldownWeapon1") {
+                        weaponSpawnerComponent.lock()->m_cooldownWeapon1 = property.m_value.floatValue;
+                    } else if (property.m_name == "cooldownWeapon2") {
+                        weaponSpawnerComponent.lock()->m_cooldownWeapon2 = property.m_value.floatValue;
+                    } else if (property.m_name == "spawnWeapon1") {
+                        weaponSpawnerComponent.lock()->m_spawnWeapon1 = property.m_value.boolValue;
+                    } else if (property.m_name == "spawnWeapon2") {
+                        weaponSpawnerComponent.lock()->m_spawnWeapon2 = property.m_value.boolValue;
+                    } else if (property.m_name == "spawnSeconds") {
+                        weaponSpawnerComponent.lock()->m_timeout = property.m_value.floatValue;
+                    }
+                }
 
                 // Collider
                 std::weak_ptr<ColliderComponent> colliderComponent = g_game->GetComponentManager().AddComponent<ColliderComponent>(entity);

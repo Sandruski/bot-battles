@@ -59,17 +59,15 @@ bool WeaponSystemClient::Update()
             const Input& input = clientComponent.m_inputBuffer.GetLast();
             U32 dirtyState = input.GetDirtyState();
 
-            const bool hasShoot = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_SHOOT);
-            if (hasShoot) {
+            const bool hasShootPrimaryWeapon = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_SHOOT_PRIMARY_WEAPON);
+            const bool hasShootSecondaryWeapon = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_SHOOT_SECONDARY_WEAPON);
+            if (hasShootPrimaryWeapon || hasShootSecondaryWeapon) {
                 glm::vec2 position = transformComponent.lock()->m_position;
                 glm::vec2 rotation = transformComponent.lock()->GetDirection();
 
                 weaponComponent.lock()->m_origin = position;
-                ILOG("Origin: %f %f Rotation: %f", position.x, position.y, transformComponent.lock()->m_rotation);
-                WindowComponent& windowComponent = g_gameClient->GetWindowComponent();
-                F32 maxLength = static_cast<F32>(std::max(windowComponent.m_currentResolution.x, windowComponent.m_currentResolution.y));
+                F32 maxLength = hasShootPrimaryWeapon ? weaponComponent.lock()->m_rangePrimary : weaponComponent.lock()->m_rangeSecondary;
                 weaponComponent.lock()->m_destination = position + rotation * maxLength;
-                weaponComponent.lock()->m_hasHit = false;
 
                 PhysicsComponent& physicsComponent = g_gameClient->GetPhysicsComponent();
                 PhysicsComponent::RaycastHit hitInfo;
@@ -78,15 +76,11 @@ bool WeaponSystemClient::Update()
                     std::weak_ptr<TransformComponent> hitEntityTransformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(hitInfo.m_entity);
                     if (!hitEntityTransformComponent.expired()) {
                         weaponComponent.lock()->m_destination = hitInfo.m_point;
-                        ILOG("CLIENT POS %f %f ROT %f", hitEntityTransformComponent.lock()->m_position.x, hitEntityTransformComponent.lock()->m_position.y, hitEntityTransformComponent.lock()->m_rotation);
                     }
-
-                    ILOG("Input %u", input.GetFrame());
 
                     std::weak_ptr<HealthComponent> hitEntityHealthComponent = g_gameClient->GetComponentManager().GetComponent<HealthComponent>(hitInfo.m_entity);
                     if (!hitEntityHealthComponent.expired()) {
-                        weaponComponent.lock()->m_hasHit = true;
-                        ILOG("HAS HIT CLIENT");
+                        // TODO: spawn blood effect
                     }
                 }
             }

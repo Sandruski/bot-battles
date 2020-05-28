@@ -20,6 +20,7 @@
 #include <array>
 #include <bitset>
 #include <deque>
+#include <filesystem>
 #include <functional>
 #include <memory>
 #include <queue>
@@ -27,8 +28,6 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
-
-#include <filesystem>
 
 // SDL
 #include <SDL.h>

@@ -6,11 +6,18 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 WeaponComponent::WeaponComponent()
-    : m_damage(0)
-    , m_ammo(0)
+    : m_damagePrimary(0)
+    , m_damageSecondary(0)
+    , m_ammoPrimary(0)
+    , m_rangePrimary(0.0f)
+    , m_rangeSecondary(0.0f)
+    , m_cooldownPrimary(0.0f)
+    , m_cooldownSecondary(0.0f)
+    , m_hasPrimary(false)
     , m_origin(0.0f, 0.0f)
     , m_destination(0.0f, 0.0f)
-    , m_hasHit(false)
+    , m_timerPrimary()
+    , m_timerSecondary()
 {
 }
 
@@ -18,20 +25,26 @@ WeaponComponent::WeaponComponent()
 //----------------------------------------------------------------------------------------------------
 void WeaponComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U32 /*frame*/, ReplicationActionType /*replicationActionType*/, Entity /*entity*/)
 {
-    if (dirtyState & static_cast<U32>(ComponentMemberType::WEAPON_DAMAGE)) {
-        inputStream.Read(m_damage);
+    if (dirtyState & static_cast<U32>(ComponentMemberType::WEAPON_DAMAGE_PRIMARY)) {
+        inputStream.Read(m_damagePrimary);
     }
-    if (dirtyState & static_cast<U32>(ComponentMemberType::WEAPON_AMMO)) {
-        inputStream.Read(m_ammo);
+    if (dirtyState & static_cast<U32>(ComponentMemberType::WEAPON_DAMAGE_SECONDARY)) {
+        inputStream.Read(m_damageSecondary);
     }
-    if (dirtyState & static_cast<U32>(ComponentMemberType::WEAPON_ORIGIN)) {
-        inputStream.Read(m_origin);
+    if (dirtyState & static_cast<U32>(ComponentMemberType::WEAPON_AMMO_PRIMARY)) {
+        inputStream.Read(m_ammoPrimary);
     }
-    if (dirtyState & static_cast<U32>(ComponentMemberType::WEAPON_DESTINATION)) {
-        inputStream.Read(m_destination);
+    if (dirtyState & static_cast<U32>(ComponentMemberType::WEAPON_RANGE_PRIMARY)) {
+        inputStream.Read(m_rangePrimary);
     }
-    if (dirtyState & static_cast<U32>(ComponentMemberType::WEAPON_HIT)) {
-        inputStream.Read(m_hasHit);
+    if (dirtyState & static_cast<U32>(ComponentMemberType::WEAPON_RANGE_SECONDARY)) {
+        inputStream.Read(m_rangeSecondary);
+    }
+    if (dirtyState & static_cast<U32>(ComponentMemberType::WEAPON_COOLDOWN_PRIMARY)) {
+        inputStream.Read(m_cooldownPrimary);
+    }
+    if (dirtyState & static_cast<U32>(ComponentMemberType::WEAPON_COOLDOWN_SECONDARY)) {
+        inputStream.Read(m_cooldownSecondary);
     }
 }
 #elif defined(_SERVER)
@@ -40,47 +53,36 @@ U32 WeaponComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) con
 {
     U32 writtenState = 0;
 
-    if (dirtyState & static_cast<U32>(ComponentMemberType::WEAPON_DAMAGE)) {
-        outputStream.Write(m_damage);
-        writtenState |= static_cast<U32>(ComponentMemberType::WEAPON_DAMAGE);
+    if (dirtyState & static_cast<U32>(ComponentMemberType::WEAPON_DAMAGE_PRIMARY)) {
+        outputStream.Write(m_damagePrimary);
+        writtenState |= static_cast<U32>(ComponentMemberType::WEAPON_DAMAGE_PRIMARY);
     }
-    if (dirtyState & static_cast<U32>(ComponentMemberType::WEAPON_AMMO)) {
-        outputStream.Write(m_ammo);
-        writtenState |= static_cast<U32>(ComponentMemberType::WEAPON_AMMO);
+    if (dirtyState & static_cast<U32>(ComponentMemberType::WEAPON_DAMAGE_SECONDARY)) {
+        outputStream.Write(m_damageSecondary);
+        writtenState |= static_cast<U32>(ComponentMemberType::WEAPON_DAMAGE_SECONDARY);
     }
-    if (dirtyState & static_cast<U32>(ComponentMemberType::WEAPON_ORIGIN)) {
-        outputStream.Write(m_origin);
-        writtenState |= static_cast<U32>(ComponentMemberType::WEAPON_ORIGIN);
+    if (dirtyState & static_cast<U32>(ComponentMemberType::WEAPON_AMMO_PRIMARY)) {
+        outputStream.Write(m_ammoPrimary);
+        writtenState |= static_cast<U32>(ComponentMemberType::WEAPON_AMMO_PRIMARY);
     }
-    if (dirtyState & static_cast<U32>(ComponentMemberType::WEAPON_DESTINATION)) {
-        outputStream.Write(m_destination);
-        writtenState |= static_cast<U32>(ComponentMemberType::WEAPON_DESTINATION);
+    if (dirtyState & static_cast<U32>(ComponentMemberType::WEAPON_RANGE_PRIMARY)) {
+        outputStream.Write(m_rangePrimary);
+        writtenState |= static_cast<U32>(ComponentMemberType::WEAPON_RANGE_PRIMARY);
     }
-    if (dirtyState & static_cast<U32>(ComponentMemberType::WEAPON_HIT)) {
-        outputStream.Write(m_hasHit);
-        writtenState |= static_cast<U32>(ComponentMemberType::WEAPON_HIT);
+    if (dirtyState & static_cast<U32>(ComponentMemberType::WEAPON_RANGE_SECONDARY)) {
+        outputStream.Write(m_rangeSecondary);
+        writtenState |= static_cast<U32>(ComponentMemberType::WEAPON_RANGE_SECONDARY);
+    }
+    if (dirtyState & static_cast<U32>(ComponentMemberType::WEAPON_COOLDOWN_PRIMARY)) {
+        outputStream.Write(m_cooldownPrimary);
+        writtenState |= static_cast<U32>(ComponentMemberType::WEAPON_COOLDOWN_PRIMARY);
+    }
+    if (dirtyState & static_cast<U32>(ComponentMemberType::WEAPON_COOLDOWN_SECONDARY)) {
+        outputStream.Write(m_cooldownSecondary);
+        writtenState |= static_cast<U32>(ComponentMemberType::WEAPON_COOLDOWN_SECONDARY);
     }
 
     return writtenState;
 }
 #endif
-
-//----------------------------------------------------------------------------------------------------
-U32 WeaponComponent::Reload(U32 ammo)
-{
-    m_ammo += ammo;
-
-    return 0;
-}
-
-//----------------------------------------------------------------------------------------------------
-bool WeaponComponent::Shoot()
-{
-    if (m_ammo > 0) {
-        m_ammo -= 1;
-        return true;
-    }
-
-    return false;
-}
 }
