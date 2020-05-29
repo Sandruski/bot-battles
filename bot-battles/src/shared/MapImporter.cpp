@@ -259,6 +259,8 @@ void MapImporter::Create(const Tilemap& tilemap) const
                 std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_game->GetComponentManager().AddComponent<RigidbodyComponent>(entity);
                 rigidbodyComponent.lock()->m_bodyType = RigidbodyComponent::BodyType::STATIC;
                 rigidbodyComponent.lock()->UpdateBodyType();
+                //rigidbodyComponent.lock()->m_groupIndex = 0;
+                //rigidbodyComponent.lock()->UpdateGroupIndex();
             }
         }
     }

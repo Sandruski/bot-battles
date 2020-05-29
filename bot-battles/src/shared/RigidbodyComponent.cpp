@@ -90,9 +90,7 @@ void RigidbodyComponent::SetAsCircle(glm::vec2 position, F32 rotation, F32 radiu
     fixtureDef.restitution = 0.0f;
     fixtureDef.friction = 0.0f;
     fixtureDef.isSensor = isSensor;
-    if (m_bodyType == BodyType::DYNAMIC) {
-        fixtureDef.density = 1.0f;
-    }
+    fixtureDef.density = 1.0f;
     m_body->CreateFixture(&fixtureDef);
 }
 
@@ -121,9 +119,7 @@ void RigidbodyComponent::SetAsBox(glm::vec2 position, F32 rotation, glm::vec2 ha
     fixtureDef.restitution = 0.0f;
     fixtureDef.friction = 0.0f;
     fixtureDef.isSensor = isSensor;
-    if (m_bodyType == BodyType::DYNAMIC) {
-        fixtureDef.density = 1.0f;
-    }
+    fixtureDef.density = 1.0f;
     m_body->CreateFixture(&fixtureDef);
 }
 
