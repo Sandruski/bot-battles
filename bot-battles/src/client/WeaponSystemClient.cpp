@@ -64,21 +64,20 @@ bool WeaponSystemClient::Update()
             if (hasShootPrimaryWeapon || hasShootSecondaryWeapon) {
                 F32 timestamp = input.GetTimestamp();
 
+                F32 timestampDiff = timestamp - weaponComponent.lock()->m_timestampShot;
+                F32 cooldown = weaponComponent.lock()->m_weaponShot == 1 ? weaponComponent.lock()->m_cooldownPrimary : weaponComponent.lock()->m_cooldownSecondary;
+                if (timestampDiff < cooldown) {
+                    continue;
+                }
+
                 if (hasShootPrimaryWeapon) {
-                    F32 timestampDiff = timestamp - weaponComponent.lock()->m_timestampLastShotPrimary;
-                    if (timestampDiff < weaponComponent.lock()->m_cooldownPrimary) {
-                        continue;
-                    }
                     if (weaponComponent.lock()->m_ammoPrimary == 0) {
                         continue;
                     }
-                } else if (hasShootSecondaryWeapon) {
-                    F32 timestampDiff = timestamp - weaponComponent.lock()->m_timestampLastShotSecondary;
-                    if (timestampDiff < weaponComponent.lock()->m_cooldownSecondary) {
-                        continue;
-                    }
                 }
-                weaponComponent.lock()->m_timestampLastShotSecondary = timestamp;
+
+                weaponComponent.lock()->m_weaponShot = hasShootPrimaryWeapon ? 1 : 0;
+                weaponComponent.lock()->m_timestampShot = timestamp;
                 weaponComponent.lock()->m_timerShot.Start();
 
                 glm::vec2 position = transformComponent.lock()->m_position;
