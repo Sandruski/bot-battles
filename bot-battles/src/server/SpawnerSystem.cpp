@@ -112,7 +112,7 @@ Entity SpawnerSystem::Spawn(PlayerID playerID) const
     std::string playerName = "Player ";
     playerName.append(std::to_string(playerNumber));
     labelComponent.lock()->m_text = playerName;
-    labelComponent.lock()->m_offset = glm::vec2(0.0f, -35.0f);
+    labelComponent.lock()->m_offset = glm::vec2(0.0f, 35.0f);
     switch (playerNumber) {
     case 1: {
         labelComponent.lock()->m_color = Red;
