@@ -758,7 +758,7 @@ void ServerSystem::OnPlayerAdded(PlayerID playerID) const
     std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
     const std::unordered_map<NetworkID, Entity>& networkIDToEntity = g_gameServer->GetLinkingContext().GetNetworkIDToEntityMap();
     for (const auto& pair : networkIDToEntity) {
-        clientProxy.lock()->m_replicationManager->AddCommand(pair.first, static_cast<U32>(ComponentMemberType::ALL), false);
+        clientProxy.lock()->m_replicationManager->AddCommand(pair.first, static_cast<U64>(ComponentMemberType::ALL), false);
     }
 }
 
@@ -771,7 +771,7 @@ void ServerSystem::OnNetworkEntityAdded(NetworkID networkID) const
     const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.GetPlayerIDToClientProxyMap();
     for (const auto& pair : playerIDToClientProxy) {
         std::shared_ptr<ClientProxy> clientProxy = pair.second;
-        clientProxy->m_replicationManager->AddCommand(networkID, static_cast<U32>(ComponentMemberType::ALL), false);
+        clientProxy->m_replicationManager->AddCommand(networkID, static_cast<U64>(ComponentMemberType::ALL), false);
     }
 }
 
@@ -788,7 +788,7 @@ void ServerSystem::OnNetworkEntityRemoved(NetworkID networkID) const
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerSystem::OnComponentMemberChanged(U32 dirtyState, Entity entity) const
+void ServerSystem::OnComponentMemberChanged(U64 dirtyState, Entity entity) const
 {
     assert(entity < INVALID_ENTITY);
 

@@ -69,7 +69,7 @@ void ReplicationResultManager::HandleDeliveryFailure(const DeliveryManagerServer
         }
 
         case ReplicationActionType::UPDATE: {
-            U32 dirtyState = replicationCommand.GetDirtyState();
+            U64 dirtyState = replicationCommand.GetDirtyState();
             HandleUpdateDeliveryFailure(networkID, dirtyState, deliveryManagerServer);
             break;
         }
@@ -114,12 +114,12 @@ void ReplicationResultManager::HandleCreateDeliveryFailure(NetworkID networkID) 
     ILOG("RESENDING PACKET CREATE");
     Entity entity = g_game->GetLinkingContext().GetEntity(networkID);
     if (entity < INVALID_ENTITY) {
-        m_replicationManager.lock()->SetCreate(networkID, static_cast<U32>(ComponentMemberType::ALL));
+        m_replicationManager.lock()->SetCreate(networkID, static_cast<U64>(ComponentMemberType::ALL));
     }
 }
 
 //----------------------------------------------------------------------------------------------------
-void ReplicationResultManager::HandleUpdateDeliveryFailure(NetworkID networkID, U32 dirtyState, const DeliveryManagerServer& deliveryManagerServer) const
+void ReplicationResultManager::HandleUpdateDeliveryFailure(NetworkID networkID, U64 dirtyState, const DeliveryManagerServer& deliveryManagerServer) const
 {
     ILOG("RESENDING PACKET UPDATE");
     Entity entity = g_game->GetLinkingContext().GetEntity(networkID);
@@ -130,7 +130,7 @@ void ReplicationResultManager::HandleUpdateDeliveryFailure(NetworkID networkID, 
             for (const auto& pair : networkIDToReplicationCommand) {
                 NetworkID otherNetworkID = pair.first;
                 if (otherNetworkID == networkID) {
-                    U32 otherDirtyState = pair.second.GetDirtyState();
+                    U64 otherDirtyState = pair.second.GetDirtyState();
                     dirtyState &= ~otherDirtyState;
                 }
             }

@@ -68,14 +68,14 @@ bool MovementSystemServer::Update()
                 U32 inputIndex = clientProxy.lock()->m_inputBuffer.m_front + i;
                 const Input& input = clientProxy.lock()->m_inputBuffer.Get(inputIndex);
                 const InputComponent& inputComponent = input.GetInputComponent();
-                U32 dirtyState = input.GetDirtyState();
+                U64 dirtyState = input.GetDirtyState();
 
-                const bool hasLinearVelocity = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
+                const bool hasLinearVelocity = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
                 if (hasLinearVelocity) {
                     // TODO: cap m_acceleration to m_maxAcceleration
                     linearVelocity += inputComponent.m_linearVelocity;
                 }
-                const bool hasAngularVelocity = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
+                const bool hasAngularVelocity = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
                 if (hasAngularVelocity) {
                     // TODO: cap m_angularAcceleration to m_maxAngularAcceleration
                     angularVelocity += inputComponent.m_angularVelocity;
@@ -110,10 +110,10 @@ bool MovementSystemServer::Update()
             if (i < inputCount) {
                 U32 inputIndex = clientProxy.lock()->m_inputBuffer.m_front + i;
                 const Input& input = clientProxy.lock()->m_inputBuffer.Get(inputIndex);
-                U32 dirtyState = input.GetDirtyState();
+                U64 dirtyState = input.GetDirtyState();
 
-                const bool hasLinearVelocity = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
-                const bool hasAngularVelocity = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
+                const bool hasLinearVelocity = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
+                const bool hasAngularVelocity = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
                 if (hasLinearVelocity || hasAngularVelocity) {
                     b2Vec2 physicsPosition = rigidbodyComponent.lock()->m_body->GetPosition();
                     transformComponent.lock()->m_position = glm::vec2(METERS_TO_PIXELS(physicsPosition.x), METERS_TO_PIXELS(physicsPosition.y));
@@ -124,7 +124,7 @@ bool MovementSystemServer::Update()
                     Event newEvent;
                     newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
                     newEvent.component.entity = entity;
-                    newEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION) | static_cast<U32>(ComponentMemberType::TRANSFORM_ROTATION);
+                    newEvent.component.dirtyState = static_cast<U64>(ComponentMemberType::TRANSFORM_POSITION) | static_cast<U64>(ComponentMemberType::TRANSFORM_ROTATION);
                     NotifyEvent(newEvent);
                 }
 

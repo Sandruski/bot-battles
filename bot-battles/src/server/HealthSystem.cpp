@@ -113,7 +113,7 @@ void HealthSystem::OnCollisionEnter(Entity entityA, Entity entityB) const
 
     Event newComponentEvent;
     newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
-    newComponentEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::HEALTH_HEALTH);
+    newComponentEvent.component.dirtyState = static_cast<U64>(ComponentMemberType::HEALTH_HEALTH);
     newComponentEvent.component.entity = entityA;
     NotifyEvent(newComponentEvent);
     newComponentEvent.component.entity = entityB;
@@ -140,7 +140,7 @@ void HealthSystem::OnWeaponHit(Entity entity, U32 damage) const
 
     Event newComponentEvent;
     newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
-    newComponentEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::HEALTH_HEALTH);
+    newComponentEvent.component.dirtyState = static_cast<U64>(ComponentMemberType::HEALTH_HEALTH);
     newComponentEvent.component.entity = entity;
     NotifyEvent(newComponentEvent);
 }

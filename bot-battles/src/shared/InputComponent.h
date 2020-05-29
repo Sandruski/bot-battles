@@ -14,8 +14,8 @@ struct InputComponent : public Component,
                         public NetworkableReadObject {
     InputComponent();
 
-    U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override;
-    void Read(InputMemoryStream& inputStream, U32 dirtyState, U32 frame, ReplicationActionType replicationActionType, Entity entity) override;
+    U64 Write(OutputMemoryStream& outputStream, U64 dirtyState) const override;
+    void Read(InputMemoryStream& inputStream, U64 dirtyState, U32 frame, ReplicationActionType replicationActionType, Entity entity) override;
 
     void Reset();
     void FullReset();
@@ -39,7 +39,7 @@ struct InputComponent : public Component,
     glm::vec2 m_linearVelocity; // pixels
     F32 m_angularVelocity; // degrees
 
-    U32 m_dirtyState;
+    U64 m_dirtyState;
 };
 }
 

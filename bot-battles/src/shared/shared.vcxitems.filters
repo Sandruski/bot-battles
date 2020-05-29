@@ -414,7 +414,10 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)BotSpawnerComponent.h">
       <Filter>Header Files\Components\Entity Components</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Projects\bot-battles\bot-battles\src\shared\WeaponSpawnerComponent.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)HealthSpawnerComponent.h">
+      <Filter>Header Files\Components\Entity Components</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)WeaponSpawnerComponent.h">
       <Filter>Header Files\Components\Entity Components</Filter>
     </ClInclude>
   </ItemGroup>
@@ -623,7 +626,10 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)BotSpawnerComponent.cpp">
       <Filter>Source Files\Components\Entity Components</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Projects\bot-battles\bot-battles\src\shared\WeaponSpawnerComponent.cpp">
+    <ClCompile Include="$(MSBuildThisFileDirectory)HealthSpawnerComponent.cpp">
+      <Filter>Source Files\Components\Entity Components</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)WeaponSpawnerComponent.cpp">
       <Filter>Source Files\Components\Entity Components</Filter>
     </ClCompile>
   </ItemGroup>

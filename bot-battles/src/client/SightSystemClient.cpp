@@ -86,7 +86,7 @@ void SightSystemClient::OnSeenNewEntity(Entity seenEntity) const
 
             Event newComponentEvent;
             newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
-            newComponentEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::SPRITE_PCT);
+            newComponentEvent.component.dirtyState = static_cast<U64>(ComponentMemberType::SPRITE_PCT);
             newComponentEvent.component.entity = seenEntity;
             NotifyEvent(newComponentEvent);
         }
@@ -116,7 +116,7 @@ void SightSystemClient::OnSeenLostEntity(Entity seenEntity) const
 
             Event newComponentEvent;
             newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
-            newComponentEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::SPRITE_COLOR) | static_cast<U32>(ComponentMemberType::SPRITE_PCT);
+            newComponentEvent.component.dirtyState = static_cast<U64>(ComponentMemberType::SPRITE_COLOR) | static_cast<U64>(ComponentMemberType::SPRITE_PCT);
             newComponentEvent.component.entity = seenEntity;
             NotifyEvent(newComponentEvent);
         }

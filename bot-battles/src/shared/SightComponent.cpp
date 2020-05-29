@@ -14,28 +14,28 @@ SightComponent::SightComponent()
 
 #ifdef _CLIENT
 //----------------------------------------------------------------------------------------------------
-void SightComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U32 /*frame*/, ReplicationActionType /*replicationActionType*/, Entity /*entity*/)
+void SightComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /*frame*/, ReplicationActionType /*replicationActionType*/, Entity /*entity*/)
 {
-    if (dirtyState & static_cast<U32>(ComponentMemberType::SIGHT_ANGLE)) {
+    if (dirtyState & static_cast<U64>(ComponentMemberType::SIGHT_ANGLE)) {
         inputStream.Read(m_angle);
     }
-    if (dirtyState & static_cast<U32>(ComponentMemberType::SIGHT_DISTANCE)) {
+    if (dirtyState & static_cast<U64>(ComponentMemberType::SIGHT_DISTANCE)) {
         inputStream.Read(m_distance);
     }
 }
 #elif defined(_SERVER)
 //----------------------------------------------------------------------------------------------------
-U32 SightComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) const
+U64 SightComponent::Write(OutputMemoryStream& outputStream, U64 dirtyState) const
 {
-    U32 writtenState = 0;
+    U64 writtenState = 0;
 
-    if (dirtyState & static_cast<U32>(ComponentMemberType::SIGHT_ANGLE)) {
+    if (dirtyState & static_cast<U64>(ComponentMemberType::SIGHT_ANGLE)) {
         outputStream.Write(m_angle);
-        writtenState |= static_cast<U32>(ComponentMemberType::SIGHT_ANGLE);
+        writtenState |= static_cast<U64>(ComponentMemberType::SIGHT_ANGLE);
     }
-    if (dirtyState & static_cast<U32>(ComponentMemberType::SIGHT_DISTANCE)) {
+    if (dirtyState & static_cast<U64>(ComponentMemberType::SIGHT_DISTANCE)) {
         outputStream.Write(m_distance);
-        writtenState |= static_cast<U32>(ComponentMemberType::SIGHT_DISTANCE);
+        writtenState |= static_cast<U64>(ComponentMemberType::SIGHT_DISTANCE);
     }
 
     return writtenState;

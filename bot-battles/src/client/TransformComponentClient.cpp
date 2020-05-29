@@ -13,29 +13,29 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U32 frame, ReplicationActionType replicationActionType, Entity entity)
+void TransformComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 frame, ReplicationActionType replicationActionType, Entity entity)
 {
-    U32 transformDirtyState = 0;
+    U64 transformDirtyState = 0;
 
     glm::vec2 oldPosition = m_position;
     glm::vec2 newPosition = glm::vec2(0.0f, 0.0f);
-    const bool hasPosition = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION);
+    const bool hasPosition = dirtyState & static_cast<U64>(ComponentMemberType::TRANSFORM_POSITION);
     if (hasPosition) {
         inputStream.Read(newPosition);
     }
-    if (dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_LAYER_TYPE)) {
+    if (dirtyState & static_cast<U64>(ComponentMemberType::TRANSFORM_LAYER_TYPE)) {
         inputStream.Read(m_layerType);
-        transformDirtyState |= static_cast<U32>(ComponentMemberType::TRANSFORM_LAYER_TYPE);
+        transformDirtyState |= static_cast<U64>(ComponentMemberType::TRANSFORM_LAYER_TYPE);
     }
     F32 oldRotation = m_rotation;
     F32 newRotation = 0.0f;
-    const bool hasRotation = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_ROTATION);
+    const bool hasRotation = dirtyState & static_cast<U64>(ComponentMemberType::TRANSFORM_ROTATION);
     if (hasRotation) {
         inputStream.Read(newRotation);
     }
-    if (dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_SCALE)) {
+    if (dirtyState & static_cast<U64>(ComponentMemberType::TRANSFORM_SCALE)) {
         inputStream.Read(m_scale);
-        transformDirtyState |= static_cast<U32>(ComponentMemberType::TRANSFORM_SCALE);
+        transformDirtyState |= static_cast<U64>(ComponentMemberType::TRANSFORM_SCALE);
     }
 
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
@@ -138,7 +138,7 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U3
     }
 
     if (oldPosition != m_position || oldRotation != m_rotation) {
-        transformDirtyState |= static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION) | static_cast<U32>(ComponentMemberType::TRANSFORM_ROTATION);
+        transformDirtyState |= static_cast<U64>(ComponentMemberType::TRANSFORM_POSITION) | static_cast<U64>(ComponentMemberType::TRANSFORM_ROTATION);
     }
 
     if (transformDirtyState > 0) {

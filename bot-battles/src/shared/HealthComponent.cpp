@@ -12,21 +12,21 @@ HealthComponent::HealthComponent()
 
 #ifdef _CLIENT
 //----------------------------------------------------------------------------------------------------
-void HealthComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U32 /*frame*/, ReplicationActionType /*replicationActionType*/, Entity /*entity*/)
+void HealthComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /*frame*/, ReplicationActionType /*replicationActionType*/, Entity /*entity*/)
 {
-    if (dirtyState & static_cast<U32>(ComponentMemberType::HEALTH_HEALTH)) {
+    if (dirtyState & static_cast<U64>(ComponentMemberType::HEALTH_HEALTH)) {
         inputStream.Read(m_health);
     }
 }
 #elif defined(_SERVER)
 //----------------------------------------------------------------------------------------------------
-U32 HealthComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) const
+U64 HealthComponent::Write(OutputMemoryStream& outputStream, U64 dirtyState) const
 {
-    U32 writtenState = 0;
+    U64 writtenState = 0;
 
-    if (dirtyState & static_cast<U32>(ComponentMemberType::HEALTH_HEALTH)) {
+    if (dirtyState & static_cast<U64>(ComponentMemberType::HEALTH_HEALTH)) {
         outputStream.Write(m_health);
-        writtenState |= static_cast<U32>(ComponentMemberType::HEALTH_HEALTH);
+        writtenState |= static_cast<U64>(ComponentMemberType::HEALTH_HEALTH);
     }
 
     return writtenState;

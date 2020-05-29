@@ -56,14 +56,14 @@ bool MovementSystemClient::Update()
                 F32 angularVelocity = 0.0f;
 
                 const InputComponent& inputComponent = input.GetInputComponent();
-                U32 dirtyState = input.GetDirtyState();
+                U64 dirtyState = input.GetDirtyState();
 
-                const bool hasLinearVelocity = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
+                const bool hasLinearVelocity = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
                 if (hasLinearVelocity) {
                     // TODO: cap m_acceleration to m_maxAcceleration
                     linearVelocity += inputComponent.m_linearVelocity;
                 }
-                const bool hasAngularVelocity = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
+                const bool hasAngularVelocity = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
                 if (hasAngularVelocity) {
                     // TODO: cap m_angularAcceleration to m_maxAngularAcceleration
                     angularVelocity += inputComponent.m_angularVelocity;
@@ -87,7 +87,7 @@ bool MovementSystemClient::Update()
 
                     Event newComponentEvent;
                     newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
-                    newComponentEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION) | static_cast<U32>(ComponentMemberType::TRANSFORM_ROTATION);
+                    newComponentEvent.component.dirtyState = static_cast<U64>(ComponentMemberType::TRANSFORM_POSITION) | static_cast<U64>(ComponentMemberType::TRANSFORM_ROTATION);
                     newComponentEvent.component.entity = entity;
                     NotifyEvent(newComponentEvent);
                 }

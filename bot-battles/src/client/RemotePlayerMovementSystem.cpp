@@ -96,7 +96,7 @@ bool RemotePlayerMovementSystem::Update()
 
                     Event newComponentEvent;
                     newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
-                    newComponentEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION) | static_cast<U32>(ComponentMemberType::TRANSFORM_ROTATION);
+                    newComponentEvent.component.dirtyState = static_cast<U64>(ComponentMemberType::TRANSFORM_POSITION) | static_cast<U64>(ComponentMemberType::TRANSFORM_ROTATION);
                     newComponentEvent.component.entity = entity;
                     NotifyEvent(newComponentEvent);
                 }

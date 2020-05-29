@@ -57,10 +57,10 @@ bool WeaponSystemClient::Update()
 
         if (clientComponent.m_isLastShootInputPending) {
             const Input& input = clientComponent.m_inputBuffer.GetLast();
-            U32 dirtyState = input.GetDirtyState();
+            U64 dirtyState = input.GetDirtyState();
 
-            const bool hasShootPrimaryWeapon = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_SHOOT_PRIMARY_WEAPON);
-            const bool hasShootSecondaryWeapon = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_SHOOT_SECONDARY_WEAPON);
+            const bool hasShootPrimaryWeapon = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_PRIMARY_WEAPON);
+            const bool hasShootSecondaryWeapon = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_SECONDARY_WEAPON);
             if (hasShootPrimaryWeapon || hasShootSecondaryWeapon) {
                 glm::vec2 position = transformComponent.lock()->m_position;
                 glm::vec2 rotation = transformComponent.lock()->GetDirection();

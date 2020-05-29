@@ -27,46 +27,46 @@ RigidbodyComponent::~RigidbodyComponent()
 
 #ifdef _CLIENT
 //----------------------------------------------------------------------------------------------------
-void RigidbodyComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U32 /*frame*/, ReplicationActionType /*replicationActionType*/, Entity /*entity*/)
+void RigidbodyComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /*frame*/, ReplicationActionType /*replicationActionType*/, Entity /*entity*/)
 {
-    if (dirtyState & static_cast<U32>(ComponentMemberType::RIGIDBODY_BODY_TYPE)) {
+    if (dirtyState & static_cast<U64>(ComponentMemberType::RIGIDBODY_BODY_TYPE)) {
         inputStream.Read(m_bodyType);
         UpdateBodyType();
     }
-    if (dirtyState & static_cast<U32>(ComponentMemberType::RIGIDBODY_GROUP_INDEX)) {
+    if (dirtyState & static_cast<U64>(ComponentMemberType::RIGIDBODY_GROUP_INDEX)) {
         inputStream.Read(m_groupIndex);
         UpdateGroupIndex();
     }
-    if (dirtyState & static_cast<U32>(ComponentMemberType::RIGIDBODY_SENSOR)) {
+    if (dirtyState & static_cast<U64>(ComponentMemberType::RIGIDBODY_SENSOR)) {
         inputStream.Read(m_isSensor);
         UpdateSensor();
     }
-    if (dirtyState & static_cast<U32>(ComponentMemberType::RIGIDBODY_BULLET)) {
+    if (dirtyState & static_cast<U64>(ComponentMemberType::RIGIDBODY_BULLET)) {
         inputStream.Read(m_isBullet);
         UpdateBullet();
     }
 }
 #elif defined(_SERVER)
 //----------------------------------------------------------------------------------------------------
-U32 RigidbodyComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) const
+U64 RigidbodyComponent::Write(OutputMemoryStream& outputStream, U64 dirtyState) const
 {
-    U32 writtenState = 0;
+    U64 writtenState = 0;
 
-    if (dirtyState & static_cast<U32>(ComponentMemberType::RIGIDBODY_BODY_TYPE)) {
+    if (dirtyState & static_cast<U64>(ComponentMemberType::RIGIDBODY_BODY_TYPE)) {
         outputStream.Write(m_bodyType);
-        writtenState |= static_cast<U32>(ComponentMemberType::RIGIDBODY_BODY_TYPE);
+        writtenState |= static_cast<U64>(ComponentMemberType::RIGIDBODY_BODY_TYPE);
     }
-    if (dirtyState & static_cast<U32>(ComponentMemberType::RIGIDBODY_GROUP_INDEX)) {
+    if (dirtyState & static_cast<U64>(ComponentMemberType::RIGIDBODY_GROUP_INDEX)) {
         outputStream.Write(m_groupIndex);
-        writtenState |= static_cast<U32>(ComponentMemberType::RIGIDBODY_GROUP_INDEX);
+        writtenState |= static_cast<U64>(ComponentMemberType::RIGIDBODY_GROUP_INDEX);
     }
-    if (dirtyState & static_cast<U32>(ComponentMemberType::RIGIDBODY_SENSOR)) {
+    if (dirtyState & static_cast<U64>(ComponentMemberType::RIGIDBODY_SENSOR)) {
         outputStream.Write(m_isSensor);
-        writtenState |= static_cast<U32>(ComponentMemberType::RIGIDBODY_SENSOR);
+        writtenState |= static_cast<U64>(ComponentMemberType::RIGIDBODY_SENSOR);
     }
-    if (dirtyState & static_cast<U32>(ComponentMemberType::RIGIDBODY_BULLET)) {
+    if (dirtyState & static_cast<U64>(ComponentMemberType::RIGIDBODY_BULLET)) {
         outputStream.Write(m_isBullet);
-        writtenState |= static_cast<U32>(ComponentMemberType::RIGIDBODY_BULLET);
+        writtenState |= static_cast<U64>(ComponentMemberType::RIGIDBODY_BULLET);
     }
 
     return writtenState;

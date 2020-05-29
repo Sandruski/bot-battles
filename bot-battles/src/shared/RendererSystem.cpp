@@ -182,7 +182,7 @@ void RendererSystem::OnSystemEntityRemoved(Entity /*entity*/) const
 }
 
 //----------------------------------------------------------------------------------------------------
-void RendererSystem::OnComponentMemberChanged(U32 dirtyState, Entity entity) const
+void RendererSystem::OnComponentMemberChanged(U64 dirtyState, Entity entity) const
 {
     std::vector<Entity>::const_iterator it = std::find(m_entities.begin(), m_entities.end(), entity);
     if (it == m_entities.end()) {
@@ -194,13 +194,13 @@ void RendererSystem::OnComponentMemberChanged(U32 dirtyState, Entity entity) con
         return;
     }
 
-    const bool hasPosition = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION);
-    const bool hasRotation = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_ROTATION);
-    const bool hasScale = dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_SCALE);
-    const bool hasSpriteNameToTextureCoords = dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_SPRITE_NAME_TO_TEXTURE_COORDS);
-    const bool hasColor = dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_COLOR);
-    const bool hasPct = dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_PCT);
-    const bool hasIsVisible = dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_VISIBLE);
+    const bool hasPosition = dirtyState & static_cast<U64>(ComponentMemberType::TRANSFORM_POSITION);
+    const bool hasRotation = dirtyState & static_cast<U64>(ComponentMemberType::TRANSFORM_ROTATION);
+    const bool hasScale = dirtyState & static_cast<U64>(ComponentMemberType::TRANSFORM_SCALE);
+    const bool hasSpriteNameToTextureCoords = dirtyState & static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME_TO_TEXTURE_COORDS);
+    const bool hasColor = dirtyState & static_cast<U64>(ComponentMemberType::SPRITE_COLOR);
+    const bool hasPct = dirtyState & static_cast<U64>(ComponentMemberType::SPRITE_PCT);
+    const bool hasIsVisible = dirtyState & static_cast<U64>(ComponentMemberType::SPRITE_VISIBLE);
     if (hasColor || hasPct) {
         ILOG("a");
     }

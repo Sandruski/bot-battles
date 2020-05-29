@@ -10,7 +10,7 @@ struct NetworkableWriteObject {
 
     virtual ~NetworkableWriteObject() = default;
 
-    virtual U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const = 0;
+    virtual U64 Write(OutputMemoryStream& outputStream, U64 dirtyState) const = 0;
 };
 }
 

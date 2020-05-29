@@ -9,14 +9,14 @@ WallComponent::WallComponent()
 
 #ifdef _CLIENT
 //----------------------------------------------------------------------------------------------------
-void WallComponent::Read(InputMemoryStream& /*inputStream*/, U32 /*dirtyState*/, U32 /*frame*/, ReplicationActionType /*replicationActionType*/, Entity /*entity*/)
+void WallComponent::Read(InputMemoryStream& /*inputStream*/, U64 /*dirtyState*/, U32 /*frame*/, ReplicationActionType /*replicationActionType*/, Entity /*entity*/)
 {
 }
 #elif defined(_SERVER)
 //----------------------------------------------------------------------------------------------------
-U32 WallComponent::Write(OutputMemoryStream& /*outputStream*/, U32 /*dirtyState*/) const
+U64 WallComponent::Write(OutputMemoryStream& /*outputStream*/, U64 /*dirtyState*/) const
 {
-    U32 writtenState = 0;
+    U64 writtenState = 0;
 
     return writtenState;
 }

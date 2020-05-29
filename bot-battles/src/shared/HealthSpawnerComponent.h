@@ -1,5 +1,5 @@
-#ifndef __WEAPON_SPAWNER_COMPONENT_H__
-#define __WEAPON_SPAWNER_COMPONENT_H__
+#ifndef __HEALTH_SPAWNER_COMPONENT_H__
+#define __HEALTH_SPAWNER_COMPONENT_H__
 
 #include "Component.h"
 #ifdef _CLIENT
@@ -12,7 +12,7 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 // Entity Component
-struct WeaponSpawnerComponent : public Component
+struct HealthSpawnerComponent : public Component
 #ifdef _CLIENT
     ,
                                 public NetworkableReadObject
@@ -23,7 +23,7 @@ struct WeaponSpawnerComponent : public Component
 {
     static ComponentType GetType() { return ComponentType::SPAWNER; }
 
-    WeaponSpawnerComponent();
+    HealthSpawnerComponent();
 
 #ifdef _CLIENT
     void Read(InputMemoryStream& inputStream, U64 dirtyState, U32 frame, ReplicationActionType replicationActionType, Entity entity) override;
@@ -32,21 +32,12 @@ struct WeaponSpawnerComponent : public Component
 #endif
 
     // Networked
-    U32 m_weapon;
-    U32 m_damageWeapon1;
-    U32 m_damageWeapon2;
-    U32 m_ammoWeapon1;
-    U32 m_ammoWeapon2;
-    F32 m_rangeWeapon1;
-    F32 m_rangeWeapon2;
-    F32 m_cooldownWeapon1;
-    F32 m_cooldownWeapon2;
+    bool m_hasHealth;
+    U32 m_health;
 
     // Local (server)
     MyTimer m_timer;
     F32 m_timeout;
-    bool m_spawnWeapon1;
-    bool m_spawnWeapon2;
 };
 }
 

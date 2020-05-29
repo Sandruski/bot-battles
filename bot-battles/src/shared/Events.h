@@ -20,7 +20,7 @@ struct EntityEvent {
 struct ComponentEvent {
     EventType eventType;
     ComponentType componentType;
-    U32 dirtyState;
+    U64 dirtyState;
     Entity entity;
 };
 

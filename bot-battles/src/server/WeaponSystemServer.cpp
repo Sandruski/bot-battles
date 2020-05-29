@@ -63,18 +63,15 @@ bool WeaponSystemServer::Update()
         std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
         for (U32 i = clientProxy.lock()->m_inputBuffer.m_front; i < clientProxy.lock()->m_inputBuffer.m_back; ++i) {
             const Input& input = clientProxy.lock()->m_inputBuffer.Get(i);
-            U32 dirtyState = input.GetDirtyState();
+            U64 dirtyState = input.GetDirtyState();
 
-            const bool hasShootPrimaryWeapon = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_SHOOT_PRIMARY_WEAPON);
-            const bool hasShootSecondaryWeapon = dirtyState & static_cast<U32>(InputComponentMemberType::INPUT_SHOOT_SECONDARY_WEAPON);
+            const bool hasShootPrimaryWeapon = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_PRIMARY_WEAPON);
+            const bool hasShootSecondaryWeapon = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_SECONDARY_WEAPON);
             if (hasShootPrimaryWeapon || hasShootSecondaryWeapon) {
-                U32 weaponDirtyState = 0;
+                U64 weaponDirtyState = 0;
 
                 // TODO: put these conditions on client too for local prediction
                 if (hasShootPrimaryWeapon) {
-                    if (!weaponComponent.lock()->m_hasPrimary) {
-                        continue;
-                    }
                     if (weaponComponent.lock()->m_timerPrimary.ReadSec() < weaponComponent.lock()->m_cooldownPrimary) {
                         continue;
                     }
@@ -83,7 +80,7 @@ bool WeaponSystemServer::Update()
                     }
                     weaponComponent.lock()->m_timerPrimary.Start();
                     weaponComponent.lock()->m_ammoPrimary -= 1;
-                    weaponDirtyState |= static_cast<U32>(ComponentMemberType::WEAPON_AMMO_PRIMARY);
+                    weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_AMMO_PRIMARY);
                 } else if (hasShootSecondaryWeapon) {
                     if (weaponComponent.lock()->m_timerSecondary.ReadSec() < weaponComponent.lock()->m_cooldownSecondary) {
                         continue;

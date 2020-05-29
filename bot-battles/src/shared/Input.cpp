@@ -14,7 +14,7 @@ Input::Input()
 }
 
 //----------------------------------------------------------------------------------------------------
-Input::Input(const InputComponent& inputComponent, U32 dirtyState, U32 frame, U32 from, U32 to, F32 percentage)
+Input::Input(const InputComponent& inputComponent, U64 dirtyState, U32 frame, U32 from, U32 to, F32 percentage)
     : m_inputComponent(inputComponent)
     , m_dirtyState(dirtyState)
     , m_frame(frame)
@@ -55,7 +55,7 @@ const InputComponent& Input::GetInputComponent() const
 }
 
 //----------------------------------------------------------------------------------------------------
-U32 Input::GetDirtyState() const
+U64 Input::GetDirtyState() const
 {
     return m_dirtyState;
 }

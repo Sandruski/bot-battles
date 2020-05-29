@@ -5,25 +5,25 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-U32 TransformComponent::Write(OutputMemoryStream& outputStream, U32 dirtyState) const
+U64 TransformComponent::Write(OutputMemoryStream& outputStream, U64 dirtyState) const
 {
-    U32 writtenState = 0;
+    U64 writtenState = 0;
 
-    if (dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION)) {
+    if (dirtyState & static_cast<U64>(ComponentMemberType::TRANSFORM_POSITION)) {
         outputStream.Write(m_position);
-        writtenState |= static_cast<U32>(ComponentMemberType::TRANSFORM_POSITION);
+        writtenState |= static_cast<U64>(ComponentMemberType::TRANSFORM_POSITION);
     }
-    if (dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_LAYER_TYPE)) {
+    if (dirtyState & static_cast<U64>(ComponentMemberType::TRANSFORM_LAYER_TYPE)) {
         outputStream.Write(m_layerType);
-        writtenState |= static_cast<U32>(ComponentMemberType::TRANSFORM_LAYER_TYPE);
+        writtenState |= static_cast<U64>(ComponentMemberType::TRANSFORM_LAYER_TYPE);
     }
-    if (dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_ROTATION)) {
+    if (dirtyState & static_cast<U64>(ComponentMemberType::TRANSFORM_ROTATION)) {
         outputStream.Write(m_rotation);
-        writtenState |= static_cast<U32>(ComponentMemberType::TRANSFORM_ROTATION);
+        writtenState |= static_cast<U64>(ComponentMemberType::TRANSFORM_ROTATION);
     }
-    if (dirtyState & static_cast<U32>(ComponentMemberType::TRANSFORM_SCALE)) {
+    if (dirtyState & static_cast<U64>(ComponentMemberType::TRANSFORM_SCALE)) {
         outputStream.Write(m_scale);
-        writtenState |= static_cast<U32>(ComponentMemberType::TRANSFORM_SCALE);
+        writtenState |= static_cast<U64>(ComponentMemberType::TRANSFORM_SCALE);
     }
 
     return writtenState;

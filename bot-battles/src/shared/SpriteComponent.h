@@ -29,9 +29,9 @@ struct SpriteComponent : public Component
     ~SpriteComponent() override;
 
 #ifdef _CLIENT
-    void Read(InputMemoryStream& inputStream, U32 dirtyState, U32 frame, ReplicationActionType replicationActionType, Entity entity) override;
+    void Read(InputMemoryStream& inputStream, U64 dirtyState, U32 frame, ReplicationActionType replicationActionType, Entity entity) override;
 #elif defined(_SERVER)
-    U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override;
+    U64 Write(OutputMemoryStream& outputStream, U64 dirtyState) const override;
 #endif
 
     bool AddSprite(const std::string& name, const glm::uvec4& textureCoords);

@@ -55,7 +55,7 @@ bool PickUpSystem::Update()
             Event newComponentEvent;
             newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
             newComponentEvent.component.entity = entity;
-            newComponentEvent.component.dirtyState = static_cast<U32>(ComponentMemberType::WEAPON_SPAWNER_WEAPON);
+            newComponentEvent.component.dirtyState = static_cast<U64>(ComponentMemberType::WEAPON_SPAWNER_WEAPON);
             NotifyEvent(newComponentEvent);
         }
     }
@@ -107,7 +107,7 @@ void PickUpSystem::OnCollisionEnter(Entity entityA, Entity entityB) const
     }
 
     if (!weaponSpawnerComponent.expired()) {
-        U32 weaponDirtyState = 0;
+        U64 weaponDirtyState = 0;
 
         std::weak_ptr<WeaponComponent> weaponComponent = g_gameServer->GetComponentManager().GetComponent<WeaponComponent>(entity);
         switch (weaponSpawnerComponent.lock()->m_weapon) {
@@ -115,29 +115,25 @@ void PickUpSystem::OnCollisionEnter(Entity entityA, Entity entityB) const
             break;
         }
         case 1: {
-            weaponComponent.lock()->m_hasPrimary = true;
-            weaponDirtyState |= static_cast<U32>(ComponentMemberType::WEAPON_HAS_PRIMARY);
             weaponComponent.lock()->m_damagePrimary = weaponSpawnerComponent.lock()->m_damageWeapon1;
-            weaponDirtyState |= static_cast<U32>(ComponentMemberType::WEAPON_DAMAGE_PRIMARY);
+            weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_DAMAGE_PRIMARY);
             weaponComponent.lock()->m_ammoPrimary = weaponSpawnerComponent.lock()->m_ammoWeapon1;
-            weaponDirtyState |= static_cast<U32>(ComponentMemberType::WEAPON_AMMO_PRIMARY);
+            weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_AMMO_PRIMARY);
             weaponComponent.lock()->m_rangePrimary = weaponSpawnerComponent.lock()->m_rangeWeapon1;
-            weaponDirtyState |= static_cast<U32>(ComponentMemberType::WEAPON_RANGE_PRIMARY);
+            weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_RANGE_PRIMARY);
             weaponComponent.lock()->m_cooldownPrimary = weaponSpawnerComponent.lock()->m_cooldownWeapon1;
-            weaponDirtyState |= static_cast<U32>(ComponentMemberType::WEAPON_COOLDOWN_PRIMARY);
+            weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_COOLDOWN_PRIMARY);
             break;
         }
         case 2: {
-            weaponComponent.lock()->m_hasPrimary = true;
-            weaponDirtyState |= static_cast<U32>(ComponentMemberType::WEAPON_HAS_PRIMARY);
             weaponComponent.lock()->m_damagePrimary = weaponSpawnerComponent.lock()->m_damageWeapon2;
-            weaponDirtyState |= static_cast<U32>(ComponentMemberType::WEAPON_DAMAGE_PRIMARY);
+            weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_DAMAGE_PRIMARY);
             weaponComponent.lock()->m_ammoPrimary = weaponSpawnerComponent.lock()->m_ammoWeapon2;
-            weaponDirtyState |= static_cast<U32>(ComponentMemberType::WEAPON_AMMO_PRIMARY);
+            weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_AMMO_PRIMARY);
             weaponComponent.lock()->m_rangePrimary = weaponSpawnerComponent.lock()->m_rangeWeapon2;
-            weaponDirtyState |= static_cast<U32>(ComponentMemberType::WEAPON_RANGE_PRIMARY);
+            weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_RANGE_PRIMARY);
             weaponComponent.lock()->m_cooldownPrimary = weaponSpawnerComponent.lock()->m_cooldownWeapon2;
-            weaponDirtyState |= static_cast<U32>(ComponentMemberType::WEAPON_COOLDOWN_PRIMARY);
+            weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_COOLDOWN_PRIMARY);
             break;
         }
         default: {

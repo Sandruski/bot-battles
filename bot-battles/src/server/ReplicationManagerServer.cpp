@@ -18,7 +18,7 @@ ReplicationManagerServer::ReplicationManagerServer()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool ReplicationManagerServer::AddCommand(NetworkID networkID, U32 dirtyState, bool isReplicated)
+bool ReplicationManagerServer::AddCommand(NetworkID networkID, U64 dirtyState, bool isReplicated)
 {
     auto it = m_networkIDToReplicationCommand.find(networkID);
     if (it != m_networkIDToReplicationCommand.end()) {
@@ -46,7 +46,7 @@ bool ReplicationManagerServer::RemoveCommand(NetworkID networkID)
 }
 
 //----------------------------------------------------------------------------------------------------
-void ReplicationManagerServer::SetCreate(NetworkID networkID, U32 dirtyState)
+void ReplicationManagerServer::SetCreate(NetworkID networkID, U64 dirtyState)
 {
     ReplicationCommand& replicationCommand = m_networkIDToReplicationCommand.at(networkID);
     if (replicationCommand.m_replicationActionType != ReplicationActionType::REMOVE) {
@@ -77,7 +77,7 @@ void ReplicationManagerServer::SetIsReplicated(NetworkID networkID, bool isRepli
 }
 
 //----------------------------------------------------------------------------------------------------
-void ReplicationManagerServer::AddDirtyState(NetworkID networkID, U32 dirtyState)
+void ReplicationManagerServer::AddDirtyState(NetworkID networkID, U64 dirtyState)
 {
     m_networkIDToReplicationCommand.at(networkID).AddDirtyState(dirtyState);
 }
@@ -104,7 +104,7 @@ void ReplicationManagerServer::Write(OutputMemoryStream& outputStream, Replicati
             if (isReplicated) {
                 outputStream.Write(replicationCommand.m_replicationActionType, 2);
 
-                U32 writtenState = 0;
+                U64 writtenState = 0;
 
                 switch (replicationCommand.m_replicationActionType) {
 
@@ -135,7 +135,7 @@ void ReplicationManagerServer::Write(OutputMemoryStream& outputStream, Replicati
             replicationResultManager.AddDelivery(networkID, replicationCommand);
 
             if (isReplicated) {
-                replicationCommand.RemoveDirtyState(static_cast<U32>(ComponentMemberType::ALL));
+                replicationCommand.RemoveDirtyState(static_cast<U64>(ComponentMemberType::ALL));
                 //replicationCommand.RemoveDirtyState(writtenState);
 
                 if (replicationCommand.m_replicationActionType == ReplicationActionType::CREATE
@@ -154,7 +154,7 @@ void ReplicationManagerServer::Write(OutputMemoryStream& outputStream, Replicati
 }
 
 //----------------------------------------------------------------------------------------------------
-U32 ReplicationManagerServer::WriteCreateAction(OutputMemoryStream& outputStream, NetworkID networkID, U32 dirtyState) const
+U64 ReplicationManagerServer::WriteCreateAction(OutputMemoryStream& outputStream, NetworkID networkID, U64 dirtyState) const
 {
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     Entity entity = g_gameServer->GetLinkingContext().GetEntity(networkID);
@@ -165,9 +165,9 @@ U32 ReplicationManagerServer::WriteCreateAction(OutputMemoryStream& outputStream
 }
 
 //----------------------------------------------------------------------------------------------------
-U32 ReplicationManagerServer::WriteUpdateAction(OutputMemoryStream& outputStream, NetworkID networkID, U32 dirtyState) const
+U64 ReplicationManagerServer::WriteUpdateAction(OutputMemoryStream& outputStream, NetworkID networkID, U64 dirtyState) const
 {
-    U32 writtenState = 0;
+    U64 writtenState = 0;
 
     Entity entity = g_gameServer->GetLinkingContext().GetEntity(networkID);
     Signature signature = g_gameServer->GetEntityManager().GetSignature(entity);

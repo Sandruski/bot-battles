@@ -12,18 +12,18 @@ class ReplicationManagerServer {
 public:
     ReplicationManagerServer();
 
-    bool AddCommand(NetworkID networkID, U32 dirtyState, bool isReplicated);
+    bool AddCommand(NetworkID networkID, U64 dirtyState, bool isReplicated);
     bool RemoveCommand(NetworkID networkID);
 
-    void SetCreate(NetworkID networkID, U32 dirtyState);
+    void SetCreate(NetworkID networkID, U64 dirtyState);
     void SetUpdate(NetworkID networkID);
     void SetRemove(NetworkID networkID);
     void SetIsReplicated(NetworkID networkID, bool isReplicated);
-    void AddDirtyState(NetworkID networkID, U32 dirtyState);
+    void AddDirtyState(NetworkID networkID, U64 dirtyState);
 
     void Write(OutputMemoryStream& outputStream, ReplicationResultManager& replicationResultManager);
-    U32 WriteCreateAction(OutputMemoryStream& outputStream, NetworkID networkID, U32 dirtyState) const;
-    U32 WriteUpdateAction(OutputMemoryStream& outputStream, NetworkID networkID, U32 dirtyState) const;
+    U64 WriteCreateAction(OutputMemoryStream& outputStream, NetworkID networkID, U64 dirtyState) const;
+    U64 WriteUpdateAction(OutputMemoryStream& outputStream, NetworkID networkID, U64 dirtyState) const;
 
     void Reset();
 

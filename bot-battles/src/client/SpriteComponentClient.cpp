@@ -10,11 +10,11 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-void SpriteComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U32 /*frame*/, ReplicationActionType /*replicationActionType*/, Entity entity)
+void SpriteComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /*frame*/, ReplicationActionType /*replicationActionType*/, Entity entity)
 {
-    U32 spriteDirtyState = 0;
+    U64 spriteDirtyState = 0;
 
-    if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_FILE)) {
+    if (dirtyState & static_cast<U64>(ComponentMemberType::SPRITE_FILE)) {
         std::string file;
         inputStream.Read(file);
         if (!m_spriteResource.expired()) {
@@ -22,16 +22,16 @@ void SpriteComponent::Read(InputMemoryStream& inputStream, U32 dirtyState, U32 /
         }
         m_spriteResource = g_gameClient->GetResourceManager().AddResource<SpriteResource>(file.c_str(), TEXTURES_DIR, true);
     }
-    if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_SPRITE_NAME_TO_TEXTURE_COORDS)) {
+    if (dirtyState & static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME_TO_TEXTURE_COORDS)) {
         inputStream.Read(m_spriteNameToTextureCoords);
-        spriteDirtyState |= static_cast<U32>(ComponentMemberType::SPRITE_SPRITE_NAME_TO_TEXTURE_COORDS);
+        spriteDirtyState |= static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME_TO_TEXTURE_COORDS);
     }
-    if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_SPRITE_NAME)) {
+    if (dirtyState & static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME)) {
         inputStream.Read(m_spriteName);
     }
-    if (dirtyState & static_cast<U32>(ComponentMemberType::SPRITE_VISIBLE)) {
+    if (dirtyState & static_cast<U64>(ComponentMemberType::SPRITE_VISIBLE)) {
         inputStream.Read(m_isVisible);
-        spriteDirtyState |= static_cast<U32>(ComponentMemberType::SPRITE_VISIBLE);
+        spriteDirtyState |= static_cast<U64>(ComponentMemberType::SPRITE_VISIBLE);
     }
 
     if (spriteDirtyState > 0) {

@@ -54,7 +54,7 @@ private:
     void OnPlayerAdded(PlayerID playerID) const;
     void OnNetworkEntityAdded(NetworkID networkID) const;
     void OnNetworkEntityRemoved(NetworkID networkID) const;
-    void OnComponentMemberChanged(U32 dirtyState, Entity entity) const;
+    void OnComponentMemberChanged(U64 dirtyState, Entity entity) const;
     void OnSeenNewEntity(PlayerID playerID, Entity entity) const;
     void OnSeenLostEntity(PlayerID playerID, Entity entity) const;
 };

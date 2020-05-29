@@ -15,6 +15,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)AckRange.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)HealthSpawnerComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)WeaponSpawnerComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)BotComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ByteSwap.h" />
@@ -118,6 +119,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)AckRange.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)HealthSpawnerComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)WeaponSpawnerComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)BotComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ColliderComponent.cpp" />

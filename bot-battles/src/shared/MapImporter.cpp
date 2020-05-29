@@ -154,8 +154,9 @@ void MapImporter::Create(const Tilemap& tilemap) const
 
     for (const auto& objectlayer : tilemap.m_objectlayers) {
         for (const auto& object : objectlayer.m_objects) {
+            const bool isSpawner = object.m_type.find("Spawner");
 #ifdef _CLIENT
-            if (object.m_type == "AmmoSpawner") {
+            if (isSpawner) {
                 continue;
             }
 #endif
@@ -190,6 +191,10 @@ void MapImporter::Create(const Tilemap& tilemap) const
             }
 
             // UNIQUE
+            if (isSpawner) {
+                g_game->GetLinkingContext().AddEntity(entity);
+            }
+
             // BotSpawner
             if (object.m_type == "BotSpawner") {
                 std::weak_ptr<BotSpawnerComponent> botSpawnerComponent = g_game->GetComponentManager().AddComponent<BotSpawnerComponent>(entity);
@@ -216,7 +221,6 @@ void MapImporter::Create(const Tilemap& tilemap) const
 
             // WeaponSpawner
             if (object.m_type == "WeaponSpawner") {
-                g_game->GetLinkingContext().AddEntity(entity);
                 std::weak_ptr<WeaponSpawnerComponent> weaponSpawnerComponent = g_game->GetComponentManager().AddComponent<WeaponSpawnerComponent>(entity);
                 for (const auto& property : object.m_properties) {
                     if (property.m_name == "damageWeapon1") {

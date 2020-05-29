@@ -25,7 +25,7 @@ private:
     void HandleRemoveDeliverySuccess(NetworkID networkID) const;
 
     void HandleCreateDeliveryFailure(NetworkID networkID) const;
-    void HandleUpdateDeliveryFailure(NetworkID networkID, U32 dirtyState, const DeliveryManagerServer& deliveryManagerServer) const;
+    void HandleUpdateDeliveryFailure(NetworkID networkID, U64 dirtyState, const DeliveryManagerServer& deliveryManagerServer) const;
     void HandleRemoveDeliveryFailure(NetworkID networkID) const;
 
 private:

@@ -26,9 +26,9 @@ struct WeaponComponent : public Component
     WeaponComponent();
 
 #ifdef _CLIENT
-    void Read(InputMemoryStream& inputStream, U32 dirtyState, U32 frame, ReplicationActionType replicationActionType, Entity entity) override;
+    void Read(InputMemoryStream& inputStream, U64 dirtyState, U32 frame, ReplicationActionType replicationActionType, Entity entity) override;
 #elif defined(_SERVER)
-    U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override;
+    U64 Write(OutputMemoryStream& outputStream, U64 dirtyState) const override;
 #endif
 
     // Networked
@@ -39,7 +39,6 @@ struct WeaponComponent : public Component
     F32 m_rangeSecondary;
     F32 m_cooldownPrimary;
     F32 m_cooldownSecondary;
-    bool m_hasPrimary;
 
     // Local
     /// Client & Server

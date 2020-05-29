@@ -34,9 +34,9 @@ struct RigidbodyComponent : public Component
     ~RigidbodyComponent() override;
 
 #ifdef _CLIENT
-    void Read(InputMemoryStream& inputStream, U32 dirtyState, U32 frame, ReplicationActionType replicationActionType, Entity entity) override;
+    void Read(InputMemoryStream& inputStream, U64 dirtyState, U32 frame, ReplicationActionType replicationActionType, Entity entity) override;
 #elif defined(_SERVER)
-    U32 Write(OutputMemoryStream& outputStream, U32 dirtyState) const override;
+    U64 Write(OutputMemoryStream& outputStream, U64 dirtyState) const override;
 #endif
 
     void SetAsCircle(glm::vec2 position, F32 rotation, F32 radius, const Entity& entity);
