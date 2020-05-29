@@ -28,8 +28,6 @@ WeaponSystemServer::WeaponSystemServer()
     m_signature |= 1 << static_cast<U16>(ComponentType::PLAYER);
 }
 
-// TODO: in init start timers:) or whenever you take a new weapon
-
 //----------------------------------------------------------------------------------------------------
 bool WeaponSystemServer::PreUpdate()
 {
@@ -60,6 +58,17 @@ bool WeaponSystemServer::Update()
         std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameServer->GetComponentManager().GetComponent<RigidbodyComponent>(entity);
         std::weak_ptr<WeaponComponent> weaponComponent = g_gameServer->GetComponentManager().GetComponent<WeaponComponent>(entity);
 
+        U64 weaponDirtyState = 0;
+
+        if (!weaponComponent.lock()->m_canShootPrimary && weaponComponent.lock()->m_timerPrimary.ReadSec() >= weaponComponent.lock()->m_cooldownPrimary) {
+            weaponComponent.lock()->m_canShootPrimary = true;
+            weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_CAN_SHOOT_PRIMARY);
+        }
+        if (!weaponComponent.lock()->m_canShootSecondary && weaponComponent.lock()->m_timerSecondary.ReadSec() >= weaponComponent.lock()->m_cooldownSecondary) {
+            weaponComponent.lock()->m_canShootSecondary = true;
+            weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_CAN_SHOOT_SECONDARY);
+        }
+
         std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
         for (U32 i = clientProxy.lock()->m_inputBuffer.m_front; i < clientProxy.lock()->m_inputBuffer.m_back; ++i) {
             const Input& input = clientProxy.lock()->m_inputBuffer.Get(i);
@@ -68,24 +77,26 @@ bool WeaponSystemServer::Update()
             const bool hasShootPrimaryWeapon = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_PRIMARY_WEAPON);
             const bool hasShootSecondaryWeapon = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_SECONDARY_WEAPON);
             if (hasShootPrimaryWeapon || hasShootSecondaryWeapon) {
-                U64 weaponDirtyState = 0;
-
-                // TODO: put these conditions on client too for local prediction
+                // TODO: only shoot one weapon at a time
                 if (hasShootPrimaryWeapon) {
-                    if (weaponComponent.lock()->m_timerPrimary.ReadSec() < weaponComponent.lock()->m_cooldownPrimary) {
+                    if (!weaponComponent.lock()->m_canShootPrimary) {
                         continue;
                     }
                     if (weaponComponent.lock()->m_ammoPrimary == 0) {
                         continue;
                     }
                     weaponComponent.lock()->m_timerPrimary.Start();
+                    weaponComponent.lock()->m_canShootPrimary = false;
+                    weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_CAN_SHOOT_PRIMARY);
                     weaponComponent.lock()->m_ammoPrimary -= 1;
                     weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_AMMO_PRIMARY);
                 } else if (hasShootSecondaryWeapon) {
-                    if (weaponComponent.lock()->m_timerSecondary.ReadSec() < weaponComponent.lock()->m_cooldownSecondary) {
+                    if (!weaponComponent.lock()->m_canShootSecondary) {
                         continue;
                     }
                     weaponComponent.lock()->m_timerSecondary.Start();
+                    weaponComponent.lock()->m_canShootSecondary = false;
+                    weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_CAN_SHOOT_SECONDARY);
                 }
 
                 if (serverComponent.m_isServerRewind) {
@@ -135,20 +146,20 @@ bool WeaponSystemServer::Update()
                     }
                 }
 
-                if (weaponDirtyState > 0) {
-                    Event newEvent;
-                    newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
-                    newEvent.component.entity = entity;
-                    newEvent.component.dirtyState = weaponDirtyState;
-                    NotifyEvent(newEvent);
-                }
-
                 rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(transformComponent.lock()->m_position.x), PIXELS_TO_METERS(transformComponent.lock()->m_position.y)), glm::radians(transformComponent.lock()->m_rotation));
 
                 if (serverComponent.m_isServerRewind) {
                     Revert(entity);
                 }
             }
+        }
+
+        if (weaponDirtyState > 0) {
+            Event newEvent;
+            newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
+            newEvent.component.entity = entity;
+            newEvent.component.dirtyState = weaponDirtyState;
+            NotifyEvent(newEvent);
         }
     }
 
@@ -230,7 +241,6 @@ void WeaponSystemServer::Rewind(Entity localEntity, U32 from, U32 to, F32 percen
             glm::vec2 interpolatedPosition = Lerp(fromTransform.m_position, toTransform.m_position, percentage);
             F32 interpolatedRotation = Lerp(fromTransform.m_rotation, toTransform.m_rotation, percentage);
             rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(interpolatedPosition.x), PIXELS_TO_METERS(interpolatedPosition.y)), glm::radians(interpolatedRotation));
-            ILOG("SERVER REWIND POS %f %f ROT %f", interpolatedPosition.x, interpolatedPosition.y, interpolatedRotation);
         }
     }
 }

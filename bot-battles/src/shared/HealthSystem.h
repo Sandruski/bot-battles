@@ -13,7 +13,7 @@ struct HealthComponent;
 class HealthSystem : public System {
 
 public:
-    void Draw(RendererComponent& rendererComponent, std::weak_ptr<TransformComponent> transformComponent, std::weak_ptr<HealthComponent> healthComponent, const glm::vec4& color) const;
+    void Draw(RendererComponent& rendererComponent, std::weak_ptr<TransformComponent> transformComponent, std::weak_ptr<HealthComponent> healthComponent, const glm::vec4& color, const glm::vec4& backgroundColor) const;
 };
 }
 

@@ -31,8 +31,10 @@ bool HealthSystemClient::Render()
         std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
         std::weak_ptr<HealthComponent> healthComponent = g_gameClient->GetComponentManager().GetComponent<HealthComponent>(entity);
 
-        glm::vec4 color = Red;
-        Draw(rendererComponent, transformComponent, healthComponent, color);
+        glm::vec4 color = White;
+        glm::vec4 backgroundColor = Black;
+        backgroundColor.a = 0.5f;
+        Draw(rendererComponent, transformComponent, healthComponent, color, backgroundColor);
     }
 
     return true;

@@ -144,9 +144,11 @@ Entity SpawnerSystem::Spawn(PlayerID playerID) const
     weaponComponent.lock()->m_damageSecondary = botSpawnerComponent.lock()->m_damageWeapon;
     weaponComponent.lock()->m_rangeSecondary = botSpawnerComponent.lock()->m_rangeWeapon;
     weaponComponent.lock()->m_cooldownSecondary = botSpawnerComponent.lock()->m_cooldownWeapon;
+    weaponComponent.lock()->m_timerPrimary.Start();
+    weaponComponent.lock()->m_timerSecondary.Start();
 
     std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().AddComponent<HealthComponent>(character);
-    healthComponent.lock()->m_health = botSpawnerComponent.lock()->m_health;
+    healthComponent.lock()->m_maxHealth = healthComponent.lock()->m_currentHealth = botSpawnerComponent.lock()->m_health;
 
     std::weak_ptr<SightComponent> sightComponent = g_gameServer->GetComponentManager().AddComponent<SightComponent>(character);
     sightComponent.lock()->m_angle = botSpawnerComponent.lock()->m_sightAngle;

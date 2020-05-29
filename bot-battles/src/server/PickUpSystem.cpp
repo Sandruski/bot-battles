@@ -148,6 +148,8 @@ void PickUpSystem::OnCollisionEnter(Entity entityA, Entity entityB) const
             newComponentEvent.component.dirtyState = weaponDirtyState;
             NotifyEvent(newComponentEvent);
         }
+
+        // TODO: HEALTH_CURRENT_HEALTH changed
     }
 }
 }

@@ -62,6 +62,19 @@ bool WeaponSystemClient::Update()
             const bool hasShootPrimaryWeapon = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_PRIMARY_WEAPON);
             const bool hasShootSecondaryWeapon = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_SECONDARY_WEAPON);
             if (hasShootPrimaryWeapon || hasShootSecondaryWeapon) {
+                if (hasShootPrimaryWeapon) {
+                    if (!weaponComponent.lock()->m_canShootPrimary) {
+                        continue;
+                    }
+                    if (weaponComponent.lock()->m_ammoPrimary == 0) {
+                        continue;
+                    }
+                } else if (hasShootSecondaryWeapon) {
+                    if (!weaponComponent.lock()->m_canShootSecondary) {
+                        continue;
+                    }
+                }
+
                 glm::vec2 position = transformComponent.lock()->m_position;
                 glm::vec2 rotation = transformComponent.lock()->GetDirection();
 
