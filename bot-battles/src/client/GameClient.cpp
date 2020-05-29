@@ -6,6 +6,7 @@
 #include "ConfigClient.h"
 #include "FSM.h"
 #include "GameplayStateClient.h"
+#include "HealthSystemClient.h"
 #include "InputSystem.h"
 #include "LocalPlayerComponent.h"
 #include "MainMenuStateClient.h"
@@ -70,6 +71,10 @@ bool GameClient::Init()
         return ret;
     }
     ret = m_systemManager->RegisterSystem<SightSystemClient>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_systemManager->RegisterSystem<HealthSystemClient>();
     if (!ret) {
         return ret;
     }

@@ -10,6 +10,7 @@ enum class LayerType : U16 {
 
     DEBUG,
 
+    LIFEBAR,
     PLAYER,
     WEAPON,
     SIGHT,

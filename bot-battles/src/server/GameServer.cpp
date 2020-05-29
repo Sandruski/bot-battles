@@ -6,7 +6,7 @@
 #include "EntityManager.h"
 #include "FSM.h"
 #include "GameplayStateServer.h"
-#include "HealthSystem.h"
+#include "HealthSystemServer.h"
 #include "LinkingContext.h"
 #include "MainMenuStateServer.h"
 #include "MovementSystemServer.h"
@@ -63,7 +63,7 @@ bool GameServer::Init()
     if (!ret) {
         return ret;
     }
-    ret = m_systemManager->RegisterSystem<HealthSystem>();
+    ret = m_systemManager->RegisterSystem<HealthSystemServer>();
     if (!ret) {
         return ret;
     }
@@ -130,20 +130,20 @@ bool GameServer::Init()
     if (!ret) {
         return ret;
     }
-    std::weak_ptr<HealthSystem> healthSystem = m_systemManager->GetSystem<HealthSystem>();
-    ret = weaponSystemServer.lock()->AddObserver(healthSystem);
+    std::weak_ptr<HealthSystemServer> healthSystemServer = m_systemManager->GetSystem<HealthSystemServer>();
+    ret = weaponSystemServer.lock()->AddObserver(healthSystemServer);
     if (!ret) {
         return ret;
     }
-    ret = healthSystem.lock()->AddObserver(serverSystem);
+    ret = healthSystemServer.lock()->AddObserver(serverSystem);
     if (!ret) {
         return ret;
     }
-    ret = healthSystem.lock()->AddObserver(std::weak_ptr<Observer>(m_fsm));
+    ret = healthSystemServer.lock()->AddObserver(std::weak_ptr<Observer>(m_fsm));
     if (!ret) {
         return ret;
     }
-    ret = m_physicsComponent.AddObserver(healthSystem);
+    ret = m_physicsComponent.AddObserver(healthSystemServer);
     if (!ret) {
         return ret;
     }

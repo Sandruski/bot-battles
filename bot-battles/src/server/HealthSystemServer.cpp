@@ -1,4 +1,4 @@
-#include "HealthSystem.h"
+#include "HealthSystemServer.h"
 
 #include "ComponentManager.h"
 #include "ComponentMemberTypes.h"
@@ -10,15 +10,14 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-HealthSystem::HealthSystem()
+HealthSystemServer::HealthSystemServer()
 {
     m_signature |= 1 << static_cast<U16>(ComponentType::HEALTH);
-    m_signature |= 1 << static_cast<U16>(ComponentType::SPRITE);
     m_signature |= 1 << static_cast<U16>(ComponentType::PLAYER);
 }
 
 //----------------------------------------------------------------------------------------------------
-bool HealthSystem::PreUpdate()
+bool HealthSystemServer::PreUpdate()
 {
     NotifyEvents();
 
@@ -26,7 +25,7 @@ bool HealthSystem::PreUpdate()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool HealthSystem::Update()
+bool HealthSystemServer::Update()
 {
     OPTICK_EVENT();
 
@@ -65,7 +64,13 @@ bool HealthSystem::Update()
 }
 
 //----------------------------------------------------------------------------------------------------
-void HealthSystem::OnNotify(const Event& event)
+bool HealthSystemServer::Render()
+{
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+void HealthSystemServer::OnNotify(const Event& event)
 {
     switch (event.eventType) {
 
@@ -86,7 +91,7 @@ void HealthSystem::OnNotify(const Event& event)
 }
 
 //----------------------------------------------------------------------------------------------------
-void HealthSystem::OnCollisionEnter(Entity entityA, Entity entityB) const
+void HealthSystemServer::OnCollisionEnter(Entity entityA, Entity entityB) const
 {
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     PlayerID playerIDA = serverComponent.GetPlayerID(entityA);
@@ -121,7 +126,7 @@ void HealthSystem::OnCollisionEnter(Entity entityA, Entity entityB) const
 }
 
 //----------------------------------------------------------------------------------------------------
-void HealthSystem::OnWeaponHit(Entity entity, U32 damage) const
+void HealthSystemServer::OnWeaponHit(Entity entity, U32 damage) const
 {
     std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(entity);
     if (healthComponent.expired()) {

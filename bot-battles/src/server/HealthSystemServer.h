@@ -1,12 +1,12 @@
-#ifndef __HEALTH_SYSTEM_H__
-#define __HEALTH_SYSTEM_H__
+#ifndef __HEALTH_SYSTEM_SERVER_H__
+#define __HEALTH_SYSTEM_SERVER_H__
 
-#include "System.h"
+#include "HealthSystem.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class HealthSystem : public System, public Subject, public Observer {
+class HealthSystemServer : public HealthSystem, public Subject, public Observer {
 public:
     static SystemType GetType()
     {
@@ -14,10 +14,11 @@ public:
     }
 
 public:
-    HealthSystem();
+    HealthSystemServer();
 
     bool PreUpdate() override;
     bool Update() override;
+    bool Render() override;
 
     void OnNotify(const Event& event) override;
 

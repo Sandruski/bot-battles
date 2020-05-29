@@ -204,9 +204,6 @@
     <ClCompile Include="WeaponSystemServer.cpp">
       <Filter>Source Files\Systems\Shared</Filter>
     </ClCompile>
-    <ClCompile Include="HealthSystem.cpp">
-      <Filter>Source Files\Systems\Unique</Filter>
-    </ClCompile>
     <ClCompile Include="OutputSystemServer.cpp">
       <Filter>Source Files\Systems\Unique</Filter>
     </ClCompile>
@@ -221,6 +218,9 @@
     </ClCompile>
     <ClCompile Include="PickUpSystem.cpp">
       <Filter>Source Files\Systems\Unique</Filter>
+    </ClCompile>
+    <ClCompile Include="HealthSystemServer.cpp">
+      <Filter>Source Files\Systems\Shared</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -293,9 +293,6 @@
     <ClInclude Include="WeaponSystemServer.h">
       <Filter>Header Files\Systems\Shared</Filter>
     </ClInclude>
-    <ClInclude Include="HealthSystem.h">
-      <Filter>Header Files\Systems\Unique</Filter>
-    </ClInclude>
     <ClInclude Include="OutputSystemServer.h">
       <Filter>Header Files\Systems\Unique</Filter>
     </ClInclude>
@@ -307,6 +304,9 @@
     </ClInclude>
     <ClInclude Include="PickUpSystem.h">
       <Filter>Header Files\Systems\Unique</Filter>
+    </ClInclude>
+    <ClInclude Include="HealthSystemServer.h">
+      <Filter>Header Files\Systems\Shared</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
