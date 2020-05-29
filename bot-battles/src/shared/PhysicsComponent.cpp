@@ -123,6 +123,7 @@ PhysicsComponent::PhysicsComponent()
     , m_positionIterations(2)
     , m_epsilon(0.0001f)
 {
+    m_world.SetAllowSleeping(false);
     m_world.SetContactListener(&m_contactListener);
 }
 

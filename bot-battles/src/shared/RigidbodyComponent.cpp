@@ -175,7 +175,9 @@ void RigidbodyComponent::UpdateGroupIndex() const
 
     b2Filter filter;
     filter.groupIndex = m_groupIndex;
-    m_body->GetFixtureList()->SetFilterData(filter);
+    for (b2Fixture* fixture = m_body->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()) {
+        fixture->SetFilterData(filter);
+    }
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -185,7 +187,9 @@ void RigidbodyComponent::UpdateSensor() const
         return;
     }
 
-    m_body->GetFixtureList()->SetSensor(m_isSensor);
+    for (b2Fixture* fixture = m_body->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()) {
+        fixture->SetSensor(m_isSensor);
+    }
 }
 
 //----------------------------------------------------------------------------------------------------

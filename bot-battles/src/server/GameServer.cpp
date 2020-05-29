@@ -153,6 +153,10 @@ bool GameServer::Init()
         return ret;
     }
     std::weak_ptr<PickUpSystem> pickUpSystem = m_systemManager->GetSystem<PickUpSystem>();
+    ret = m_physicsComponent.AddObserver(pickUpSystem);
+    if (!ret) {
+        return ret;
+    }
     ret = pickUpSystem.lock()->AddObserver(serverSystem);
     if (!ret) {
         return ret;
