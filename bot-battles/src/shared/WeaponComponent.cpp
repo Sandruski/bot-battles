@@ -17,7 +17,7 @@ WeaponComponent::WeaponComponent()
     , m_timestampLastShotSecondary(0.0f)
     , m_originShot(0.0f, 0.0f)
     , m_destinationShot(0.0f, 0.0f)
-    , m_timeoutShot(0.1f)
+    , m_timeoutShot(0.3f)
     , m_timerShot()
 {
 }
