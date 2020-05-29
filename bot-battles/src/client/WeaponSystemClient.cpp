@@ -79,21 +79,22 @@ bool WeaponSystemClient::Update()
                     }
                 }
                 weaponComponent.lock()->m_timestampLastShotSecondary = timestamp;
+                weaponComponent.lock()->m_timerShot.Start();
 
                 glm::vec2 position = transformComponent.lock()->m_position;
                 glm::vec2 rotation = transformComponent.lock()->GetDirection();
 
-                weaponComponent.lock()->m_origin = position;
+                weaponComponent.lock()->m_originShot = position;
                 F32 maxLength = hasShootPrimaryWeapon ? weaponComponent.lock()->m_rangePrimary : weaponComponent.lock()->m_rangeSecondary;
-                weaponComponent.lock()->m_destination = position + rotation * maxLength;
+                weaponComponent.lock()->m_destinationShot = position + rotation * maxLength;
 
                 PhysicsComponent& physicsComponent = g_gameClient->GetPhysicsComponent();
                 PhysicsComponent::RaycastHit hitInfo;
-                const bool hasIntersected = physicsComponent.Raycast(weaponComponent.lock()->m_origin, weaponComponent.lock()->m_destination, hitInfo);
+                const bool hasIntersected = physicsComponent.Raycast(weaponComponent.lock()->m_originShot, weaponComponent.lock()->m_destinationShot, hitInfo);
                 if (hasIntersected) {
                     std::weak_ptr<TransformComponent> hitEntityTransformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(hitInfo.m_entity);
                     if (!hitEntityTransformComponent.expired()) {
-                        weaponComponent.lock()->m_destination = hitInfo.m_point;
+                        weaponComponent.lock()->m_destinationShot = hitInfo.m_point;
                     }
 
                     std::weak_ptr<HealthComponent> hitEntityHealthComponent = g_gameClient->GetComponentManager().GetComponent<HealthComponent>(hitInfo.m_entity);
