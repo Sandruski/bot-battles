@@ -6,9 +6,7 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 WeaponComponent::WeaponComponent()
-    : m_canShootPrimary(true)
-    , m_canShootSecondary(true)
-    , m_damagePrimary(0)
+    : m_damagePrimary(0)
     , m_damageSecondary(0)
     , m_ammoPrimary(0)
     , m_rangePrimary(0.0f)
@@ -17,10 +15,11 @@ WeaponComponent::WeaponComponent()
     , m_cooldownSecondary(0.0f)
     , m_origin(0.0f, 0.0f)
     , m_destination(0.0f, 0.0f)
-#ifdef _SERVER
-    , m_timerPrimary()
-    , m_timerSecondary()
-#endif
+    , m_timestampLastShotPrimary(0.0f)
+    , m_timestampLastShotSecondary(0.0f)
+    , m_hasShot(false)
+    , m_timeoutShot(1.0f)
+    , m_timerShot()
 {
 }
 
@@ -28,12 +27,6 @@ WeaponComponent::WeaponComponent()
 //----------------------------------------------------------------------------------------------------
 void WeaponComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /*frame*/, ReplicationActionType /*replicationActionType*/, Entity /*entity*/)
 {
-    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_CAN_SHOOT_PRIMARY)) {
-        inputStream.Read(m_canShootPrimary);
-    }
-    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_CAN_SHOOT_SECONDARY)) {
-        inputStream.Read(m_canShootSecondary);
-    }
     if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_DAMAGE_PRIMARY)) {
         inputStream.Read(m_damagePrimary);
     }
@@ -62,14 +55,6 @@ U64 WeaponComponent::Write(OutputMemoryStream& outputStream, U64 dirtyState) con
 {
     U64 writtenState = 0;
 
-    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_CAN_SHOOT_PRIMARY)) {
-        outputStream.Write(m_canShootPrimary);
-        writtenState |= static_cast<U64>(ComponentMemberType::WEAPON_CAN_SHOOT_PRIMARY);
-    }
-    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_CAN_SHOOT_SECONDARY)) {
-        outputStream.Write(m_canShootSecondary);
-        writtenState |= static_cast<U64>(ComponentMemberType::WEAPON_CAN_SHOOT_SECONDARY);
-    }
     if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_DAMAGE_PRIMARY)) {
         outputStream.Write(m_damagePrimary);
         writtenState |= static_cast<U64>(ComponentMemberType::WEAPON_DAMAGE_PRIMARY);

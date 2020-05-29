@@ -9,7 +9,7 @@ namespace sand {
 class Input {
 public:
     Input();
-    Input(const InputComponent& inputComponent, U64 dirtyState, U32 frame, U32 from, U32 to, F32 percentage);
+    Input(const InputComponent& inputComponent, U64 dirtyState, U32 frame, F32 timestamp, U32 from, U32 to, F32 percentage);
 
 #ifdef _CLIENT
     void Write(OutputMemoryStream& outputStream) const;
@@ -20,6 +20,7 @@ public:
     const InputComponent& GetInputComponent() const;
     U64 GetDirtyState() const;
     U32 GetFrame() const;
+    F32 GetTimestamp() const;
 
 public:
     U32 m_interpolationFromFrame;
@@ -30,6 +31,7 @@ private:
     InputComponent m_inputComponent;
     U64 m_dirtyState;
     U32 m_frame;
+    F32 m_timestamp;
 };
 }
 

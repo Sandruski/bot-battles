@@ -32,8 +32,6 @@ struct WeaponComponent : public Component
 #endif
 
     // Networked
-    bool m_canShootPrimary;
-    bool m_canShootSecondary;
     U32 m_damagePrimary;
     U32 m_damageSecondary;
     U32 m_ammoPrimary;
@@ -46,12 +44,12 @@ struct WeaponComponent : public Component
     /// Client & Server
     glm::vec2 m_origin;
     glm::vec2 m_destination;
+    F32 m_timestampLastShotPrimary;
+    F32 m_timestampLastShotSecondary;
 
-    /// Server
-#ifdef _SERVER
-    MyTimer m_timerPrimary;
-    MyTimer m_timerSecondary;
-#endif
+    bool m_hasShot;
+    F32 m_timeoutShot;
+    MyTimer m_timerShot;
 };
 }
 

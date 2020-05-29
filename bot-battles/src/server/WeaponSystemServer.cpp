@@ -54,112 +54,102 @@ bool WeaponSystemServer::Update()
             continue;
         }
 
-        std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
-        std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameServer->GetComponentManager().GetComponent<RigidbodyComponent>(entity);
-        std::weak_ptr<WeaponComponent> weaponComponent = g_gameServer->GetComponentManager().GetComponent<WeaponComponent>(entity);
-
-        U64 weaponDirtyState = 0;
-
-        if (!weaponComponent.lock()->m_canShootPrimary && weaponComponent.lock()->m_timerPrimary.ReadSec() >= weaponComponent.lock()->m_cooldownPrimary) {
-            weaponComponent.lock()->m_canShootPrimary = true;
-            weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_CAN_SHOOT_PRIMARY);
-        }
-        if (!weaponComponent.lock()->m_canShootSecondary && weaponComponent.lock()->m_timerSecondary.ReadSec() >= weaponComponent.lock()->m_cooldownSecondary) {
-            weaponComponent.lock()->m_canShootSecondary = true;
-            weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_CAN_SHOOT_SECONDARY);
-        }
-
         std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
-        for (U32 i = clientProxy.lock()->m_inputBuffer.m_front; i < clientProxy.lock()->m_inputBuffer.m_back; ++i) {
-            const Input& input = clientProxy.lock()->m_inputBuffer.Get(i);
-            U64 dirtyState = input.GetDirtyState();
+        if (!clientProxy.lock()->m_inputBuffer.IsEmpty()) {
+            std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
+            std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameServer->GetComponentManager().GetComponent<RigidbodyComponent>(entity);
+            std::weak_ptr<WeaponComponent> weaponComponent = g_gameServer->GetComponentManager().GetComponent<WeaponComponent>(entity);
 
-            const bool hasShootPrimaryWeapon = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_PRIMARY_WEAPON);
-            const bool hasShootSecondaryWeapon = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_SECONDARY_WEAPON);
-            if (hasShootPrimaryWeapon || hasShootSecondaryWeapon) {
-                // TODO: only shoot one weapon at a time
-                if (hasShootPrimaryWeapon) {
-                    if (!weaponComponent.lock()->m_canShootPrimary) {
-                        continue;
-                    }
-                    if (weaponComponent.lock()->m_ammoPrimary == 0) {
-                        continue;
-                    }
-                    weaponComponent.lock()->m_timerPrimary.Start();
-                    weaponComponent.lock()->m_canShootPrimary = false;
-                    weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_CAN_SHOOT_PRIMARY);
-                    weaponComponent.lock()->m_ammoPrimary -= 1;
-                    weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_AMMO_PRIMARY);
-                } else if (hasShootSecondaryWeapon) {
-                    if (!weaponComponent.lock()->m_canShootSecondary) {
-                        continue;
-                    }
-                    weaponComponent.lock()->m_timerSecondary.Start();
-                    weaponComponent.lock()->m_canShootSecondary = false;
-                    weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_CAN_SHOOT_SECONDARY);
-                }
+            U64 weaponDirtyState = 0;
+            for (U32 i = clientProxy.lock()->m_inputBuffer.m_front; i < clientProxy.lock()->m_inputBuffer.m_back; ++i) {
+                const Input& input = clientProxy.lock()->m_inputBuffer.Get(i);
+                U64 dirtyState = input.GetDirtyState();
 
-                if (serverComponent.m_isServerRewind) {
-                    Rewind(entity, input.m_interpolationFromFrame, input.m_interpolationToFrame, input.m_interpolationPercentage);
-                }
+                const bool hasShootPrimaryWeapon = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_PRIMARY_WEAPON);
+                const bool hasShootSecondaryWeapon = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_SECONDARY_WEAPON);
+                if (hasShootPrimaryWeapon || hasShootSecondaryWeapon) {
+                    F32 timestamp = input.GetTimestamp();
 
-                U32 index = transformComponent.lock()->m_inputTransformBuffer.m_front;
-                bool isFound = false;
-                while (index < transformComponent.lock()->m_inputTransformBuffer.m_back) {
-                    const Transform& transform = transformComponent.lock()->m_inputTransformBuffer.Get(index);
-                    if (transform.GetFrame() == input.GetFrame()) {
-                        isFound = true;
-                        break;
-                    }
-                    ++index;
-                }
-                Transform& transform = isFound ? transformComponent.lock()->m_inputTransformBuffer.Get(index) : transformComponent.lock()->m_inputTransformBuffer.GetLast();
-                rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(transform.m_position.x), PIXELS_TO_METERS(transform.m_position.y)), glm::radians(transform.m_rotation));
-
-                glm::vec2 position = transform.m_position;
-                F32 x = std::cos(glm::radians(transform.m_rotation));
-                F32 y = std::sin(glm::radians(transform.m_rotation));
-                glm::vec2 rotation = glm::vec2(x, y);
-
-                weaponComponent.lock()->m_origin = position;
-                F32 maxLength = hasShootPrimaryWeapon ? weaponComponent.lock()->m_rangePrimary : weaponComponent.lock()->m_rangeSecondary;
-                weaponComponent.lock()->m_destination = position + rotation * maxLength;
-
-                PhysicsComponent& physicsComponent = g_gameServer->GetPhysicsComponent();
-                PhysicsComponent::RaycastHit hitInfo;
-                const bool hasIntersected = physicsComponent.Raycast(weaponComponent.lock()->m_origin, weaponComponent.lock()->m_destination, hitInfo);
-                if (hasIntersected) {
-                    std::weak_ptr<TransformComponent> hitEntityTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(hitInfo.m_entity);
-                    if (!hitEntityTransformComponent.expired()) {
-                        weaponComponent.lock()->m_destination = hitInfo.m_point;
-                    }
-
-                    if (hitInfo.m_entity != entity) {
-                        std::weak_ptr<HealthComponent> hitEntityHealthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(hitInfo.m_entity);
-                        if (!hitEntityHealthComponent.expired()) {
-                            Event newEvent;
-                            newEvent.eventType = EventType::WEAPON_HIT;
-                            newEvent.weapon.entity = entity;
-                            newEvent.weapon.damage = hasShootPrimaryWeapon ? weaponComponent.lock()->m_damagePrimary : weaponComponent.lock()->m_damageSecondary;
-                            PushEvent(newEvent);
+                    if (hasShootPrimaryWeapon) {
+                        F32 timestampDiff = timestamp - weaponComponent.lock()->m_timestampLastShotPrimary;
+                        if (timestampDiff < weaponComponent.lock()->m_cooldownPrimary) {
+                            continue;
+                        }
+                        if (weaponComponent.lock()->m_ammoPrimary == 0) {
+                            continue;
+                        }
+                        weaponComponent.lock()->m_ammoPrimary -= 1;
+                        weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_AMMO_PRIMARY);
+                    } else if (hasShootSecondaryWeapon) {
+                        F32 timestampDiff = timestamp - weaponComponent.lock()->m_timestampLastShotSecondary;
+                        if (timestampDiff < weaponComponent.lock()->m_cooldownSecondary) {
+                            continue;
                         }
                     }
-                }
+                    weaponComponent.lock()->m_timestampLastShotSecondary = timestamp;
 
-                rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(transformComponent.lock()->m_position.x), PIXELS_TO_METERS(transformComponent.lock()->m_position.y)), glm::radians(transformComponent.lock()->m_rotation));
+                    if (serverComponent.m_isServerRewind) {
+                        Rewind(entity, input.m_interpolationFromFrame, input.m_interpolationToFrame, input.m_interpolationPercentage);
+                    }
 
-                if (serverComponent.m_isServerRewind) {
-                    Revert(entity);
+                    U32 index = transformComponent.lock()->m_inputTransformBuffer.m_front;
+                    bool isFound = false;
+                    while (index < transformComponent.lock()->m_inputTransformBuffer.m_back) {
+                        const Transform& transform = transformComponent.lock()->m_inputTransformBuffer.Get(index);
+                        if (transform.GetFrame() == input.GetFrame()) {
+                            isFound = true;
+                            break;
+                        }
+                        ++index;
+                    }
+                    Transform& transform = isFound ? transformComponent.lock()->m_inputTransformBuffer.Get(index) : transformComponent.lock()->m_inputTransformBuffer.GetLast();
+                    rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(transform.m_position.x), PIXELS_TO_METERS(transform.m_position.y)), glm::radians(transform.m_rotation));
+
+                    glm::vec2 position = transform.m_position;
+                    F32 x = std::cos(glm::radians(transform.m_rotation));
+                    F32 y = std::sin(glm::radians(transform.m_rotation));
+                    glm::vec2 rotation = glm::vec2(x, y);
+
+                    weaponComponent.lock()->m_origin = position;
+                    F32 maxLength = hasShootPrimaryWeapon ? weaponComponent.lock()->m_rangePrimary : weaponComponent.lock()->m_rangeSecondary;
+                    weaponComponent.lock()->m_destination = position + rotation * maxLength;
+
+                    PhysicsComponent& physicsComponent = g_gameServer->GetPhysicsComponent();
+                    PhysicsComponent::RaycastHit hitInfo;
+                    const bool hasIntersected = physicsComponent.Raycast(weaponComponent.lock()->m_origin, weaponComponent.lock()->m_destination, hitInfo);
+                    if (hasIntersected) {
+                        std::weak_ptr<TransformComponent> hitEntityTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(hitInfo.m_entity);
+                        if (!hitEntityTransformComponent.expired()) {
+                            weaponComponent.lock()->m_destination = hitInfo.m_point;
+                        }
+
+                        if (hitInfo.m_entity != entity) {
+                            std::weak_ptr<HealthComponent> hitEntityHealthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(hitInfo.m_entity);
+                            if (!hitEntityHealthComponent.expired()) {
+                                Event newEvent;
+                                newEvent.eventType = EventType::WEAPON_HIT;
+                                newEvent.weapon.entity = entity;
+                                newEvent.weapon.damage = hasShootPrimaryWeapon ? weaponComponent.lock()->m_damagePrimary : weaponComponent.lock()->m_damageSecondary;
+                                PushEvent(newEvent);
+                            }
+                        }
+                    }
+
+                    rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(transformComponent.lock()->m_position.x), PIXELS_TO_METERS(transformComponent.lock()->m_position.y)), glm::radians(transformComponent.lock()->m_rotation));
+
+                    if (serverComponent.m_isServerRewind) {
+                        Revert(entity);
+                    }
                 }
             }
-        }
 
-        if (weaponDirtyState > 0) {
-            Event newEvent;
-            newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
-            newEvent.component.entity = entity;
-            newEvent.component.dirtyState = weaponDirtyState;
-            NotifyEvent(newEvent);
+            if (weaponDirtyState > 0) {
+                Event newEvent;
+                newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
+                newEvent.component.entity = entity;
+                newEvent.component.dirtyState = weaponDirtyState;
+                NotifyEvent(newEvent);
+            }
         }
     }
 

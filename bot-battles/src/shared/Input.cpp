@@ -7,6 +7,7 @@ Input::Input()
     : m_inputComponent()
     , m_dirtyState(0)
     , m_frame(0)
+    , m_timestamp(0.0f)
     , m_interpolationFromFrame(0)
     , m_interpolationToFrame(0)
     , m_interpolationPercentage(0.0f)
@@ -14,10 +15,11 @@ Input::Input()
 }
 
 //----------------------------------------------------------------------------------------------------
-Input::Input(const InputComponent& inputComponent, U64 dirtyState, U32 frame, U32 from, U32 to, F32 percentage)
+Input::Input(const InputComponent& inputComponent, U64 dirtyState, U32 frame, F32 timestamp, U32 from, U32 to, F32 percentage)
     : m_inputComponent(inputComponent)
     , m_dirtyState(dirtyState)
     , m_frame(frame)
+    , m_timestamp(timestamp)
     , m_interpolationFromFrame(from)
     , m_interpolationToFrame(to)
     , m_interpolationPercentage(percentage)
@@ -31,6 +33,7 @@ void Input::Write(OutputMemoryStream& outputStream) const
     outputStream.Write(m_dirtyState);
     m_inputComponent.Write(outputStream, m_dirtyState);
     outputStream.Write(m_frame);
+    outputStream.Write(m_timestamp);
     outputStream.Write(m_interpolationFromFrame);
     outputStream.Write(m_interpolationToFrame);
     outputStream.Write(m_interpolationPercentage);
@@ -42,6 +45,7 @@ void Input::Read(InputMemoryStream& inputStream)
     inputStream.Read(m_dirtyState);
     m_inputComponent.Read(inputStream, m_dirtyState, 0, ReplicationActionType::NONE, INVALID_ENTITY);
     inputStream.Read(m_frame);
+    inputStream.Read(m_timestamp);
     inputStream.Read(m_interpolationFromFrame);
     inputStream.Read(m_interpolationToFrame);
     inputStream.Read(m_interpolationPercentage);
@@ -64,5 +68,11 @@ U64 Input::GetDirtyState() const
 U32 Input::GetFrame() const
 {
     return m_frame;
+}
+
+//----------------------------------------------------------------------------------------------------
+F32 Input::GetTimestamp() const
+{
+    return m_timestamp;
 }
 }

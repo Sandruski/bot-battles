@@ -62,18 +62,23 @@ bool WeaponSystemClient::Update()
             const bool hasShootPrimaryWeapon = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_PRIMARY_WEAPON);
             const bool hasShootSecondaryWeapon = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_SECONDARY_WEAPON);
             if (hasShootPrimaryWeapon || hasShootSecondaryWeapon) {
+                F32 timestamp = input.GetTimestamp();
+
                 if (hasShootPrimaryWeapon) {
-                    if (!weaponComponent.lock()->m_canShootPrimary) {
+                    F32 timestampDiff = timestamp - weaponComponent.lock()->m_timestampLastShotPrimary;
+                    if (timestampDiff < weaponComponent.lock()->m_cooldownPrimary) {
                         continue;
                     }
                     if (weaponComponent.lock()->m_ammoPrimary == 0) {
                         continue;
                     }
                 } else if (hasShootSecondaryWeapon) {
-                    if (!weaponComponent.lock()->m_canShootSecondary) {
+                    F32 timestampDiff = timestamp - weaponComponent.lock()->m_timestampLastShotSecondary;
+                    if (timestampDiff < weaponComponent.lock()->m_cooldownSecondary) {
                         continue;
                     }
                 }
+                weaponComponent.lock()->m_timestampLastShotSecondary = timestamp;
 
                 glm::vec2 position = transformComponent.lock()->m_position;
                 glm::vec2 rotation = transformComponent.lock()->GetDirection();
