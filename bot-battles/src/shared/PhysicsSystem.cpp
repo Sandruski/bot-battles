@@ -38,12 +38,12 @@ void PhysicsSystem::OnRigidbodyComponentAdded(Entity entity) const
 
     switch (colliderComponent.lock()->m_shapeType) {
     case ColliderComponent::ShapeType::CIRCLE: {
-        rigidbodyComponent.lock()->SetAsCircle(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, colliderComponent.lock()->m_size.x / 2.0f, originalEntity);
+        rigidbodyComponent.lock()->SetAsCircle(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, colliderComponent.lock()->m_size.x / 2.0f, colliderComponent.lock()->m_isTrigger, originalEntity);
         break;
     }
 
     case ColliderComponent::ShapeType::BOX: {
-        rigidbodyComponent.lock()->SetAsBox(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, colliderComponent.lock()->m_size / 2.0f, originalEntity);
+        rigidbodyComponent.lock()->SetAsBox(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, colliderComponent.lock()->m_size / 2.0f, colliderComponent.lock()->m_isTrigger, originalEntity);
         break;
     }
 

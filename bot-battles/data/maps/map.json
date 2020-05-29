@@ -230,7 +230,7 @@
                  "type":"WeaponSpawner",
                  "visible":true,
                  "width":64,
-                 "x":320,
+                 "x":640,
                  "y":448
                 }, 
                 {
@@ -273,7 +273,7 @@
                  "type":"WeaponSpawner",
                  "visible":true,
                  "width":64,
-                 "x":448,
+                 "x":192,
                  "y":128
                 }],
          "opacity":1,

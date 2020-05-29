@@ -41,6 +41,7 @@ struct ColliderComponent : public Component
     // Networked
     glm::vec2 m_size;
     ShapeType m_shapeType;
+    bool m_isTrigger;
 };
 }
 

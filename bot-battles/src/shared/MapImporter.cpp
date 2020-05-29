@@ -253,15 +253,12 @@ void MapImporter::Create(const Tilemap& tilemap) const
                 colliderComponent.lock()->m_size = static_cast<glm::vec2>(tilemap.m_tileSize);
                 colliderComponent.lock()->m_size *= transformComponent.lock()->m_scale;
                 colliderComponent.lock()->m_shapeType = ColliderComponent::ShapeType::BOX;
+                colliderComponent.lock()->m_isTrigger = true;
 
                 // Rigidbody
                 std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_game->GetComponentManager().AddComponent<RigidbodyComponent>(entity);
                 rigidbodyComponent.lock()->m_bodyType = RigidbodyComponent::BodyType::STATIC;
                 rigidbodyComponent.lock()->UpdateBodyType();
-                rigidbodyComponent.lock()->m_groupIndex = 0;
-                rigidbodyComponent.lock()->UpdateGroupIndex();
-                rigidbodyComponent.lock()->m_isSensor = true;
-                rigidbodyComponent.lock()->UpdateSensor();
             }
         }
     }

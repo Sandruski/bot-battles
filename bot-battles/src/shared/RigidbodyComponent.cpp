@@ -37,10 +37,6 @@ void RigidbodyComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U3
         inputStream.Read(m_groupIndex);
         UpdateGroupIndex();
     }
-    if (dirtyState & static_cast<U64>(ComponentMemberType::RIGIDBODY_SENSOR)) {
-        inputStream.Read(m_isSensor);
-        UpdateSensor();
-    }
     if (dirtyState & static_cast<U64>(ComponentMemberType::RIGIDBODY_BULLET)) {
         inputStream.Read(m_isBullet);
         UpdateBullet();
@@ -60,10 +56,6 @@ U64 RigidbodyComponent::Write(OutputMemoryStream& outputStream, U64 dirtyState) 
         outputStream.Write(m_groupIndex);
         writtenState |= static_cast<U64>(ComponentMemberType::RIGIDBODY_GROUP_INDEX);
     }
-    if (dirtyState & static_cast<U64>(ComponentMemberType::RIGIDBODY_SENSOR)) {
-        outputStream.Write(m_isSensor);
-        writtenState |= static_cast<U64>(ComponentMemberType::RIGIDBODY_SENSOR);
-    }
     if (dirtyState & static_cast<U64>(ComponentMemberType::RIGIDBODY_BULLET)) {
         outputStream.Write(m_isBullet);
         writtenState |= static_cast<U64>(ComponentMemberType::RIGIDBODY_BULLET);
@@ -74,7 +66,7 @@ U64 RigidbodyComponent::Write(OutputMemoryStream& outputStream, U64 dirtyState) 
 #endif
 
 //----------------------------------------------------------------------------------------------------
-void RigidbodyComponent::SetAsCircle(glm::vec2 position, F32 rotation, F32 radius, const Entity& entity)
+void RigidbodyComponent::SetAsCircle(glm::vec2 position, F32 rotation, F32 radius, bool isSensor, const Entity& entity)
 {
     if (m_body != nullptr) {
         return;
@@ -97,6 +89,7 @@ void RigidbodyComponent::SetAsCircle(glm::vec2 position, F32 rotation, F32 radiu
     fixtureDef.shape = &shape;
     fixtureDef.restitution = 0.0f;
     fixtureDef.friction = 0.0f;
+    fixtureDef.isSensor = isSensor;
     if (m_bodyType == BodyType::DYNAMIC) {
         fixtureDef.density = 1.0f;
     }
@@ -104,7 +97,7 @@ void RigidbodyComponent::SetAsCircle(glm::vec2 position, F32 rotation, F32 radiu
 }
 
 //----------------------------------------------------------------------------------------------------
-void RigidbodyComponent::SetAsBox(glm::vec2 position, F32 rotation, glm::vec2 halfSize, const Entity& entity)
+void RigidbodyComponent::SetAsBox(glm::vec2 position, F32 rotation, glm::vec2 halfSize, bool isSensor, const Entity& entity)
 {
     if (m_body != nullptr) {
         return;
@@ -127,6 +120,7 @@ void RigidbodyComponent::SetAsBox(glm::vec2 position, F32 rotation, glm::vec2 ha
     fixtureDef.shape = &shape;
     fixtureDef.restitution = 0.0f;
     fixtureDef.friction = 0.0f;
+    fixtureDef.isSensor = isSensor;
     if (m_bodyType == BodyType::DYNAMIC) {
         fixtureDef.density = 1.0f;
     }
@@ -177,18 +171,6 @@ void RigidbodyComponent::UpdateGroupIndex() const
     filter.groupIndex = m_groupIndex;
     for (b2Fixture* fixture = m_body->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()) {
         fixture->SetFilterData(filter);
-    }
-}
-
-//----------------------------------------------------------------------------------------------------
-void RigidbodyComponent::UpdateSensor() const
-{
-    if (m_body == nullptr) {
-        return;
-    }
-
-    for (b2Fixture* fixture = m_body->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()) {
-        fixture->SetSensor(m_isSensor);
     }
 }
 
