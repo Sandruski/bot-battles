@@ -11,7 +11,6 @@ RigidbodyComponent::RigidbodyComponent()
     : m_body(nullptr)
     , m_bodyType(BodyType::NONE)
     , m_groupIndex(0)
-    , m_isSensor(false)
     , m_isBullet(false)
 {
 }
@@ -87,9 +86,9 @@ void RigidbodyComponent::SetAsCircle(glm::vec2 position, F32 rotation, F32 radiu
     b2CircleShape shape;
     shape.m_radius = PIXELS_TO_METERS(radius);
     fixtureDef.shape = &shape;
+    fixtureDef.isSensor = isSensor;
     fixtureDef.restitution = 0.0f;
     fixtureDef.friction = 0.0f;
-    fixtureDef.isSensor = isSensor;
     fixtureDef.density = 1.0f;
     m_body->CreateFixture(&fixtureDef);
 }
@@ -116,9 +115,9 @@ void RigidbodyComponent::SetAsBox(glm::vec2 position, F32 rotation, glm::vec2 ha
     b2PolygonShape shape;
     shape.SetAsBox(PIXELS_TO_METERS(halfSize.x), PIXELS_TO_METERS(halfSize.y));
     fixtureDef.shape = &shape;
+    fixtureDef.isSensor = isSensor;
     fixtureDef.restitution = 0.0f;
     fixtureDef.friction = 0.0f;
-    fixtureDef.isSensor = isSensor;
     fixtureDef.density = 1.0f;
     m_body->CreateFixture(&fixtureDef);
 }

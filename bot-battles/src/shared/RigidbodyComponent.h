@@ -59,7 +59,6 @@ struct RigidbodyComponent : public Component
     // Networked
     BodyType m_bodyType;
     I16 m_groupIndex;
-    bool m_isSensor;
     bool m_isBullet;
 };
 }
