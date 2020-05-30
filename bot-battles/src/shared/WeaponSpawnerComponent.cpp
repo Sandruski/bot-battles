@@ -16,7 +16,7 @@ WeaponSpawnerComponent::WeaponSpawnerComponent()
     , m_spawnWeapon2(false)
     , m_timeoutSpawn(0.0f)
     , m_timerSpawn()
-    , m_entitySpawn(INVALID_ENTITY)
+    , m_entitySpawned(INVALID_ENTITY)
 {
 }
 }

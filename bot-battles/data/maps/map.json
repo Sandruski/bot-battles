@@ -43,7 +43,7 @@
                  "gid":198,
                  "height":64,
                  "id":18,
-                 "name":"bot1",
+                 "name":"botSpawner2",
                  "properties":[
                         {
                          "name":"cooldownWeapon",
@@ -96,7 +96,7 @@
                  "gid":198,
                  "height":64,
                  "id":17,
-                 "name":"bot0",
+                 "name":"botSpawner1",
                  "properties":[
                         {
                          "name":"cooldownWeapon",
@@ -163,14 +163,29 @@
                  "name":"healthSpawner1",
                  "properties":[
                         {
-                         "name":"health",
+                         "name":"pointsHealth1",
+                         "type":"int",
+                         "value":20
+                        }, 
+                        {
+                         "name":"pointsHealth2",
                          "type":"int",
                          "value":50
                         }, 
                         {
+                         "name":"spawnHealth1",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"spawnHealth2",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
                          "name":"spawnSeconds",
                          "type":"float",
-                         "value":30
+                         "value":10
                         }],
                  "rotation":0,
                  "type":"HealthSpawner",

@@ -27,7 +27,7 @@ struct WeaponSpawnerComponent : public Component {
     F32 m_timeoutSpawn;
 
     MyTimer m_timerSpawn;
-    Entity m_entitySpawn;
+    Entity m_entitySpawned;
 };
 }
 

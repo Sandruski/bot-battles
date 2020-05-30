@@ -240,8 +240,21 @@ void MapImporter::Create(const Tilemap& tilemap) const
                 }
             }
 
-            // HealthSpawner TODO
             if (object.m_type == "HealthSpawner") {
+                std::weak_ptr<HealthSpawnerComponent> healthSpawnerComponent = g_game->GetComponentManager().AddComponent<HealthSpawnerComponent>(entity);
+                for (const auto& property : object.m_properties) {
+                    if (property.m_name == "pointsHealth1") {
+                        healthSpawnerComponent.lock()->m_pointsHealth1 = property.m_value.intValue;
+                    } else if (property.m_name == "pointsHealth2") {
+                        healthSpawnerComponent.lock()->m_pointsHealth2 = property.m_value.intValue;
+                    } else if (property.m_name == "spawnHealth1") {
+                        healthSpawnerComponent.lock()->m_spawnHealth1 = property.m_value.boolValue;
+                    } else if (property.m_name == "spawnHealth2") {
+                        healthSpawnerComponent.lock()->m_spawnHealth2 = property.m_value.boolValue;
+                    } else if (property.m_name == "spawnSeconds") {
+                        healthSpawnerComponent.lock()->m_timeoutSpawn = property.m_value.floatValue;
+                    }
+                }
             }
 #endif
         }

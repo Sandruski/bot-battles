@@ -26,7 +26,7 @@ WeaponSpawnerSystem::WeaponSpawnerSystem()
 bool WeaponSpawnerSystem::Update()
 {
     OPTICK_EVENT();
-
+    // TODO: spawn only once or forever
     GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
     std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
     if (currentState.expired()) {
@@ -39,7 +39,7 @@ bool WeaponSpawnerSystem::Update()
             if (!weaponSpawnerComponent.lock()->m_spawnWeapon1 && !weaponSpawnerComponent.lock()->m_spawnWeapon2) {
                 continue;
             }
-            if (weaponSpawnerComponent.lock()->m_entitySpawn < INVALID_ENTITY) {
+            if (weaponSpawnerComponent.lock()->m_entitySpawned < INVALID_ENTITY) {
                 continue;
             }
             if (weaponSpawnerComponent.lock()->m_timerSpawn.ReadSec() < weaponSpawnerComponent.lock()->m_timeoutSpawn) {
@@ -50,7 +50,7 @@ bool WeaponSpawnerSystem::Update()
             U32 weapon1 = weaponSpawnerComponent.lock()->m_spawnWeapon1 ? 1 : 2;
             U32 weapon2 = weaponSpawnerComponent.lock()->m_spawnWeapon2 ? 2 : 1;
             U32 weapon = RandomInt(weapon1, weapon2);
-            weaponSpawnerComponent.lock()->m_entitySpawn = SpawnWeapon(weapon, entity);
+            weaponSpawnerComponent.lock()->m_entitySpawned = SpawnWeapon(weapon, entity);
         }
     }
 
@@ -112,7 +112,7 @@ Entity WeaponSpawnerSystem::SpawnWeapon(U32 weapon, Entity spawner) const
 
     // Collider
     std::weak_ptr<ColliderComponent> colliderComponent = g_game->GetComponentManager().AddComponent<ColliderComponent>(entity);
-    colliderComponent.lock()->m_size = glm::vec2(30.0f, 30.0f);
+    colliderComponent.lock()->m_size = glm::vec2(64.0f, 64.0f);
     colliderComponent.lock()->m_size *= transformComponent.lock()->m_scale;
     colliderComponent.lock()->m_shapeType = ColliderComponent::ShapeType::BOX;
     colliderComponent.lock()->m_isTrigger = true;
@@ -155,8 +155,8 @@ void WeaponSpawnerSystem::OnEntityRemoved(Entity entityRemoved) const
     for (auto& entity : m_entities) {
         std::weak_ptr<WeaponSpawnerComponent> weaponSpawnerComponent = g_gameServer->GetComponentManager().GetComponent<WeaponSpawnerComponent>(entity);
         if (!weaponSpawnerComponent.expired()) {
-            if (weaponSpawnerComponent.lock()->m_entitySpawn == entityRemoved) {
-                weaponSpawnerComponent.lock()->m_entitySpawn = INVALID_ENTITY;
+            if (weaponSpawnerComponent.lock()->m_entitySpawned == entityRemoved) {
+                weaponSpawnerComponent.lock()->m_entitySpawned = INVALID_ENTITY;
                 break;
             }
         }

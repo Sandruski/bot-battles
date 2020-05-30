@@ -6,7 +6,7 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class HealthSpawnerSystem : public System {
+class HealthSpawnerSystem : public System, public Observer {
 public:
     static SystemType GetType()
     {
@@ -17,6 +17,13 @@ public:
     HealthSpawnerSystem();
 
     bool Update() override;
+
+    void OnNotify(const Event& event) override;
+
+private:
+    Entity SpawnHealth(U32 health, Entity spawner) const;
+
+    void OnEntityRemoved(Entity entityRemoved) const;
 };
 }
 
