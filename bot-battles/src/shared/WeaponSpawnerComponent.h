@@ -24,10 +24,12 @@ struct WeaponSpawnerComponent : public Component {
     F32 m_cooldownWeapon2;
     bool m_spawnWeapon1;
     bool m_spawnWeapon2;
+    I32 m_amountSpawn;
     F32 m_timeoutSpawn;
 
     MyTimer m_timerSpawn;
     Entity m_entitySpawned;
+    U32 m_amountSpawned;
 };
 }
 

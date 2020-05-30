@@ -38,6 +38,9 @@ bool HealthSpawnerSystem::Update()
             if (!healthSpawnerComponent.lock()->m_spawnHealth1 && !healthSpawnerComponent.lock()->m_spawnHealth2) {
                 continue;
             }
+            if (healthSpawnerComponent.lock()->m_amountSpawn == 0 || (healthSpawnerComponent.lock()->m_amountSpawn != -1 && static_cast<I32>(healthSpawnerComponent.lock()->m_amountSpawned) >= healthSpawnerComponent.lock()->m_amountSpawn)) {
+                continue;
+            }
             if (healthSpawnerComponent.lock()->m_entitySpawned < INVALID_ENTITY) {
                 continue;
             }
@@ -50,6 +53,7 @@ bool HealthSpawnerSystem::Update()
             U32 health2 = healthSpawnerComponent.lock()->m_spawnHealth2 ? 2 : 1;
             U32 health = RandomInt(health1, health2);
             healthSpawnerComponent.lock()->m_entitySpawned = SpawnHealth(health, entity);
+            ++healthSpawnerComponent.lock()->m_amountSpawned;
         }
     }
 

@@ -163,6 +163,11 @@
                  "name":"healthSpawner1",
                  "properties":[
                         {
+                         "name":"amountSpawn",
+                         "type":"int",
+                         "value":1
+                        }, 
+                        {
                          "name":"pointsHealth1",
                          "type":"int",
                          "value":20
@@ -217,6 +222,11 @@
                          "value":10
                         }, 
                         {
+                         "name":"amountSpawn",
+                         "type":"int",
+                         "value":-1
+                        }, 
+                        {
                          "name":"cooldownWeapon1",
                          "type":"float",
                          "value":5
@@ -263,6 +273,11 @@
                          "name":"ammoWeapon2",
                          "type":"int",
                          "value":5
+                        }, 
+                        {
+                         "name":"amountSpawn",
+                         "type":"int",
+                         "value":-1
                         }, 
                         {
                          "name":"cooldownWeapon2",

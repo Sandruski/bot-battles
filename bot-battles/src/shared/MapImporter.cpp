@@ -234,6 +234,8 @@ void MapImporter::Create(const Tilemap& tilemap) const
                         weaponSpawnerComponent.lock()->m_spawnWeapon1 = property.m_value.boolValue;
                     } else if (property.m_name == "spawnWeapon2") {
                         weaponSpawnerComponent.lock()->m_spawnWeapon2 = property.m_value.boolValue;
+                    } else if (property.m_name == "amountSpawn") {
+                        weaponSpawnerComponent.lock()->m_amountSpawn = property.m_value.intValue;
                     } else if (property.m_name == "spawnSeconds") {
                         weaponSpawnerComponent.lock()->m_timeoutSpawn = property.m_value.floatValue;
                     }
@@ -251,6 +253,8 @@ void MapImporter::Create(const Tilemap& tilemap) const
                         healthSpawnerComponent.lock()->m_spawnHealth1 = property.m_value.boolValue;
                     } else if (property.m_name == "spawnHealth2") {
                         healthSpawnerComponent.lock()->m_spawnHealth2 = property.m_value.boolValue;
+                    } else if (property.m_name == "amountSpawn") {
+                        healthSpawnerComponent.lock()->m_amountSpawn = property.m_value.intValue;
                     } else if (property.m_name == "spawnSeconds") {
                         healthSpawnerComponent.lock()->m_timeoutSpawn = property.m_value.floatValue;
                     }

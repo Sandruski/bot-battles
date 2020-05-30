@@ -39,6 +39,9 @@ bool WeaponSpawnerSystem::Update()
             if (!weaponSpawnerComponent.lock()->m_spawnWeapon1 && !weaponSpawnerComponent.lock()->m_spawnWeapon2) {
                 continue;
             }
+            if (weaponSpawnerComponent.lock()->m_amountSpawn == 0 || (weaponSpawnerComponent.lock()->m_amountSpawn != -1 && static_cast<I32>(weaponSpawnerComponent.lock()->m_amountSpawned) >= weaponSpawnerComponent.lock()->m_amountSpawn)) {
+                continue;
+            }
             if (weaponSpawnerComponent.lock()->m_entitySpawned < INVALID_ENTITY) {
                 continue;
             }
@@ -51,6 +54,7 @@ bool WeaponSpawnerSystem::Update()
             U32 weapon2 = weaponSpawnerComponent.lock()->m_spawnWeapon2 ? 2 : 1;
             U32 weapon = RandomInt(weapon1, weapon2);
             weaponSpawnerComponent.lock()->m_entitySpawned = SpawnWeapon(weapon, entity);
+            ++weaponSpawnerComponent.lock()->m_amountSpawned;
         }
     }
 
