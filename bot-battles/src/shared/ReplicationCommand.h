@@ -9,12 +9,14 @@ namespace sand {
 class ReplicationCommand {
 public:
     ReplicationCommand();
-    ReplicationCommand(ReplicationActionType replicationAction, U64 dirtyState, bool isReplicated);
+    ReplicationCommand(ReplicationActionType replicationAction, U64 dirtyState, bool isReplicated, bool hasReplicated);
 
     void SetIsReplicated(bool isReplicated);
     void SetWasReplicated(bool wasReplicated);
+    void SetHasReplicated(bool hasReplicated);
     bool GetIsReplicated() const;
     bool GetWasReplicated() const;
+    bool GetHasReplicated() const;
 
     void AddDirtyState(U64 dirtyState);
     void RemoveDirtyState(U64 dirtyState);
@@ -28,6 +30,7 @@ private:
     U64 m_dirtyState;
     bool m_isReplicated;
     bool m_wasReplicated;
+    bool m_hasReplicated;
 };
 }
 

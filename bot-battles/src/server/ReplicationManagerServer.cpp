@@ -26,7 +26,7 @@ bool ReplicationManagerServer::AddCommand(NetworkID networkID, U64 dirtyState, b
         return false;
     }
 
-    m_networkIDToReplicationCommand[networkID] = ReplicationCommand(ReplicationActionType::CREATE, dirtyState, isReplicated);
+    m_networkIDToReplicationCommand[networkID] = ReplicationCommand(ReplicationActionType::CREATE, dirtyState, isReplicated, false);
 
     return true;
 }
@@ -80,6 +80,18 @@ void ReplicationManagerServer::SetIsReplicated(NetworkID networkID, bool isRepli
 void ReplicationManagerServer::AddDirtyState(NetworkID networkID, U64 dirtyState)
 {
     m_networkIDToReplicationCommand.at(networkID).AddDirtyState(dirtyState);
+}
+
+//----------------------------------------------------------------------------------------------------
+void ReplicationManagerServer::Remove(NetworkID networkID)
+{
+    ReplicationCommand& replicationCommand = m_networkIDToReplicationCommand.at(networkID);
+    const bool hasReplicated = replicationCommand.GetHasReplicated();
+    if (hasReplicated) {
+        SetRemove(networkID);
+    } else {
+        RemoveCommand(networkID);
+    }
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -137,6 +149,7 @@ void ReplicationManagerServer::Write(OutputMemoryStream& outputStream, Replicati
             if (isReplicated) {
                 replicationCommand.RemoveDirtyState(static_cast<U64>(ComponentMemberType::ALL));
                 //replicationCommand.RemoveDirtyState(writtenState);
+                replicationCommand.SetHasReplicated(true);
 
                 if (replicationCommand.m_replicationActionType == ReplicationActionType::CREATE
                     || replicationCommand.m_replicationActionType == ReplicationActionType::REMOVE) {

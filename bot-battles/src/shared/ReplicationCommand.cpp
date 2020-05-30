@@ -8,15 +8,17 @@ ReplicationCommand::ReplicationCommand()
     , m_dirtyState(0)
     , m_isReplicated(true)
     , m_wasReplicated(true)
+    , m_hasReplicated(false)
 {
 }
 
 //----------------------------------------------------------------------------------------------------
-ReplicationCommand::ReplicationCommand(ReplicationActionType replicationAction, U64 dirtyState, bool isReplicated)
+ReplicationCommand::ReplicationCommand(ReplicationActionType replicationAction, U64 dirtyState, bool isReplicated, bool hasReplicated)
     : m_replicationActionType(replicationAction)
     , m_dirtyState(dirtyState)
     , m_isReplicated(isReplicated)
     , m_wasReplicated(isReplicated)
+    , m_hasReplicated(hasReplicated)
 {
 }
 
@@ -34,6 +36,12 @@ void ReplicationCommand::SetWasReplicated(bool wasReplicated)
 }
 
 //----------------------------------------------------------------------------------------------------
+void ReplicationCommand::SetHasReplicated(bool hasReplicated)
+{
+    m_hasReplicated = hasReplicated;
+}
+
+//----------------------------------------------------------------------------------------------------
 bool ReplicationCommand::GetIsReplicated() const
 {
     return m_isReplicated;
@@ -43,6 +51,12 @@ bool ReplicationCommand::GetIsReplicated() const
 bool ReplicationCommand::GetWasReplicated() const
 {
     return m_wasReplicated;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool ReplicationCommand::GetHasReplicated() const
+{
+    return m_hasReplicated;
 }
 
 //----------------------------------------------------------------------------------------------------
