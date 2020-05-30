@@ -19,8 +19,8 @@ public:
     void OnNotify(const Event& event) override;
 
 private:
-    Entity Spawn(PlayerID playerID) const;
-    void Despawn(Entity entity) const;
+    Entity SpawnBot(PlayerID playerID) const;
+    void DespawnBot(Entity entity) const;
 
     void OnPlayerAdded(PlayerID playerID) const;
     void OnPlayerRemoved(Entity entity) const;

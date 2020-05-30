@@ -2,6 +2,7 @@
 
 #include "ColliderComponent.h"
 #include "ComponentManager.h"
+#include "ComponentMemberTypes.h"
 #include "EntityManager.h"
 #include "GameServer.h"
 #include "GameplayComponent.h"
@@ -64,6 +65,11 @@ bool HealthSpawnerSystem::Update()
 void HealthSpawnerSystem::OnNotify(const Event& event)
 {
     switch (event.eventType) {
+
+    case EventType::COLLISION_ENTER: {
+        OnCollisionEnter(event.collision.entityA, event.collision.entityB);
+        break;
+    }
 
     case EventType::ENTITY_REMOVED: {
         OnEntityRemoved(event.entity.entity);
@@ -144,6 +150,70 @@ Entity HealthSpawnerSystem::SpawnHealth(U32 health, Entity spawner) const
     }
 
     return entity;
+}
+
+//----------------------------------------------------------------------------------------------------
+void HealthSpawnerSystem::DespawnHealth(Entity entity) const
+{
+    g_gameServer->GetLinkingContext().RemoveEntity(entity);
+    g_gameServer->GetEntityManager().RemoveEntity(entity);
+}
+
+//----------------------------------------------------------------------------------------------------
+bool HealthSpawnerSystem::PickUpHealth(Entity character, Entity health) const
+{
+    std::weak_ptr<HealthComponent> characterHealthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(character);
+    if (characterHealthComponent.lock()->m_currentHealth == static_cast<I32>(characterHealthComponent.lock()->m_maxHealth)) {
+        return false;
+    }
+    std::weak_ptr<HealthComponent> healthHealthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(health);
+
+    U64 healthDirtyState = 0;
+    characterHealthComponent.lock()->m_currentHealth += healthHealthComponent.lock()->m_currentHealth;
+    if (characterHealthComponent.lock()->m_currentHealth > static_cast<I32>(characterHealthComponent.lock()->m_maxHealth)) {
+        characterHealthComponent.lock()->m_currentHealth = characterHealthComponent.lock()->m_maxHealth;
+    }
+    healthDirtyState |= static_cast<U64>(ComponentMemberType::HEALTH_CURRENT_HEALTH);
+
+    if (healthDirtyState > 0) {
+        Event newComponentEvent;
+        newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
+        newComponentEvent.component.entity = character;
+        newComponentEvent.component.dirtyState = healthDirtyState;
+        NotifyEvent(newComponentEvent);
+    }
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+void HealthSpawnerSystem::OnCollisionEnter(Entity entityA, Entity entityB) const
+{
+    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
+    PlayerID playerIDA = serverComponent.GetPlayerID(entityA);
+    PlayerID playerIDB = serverComponent.GetPlayerID(entityB);
+    if ((playerIDA < INVALID_PLAYER_ID && playerIDB < INVALID_PLAYER_ID)
+        || (playerIDA >= INVALID_PLAYER_ID && playerIDB >= INVALID_PLAYER_ID)) {
+        return;
+    }
+
+    if (playerIDA < INVALID_PLAYER_ID) {
+        std::weak_ptr<HealthComponent> healthComponentB = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(entityB);
+        if (!healthComponentB.expired()) {
+            const bool isPickUp = PickUpHealth(entityA, entityB);
+            if (isPickUp) {
+                DespawnHealth(entityB);
+            }
+        }
+    } else if (playerIDB < INVALID_PLAYER_ID) {
+        std::weak_ptr<HealthComponent> healthComponentA = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(entityA);
+        if (!healthComponentA.expired()) {
+            const bool isPickUp = PickUpHealth(entityB, entityA);
+            if (isPickUp) {
+                DespawnHealth(entityA);
+            }
+        }
+    }
 }
 
 //----------------------------------------------------------------------------------------------------

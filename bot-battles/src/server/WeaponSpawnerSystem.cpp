@@ -2,6 +2,7 @@
 
 #include "ColliderComponent.h"
 #include "ComponentManager.h"
+#include "ComponentMemberTypes.h"
 #include "EntityManager.h"
 #include "GameServer.h"
 #include "GameplayComponent.h"
@@ -65,6 +66,11 @@ bool WeaponSpawnerSystem::Update()
 void WeaponSpawnerSystem::OnNotify(const Event& event)
 {
     switch (event.eventType) {
+
+    case EventType::COLLISION_ENTER: {
+        OnCollisionEnter(event.collision.entityA, event.collision.entityB);
+        break;
+    }
 
     case EventType::ENTITY_REMOVED: {
         OnEntityRemoved(event.entity.entity);
@@ -151,6 +157,70 @@ Entity WeaponSpawnerSystem::SpawnWeapon(U32 weapon, Entity spawner) const
     }
 
     return entity;
+}
+
+//----------------------------------------------------------------------------------------------------
+void WeaponSpawnerSystem::DespawnWeapon(Entity entity) const
+{
+    g_gameServer->GetLinkingContext().RemoveEntity(entity);
+    g_gameServer->GetEntityManager().RemoveEntity(entity);
+}
+
+//----------------------------------------------------------------------------------------------------
+bool WeaponSpawnerSystem::PickUpWeapon(Entity character, Entity weapon) const
+{
+    std::weak_ptr<WeaponComponent> characterWeaponComponent = g_gameServer->GetComponentManager().GetComponent<WeaponComponent>(character);
+    std::weak_ptr<WeaponComponent> weaponWeaponComponent = g_gameServer->GetComponentManager().GetComponent<WeaponComponent>(weapon);
+
+    U64 weaponDirtyState = 0;
+    characterWeaponComponent.lock()->m_damagePrimary = weaponWeaponComponent.lock()->m_damagePrimary;
+    weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_DAMAGE_PRIMARY);
+    characterWeaponComponent.lock()->m_ammoPrimary = weaponWeaponComponent.lock()->m_ammoPrimary;
+    weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_AMMO_PRIMARY);
+    characterWeaponComponent.lock()->m_rangePrimary = weaponWeaponComponent.lock()->m_rangePrimary;
+    weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_RANGE_PRIMARY);
+    characterWeaponComponent.lock()->m_cooldownPrimary = weaponWeaponComponent.lock()->m_cooldownPrimary;
+    weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_COOLDOWN_PRIMARY);
+
+    if (weaponDirtyState > 0) {
+        Event newComponentEvent;
+        newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
+        newComponentEvent.component.entity = character;
+        newComponentEvent.component.dirtyState = weaponDirtyState;
+        NotifyEvent(newComponentEvent);
+    }
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+void WeaponSpawnerSystem::OnCollisionEnter(Entity entityA, Entity entityB) const
+{
+    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
+    PlayerID playerIDA = serverComponent.GetPlayerID(entityA);
+    PlayerID playerIDB = serverComponent.GetPlayerID(entityB);
+    if ((playerIDA < INVALID_PLAYER_ID && playerIDB < INVALID_PLAYER_ID)
+        || (playerIDA >= INVALID_PLAYER_ID && playerIDB >= INVALID_PLAYER_ID)) {
+        return;
+    }
+
+    if (playerIDA < INVALID_PLAYER_ID) {
+        std::weak_ptr<WeaponComponent> weaponComponentB = g_gameServer->GetComponentManager().GetComponent<WeaponComponent>(entityB);
+        if (!weaponComponentB.expired()) {
+            const bool isPickUp = PickUpWeapon(entityA, entityB);
+            if (isPickUp) {
+                DespawnWeapon(entityB);
+            }
+        }
+    } else if (playerIDB < INVALID_PLAYER_ID) {
+        std::weak_ptr<WeaponComponent> weaponComponentA = g_gameServer->GetComponentManager().GetComponent<WeaponComponent>(entityA);
+        if (!weaponComponentA.expired()) {
+            const bool isPickUp = PickUpWeapon(entityB, entityA);
+            if (isPickUp) {
+                DespawnWeapon(entityA);
+            }
+        }
+    }
 }
 
 //----------------------------------------------------------------------------------------------------

@@ -51,7 +51,7 @@ void BotSpawnerSystem::OnNotify(const Event& event)
 }
 
 //----------------------------------------------------------------------------------------------------
-Entity BotSpawnerSystem::Spawn(PlayerID playerID) const
+Entity BotSpawnerSystem::SpawnBot(PlayerID playerID) const
 {
     Entity botSpawner = INVALID_ENTITY;
     std::weak_ptr<BotSpawnerComponent> botSpawnerComponent;
@@ -159,7 +159,7 @@ Entity BotSpawnerSystem::Spawn(PlayerID playerID) const
 }
 
 //----------------------------------------------------------------------------------------------------
-void BotSpawnerSystem::Despawn(Entity entity) const
+void BotSpawnerSystem::DespawnBot(Entity entity) const
 {
     g_gameServer->GetLinkingContext().RemoveEntity(entity);
     g_gameServer->GetEntityManager().RemoveEntity(entity);
@@ -175,14 +175,14 @@ void BotSpawnerSystem::OnPlayerAdded(PlayerID playerID) const
         return;
     }
 
-    entity = Spawn(playerID);
+    entity = SpawnBot(playerID);
     serverComponent.AddEntity(entity, playerID);
 }
 
 //----------------------------------------------------------------------------------------------------
 void BotSpawnerSystem::OnPlayerRemoved(Entity entity) const
 {
-    Despawn(entity);
+    DespawnBot(entity);
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     serverComponent.RemoveEntity(entity);
 }

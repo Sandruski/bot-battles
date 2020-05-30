@@ -213,9 +213,6 @@
     <ClCompile Include="SpriteComponentServer.cpp">
       <Filter>Source Files\Components\Entity Components</Filter>
     </ClCompile>
-    <ClCompile Include="PickUpSystem.cpp">
-      <Filter>Source Files\Systems\Unique</Filter>
-    </ClCompile>
     <ClCompile Include="HealthSystemServer.cpp">
       <Filter>Source Files\Systems\Shared</Filter>
     </ClCompile>
@@ -303,9 +300,6 @@
       <Filter>Header Files\Systems\Unique</Filter>
     </ClInclude>
     <ClInclude Include="ServerSystem.h">
-      <Filter>Header Files\Systems\Unique</Filter>
-    </ClInclude>
-    <ClInclude Include="PickUpSystem.h">
       <Filter>Header Files\Systems\Unique</Filter>
     </ClInclude>
     <ClInclude Include="HealthSystemServer.h">

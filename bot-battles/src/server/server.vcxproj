@@ -202,7 +202,6 @@
     <ClCompile Include="..\dependencies\source\imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\dependencies\source\stb\stb_image.cpp" />
     <ClCompile Include="HealthSpawnerSystem.cpp" />
-    <ClCompile Include="PickUpSystem.cpp" />
     <ClCompile Include="ClientProxy.cpp" />
     <ClCompile Include="CollisionSystemServer.cpp" />
     <ClCompile Include="ConfigServer.cpp" />
@@ -240,7 +239,6 @@
     </ClCompile>
     <ClCompile Include="PlayStateServer.cpp" />
     <ClInclude Include="HealthSpawnerSystem.h" />
-    <ClInclude Include="PickUpSystem.h" />
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="PlayStateServer.h" />
     <ClCompile Include="ReplicationResultManager.cpp" />

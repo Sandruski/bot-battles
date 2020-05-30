@@ -14,7 +14,6 @@
 #include "MovementSystemServer.h"
 #include "OutputSystemServer.h"
 #include "PhysicsComponent.h"
-#include "PickUpSystem.h"
 #include "PlayerComponent.h"
 #include "RendererSystem.h"
 #include "ScoreboardStateServer.h"
@@ -54,10 +53,6 @@ bool GameServer::Init()
         return ret;
     }
     ret = m_systemManager->RegisterSystem<WeaponSystemServer>();
-    if (!ret) {
-        return ret;
-    }
-    ret = m_systemManager->RegisterSystem<PickUpSystem>();
     if (!ret) {
         return ret;
     }
@@ -162,21 +157,32 @@ bool GameServer::Init()
     if (!ret) {
         return ret;
     }
-    std::weak_ptr<PickUpSystem> pickUpSystem = m_systemManager->GetSystem<PickUpSystem>();
-    ret = m_physicsComponent.AddObserver(pickUpSystem);
-    if (!ret) {
-        return ret;
-    }
-    ret = pickUpSystem.lock()->AddObserver(serverSystem);
-    if (!ret) {
-        return ret;
-    }
     std::weak_ptr<WeaponSpawnerSystem> weaponSpawnerSystem = m_systemManager->GetSystem<WeaponSpawnerSystem>();
     ret = m_entityManager->AddObserver(weaponSpawnerSystem);
     if (!ret) {
         return ret;
     }
-
+    ret = m_physicsComponent.AddObserver(weaponSpawnerSystem);
+    if (!ret) {
+        return ret;
+    }
+    ret = weaponSpawnerSystem.lock()->AddObserver(serverSystem);
+    if (!ret) {
+        return ret;
+    }
+    std::weak_ptr<HealthSpawnerSystem> healthSpawnerSystem = m_systemManager->GetSystem<HealthSpawnerSystem>();
+    ret = m_entityManager->AddObserver(healthSpawnerSystem);
+    if (!ret) {
+        return ret;
+    }
+    ret = m_physicsComponent.AddObserver(healthSpawnerSystem);
+    if (!ret) {
+        return ret;
+    }
+    ret = healthSpawnerSystem.lock()->AddObserver(serverSystem);
+    if (!ret) {
+        return ret;
+    }
 #ifdef _DRAW
     std::weak_ptr<RendererSystem> rendererSystem = m_systemManager->GetSystem<RendererSystem>();
     ret = movementSystemServer.lock()->AddObserver(rendererSystem);

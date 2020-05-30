@@ -6,7 +6,7 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class HealthSpawnerSystem : public System, public Observer {
+class HealthSpawnerSystem : public System, public Subject, public Observer {
 public:
     static SystemType GetType()
     {
@@ -22,7 +22,10 @@ public:
 
 private:
     Entity SpawnHealth(U32 health, Entity spawner) const;
+    void DespawnHealth(Entity entity) const;
+    bool PickUpHealth(Entity character, Entity health) const;
 
+    void OnCollisionEnter(Entity entityA, Entity entityB) const;
     void OnEntityRemoved(Entity entityRemoved) const;
 };
 }
