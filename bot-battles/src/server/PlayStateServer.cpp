@@ -60,9 +60,16 @@ void PlayStateServer::OnHealthEmptied(Entity entity) const
 {
     U32 aliveCount = 0;
     Entity winnerEntity = INVALID_ENTITY;
+
+    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     std::vector<std::pair<Entity, std::weak_ptr<HealthComponent>>> healthComponents = g_gameServer->GetComponentManager().GetComponents<HealthComponent>();
     for (const auto& pair : healthComponents) {
         Entity ownerEntity = pair.first;
+        PlayerID playerID = serverComponent.GetPlayerID(ownerEntity);
+        if (playerID >= INVALID_PLAYER_ID) {
+            continue;
+        }
+
         if (ownerEntity == entity) {
             continue;
         }
@@ -82,7 +89,6 @@ void PlayStateServer::OnHealthEmptied(Entity entity) const
     // V X
     if (aliveCount == 0 || aliveCount == 1) {
         ScoreboardComponent& scoreboardComponent = g_gameServer->GetScoreboardComponent();
-        ServerComponent& serverComponent = g_gameServer->GetServerComponent();
         scoreboardComponent.m_winnerPlayerID = serverComponent.GetPlayerID(winnerEntity);
 
         ChangeToScoreboard();
