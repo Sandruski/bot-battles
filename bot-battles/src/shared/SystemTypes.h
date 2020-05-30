@@ -43,7 +43,10 @@ enum class SystemType : U16 {
 #endif
     SERVER,
 
-    SPAWNER,
+    BOT_SPAWNER,
+    WEAPON_SPAWNER,
+    HEALTH_SPAWNER,
+
     PHYSICS,
     //
     SIGHT,

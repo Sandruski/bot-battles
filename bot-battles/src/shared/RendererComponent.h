@@ -24,6 +24,7 @@ struct RendererComponent {
     void DrawQuad(glm::vec3 position, F32 rotation, glm::vec3 scale, glm::vec4 color, bool filled);
     void DrawMapTexturedQuad(U32 texture);
     void DrawCharactersTexturedQuad(U32 texture);
+    void DrawObjectsTexturedQuad(U32 texture);
 
     std::weak_ptr<ShaderResource> m_defaultShaderResource;
     std::weak_ptr<ShaderResource> m_instancingShaderResource;
@@ -33,6 +34,7 @@ struct RendererComponent {
     std::weak_ptr<MeshResource> m_quadMeshResource;
     std::weak_ptr<MeshResource> m_mapMeshResource;
     std::weak_ptr<MeshResource> m_charactersMeshResource;
+    std::weak_ptr<MeshResource> m_objectsMeshResource;
 
     glm::vec4 m_backgroundColor;
 

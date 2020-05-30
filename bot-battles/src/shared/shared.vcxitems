@@ -15,9 +15,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)AckRange.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)BotSpawnerComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)HealthSpawnerComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)HealthSystem.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)WeaponSpawnerComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)BotComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ByteSwap.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)CircularBuffer.h" />
@@ -90,7 +90,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Shaders.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SightComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SightSystem.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)BotSpawnerComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SpriteResource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)RendererComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StateDefs.h" />
@@ -100,6 +99,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Transform.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)WallComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)WeaponComponent.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)WeaponSpawnerComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)WeaponSystem.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)WindowComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SocketAddress.h" />
@@ -120,9 +120,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)AckRange.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)BotSpawnerComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)HealthSpawnerComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)HealthSystem.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)WeaponSpawnerComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)BotComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ColliderComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)CollisionSystem.cpp" />
@@ -170,12 +170,12 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)ShaderResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SightComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SightSystem.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)BotSpawnerComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)StatesPanel.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TCPSocket.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Transform.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)WallComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)WeaponComponent.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)WeaponSpawnerComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)WeaponSystem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)WindowComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SpriteComponent.cpp" />

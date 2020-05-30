@@ -9,6 +9,7 @@
 #include "EventSystem.h"
 #include "FSM.h"
 #include "HealthComponent.h"
+#include "HealthSpawnerComponent.h"
 #include "InputComponent.h"
 #include "LinkingContext.h"
 #include "PhysicsSystem.h"
@@ -129,14 +130,6 @@ bool Game::Init()
     if (!ret) {
         return ret;
     }
-    ret = m_componentManager->RegisterComponent<BotSpawnerComponent>();
-    if (!ret) {
-        return ret;
-    }
-    ret = m_componentManager->RegisterComponent<WeaponSpawnerComponent>();
-    if (!ret) {
-        return ret;
-    }
     ret = m_componentManager->RegisterComponent<BotComponent>();
     if (!ret) {
         return ret;
@@ -146,6 +139,18 @@ bool Game::Init()
         return ret;
     }
     ret = m_componentManager->RegisterComponent<SightComponent>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_componentManager->RegisterComponent<BotSpawnerComponent>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_componentManager->RegisterComponent<WeaponSpawnerComponent>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_componentManager->RegisterComponent<HealthSpawnerComponent>();
     if (!ret) {
         return ret;
     }

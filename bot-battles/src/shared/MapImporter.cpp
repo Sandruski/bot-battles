@@ -6,6 +6,7 @@
 #include "EntityManager.h"
 #include "FileSystem.h"
 #include "Game.h"
+#include "HealthSpawnerComponent.h"
 #include "LinkingContext.h"
 #include "RendererComponent.h"
 #include "ResourceManager.h"
@@ -154,13 +155,6 @@ void MapImporter::Create(const Tilemap& tilemap) const
 
     for (const auto& objectlayer : tilemap.m_objectlayers) {
         for (const auto& object : objectlayer.m_objects) {
-            const bool isSpawner = object.m_type.find("Spawner");
-#ifdef _CLIENT
-            if (isSpawner) {
-                continue;
-            }
-#endif
-
             Entity entity = g_game->GetEntityManager().AddEntity();
 
             // SHARED
@@ -177,7 +171,7 @@ void MapImporter::Create(const Tilemap& tilemap) const
             worldPosition *= transformComponent.lock()->m_scale;
             worldPosition += static_cast<glm::vec2>(windowComponent.m_baseResolution) / 2.0f;
             transformComponent.lock()->m_position = worldPosition;
-            transformComponent.lock()->m_layerType = LayerType::OBJECT;
+            transformComponent.lock()->m_layerType = LayerType::FLOOR;
             transformComponent.lock()->m_rotation = object.m_rotation;
 
             // Sprite
@@ -191,10 +185,7 @@ void MapImporter::Create(const Tilemap& tilemap) const
             }
 
             // UNIQUE
-            if (isSpawner) {
-                g_game->GetLinkingContext().AddEntity(entity);
-            }
-
+#ifdef _SERVER
             // BotSpawner
             if (object.m_type == "BotSpawner") {
                 std::weak_ptr<BotSpawnerComponent> botSpawnerComponent = g_game->GetComponentManager().AddComponent<BotSpawnerComponent>(entity);
@@ -244,24 +235,15 @@ void MapImporter::Create(const Tilemap& tilemap) const
                     } else if (property.m_name == "spawnWeapon2") {
                         weaponSpawnerComponent.lock()->m_spawnWeapon2 = property.m_value.boolValue;
                     } else if (property.m_name == "spawnSeconds") {
-                        weaponSpawnerComponent.lock()->m_timeout = property.m_value.floatValue;
+                        weaponSpawnerComponent.lock()->m_timeoutSpawn = property.m_value.floatValue;
                     }
                 }
-
-                // Collider
-                std::weak_ptr<ColliderComponent> colliderComponent = g_game->GetComponentManager().AddComponent<ColliderComponent>(entity);
-                colliderComponent.lock()->m_size = static_cast<glm::vec2>(tilemap.m_tileSize);
-                colliderComponent.lock()->m_size *= transformComponent.lock()->m_scale;
-                colliderComponent.lock()->m_shapeType = ColliderComponent::ShapeType::BOX;
-                colliderComponent.lock()->m_isTrigger = true;
-
-                // Rigidbody
-                std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_game->GetComponentManager().AddComponent<RigidbodyComponent>(entity);
-                rigidbodyComponent.lock()->m_bodyType = RigidbodyComponent::BodyType::STATIC;
-                rigidbodyComponent.lock()->UpdateBodyType();
-                rigidbodyComponent.lock()->m_groupIndex = 0;
-                rigidbodyComponent.lock()->UpdateGroupIndex();
             }
+
+            // HealthSpawner TODO
+            if (object.m_type == "HealthSpawner") {
+            }
+#endif
         }
     }
 }

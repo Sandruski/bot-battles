@@ -19,10 +19,9 @@ namespace sand {
 PickUpSystem::PickUpSystem()
 {
     // Spawners
-    m_signature |= 1 << static_cast<U16>(ComponentType::SPAWNER);
+    //m_signature |= 1 << static_cast<U16>(ComponentType::SPAWNER);
+    // TODO
 }
-
-// TODO: init timer
 
 //----------------------------------------------------------------------------------------------------
 bool PickUpSystem::Update()
@@ -35,6 +34,7 @@ bool PickUpSystem::Update()
         return true;
     }
 
+    /*
     for (auto& entity : m_entities) {
         std::weak_ptr<WeaponSpawnerComponent> weaponSpawnerComponent = g_gameServer->GetComponentManager().GetComponent<WeaponSpawnerComponent>(entity);
         if (!weaponSpawnerComponent.expired()) {
@@ -58,7 +58,7 @@ bool PickUpSystem::Update()
             newComponentEvent.component.dirtyState = static_cast<U64>(ComponentMemberType::WEAPON_SPAWNER_WEAPON);
             NotifyEvent(newComponentEvent);
         }
-    }
+    }*/
 
     return true;
 }
@@ -106,6 +106,7 @@ void PickUpSystem::OnCollisionEnter(Entity entityA, Entity entityB) const
         return;
     }
 
+    /*
     std::weak_ptr<WeaponSpawnerComponent> weaponSpawnerComponent = g_gameServer->GetComponentManager().GetComponent<WeaponSpawnerComponent>(objectEntity);
     if (!weaponSpawnerComponent.expired()) {
         U64 weaponDirtyState = 0;
@@ -163,7 +164,7 @@ void PickUpSystem::OnCollisionEnter(Entity entityA, Entity entityB) const
             NotifyEvent(newComponentEvent);
         }
     }
-
+    */
     // TODO: HEALTH_CURRENT_HEALTH changed
 }
 }

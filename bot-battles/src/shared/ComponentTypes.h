@@ -10,11 +10,12 @@ enum class ComponentType : U16 {
     COLLIDER,
     RIGIDBODY,
     HEALTH,
-    BOT_SPAWNER,
-    SPAWNER, // TODO: you can only be a spawner at once
     BOT,
     WALL,
     SIGHT,
+    BOT_SPAWNER,
+    WEAPON_SPAWNER,
+    HEALTH_SPAWNER,
 
 #ifdef _DRAW
     LABEL,
@@ -22,10 +23,10 @@ enum class ComponentType : U16 {
 #endif
 
 #ifdef _CLIENT
-    LOCAL_PLAYER, // client-only
-    REMOTE_PLAYER, // client-only
+    LOCAL_PLAYER,
+    REMOTE_PLAYER,
 #elif defined(_SERVER)
-    PLAYER, // server-only
+    PLAYER,
 #endif
 
     COUNT

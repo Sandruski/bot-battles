@@ -1,4 +1,4 @@
-#include "SpawnerSystem.h"
+#include "BotSpawnerSystem.h"
 
 #include "BotComponent.h"
 #include "BotSpawnerComponent.h"
@@ -24,14 +24,13 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-SpawnerSystem::SpawnerSystem()
+BotSpawnerSystem::BotSpawnerSystem()
 {
-    m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
     m_signature |= 1 << static_cast<U16>(ComponentType::BOT_SPAWNER);
 }
 
 //----------------------------------------------------------------------------------------------------
-void SpawnerSystem::OnNotify(const Event& event)
+void BotSpawnerSystem::OnNotify(const Event& event)
 {
     switch (event.eventType) {
 
@@ -52,7 +51,7 @@ void SpawnerSystem::OnNotify(const Event& event)
 }
 
 //----------------------------------------------------------------------------------------------------
-Entity SpawnerSystem::Spawn(PlayerID playerID) const
+Entity BotSpawnerSystem::Spawn(PlayerID playerID) const
 {
     Entity botSpawner = INVALID_ENTITY;
     std::weak_ptr<BotSpawnerComponent> botSpawnerComponent;
@@ -160,14 +159,14 @@ Entity SpawnerSystem::Spawn(PlayerID playerID) const
 }
 
 //----------------------------------------------------------------------------------------------------
-void SpawnerSystem::Despawn(Entity entity) const
+void BotSpawnerSystem::Despawn(Entity entity) const
 {
     g_gameServer->GetLinkingContext().RemoveEntity(entity);
     g_gameServer->GetEntityManager().RemoveEntity(entity);
 }
 
 //----------------------------------------------------------------------------------------------------
-void SpawnerSystem::OnPlayerAdded(PlayerID playerID) const
+void BotSpawnerSystem::OnPlayerAdded(PlayerID playerID) const
 {
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     Entity entity = serverComponent.GetEntity(playerID);
@@ -181,7 +180,7 @@ void SpawnerSystem::OnPlayerAdded(PlayerID playerID) const
 }
 
 //----------------------------------------------------------------------------------------------------
-void SpawnerSystem::OnPlayerRemoved(Entity entity) const
+void BotSpawnerSystem::OnPlayerRemoved(Entity entity) const
 {
     Despawn(entity);
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();

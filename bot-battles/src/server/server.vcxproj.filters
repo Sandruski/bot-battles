@@ -210,9 +210,6 @@
     <ClCompile Include="ServerSystem.cpp">
       <Filter>Source Files\Systems\Unique</Filter>
     </ClCompile>
-    <ClCompile Include="SpawnerSystem.cpp">
-      <Filter>Source Files\Systems\Unique</Filter>
-    </ClCompile>
     <ClCompile Include="SpriteComponentServer.cpp">
       <Filter>Source Files\Components\Entity Components</Filter>
     </ClCompile>
@@ -221,6 +218,15 @@
     </ClCompile>
     <ClCompile Include="HealthSystemServer.cpp">
       <Filter>Source Files\Systems\Shared</Filter>
+    </ClCompile>
+    <ClCompile Include="BotSpawnerSystem.cpp">
+      <Filter>Source Files\Systems\Unique</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponSpawnerSystem.cpp">
+      <Filter>Source Files\Systems\Unique</Filter>
+    </ClCompile>
+    <ClCompile Include="HealthSpawnerSystem.cpp">
+      <Filter>Source Files\Systems\Unique</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -299,14 +305,20 @@
     <ClInclude Include="ServerSystem.h">
       <Filter>Header Files\Systems\Unique</Filter>
     </ClInclude>
-    <ClInclude Include="SpawnerSystem.h">
-      <Filter>Header Files\Systems\Unique</Filter>
-    </ClInclude>
     <ClInclude Include="PickUpSystem.h">
       <Filter>Header Files\Systems\Unique</Filter>
     </ClInclude>
     <ClInclude Include="HealthSystemServer.h">
       <Filter>Header Files\Systems\Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="BotSpawnerSystem.h">
+      <Filter>Header Files\Systems\Unique</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponSpawnerSystem.h">
+      <Filter>Header Files\Systems\Unique</Filter>
+    </ClInclude>
+    <ClInclude Include="HealthSpawnerSystem.h">
+      <Filter>Header Files\Systems\Unique</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

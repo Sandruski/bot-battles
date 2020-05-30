@@ -32,6 +32,7 @@ private:
 private:
     void RecalculateMapMesh() const;
     void RecalculateCharactersMesh() const;
+    void RecalculateObjectsMesh() const;
     void RecalculateAllMeshes() const;
 };
 }

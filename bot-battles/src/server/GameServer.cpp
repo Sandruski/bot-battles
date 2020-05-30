@@ -1,11 +1,13 @@
 #include "GameServer.h"
 
+#include "BotSpawnerSystem.h"
 #include "CollisionSystemServer.h"
 #include "ComponentManager.h"
 #include "ConfigServer.h"
 #include "EntityManager.h"
 #include "FSM.h"
 #include "GameplayStateServer.h"
+#include "HealthSpawnerSystem.h"
 #include "HealthSystemServer.h"
 #include "LinkingContext.h"
 #include "MainMenuStateServer.h"
@@ -19,8 +21,8 @@
 #include "ServerComponent.h"
 #include "ServerSystem.h"
 #include "SightSystemServer.h"
-#include "SpawnerSystem.h"
 #include "SystemManager.h"
+#include "WeaponSpawnerSystem.h"
 #include "WeaponSystemServer.h"
 
 namespace sand {
@@ -40,10 +42,6 @@ bool GameServer::Init()
 
     // Systems
     ret = m_systemManager->RegisterSystem<ServerSystem>();
-    if (!ret) {
-        return ret;
-    }
-    ret = m_systemManager->RegisterSystem<SpawnerSystem>();
     if (!ret) {
         return ret;
     }
@@ -72,6 +70,18 @@ bool GameServer::Init()
         return ret;
     }
     ret = m_systemManager->RegisterSystem<SightSystemServer>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_systemManager->RegisterSystem<BotSpawnerSystem>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_systemManager->RegisterSystem<WeaponSpawnerSystem>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_systemManager->RegisterSystem<HealthSpawnerSystem>();
     if (!ret) {
         return ret;
     }
@@ -107,8 +117,8 @@ bool GameServer::Init()
     if (!ret) {
         return ret;
     }
-    std::weak_ptr<SpawnerSystem> spawnerSystem = m_systemManager->GetSystem<SpawnerSystem>();
-    ret = serverSystem.lock()->AddObserver(spawnerSystem);
+    std::weak_ptr<BotSpawnerSystem> botSpawnerSystem = m_systemManager->GetSystem<BotSpawnerSystem>();
+    ret = serverSystem.lock()->AddObserver(botSpawnerSystem);
     if (!ret) {
         return ret;
     }
@@ -161,19 +171,18 @@ bool GameServer::Init()
     if (!ret) {
         return ret;
     }
+    std::weak_ptr<WeaponSpawnerSystem> weaponSpawnerSystem = m_systemManager->GetSystem<WeaponSpawnerSystem>();
+    ret = m_entityManager->AddObserver(weaponSpawnerSystem);
+    if (!ret) {
+        return ret;
+    }
+
 #ifdef _DRAW
     std::weak_ptr<RendererSystem> rendererSystem = m_systemManager->GetSystem<RendererSystem>();
     ret = movementSystemServer.lock()->AddObserver(rendererSystem);
     if (!ret) {
         return ret;
     }
-    /*
-    ret = ammoSystem.lock()->AddObserver(rendererSystem);
-    if (!ret) {
-        return ret;
-    }
-    */
-    // TODO: hide
 #endif
 
     return ret;

@@ -411,6 +411,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)SightSystem.h">
       <Filter>Header Files\Systems\Shared</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)HealthSystem.h">
+      <Filter>Header Files\Systems\Shared</Filter>
+    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)BotSpawnerComponent.h">
       <Filter>Header Files\Components\Entity Components</Filter>
     </ClInclude>
@@ -419,9 +422,6 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)WeaponSpawnerComponent.h">
       <Filter>Header Files\Components\Entity Components</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)HealthSystem.h">
-      <Filter>Header Files\Systems\Shared</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -626,6 +626,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)CollisionSystem.cpp">
       <Filter>Source Files\Systems\Shared</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)HealthSystem.cpp">
+      <Filter>Source Files\Systems\Shared</Filter>
+    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)BotSpawnerComponent.cpp">
       <Filter>Source Files\Components\Entity Components</Filter>
     </ClCompile>
@@ -634,9 +637,6 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)WeaponSpawnerComponent.cpp">
       <Filter>Source Files\Components\Entity Components</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)HealthSystem.cpp">
-      <Filter>Source Files\Systems\Shared</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
