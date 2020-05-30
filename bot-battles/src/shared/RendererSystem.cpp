@@ -181,11 +181,7 @@ void RendererSystem::OnNotify(const Event& event)
 void RendererSystem::OnSystemEntityAdded(Entity entity) const
 {
     std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
-    if (spriteComponent.expired()) {
-        return;
-    }
-
-    if (spriteComponent.lock()->m_spriteResource.expired()) {
+    if (spriteComponent.expired() || spriteComponent.lock()->m_spriteResource.expired()) {
         RecalculateAllMeshes();
         return;
     }
@@ -204,11 +200,7 @@ void RendererSystem::OnSystemEntityAdded(Entity entity) const
 void RendererSystem::OnSystemEntityRemoved(Entity entity) const
 {
     std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
-    if (spriteComponent.expired()) {
-        return;
-    }
-
-    if (spriteComponent.lock()->m_spriteResource.expired()) {
+    if (spriteComponent.expired() || spriteComponent.lock()->m_spriteResource.expired()) {
         RecalculateAllMeshes();
         return;
     }
