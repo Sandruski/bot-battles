@@ -1,5 +1,6 @@
 #include "PhysicsComponent.h"
 
+#include "ColliderComponent.h"
 #include "ComponentManager.h"
 #include "Game.h"
 #include "RigidbodyComponent.h"
@@ -23,6 +24,22 @@ void ContactListener::BeginContact(b2Contact* contact)
     glm::vec2 normal = glm::vec2(worldManifold.normal.x, worldManifold.normal.y);
 
     g_game->GetPhysicsComponent().OnCollisionEnter(entityA, entityB, linearVelocityA, linearVelocityB, normal);
+}
+
+//----------------------------------------------------------------------------------------------------
+void ContactListener::PreSolve(b2Contact* contact, const b2Manifold* /*oldManifold*/)
+{
+    b2Body* bodyA = contact->GetFixtureA()->GetBody();
+    b2Body* bodyB = contact->GetFixtureB()->GetBody();
+    Entity entityA = *static_cast<Entity*>(bodyA->GetUserData());
+    Entity entityB = *static_cast<Entity*>(bodyB->GetUserData());
+
+    std::weak_ptr<ColliderComponent> colliderComponentA = g_game->GetComponentManager().AddComponent<ColliderComponent>(entityA);
+    std::weak_ptr<ColliderComponent> colliderComponentB = g_game->GetComponentManager().AddComponent<ColliderComponent>(entityB);
+    if ((!colliderComponentA.expired() && colliderComponentA.lock()->m_isTrigger)
+        || (!colliderComponentB.expired() && colliderComponentB.lock()->m_isTrigger)) {
+        contact->SetEnabled(false);
+    }
 }
 
 //----------------------------------------------------------------------------------------------------

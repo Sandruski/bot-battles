@@ -65,7 +65,7 @@ U64 RigidbodyComponent::Write(OutputMemoryStream& outputStream, U64 dirtyState) 
 #endif
 
 //----------------------------------------------------------------------------------------------------
-void RigidbodyComponent::SetAsCircle(glm::vec2 position, F32 rotation, F32 radius, bool isSensor, const Entity& entity)
+void RigidbodyComponent::SetAsCircle(glm::vec2 position, F32 rotation, F32 radius, const Entity& entity)
 {
     if (m_body != nullptr) {
         return;
@@ -86,7 +86,6 @@ void RigidbodyComponent::SetAsCircle(glm::vec2 position, F32 rotation, F32 radiu
     b2CircleShape shape;
     shape.m_radius = PIXELS_TO_METERS(radius);
     fixtureDef.shape = &shape;
-    fixtureDef.isSensor = isSensor;
     fixtureDef.restitution = 0.0f;
     fixtureDef.friction = 0.0f;
     fixtureDef.density = 1.0f;
@@ -94,7 +93,7 @@ void RigidbodyComponent::SetAsCircle(glm::vec2 position, F32 rotation, F32 radiu
 }
 
 //----------------------------------------------------------------------------------------------------
-void RigidbodyComponent::SetAsBox(glm::vec2 position, F32 rotation, glm::vec2 halfSize, bool isSensor, const Entity& entity)
+void RigidbodyComponent::SetAsBox(glm::vec2 position, F32 rotation, glm::vec2 halfSize, const Entity& entity)
 {
     if (m_body != nullptr) {
         return;
@@ -115,7 +114,6 @@ void RigidbodyComponent::SetAsBox(glm::vec2 position, F32 rotation, glm::vec2 ha
     b2PolygonShape shape;
     shape.SetAsBox(PIXELS_TO_METERS(halfSize.x), PIXELS_TO_METERS(halfSize.y));
     fixtureDef.shape = &shape;
-    fixtureDef.isSensor = isSensor;
     fixtureDef.restitution = 0.0f;
     fixtureDef.friction = 0.0f;
     fixtureDef.density = 1.0f;
