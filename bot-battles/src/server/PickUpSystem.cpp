@@ -82,34 +82,36 @@ void PickUpSystem::OnNotify(const Event& event)
 //----------------------------------------------------------------------------------------------------
 void PickUpSystem::OnCollisionEnter(Entity entityA, Entity entityB) const
 {
-    Entity entity = INVALID_ENTITY;
-    std::weak_ptr<WeaponSpawnerComponent> weaponSpawnerComponent;
+    Entity playerEntity = INVALID_ENTITY;
+    Entity objectEntity = INVALID_ENTITY;
 
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     PlayerID playerIDA = serverComponent.GetPlayerID(entityA);
     PlayerID playerIDB = serverComponent.GetPlayerID(entityB);
     if (playerIDA < INVALID_PLAYER_ID) {
-        entity = entityA;
+        playerEntity = entityA;
         std::weak_ptr<WeaponSpawnerComponent> weaponSpawnerComponentB = g_gameServer->GetComponentManager().GetComponent<WeaponSpawnerComponent>(entityB);
         if (!weaponSpawnerComponentB.expired()) {
-            weaponSpawnerComponent = weaponSpawnerComponentB;
+            objectEntity = entityB;
         }
     } else if (playerIDB < INVALID_PLAYER_ID) {
-        entity = entityB;
+        playerEntity = entityB;
         std::weak_ptr<WeaponSpawnerComponent> weaponSpawnerComponentA = g_gameServer->GetComponentManager().GetComponent<WeaponSpawnerComponent>(entityA);
         if (!weaponSpawnerComponentA.expired()) {
-            weaponSpawnerComponent = weaponSpawnerComponentA;
+            objectEntity = entityA;
         }
     }
 
-    if (entity >= INVALID_ENTITY) {
+    if (playerEntity >= INVALID_ENTITY || objectEntity >= INVALID_ENTITY) {
         return;
     }
 
+    std::weak_ptr<WeaponSpawnerComponent> weaponSpawnerComponent = g_gameServer->GetComponentManager().GetComponent<WeaponSpawnerComponent>(objectEntity);
     if (!weaponSpawnerComponent.expired()) {
         U64 weaponDirtyState = 0;
+        U64 weaponSpawnerDirtyState = 0;
 
-        std::weak_ptr<WeaponComponent> weaponComponent = g_gameServer->GetComponentManager().GetComponent<WeaponComponent>(entity);
+        std::weak_ptr<WeaponComponent> weaponComponent = g_gameServer->GetComponentManager().GetComponent<WeaponComponent>(playerEntity);
         switch (weaponSpawnerComponent.lock()->m_weapon) {
         case 0: {
             break;
@@ -123,6 +125,8 @@ void PickUpSystem::OnCollisionEnter(Entity entityA, Entity entityB) const
             weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_RANGE_PRIMARY);
             weaponComponent.lock()->m_cooldownPrimary = weaponSpawnerComponent.lock()->m_cooldownWeapon1;
             weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_COOLDOWN_PRIMARY);
+            weaponSpawnerComponent.lock()->m_weapon = 0;
+            weaponSpawnerDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_SPAWNER_WEAPON);
             break;
         }
         case 2: {
@@ -134,6 +138,8 @@ void PickUpSystem::OnCollisionEnter(Entity entityA, Entity entityB) const
             weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_RANGE_PRIMARY);
             weaponComponent.lock()->m_cooldownPrimary = weaponSpawnerComponent.lock()->m_cooldownWeapon2;
             weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_COOLDOWN_PRIMARY);
+            weaponSpawnerComponent.lock()->m_weapon = 0;
+            weaponSpawnerDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_SPAWNER_WEAPON);
             break;
         }
         default: {
@@ -144,12 +150,20 @@ void PickUpSystem::OnCollisionEnter(Entity entityA, Entity entityB) const
         if (weaponDirtyState > 0) {
             Event newComponentEvent;
             newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
-            newComponentEvent.component.entity = entity;
+            newComponentEvent.component.entity = playerEntity;
             newComponentEvent.component.dirtyState = weaponDirtyState;
             NotifyEvent(newComponentEvent);
         }
 
-        // TODO: HEALTH_CURRENT_HEALTH changed
+        if (weaponSpawnerDirtyState > 0) {
+            Event newComponentEvent;
+            newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
+            newComponentEvent.component.entity = objectEntity;
+            newComponentEvent.component.dirtyState = weaponSpawnerDirtyState;
+            NotifyEvent(newComponentEvent);
+        }
     }
+
+    // TODO: HEALTH_CURRENT_HEALTH changed
 }
 }

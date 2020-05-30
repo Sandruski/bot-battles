@@ -6,7 +6,10 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 inline I32 RandomInt(I32 min, I32 max)
 {
-    return rand() % max + min;
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    static std::uniform_int_distribution<I32> dis(min, max);
+    return dis(gen);
 }
 
 //----------------------------------------------------------------------------------------------------
