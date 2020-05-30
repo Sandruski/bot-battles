@@ -117,26 +117,27 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream)
 //----------------------------------------------------------------------------------------------------
 void ReplicationManagerClient::ReadCreateAction(InputMemoryStream& inputStream, NetworkID networkID, U32 frame) const
 {
+    PlayerID playerID = INVALID_PLAYER_ID;
+    inputStream.Read(playerID);
+
     Entity entity = g_gameClient->GetLinkingContext().GetEntity(networkID);
     if (entity >= INVALID_ENTITY) {
         entity = g_gameClient->GetEntityManager().AddEntity();
         g_gameClient->GetLinkingContext().AddEntity(entity, networkID);
-    }
 
-    PlayerID playerID = INVALID_PLAYER_ID;
-    inputStream.Read(playerID);
-    Signature signature = g_gameClient->GetEntityManager().GetSignature(entity);
-    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    if (playerID == clientComponent.m_playerID) {
-        clientComponent.m_entity = entity;
-        const bool hasLocalPlayer = signature & static_cast<U16>(ComponentType::LOCAL_PLAYER);
-        if (!hasLocalPlayer) {
-            g_gameClient->GetComponentManager().AddComponent<LocalPlayerComponent>(entity);
-        }
-    } else /*if (playerID != INVALID_PLAYER_ID)*/ {
-        const bool hasRemotePlayer = signature & static_cast<U16>(ComponentType::REMOTE_PLAYER); // TODO: remote players are bots and ammo
-        if (!hasRemotePlayer) {
-            g_gameClient->GetComponentManager().AddComponent<RemotePlayerComponent>(entity);
+        Signature signature = g_gameClient->GetEntityManager().GetSignature(entity);
+        ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+        if (playerID == clientComponent.m_playerID) {
+            clientComponent.m_entity = entity;
+            const bool hasLocalPlayer = signature & static_cast<U16>(ComponentType::LOCAL_PLAYER);
+            if (!hasLocalPlayer) {
+                g_gameClient->GetComponentManager().AddComponent<LocalPlayerComponent>(entity);
+            }
+        } else /*if (playerID != INVALID_PLAYER_ID)*/ {
+            const bool hasRemotePlayer = signature & static_cast<U16>(ComponentType::REMOTE_PLAYER); // TODO: remote players are bots and ammo
+            if (!hasRemotePlayer) {
+                g_gameClient->GetComponentManager().AddComponent<RemotePlayerComponent>(entity);
+            }
         }
     }
 
@@ -147,6 +148,10 @@ void ReplicationManagerClient::ReadCreateAction(InputMemoryStream& inputStream, 
 void ReplicationManagerClient::ReadUpdateAction(InputMemoryStream& inputStream, NetworkID networkID, U32 frame) const
 {
     Entity entity = g_gameClient->GetLinkingContext().GetEntity(networkID);
+    if (entity >= INVALID_ENTITY) {
+        return;
+    }
+
     Signature signature = g_gameClient->GetEntityManager().GetSignature(entity);
 
     Signature newSignature = 0;
@@ -179,9 +184,12 @@ void ReplicationManagerClient::ReadRemoveAction(NetworkID networkID) const
         return;
     }
 
+    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    if (entity == clientComponent.m_entity) {
+        clientComponent.m_entity = INVALID_ENTITY;
+    }
+
     g_gameClient->GetLinkingContext().RemoveEntity(entity);
     g_gameClient->GetEntityManager().RemoveEntity(entity);
-    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    clientComponent.m_entity = INVALID_ENTITY;
 }
 }
