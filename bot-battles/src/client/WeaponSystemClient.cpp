@@ -22,9 +22,9 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 WeaponSystemClient::WeaponSystemClient()
 {
-    m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
     m_signature |= 1 << static_cast<U16>(ComponentType::WEAPON);
-    m_signature |= 1 << static_cast<U16>(ComponentType::BOT);
+    m_signature |= 1 << static_cast<U16>(ComponentType::PLAYER);
+    m_signature |= 1 << static_cast<U16>(ComponentType::LOCAL_PLAYER);
 }
 
 //----------------------------------------------------------------------------------------------------

@@ -13,7 +13,6 @@ namespace sand {
 CollisionSystemClient::CollisionSystemClient()
 {
     m_signature |= 1 << static_cast<U16>(ComponentType::COLLIDER);
-    m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
 }
 
 //----------------------------------------------------------------------------------------------------

@@ -14,9 +14,8 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 SightSystemClient::SightSystemClient()
 {
-    m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
     m_signature |= 1 << static_cast<U16>(ComponentType::SIGHT);
-    m_signature |= 1 << static_cast<U16>(ComponentType::BOT);
+    m_signature |= 1 << static_cast<U16>(ComponentType::PLAYER);
     m_signature |= 1 << static_cast<U16>(ComponentType::LOCAL_PLAYER);
 }
 

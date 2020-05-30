@@ -23,7 +23,6 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 SightSystemServer::SightSystemServer()
 {
-    m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
     m_signature |= 1 << static_cast<U16>(ComponentType::SIGHT);
     m_signature |= 1 << static_cast<U16>(ComponentType::PLAYER);
 }

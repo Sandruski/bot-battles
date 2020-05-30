@@ -16,6 +16,7 @@ enum class ComponentType : U16 {
     BOT_SPAWNER,
     WEAPON_SPAWNER,
     HEALTH_SPAWNER,
+    PLAYER,
 
 #ifdef _DRAW
     LABEL,
@@ -25,8 +26,6 @@ enum class ComponentType : U16 {
 #ifdef _CLIENT
     LOCAL_PLAYER,
     REMOTE_PLAYER,
-#elif defined(_SERVER)
-    PLAYER,
 #endif
 
     COUNT

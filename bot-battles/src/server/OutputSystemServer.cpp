@@ -2,14 +2,18 @@
 
 #include "ClientProxy.h"
 #include "ComponentManager.h"
-#include "FSM.h"
 #include "GameServer.h"
 #include "GameplayComponent.h"
 #include "ServerComponent.h"
-#include "State.h"
 #include "TransformComponent.h"
 
 namespace sand {
+
+//----------------------------------------------------------------------------------------------------
+OutputSystemServer::OutputSystemServer()
+{
+    m_signature |= 1 << static_cast<U16>(ComponentType::PLAYER);
+}
 
 //----------------------------------------------------------------------------------------------------
 bool OutputSystemServer::Update()
@@ -23,27 +27,25 @@ bool OutputSystemServer::Update()
     }
 
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
-    const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.GetPlayerIDToClientProxyMap();
-    for (const auto& pair : playerIDToClientProxy) {
-        PlayerID playerID = pair.first;
-        std::shared_ptr<ClientProxy> clientProxy = pair.second;
-
-        clientProxy->m_inputBuffer.Clear();
-
-        Entity entity = serverComponent.GetEntity(playerID);
-        if (entity >= INVALID_ENTITY) {
+    for (auto& entity : m_entities) {
+        PlayerID playerID = serverComponent.GetPlayerID(entity);
+        if (playerID >= INVALID_PLAYER_ID) {
             continue;
         }
+
+        std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
+        if (clientProxy.expired()) {
+            continue;
+        }
+
+        clientProxy.lock()->m_inputBuffer.Clear();
+
         std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
-        if (transformComponent.expired()) {
-            continue;
-        }
-
         U32 index = transformComponent.lock()->m_inputTransformBuffer.m_front;
         bool isFound = false;
         while (index < transformComponent.lock()->m_inputTransformBuffer.m_back) {
             const Transform& transform = transformComponent.lock()->m_inputTransformBuffer.Get(index);
-            if (transform.GetFrame() == clientProxy->m_lastAckdFrame) {
+            if (transform.GetFrame() == clientProxy.lock()->m_lastAckdFrame) {
                 isFound = true;
                 break;
             }

@@ -14,7 +14,6 @@
 #include "MovementSystemServer.h"
 #include "OutputSystemServer.h"
 #include "PhysicsComponent.h"
-#include "PlayerComponent.h"
 #include "RendererSystem.h"
 #include "ScoreboardStateServer.h"
 #include "ServerComponent.h"
@@ -82,10 +81,6 @@ bool GameServer::Init()
     }
 
     // Components
-    ret = m_componentManager->RegisterComponent<PlayerComponent>();
-    if (!ret) {
-        return ret;
-    }
 
     // States
     ret = m_fsm->RegisterState<MainMenuStateServer>();

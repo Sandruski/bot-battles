@@ -22,8 +22,6 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 WeaponSystemServer::WeaponSystemServer()
 {
-    m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
-    m_signature |= 1 << static_cast<U16>(ComponentType::RIGIDBODY);
     m_signature |= 1 << static_cast<U16>(ComponentType::WEAPON);
     m_signature |= 1 << static_cast<U16>(ComponentType::PLAYER);
 }

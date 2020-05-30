@@ -269,9 +269,6 @@
     <ClInclude Include="PlayStateServer.h">
       <Filter>Header Files\States\Gameplay States</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerComponent.h">
-      <Filter>Header Files\Components\Entity Components</Filter>
-    </ClInclude>
     <ClInclude Include="ServerComponent.h">
       <Filter>Header Files\Components\System Components</Filter>
     </ClInclude>

@@ -18,8 +18,8 @@ MovementSystemClient::MovementSystemClient()
 {
     m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
     m_signature |= 1 << static_cast<U16>(ComponentType::RIGIDBODY);
-    m_signature |= 1 << static_cast<U16>(ComponentType::BOT);
-    m_signature |= 1 << static_cast<U16>(ComponentType::LOCAL_PLAYER); // this should be input component
+    m_signature |= 1 << static_cast<U16>(ComponentType::PLAYER);
+    m_signature |= 1 << static_cast<U16>(ComponentType::LOCAL_PLAYER);
 }
 
 //----------------------------------------------------------------------------------------------------

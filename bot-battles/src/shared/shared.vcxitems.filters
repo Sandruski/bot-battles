@@ -423,6 +423,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)WeaponSpawnerComponent.h">
       <Filter>Header Files\Components\Entity Components</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)PlayerComponent.h">
+      <Filter>Header Files\Components\Entity Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp">
@@ -636,6 +639,9 @@
       <Filter>Source Files\Components\Entity Components</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)WeaponSpawnerComponent.cpp">
+      <Filter>Source Files\Components\Entity Components</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)PlayerComponent.cpp">
       <Filter>Source Files\Components\Entity Components</Filter>
     </ClCompile>
   </ItemGroup>

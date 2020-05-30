@@ -13,6 +13,7 @@
 #include "InputComponent.h"
 #include "LinkingContext.h"
 #include "PhysicsSystem.h"
+#include "PlayerComponent.h"
 #include "RigidbodyComponent.h"
 #include "SightComponent.h"
 #include "SystemManager.h"
@@ -151,6 +152,10 @@ bool Game::Init()
         return ret;
     }
     ret = m_componentManager->RegisterComponent<HealthSpawnerComponent>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_componentManager->RegisterComponent<PlayerComponent>();
     if (!ret) {
         return ret;
     }

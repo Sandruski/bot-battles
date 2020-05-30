@@ -239,7 +239,6 @@
     </ClCompile>
     <ClCompile Include="PlayStateServer.cpp" />
     <ClInclude Include="HealthSpawnerSystem.h" />
-    <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="PlayStateServer.h" />
     <ClCompile Include="ReplicationResultManager.cpp" />
     <ClInclude Include="ReplicationResultManager.h" />

@@ -14,6 +14,8 @@ public:
     }
 
 public:
+    OutputSystemServer();
+
     bool Update() override;
 };
 }

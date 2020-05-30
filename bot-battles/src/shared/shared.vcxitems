@@ -75,6 +75,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)pch.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)PhysicsComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)PhysicsSystem.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)PlayerComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Random.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GraphicsPanel.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)RendererSystem.h" />
@@ -159,6 +160,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)GraphicsPanel.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)PhysicsComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)PhysicsSystem.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)PlayerComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)RendererSystem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ReplicationCommand.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Resource.cpp" />

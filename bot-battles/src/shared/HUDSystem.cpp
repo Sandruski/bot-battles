@@ -11,7 +11,6 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 HUDSystem::HUDSystem()
 {
-    m_signature |= 1 << static_cast<U16>(ComponentType::TRANSFORM);
     m_signature |= 1 << static_cast<U16>(ComponentType::LABEL);
 }
 
