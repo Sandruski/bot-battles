@@ -225,6 +225,12 @@
     <ClCompile Include="HealthSpawnerSystem.cpp">
       <Filter>Source Files\Systems\Unique</Filter>
     </ClCompile>
+    <ClCompile Include="HealthComponentServer.cpp">
+      <Filter>Source Files\Components\Entity Components</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponComponentServer.cpp">
+      <Filter>Source Files\Components\Entity Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientProxy.h">

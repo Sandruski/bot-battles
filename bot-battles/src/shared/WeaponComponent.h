@@ -41,6 +41,7 @@ struct WeaponComponent : public Component
     F32 m_cooldownPrimary;
     F32 m_cooldownSecondary;
     bool m_hasShot;
+    bool m_hasHit;
 
     // Local
     /// Client & Server

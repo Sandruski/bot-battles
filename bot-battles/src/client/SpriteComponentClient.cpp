@@ -12,7 +12,7 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 void SpriteComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /*frame*/, ReplicationActionType /*replicationActionType*/, Entity entity)
 {
-    U64 spriteDirtyState = 0;
+    U64 characterDirtyState = 0;
 
     if (dirtyState & static_cast<U64>(ComponentMemberType::SPRITE_FILE)) {
         std::string file;
@@ -24,20 +24,20 @@ void SpriteComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /
     }
     if (dirtyState & static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME_TO_TEXTURE_COORDS)) {
         inputStream.Read(m_spriteNameToTextureCoords);
-        spriteDirtyState |= static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME_TO_TEXTURE_COORDS);
+        characterDirtyState |= static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME_TO_TEXTURE_COORDS);
     }
     if (dirtyState & static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME)) {
         inputStream.Read(m_spriteName);
     }
     if (dirtyState & static_cast<U64>(ComponentMemberType::SPRITE_VISIBLE)) {
         inputStream.Read(m_isVisible);
-        spriteDirtyState |= static_cast<U64>(ComponentMemberType::SPRITE_VISIBLE);
+        characterDirtyState |= static_cast<U64>(ComponentMemberType::SPRITE_VISIBLE);
     }
 
-    if (spriteDirtyState > 0) {
+    if (characterDirtyState > 0) {
         Event newComponentEvent;
         newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
-        newComponentEvent.component.dirtyState = spriteDirtyState;
+        newComponentEvent.component.dirtyState = characterDirtyState;
         newComponentEvent.component.entity = entity;
         ClientComponent& clientComponent = g_gameClient->GetClientComponent();
         clientComponent.m_replicationManager.NotifyEvent(newComponentEvent);

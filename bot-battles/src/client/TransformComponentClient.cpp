@@ -15,7 +15,7 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 void TransformComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 frame, ReplicationActionType replicationActionType, Entity entity)
 {
-    U64 transformDirtyState = 0;
+    U64 characterDirtyState = 0;
 
     glm::vec2 oldPosition = m_position;
     glm::vec2 newPosition = glm::vec2(0.0f, 0.0f);
@@ -25,7 +25,7 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U3
     }
     if (dirtyState & static_cast<U64>(ComponentMemberType::TRANSFORM_LAYER_TYPE)) {
         inputStream.Read(m_layerType);
-        transformDirtyState |= static_cast<U64>(ComponentMemberType::TRANSFORM_LAYER_TYPE);
+        characterDirtyState |= static_cast<U64>(ComponentMemberType::TRANSFORM_LAYER_TYPE);
     }
     F32 oldRotation = m_rotation;
     F32 newRotation = 0.0f;
@@ -35,7 +35,7 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U3
     }
     if (dirtyState & static_cast<U64>(ComponentMemberType::TRANSFORM_SCALE)) {
         inputStream.Read(m_scale);
-        transformDirtyState |= static_cast<U64>(ComponentMemberType::TRANSFORM_SCALE);
+        characterDirtyState |= static_cast<U64>(ComponentMemberType::TRANSFORM_SCALE);
     }
 
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
@@ -138,13 +138,13 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U3
     }
 
     if (oldPosition != m_position || oldRotation != m_rotation) {
-        transformDirtyState |= static_cast<U64>(ComponentMemberType::TRANSFORM_POSITION) | static_cast<U64>(ComponentMemberType::TRANSFORM_ROTATION);
+        characterDirtyState |= static_cast<U64>(ComponentMemberType::TRANSFORM_POSITION) | static_cast<U64>(ComponentMemberType::TRANSFORM_ROTATION);
     }
 
-    if (transformDirtyState > 0) {
+    if (characterDirtyState > 0) {
         Event newComponentEvent;
         newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
-        newComponentEvent.component.dirtyState = transformDirtyState;
+        newComponentEvent.component.dirtyState = characterDirtyState;
         newComponentEvent.component.entity = entity;
         clientComponent.m_replicationManager.NotifyEvent(newComponentEvent);
     }

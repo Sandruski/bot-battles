@@ -201,6 +201,7 @@
     <ClCompile Include="..\dependencies\source\imgui\imgui_stdlib.cpp" />
     <ClCompile Include="..\dependencies\source\imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\dependencies\source\stb\stb_image.cpp" />
+    <ClCompile Include="HealthComponentServer.cpp" />
     <ClCompile Include="HealthSpawnerSystem.cpp" />
     <ClCompile Include="ClientProxy.cpp" />
     <ClCompile Include="CollisionSystemServer.cpp" />
@@ -254,6 +255,7 @@
     <ClCompile Include="StartStateServer.cpp" />
     <ClCompile Include="StatesPanelServer.cpp" />
     <ClCompile Include="TransformComponentServer.cpp" />
+    <ClCompile Include="WeaponComponentServer.cpp" />
     <ClCompile Include="WeaponSpawnerSystem.cpp" />
     <ClCompile Include="WeaponSystemServer.cpp" />
   </ItemGroup>

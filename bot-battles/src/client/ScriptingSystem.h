@@ -35,6 +35,12 @@ private:
     void OnCollisionExit(Entity entityA, Entity entityB, glm::vec2 linearVelocityA, glm::vec2 linearVelocityB, glm::vec2 normal) const;
     void OnSeenNewEntity(Entity entity) const;
     void OnSeenLostEntity(Entity entity) const;
+    void OnWeaponHit(Entity entity) const;
+    void OnWeaponMissed(Entity entity) const;
+    void OnWeaponPrimaryGained(Entity entity) const;
+    void OnHealthEmptied(Entity entity) const;
+    void OnHealthLost(Entity entity, U32 health) const;
+    void OnHealthGained(Entity entity, U32 health) const;
 };
 }
 

@@ -66,9 +66,13 @@ enum class EventType {
     // GAMEPLAY
     // Weapon
     WEAPON_HIT,
+    WEAPON_MISSED,
+    WEAPON_PRIMARY_GAINED,
 
     // Health
+    HEALTH_LOST,
     HEALTH_EMPTIED,
+    HEALTH_GAINED,
 
     // Sight
     SEEN_NEW_ENTITY,

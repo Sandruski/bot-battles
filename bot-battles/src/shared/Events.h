@@ -59,6 +59,7 @@ struct WeaponEvent {
 struct HealthEvent {
     EventType eventType;
     Entity entity;
+    U32 health;
 };
 
 // Sight

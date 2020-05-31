@@ -100,11 +100,6 @@ void ScriptingSystem::OnNotify(const Event& event)
         break;
     }
 
-    case EventType::COLLISION_EXIT: {
-        OnCollisionExit(event.collision.entityA, event.collision.entityB, event.collision.linearVelocityA, event.collision.linearVelocityB, event.collision.normal);
-        break;
-    }
-
     case EventType::SEEN_NEW_ENTITY: {
         OnSeenNewEntity(event.sight.entity);
         break;
@@ -112,6 +107,36 @@ void ScriptingSystem::OnNotify(const Event& event)
 
     case EventType::SEEN_LOST_ENTITY: {
         OnSeenLostEntity(event.sight.entity);
+        break;
+    }
+
+    case EventType::WEAPON_HIT: {
+        OnWeaponHit(event.weapon.entity);
+        break;
+    }
+
+    case EventType::WEAPON_MISSED: {
+        OnWeaponMissed(event.weapon.entity);
+        break;
+    }
+
+    case EventType::WEAPON_PRIMARY_GAINED: {
+        OnWeaponPrimaryGained(event.weapon.entity);
+        break;
+    }
+
+    case EventType::HEALTH_EMPTIED: {
+        OnHealthEmptied(event.health.entity);
+        break;
+    }
+
+    case EventType::HEALTH_LOST: {
+        OnHealthLost(event.health.entity, event.health.health);
+        break;
+    }
+
+    case EventType::HEALTH_GAINED: {
+        OnHealthGained(event.health.entity, event.health.health);
         break;
     }
 
@@ -199,42 +224,7 @@ void ScriptingSystem::OnCollisionEnter(Entity entityA, Entity entityB, glm::vec2
         ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();
         InputComponent& inputComponent = g_gameClient->GetInputComponent();
         try {
-            scriptingComponent.m_mainModule.attr("onHitWallEnter")(&inputComponent, collision);
-            scriptingComponent.m_mainModule.attr("log")();
-        } catch (const std::runtime_error& /*re*/) {
-        }
-    }
-}
-
-//----------------------------------------------------------------------------------------------------
-void ScriptingSystem::OnCollisionExit(Entity entityA, Entity entityB, glm::vec2 linearVelocityA, glm::vec2 linearVelocityB, glm::vec2 normal) const
-{
-    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    Entity entity = INVALID_ENTITY;
-    if (entityA == clientComponent.m_entity) {
-        entity = entityB;
-    } else if (entityB == clientComponent.m_entity) {
-        entity = entityA;
-    }
-
-    if (entity >= INVALID_ENTITY) {
-        return;
-    }
-
-    PhysicsComponent::Collision collision;
-    collision.m_normal = normal;
-    if (entity == entityA) {
-        collision.m_relativeVelocity = linearVelocityA - linearVelocityB;
-    } else if (entity == entityB) {
-        collision.m_relativeVelocity = linearVelocityB - linearVelocityA;
-    }
-
-    std::weak_ptr<WallComponent> wallComponent = g_gameClient->GetComponentManager().GetComponent<WallComponent>(entity);
-    if (!wallComponent.expired()) {
-        ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();
-        InputComponent& inputComponent = g_gameClient->GetInputComponent();
-        try {
-            scriptingComponent.m_mainModule.attr("onHitWallExit")(&inputComponent, collision);
+            scriptingComponent.m_mainModule.attr("onHitWall")(&inputComponent, collision);
             scriptingComponent.m_mainModule.attr("log")();
         } catch (const std::runtime_error& /*re*/) {
         }
@@ -263,6 +253,10 @@ void ScriptingSystem::OnSeenNewEntity(Entity entity) const
         }
         return;
     }
+
+    // onSeenNewWeapon
+    // onSeenNewHealth
+
     //std::weak_ptr<AmmoSpawnerComponent> ammoSpawnerComponent = g_gameClient->GetComponentManager().GetComponent<AmmoSpawnerComponent>(entity);
     //if (!ammoSpawnerComponent.expired()) {
     //    try {
@@ -295,6 +289,10 @@ void ScriptingSystem::OnSeenLostEntity(Entity entity) const
         } catch (const std::runtime_error& /*re*/) {
         }
     }
+
+    // onSeenLostWeapon
+    // onSeenLostHealth
+
     //std::weak_ptr<AmmoSpawnerComponent> ammoSpawnerComponent = g_gameClient->GetComponentManager().GetComponent<AmmoSpawnerComponent>(entity);
     //if (!ammoSpawnerComponent.expired()) {
     //    try {
@@ -303,5 +301,41 @@ void ScriptingSystem::OnSeenLostEntity(Entity entity) const
     //    } catch (const std::runtime_error& /*re*/) {
     //    }
     //}
+}
+
+//----------------------------------------------------------------------------------------------------
+void ScriptingSystem::OnWeaponHit(Entity /*entity*/) const
+{
+    // OnBulletMiss
+}
+
+//----------------------------------------------------------------------------------------------------
+void ScriptingSystem::OnWeaponMissed(Entity /*entity*/) const
+{
+    // OnBulletHit
+}
+
+//----------------------------------------------------------------------------------------------------
+void ScriptingSystem::OnWeaponPrimaryGained(Entity /*entity*/) const
+{
+    // OnWeaponPicked
+}
+
+//----------------------------------------------------------------------------------------------------
+void ScriptingSystem::OnHealthEmptied(Entity /*entity*/) const
+{
+    // OnDeath
+}
+
+//----------------------------------------------------------------------------------------------------
+void ScriptingSystem::OnHealthLost(Entity /*entity*/, U32 /*health*/) const
+{
+    // OnHitByBullet
+}
+
+//----------------------------------------------------------------------------------------------------
+void ScriptingSystem::OnHealthGained(Entity /*entity*/, U32 /*health*/) const
+{
+    // OnHealthPicked
 }
 }

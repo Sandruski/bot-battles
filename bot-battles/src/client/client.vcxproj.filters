@@ -240,6 +240,12 @@
     <ClCompile Include="HealthSystemClient.cpp">
       <Filter>Source Files\Systems\Shared</Filter>
     </ClCompile>
+    <ClCompile Include="HealthComponentClient.cpp">
+      <Filter>Source Files\Components\Entity Components</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponComponentClient.cpp">
+      <Filter>Source Files\Components\Entity Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ReplicationManagerClient.h">

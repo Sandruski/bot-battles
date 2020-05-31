@@ -8,22 +8,13 @@ class Bot:
     def tick(self, input):
         pass
 
-    def onHitWallEnter(self, input, collisionEvent):
-        pass
-
-    def onHitWallExit(self, input, collisionEvent):
+    def onHitWall(self, input, collisionEvent):
         pass
 
     def onSeenNewBot(self, input):
         pass
 
     def onSeenLostBot(self, input):
-        pass
-
-    def onSeenNewAmmo(self, input):
-        pass
-
-    def onSeenLostAmmo(self, input):
         pass
 
     #def onHitByBullet(self, input):

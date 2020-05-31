@@ -122,6 +122,7 @@
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)AckRange.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)BotSpawnerComponent.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)HealthComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)HealthSpawnerComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)HealthSystem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)BotComponent.cpp" />
@@ -140,7 +141,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)GameplayComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GuiComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GuiSystem.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)HealthComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)HUDSystem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)InputComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)LabelComponent.cpp" />

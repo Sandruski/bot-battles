@@ -533,9 +533,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)GuiComponent.cpp">
       <Filter>Source Files\Components\System Components</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)HealthComponent.cpp">
-      <Filter>Source Files\Components\Entity Components</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)InputComponent.cpp">
       <Filter>Source Files\Components\System Components</Filter>
     </ClCompile>
@@ -555,9 +552,6 @@
       <Filter>Source Files\Components\Entity Components</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)SpriteComponent.cpp">
-      <Filter>Source Files\Components\Entity Components</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)WeaponComponent.cpp">
       <Filter>Source Files\Components\Entity Components</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)WindowComponent.cpp">
@@ -642,6 +636,12 @@
       <Filter>Source Files\Components\Entity Components</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)PlayerComponent.cpp">
+      <Filter>Source Files\Components\Entity Components</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)WeaponComponent.cpp">
+      <Filter>Source Files\Components\Entity Components</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)HealthComponent.cpp">
       <Filter>Source Files\Components\Entity Components</Filter>
     </ClCompile>
   </ItemGroup>

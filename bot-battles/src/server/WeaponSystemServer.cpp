@@ -143,6 +143,9 @@ bool WeaponSystemServer::Update()
                 F32 maxLength = hasShootPrimaryWeapon ? weaponComponent.lock()->m_rangePrimary : weaponComponent.lock()->m_rangeSecondary;
                 weaponComponent.lock()->m_destinationShot = position + rotation * maxLength;
 
+                weaponComponent.lock()->m_hasHit = false;
+                characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_HAS_HIT);
+
                 PhysicsComponent& physicsComponent = g_gameServer->GetPhysicsComponent();
                 PhysicsComponent::RaycastHit hitInfo;
                 const bool hasIntersected = physicsComponent.Raycast(weaponComponent.lock()->m_originShot, weaponComponent.lock()->m_destinationShot, hitInfo);
@@ -155,6 +158,8 @@ bool WeaponSystemServer::Update()
                     if (hitInfo.m_entity != entity) {
                         std::weak_ptr<HealthComponent> hitEntityHealthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(hitInfo.m_entity);
                         if (!hitEntityHealthComponent.expired()) {
+                            weaponComponent.lock()->m_hasHit = true;
+
                             Event newEvent;
                             newEvent.eventType = EventType::WEAPON_HIT;
                             newEvent.weapon.entity = entity;
