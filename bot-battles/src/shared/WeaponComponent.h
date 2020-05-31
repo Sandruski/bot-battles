@@ -32,6 +32,7 @@ struct WeaponComponent : public Component
 #endif
 
     // Networked
+    U32 m_weaponPrimary;
     U32 m_damagePrimary;
     U32 m_damageSecondary;
     U32 m_ammoPrimary;
@@ -44,6 +45,7 @@ struct WeaponComponent : public Component
     U32 m_weaponShot;
     F32 m_timestampShot;
 
+    bool m_hasShot;
     glm::vec2 m_originShot;
     glm::vec2 m_destinationShot;
     F32 m_timeoutShot;

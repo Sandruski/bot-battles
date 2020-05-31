@@ -282,7 +282,7 @@
                         {
                          "name":"cooldownWeapon2",
                          "type":"float",
-                         "value":20
+                         "value":5
                         }, 
                         {
                          "name":"damageWeapon2",

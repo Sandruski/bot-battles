@@ -136,6 +136,7 @@ Entity WeaponSpawnerSystem::SpawnWeapon(U32 weapon, Entity spawner) const
 
     // Weapon
     std::weak_ptr<WeaponComponent> weaponComponent = g_gameServer->GetComponentManager().AddComponent<WeaponComponent>(entity);
+    weaponComponent.lock()->m_weaponPrimary = weapon;
     switch (weapon) {
     case 1: {
         weaponComponent.lock()->m_damagePrimary = weaponSpawnerComponent.lock()->m_damageWeapon1;
@@ -173,6 +174,8 @@ bool WeaponSpawnerSystem::PickUpWeapon(Entity character, Entity weapon) const
     std::weak_ptr<WeaponComponent> weaponWeaponComponent = g_gameServer->GetComponentManager().GetComponent<WeaponComponent>(weapon);
 
     U64 weaponDirtyState = 0;
+    characterWeaponComponent.lock()->m_weaponPrimary = weaponWeaponComponent.lock()->m_weaponPrimary;
+    weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_WEAPON_PRIMARY);
     characterWeaponComponent.lock()->m_damagePrimary = weaponWeaponComponent.lock()->m_damagePrimary;
     weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_DAMAGE_PRIMARY);
     characterWeaponComponent.lock()->m_ammoPrimary = weaponWeaponComponent.lock()->m_ammoPrimary;

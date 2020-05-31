@@ -14,7 +14,7 @@ class MyBot(bot.Bot):
             input.linearVelocityX = input.maxLinearVelocity
             input.linearVelocityY = 0
         input.angularVelocity = 0
-        #input.shootPrimaryWeapon()
+        input.shootPrimaryWeapon()
         #input.shootSecondaryWeapon()
     
     def onHitWallEnter(self, input, collisionEvent):

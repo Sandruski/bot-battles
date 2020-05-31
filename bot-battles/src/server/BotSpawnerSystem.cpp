@@ -54,59 +54,65 @@ void BotSpawnerSystem::OnNotify(const Event& event)
 Entity BotSpawnerSystem::SpawnBot(PlayerID playerID) const
 {
     Entity botSpawner = INVALID_ENTITY;
-    std::weak_ptr<BotSpawnerComponent> botSpawnerComponent;
     for (const auto& entity : m_entities) {
         std::weak_ptr<BotSpawnerComponent> botSpawnerBotSpawnerComponent = g_gameServer->GetComponentManager().GetComponent<BotSpawnerComponent>(entity);
         if (botSpawnerBotSpawnerComponent.lock()->m_playerID == playerID) {
             botSpawner = entity;
-            botSpawnerComponent = botSpawnerBotSpawnerComponent;
             break;
         }
     }
+    std::weak_ptr<BotSpawnerComponent> botSpawnerComponent = g_gameServer->GetComponentManager().GetComponent<BotSpawnerComponent>(botSpawner);
+    std::weak_ptr<TransformComponent> botSpawnerTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(botSpawner);
 
     Entity character = g_gameServer->GetEntityManager().AddEntity();
     g_gameServer->GetLinkingContext().AddEntity(character);
 
+    // Transform
     std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().AddComponent<TransformComponent>(character);
-    std::weak_ptr<TransformComponent> botSpawnerTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(botSpawner);
     transformComponent.lock()->m_position = botSpawnerTransformComponent.lock()->m_position;
     transformComponent.lock()->m_layerType = LayerType::PLAYER;
     transformComponent.lock()->m_rotation = botSpawnerComponent.lock()->m_facing;
     transformComponent.lock()->m_scale = 1.0f;
 
+    // Sprite
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().AddComponent<SpriteComponent>(character);
     std::weak_ptr<SpriteResource> charactersSpriteResource = g_gameServer->GetResourceManager().AddResource<SpriteResource>("characters.png", TEXTURES_DIR, true);
     spriteComponent.lock()->m_spriteResource = charactersSpriteResource;
     U32 playerNumber = playerID + 1;
     switch (playerNumber) {
     case 1: {
-        glm::vec4 standTextureCoords = glm::vec4(1.0f, 1.0f, 36.0f, 43.0f);
-        spriteComponent.lock()->AddSprite("stand", standTextureCoords);
-        glm::vec4 holdTextureCoords = glm::vec4(38.0f, 1.0f, 38.0f, 43.0f);
-        spriteComponent.lock()->AddSprite("hold", holdTextureCoords);
-        glm::vec4 shootTextureCoords = glm::vec4(77.0f, 1.0f, 52.0f, 43.0f);
-        spriteComponent.lock()->AddSprite("shoot", shootTextureCoords);
-        glm::vec4 realoadTextureCoords = glm::vec4(130.0f, 1.0f, 42.0f, 43.0f);
-        spriteComponent.lock()->AddSprite("reaload", realoadTextureCoords);
+        glm::vec4 idleTextureCoords = glm::vec4(1.0f, 1.0f, 36.0f, 43.0f);
+        spriteComponent.lock()->AddSprite("idle", idleTextureCoords);
+        glm::vec4 interactTextureCoords = glm::vec4(38.0f, 1.0f, 38.0f, 43.0f);
+        spriteComponent.lock()->AddSprite("interact", interactTextureCoords);
+        glm::vec4 shootSecondaryTextureCoords = glm::vec4(77.0f, 1.0f, 52.0f, 43.0f);
+        spriteComponent.lock()->AddSprite("shootSecondary", shootSecondaryTextureCoords);
+        glm::vec4 shootPrimary1TextureCoords = glm::vec4(130.0f, 1.0f, 57.0f, 43.0f);
+        spriteComponent.lock()->AddSprite("shootPrimary1", shootPrimary1TextureCoords);
+        glm::vec4 shootPrimary2TextureCoords = glm::vec4(188.0f, 1.0f, 52.0f, 43.0f);
+        spriteComponent.lock()->AddSprite("shootPrimary2", shootPrimary2TextureCoords);
         break;
     }
     case 2: {
-        glm::vec4 standTextureCoords = glm::vec4(1.0f, 45.0f, 35.0f, 43.0f);
-        spriteComponent.lock()->AddSprite("stand", standTextureCoords);
-        glm::vec4 holdTextureCoords = glm::vec4(37.0f, 45.0f, 37.0f, 43.0f);
-        spriteComponent.lock()->AddSprite("hold", holdTextureCoords);
-        glm::vec4 shootTextureCoords = glm::vec4(75.0f, 45.0f, 51.0f, 43.0f);
-        spriteComponent.lock()->AddSprite("shoot", shootTextureCoords);
-        glm::vec4 realoadTextureCoords = glm::vec4(127.0f, 45.0f, 42.0f, 43.0f);
-        spriteComponent.lock()->AddSprite("reaload", realoadTextureCoords);
+        glm::vec4 idleTextureCoords = glm::vec4(1.0f, 45.0f, 35.0f, 43.0f);
+        spriteComponent.lock()->AddSprite("idle", idleTextureCoords);
+        glm::vec4 interactTextureCoords = glm::vec4(38.0f, 45.0f, 37.0f, 43.0f);
+        spriteComponent.lock()->AddSprite("interact", interactTextureCoords);
+        glm::vec4 shootSecondaryTextureCoords = glm::vec4(77.0f, 45.0f, 51.0f, 43.0f);
+        spriteComponent.lock()->AddSprite("shootSecondary", shootSecondaryTextureCoords);
+        glm::vec4 shootPrimary1TextureCoords = glm::vec4(130.0f, 45.0f, 56.0f, 43.0f);
+        spriteComponent.lock()->AddSprite("shootPrimary1", shootPrimary1TextureCoords);
+        glm::vec4 shootPrimary2TextureCoords = glm::vec4(188.0f, 45.0f, 51.0f, 43.0f);
+        spriteComponent.lock()->AddSprite("shootPrimary2", shootPrimary2TextureCoords);
         break;
     }
     default: {
         break;
     }
     }
-    spriteComponent.lock()->m_spriteName = "stand";
+    spriteComponent.lock()->m_spriteName = "idle";
 
+    // Label
     std::weak_ptr<LabelComponent> labelComponent = g_gameServer->GetComponentManager().AddComponent<LabelComponent>(character);
     std::string playerName = "Player ";
     playerName.append(std::to_string(playerNumber));
@@ -126,11 +132,13 @@ Entity BotSpawnerSystem::SpawnBot(PlayerID playerID) const
     }
     }
 
+    // Collider
     std::weak_ptr<ColliderComponent> colliderComponent = g_gameServer->GetComponentManager().AddComponent<ColliderComponent>(character);
     colliderComponent.lock()->m_size = glm::vec2(30.0f, 30.0f);
     colliderComponent.lock()->m_size *= transformComponent.lock()->m_scale;
     colliderComponent.lock()->m_shapeType = ColliderComponent::ShapeType::CIRCLE;
 
+    // Rigidbody
     std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameServer->GetComponentManager().AddComponent<RigidbodyComponent>(character);
     rigidbodyComponent.lock()->m_bodyType = RigidbodyComponent::BodyType::DYNAMIC;
     rigidbodyComponent.lock()->UpdateBodyType();
@@ -139,20 +147,25 @@ Entity BotSpawnerSystem::SpawnBot(PlayerID playerID) const
     rigidbodyComponent.lock()->m_isBullet = true;
     rigidbodyComponent.lock()->UpdateBullet();
 
+    // Weapon
     std::weak_ptr<WeaponComponent> weaponComponent = g_gameServer->GetComponentManager().AddComponent<WeaponComponent>(character);
     weaponComponent.lock()->m_damageSecondary = botSpawnerComponent.lock()->m_damageWeapon;
     weaponComponent.lock()->m_rangeSecondary = botSpawnerComponent.lock()->m_rangeWeapon;
     weaponComponent.lock()->m_cooldownSecondary = botSpawnerComponent.lock()->m_cooldownWeapon;
 
+    // Health
     std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().AddComponent<HealthComponent>(character);
     healthComponent.lock()->m_maxHealth = healthComponent.lock()->m_currentHealth = botSpawnerComponent.lock()->m_health;
 
+    // Sight
     std::weak_ptr<SightComponent> sightComponent = g_gameServer->GetComponentManager().AddComponent<SightComponent>(character);
     sightComponent.lock()->m_angle = botSpawnerComponent.lock()->m_sightAngle;
     sightComponent.lock()->m_distance = botSpawnerComponent.lock()->m_sightDistance;
 
+    // Bot
     g_gameServer->GetComponentManager().AddComponent<BotComponent>(character);
 
+    // Player
     g_gameServer->GetComponentManager().AddComponent<PlayerComponent>(character);
 
     return character;

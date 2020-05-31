@@ -6,7 +6,8 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 WeaponComponent::WeaponComponent()
-    : m_damagePrimary(0)
+    : m_weaponPrimary(0)
+    , m_damagePrimary(0)
     , m_damageSecondary(0)
     , m_ammoPrimary(0)
     , m_rangePrimary(0.0f)
@@ -15,6 +16,7 @@ WeaponComponent::WeaponComponent()
     , m_cooldownSecondary(0.0f)
     , m_weaponShot(0)
     , m_timestampShot(0.0f)
+    , m_hasShot(false)
     , m_originShot(0.0f, 0.0f)
     , m_destinationShot(0.0f, 0.0f)
     , m_timeoutShot(0.3f)
@@ -26,6 +28,9 @@ WeaponComponent::WeaponComponent()
 //----------------------------------------------------------------------------------------------------
 void WeaponComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /*frame*/, ReplicationActionType /*replicationActionType*/, Entity /*entity*/)
 {
+    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_WEAPON_PRIMARY)) {
+        inputStream.Read(m_weaponPrimary);
+    }
     if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_DAMAGE_PRIMARY)) {
         inputStream.Read(m_damagePrimary);
     }
@@ -54,6 +59,10 @@ U64 WeaponComponent::Write(OutputMemoryStream& outputStream, U64 dirtyState) con
 {
     U64 writtenState = 0;
 
+    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_WEAPON_PRIMARY)) {
+        outputStream.Write(m_weaponPrimary);
+        writtenState |= static_cast<U64>(ComponentMemberType::WEAPON_WEAPON_PRIMARY);
+    }
     if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_DAMAGE_PRIMARY)) {
         outputStream.Write(m_damagePrimary);
         writtenState |= static_cast<U64>(ComponentMemberType::WEAPON_DAMAGE_PRIMARY);
