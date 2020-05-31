@@ -35,15 +35,41 @@ def init(scriptName, transformComponent, rigidbodyComponent):
 def tick(input):
     myBot.tick(input)
 
-def onHitWall(input, collisionEvent):
-    myBot.onHitWall(input, collisionEvent)
-
 def onSeenNewBot(input):
     myBot.onSeenNewBot(input)
+
+def onSeenNewWeapon(input):
+    myBot.onSeenNewWeapon(input)
+
+def onSeenNewHealth(input):
+    myBot.onSeenNewHealth(input)
 
 def onSeenLostBot(input):
     myBot.onSeenLostBot(input)
 
+def onSeenLostWeapon(input):
+    myBot.onSeenLostWeapon(input)
+
+def onSeenLostHealth(input):
+    myBot.onSeenLostHealth(input)
+
+def onWeaponPicked(input):
+    myBot.onWeaponPicked(input)
+
+def onHealthPicked(input):
+    myBot.onHealthPicked(input)
+
+def onBulletHit(input):
+    myBot.onBulletHit(input)
+
+def onBulletMiss(input):
+    myBot.onBulletMiss(input)
+
+def onHitByBullet(input):
+    myBot.onHitByBullet(input)
+
+def onHitWall(input, collisionEvent):
+    myBot.onHitWall(input, collisionEvent)
 
 def log():
     content = stream.getvalue()

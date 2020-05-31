@@ -19,14 +19,14 @@ enum class SystemType : U16 {
     INPUT,
 
     PHYSICS,
+    COLLISION,
+
     //
     SIGHT,
     MOVEMENT,
     WEAPON,
     HEALTH,
     //
-
-    COLLISION, // TODO
 
     OUTPUT,
 
@@ -48,14 +48,14 @@ enum class SystemType : U16 {
     HEALTH_SPAWNER,
 
     PHYSICS,
+    COLLISION,
+
     //
     SIGHT,
     MOVEMENT,
     WEAPON,
     HEALTH,
     //
-
-    COLLISION, // TODO
 
     OUTPUT,
 

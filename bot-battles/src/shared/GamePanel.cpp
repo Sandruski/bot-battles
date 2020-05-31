@@ -37,8 +37,6 @@ bool GamePanel::RenderBody() const
     F32 dt = MyTime::GetInstance().GetDt();
     ImGui::Text("%.2f", dt);
 
-    // TODO: write Physics dt also
-
     ImGui::Text("Frame:");
     ImGui::SameLine();
     U32 frame = MyTime::GetInstance().GetFrame();

@@ -40,7 +40,8 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 Game::Game()
-    : m_config(nullptr)
+    : m_isRunning(false)
+    , m_config()
     , m_entityManager()
     , m_componentManager()
     , m_systemManager()
@@ -58,7 +59,6 @@ Game::Game()
     , m_mainMenuComponent()
     , m_gameplayComponent()
     , m_scoreboardComponent()
-    , m_isRunning(false)
 {
     m_entityManager = std::make_shared<EntityManager>();
     m_componentManager = std::make_shared<ComponentManager>();

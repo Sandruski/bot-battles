@@ -38,7 +38,6 @@ private:
     void OnWeaponHit(Entity entity) const;
     void OnWeaponMissed(Entity entity) const;
     void OnWeaponPrimaryGained(Entity entity) const;
-    void OnHealthEmptied(Entity entity) const;
     void OnHealthLost(Entity entity, U32 health) const;
     void OnHealthGained(Entity entity, U32 health) const;
 };

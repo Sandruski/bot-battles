@@ -78,14 +78,14 @@ bool EventSystem::Update()
             case SDL_WINDOWEVENT_SHOWN:
             case SDL_WINDOWEVENT_MAXIMIZED:
             case SDL_WINDOWEVENT_FOCUS_GAINED: {
-                // TODO: we show and update m_isRunning accordingly
+                g_game->m_isRunning = true;
                 break;
             }
 
             case SDL_WINDOWEVENT_HIDDEN:
             case SDL_WINDOWEVENT_MINIMIZED:
             case SDL_WINDOWEVENT_FOCUS_LOST: {
-                // TODO: we hide and update m_isRunning accordingly
+                g_game->m_isRunning = false;
                 break;
             }
 

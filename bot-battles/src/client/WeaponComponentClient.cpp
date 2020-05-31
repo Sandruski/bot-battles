@@ -7,16 +7,18 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-void WeaponComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /*frame*/, ReplicationActionType /*replicationActionType*/, Entity entity)
+void WeaponComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /*frame*/, ReplicationActionType replicationActionType, Entity entity)
 {
     if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_WEAPON_PRIMARY)) {
         inputStream.Read(m_weaponPrimary);
 
-        Event newWeaponEvent;
-        newWeaponEvent.eventType = EventType::WEAPON_PRIMARY_GAINED;
-        newWeaponEvent.weapon.entity = entity;
-        ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-        clientComponent.m_replicationManager.NotifyEvent(newWeaponEvent);
+        if (replicationActionType != ReplicationActionType::CREATE) {
+            Event newWeaponEvent;
+            newWeaponEvent.eventType = EventType::WEAPON_PRIMARY_GAINED;
+            newWeaponEvent.weapon.entity = entity;
+            ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+            clientComponent.m_replicationManager.NotifyEvent(newWeaponEvent);
+        }
     }
     if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_DAMAGE_PRIMARY)) {
         inputStream.Read(m_damagePrimary);
@@ -45,15 +47,17 @@ void WeaponComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /
     if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_HAS_HIT)) {
         inputStream.Read(m_hasHit);
 
-        Event newWeaponEvent;
-        if (m_hasHit) {
-            newWeaponEvent.eventType = EventType::WEAPON_HIT;
-        } else {
-            newWeaponEvent.eventType = EventType::WEAPON_MISSED;
+        if (replicationActionType != ReplicationActionType::CREATE) {
+            Event newWeaponEvent;
+            if (m_hasHit) {
+                newWeaponEvent.eventType = EventType::WEAPON_HIT;
+            } else {
+                newWeaponEvent.eventType = EventType::WEAPON_MISSED;
+            }
+            newWeaponEvent.weapon.entity = entity;
+            ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+            clientComponent.m_replicationManager.NotifyEvent(newWeaponEvent);
         }
-        newWeaponEvent.weapon.entity = entity;
-        ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-        clientComponent.m_replicationManager.NotifyEvent(newWeaponEvent);
     }
 }
 }

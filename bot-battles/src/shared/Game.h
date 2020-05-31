@@ -103,6 +103,9 @@ private:
     bool RenderGui();
     bool PostRender();
 
+public:
+    bool m_isRunning;
+
 protected:
     std::shared_ptr<Config> m_config;
 
@@ -127,8 +130,6 @@ protected:
     MainMenuComponent m_mainMenuComponent;
     GameplayComponent m_gameplayComponent;
     ScoreboardComponent m_scoreboardComponent;
-
-    bool m_isRunning;
 };
 
 extern Game* g_game;

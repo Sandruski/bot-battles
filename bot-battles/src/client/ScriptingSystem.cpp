@@ -5,6 +5,7 @@
 #include "ComponentManager.h"
 #include "GameClient.h"
 #include "GameplayComponent.h"
+#include "HealthComponent.h"
 #include "InputComponent.h"
 #include "LinkingContext.h"
 #include "RigidbodyComponent.h"
@@ -13,6 +14,7 @@
 #include "State.h"
 #include "TransformComponent.h"
 #include "WallComponent.h"
+#include "WeaponComponent.h"
 
 namespace sand {
 
@@ -125,11 +127,6 @@ void ScriptingSystem::OnNotify(const Event& event)
         break;
     }
 
-    case EventType::HEALTH_EMPTIED: {
-        OnHealthEmptied(event.health.entity);
-        break;
-    }
-
     case EventType::HEALTH_LOST: {
         OnHealthLost(event.health.entity, event.health.health);
         break;
@@ -189,7 +186,9 @@ void ScriptingSystem::InitScripts() const
         std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameClient->GetComponentManager().GetComponent<RigidbodyComponent>(entity);
         try {
             scriptingComponent.m_mainModule.attr("init")(clientComponent.m_script.c_str(), transformComponent.lock(), rigidbodyComponent.lock());
-        } catch (const std::runtime_error& /*re*/) {
+        } catch (const std::runtime_error& re) {
+            OutputDebugStringA(re.what());
+            ::MessageBoxA(NULL, re.what(), "Error importing script", MB_OK);
         }
 
         break;
@@ -226,7 +225,9 @@ void ScriptingSystem::OnCollisionEnter(Entity entityA, Entity entityB, glm::vec2
         try {
             scriptingComponent.m_mainModule.attr("onHitWall")(&inputComponent, collision);
             scriptingComponent.m_mainModule.attr("log")();
-        } catch (const std::runtime_error& /*re*/) {
+        } catch (const std::runtime_error& re) {
+            OutputDebugStringA(re.what());
+            ::MessageBoxA(NULL, re.what(), "Error importing script", MB_OK);
         }
     }
 }
@@ -249,23 +250,36 @@ void ScriptingSystem::OnSeenNewEntity(Entity entity) const
         try {
             scriptingComponent.m_mainModule.attr("onSeenNewBot")(&inputComponent);
             scriptingComponent.m_mainModule.attr("log")();
-        } catch (const std::runtime_error& /*re*/) {
+        } catch (const std::runtime_error& re) {
+            OutputDebugStringA(re.what());
+            ::MessageBoxA(NULL, re.what(), "Error importing script", MB_OK);
         }
         return;
     }
 
-    // onSeenNewWeapon
-    // onSeenNewHealth
+    std::weak_ptr<WeaponComponent> weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(entity);
+    if (!botComponent.expired()) {
+        try {
+            scriptingComponent.m_mainModule.attr("onSeenNewWeapon")(&inputComponent);
+            scriptingComponent.m_mainModule.attr("log")();
+        } catch (const std::runtime_error& re) {
+            OutputDebugStringA(re.what());
+            ::MessageBoxA(NULL, re.what(), "Error importing script", MB_OK);
+        }
+        return;
+    }
 
-    //std::weak_ptr<AmmoSpawnerComponent> ammoSpawnerComponent = g_gameClient->GetComponentManager().GetComponent<AmmoSpawnerComponent>(entity);
-    //if (!ammoSpawnerComponent.expired()) {
-    //    try {
-    //        scriptingComponent.m_mainModule.attr("onSeenNewAmmo")(&inputComponent);
-    //        scriptingComponent.m_mainModule.attr("log")();
-    //    } catch (const std::runtime_error& /*re*/) {
-    //    }
-    //    return;
-    //}
+    std::weak_ptr<HealthComponent> healthComponent = g_gameClient->GetComponentManager().GetComponent<HealthComponent>(entity);
+    if (!botComponent.expired()) {
+        try {
+            scriptingComponent.m_mainModule.attr("onSeenNewHealth")(&inputComponent);
+            scriptingComponent.m_mainModule.attr("log")();
+        } catch (const std::runtime_error& re) {
+            OutputDebugStringA(re.what());
+            ::MessageBoxA(NULL, re.what(), "Error importing script", MB_OK);
+        }
+        return;
+    }
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -286,56 +300,143 @@ void ScriptingSystem::OnSeenLostEntity(Entity entity) const
         try {
             scriptingComponent.m_mainModule.attr("onSeenLostBot")(&inputComponent);
             scriptingComponent.m_mainModule.attr("log")();
-        } catch (const std::runtime_error& /*re*/) {
+        } catch (const std::runtime_error& re) {
+            OutputDebugStringA(re.what());
+            ::MessageBoxA(NULL, re.what(), "Error importing script", MB_OK);
         }
     }
 
-    // onSeenLostWeapon
-    // onSeenLostHealth
+    std::weak_ptr<WeaponComponent> weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(entity);
+    if (!botComponent.expired()) {
+        try {
+            scriptingComponent.m_mainModule.attr("onSeenLostWeapon")(&inputComponent);
+            scriptingComponent.m_mainModule.attr("log")();
+        } catch (const std::runtime_error& re) {
+            OutputDebugStringA(re.what());
+            ::MessageBoxA(NULL, re.what(), "Error importing script", MB_OK);
+        }
+        return;
+    }
 
-    //std::weak_ptr<AmmoSpawnerComponent> ammoSpawnerComponent = g_gameClient->GetComponentManager().GetComponent<AmmoSpawnerComponent>(entity);
-    //if (!ammoSpawnerComponent.expired()) {
-    //    try {
-    //        scriptingComponent.m_mainModule.attr("onSeenLostAmmo")(&inputComponent);
-    //        scriptingComponent.m_mainModule.attr("log")();
-    //    } catch (const std::runtime_error& /*re*/) {
-    //    }
-    //}
+    std::weak_ptr<HealthComponent> healthComponent = g_gameClient->GetComponentManager().GetComponent<HealthComponent>(entity);
+    if (!botComponent.expired()) {
+        try {
+            scriptingComponent.m_mainModule.attr("onSeenLostHealth")(&inputComponent);
+            scriptingComponent.m_mainModule.attr("log")();
+        } catch (const std::runtime_error& re) {
+            OutputDebugStringA(re.what());
+            ::MessageBoxA(NULL, re.what(), "Error importing script", MB_OK);
+        }
+        return;
+    }
 }
 
 //----------------------------------------------------------------------------------------------------
-void ScriptingSystem::OnWeaponHit(Entity /*entity*/) const
+void ScriptingSystem::OnWeaponHit(Entity entity) const
 {
-    // OnBulletMiss
+    assert(entity < INVALID_ENTITY);
+
+    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    if (entity != clientComponent.m_entity) {
+        return;
+    }
+
+    ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();
+    InputComponent& inputComponent = g_gameClient->GetInputComponent();
+    try {
+        scriptingComponent.m_mainModule.attr("onBulletHit")(&inputComponent);
+        scriptingComponent.m_mainModule.attr("log")();
+    } catch (const std::runtime_error& re) {
+        OutputDebugStringA(re.what());
+        ::MessageBoxA(NULL, re.what(), "Error importing script", MB_OK);
+    }
 }
 
 //----------------------------------------------------------------------------------------------------
-void ScriptingSystem::OnWeaponMissed(Entity /*entity*/) const
+void ScriptingSystem::OnWeaponMissed(Entity entity) const
 {
-    // OnBulletHit
+    assert(entity < INVALID_ENTITY);
+
+    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    if (entity != clientComponent.m_entity) {
+        return;
+    }
+
+    ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();
+    InputComponent& inputComponent = g_gameClient->GetInputComponent();
+    try {
+        scriptingComponent.m_mainModule.attr("onBulletMiss")(&inputComponent);
+        scriptingComponent.m_mainModule.attr("log")();
+    } catch (const std::runtime_error& re) {
+        OutputDebugStringA(re.what());
+        ::MessageBoxA(NULL, re.what(), "Error importing script", MB_OK);
+    }
 }
 
 //----------------------------------------------------------------------------------------------------
-void ScriptingSystem::OnWeaponPrimaryGained(Entity /*entity*/) const
+void ScriptingSystem::OnWeaponPrimaryGained(Entity entity) const
 {
-    // OnWeaponPicked
+    assert(entity < INVALID_ENTITY);
+
+    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    if (entity != clientComponent.m_entity) {
+        return;
+    }
+
+    ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();
+    InputComponent& inputComponent = g_gameClient->GetInputComponent();
+    try {
+        scriptingComponent.m_mainModule.attr("onWeaponPicked")(&inputComponent);
+        scriptingComponent.m_mainModule.attr("log")();
+    } catch (const std::runtime_error& re) {
+        OutputDebugStringA(re.what());
+        ::MessageBoxA(NULL, re.what(), "Error importing script", MB_OK);
+    }
 }
 
 //----------------------------------------------------------------------------------------------------
-void ScriptingSystem::OnHealthEmptied(Entity /*entity*/) const
+void ScriptingSystem::OnHealthLost(Entity entity, U32 /*health*/) const
 {
-    // OnDeath
+    // TODO: do smth with health
+
+    assert(entity < INVALID_ENTITY);
+
+    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    if (entity != clientComponent.m_entity) {
+        return;
+    }
+
+    ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();
+    InputComponent& inputComponent = g_gameClient->GetInputComponent();
+    try {
+        scriptingComponent.m_mainModule.attr("onHitByBullet")(&inputComponent);
+        scriptingComponent.m_mainModule.attr("log")();
+    } catch (const std::runtime_error& re) {
+        OutputDebugStringA(re.what());
+        ::MessageBoxA(NULL, re.what(), "Error importing script", MB_OK);
+    }
 }
 
 //----------------------------------------------------------------------------------------------------
-void ScriptingSystem::OnHealthLost(Entity /*entity*/, U32 /*health*/) const
+void ScriptingSystem::OnHealthGained(Entity entity, U32 /*health*/) const
 {
-    // OnHitByBullet
-}
+    // TODO: do smth with health
 
-//----------------------------------------------------------------------------------------------------
-void ScriptingSystem::OnHealthGained(Entity /*entity*/, U32 /*health*/) const
-{
-    // OnHealthPicked
+    assert(entity < INVALID_ENTITY);
+
+    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    if (entity != clientComponent.m_entity) {
+        return;
+    }
+
+    ScriptingComponent& scriptingComponent = g_gameClient->GetScriptingComponent();
+    InputComponent& inputComponent = g_gameClient->GetInputComponent();
+    try {
+        scriptingComponent.m_mainModule.attr("onHealthPicked")(&inputComponent);
+        scriptingComponent.m_mainModule.attr("log")();
+    } catch (const std::runtime_error& re) {
+        OutputDebugStringA(re.what());
+        ::MessageBoxA(NULL, re.what(), "Error importing script", MB_OK);
+    }
 }
 }
