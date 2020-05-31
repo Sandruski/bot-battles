@@ -40,14 +40,16 @@ struct WeaponComponent : public Component
     F32 m_rangeSecondary;
     F32 m_cooldownPrimary;
     F32 m_cooldownSecondary;
+    bool m_hasShot;
 
     // Local
+    /// Client & Server
     U32 m_weaponShot;
     F32 m_timestampShot;
-
-    bool m_hasShot;
     glm::vec2 m_originShot;
     glm::vec2 m_destinationShot;
+
+    /// Server
     F32 m_timeoutShot;
     MyTimer m_timerShot;
 };

@@ -53,14 +53,6 @@ bool WeaponSystemClient::Update()
             continue;
         }
 
-        std::weak_ptr<WeaponComponent> weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(entity);
-        std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
-        std::weak_ptr<SpriteComponent> spriteComponent = g_gameClient->GetComponentManager().GetComponent<SpriteComponent>(entity);
-        if (weaponComponent.lock()->m_hasShot && weaponComponent.lock()->m_timerShot.ReadSec() >= weaponComponent.lock()->m_timeoutShot) {
-            spriteComponent.lock()->m_spriteName = "idle";
-            weaponComponent.lock()->m_hasShot = false;
-        }
-
         if (clientComponent.m_isLastShootInputPending) {
             const Input& input = clientComponent.m_inputBuffer.GetLast();
             U64 dirtyState = input.GetDirtyState();
@@ -68,6 +60,10 @@ bool WeaponSystemClient::Update()
             const bool hasShootPrimaryWeapon = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_PRIMARY_WEAPON);
             const bool hasShootSecondaryWeapon = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_SECONDARY_WEAPON);
             if (hasShootPrimaryWeapon || hasShootSecondaryWeapon) {
+                std::weak_ptr<WeaponComponent> weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(entity);
+                std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
+                std::weak_ptr<SpriteComponent> spriteComponent = g_gameClient->GetComponentManager().GetComponent<SpriteComponent>(entity);
+
                 F32 timestamp = input.GetTimestamp();
 
                 F32 timestampDiff = timestamp - weaponComponent.lock()->m_timestampShot;
@@ -76,23 +72,11 @@ bool WeaponSystemClient::Update()
                     continue;
                 }
 
-                if (hasShootPrimaryWeapon && weaponComponent.lock()->m_ammoPrimary == 0) {
-                    continue;
-                }
-
-                weaponComponent.lock()->m_hasShot = true;
-                weaponComponent.lock()->m_timerShot.Start();
-
-                weaponComponent.lock()->m_weaponShot = hasShootPrimaryWeapon ? 1 : 0;
-                weaponComponent.lock()->m_timestampShot = timestamp;
-
-                glm::vec2 position = transformComponent.lock()->m_position;
-                glm::vec2 rotation = transformComponent.lock()->GetDirection();
-                weaponComponent.lock()->m_originShot = position;
-                F32 maxLength = hasShootPrimaryWeapon ? weaponComponent.lock()->m_rangePrimary : weaponComponent.lock()->m_rangeSecondary;
-                weaponComponent.lock()->m_destinationShot = position + rotation * maxLength;
-
                 if (hasShootPrimaryWeapon) {
+                    if (weaponComponent.lock()->m_ammoPrimary == 0) {
+                        continue;
+                    }
+
                     switch (weaponComponent.lock()->m_weaponPrimary) {
                     case 1: {
                         spriteComponent.lock()->m_spriteName = "shootPrimary1";
@@ -109,6 +93,15 @@ bool WeaponSystemClient::Update()
                 } else {
                     spriteComponent.lock()->m_spriteName = "shootSecondary";
                 }
+
+                weaponComponent.lock()->m_weaponShot = hasShootPrimaryWeapon ? 1 : 0;
+                weaponComponent.lock()->m_timestampShot = timestamp;
+
+                glm::vec2 position = transformComponent.lock()->m_position;
+                glm::vec2 rotation = transformComponent.lock()->GetDirection();
+                weaponComponent.lock()->m_originShot = position;
+                F32 maxLength = hasShootPrimaryWeapon ? weaponComponent.lock()->m_rangePrimary : weaponComponent.lock()->m_rangeSecondary;
+                weaponComponent.lock()->m_destinationShot = position + rotation * maxLength;
 
                 PhysicsComponent& physicsComponent = g_gameClient->GetPhysicsComponent();
                 PhysicsComponent::RaycastHit hitInfo;
@@ -149,7 +142,7 @@ bool WeaponSystemClient::Render()
 
         std::weak_ptr<WeaponComponent> weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(entity);
         if (!weaponComponent.lock()->m_hasShot) {
-            return true;
+            continue;
         }
 
         glm::vec4 color = White;

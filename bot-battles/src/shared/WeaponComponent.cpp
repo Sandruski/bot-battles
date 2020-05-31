@@ -14,12 +14,12 @@ WeaponComponent::WeaponComponent()
     , m_rangeSecondary(0.0f)
     , m_cooldownPrimary(0.0f)
     , m_cooldownSecondary(0.0f)
+    , m_hasShot(false)
     , m_weaponShot(0)
     , m_timestampShot(0.0f)
-    , m_hasShot(false)
     , m_originShot(0.0f, 0.0f)
     , m_destinationShot(0.0f, 0.0f)
-    , m_timeoutShot(0.3f)
+    , m_timeoutShot(1.0f)
     , m_timerShot()
 {
 }
@@ -51,6 +51,9 @@ void WeaponComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /
     }
     if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_COOLDOWN_SECONDARY)) {
         inputStream.Read(m_cooldownSecondary);
+    }
+    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_HAS_SHOT)) {
+        inputStream.Read(m_hasShot);
     }
 }
 #elif defined(_SERVER)
@@ -90,6 +93,10 @@ U64 WeaponComponent::Write(OutputMemoryStream& outputStream, U64 dirtyState) con
     if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_COOLDOWN_SECONDARY)) {
         outputStream.Write(m_cooldownSecondary);
         writtenState |= static_cast<U64>(ComponentMemberType::WEAPON_COOLDOWN_SECONDARY);
+    }
+    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_HAS_SHOT)) {
+        outputStream.Write(m_hasShot);
+        writtenState |= static_cast<U64>(ComponentMemberType::WEAPON_HAS_SHOT);
     }
 
     return writtenState;

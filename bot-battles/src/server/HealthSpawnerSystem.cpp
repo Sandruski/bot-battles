@@ -26,7 +26,7 @@ HealthSpawnerSystem::HealthSpawnerSystem()
 bool HealthSpawnerSystem::Update()
 {
     OPTICK_EVENT();
-    // TODO: spawn only once or forever
+
     GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
     std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
     if (currentState.expired()) {
@@ -48,13 +48,14 @@ bool HealthSpawnerSystem::Update()
             if (healthSpawnerComponent.lock()->m_timerSpawn.ReadSec() < healthSpawnerComponent.lock()->m_timeoutSpawn) {
                 continue;
             }
-            healthSpawnerComponent.lock()->m_timerSpawn.Start();
 
             U32 health1 = healthSpawnerComponent.lock()->m_spawnHealth1 ? 1 : 2;
             U32 health2 = healthSpawnerComponent.lock()->m_spawnHealth2 ? 2 : 1;
             U32 health = RandomInt(health1, health2);
             healthSpawnerComponent.lock()->m_entitySpawned = SpawnHealth(health, entity);
             ++healthSpawnerComponent.lock()->m_amountSpawned;
+
+            healthSpawnerComponent.lock()->m_timerSpawn.Start();
         }
     }
 

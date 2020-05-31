@@ -27,7 +27,7 @@ WeaponSpawnerSystem::WeaponSpawnerSystem()
 bool WeaponSpawnerSystem::Update()
 {
     OPTICK_EVENT();
-    // TODO: spawn only once or forever
+
     GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
     std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
     if (currentState.expired()) {
@@ -49,13 +49,14 @@ bool WeaponSpawnerSystem::Update()
             if (weaponSpawnerComponent.lock()->m_timerSpawn.ReadSec() < weaponSpawnerComponent.lock()->m_timeoutSpawn) {
                 continue;
             }
-            weaponSpawnerComponent.lock()->m_timerSpawn.Start();
 
             U32 weapon1 = weaponSpawnerComponent.lock()->m_spawnWeapon1 ? 1 : 2;
             U32 weapon2 = weaponSpawnerComponent.lock()->m_spawnWeapon2 ? 2 : 1;
             U32 weapon = RandomInt(weapon1, weapon2);
             weaponSpawnerComponent.lock()->m_entitySpawned = SpawnWeapon(weapon, entity);
             ++weaponSpawnerComponent.lock()->m_amountSpawned;
+
+            weaponSpawnerComponent.lock()->m_timerSpawn.Start();
         }
     }
 

@@ -229,7 +229,7 @@
                         {
                          "name":"cooldownWeapon1",
                          "type":"float",
-                         "value":5
+                         "value":2
                         }, 
                         {
                          "name":"damageWeapon1",
@@ -254,7 +254,7 @@
                         {
                          "name":"spawnWeapon2",
                          "type":"bool",
-                         "value":true
+                         "value":false
                         }],
                  "rotation":0,
                  "type":"WeaponSpawner",
@@ -282,7 +282,7 @@
                         {
                          "name":"cooldownWeapon2",
                          "type":"float",
-                         "value":5
+                         "value":2
                         }, 
                         {
                          "name":"damageWeapon2",
@@ -302,7 +302,7 @@
                         {
                          "name":"spawnWeapon1",
                          "type":"bool",
-                         "value":true
+                         "value":false
                         }, 
                         {
                          "name":"spawnWeapon2",

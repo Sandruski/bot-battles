@@ -169,7 +169,7 @@ bool SightSystemServer::Render()
         std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
         std::weak_ptr<SightComponent> sightComponent = g_gameServer->GetComponentManager().GetComponent<SightComponent>(entity);
 
-        glm::vec4 color = Red;
+        glm::vec4 color = White;
         color.a = 0.5f;
         Draw(rendererComponent, transformComponent, sightComponent, color);
     }

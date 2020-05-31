@@ -13,6 +13,7 @@
 #include "RigidbodyComponent.h"
 #include "ServerComponent.h"
 #include "ShaderResource.h"
+#include "SpriteComponent.h"
 #include "State.h"
 #include "SystemManager.h"
 #include "TransformComponent.h"
@@ -52,102 +53,133 @@ bool WeaponSystemServer::Update()
             continue;
         }
 
+        std::weak_ptr<WeaponComponent> weaponComponent = g_gameServer->GetComponentManager().GetComponent<WeaponComponent>(entity);
+        std::weak_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().GetComponent<SpriteComponent>(entity);
+        std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
+        std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameServer->GetComponentManager().GetComponent<RigidbodyComponent>(entity);
+
+        U64 characterDirtyState = 0;
+
+        if (weaponComponent.lock()->m_hasShot && weaponComponent.lock()->m_timerShot.ReadSec() >= weaponComponent.lock()->m_timeoutShot) {
+            spriteComponent.lock()->m_spriteName = "idle";
+            characterDirtyState |= static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME);
+
+            weaponComponent.lock()->m_hasShot = false;
+            characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_HAS_SHOT);
+        }
+
         std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
-        if (!clientProxy.lock()->m_inputBuffer.IsEmpty()) {
-            std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
-            std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameServer->GetComponentManager().GetComponent<RigidbodyComponent>(entity);
-            std::weak_ptr<WeaponComponent> weaponComponent = g_gameServer->GetComponentManager().GetComponent<WeaponComponent>(entity);
+        for (U32 i = clientProxy.lock()->m_inputBuffer.m_front; i < clientProxy.lock()->m_inputBuffer.m_back; ++i) {
+            const Input& input = clientProxy.lock()->m_inputBuffer.Get(i);
+            U64 dirtyState = input.GetDirtyState();
 
-            U64 weaponDirtyState = 0;
-            for (U32 i = clientProxy.lock()->m_inputBuffer.m_front; i < clientProxy.lock()->m_inputBuffer.m_back; ++i) {
-                const Input& input = clientProxy.lock()->m_inputBuffer.Get(i);
-                U64 dirtyState = input.GetDirtyState();
+            const bool hasShootPrimaryWeapon = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_PRIMARY_WEAPON);
+            const bool hasShootSecondaryWeapon = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_SECONDARY_WEAPON);
+            if (hasShootPrimaryWeapon || hasShootSecondaryWeapon) {
+                F32 timestamp = input.GetTimestamp();
 
-                const bool hasShootPrimaryWeapon = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_PRIMARY_WEAPON);
-                const bool hasShootSecondaryWeapon = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_SECONDARY_WEAPON);
-                if (hasShootPrimaryWeapon || hasShootSecondaryWeapon) {
-                    F32 timestamp = input.GetTimestamp();
+                F32 timestampDiff = timestamp - weaponComponent.lock()->m_timestampShot;
+                F32 cooldown = weaponComponent.lock()->m_weaponShot == 1 ? weaponComponent.lock()->m_cooldownPrimary : weaponComponent.lock()->m_cooldownSecondary;
+                if (timestampDiff < cooldown) {
+                    continue;
+                }
 
-                    F32 timestampDiff = timestamp - weaponComponent.lock()->m_timestampShot;
-                    F32 cooldown = weaponComponent.lock()->m_weaponShot == 1 ? weaponComponent.lock()->m_cooldownPrimary : weaponComponent.lock()->m_cooldownSecondary;
-                    if (timestampDiff < cooldown) {
+                if (hasShootPrimaryWeapon) {
+                    if (weaponComponent.lock()->m_ammoPrimary == 0) {
                         continue;
                     }
 
-                    if (hasShootPrimaryWeapon) {
-                        if (weaponComponent.lock()->m_ammoPrimary == 0) {
-                            continue;
-                        }
-                        weaponComponent.lock()->m_ammoPrimary -= 1;
-                        weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_AMMO_PRIMARY);
+                    weaponComponent.lock()->m_ammoPrimary -= 1;
+                    characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_AMMO_PRIMARY);
+
+                    switch (weaponComponent.lock()->m_weaponPrimary) {
+                    case 1: {
+                        spriteComponent.lock()->m_spriteName = "shootPrimary1";
+                        characterDirtyState |= static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME);
+                        break;
+                    }
+                    case 2: {
+                        spriteComponent.lock()->m_spriteName = "shootPrimary2";
+                        characterDirtyState |= static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME);
+                        break;
+                    }
+                    default: {
+                        break;
+                    }
+                    }
+                } else {
+                    spriteComponent.lock()->m_spriteName = "shootSecondary";
+                    characterDirtyState |= static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME);
+                }
+
+                weaponComponent.lock()->m_hasShot = true;
+                characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_HAS_SHOT);
+                weaponComponent.lock()->m_weaponShot = hasShootPrimaryWeapon ? 1 : 0;
+                weaponComponent.lock()->m_timestampShot = timestamp;
+
+                if (serverComponent.m_isServerRewind) {
+                    Rewind(entity, input.m_interpolationFromFrame, input.m_interpolationToFrame, input.m_interpolationPercentage);
+                }
+
+                U32 index = transformComponent.lock()->m_inputTransformBuffer.m_front;
+                bool isFound = false;
+                while (index < transformComponent.lock()->m_inputTransformBuffer.m_back) {
+                    const Transform& transform = transformComponent.lock()->m_inputTransformBuffer.Get(index);
+                    if (transform.GetFrame() == input.GetFrame()) {
+                        isFound = true;
+                        break;
+                    }
+                    ++index;
+                }
+                Transform& transform = isFound ? transformComponent.lock()->m_inputTransformBuffer.Get(index) : transformComponent.lock()->m_inputTransformBuffer.GetLast();
+                rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(transform.m_position.x), PIXELS_TO_METERS(transform.m_position.y)), glm::radians(transform.m_rotation));
+
+                glm::vec2 position = transform.m_position;
+                F32 x = std::cos(glm::radians(transform.m_rotation));
+                F32 y = std::sin(glm::radians(transform.m_rotation));
+                glm::vec2 rotation = glm::vec2(x, y);
+
+                weaponComponent.lock()->m_originShot = position;
+                F32 maxLength = hasShootPrimaryWeapon ? weaponComponent.lock()->m_rangePrimary : weaponComponent.lock()->m_rangeSecondary;
+                weaponComponent.lock()->m_destinationShot = position + rotation * maxLength;
+
+                PhysicsComponent& physicsComponent = g_gameServer->GetPhysicsComponent();
+                PhysicsComponent::RaycastHit hitInfo;
+                const bool hasIntersected = physicsComponent.Raycast(weaponComponent.lock()->m_originShot, weaponComponent.lock()->m_destinationShot, hitInfo);
+                if (hasIntersected) {
+                    std::weak_ptr<TransformComponent> hitEntityTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(hitInfo.m_entity);
+                    if (!hitEntityTransformComponent.expired()) {
+                        weaponComponent.lock()->m_destinationShot = hitInfo.m_point;
                     }
 
-                    weaponComponent.lock()->m_weaponShot = hasShootPrimaryWeapon ? 1 : 0;
-                    weaponComponent.lock()->m_timestampShot = timestamp;
-                    weaponComponent.lock()->m_timerShot.Start();
-
-                    if (serverComponent.m_isServerRewind) {
-                        Rewind(entity, input.m_interpolationFromFrame, input.m_interpolationToFrame, input.m_interpolationPercentage);
-                    }
-
-                    U32 index = transformComponent.lock()->m_inputTransformBuffer.m_front;
-                    bool isFound = false;
-                    while (index < transformComponent.lock()->m_inputTransformBuffer.m_back) {
-                        const Transform& transform = transformComponent.lock()->m_inputTransformBuffer.Get(index);
-                        if (transform.GetFrame() == input.GetFrame()) {
-                            isFound = true;
-                            break;
+                    if (hitInfo.m_entity != entity) {
+                        std::weak_ptr<HealthComponent> hitEntityHealthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(hitInfo.m_entity);
+                        if (!hitEntityHealthComponent.expired()) {
+                            Event newEvent;
+                            newEvent.eventType = EventType::WEAPON_HIT;
+                            newEvent.weapon.entity = entity;
+                            newEvent.weapon.damage = hasShootPrimaryWeapon ? weaponComponent.lock()->m_damagePrimary : weaponComponent.lock()->m_damageSecondary;
+                            PushEvent(newEvent);
                         }
-                        ++index;
-                    }
-                    Transform& transform = isFound ? transformComponent.lock()->m_inputTransformBuffer.Get(index) : transformComponent.lock()->m_inputTransformBuffer.GetLast();
-                    rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(transform.m_position.x), PIXELS_TO_METERS(transform.m_position.y)), glm::radians(transform.m_rotation));
-
-                    glm::vec2 position = transform.m_position;
-                    F32 x = std::cos(glm::radians(transform.m_rotation));
-                    F32 y = std::sin(glm::radians(transform.m_rotation));
-                    glm::vec2 rotation = glm::vec2(x, y);
-
-                    weaponComponent.lock()->m_originShot = position;
-                    F32 maxLength = hasShootPrimaryWeapon ? weaponComponent.lock()->m_rangePrimary : weaponComponent.lock()->m_rangeSecondary;
-                    weaponComponent.lock()->m_destinationShot = position + rotation * maxLength;
-
-                    PhysicsComponent& physicsComponent = g_gameServer->GetPhysicsComponent();
-                    PhysicsComponent::RaycastHit hitInfo;
-                    const bool hasIntersected = physicsComponent.Raycast(weaponComponent.lock()->m_originShot, weaponComponent.lock()->m_destinationShot, hitInfo);
-                    if (hasIntersected) {
-                        std::weak_ptr<TransformComponent> hitEntityTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(hitInfo.m_entity);
-                        if (!hitEntityTransformComponent.expired()) {
-                            weaponComponent.lock()->m_destinationShot = hitInfo.m_point;
-                        }
-
-                        if (hitInfo.m_entity != entity) {
-                            std::weak_ptr<HealthComponent> hitEntityHealthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(hitInfo.m_entity);
-                            if (!hitEntityHealthComponent.expired()) {
-                                Event newEvent;
-                                newEvent.eventType = EventType::WEAPON_HIT;
-                                newEvent.weapon.entity = entity;
-                                newEvent.weapon.damage = hasShootPrimaryWeapon ? weaponComponent.lock()->m_damagePrimary : weaponComponent.lock()->m_damageSecondary;
-                                PushEvent(newEvent);
-                            }
-                        }
-                    }
-
-                    rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(transformComponent.lock()->m_position.x), PIXELS_TO_METERS(transformComponent.lock()->m_position.y)), glm::radians(transformComponent.lock()->m_rotation));
-
-                    if (serverComponent.m_isServerRewind) {
-                        Revert(entity);
                     }
                 }
-            }
 
-            if (weaponDirtyState > 0) {
-                Event newEvent;
-                newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
-                newEvent.component.entity = entity;
-                newEvent.component.dirtyState = weaponDirtyState;
-                NotifyEvent(newEvent);
+                rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(transformComponent.lock()->m_position.x), PIXELS_TO_METERS(transformComponent.lock()->m_position.y)), glm::radians(transformComponent.lock()->m_rotation));
+
+                if (serverComponent.m_isServerRewind) {
+                    Revert(entity);
+                }
+
+                weaponComponent.lock()->m_timerShot.Start();
             }
+        }
+
+        if (characterDirtyState > 0) {
+            Event newEvent;
+            newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
+            newEvent.component.entity = entity;
+            newEvent.component.dirtyState = characterDirtyState;
+            NotifyEvent(newEvent);
         }
     }
 
@@ -168,6 +200,9 @@ bool WeaponSystemServer::Render()
         }
 
         std::weak_ptr<WeaponComponent> weaponComponent = g_gameServer->GetComponentManager().GetComponent<WeaponComponent>(entity);
+        if (!weaponComponent.lock()->m_hasShot) {
+            continue;
+        }
 
         glm::vec4 color = White;
         switch (playerID) {
