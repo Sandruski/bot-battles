@@ -83,26 +83,22 @@ Entity BotSpawnerSystem::SpawnBot(PlayerID playerID) const
     case 1: {
         glm::vec4 idleTextureCoords = glm::vec4(1.0f, 1.0f, 36.0f, 43.0f);
         spriteComponent.lock()->AddSprite("idle", idleTextureCoords);
-        glm::vec4 interactTextureCoords = glm::vec4(38.0f, 1.0f, 38.0f, 43.0f);
-        spriteComponent.lock()->AddSprite("interact", interactTextureCoords);
-        glm::vec4 shootSecondaryTextureCoords = glm::vec4(77.0f, 1.0f, 52.0f, 43.0f);
+        glm::vec4 shootSecondaryTextureCoords = glm::vec4(38.0f, 1.0f, 52.0f, 43.0f);
         spriteComponent.lock()->AddSprite("shootSecondary", shootSecondaryTextureCoords);
-        glm::vec4 shootPrimary1TextureCoords = glm::vec4(130.0f, 1.0f, 57.0f, 43.0f);
+        glm::vec4 shootPrimary1TextureCoords = glm::vec4(91.0f, 1.0f, 57.0f, 43.0f);
         spriteComponent.lock()->AddSprite("shootPrimary1", shootPrimary1TextureCoords);
-        glm::vec4 shootPrimary2TextureCoords = glm::vec4(188.0f, 1.0f, 52.0f, 43.0f);
+        glm::vec4 shootPrimary2TextureCoords = glm::vec4(149.0f, 1.0f, 52.0f, 43.0f);
         spriteComponent.lock()->AddSprite("shootPrimary2", shootPrimary2TextureCoords);
         break;
     }
     case 2: {
         glm::vec4 idleTextureCoords = glm::vec4(1.0f, 45.0f, 35.0f, 43.0f);
         spriteComponent.lock()->AddSprite("idle", idleTextureCoords);
-        glm::vec4 interactTextureCoords = glm::vec4(38.0f, 45.0f, 37.0f, 43.0f);
-        spriteComponent.lock()->AddSprite("interact", interactTextureCoords);
-        glm::vec4 shootSecondaryTextureCoords = glm::vec4(77.0f, 45.0f, 51.0f, 43.0f);
+        glm::vec4 shootSecondaryTextureCoords = glm::vec4(38.0f, 45.0f, 51.0f, 43.0f);
         spriteComponent.lock()->AddSprite("shootSecondary", shootSecondaryTextureCoords);
-        glm::vec4 shootPrimary1TextureCoords = glm::vec4(130.0f, 45.0f, 56.0f, 43.0f);
+        glm::vec4 shootPrimary1TextureCoords = glm::vec4(91.0f, 45.0f, 56.0f, 43.0f);
         spriteComponent.lock()->AddSprite("shootPrimary1", shootPrimary1TextureCoords);
-        glm::vec4 shootPrimary2TextureCoords = glm::vec4(188.0f, 45.0f, 51.0f, 43.0f);
+        glm::vec4 shootPrimary2TextureCoords = glm::vec4(149.0f, 45.0f, 51.0f, 43.0f);
         spriteComponent.lock()->AddSprite("shootPrimary2", shootPrimary2TextureCoords);
         break;
     }
