@@ -17,7 +17,7 @@ void HealthSystem::Draw(RendererComponent& rendererComponent, std::weak_ptr<Tran
     rendererComponent.DrawQuad(backgroundPosition, rotation, backgroundScale, backgroundColor, true);
 
     glm::vec3 scale = backgroundScale;
-    scale.x *= static_cast<F32>(healthComponent.lock()->m_currentHealth) / static_cast<F32>(healthComponent.lock()->m_maxHealth);
+    scale.x *= static_cast<F32>(healthComponent.lock()->m_currentHP) / static_cast<F32>(healthComponent.lock()->m_maxHP);
     glm::vec3 position = backgroundPosition;
     position.x -= (backgroundScale.x - scale.x) / 2.0f;
     rendererComponent.DrawQuad(position, rotation, scale, color, true);

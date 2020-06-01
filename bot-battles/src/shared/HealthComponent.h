@@ -31,9 +31,17 @@ struct HealthComponent : public Component
     U64 Write(OutputMemoryStream& outputStream, U64 dirtyState) const override;
 #endif
 
+    bool CanHeal() const;
+    void Heal();
+
     // Networked
-    I32 m_currentHealth;
-    U32 m_maxHealth;
+    I32 m_currentHP;
+    U32 m_maxHP;
+    U32 m_HP;
+    F32 m_timeHeal;
+    F32 m_cooldownHeal;
+
+    bool m_hasHealed;
 };
 }
 

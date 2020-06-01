@@ -30,6 +30,14 @@ struct BotComponent : public Component
 #elif defined(_SERVER)
     U64 Write(OutputMemoryStream& outputStream, U64 dirtyState) const override;
 #endif
+
+    // Networked
+    bool m_canPerformAction;
+
+    // Local (server)
+    F32 m_timeAction;
+    F32 m_cooldownAction;
+    MyTimer m_timerAction;
 };
 }
 #endif

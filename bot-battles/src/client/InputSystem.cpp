@@ -83,11 +83,14 @@ bool InputSystem::Update()
     InputComponent& inputComponent = g_gameClient->GetInputComponent();
     if (inputComponent.m_dirtyState != 0) {
         if (!clientComponent.m_inputBuffer.IsFull()) {
-            clientComponent.m_isLastMoveInputPending = (inputComponent.m_dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_LINEAR_VELOCITY)) || (inputComponent.m_dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY));
-            clientComponent.m_isLastShootInputPending = (inputComponent.m_dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_PRIMARY_WEAPON)) || (inputComponent.m_dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_SECONDARY_WEAPON));
+            clientComponent.m_isLastMovementInputPending = (inputComponent.m_dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_LINEAR_VELOCITY))
+                || (inputComponent.m_dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY));
+            clientComponent.m_isLastWeaponInputPending = (inputComponent.m_dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_PRIMARY_WEAPON))
+                || (inputComponent.m_dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_SECONDARY_WEAPON))
+                || (inputComponent.m_dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_RELOAD));
+            clientComponent.m_isLastHealthInputPending = (inputComponent.m_dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_HEAL));
 
-            F32 now = MyTime::GetInstance().GetTime();
-            Input input = Input(inputComponent, inputComponent.m_dirtyState, clientComponent.m_inputBuffer.m_back, now, clientComponent.m_interpolationFromFrame, clientComponent.m_interpolationToFrame, clientComponent.m_interpolationPercentage);
+            Input input = Input(inputComponent, inputComponent.m_dirtyState, clientComponent.m_inputBuffer.m_back, clientComponent.m_interpolationFromFrame, clientComponent.m_interpolationToFrame, clientComponent.m_interpolationPercentage);
             clientComponent.m_inputBuffer.Add(input);
         }
     }

@@ -79,7 +79,7 @@ void PlayStateServer::OnHealthEmptied(Entity entity) const
             continue;
         }
 
-        const bool isAlive = healthComponent.lock()->m_currentHealth > 0;
+        const bool isAlive = healthComponent.lock()->m_currentHP > 0;
         if (isAlive) {
             ++aliveCount;
             winnerEntity = ownerEntity;

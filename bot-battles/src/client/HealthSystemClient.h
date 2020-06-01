@@ -16,6 +16,7 @@ public:
 public:
     HealthSystemClient();
 
+    bool Update() override;
     bool Render() override;
 };
 }

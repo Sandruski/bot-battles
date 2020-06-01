@@ -36,23 +36,17 @@ bool HealthSpawnerSystem::Update()
     for (auto& entity : m_entities) {
         std::weak_ptr<HealthSpawnerComponent> healthSpawnerComponent = g_gameServer->GetComponentManager().GetComponent<HealthSpawnerComponent>(entity);
         if (!healthSpawnerComponent.expired()) {
-            if (!healthSpawnerComponent.lock()->m_spawnHealth1 && !healthSpawnerComponent.lock()->m_spawnHealth2) {
-                continue;
-            }
             if (healthSpawnerComponent.lock()->m_amountSpawn == 0 || (healthSpawnerComponent.lock()->m_amountSpawn != -1 && static_cast<I32>(healthSpawnerComponent.lock()->m_amountSpawned) >= healthSpawnerComponent.lock()->m_amountSpawn)) {
                 continue;
             }
             if (healthSpawnerComponent.lock()->m_entitySpawned < INVALID_ENTITY) {
                 continue;
             }
-            if (healthSpawnerComponent.lock()->m_timerSpawn.ReadSec() < healthSpawnerComponent.lock()->m_timeoutSpawn) {
+            if (healthSpawnerComponent.lock()->m_timerSpawn.ReadSec() < healthSpawnerComponent.lock()->m_cooldownSpawn) {
                 continue;
             }
 
-            U32 health1 = healthSpawnerComponent.lock()->m_spawnHealth1 ? 1 : 2;
-            U32 health2 = healthSpawnerComponent.lock()->m_spawnHealth2 ? 2 : 1;
-            U32 health = RandomInt(health1, health2);
-            healthSpawnerComponent.lock()->m_entitySpawned = SpawnHealth(health, entity);
+            healthSpawnerComponent.lock()->m_entitySpawned = SpawnHealth(entity);
             ++healthSpawnerComponent.lock()->m_amountSpawned;
 
             healthSpawnerComponent.lock()->m_timerSpawn.Start();
@@ -84,7 +78,7 @@ void HealthSpawnerSystem::OnNotify(const Event& event)
 }
 
 //----------------------------------------------------------------------------------------------------
-Entity HealthSpawnerSystem::SpawnHealth(U32 health, Entity spawner) const
+Entity HealthSpawnerSystem::SpawnHealth(Entity spawner) const
 {
     std::weak_ptr<HealthSpawnerComponent> healthSpawnerComponent = g_gameServer->GetComponentManager().GetComponent<HealthSpawnerComponent>(spawner);
     std::weak_ptr<TransformComponent> healthSpawnerTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(spawner);
@@ -103,21 +97,8 @@ Entity HealthSpawnerSystem::SpawnHealth(U32 health, Entity spawner) const
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().AddComponent<SpriteComponent>(entity);
     std::weak_ptr<SpriteResource> spriteResource = g_gameServer->GetResourceManager().AddResource<SpriteResource>("objects.png", TEXTURES_DIR, true);
     spriteComponent.lock()->m_spriteResource = spriteResource;
-    switch (health) {
-    case 1: {
-        glm::vec4 textureCoords = glm::vec4(1.0f, 12.0f, 64.0f, 64.0f);
-        spriteComponent.lock()->AddSprite("default", textureCoords);
-        break;
-    }
-    case 2: {
-        glm::vec4 textureCoords = glm::vec4(66.0f, 12.0f, 64.0f, 64.0f);
-        spriteComponent.lock()->AddSprite("default", textureCoords);
-        break;
-    }
-    default: {
-        break;
-    }
-    }
+    glm::vec4 textureCoords = glm::vec4(1.0f, 12.0f, 64.0f, 64.0f);
+    spriteComponent.lock()->AddSprite("default", textureCoords);
     spriteComponent.lock()->m_spriteName = "default";
 
     // Collider
@@ -136,19 +117,9 @@ Entity HealthSpawnerSystem::SpawnHealth(U32 health, Entity spawner) const
 
     // Health
     std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().AddComponent<HealthComponent>(entity);
-    switch (health) {
-    case 1: {
-        healthComponent.lock()->m_currentHealth = healthComponent.lock()->m_maxHealth = healthSpawnerComponent.lock()->m_pointsHealth1;
-        break;
-    }
-    case 2: {
-        healthComponent.lock()->m_currentHealth = healthComponent.lock()->m_maxHealth = healthSpawnerComponent.lock()->m_pointsHealth2;
-        break;
-    }
-    default: {
-        break;
-    }
-    }
+    healthComponent.lock()->m_HP = healthSpawnerComponent.lock()->m_HP;
+    healthComponent.lock()->m_timeHeal = healthSpawnerComponent.lock()->m_timeHeal;
+    healthComponent.lock()->m_cooldownHeal = healthSpawnerComponent.lock()->m_cooldownHeal;
 
     return entity;
 }
@@ -164,17 +135,15 @@ void HealthSpawnerSystem::DespawnHealth(Entity entity) const
 bool HealthSpawnerSystem::PickUpHealth(Entity character, Entity health) const
 {
     std::weak_ptr<HealthComponent> characterHealthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(character);
-    if (characterHealthComponent.lock()->m_currentHealth == static_cast<I32>(characterHealthComponent.lock()->m_maxHealth)) {
-        return false;
-    }
     std::weak_ptr<HealthComponent> healthHealthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(health);
 
     U64 healthDirtyState = 0;
-    characterHealthComponent.lock()->m_currentHealth += healthHealthComponent.lock()->m_currentHealth;
-    if (characterHealthComponent.lock()->m_currentHealth > static_cast<I32>(characterHealthComponent.lock()->m_maxHealth)) {
-        characterHealthComponent.lock()->m_currentHealth = characterHealthComponent.lock()->m_maxHealth;
-    }
-    healthDirtyState |= static_cast<U64>(ComponentMemberType::HEALTH_CURRENT_HEALTH);
+    characterHealthComponent.lock()->m_HP = healthHealthComponent.lock()->m_HP;
+    healthDirtyState |= static_cast<U64>(ComponentMemberType::HEALTH_HP);
+    characterHealthComponent.lock()->m_timeHeal = healthHealthComponent.lock()->m_timeHeal;
+    healthDirtyState |= static_cast<U64>(ComponentMemberType::HEALTH_TIME_HEAL);
+    characterHealthComponent.lock()->m_cooldownHeal = healthHealthComponent.lock()->m_cooldownHeal;
+    healthDirtyState |= static_cast<U64>(ComponentMemberType::HEALTH_COOLDOWN_HEAL);
 
     if (healthDirtyState > 0) {
         Event newComponentEvent;

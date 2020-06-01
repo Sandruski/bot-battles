@@ -28,7 +28,8 @@ PYBIND11_EMBEDDED_MODULE(botbattles, m)
         .def_property("linearVelocityY", &InputComponent::GetLinearVelocityY, &InputComponent::SetLinearVelocityY)
         .def_property("angularVelocity", &InputComponent::GetAngularVelocity, &InputComponent::SetAngularVelocity)
         .def("shootPrimaryWeapon", &InputComponent::ShootPrimaryWeapon)
-        .def("shootSecondaryWeapon", &InputComponent::ShootSecondaryWeapon);
+        .def("shootSecondaryWeapon", &InputComponent::ShootSecondaryWeapon)
+        .def("reloadSecondaryWeapon", &InputComponent::Reload);
 
     py::class_<TransformComponent, std::unique_ptr<TransformComponent, py::nodelete>>(m, "TransformComponent")
         .def_property_readonly("positionX", &TransformComponent::GetPositionX)

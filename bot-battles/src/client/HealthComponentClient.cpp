@@ -9,26 +9,38 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 void HealthComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /*frame*/, ReplicationActionType replicationActionType, Entity entity)
 {
-    if (dirtyState & static_cast<U64>(ComponentMemberType::HEALTH_CURRENT_HEALTH)) {
-        I32 oldCurrentHealth = m_currentHealth;
-        inputStream.Read(m_currentHealth);
+    if (dirtyState & static_cast<U64>(ComponentMemberType::HEALTH_CURRENT_HP)) {
+        I32 oldCurrentHP = m_currentHP;
+        inputStream.Read(m_currentHP);
 
         if (replicationActionType != ReplicationActionType::CREATE) {
             Event newHealthEvent;
-            if (oldCurrentHealth > m_currentHealth) {
+            if (oldCurrentHP > m_currentHP) {
                 newHealthEvent.eventType = EventType::HEALTH_LOST;
-                newHealthEvent.health.health = oldCurrentHealth - m_currentHealth;
-            } else if (oldCurrentHealth < m_currentHealth) {
+                newHealthEvent.health.health = oldCurrentHP - m_currentHP;
+            } else if (oldCurrentHP < m_currentHP) {
                 newHealthEvent.eventType = EventType::HEALTH_GAINED;
-                newHealthEvent.health.health = m_currentHealth - oldCurrentHealth;
+                newHealthEvent.health.health = m_currentHP - oldCurrentHP;
             }
             newHealthEvent.health.entity = entity;
             ClientComponent& clientComponent = g_gameClient->GetClientComponent();
             clientComponent.m_replicationManager.NotifyEvent(newHealthEvent);
         }
     }
-    if (dirtyState & static_cast<U64>(ComponentMemberType::HEALTH_MAX_HEALTH)) {
-        inputStream.Read(m_maxHealth);
+    if (dirtyState & static_cast<U64>(ComponentMemberType::HEALTH_MAX_HP)) {
+        inputStream.Read(m_maxHP);
+    }
+    if (dirtyState & static_cast<U64>(ComponentMemberType::HEALTH_HP)) {
+        inputStream.Read(m_HP);
+    }
+    if (dirtyState & static_cast<U64>(ComponentMemberType::HEALTH_TIME_HEAL)) {
+        inputStream.Read(m_timeHeal);
+    }
+    if (dirtyState & static_cast<U64>(ComponentMemberType::HEALTH_COOLDOWN_HEAL)) {
+        inputStream.Read(m_cooldownHeal);
+    }
+    if (dirtyState & static_cast<U64>(ComponentMemberType::HEALTH_HAS_HEALED)) {
+        inputStream.Read(m_hasHealed);
     }
 }
 }

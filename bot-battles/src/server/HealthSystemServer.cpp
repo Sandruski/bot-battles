@@ -1,9 +1,13 @@
 #include "HealthSystemServer.h"
 
+#include "BotComponent.h"
+#include "ClientProxy.h"
 #include "ComponentManager.h"
 #include "ComponentMemberTypes.h"
 #include "GameServer.h"
 #include "HealthComponent.h"
+#include "ServerComponent.h"
+#include "SpriteComponent.h"
 #include "State.h"
 #include "TransformComponent.h"
 
@@ -35,29 +39,92 @@ bool HealthSystemServer::Update()
         return true;
     }
 
+    Entity entityA = INVALID_ENTITY;
+    Entity entityB = INVALID_ENTITY;
+
+    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
+    for (auto& entity : m_entities) {
+        PlayerID playerID = serverComponent.GetPlayerID(entity);
+        if (playerID >= INVALID_PLAYER_ID) {
+            continue;
+        }
+
+        if (entityA == INVALID_ENTITY) {
+            entityA = entity;
+        } else if (entityB == INVALID_ENTITY) {
+            entityB = entity;
+        }
+
+        std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(entity);
+        std::weak_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().GetComponent<SpriteComponent>(entity);
+        std::weak_ptr<BotComponent> botComponent = g_gameServer->GetComponentManager().GetComponent<BotComponent>(entity);
+
+        U64 characterDirtyState = 0;
+
+        if (botComponent.lock()->m_timerAction.ReadSec() >= botComponent.lock()->m_timeAction) {
+            if (healthComponent.lock()->m_hasHealed) {
+                spriteComponent.lock()->m_spriteName = "idle";
+                characterDirtyState |= static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME);
+
+                healthComponent.lock()->m_hasHealed = false;
+                characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_HAS_RELOADED);
+            }
+        }
+
+        if (botComponent.lock()->m_timerAction.ReadSec() >= botComponent.lock()->m_cooldownAction) {
+            if (!botComponent.lock()->m_canPerformAction) {
+                botComponent.lock()->m_canPerformAction = true;
+                characterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_CAN_PERFORM_ACTION);
+            }
+        }
+
+        if (botComponent.lock()->m_canPerformAction) {
+            std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
+            for (U32 i = clientProxy.lock()->m_inputBuffer.m_front; i < clientProxy.lock()->m_inputBuffer.m_back; ++i) {
+                const Input& input = clientProxy.lock()->m_inputBuffer.Get(i);
+                U64 dirtyState = input.GetDirtyState();
+
+                // Heal
+                const bool hasHeal = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_HEAL);
+                if (hasHeal) {
+                    const bool result = healthComponent.lock()->CanHeal();
+                    if (!result) {
+                        continue;
+                    }
+
+                    healthComponent.lock()->Heal();
+                    characterDirtyState |= static_cast<U64>(ComponentMemberType::HEALTH_CURRENT_HP);
+                    characterDirtyState |= static_cast<U64>(ComponentMemberType::HEALTH_HP);
+
+                    spriteComponent.lock()->m_spriteName = "heal";
+                    characterDirtyState |= static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME);
+
+                    botComponent.lock()->m_timeAction = healthComponent.lock()->m_timeHeal;
+                    botComponent.lock()->m_cooldownAction = healthComponent.lock()->m_cooldownHeal;
+                    botComponent.lock()->m_timerAction.Start();
+
+                    botComponent.lock()->m_canPerformAction = false;
+                    characterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_CAN_PERFORM_ACTION);
+
+                    healthComponent.lock()->m_hasHealed = true;
+                    characterDirtyState |= static_cast<U64>(ComponentMemberType::HEALTH_HAS_HEALED);
+                }
+            }
+        }
+
+        if (characterDirtyState > 0) {
+            Event newEvent;
+            newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
+            newEvent.component.entity = entity;
+            newEvent.component.dirtyState = characterDirtyState;
+            NotifyEvent(newEvent);
+        }
+    }
+
     EventComponent& eventComponent = g_game->GetEventComponent();
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_LSHIFT) == EventComponent::KeyState::REPEAT
         && eventComponent.m_keyboard.at(SDL_SCANCODE_W) == EventComponent::KeyState::DOWN) {
-        for (auto& entity : m_entities) {
-            std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(entity);
-            if (healthComponent.expired()) {
-                continue;
-            }
-
-            healthComponent.lock()->m_currentHealth = 0;
-        }
-
-        for (auto& entity : m_entities) {
-            std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(entity);
-            if (healthComponent.expired()) {
-                continue;
-            }
-
-            Event newHealthEvent;
-            newHealthEvent.eventType = EventType::HEALTH_EMPTIED;
-            newHealthEvent.health.entity = entity;
-            NotifyEvent(newHealthEvent);
-        }
+        OnCollisionEnter(entityA, entityB);
     }
 
     return true;
@@ -125,8 +192,8 @@ void HealthSystemServer::OnCollisionEnter(Entity entityA, Entity entityB) const
         return;
     }
 
-    healthComponentA.lock()->m_currentHealth = 0;
-    healthComponentB.lock()->m_currentHealth = 0;
+    healthComponentA.lock()->m_currentHP = 0;
+    healthComponentB.lock()->m_currentHP = 0;
 
     Event newHealthEvent;
     newHealthEvent.eventType = EventType::HEALTH_EMPTIED;
@@ -137,7 +204,7 @@ void HealthSystemServer::OnCollisionEnter(Entity entityA, Entity entityB) const
 
     Event newComponentEvent;
     newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
-    newComponentEvent.component.dirtyState = static_cast<U64>(ComponentMemberType::HEALTH_CURRENT_HEALTH);
+    newComponentEvent.component.dirtyState = static_cast<U64>(ComponentMemberType::HEALTH_CURRENT_HP);
     newComponentEvent.component.entity = entityA;
     NotifyEvent(newComponentEvent);
     newComponentEvent.component.entity = entityB;
@@ -152,9 +219,9 @@ void HealthSystemServer::OnWeaponHit(Entity entity, U32 damage) const
         return;
     }
 
-    healthComponent.lock()->m_currentHealth -= damage;
-    if (healthComponent.lock()->m_currentHealth <= 0) {
-        healthComponent.lock()->m_currentHealth = 0;
+    healthComponent.lock()->m_currentHP -= damage;
+    if (healthComponent.lock()->m_currentHP <= 0) {
+        healthComponent.lock()->m_currentHP = 0;
 
         Event newHealthEvent;
         newHealthEvent.eventType = EventType::HEALTH_EMPTIED;
@@ -164,7 +231,7 @@ void HealthSystemServer::OnWeaponHit(Entity entity, U32 damage) const
 
     Event newComponentEvent;
     newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
-    newComponentEvent.component.dirtyState = static_cast<U64>(ComponentMemberType::HEALTH_CURRENT_HEALTH);
+    newComponentEvent.component.dirtyState = static_cast<U64>(ComponentMemberType::HEALTH_CURRENT_HP);
     newComponentEvent.component.entity = entity;
     NotifyEvent(newComponentEvent);
 }

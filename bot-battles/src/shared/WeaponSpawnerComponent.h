@@ -14,18 +14,17 @@ struct WeaponSpawnerComponent : public Component {
     WeaponSpawnerComponent();
 
     // Local (server)
-    U32 m_damageWeapon1;
-    U32 m_damageWeapon2;
-    U32 m_ammoWeapon1;
-    U32 m_ammoWeapon2;
-    F32 m_rangeWeapon1;
-    F32 m_rangeWeapon2;
-    F32 m_cooldownWeapon1;
-    F32 m_cooldownWeapon2;
-    bool m_spawnWeapon1;
-    bool m_spawnWeapon2;
+    U32 m_damageWeapon;
+    U32 m_ammoWeapon;
+    U32 m_ammo;
+    F32 m_rangeWeapon;
+    F32 m_timeShoot;
+    F32 m_cooldownShoot;
+    F32 m_timeReload;
+    F32 m_cooldownReload;
+
     I32 m_amountSpawn;
-    F32 m_timeoutSpawn;
+    F32 m_cooldownSpawn;
 
     MyTimer m_timerSpawn;
     Entity m_entitySpawned;

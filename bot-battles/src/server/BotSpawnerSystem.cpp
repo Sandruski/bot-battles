@@ -83,23 +83,27 @@ Entity BotSpawnerSystem::SpawnBot(PlayerID playerID) const
     case 1: {
         glm::vec4 idleTextureCoords = glm::vec4(1.0f, 1.0f, 36.0f, 43.0f);
         spriteComponent.lock()->AddSprite("idle", idleTextureCoords);
-        glm::vec4 shootSecondaryTextureCoords = glm::vec4(38.0f, 1.0f, 52.0f, 43.0f);
+        glm::vec4 healTextureCoords = glm::vec4(38.0f, 1.0f, 38.0f, 43.0f);
+        spriteComponent.lock()->AddSprite("heal", healTextureCoords);
+        glm::vec4 shootSecondaryTextureCoords = glm::vec4(77.0f, 1.0f, 52.0f, 43.0f);
         spriteComponent.lock()->AddSprite("shootSecondary", shootSecondaryTextureCoords);
-        glm::vec4 shootPrimary1TextureCoords = glm::vec4(91.0f, 1.0f, 57.0f, 43.0f);
-        spriteComponent.lock()->AddSprite("shootPrimary1", shootPrimary1TextureCoords);
-        glm::vec4 shootPrimary2TextureCoords = glm::vec4(149.0f, 1.0f, 52.0f, 43.0f);
-        spriteComponent.lock()->AddSprite("shootPrimary2", shootPrimary2TextureCoords);
+        glm::vec4 shootPrimaryTextureCoords = glm::vec4(130.0f, 1.0f, 52.0f, 43.0f);
+        spriteComponent.lock()->AddSprite("shootPrimary", shootPrimaryTextureCoords);
+        glm::vec4 reloadTextureCoords = glm::vec4(183.0f, 1.0f, 42.0f, 43.0f);
+        spriteComponent.lock()->AddSprite("reload", reloadTextureCoords);
         break;
     }
     case 2: {
         glm::vec4 idleTextureCoords = glm::vec4(1.0f, 45.0f, 35.0f, 43.0f);
         spriteComponent.lock()->AddSprite("idle", idleTextureCoords);
-        glm::vec4 shootSecondaryTextureCoords = glm::vec4(38.0f, 45.0f, 51.0f, 43.0f);
+        glm::vec4 healTextureCoords = glm::vec4(38.0f, 45.0f, 37.0f, 43.0f);
+        spriteComponent.lock()->AddSprite("heal", healTextureCoords);
+        glm::vec4 shootSecondaryTextureCoords = glm::vec4(77.0f, 45.0f, 51.0f, 43.0f);
         spriteComponent.lock()->AddSprite("shootSecondary", shootSecondaryTextureCoords);
-        glm::vec4 shootPrimary1TextureCoords = glm::vec4(91.0f, 45.0f, 56.0f, 43.0f);
-        spriteComponent.lock()->AddSprite("shootPrimary1", shootPrimary1TextureCoords);
-        glm::vec4 shootPrimary2TextureCoords = glm::vec4(149.0f, 45.0f, 51.0f, 43.0f);
-        spriteComponent.lock()->AddSprite("shootPrimary2", shootPrimary2TextureCoords);
+        glm::vec4 shootPrimaryTextureCoords = glm::vec4(130.0f, 45.0f, 51.0f, 43.0f);
+        spriteComponent.lock()->AddSprite("shootPrimary", shootPrimaryTextureCoords);
+        glm::vec4 reloadTextureCoords = glm::vec4(183.0f, 45.0f, 41.0f, 43.0f);
+        spriteComponent.lock()->AddSprite("reload", reloadTextureCoords);
         break;
     }
     default: {
@@ -147,11 +151,12 @@ Entity BotSpawnerSystem::SpawnBot(PlayerID playerID) const
     std::weak_ptr<WeaponComponent> weaponComponent = g_gameServer->GetComponentManager().AddComponent<WeaponComponent>(character);
     weaponComponent.lock()->m_damageSecondary = botSpawnerComponent.lock()->m_damageWeapon;
     weaponComponent.lock()->m_rangeSecondary = botSpawnerComponent.lock()->m_rangeWeapon;
-    weaponComponent.lock()->m_cooldownSecondary = botSpawnerComponent.lock()->m_cooldownWeapon;
+    weaponComponent.lock()->m_timeShootSecondary = botSpawnerComponent.lock()->m_timeShoot;
+    weaponComponent.lock()->m_cooldownShootSecondary = botSpawnerComponent.lock()->m_cooldownShoot;
 
     // Health
     std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().AddComponent<HealthComponent>(character);
-    healthComponent.lock()->m_maxHealth = healthComponent.lock()->m_currentHealth = botSpawnerComponent.lock()->m_health;
+    healthComponent.lock()->m_maxHP = healthComponent.lock()->m_currentHP = botSpawnerComponent.lock()->m_HP;
 
     // Sight
     std::weak_ptr<SightComponent> sightComponent = g_gameServer->GetComponentManager().AddComponent<SightComponent>(character);

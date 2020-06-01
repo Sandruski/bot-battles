@@ -13,12 +13,13 @@ struct HealthSpawnerComponent : public Component {
 
     HealthSpawnerComponent();
 
-    U32 m_pointsHealth1;
-    U32 m_pointsHealth2;
-    bool m_spawnHealth1;
-    bool m_spawnHealth2;
+    // Local (server)
+    U32 m_HP;
+    F32 m_timeHeal;
+    F32 m_cooldownHeal;
+
     I32 m_amountSpawn;
-    F32 m_timeoutSpawn;
+    F32 m_cooldownSpawn;
 
     MyTimer m_timerSpawn;
     Entity m_entitySpawned;

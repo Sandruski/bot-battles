@@ -31,28 +31,34 @@ struct WeaponComponent : public Component
     U64 Write(OutputMemoryStream& outputStream, U64 dirtyState) const override;
 #endif
 
+    bool CanShootPrimary() const;
+    void ShootPrimary();
+    bool CanShootSecondary() const;
+    void ShootSecondary();
+    bool CanReload() const;
+    void Reload();
+
     // Networked
-    U32 m_weaponPrimary;
     U32 m_damagePrimary;
     U32 m_damageSecondary;
+    I32 m_currentAmmoPrimary;
+    U32 m_maxAmmoPrimary;
     U32 m_ammoPrimary;
     F32 m_rangePrimary;
     F32 m_rangeSecondary;
-    F32 m_cooldownPrimary;
-    F32 m_cooldownSecondary;
-    bool m_hasShot;
-    bool m_hasHit;
+    F32 m_timeShootPrimary;
+    F32 m_cooldownShootPrimary;
+    F32 m_timeShootSecondary;
+    F32 m_cooldownShootSecondary;
+    F32 m_timeReload;
+    F32 m_cooldownReload;
 
-    // Local
-    /// Client & Server
-    U32 m_weaponShot;
-    F32 m_timestampShot;
+    bool m_hasShot;
     glm::vec2 m_originShot;
     glm::vec2 m_destinationShot;
+    bool m_hitShot;
 
-    /// Server
-    F32 m_timeoutShot;
-    MyTimer m_timerShot;
+    bool m_hasReloaded;
 };
 }
 

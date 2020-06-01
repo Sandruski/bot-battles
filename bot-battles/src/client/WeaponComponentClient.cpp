@@ -9,22 +9,26 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 void WeaponComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /*frame*/, ReplicationActionType replicationActionType, Entity entity)
 {
-    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_WEAPON_PRIMARY)) {
-        inputStream.Read(m_weaponPrimary);
-
-        if (replicationActionType != ReplicationActionType::CREATE) {
+    /* TODO GAIN PRIMARY WEAPON
+            if (replicationActionType != ReplicationActionType::CREATE) {
             Event newWeaponEvent;
             newWeaponEvent.eventType = EventType::WEAPON_PRIMARY_GAINED;
             newWeaponEvent.weapon.entity = entity;
             ClientComponent& clientComponent = g_gameClient->GetClientComponent();
             clientComponent.m_replicationManager.NotifyEvent(newWeaponEvent);
         }
-    }
+    */
     if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_DAMAGE_PRIMARY)) {
         inputStream.Read(m_damagePrimary);
     }
     if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_DAMAGE_SECONDARY)) {
         inputStream.Read(m_damageSecondary);
+    }
+    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_CURRENT_AMMO_PRIMARY)) {
+        inputStream.Read(m_currentAmmoPrimary);
+    }
+    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_MAX_AMMO_PRIMARY)) {
+        inputStream.Read(m_maxAmmoPrimary);
     }
     if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_AMMO_PRIMARY)) {
         inputStream.Read(m_ammoPrimary);
@@ -35,21 +39,39 @@ void WeaponComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /
     if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_RANGE_SECONDARY)) {
         inputStream.Read(m_rangeSecondary);
     }
-    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_COOLDOWN_PRIMARY)) {
-        inputStream.Read(m_cooldownPrimary);
+    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_TIME_SHOOT_PRIMARY)) {
+        inputStream.Read(m_timeShootPrimary);
     }
-    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_COOLDOWN_SECONDARY)) {
-        inputStream.Read(m_cooldownSecondary);
+    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_COOLDOWN_SHOOT_PRIMARY)) {
+        inputStream.Read(m_cooldownShootPrimary);
+    }
+    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_TIME_SHOOT_SECONDARY)) {
+        inputStream.Read(m_timeShootSecondary);
+    }
+    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_COOLDOWN_SHOOT_SECONDARY)) {
+        inputStream.Read(m_cooldownShootSecondary);
+    }
+    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_TIME_RELOAD)) {
+        inputStream.Read(m_timeReload);
+    }
+    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_COOLDOWN_RELOAD)) {
+        inputStream.Read(m_cooldownReload);
     }
     if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_HAS_SHOT)) {
         inputStream.Read(m_hasShot);
     }
-    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_HAS_HIT)) {
-        inputStream.Read(m_hasHit);
+    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_ORIGIN_SHOT)) {
+        inputStream.Read(m_originShot);
+    }
+    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_DESTINATION_SHOT)) {
+        inputStream.Read(m_destinationShot);
+    }
+    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_HIT_SHOT)) {
+        inputStream.Read(m_hitShot);
 
         if (replicationActionType != ReplicationActionType::CREATE) {
             Event newWeaponEvent;
-            if (m_hasHit) {
+            if (m_hitShot) {
                 newWeaponEvent.eventType = EventType::WEAPON_HIT;
             } else {
                 newWeaponEvent.eventType = EventType::WEAPON_MISSED;
@@ -58,6 +80,9 @@ void WeaponComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /
             ClientComponent& clientComponent = g_gameClient->GetClientComponent();
             clientComponent.m_replicationManager.NotifyEvent(newWeaponEvent);
         }
+    }
+    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_HAS_RELOADED)) {
+        inputStream.Read(m_hasReloaded);
     }
 }
 }

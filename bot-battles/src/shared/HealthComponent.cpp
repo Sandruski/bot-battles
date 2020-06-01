@@ -4,8 +4,28 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 HealthComponent::HealthComponent()
-    : m_currentHealth(0)
-    , m_maxHealth(0)
+    : m_currentHP(0)
+    , m_maxHP(0)
+    , m_HP(0)
+    , m_timeHeal(0.0f)
+    , m_cooldownHeal(0.0f)
+    , m_hasHealed(false)
 {
+}
+
+//----------------------------------------------------------------------------------------------------
+bool HealthComponent::CanHeal() const
+{
+    return m_HP > 0;
+}
+
+//----------------------------------------------------------------------------------------------------
+void HealthComponent::Heal()
+{
+    m_currentHP += m_HP;
+    if (m_currentHP > static_cast<I32>(m_maxHP)) {
+        m_currentHP = m_maxHP;
+    }
+    m_HP = 0;
 }
 }

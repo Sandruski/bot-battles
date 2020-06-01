@@ -1,3 +1,4 @@
+#include "..\shared\HealthComponent.h"
 #include "HealthComponent.h"
 
 #include "ComponentMemberTypes.h"
@@ -9,13 +10,29 @@ U64 HealthComponent::Write(OutputMemoryStream& outputStream, U64 dirtyState) con
 {
     U64 writtenState = 0;
 
-    if (dirtyState & static_cast<U64>(ComponentMemberType::HEALTH_CURRENT_HEALTH)) {
-        outputStream.Write(m_currentHealth);
-        writtenState |= static_cast<U64>(ComponentMemberType::HEALTH_CURRENT_HEALTH);
+    if (dirtyState & static_cast<U64>(ComponentMemberType::HEALTH_CURRENT_HP)) {
+        outputStream.Write(m_currentHP);
+        writtenState |= static_cast<U64>(ComponentMemberType::HEALTH_CURRENT_HP);
     }
-    if (dirtyState & static_cast<U64>(ComponentMemberType::HEALTH_MAX_HEALTH)) {
-        outputStream.Write(m_maxHealth);
-        writtenState |= static_cast<U64>(ComponentMemberType::HEALTH_MAX_HEALTH);
+    if (dirtyState & static_cast<U64>(ComponentMemberType::HEALTH_MAX_HP)) {
+        outputStream.Write(m_maxHP);
+        writtenState |= static_cast<U64>(ComponentMemberType::HEALTH_MAX_HP);
+    }
+    if (dirtyState & static_cast<U64>(ComponentMemberType::HEALTH_HP)) {
+        outputStream.Write(m_HP);
+        writtenState |= static_cast<U64>(ComponentMemberType::HEALTH_HP);
+    }
+    if (dirtyState & static_cast<U64>(ComponentMemberType::HEALTH_TIME_HEAL)) {
+        outputStream.Write(m_timeHeal);
+        writtenState |= static_cast<U64>(ComponentMemberType::HEALTH_TIME_HEAL);
+    }
+    if (dirtyState & static_cast<U64>(ComponentMemberType::HEALTH_COOLDOWN_HEAL)) {
+        outputStream.Write(m_cooldownHeal);
+        writtenState |= static_cast<U64>(ComponentMemberType::HEALTH_COOLDOWN_HEAL);
+    }
+    if (dirtyState & static_cast<U64>(ComponentMemberType::HEALTH_HAS_HEALED)) {
+        outputStream.Write(m_hasHealed);
+        writtenState |= static_cast<U64>(ComponentMemberType::HEALTH_HAS_HEALED);
     }
 
     return writtenState;

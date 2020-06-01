@@ -48,10 +48,10 @@ bool MovementSystemClient::Update()
         std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
         std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameClient->GetComponentManager().GetComponent<RigidbodyComponent>(entity);
 
-        if (clientComponent.m_isLastMoveInputPending || clientComponent.m_isLastShootInputPending) {
+        if (clientComponent.m_isLastMovementInputPending || clientComponent.m_isLastWeaponInputPending) {
             const Input& input = clientComponent.m_inputBuffer.GetLast();
 
-            if (clientComponent.m_isLastMoveInputPending) {
+            if (clientComponent.m_isLastMovementInputPending) {
                 glm::vec2 linearVelocity = glm::vec2(0.0f, 0.0f);
                 F32 angularVelocity = 0.0f;
 
@@ -92,7 +92,7 @@ bool MovementSystemClient::Update()
                     NotifyEvent(newComponentEvent);
                 }
 
-                clientComponent.m_isLastMoveInputPending = false;
+                clientComponent.m_isLastMovementInputPending = false;
             }
 
             Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, input.GetFrame());

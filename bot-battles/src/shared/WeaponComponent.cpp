@@ -4,22 +4,64 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 WeaponComponent::WeaponComponent()
-    : m_weaponPrimary(0)
-    , m_damagePrimary(0)
+    : m_damagePrimary(0)
     , m_damageSecondary(0)
+    , m_currentAmmoPrimary(0)
+    , m_maxAmmoPrimary(0)
     , m_ammoPrimary(0)
     , m_rangePrimary(0.0f)
     , m_rangeSecondary(0.0f)
-    , m_cooldownPrimary(0.0f)
-    , m_cooldownSecondary(0.0f)
+    , m_timeShootPrimary(0.0f)
+    , m_cooldownShootPrimary(0.0f)
+    , m_timeShootSecondary(0.0f)
+    , m_cooldownShootSecondary(0.0f)
+    , m_timeReload(0.0f)
+    , m_cooldownReload(0.0f)
     , m_hasShot(false)
-    , m_hasHit(false)
-    , m_weaponShot(0)
-    , m_timestampShot(0.0f)
     , m_originShot(0.0f, 0.0f)
     , m_destinationShot(0.0f, 0.0f)
-    , m_timeoutShot(1.0f)
-    , m_timerShot()
+    , m_hitShot(false)
+    , m_hasReloaded(false)
 {
+}
+
+//----------------------------------------------------------------------------------------------------
+bool WeaponComponent::CanShootPrimary() const
+{
+    return m_currentAmmoPrimary > 0;
+}
+
+//----------------------------------------------------------------------------------------------------
+void WeaponComponent::ShootPrimary()
+{
+    m_currentAmmoPrimary -= 1;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool WeaponComponent::CanShootSecondary() const
+{
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+void WeaponComponent::ShootSecondary()
+{
+}
+
+//----------------------------------------------------------------------------------------------------
+bool WeaponComponent::CanReload() const
+{
+    I32 emptyAmmoPrimary = static_cast<I32>(m_maxAmmoPrimary) - m_currentAmmoPrimary;
+    I32 reloadAmmoPrimary = static_cast<I32>(m_ammoPrimary) - emptyAmmoPrimary;
+    return reloadAmmoPrimary > 0;
+}
+
+//----------------------------------------------------------------------------------------------------
+void WeaponComponent::Reload()
+{
+    I32 emptyAmmoPrimary = static_cast<I32>(m_maxAmmoPrimary) - m_currentAmmoPrimary;
+    I32 reloadAmmoPrimary = static_cast<I32>(m_ammoPrimary) - emptyAmmoPrimary;
+    m_currentAmmoPrimary += reloadAmmoPrimary;
+    m_ammoPrimary -= reloadAmmoPrimary;
 }
 }

@@ -46,6 +46,8 @@ void InputComponent::Reset()
 {
     m_dirtyState &= ~static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_PRIMARY_WEAPON);
     m_dirtyState &= ~static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_SECONDARY_WEAPON);
+    m_dirtyState &= ~static_cast<U64>(InputComponentMemberType::INPUT_RELOAD);
+    m_dirtyState &= ~static_cast<U64>(InputComponentMemberType::INPUT_HEAL);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -115,5 +117,17 @@ void InputComponent::ShootPrimaryWeapon()
 void InputComponent::ShootSecondaryWeapon()
 {
     m_dirtyState |= static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_SECONDARY_WEAPON);
+}
+
+//----------------------------------------------------------------------------------------------------
+void InputComponent::Reload()
+{
+    m_dirtyState |= static_cast<U64>(InputComponentMemberType::INPUT_RELOAD);
+}
+
+//----------------------------------------------------------------------------------------------------
+void InputComponent::Heal()
+{
+    m_dirtyState |= static_cast<U64>(InputComponentMemberType::INPUT_HEAL);
 }
 }

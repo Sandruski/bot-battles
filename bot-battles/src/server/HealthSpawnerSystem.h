@@ -21,7 +21,7 @@ public:
     void OnNotify(const Event& event) override;
 
 private:
-    Entity SpawnHealth(U32 health, Entity spawner) const;
+    Entity SpawnHealth(Entity spawner) const;
     void DespawnHealth(Entity entity) const;
     bool PickUpHealth(Entity character, Entity health) const;
 

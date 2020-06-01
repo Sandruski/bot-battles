@@ -37,23 +37,17 @@ bool WeaponSpawnerSystem::Update()
     for (auto& entity : m_entities) {
         std::weak_ptr<WeaponSpawnerComponent> weaponSpawnerComponent = g_gameServer->GetComponentManager().GetComponent<WeaponSpawnerComponent>(entity);
         if (!weaponSpawnerComponent.expired()) {
-            if (!weaponSpawnerComponent.lock()->m_spawnWeapon1 && !weaponSpawnerComponent.lock()->m_spawnWeapon2) {
-                continue;
-            }
             if (weaponSpawnerComponent.lock()->m_amountSpawn == 0 || (weaponSpawnerComponent.lock()->m_amountSpawn != -1 && static_cast<I32>(weaponSpawnerComponent.lock()->m_amountSpawned) >= weaponSpawnerComponent.lock()->m_amountSpawn)) {
                 continue;
             }
             if (weaponSpawnerComponent.lock()->m_entitySpawned < INVALID_ENTITY) {
                 continue;
             }
-            if (weaponSpawnerComponent.lock()->m_timerSpawn.ReadSec() < weaponSpawnerComponent.lock()->m_timeoutSpawn) {
+            if (weaponSpawnerComponent.lock()->m_timerSpawn.ReadSec() < weaponSpawnerComponent.lock()->m_cooldownSpawn) {
                 continue;
             }
 
-            U32 weapon1 = weaponSpawnerComponent.lock()->m_spawnWeapon1 ? 1 : 2;
-            U32 weapon2 = weaponSpawnerComponent.lock()->m_spawnWeapon2 ? 2 : 1;
-            U32 weapon = RandomInt(weapon1, weapon2);
-            weaponSpawnerComponent.lock()->m_entitySpawned = SpawnWeapon(weapon, entity);
+            weaponSpawnerComponent.lock()->m_entitySpawned = SpawnWeapon(entity);
             ++weaponSpawnerComponent.lock()->m_amountSpawned;
 
             weaponSpawnerComponent.lock()->m_timerSpawn.Start();
@@ -85,7 +79,7 @@ void WeaponSpawnerSystem::OnNotify(const Event& event)
 }
 
 //----------------------------------------------------------------------------------------------------
-Entity WeaponSpawnerSystem::SpawnWeapon(U32 weapon, Entity spawner) const
+Entity WeaponSpawnerSystem::SpawnWeapon(Entity spawner) const
 {
     std::weak_ptr<WeaponSpawnerComponent> weaponSpawnerComponent = g_gameServer->GetComponentManager().GetComponent<WeaponSpawnerComponent>(spawner);
     std::weak_ptr<TransformComponent> weaponSpawnerTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(spawner);
@@ -104,21 +98,8 @@ Entity WeaponSpawnerSystem::SpawnWeapon(U32 weapon, Entity spawner) const
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().AddComponent<SpriteComponent>(entity);
     std::weak_ptr<SpriteResource> spriteResource = g_gameServer->GetResourceManager().AddResource<SpriteResource>("objects.png", TEXTURES_DIR, true);
     spriteComponent.lock()->m_spriteResource = spriteResource;
-    switch (weapon) {
-    case 1: {
-        glm::vec4 textureCoords = glm::vec4(1.0f, 1.0f, 33.0f, 10.0f);
-        spriteComponent.lock()->AddSprite("default", textureCoords);
-        break;
-    }
-    case 2: {
-        glm::vec4 textureCoords = glm::vec4(35.0f, 1.0f, 25.0f, 10.0f);
-        spriteComponent.lock()->AddSprite("default", textureCoords);
-        break;
-    }
-    default: {
-        break;
-    }
-    }
+    glm::vec4 textureCoords = glm::vec4(1.0f, 1.0f, 33.0f, 10.0f);
+    spriteComponent.lock()->AddSprite("default", textureCoords);
     spriteComponent.lock()->m_spriteName = "default";
 
     // Collider
@@ -137,26 +118,14 @@ Entity WeaponSpawnerSystem::SpawnWeapon(U32 weapon, Entity spawner) const
 
     // Weapon
     std::weak_ptr<WeaponComponent> weaponComponent = g_gameServer->GetComponentManager().AddComponent<WeaponComponent>(entity);
-    weaponComponent.lock()->m_weaponPrimary = weapon;
-    switch (weapon) {
-    case 1: {
-        weaponComponent.lock()->m_damagePrimary = weaponSpawnerComponent.lock()->m_damageWeapon1;
-        weaponComponent.lock()->m_ammoPrimary = weaponSpawnerComponent.lock()->m_ammoWeapon1;
-        weaponComponent.lock()->m_rangePrimary = weaponSpawnerComponent.lock()->m_rangeWeapon1;
-        weaponComponent.lock()->m_cooldownPrimary = weaponSpawnerComponent.lock()->m_cooldownWeapon1;
-        break;
-    }
-    case 2: {
-        weaponComponent.lock()->m_damagePrimary = weaponSpawnerComponent.lock()->m_damageWeapon2;
-        weaponComponent.lock()->m_ammoPrimary = weaponSpawnerComponent.lock()->m_ammoWeapon2;
-        weaponComponent.lock()->m_rangePrimary = weaponSpawnerComponent.lock()->m_rangeWeapon2;
-        weaponComponent.lock()->m_cooldownPrimary = weaponSpawnerComponent.lock()->m_cooldownWeapon2;
-        break;
-    }
-    default: {
-        break;
-    }
-    }
+    weaponComponent.lock()->m_damagePrimary = weaponSpawnerComponent.lock()->m_damageWeapon;
+    weaponComponent.lock()->m_maxAmmoPrimary = weaponSpawnerComponent.lock()->m_ammoWeapon;
+    weaponComponent.lock()->m_ammoPrimary = weaponSpawnerComponent.lock()->m_ammo;
+    weaponComponent.lock()->m_rangePrimary = weaponSpawnerComponent.lock()->m_rangeWeapon;
+    weaponComponent.lock()->m_timeShootPrimary = weaponSpawnerComponent.lock()->m_timeShoot;
+    weaponComponent.lock()->m_cooldownShootPrimary = weaponSpawnerComponent.lock()->m_cooldownShoot;
+    weaponComponent.lock()->m_timeReload = weaponSpawnerComponent.lock()->m_timeReload;
+    weaponComponent.lock()->m_cooldownReload = weaponSpawnerComponent.lock()->m_cooldownReload;
 
     return entity;
 }
@@ -175,16 +144,24 @@ bool WeaponSpawnerSystem::PickUpWeapon(Entity character, Entity weapon) const
     std::weak_ptr<WeaponComponent> weaponWeaponComponent = g_gameServer->GetComponentManager().GetComponent<WeaponComponent>(weapon);
 
     U64 weaponDirtyState = 0;
-    characterWeaponComponent.lock()->m_weaponPrimary = weaponWeaponComponent.lock()->m_weaponPrimary;
-    weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_WEAPON_PRIMARY);
     characterWeaponComponent.lock()->m_damagePrimary = weaponWeaponComponent.lock()->m_damagePrimary;
     weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_DAMAGE_PRIMARY);
+    characterWeaponComponent.lock()->m_maxAmmoPrimary = weaponWeaponComponent.lock()->m_maxAmmoPrimary;
+    weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_MAX_AMMO_PRIMARY);
     characterWeaponComponent.lock()->m_ammoPrimary = weaponWeaponComponent.lock()->m_ammoPrimary;
     weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_AMMO_PRIMARY);
+    characterWeaponComponent.lock()->Reload();
+    weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_CURRENT_AMMO_PRIMARY);
     characterWeaponComponent.lock()->m_rangePrimary = weaponWeaponComponent.lock()->m_rangePrimary;
     weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_RANGE_PRIMARY);
-    characterWeaponComponent.lock()->m_cooldownPrimary = weaponWeaponComponent.lock()->m_cooldownPrimary;
-    weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_COOLDOWN_PRIMARY);
+    characterWeaponComponent.lock()->m_timeShootPrimary = weaponWeaponComponent.lock()->m_timeShootPrimary;
+    weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_TIME_SHOOT_PRIMARY);
+    characterWeaponComponent.lock()->m_cooldownShootPrimary = weaponWeaponComponent.lock()->m_cooldownShootPrimary;
+    weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_COOLDOWN_SHOOT_PRIMARY);
+    characterWeaponComponent.lock()->m_timeReload = weaponWeaponComponent.lock()->m_timeReload;
+    weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_TIME_RELOAD);
+    characterWeaponComponent.lock()->m_cooldownReload = weaponWeaponComponent.lock()->m_cooldownReload;
+    weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_COOLDOWN_RELOAD);
 
     if (weaponDirtyState > 0) {
         Event newComponentEvent;

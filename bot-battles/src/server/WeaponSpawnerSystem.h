@@ -23,7 +23,7 @@ public:
     void OnNotify(const Event& event) override;
 
 private:
-    Entity SpawnWeapon(U32 weapon, Entity spawner) const;
+    Entity SpawnWeapon(Entity spawner) const;
     void DespawnWeapon(Entity entity) const;
     bool PickUpWeapon(Entity character, Entity weapon) const;
 
