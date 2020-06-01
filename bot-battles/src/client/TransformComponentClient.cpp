@@ -215,8 +215,31 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::v
         for (U32 i = index + 1; i < clientComponent.m_inputBuffer.m_back; ++i) {
             const Input& input = clientComponent.m_inputBuffer.Get(i);
             const InputComponent& inputComponent = input.GetInputComponent();
-            rigidbodyComponent.lock()->m_body->SetLinearVelocity(b2Vec2(PIXELS_TO_METERS(inputComponent.m_linearVelocity.x), PIXELS_TO_METERS(inputComponent.m_linearVelocity.y)));
-            rigidbodyComponent.lock()->m_body->SetAngularVelocity(glm::radians(inputComponent.m_angularVelocity));
+            U64 dirtyState = input.GetDirtyState();
+
+            glm::vec2 linearVelocity = glm::vec2(0.0f, 0.0f);
+            F32 angularVelocity = 0.0f;
+
+            const bool hasLinearVelocity = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
+            if (hasLinearVelocity) {
+                linearVelocity += inputComponent.m_linearVelocity;
+            }
+            const bool hasAngularVelocity = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
+            if (hasAngularVelocity) {
+                angularVelocity += inputComponent.m_angularVelocity;
+            }
+
+            F32 linearVelocityLength = glm::length(linearVelocity);
+            F32 linearVelocityAbsLength = glm::abs(linearVelocityLength);
+            if (linearVelocityAbsLength > inputComponent.m_maxLinearVelocity) {
+                linearVelocity = glm::normalize(linearVelocity);
+                linearVelocity *= inputComponent.m_maxLinearVelocity;
+            }
+
+            glm::clamp(angularVelocity, -inputComponent.m_maxAngularVelocity, inputComponent.m_maxAngularVelocity);
+
+            rigidbodyComponent.lock()->m_body->SetLinearVelocity(b2Vec2(PIXELS_TO_METERS(linearVelocity.x), PIXELS_TO_METERS(linearVelocity.y)));
+            rigidbodyComponent.lock()->m_body->SetAngularVelocity(glm::radians(angularVelocity));
 
             rigidbodyComponent.lock()->m_body->SetActive(true);
 

@@ -60,14 +60,21 @@ bool MovementSystemClient::Update()
 
                 const bool hasLinearVelocity = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
                 if (hasLinearVelocity) {
-                    // TODO: cap m_acceleration to m_maxAcceleration
                     linearVelocity += inputComponent.m_linearVelocity;
                 }
                 const bool hasAngularVelocity = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
                 if (hasAngularVelocity) {
-                    // TODO: cap m_angularAcceleration to m_maxAngularAcceleration
                     angularVelocity += inputComponent.m_angularVelocity;
                 }
+
+                F32 linearVelocityLength = glm::length(linearVelocity);
+                F32 linearVelocityAbsLength = glm::abs(linearVelocityLength);
+                if (linearVelocityAbsLength > inputComponent.m_maxLinearVelocity) {
+                    linearVelocity = glm::normalize(linearVelocity);
+                    linearVelocity *= inputComponent.m_maxLinearVelocity;
+                }
+
+                glm::clamp(angularVelocity, -inputComponent.m_maxAngularVelocity, inputComponent.m_maxAngularVelocity);
 
                 if (hasLinearVelocity || hasAngularVelocity) {
                     rigidbodyComponent.lock()->m_body->SetLinearVelocity(b2Vec2(PIXELS_TO_METERS(linearVelocity.x), PIXELS_TO_METERS(linearVelocity.y)));
