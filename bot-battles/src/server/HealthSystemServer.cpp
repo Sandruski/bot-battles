@@ -62,6 +62,8 @@ bool HealthSystemServer::Update()
         U64 characterDirtyState = 0;
 
         if (botComponent.lock()->m_timerAction.ReadSec() >= botComponent.lock()->m_timeAction) {
+            botComponent.lock()->m_canPerformAnimation = true;
+
             if (healthComponent.lock()->m_hasHealed) {
                 spriteComponent.lock()->m_spriteName = "idle";
                 characterDirtyState |= static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME);
@@ -105,6 +107,7 @@ bool HealthSystemServer::Update()
 
                     botComponent.lock()->m_canPerformAction = false;
                     characterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_CAN_PERFORM_ACTION);
+                    botComponent.lock()->m_canPerformAnimation = false;
 
                     healthComponent.lock()->m_hasHealed = true;
                     characterDirtyState |= static_cast<U64>(ComponentMemberType::HEALTH_HAS_HEALED);

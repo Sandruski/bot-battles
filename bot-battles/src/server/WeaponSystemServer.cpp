@@ -63,6 +63,8 @@ bool WeaponSystemServer::Update()
         U64 characterDirtyState = 0;
 
         if (botComponent.lock()->m_timerAction.ReadSec() >= botComponent.lock()->m_timeAction) {
+            botComponent.lock()->m_canPerformAnimation = true;
+
             if (weaponComponent.lock()->m_hasShot) {
                 spriteComponent.lock()->m_spriteName = "idle";
                 characterDirtyState |= static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME);
@@ -114,6 +116,7 @@ bool WeaponSystemServer::Update()
 
                     botComponent.lock()->m_canPerformAction = false;
                     characterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_CAN_PERFORM_ACTION);
+                    botComponent.lock()->m_canPerformAnimation = false;
 
                     weaponComponent.lock()->m_hasReloaded = true;
                     characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_HAS_RELOADED);
@@ -156,6 +159,7 @@ bool WeaponSystemServer::Update()
 
                     botComponent.lock()->m_canPerformAction = false;
                     characterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_CAN_PERFORM_ACTION);
+                    botComponent.lock()->m_canPerformAnimation = false;
 
                     weaponComponent.lock()->m_hasShot = true;
                     characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_HAS_SHOT);

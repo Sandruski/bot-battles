@@ -7,6 +7,7 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 BotComponent::BotComponent()
     : m_canPerformAction(true)
+    , m_canPerformAnimation(true)
     , m_timeAction(0.0f)
     , m_cooldownAction(0.0f)
     , m_timerAction()

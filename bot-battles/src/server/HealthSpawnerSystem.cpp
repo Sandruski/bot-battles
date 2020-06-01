@@ -1,5 +1,6 @@
 #include "HealthSpawnerSystem.h"
 
+#include "BotComponent.h"
 #include "ColliderComponent.h"
 #include "ComponentManager.h"
 #include "ComponentMemberTypes.h"
@@ -133,7 +134,8 @@ void HealthSpawnerSystem::DespawnHealth(Entity entity) const
 bool HealthSpawnerSystem::PickUpHealth(Entity character, Entity health) const
 {
     std::weak_ptr<HealthComponent> healthHealthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(health);
-    if (healthHealthComponent.lock()->m_isPickedUp) {
+    std::weak_ptr<BotComponent> characterBotComponent = g_gameServer->GetComponentManager().GetComponent<BotComponent>(character);
+    if (healthHealthComponent.lock()->m_isPickedUp || !characterBotComponent.lock()->m_canPerformAnimation) {
         return false;
     }
     healthHealthComponent.lock()->m_isPickedUp = true;

@@ -35,6 +35,7 @@ struct BotComponent : public Component
     bool m_canPerformAction;
 
     // Local (server)
+    bool m_canPerformAnimation;
     F32 m_timeAction;
     F32 m_cooldownAction;
     MyTimer m_timerAction;

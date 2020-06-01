@@ -1,5 +1,6 @@
 #include "WeaponSpawnerSystem.h"
 
+#include "BotComponent.h"
 #include "ColliderComponent.h"
 #include "ComponentManager.h"
 #include "ComponentMemberTypes.h"
@@ -139,7 +140,8 @@ void WeaponSpawnerSystem::DespawnWeapon(Entity entity) const
 bool WeaponSpawnerSystem::PickUpWeapon(Entity character, Entity weapon) const
 {
     std::weak_ptr<WeaponComponent> weaponWeaponComponent = g_gameServer->GetComponentManager().GetComponent<WeaponComponent>(weapon);
-    if (weaponWeaponComponent.lock()->m_isPickedUp) {
+    std::weak_ptr<BotComponent> characterBotComponent = g_gameServer->GetComponentManager().GetComponent<BotComponent>(character);
+    if (weaponWeaponComponent.lock()->m_isPickedUp || !characterBotComponent.lock()->m_canPerformAnimation) {
         return false;
     }
     weaponWeaponComponent.lock()->m_isPickedUp = true;
