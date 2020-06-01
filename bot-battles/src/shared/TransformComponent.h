@@ -52,7 +52,7 @@ struct TransformComponent : public Component
     F32 m_rotation;
     F32 m_scale;
 
-    // Local
+    // Local (client & server)
     CircularBuffer<Transform, MAX_TRANSFORMS> m_transformBuffer;
     /*
     Client: transform per frame received from server (for Entity Interpolation)

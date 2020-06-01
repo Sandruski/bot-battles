@@ -49,8 +49,6 @@ bool WeaponSpawnerSystem::Update()
 
             weaponSpawnerComponent.lock()->m_entitySpawned = SpawnWeapon(entity);
             ++weaponSpawnerComponent.lock()->m_amountSpawned;
-
-            weaponSpawnerComponent.lock()->m_timerSpawn.Start();
         }
     }
 
@@ -140,8 +138,13 @@ void WeaponSpawnerSystem::DespawnWeapon(Entity entity) const
 //----------------------------------------------------------------------------------------------------
 bool WeaponSpawnerSystem::PickUpWeapon(Entity character, Entity weapon) const
 {
-    std::weak_ptr<WeaponComponent> characterWeaponComponent = g_gameServer->GetComponentManager().GetComponent<WeaponComponent>(character);
     std::weak_ptr<WeaponComponent> weaponWeaponComponent = g_gameServer->GetComponentManager().GetComponent<WeaponComponent>(weapon);
+    if (weaponWeaponComponent.lock()->m_isPickedUp) {
+        return false;
+    }
+    weaponWeaponComponent.lock()->m_isPickedUp = true;
+
+    std::weak_ptr<WeaponComponent> characterWeaponComponent = g_gameServer->GetComponentManager().GetComponent<WeaponComponent>(character);
 
     U64 weaponDirtyState = 0;
     characterWeaponComponent.lock()->m_damagePrimary = weaponWeaponComponent.lock()->m_damagePrimary;
@@ -212,6 +215,7 @@ void WeaponSpawnerSystem::OnEntityRemoved(Entity entityRemoved) const
         if (!weaponSpawnerComponent.expired()) {
             if (weaponSpawnerComponent.lock()->m_entitySpawned == entityRemoved) {
                 weaponSpawnerComponent.lock()->m_entitySpawned = INVALID_ENTITY;
+                weaponSpawnerComponent.lock()->m_timerSpawn.Start();
                 break;
             }
         }

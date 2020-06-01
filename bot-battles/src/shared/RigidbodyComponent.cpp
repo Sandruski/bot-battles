@@ -8,10 +8,10 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 RigidbodyComponent::RigidbodyComponent()
-    : m_body(nullptr)
-    , m_bodyType(BodyType::NONE)
+    : m_bodyType(BodyType::NONE)
     , m_groupIndex(0)
     , m_isBullet(false)
+    , m_body(nullptr)
 {
 }
 

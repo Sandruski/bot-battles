@@ -22,6 +22,7 @@ WeaponComponent::WeaponComponent()
     , m_destinationShot(0.0f, 0.0f)
     , m_hitShot(false)
     , m_hasReloaded(false)
+    , m_isPickedUp(false)
 {
 }
 

@@ -37,7 +37,7 @@ struct SightComponent : public Component
     F32 m_angle;
     F32 m_distance;
 
-    // Local
+    // Local (client & server)
     std::vector<Entity> m_seenEntities;
 };
 }

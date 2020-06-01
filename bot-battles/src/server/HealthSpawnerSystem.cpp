@@ -48,8 +48,6 @@ bool HealthSpawnerSystem::Update()
 
             healthSpawnerComponent.lock()->m_entitySpawned = SpawnHealth(entity);
             ++healthSpawnerComponent.lock()->m_amountSpawned;
-
-            healthSpawnerComponent.lock()->m_timerSpawn.Start();
         }
     }
 
@@ -134,8 +132,13 @@ void HealthSpawnerSystem::DespawnHealth(Entity entity) const
 //----------------------------------------------------------------------------------------------------
 bool HealthSpawnerSystem::PickUpHealth(Entity character, Entity health) const
 {
-    std::weak_ptr<HealthComponent> characterHealthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(character);
     std::weak_ptr<HealthComponent> healthHealthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(health);
+    if (healthHealthComponent.lock()->m_isPickedUp) {
+        return false;
+    }
+    healthHealthComponent.lock()->m_isPickedUp = true;
+
+    std::weak_ptr<HealthComponent> characterHealthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(character);
 
     U64 healthDirtyState = 0;
     characterHealthComponent.lock()->m_HP = healthHealthComponent.lock()->m_HP;
@@ -191,11 +194,10 @@ void HealthSpawnerSystem::OnEntityRemoved(Entity entityRemoved) const
 {
     for (auto& entity : m_entities) {
         std::weak_ptr<HealthSpawnerComponent> healthSpawnerComponent = g_gameServer->GetComponentManager().GetComponent<HealthSpawnerComponent>(entity);
-        if (!healthSpawnerComponent.expired()) {
-            if (healthSpawnerComponent.lock()->m_entitySpawned == entityRemoved) {
-                healthSpawnerComponent.lock()->m_entitySpawned = INVALID_ENTITY;
-                break;
-            }
+        if (healthSpawnerComponent.lock()->m_entitySpawned == entityRemoved) {
+            healthSpawnerComponent.lock()->m_entitySpawned = INVALID_ENTITY;
+            healthSpawnerComponent.lock()->m_timerSpawn.Start();
+            break;
         }
     }
 }

@@ -59,6 +59,9 @@ struct WeaponComponent : public Component
     bool m_hitShot;
 
     bool m_hasReloaded;
+
+    // Local (server)
+    bool m_isPickedUp;
 };
 }
 

@@ -12,10 +12,12 @@ class MyBot(bot.Bot):
     def tick(self, input):
         if self.wallHit == False:
             input.linearVelocityX = input.maxLinearVelocity
-            input.linearVelocityY = input.maxLinearVelocity
-        input.angularVelocity = input.maxAngularVelocity
+            input.linearVelocityY = 0
+        input.angularVelocity = 0
         #input.shootPrimaryWeapon()
-        input.shootSecondaryWeapon()
+        #input.shootSecondaryWeapon()
+        input.reloadPrimaryWeapon()
+        #input.heal()
 
     def onSeenNewBot(self, input):
         logging.info('onSeenNewBot')

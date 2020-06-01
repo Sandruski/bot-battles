@@ -53,13 +53,13 @@ struct RigidbodyComponent : public Component
     F32 GetLinearVelocityY() const;
     F32 GetAngularVelocity() const;
 
-    // Local
-    b2Body* m_body;
-
     // Networked
     BodyType m_bodyType;
     I16 m_groupIndex;
     bool m_isBullet;
+
+    // Local (client & server)
+    b2Body* m_body;
 };
 }
 

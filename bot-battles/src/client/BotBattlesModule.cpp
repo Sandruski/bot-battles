@@ -1,11 +1,13 @@
 #ifndef __BOT_BATTLES_MODULE_H__
 #define __BOT_BATTLES_MODULE_H__
 
+#include "HealthComponent.h"
 #include "InputComponent.h"
 #include "PhysicsComponent.h"
 #include "RigidbodyComponent.h"
 #include "TransformComponent.h"
 #include "UtilsClient.h"
+#include "WeaponComponent.h"
 
 // TODO: remove this. We already have it in the pchClient.h
 #include <embed.h>
@@ -29,7 +31,8 @@ PYBIND11_EMBEDDED_MODULE(botbattles, m)
         .def_property("angularVelocity", &InputComponent::GetAngularVelocity, &InputComponent::SetAngularVelocity)
         .def("shootPrimaryWeapon", &InputComponent::ShootPrimaryWeapon)
         .def("shootSecondaryWeapon", &InputComponent::ShootSecondaryWeapon)
-        .def("reloadSecondaryWeapon", &InputComponent::Reload);
+        .def("reloadPrimaryWeapon", &InputComponent::Reload)
+        .def("heal", &InputComponent::Heal);
 
     py::class_<TransformComponent, std::unique_ptr<TransformComponent, py::nodelete>>(m, "TransformComponent")
         .def_property_readonly("positionX", &TransformComponent::GetPositionX)
@@ -42,6 +45,10 @@ PYBIND11_EMBEDDED_MODULE(botbattles, m)
         .def_property_readonly("linearVelocityX", &RigidbodyComponent::GetLinearVelocityX)
         .def_property_readonly("linearVelocityY", &RigidbodyComponent::GetLinearVelocityY)
         .def_property_readonly("angularVelocity", &RigidbodyComponent::GetAngularVelocity);
+
+    py::class_<WeaponComponent, std::unique_ptr<WeaponComponent, py::nodelete>>(m, "WeaponComponent");
+    py::class_<HealthComponent, std::unique_ptr<HealthComponent, py::nodelete>>(m, "HealthComponent");
+    // TODO: weaponComponent, healthComponent
 
     py::class_<PhysicsComponent::Collision>(m, "CollisionEvent")
         .def_property_readonly("normalX", &PhysicsComponent::Collision::GetNormalX)

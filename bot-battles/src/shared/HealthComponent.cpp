@@ -10,6 +10,7 @@ HealthComponent::HealthComponent()
     , m_timeHeal(0.0f)
     , m_cooldownHeal(0.0f)
     , m_hasHealed(false)
+    , m_isPickedUp(false)
 {
 }
 
