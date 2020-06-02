@@ -8,6 +8,7 @@
 #include "Game.h"
 #include "HealthSpawnerComponent.h"
 #include "LinkingContext.h"
+#include "MapComponent.h"
 #include "RendererComponent.h"
 #include "ResourceManager.h"
 #include "RigidbodyComponent.h"
@@ -98,7 +99,15 @@ bool MapImporter::Load(const std::string& path, Tilemap& tilemap) const
 //----------------------------------------------------------------------------------------------------
 void MapImporter::Create(const Tilemap& tilemap) const
 {
+    MapComponent& mapComponent = g_game->GetMapComponent();
+    mapComponent.m_tileCount = tilemap.m_tileCount;
+    mapComponent.m_tileSize = tilemap.m_tileSize;
+    mapComponent.m_scale = 1.0f;
+    U32 tileCount = mapComponent.m_tileCount.x * mapComponent.m_tileCount.y;
+    mapComponent.m_tiles.resize(tileCount);
+
     WindowComponent& windowComponent = g_game->GetWindowComponent();
+
     for (const auto& tilelayer : tilemap.m_tilelayers) {
         for (U32 i = 0; i < tilemap.m_tileCount.x; ++i) {
             for (U32 j = 0; j < tilemap.m_tileCount.y; ++j) {
@@ -109,10 +118,17 @@ void MapImporter::Create(const Tilemap& tilemap) const
                     continue;
                 }
 
+                // Walkability
+                if (tilelayer.m_name == "walkability") {
+                    MapComponent::Tile& tile = mapComponent.GetTile(i, j);
+                    tile.m_tileType = MapComponent::Tile::TileType::FLOOR;
+                    continue;
+                }
+
                 // SHARED
                 // Transform
                 std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().AddComponent<TransformComponent>(entity);
-                transformComponent.lock()->m_scale = 1.0f;
+                transformComponent.lock()->m_scale = mapComponent.m_scale;
                 glm::uvec2 tilePosition = tilemap.MapToWorld(i, j);
                 glm::vec2 worldPosition = static_cast<glm::vec2>(tilePosition);
                 worldPosition += static_cast<glm::vec2>(tilemap.m_tileSize) / 2.0f;
@@ -160,7 +176,7 @@ void MapImporter::Create(const Tilemap& tilemap) const
             // SHARED
             // Transform
             std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().AddComponent<TransformComponent>(entity);
-            transformComponent.lock()->m_scale = 1.0f;
+            transformComponent.lock()->m_scale = mapComponent.m_scale;
             glm::uvec2 objectPosition = object.m_position;
             glm::vec2 worldPosition = static_cast<glm::vec2>(objectPosition);
             worldPosition += static_cast<glm::vec2>(tilemap.m_tileSize) / 2.0f;
@@ -185,9 +201,13 @@ void MapImporter::Create(const Tilemap& tilemap) const
             }
 
             // UNIQUE
-#ifdef _SERVER
             // BotSpawner
             if (object.m_type == "BotSpawner") {
+                // Walkability
+                glm::uvec2 map = mapComponent.RealWorldToMap(transformComponent.lock()->m_position.x, transformComponent.lock()->m_position.y);
+                MapComponent::Tile& tile = mapComponent.GetTile(map.x, map.y);
+                tile.m_tileType = MapComponent::Tile::TileType::BOT_SPAWNER;
+
                 std::weak_ptr<BotSpawnerComponent> botSpawnerComponent = g_game->GetComponentManager().AddComponent<BotSpawnerComponent>(entity);
                 for (const auto& property : object.m_properties) {
                     if (property.m_name == "facing") {
@@ -214,6 +234,11 @@ void MapImporter::Create(const Tilemap& tilemap) const
 
             // WeaponSpawner
             if (object.m_type == "WeaponSpawner") {
+                // Walkability
+                glm::uvec2 map = mapComponent.RealWorldToMap(transformComponent.lock()->m_position.x, transformComponent.lock()->m_position.y);
+                MapComponent::Tile& tile = mapComponent.GetTile(map.x, map.y);
+                tile.m_tileType = MapComponent::Tile::TileType::WEAPON_SPAWNER;
+
                 std::weak_ptr<WeaponSpawnerComponent> weaponSpawnerComponent = g_game->GetComponentManager().AddComponent<WeaponSpawnerComponent>(entity);
                 for (const auto& property : object.m_properties) {
                     if (property.m_name == "damageWeapon") {
@@ -241,6 +266,11 @@ void MapImporter::Create(const Tilemap& tilemap) const
             }
 
             if (object.m_type == "HealthSpawner") {
+                // Walkability
+                glm::uvec2 map = mapComponent.RealWorldToMap(transformComponent.lock()->m_position.x, transformComponent.lock()->m_position.y);
+                MapComponent::Tile& tile = mapComponent.GetTile(map.x, map.y);
+                tile.m_tileType = MapComponent::Tile::TileType::HEALTH_SPAWNER;
+
                 std::weak_ptr<HealthSpawnerComponent> healthSpawnerComponent = g_game->GetComponentManager().AddComponent<HealthSpawnerComponent>(entity);
                 for (const auto& property : object.m_properties) {
                     if (property.m_name == "HP") {
@@ -256,7 +286,6 @@ void MapImporter::Create(const Tilemap& tilemap) const
                     }
                 }
             }
-#endif
         }
     }
 }

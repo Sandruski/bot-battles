@@ -52,6 +52,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)LinkingContext.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Log.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MainMenuComponent.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MapComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MapImporter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Memory.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)InputMemoryStream.h" />
@@ -149,6 +150,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)InputMemoryStream.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Input.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MainMenuComponent.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)MapComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MapImporter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MeshImporter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MeshResource.cpp" />

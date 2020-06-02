@@ -13,6 +13,7 @@
 #include "FileSystem.h"
 #include "GameplayComponent.h"
 #include "MainMenuComponent.h"
+#include "MapComponent.h"
 #include "MapImporter.h"
 #include "PhysicsComponent.h"
 #include "ResourceManager.h"
@@ -92,6 +93,10 @@ public:
     {
         return m_scoreboardComponent;
     }
+    MapComponent& GetMapComponent()
+    {
+        return m_mapComponent;
+    }
 
 private:
     bool PreUpdate();
@@ -130,6 +135,7 @@ protected:
     MainMenuComponent m_mainMenuComponent;
     GameplayComponent m_gameplayComponent;
     ScoreboardComponent m_scoreboardComponent;
+    MapComponent m_mapComponent;
 };
 
 extern Game* g_game;

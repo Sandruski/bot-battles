@@ -59,6 +59,7 @@ Game::Game()
     , m_mainMenuComponent()
     , m_gameplayComponent()
     , m_scoreboardComponent()
+    , m_mapComponent()
 {
     m_entityManager = std::make_shared<EntityManager>();
     m_componentManager = std::make_shared<ComponentManager>();

@@ -14,9 +14,9 @@ class MyBot(bot.Bot):
             input.linearVelocityX = input.maxLinearVelocity
             input.linearVelocityY = 0
         input.angularVelocity = 0
-        #input.shootPrimaryWeapon()
+        input.shootPrimaryWeapon()
         #input.shootSecondaryWeapon()
-        input.reloadPrimaryWeapon()
+        #input.reloadPrimaryWeapon()
         #input.heal()
 
     def onSeenNewBot(self, input):

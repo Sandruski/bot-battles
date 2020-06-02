@@ -426,6 +426,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)PlayerComponent.h">
       <Filter>Header Files\Components\Entity Components</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)MapComponent.h">
+      <Filter>Header Files\Components\System Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp">
@@ -643,6 +646,9 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)HealthComponent.cpp">
       <Filter>Source Files\Components\Entity Components</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)MapComponent.cpp">
+      <Filter>Source Files\Components\System Components</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
