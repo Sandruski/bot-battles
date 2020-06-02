@@ -142,7 +142,7 @@ bool HealthSpawnerSystem::PickUpHealth(Entity character, Entity health) const
         return false;
     }
 
-    if (characterSpriteComponent.lock()->m_spriteName != "idle") {
+    if (characterBotComponent.lock()->m_actionType != BotComponent::ActionType::COOLDOWN && characterBotComponent.lock()->m_actionType != BotComponent::ActionType::NONE) {
         return false;
     }
 
