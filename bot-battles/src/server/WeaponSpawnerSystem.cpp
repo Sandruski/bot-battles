@@ -147,40 +147,43 @@ bool WeaponSpawnerSystem::PickUpWeapon(Entity character, Entity weapon) const
         return false;
     }
 
-    if (characterBotComponent.lock()->m_actionType != BotComponent::ActionType::COOLDOWN && characterBotComponent.lock()->m_actionType != BotComponent::ActionType::NONE) {
+    if (characterBotComponent.lock()->m_actionType == BotComponent::ActionType::SHOOT && characterBotComponent.lock()->m_actionType == BotComponent::ActionType::RELOAD) {
         return false;
     }
 
-    // TODO: reset
-    //characterBotComponent.lock()->m_actionType = BotComponent::ActionType::NONE;
+    U32 characterDirtyState = 0;
+
+    if (characterBotComponent.lock()->m_actionType == BotComponent::ActionType::COOLDOWN_SHOOT || characterBotComponent.lock()->m_actionType == BotComponent::ActionType::COOLDOWN_RELOAD) {
+        characterBotComponent.lock()->m_actionType = BotComponent::ActionType::NONE;
+        characterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_ACTION_TYPE);
+    }
 
     weaponWeaponComponent.lock()->m_isPickedUp = true;
 
-    U64 weaponDirtyState = 0;
     characterWeaponComponent.lock()->m_damagePrimary = weaponWeaponComponent.lock()->m_damagePrimary;
-    weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_DAMAGE_PRIMARY);
+    characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_DAMAGE_PRIMARY);
     characterWeaponComponent.lock()->m_maxAmmoPrimary = weaponWeaponComponent.lock()->m_maxAmmoPrimary;
-    weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_MAX_AMMO_PRIMARY);
+    characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_MAX_AMMO_PRIMARY);
     characterWeaponComponent.lock()->m_ammoPrimary = weaponWeaponComponent.lock()->m_ammoPrimary;
-    weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_AMMO_PRIMARY);
+    characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_AMMO_PRIMARY);
     characterWeaponComponent.lock()->Reload();
-    weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_CURRENT_AMMO_PRIMARY);
+    characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_CURRENT_AMMO_PRIMARY);
     characterWeaponComponent.lock()->m_rangePrimary = weaponWeaponComponent.lock()->m_rangePrimary;
-    weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_RANGE_PRIMARY);
+    characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_RANGE_PRIMARY);
     characterWeaponComponent.lock()->m_timeShootPrimary = weaponWeaponComponent.lock()->m_timeShootPrimary;
-    weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_TIME_SHOOT_PRIMARY);
+    characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_TIME_SHOOT_PRIMARY);
     characterWeaponComponent.lock()->m_cooldownShootPrimary = weaponWeaponComponent.lock()->m_cooldownShootPrimary;
-    weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_COOLDOWN_SHOOT_PRIMARY);
+    characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_COOLDOWN_SHOOT_PRIMARY);
     characterWeaponComponent.lock()->m_timeReload = weaponWeaponComponent.lock()->m_timeReload;
-    weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_TIME_RELOAD);
+    characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_TIME_RELOAD);
     characterWeaponComponent.lock()->m_cooldownReload = weaponWeaponComponent.lock()->m_cooldownReload;
-    weaponDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_COOLDOWN_RELOAD);
+    characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_COOLDOWN_RELOAD);
 
-    if (weaponDirtyState > 0) {
+    if (characterDirtyState > 0) {
         Event newComponentEvent;
         newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
         newComponentEvent.component.entity = character;
-        newComponentEvent.component.dirtyState = weaponDirtyState;
+        newComponentEvent.component.dirtyState = characterDirtyState;
         NotifyEvent(newComponentEvent);
     }
 

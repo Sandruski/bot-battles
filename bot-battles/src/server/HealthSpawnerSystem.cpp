@@ -142,28 +142,31 @@ bool HealthSpawnerSystem::PickUpHealth(Entity character, Entity health) const
         return false;
     }
 
-    if (characterBotComponent.lock()->m_actionType != BotComponent::ActionType::COOLDOWN && characterBotComponent.lock()->m_actionType != BotComponent::ActionType::NONE) {
+    if (characterBotComponent.lock()->m_actionType == BotComponent::ActionType::HEAL) {
         return false;
     }
 
-    // TODO: reset
-    //characterBotComponent.lock()->m_actionType = BotComponent::ActionType::NONE;
+    U32 characterDirtyState = 0;
+
+    if (characterBotComponent.lock()->m_actionType == BotComponent::ActionType::COOLDOWN_HEAL) {
+        characterBotComponent.lock()->m_actionType = BotComponent::ActionType::NONE;
+        characterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_ACTION_TYPE);
+    }
 
     healthHealthComponent.lock()->m_isPickedUp = true;
 
-    U64 healthDirtyState = 0;
     characterHealthComponent.lock()->m_HP = healthHealthComponent.lock()->m_HP;
-    healthDirtyState |= static_cast<U64>(ComponentMemberType::HEALTH_HP);
+    characterDirtyState |= static_cast<U64>(ComponentMemberType::HEALTH_HP);
     characterHealthComponent.lock()->m_timeHeal = healthHealthComponent.lock()->m_timeHeal;
-    healthDirtyState |= static_cast<U64>(ComponentMemberType::HEALTH_TIME_HEAL);
+    characterDirtyState |= static_cast<U64>(ComponentMemberType::HEALTH_TIME_HEAL);
     characterHealthComponent.lock()->m_cooldownHeal = healthHealthComponent.lock()->m_cooldownHeal;
-    healthDirtyState |= static_cast<U64>(ComponentMemberType::HEALTH_COOLDOWN_HEAL);
+    characterDirtyState |= static_cast<U64>(ComponentMemberType::HEALTH_COOLDOWN_HEAL);
 
-    if (healthDirtyState > 0) {
+    if (characterDirtyState > 0) {
         Event newComponentEvent;
         newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
         newComponentEvent.component.entity = character;
-        newComponentEvent.component.dirtyState = healthDirtyState;
+        newComponentEvent.component.dirtyState = characterDirtyState;
         NotifyEvent(newComponentEvent);
     }
 

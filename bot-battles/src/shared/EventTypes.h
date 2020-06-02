@@ -3,7 +3,7 @@
 
 namespace sand {
 
-enum class EventType {
+enum class EventType : U64 {
 
     // ENGINE
     // Non-networking

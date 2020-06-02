@@ -42,20 +42,43 @@ bool BotSystem::Update()
         U32 characterDirtyState = 0;
 
         switch (botComponent.lock()->m_actionType) {
-        case BotComponent::ActionType::SHOOT:
-        case BotComponent::ActionType::RELOAD:
-        case BotComponent::ActionType::HEAL: {
+
+        case BotComponent::ActionType::SHOOT: {
             if (botComponent.lock()->m_timerAction.ReadSec() >= botComponent.lock()->m_timeAction) {
                 spriteComponent.lock()->m_spriteName = "idle";
                 characterDirtyState |= static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME);
 
-                botComponent.lock()->m_actionType = BotComponent::ActionType::COOLDOWN;
+                botComponent.lock()->m_actionType = BotComponent::ActionType::COOLDOWN_SHOOT;
                 characterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_ACTION_TYPE);
             }
             break;
         }
 
-        case BotComponent::ActionType::COOLDOWN: {
+        case BotComponent::ActionType::RELOAD: {
+            if (botComponent.lock()->m_timerAction.ReadSec() >= botComponent.lock()->m_timeAction) {
+                spriteComponent.lock()->m_spriteName = "idle";
+                characterDirtyState |= static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME);
+
+                botComponent.lock()->m_actionType = BotComponent::ActionType::COOLDOWN_RELOAD;
+                characterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_ACTION_TYPE);
+            }
+            break;
+        }
+
+        case BotComponent::ActionType::HEAL: {
+            if (botComponent.lock()->m_timerAction.ReadSec() >= botComponent.lock()->m_timeAction) {
+                spriteComponent.lock()->m_spriteName = "idle";
+                characterDirtyState |= static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME);
+
+                botComponent.lock()->m_actionType = BotComponent::ActionType::COOLDOWN_HEAL;
+                characterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_ACTION_TYPE);
+            }
+            break;
+        }
+
+        case BotComponent::ActionType::COOLDOWN_SHOOT:
+        case BotComponent::ActionType::COOLDOWN_RELOAD:
+        case BotComponent::ActionType::COOLDOWN_HEAL: {
             if (botComponent.lock()->m_timerAction.ReadSec() >= botComponent.lock()->m_timeAction + botComponent.lock()->m_cooldownAction) {
                 botComponent.lock()->m_actionType = BotComponent::ActionType::NONE;
                 characterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_ACTION_TYPE);

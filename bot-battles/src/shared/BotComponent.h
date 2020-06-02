@@ -25,9 +25,11 @@ struct BotComponent : public Component
 
         NONE,
         SHOOT,
+        COOLDOWN_SHOOT,
         RELOAD,
+        COOLDOWN_RELOAD,
         HEAL,
-        COOLDOWN
+        COOLDOWN_HEAL
     };
 
     static ComponentType GetType() { return ComponentType::BOT; }
