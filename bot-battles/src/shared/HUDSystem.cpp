@@ -34,7 +34,8 @@ bool HUDSystem::RenderGui()
     windowFlags |= ImGuiWindowFlags_NoDecoration;
     windowFlags |= ImGuiWindowFlags_NoInputs;
 
-    for (auto& entity : m_entities) {
+    for (U32 i = 0; i < m_entities.size(); ++i) {
+        Entity entity = m_entities.at(i);
         std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
         std::weak_ptr<LabelComponent> labelComponent = g_game->GetComponentManager().GetComponent<LabelComponent>(entity);
 
@@ -44,6 +45,7 @@ bool HUDSystem::RenderGui()
         ImGui::SetNextWindowPos(position, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 
         std::string name = "##";
+        name.append(std::to_string(i));
         name.append(labelComponent.lock()->m_text);
         if (ImGui::Begin(name.c_str(), nullptr, windowFlags)) {
             ImVec4 color = ImVec4(labelComponent.lock()->m_color.r, labelComponent.lock()->m_color.g, labelComponent.lock()->m_color.b, labelComponent.lock()->m_color.a);
