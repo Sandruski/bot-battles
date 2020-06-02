@@ -28,15 +28,19 @@ bool MapSystem::DebugRender()
             glm::vec4 color = White;
             switch (tile.m_tileType) {
             case MapComponent::Tile::TileType::FLOOR: {
+                color = Yellow;
                 break;
             }
             case MapComponent::Tile::TileType::BOT_SPAWNER: {
+                color = Red;
                 break;
             }
             case MapComponent::Tile::TileType::WEAPON_SPAWNER: {
+                color = Green;
                 break;
             }
             case MapComponent::Tile::TileType::HEALTH_SPAWNER: {
+                color = Blue;
                 break;
             }
             default: {
