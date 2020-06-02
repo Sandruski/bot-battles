@@ -53,12 +53,9 @@ struct WeaponComponent : public Component
     F32 m_timeReload;
     F32 m_cooldownReload;
 
-    bool m_hasShot;
-    glm::vec2 m_originShot;
-    glm::vec2 m_destinationShot;
-    bool m_hitShot;
-
-    bool m_hasReloaded;
+    glm::vec2 m_originLastShot;
+    glm::vec2 m_destinationLastShot;
+    bool m_hasHitLastShot;
 
     // Local (server)
     bool m_isPickedUp;

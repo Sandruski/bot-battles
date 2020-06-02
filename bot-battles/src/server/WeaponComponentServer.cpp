@@ -1,4 +1,3 @@
-#include "..\shared\WeaponComponent.h"
 #include "WeaponComponent.h"
 
 #include "ComponentMemberTypes.h"
@@ -62,25 +61,17 @@ U64 WeaponComponent::Write(OutputMemoryStream& outputStream, U64 dirtyState) con
         outputStream.Write(m_cooldownReload);
         writtenState |= static_cast<U64>(ComponentMemberType::WEAPON_COOLDOWN_RELOAD);
     }
-    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_HAS_SHOT)) {
-        outputStream.Write(m_hasShot);
-        writtenState |= static_cast<U64>(ComponentMemberType::WEAPON_HAS_SHOT);
+    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_ORIGIN_LAST_SHOT)) {
+        outputStream.Write(m_originLastShot);
+        writtenState |= static_cast<U64>(ComponentMemberType::WEAPON_ORIGIN_LAST_SHOT);
     }
-    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_ORIGIN_SHOT)) {
-        outputStream.Write(m_originShot);
-        writtenState |= static_cast<U64>(ComponentMemberType::WEAPON_ORIGIN_SHOT);
+    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_DESTINATION_LAST_SHOT)) {
+        outputStream.Write(m_destinationLastShot);
+        writtenState |= static_cast<U64>(ComponentMemberType::WEAPON_DESTINATION_LAST_SHOT);
     }
-    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_DESTINATION_SHOT)) {
-        outputStream.Write(m_destinationShot);
-        writtenState |= static_cast<U64>(ComponentMemberType::WEAPON_DESTINATION_SHOT);
-    }
-    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_HIT_SHOT)) {
-        outputStream.Write(m_hitShot);
-        writtenState |= static_cast<U64>(ComponentMemberType::WEAPON_HIT_SHOT);
-    }
-    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_HAS_RELOADED)) {
-        outputStream.Write(m_hasReloaded);
-        writtenState |= static_cast<U64>(ComponentMemberType::WEAPON_HAS_RELOADED);
+    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_HAS_HIT_LAST_SHOT)) {
+        outputStream.Write(m_hasHitLastShot);
+        writtenState |= static_cast<U64>(ComponentMemberType::WEAPON_HAS_HIT_LAST_SHOT);
     }
 
     return writtenState;

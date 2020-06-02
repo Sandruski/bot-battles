@@ -141,12 +141,21 @@ bool WeaponSpawnerSystem::PickUpWeapon(Entity character, Entity weapon) const
 {
     std::weak_ptr<WeaponComponent> weaponWeaponComponent = g_gameServer->GetComponentManager().GetComponent<WeaponComponent>(weapon);
     std::weak_ptr<BotComponent> characterBotComponent = g_gameServer->GetComponentManager().GetComponent<BotComponent>(character);
-    if (weaponWeaponComponent.lock()->m_isPickedUp || !characterBotComponent.lock()->m_canPerformAnimation) {
+    std::weak_ptr<SpriteComponent> characterSpriteComponent = g_gameServer->GetComponentManager().GetComponent<SpriteComponent>(character);
+    std::weak_ptr<WeaponComponent> characterWeaponComponent = g_gameServer->GetComponentManager().GetComponent<WeaponComponent>(character);
+
+    if (weaponWeaponComponent.lock()->m_isPickedUp) {
         return false;
     }
-    weaponWeaponComponent.lock()->m_isPickedUp = true;
 
-    std::weak_ptr<WeaponComponent> characterWeaponComponent = g_gameServer->GetComponentManager().GetComponent<WeaponComponent>(character);
+    if (characterSpriteComponent.lock()->m_spriteName != "idle") {
+        return false;
+    }
+
+    // TODO: reset
+    //characterBotComponent.lock()->m_actionType = BotComponent::ActionType::NONE;
+
+    weaponWeaponComponent.lock()->m_isPickedUp = true;
 
     U64 weaponDirtyState = 0;
     characterWeaponComponent.lock()->m_damagePrimary = weaponWeaponComponent.lock()->m_damagePrimary;

@@ -1,4 +1,3 @@
-#include "..\shared\HealthComponent.h"
 #include "HealthComponent.h"
 
 #include "ComponentMemberTypes.h"
@@ -29,10 +28,6 @@ U64 HealthComponent::Write(OutputMemoryStream& outputStream, U64 dirtyState) con
     if (dirtyState & static_cast<U64>(ComponentMemberType::HEALTH_COOLDOWN_HEAL)) {
         outputStream.Write(m_cooldownHeal);
         writtenState |= static_cast<U64>(ComponentMemberType::HEALTH_COOLDOWN_HEAL);
-    }
-    if (dirtyState & static_cast<U64>(ComponentMemberType::HEALTH_HAS_HEALED)) {
-        outputStream.Write(m_hasHealed);
-        writtenState |= static_cast<U64>(ComponentMemberType::HEALTH_HAS_HEALED);
     }
 
     return writtenState;

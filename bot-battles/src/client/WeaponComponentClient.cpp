@@ -57,21 +57,18 @@ void WeaponComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /
     if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_COOLDOWN_RELOAD)) {
         inputStream.Read(m_cooldownReload);
     }
-    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_HAS_SHOT)) {
-        inputStream.Read(m_hasShot);
+    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_ORIGIN_LAST_SHOT)) {
+        inputStream.Read(m_originLastShot);
     }
-    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_ORIGIN_SHOT)) {
-        inputStream.Read(m_originShot);
+    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_DESTINATION_LAST_SHOT)) {
+        inputStream.Read(m_destinationLastShot);
     }
-    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_DESTINATION_SHOT)) {
-        inputStream.Read(m_destinationShot);
-    }
-    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_HIT_SHOT)) {
-        inputStream.Read(m_hitShot);
+    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_HAS_HIT_LAST_SHOT)) {
+        inputStream.Read(m_hasHitLastShot);
 
         if (replicationActionType != ReplicationActionType::CREATE) {
             Event newWeaponEvent;
-            if (m_hitShot) {
+            if (m_hasHitLastShot) {
                 newWeaponEvent.eventType = EventType::WEAPON_HIT;
             } else {
                 newWeaponEvent.eventType = EventType::WEAPON_MISSED;
@@ -80,9 +77,6 @@ void WeaponComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /
             ClientComponent& clientComponent = g_gameClient->GetClientComponent();
             clientComponent.m_replicationManager.NotifyEvent(newWeaponEvent);
         }
-    }
-    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_HAS_RELOADED)) {
-        inputStream.Read(m_hasReloaded);
     }
 }
 }

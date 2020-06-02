@@ -57,6 +57,8 @@ enum class SystemType : U16 {
     HEALTH,
     //
 
+    BOT,
+
     OUTPUT,
 
 #ifdef _DRAW

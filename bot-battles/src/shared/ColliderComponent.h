@@ -23,7 +23,7 @@ struct ColliderComponent : public Component
 {
     static ComponentType GetType() { return ComponentType::COLLIDER; }
 
-    enum class ShapeType {
+    enum class ShapeType : U8 {
 
         NONE,
         CIRCLE,

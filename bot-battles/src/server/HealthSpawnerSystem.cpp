@@ -135,12 +135,21 @@ bool HealthSpawnerSystem::PickUpHealth(Entity character, Entity health) const
 {
     std::weak_ptr<HealthComponent> healthHealthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(health);
     std::weak_ptr<BotComponent> characterBotComponent = g_gameServer->GetComponentManager().GetComponent<BotComponent>(character);
-    if (healthHealthComponent.lock()->m_isPickedUp || !characterBotComponent.lock()->m_canPerformAnimation) {
+    std::weak_ptr<SpriteComponent> characterSpriteComponent = g_gameServer->GetComponentManager().GetComponent<SpriteComponent>(character);
+    std::weak_ptr<HealthComponent> characterHealthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(character);
+
+    if (healthHealthComponent.lock()->m_isPickedUp) {
         return false;
     }
-    healthHealthComponent.lock()->m_isPickedUp = true;
 
-    std::weak_ptr<HealthComponent> characterHealthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(character);
+    if (characterSpriteComponent.lock()->m_spriteName != "idle") {
+        return false;
+    }
+
+    // TODO: reset
+    //characterBotComponent.lock()->m_actionType = BotComponent::ActionType::NONE;
+
+    healthHealthComponent.lock()->m_isPickedUp = true;
 
     U64 healthDirtyState = 0;
     characterHealthComponent.lock()->m_HP = healthHealthComponent.lock()->m_HP;

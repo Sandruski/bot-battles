@@ -39,8 +39,5 @@ void HealthComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /
     if (dirtyState & static_cast<U64>(ComponentMemberType::HEALTH_COOLDOWN_HEAL)) {
         inputStream.Read(m_cooldownHeal);
     }
-    if (dirtyState & static_cast<U64>(ComponentMemberType::HEALTH_HAS_HEALED)) {
-        inputStream.Read(m_hasHealed);
-    }
 }
 }

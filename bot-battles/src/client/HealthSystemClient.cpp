@@ -50,7 +50,7 @@ bool HealthSystemClient::Update()
         if (clientComponent.m_isLastHealthInputPending) {
             clientComponent.m_isLastHealthInputPending = false;
 
-            if (!botComponent.lock()->m_canPerformAction) {
+            if (botComponent.lock()->m_actionType != BotComponent::ActionType::NONE) {
                 continue;
             }
 

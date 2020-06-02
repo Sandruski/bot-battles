@@ -22,7 +22,7 @@ struct RigidbodyComponent : public Component
 {
     static ComponentType GetType() { return ComponentType::RIGIDBODY; }
 
-    enum class BodyType {
+    enum class BodyType : U8 {
 
         NONE,
         STATIC,

@@ -59,59 +59,37 @@ bool HealthSystemServer::Update()
         std::weak_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().GetComponent<SpriteComponent>(entity);
         std::weak_ptr<BotComponent> botComponent = g_gameServer->GetComponentManager().GetComponent<BotComponent>(entity);
 
+        if (botComponent.lock()->m_actionType != BotComponent::ActionType::NONE) {
+            continue;
+        }
+
         U64 characterDirtyState = 0;
 
-        if (botComponent.lock()->m_timerAction.ReadSec() >= botComponent.lock()->m_timeAction) {
-            botComponent.lock()->m_canPerformAnimation = true;
+        std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
+        for (U32 i = clientProxy.lock()->m_inputBuffer.m_front; i < clientProxy.lock()->m_inputBuffer.m_back; ++i) {
+            const Input& input = clientProxy.lock()->m_inputBuffer.Get(i);
+            U64 dirtyState = input.GetDirtyState();
 
-            if (healthComponent.lock()->m_hasHealed) {
-                spriteComponent.lock()->m_spriteName = "idle";
+            // Heal
+            const bool hasHeal = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_HEAL);
+            if (hasHeal) {
+                const bool result = healthComponent.lock()->CanHeal();
+                if (!result) {
+                    continue;
+                }
+
+                healthComponent.lock()->Heal();
+                characterDirtyState |= static_cast<U64>(ComponentMemberType::HEALTH_CURRENT_HP);
+                characterDirtyState |= static_cast<U64>(ComponentMemberType::HEALTH_HP);
+
+                spriteComponent.lock()->m_spriteName = "heal";
                 characterDirtyState |= static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME);
 
-                healthComponent.lock()->m_hasHealed = false;
-                characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_HAS_RELOADED);
-            }
-        }
-
-        if (botComponent.lock()->m_timerAction.ReadSec() >= botComponent.lock()->m_cooldownAction) {
-            if (!botComponent.lock()->m_canPerformAction) {
-                botComponent.lock()->m_canPerformAction = true;
-                characterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_CAN_PERFORM_ACTION);
-            }
-        }
-
-        if (botComponent.lock()->m_canPerformAction) {
-            std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
-            for (U32 i = clientProxy.lock()->m_inputBuffer.m_front; i < clientProxy.lock()->m_inputBuffer.m_back; ++i) {
-                const Input& input = clientProxy.lock()->m_inputBuffer.Get(i);
-                U64 dirtyState = input.GetDirtyState();
-
-                // Heal
-                const bool hasHeal = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_HEAL);
-                if (hasHeal) {
-                    const bool result = healthComponent.lock()->CanHeal();
-                    if (!result) {
-                        continue;
-                    }
-
-                    healthComponent.lock()->Heal();
-                    characterDirtyState |= static_cast<U64>(ComponentMemberType::HEALTH_CURRENT_HP);
-                    characterDirtyState |= static_cast<U64>(ComponentMemberType::HEALTH_HP);
-
-                    spriteComponent.lock()->m_spriteName = "heal";
-                    characterDirtyState |= static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME);
-
-                    botComponent.lock()->m_timeAction = healthComponent.lock()->m_timeHeal;
-                    botComponent.lock()->m_cooldownAction = healthComponent.lock()->m_cooldownHeal;
-                    botComponent.lock()->m_timerAction.Start();
-
-                    botComponent.lock()->m_canPerformAction = false;
-                    characterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_CAN_PERFORM_ACTION);
-                    botComponent.lock()->m_canPerformAnimation = false;
-
-                    healthComponent.lock()->m_hasHealed = true;
-                    characterDirtyState |= static_cast<U64>(ComponentMemberType::HEALTH_HAS_HEALED);
-                }
+                botComponent.lock()->m_actionType = BotComponent::ActionType::HEAL;
+                characterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_ACTION_TYPE);
+                botComponent.lock()->m_timeAction = healthComponent.lock()->m_timeHeal;
+                botComponent.lock()->m_cooldownAction = healthComponent.lock()->m_cooldownHeal;
+                botComponent.lock()->m_timerAction.Start();
             }
         }
 

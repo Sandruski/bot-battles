@@ -51,7 +51,7 @@ bool WeaponSystemClient::Update()
         if (clientComponent.m_isLastWeaponInputPending) {
             clientComponent.m_isLastWeaponInputPending = false;
 
-            if (!botComponent.lock()->m_canPerformAction) {
+            if (botComponent.lock()->m_actionType != BotComponent::ActionType::NONE) {
                 continue;
             }
 
@@ -110,7 +110,9 @@ bool WeaponSystemClient::Render()
         }
 
         std::weak_ptr<WeaponComponent> weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(entity);
-        if (!weaponComponent.lock()->m_hasShot) {
+        std::weak_ptr<BotComponent> botComponent = g_gameClient->GetComponentManager().GetComponent<BotComponent>(entity);
+
+        if (botComponent.lock()->m_actionType != BotComponent::ActionType::SHOOT) {
             continue;
         }
 

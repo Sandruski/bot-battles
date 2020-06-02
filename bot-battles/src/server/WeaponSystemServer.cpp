@@ -60,170 +60,133 @@ bool WeaponSystemServer::Update()
         std::weak_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().GetComponent<SpriteComponent>(entity);
         std::weak_ptr<BotComponent> botComponent = g_gameServer->GetComponentManager().GetComponent<BotComponent>(entity);
 
+        if (botComponent.lock()->m_actionType != BotComponent::ActionType::NONE) {
+            continue;
+        }
+
         U64 characterDirtyState = 0;
 
-        if (botComponent.lock()->m_timerAction.ReadSec() >= botComponent.lock()->m_timeAction) {
-            botComponent.lock()->m_canPerformAnimation = true;
+        std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
+        for (U32 i = clientProxy.lock()->m_inputBuffer.m_front; i < clientProxy.lock()->m_inputBuffer.m_back; ++i) {
+            const Input& input = clientProxy.lock()->m_inputBuffer.Get(i);
+            U64 dirtyState = input.GetDirtyState();
 
-            if (weaponComponent.lock()->m_hasShot) {
-                spriteComponent.lock()->m_spriteName = "idle";
+            // Reload
+            const bool hasReload = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_RELOAD);
+            if (hasReload) {
+                const bool result = weaponComponent.lock()->CanReload();
+                if (!result) {
+                    continue;
+                }
+
+                weaponComponent.lock()->Reload();
+                characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_CURRENT_AMMO_PRIMARY);
+                characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_AMMO_PRIMARY);
+
+                spriteComponent.lock()->m_spriteName = "reload";
                 characterDirtyState |= static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME);
 
-                weaponComponent.lock()->m_hasShot = false;
-                characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_HAS_SHOT);
+                botComponent.lock()->m_actionType = BotComponent::ActionType::RELOAD;
+                characterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_ACTION_TYPE);
+                botComponent.lock()->m_timeAction = weaponComponent.lock()->m_timeReload;
+                botComponent.lock()->m_cooldownAction = weaponComponent.lock()->m_cooldownReload;
+                botComponent.lock()->m_timerAction.Start();
             }
 
-            if (weaponComponent.lock()->m_hasReloaded) {
-                spriteComponent.lock()->m_spriteName = "idle";
-                characterDirtyState |= static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME);
-
-                weaponComponent.lock()->m_hasReloaded = false;
-                characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_HAS_RELOADED);
-            }
-        }
-
-        if (botComponent.lock()->m_timerAction.ReadSec() >= botComponent.lock()->m_cooldownAction) {
-            if (!botComponent.lock()->m_canPerformAction) {
-                botComponent.lock()->m_canPerformAction = true;
-                characterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_CAN_PERFORM_ACTION);
-            }
-        }
-
-        if (botComponent.lock()->m_canPerformAction) {
-            std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
-            for (U32 i = clientProxy.lock()->m_inputBuffer.m_front; i < clientProxy.lock()->m_inputBuffer.m_back; ++i) {
-                const Input& input = clientProxy.lock()->m_inputBuffer.Get(i);
-                U64 dirtyState = input.GetDirtyState();
-
-                // Reload
-                const bool hasReload = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_RELOAD);
-                if (hasReload) {
-                    const bool result = weaponComponent.lock()->CanReload();
+            // Shoot
+            const bool hasShootPrimaryWeapon = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_PRIMARY_WEAPON);
+            const bool hasShootSecondaryWeapon = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_SECONDARY_WEAPON);
+            if (hasShootPrimaryWeapon || hasShootSecondaryWeapon) {
+                if (hasShootPrimaryWeapon) {
+                    const bool result = weaponComponent.lock()->CanShootPrimary();
                     if (!result) {
                         continue;
                     }
 
-                    weaponComponent.lock()->Reload();
+                    weaponComponent.lock()->ShootPrimary();
                     characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_CURRENT_AMMO_PRIMARY);
-                    characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_AMMO_PRIMARY);
 
-                    spriteComponent.lock()->m_spriteName = "reload";
+                    spriteComponent.lock()->m_spriteName = "shootPrimary";
                     characterDirtyState |= static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME);
 
-                    botComponent.lock()->m_timeAction = weaponComponent.lock()->m_timeReload;
-                    botComponent.lock()->m_cooldownAction = weaponComponent.lock()->m_cooldownReload;
-                    botComponent.lock()->m_timerAction.Start();
+                    botComponent.lock()->m_timeAction = weaponComponent.lock()->m_timeShootPrimary;
+                    botComponent.lock()->m_cooldownAction = weaponComponent.lock()->m_cooldownShootPrimary;
+                } else {
+                    const bool result = weaponComponent.lock()->CanShootSecondary();
+                    if (!result) {
+                        continue;
+                    }
 
-                    botComponent.lock()->m_canPerformAction = false;
-                    characterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_CAN_PERFORM_ACTION);
-                    botComponent.lock()->m_canPerformAnimation = false;
+                    weaponComponent.lock()->ShootSecondary();
 
-                    weaponComponent.lock()->m_hasReloaded = true;
-                    characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_HAS_RELOADED);
+                    spriteComponent.lock()->m_spriteName = "shootSecondary";
+                    characterDirtyState |= static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME);
+
+                    botComponent.lock()->m_timeAction = weaponComponent.lock()->m_timeShootSecondary;
+                    botComponent.lock()->m_cooldownAction = weaponComponent.lock()->m_cooldownShootSecondary;
+                }
+                botComponent.lock()->m_actionType = BotComponent::ActionType::SHOOT;
+                characterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_ACTION_TYPE);
+                botComponent.lock()->m_timerAction.Start();
+
+                if (serverComponent.m_isServerRewind) {
+                    Rewind(entity, input.m_interpolationFromFrame, input.m_interpolationToFrame, input.m_interpolationPercentage);
                 }
 
-                // Shoot
-                const bool hasShootPrimaryWeapon = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_PRIMARY_WEAPON);
-                const bool hasShootSecondaryWeapon = dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_SECONDARY_WEAPON);
-                if (hasShootPrimaryWeapon || hasShootSecondaryWeapon) {
-                    if (hasShootPrimaryWeapon) {
-                        const bool result = weaponComponent.lock()->CanShootPrimary();
-                        if (!result) {
-                            continue;
-                        }
+                U32 index = transformComponent.lock()->m_inputTransformBuffer.m_front;
+                bool isFound = false;
+                while (index < transformComponent.lock()->m_inputTransformBuffer.m_back) {
+                    const Transform& transform = transformComponent.lock()->m_inputTransformBuffer.Get(index);
+                    if (transform.GetFrame() == input.GetFrame()) {
+                        isFound = true;
+                        break;
+                    }
+                    ++index;
+                }
+                Transform& transform = isFound ? transformComponent.lock()->m_inputTransformBuffer.Get(index) : transformComponent.lock()->m_inputTransformBuffer.GetLast();
+                rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(transform.m_position.x), PIXELS_TO_METERS(transform.m_position.y)), glm::radians(transform.m_rotation));
 
-                        weaponComponent.lock()->ShootPrimary();
-                        characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_CURRENT_AMMO_PRIMARY);
+                glm::vec2 position = transform.m_position;
+                F32 x = std::cos(glm::radians(transform.m_rotation));
+                F32 y = std::sin(glm::radians(transform.m_rotation));
+                glm::vec2 rotation = glm::vec2(x, y);
 
-                        spriteComponent.lock()->m_spriteName = "shootPrimary";
-                        characterDirtyState |= static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME);
+                weaponComponent.lock()->m_originLastShot = position;
+                characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_ORIGIN_LAST_SHOT);
+                F32 maxLength = hasShootPrimaryWeapon ? weaponComponent.lock()->m_rangePrimary : weaponComponent.lock()->m_rangeSecondary;
+                weaponComponent.lock()->m_destinationLastShot = position + rotation * maxLength;
+                characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_DESTINATION_LAST_SHOT);
 
-                        botComponent.lock()->m_timeAction = weaponComponent.lock()->m_timeShootPrimary;
-                        botComponent.lock()->m_cooldownAction = weaponComponent.lock()->m_cooldownShootPrimary;
-                    } else {
-                        const bool result = weaponComponent.lock()->CanShootSecondary();
-                        if (!result) {
-                            continue;
-                        }
+                weaponComponent.lock()->m_hasHitLastShot = false;
+                characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_HAS_HIT_LAST_SHOT);
 
-                        weaponComponent.lock()->ShootSecondary();
-
-                        spriteComponent.lock()->m_spriteName = "shootSecondary";
-                        characterDirtyState |= static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME);
-
-                        botComponent.lock()->m_timeAction = weaponComponent.lock()->m_timeShootSecondary;
-                        botComponent.lock()->m_cooldownAction = weaponComponent.lock()->m_cooldownShootSecondary;
+                PhysicsComponent& physicsComponent = g_gameServer->GetPhysicsComponent();
+                PhysicsComponent::RaycastHit hitInfo;
+                const bool hasIntersected = physicsComponent.Raycast(weaponComponent.lock()->m_originLastShot, weaponComponent.lock()->m_destinationLastShot, hitInfo);
+                if (hasIntersected) {
+                    std::weak_ptr<TransformComponent> hitEntityTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(hitInfo.m_entity);
+                    if (!hitEntityTransformComponent.expired()) {
+                        weaponComponent.lock()->m_destinationLastShot = hitInfo.m_point;
                     }
 
-                    botComponent.lock()->m_timerAction.Start();
+                    if (hitInfo.m_entity != entity) {
+                        std::weak_ptr<HealthComponent> hitEntityHealthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(hitInfo.m_entity);
+                        if (!hitEntityHealthComponent.expired()) {
+                            weaponComponent.lock()->m_hasHitLastShot = true;
 
-                    botComponent.lock()->m_canPerformAction = false;
-                    characterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_CAN_PERFORM_ACTION);
-                    botComponent.lock()->m_canPerformAnimation = false;
-
-                    weaponComponent.lock()->m_hasShot = true;
-                    characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_HAS_SHOT);
-
-                    if (serverComponent.m_isServerRewind) {
-                        Rewind(entity, input.m_interpolationFromFrame, input.m_interpolationToFrame, input.m_interpolationPercentage);
-                    }
-
-                    U32 index = transformComponent.lock()->m_inputTransformBuffer.m_front;
-                    bool isFound = false;
-                    while (index < transformComponent.lock()->m_inputTransformBuffer.m_back) {
-                        const Transform& transform = transformComponent.lock()->m_inputTransformBuffer.Get(index);
-                        if (transform.GetFrame() == input.GetFrame()) {
-                            isFound = true;
-                            break;
-                        }
-                        ++index;
-                    }
-                    Transform& transform = isFound ? transformComponent.lock()->m_inputTransformBuffer.Get(index) : transformComponent.lock()->m_inputTransformBuffer.GetLast();
-                    rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(transform.m_position.x), PIXELS_TO_METERS(transform.m_position.y)), glm::radians(transform.m_rotation));
-
-                    glm::vec2 position = transform.m_position;
-                    F32 x = std::cos(glm::radians(transform.m_rotation));
-                    F32 y = std::sin(glm::radians(transform.m_rotation));
-                    glm::vec2 rotation = glm::vec2(x, y);
-
-                    weaponComponent.lock()->m_originShot = position;
-                    characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_ORIGIN_SHOT);
-                    F32 maxLength = hasShootPrimaryWeapon ? weaponComponent.lock()->m_rangePrimary : weaponComponent.lock()->m_rangeSecondary;
-                    weaponComponent.lock()->m_destinationShot = position + rotation * maxLength;
-                    characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_DESTINATION_SHOT);
-
-                    weaponComponent.lock()->m_hitShot = false;
-                    characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_HIT_SHOT);
-
-                    PhysicsComponent& physicsComponent = g_gameServer->GetPhysicsComponent();
-                    PhysicsComponent::RaycastHit hitInfo;
-                    const bool hasIntersected = physicsComponent.Raycast(weaponComponent.lock()->m_originShot, weaponComponent.lock()->m_destinationShot, hitInfo);
-                    if (hasIntersected) {
-                        std::weak_ptr<TransformComponent> hitEntityTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(hitInfo.m_entity);
-                        if (!hitEntityTransformComponent.expired()) {
-                            weaponComponent.lock()->m_destinationShot = hitInfo.m_point;
-                        }
-
-                        if (hitInfo.m_entity != entity) {
-                            std::weak_ptr<HealthComponent> hitEntityHealthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(hitInfo.m_entity);
-                            if (!hitEntityHealthComponent.expired()) {
-                                weaponComponent.lock()->m_hitShot = true;
-                                characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_HIT_SHOT);
-
-                                Event newEvent;
-                                newEvent.eventType = EventType::WEAPON_HIT;
-                                newEvent.weapon.entity = entity;
-                                newEvent.weapon.damage = hasShootPrimaryWeapon ? weaponComponent.lock()->m_damagePrimary : weaponComponent.lock()->m_damageSecondary;
-                                PushEvent(newEvent);
-                            }
+                            Event newEvent;
+                            newEvent.eventType = EventType::WEAPON_HIT;
+                            newEvent.weapon.entity = entity;
+                            newEvent.weapon.damage = hasShootPrimaryWeapon ? weaponComponent.lock()->m_damagePrimary : weaponComponent.lock()->m_damageSecondary;
+                            PushEvent(newEvent);
                         }
                     }
+                }
 
-                    rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(transformComponent.lock()->m_position.x), PIXELS_TO_METERS(transformComponent.lock()->m_position.y)), glm::radians(transformComponent.lock()->m_rotation));
+                rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(transformComponent.lock()->m_position.x), PIXELS_TO_METERS(transformComponent.lock()->m_position.y)), glm::radians(transformComponent.lock()->m_rotation));
 
-                    if (serverComponent.m_isServerRewind) {
-                        Revert(entity);
-                    }
+                if (serverComponent.m_isServerRewind) {
+                    Revert(entity);
                 }
             }
         }
@@ -254,7 +217,9 @@ bool WeaponSystemServer::Render()
         }
 
         std::weak_ptr<WeaponComponent> weaponComponent = g_gameServer->GetComponentManager().GetComponent<WeaponComponent>(entity);
-        if (!weaponComponent.lock()->m_hasShot) {
+        std::weak_ptr<BotComponent> botComponent = g_gameServer->GetComponentManager().GetComponent<BotComponent>(entity);
+
+        if (botComponent.lock()->m_actionType != BotComponent::ActionType::SHOOT) {
             continue;
         }
 

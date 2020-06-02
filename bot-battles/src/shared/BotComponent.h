@@ -21,6 +21,14 @@ struct BotComponent : public Component
                       public NetworkableWriteObject
 #endif
 {
+    enum class ActionType : U8 {
+
+        NONE,
+        SHOOT,
+        RELOAD,
+        HEAL
+    };
+
     static ComponentType GetType() { return ComponentType::BOT; }
 
     BotComponent();
@@ -32,10 +40,9 @@ struct BotComponent : public Component
 #endif
 
     // Networked
-    bool m_canPerformAction;
+    ActionType m_actionType;
 
     // Local (server)
-    bool m_canPerformAnimation;
     F32 m_timeAction;
     F32 m_cooldownAction;
     MyTimer m_timerAction;

@@ -1,6 +1,7 @@
 #include "GameServer.h"
 
 #include "BotSpawnerSystem.h"
+#include "BotSystem.h"
 #include "CollisionSystemServer.h"
 #include "ComponentManager.h"
 #include "ConfigServer.h"
@@ -76,6 +77,10 @@ bool GameServer::Init()
         return ret;
     }
     ret = m_systemManager->RegisterSystem<HealthSpawnerSystem>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_systemManager->RegisterSystem<BotSystem>();
     if (!ret) {
         return ret;
     }
@@ -175,6 +180,11 @@ bool GameServer::Init()
         return ret;
     }
     ret = healthSpawnerSystem.lock()->AddObserver(serverSystem);
+    if (!ret) {
+        return ret;
+    }
+    std::weak_ptr<BotSystem> botSystem = m_systemManager->GetSystem<BotSystem>();
+    ret = botSystem.lock()->AddObserver(serverSystem);
     if (!ret) {
         return ret;
     }

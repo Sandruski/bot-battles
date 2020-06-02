@@ -231,6 +231,9 @@
     <ClCompile Include="WeaponComponentServer.cpp">
       <Filter>Source Files\Components\Entity Components</Filter>
     </ClCompile>
+    <ClCompile Include="BotSystem.cpp">
+      <Filter>Source Files\Systems\Unique</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientProxy.h">
@@ -315,6 +318,9 @@
       <Filter>Header Files\Systems\Unique</Filter>
     </ClInclude>
     <ClInclude Include="HealthSpawnerSystem.h">
+      <Filter>Header Files\Systems\Unique</Filter>
+    </ClInclude>
+    <ClInclude Include="BotSystem.h">
       <Filter>Header Files\Systems\Unique</Filter>
     </ClInclude>
   </ItemGroup>
