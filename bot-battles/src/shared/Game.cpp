@@ -12,6 +12,7 @@
 #include "HealthSpawnerComponent.h"
 #include "InputComponent.h"
 #include "LinkingContext.h"
+#include "MapSystem.h"
 #include "PhysicsSystem.h"
 #include "PlayerComponent.h"
 #include "RigidbodyComponent.h"
@@ -23,9 +24,9 @@
 #include "WeaponSpawnerComponent.h"
 #ifdef _DRAW
 #include "DisplayPanel.h"
+#include "GUISystem.h"
 #include "GamePanel.h"
 #include "GraphicsPanel.h"
-#include "GuiSystem.h"
 #include "HUDSystem.h"
 #include "LabelComponent.h"
 #include "NetworkingPanel.h"
@@ -87,7 +88,7 @@ bool Game::Init()
     if (!ret) {
         return ret;
     }
-    ret = m_systemManager->RegisterSystem<GuiSystem>();
+    ret = m_systemManager->RegisterSystem<GUISystem>();
     if (!ret) {
         return ret;
     }
@@ -97,6 +98,10 @@ bool Game::Init()
         return ret;
     }
     ret = m_systemManager->RegisterSystem<PhysicsSystem>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_systemManager->RegisterSystem<MapSystem>();
     if (!ret) {
         return ret;
     }

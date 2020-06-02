@@ -38,6 +38,11 @@ struct MapComponent {
         return m_tiles.at(i + m_tileCount.x * j);
     }
 
+    U32 GetTileCount() const
+    {
+        return m_tileCount.x * m_tileCount.y;
+    }
+
     glm::uvec2 MapToWorld(U32 i, U32 j) const
     {
         glm::vec2 world;

@@ -6,7 +6,7 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-class GuiSystem : public System {
+class GUISystem : public System {
 public:
     static SystemType GetType()
     {

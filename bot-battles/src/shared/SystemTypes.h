@@ -28,6 +28,8 @@ enum class SystemType : U16 {
     HEALTH,
     //
 
+    MAP,
+
     OUTPUT,
 
 #ifdef _DRAW
@@ -58,6 +60,7 @@ enum class SystemType : U16 {
     //
 
     BOT,
+    MAP,
 
     OUTPUT,
 

@@ -1,4 +1,4 @@
-#include "GuiSystem.h"
+#include "GUISystem.h"
 
 #include "EventComponent.h"
 #include "Game.h"
@@ -9,7 +9,7 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-bool GuiSystem::StartUp()
+bool GUISystem::StartUp()
 {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -27,7 +27,7 @@ bool GuiSystem::StartUp()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool GuiSystem::Update()
+bool GUISystem::Update()
 {
     EventComponent& eventComponent = g_game->GetEventComponent();
     if (eventComponent.m_keyboard.at(SDL_SCANCODE_ESCAPE) == EventComponent::KeyState::DOWN) {
@@ -43,7 +43,7 @@ bool GuiSystem::Update()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool GuiSystem::PreRender()
+bool GUISystem::PreRender()
 {
     ImGui_ImplOpenGL3_NewFrame();
     WindowComponent& windowComponent = g_game->GetWindowComponent();
@@ -54,7 +54,7 @@ bool GuiSystem::PreRender()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool GuiSystem::RenderGui()
+bool GUISystem::RenderGui()
 {
     OPTICK_EVENT();
 
@@ -133,7 +133,7 @@ bool GuiSystem::RenderGui()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool GuiSystem::ShutDown()
+bool GUISystem::ShutDown()
 {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplSDL2_Shutdown();

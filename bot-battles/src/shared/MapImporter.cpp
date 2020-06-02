@@ -103,7 +103,7 @@ void MapImporter::Create(const Tilemap& tilemap) const
     mapComponent.m_tileCount = tilemap.m_tileCount;
     mapComponent.m_tileSize = tilemap.m_tileSize;
     mapComponent.m_scale = 1.0f;
-    U32 tileCount = mapComponent.m_tileCount.x * mapComponent.m_tileCount.y;
+    U32 tileCount = mapComponent.GetTileCount();
     mapComponent.m_tiles.resize(tileCount);
 
     WindowComponent& windowComponent = g_game->GetWindowComponent();
