@@ -27,6 +27,7 @@ public:
 private:
     void OnSystemEntityAdded(Entity entity) const;
     void OnSystemEntityRemoved(Entity entity) const;
+    void OnWindowResized() const;
     void OnComponentMemberChanged(U64 dirtyState, Entity entity) const;
 
 private:

@@ -165,6 +165,11 @@ void RendererSystem::OnNotify(const Event& event)
         break;
     }
 
+    case EventType::WINDOW_RESIZED: {
+        OnWindowResized();
+        break;
+    }
+
     case EventType::COMPONENT_MEMBER_CHANGED: {
         OnComponentMemberChanged(event.component.dirtyState, event.component.entity);
         break;
@@ -212,6 +217,12 @@ void RendererSystem::OnSystemEntityRemoved(Entity entity) const
     } else if (textureFile == "objects.png") {
         RecalculateObjectsMesh();
     }
+}
+
+//----------------------------------------------------------------------------------------------------
+void RendererSystem::OnWindowResized() const
+{
+    RecalculateAllMeshes();
 }
 
 //----------------------------------------------------------------------------------------------------

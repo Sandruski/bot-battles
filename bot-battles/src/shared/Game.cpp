@@ -234,6 +234,10 @@ bool Game::Init()
     if (!ret) {
         return ret;
     }
+    ret = m_windowComponent.AddObserver(rendererSystem);
+    if (!ret) {
+        return ret;
+    }
 #endif
 
     m_config->LoadFromJson();
@@ -339,6 +343,10 @@ bool Game::PreUpdate()
     bool ret = false;
 
     ret = m_physicsComponent.PreUpdate();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_windowComponent.PreUpdate();
     if (!ret) {
         return ret;
     }

@@ -15,6 +15,14 @@ WindowComponent::WindowComponent()
 }
 
 //----------------------------------------------------------------------------------------------------
+bool WindowComponent::PreUpdate()
+{
+    NotifyEvents();
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
 void WindowComponent::LoadFromConfig(const rapidjson::Value& value)
 {
     assert(value.HasMember("resolution"));
@@ -70,10 +78,14 @@ void WindowComponent::UpdateCurrentResolution()
 }
 
 //----------------------------------------------------------------------------------------------------
-void WindowComponent::UpdateResolution() const
+void WindowComponent::UpdateResolution()
 {
     SDL_SetWindowSize(m_window, m_currentResolution.x, m_currentResolution.y);
     glViewport(0, 0, m_currentResolution.x, m_currentResolution.y);
+
+    Event newEvent;
+    newEvent.eventType = EventType::WINDOW_RESIZED;
+    PushEvent(newEvent);
 }
 
 //----------------------------------------------------------------------------------------------------

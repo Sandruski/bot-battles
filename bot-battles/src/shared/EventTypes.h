@@ -21,6 +21,8 @@ enum class EventType : U64 {
     COLLISION_ENTER,
     COLLISION_EXIT,
 
+    WINDOW_RESIZED,
+
     // Networking
     NETWORK_ENTITY_ADDED,
     NETWORK_ENTITY_REMOVED,

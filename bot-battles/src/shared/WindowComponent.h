@@ -5,7 +5,7 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 // System Component
-struct WindowComponent {
+struct WindowComponent : public Subject {
 
     enum Resolution : U8 {
         LOW,
@@ -20,10 +20,12 @@ struct WindowComponent {
 
     WindowComponent();
 
+    bool PreUpdate();
+
     void LoadFromConfig(const rapidjson::Value& value);
 
     void UpdateCurrentResolution();
-    void UpdateResolution() const;
+    void UpdateResolution();
     bool UpdateDisplayMode();
 
     glm::vec2 GetProportion() const;
