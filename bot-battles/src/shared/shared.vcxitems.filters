@@ -429,9 +429,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)MapSystem.h">
       <Filter>Header Files\Systems\Unique</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Projects\bot-battles\bot-battles\src\shared\GUISystem.h">
-      <Filter>Header Files\Systems\Unique</Filter>
-    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)GUISystem.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp">
@@ -653,8 +651,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)MapSystem.cpp">
       <Filter>Source Files\Systems\Unique</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Projects\bot-battles\bot-battles\src\shared\GUISystem.cpp">
-      <Filter>Source Files\Systems\Unique</Filter>
-    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)GUISystem.cpp" />
   </ItemGroup>
 </Project>

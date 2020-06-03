@@ -1,19 +1,36 @@
 #include "HealthSystem.h"
 
+#include "Game.h"
 #include "HealthComponent.h"
 #include "RendererComponent.h"
 #include "TransformComponent.h"
+#include "WindowComponent.h"
 
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-void HealthSystem::Draw(RendererComponent& rendererComponent, std::weak_ptr<TransformComponent> transformComponent, std::weak_ptr<HealthComponent> healthComponent, const glm::vec4& color, const glm::vec4& backgroundColor) const
+void HealthSystem::Draw(RendererComponent& rendererComponent, PlayerID playerID, std::weak_ptr<HealthComponent> healthComponent, const glm::vec4& color, const glm::vec4& backgroundColor) const
 {
+    WindowComponent& windowComponent = g_game->GetWindowComponent();
+    glm::vec2 proportion = windowComponent.GetProportion();
+
     F32 rotation = 0.0f;
 
-    glm::vec3 backgroundScale = glm::vec3(50.0f, 8.0f, 0.0f);
-    glm::vec3 backgroundPosition = glm::vec3(transformComponent.lock()->m_position.x, transformComponent.lock()->m_position.y, static_cast<F32>(LayerType::LIFEBAR));
-    backgroundPosition.y -= 35.0f;
+    glm::vec3 backgroundScale = glm::vec3(static_cast<F32>(windowComponent.m_baseResolution.x) / 3.0f, 20.0f, 0.0f);
+    glm::vec3 backgroundPosition = glm::vec3(0.0f, 20.0f, static_cast<F32>(LayerType::LIFEBAR));
+    switch (playerID) {
+    case 0: {
+        backgroundPosition.x = static_cast<F32>(windowComponent.m_baseResolution.x) / 4.0f;
+        break;
+    }
+    case 1: {
+        backgroundPosition.x = static_cast<F32>(windowComponent.m_baseResolution.x) - static_cast<F32>(windowComponent.m_baseResolution.x) / 4.0f;
+        break;
+    }
+    default: {
+        break;
+    }
+    }
     rendererComponent.DrawQuad(backgroundPosition, rotation, backgroundScale, backgroundColor, true);
 
     glm::vec3 scale = backgroundScale;

@@ -244,6 +244,39 @@ bool WeaponSystemServer::Render()
 }
 
 //----------------------------------------------------------------------------------------------------
+bool WeaponSystemServer::RenderGui()
+{
+    OPTICK_EVENT();
+
+    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
+    for (const auto& entity : m_entities) {
+        PlayerID playerID = serverComponent.GetPlayerID(entity);
+        if (playerID >= INVALID_PLAYER_ID) {
+            continue;
+        }
+
+        glm::vec4 color = White;
+        switch (playerID) {
+        case 0: {
+            color = Red;
+            break;
+        }
+        case 1: {
+            color = Blue;
+            break;
+        }
+        default: {
+            break;
+        }
+        }
+        std::weak_ptr<WeaponComponent> weaponComponent = g_gameServer->GetComponentManager().GetComponent<WeaponComponent>(entity);
+        DrawGui(playerID, weaponComponent, color);
+    }
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
 void WeaponSystemServer::Rewind(Entity localEntity, U32 from, U32 to, F32 percentage) const
 {
     LinkingContext& linkingContext = g_gameServer->GetLinkingContext();

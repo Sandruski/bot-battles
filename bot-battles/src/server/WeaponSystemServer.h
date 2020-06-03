@@ -19,6 +19,7 @@ public:
     bool PreUpdate() override;
     bool Update() override;
     bool Render() override;
+    bool RenderGui() override;
 
 private:
     void Rewind(Entity localEntity, U32 from, U32 to, F32 percentage) const;

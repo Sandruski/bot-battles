@@ -18,6 +18,7 @@ public:
 
     bool Update() override;
     bool Render() override;
+    bool RenderGui() override;
 };
 }
 

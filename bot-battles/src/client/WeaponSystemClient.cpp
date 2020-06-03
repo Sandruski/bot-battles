@@ -151,4 +151,59 @@ bool WeaponSystemClient::Render()
 
     return true;
 }
+
+//----------------------------------------------------------------------------------------------------
+bool WeaponSystemClient::RenderGui()
+{
+    OPTICK_EVENT();
+
+    LinkingContext& linkingContext = g_gameClient->GetLinkingContext();
+    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    for (const auto& entity : m_entities) {
+        NetworkID networkID = linkingContext.GetNetworkID(entity);
+        if (networkID >= INVALID_NETWORK_ID) {
+            continue;
+        }
+
+        PlayerID playerID = INVALID_PLAYER_ID;
+        glm::vec4 color = White;
+        const bool isLocalEntity = clientComponent.IsLocalEntity(entity);
+        if (isLocalEntity) {
+            playerID = clientComponent.m_playerID;
+            switch (clientComponent.m_playerID) {
+            case 0: {
+                color = Red;
+                break;
+            }
+            case 1: {
+                color = Blue;
+                break;
+            }
+            default: {
+                break;
+            }
+            }
+        } else {
+            switch (clientComponent.m_playerID) {
+            case 0: {
+                playerID = 1;
+                color = Blue;
+                break;
+            }
+            case 1: {
+                playerID = 0;
+                color = Red;
+                break;
+            }
+            default: {
+                break;
+            }
+            }
+        }
+        std::weak_ptr<WeaponComponent> weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(entity);
+        DrawGui(playerID, weaponComponent, color);
+    }
+
+    return true;
+}
 }

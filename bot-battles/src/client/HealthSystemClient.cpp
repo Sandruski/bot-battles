@@ -79,6 +79,7 @@ bool HealthSystemClient::Render()
     OPTICK_EVENT();
 
     RendererComponent& rendererComponent = g_gameClient->GetRendererComponent();
+    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     LinkingContext& linkingContext = g_gameClient->GetLinkingContext();
     for (const auto& entity : m_entities) {
         NetworkID networkID = linkingContext.GetNetworkID(entity);
@@ -86,13 +87,45 @@ bool HealthSystemClient::Render()
             continue;
         }
 
-        std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
-        std::weak_ptr<HealthComponent> healthComponent = g_gameClient->GetComponentManager().GetComponent<HealthComponent>(entity);
-
+        PlayerID playerID = INVALID_PLAYER_ID;
         glm::vec4 color = White;
+        const bool isLocalEntity = clientComponent.IsLocalEntity(entity);
+        if (isLocalEntity) {
+            playerID = clientComponent.m_playerID;
+            switch (clientComponent.m_playerID) {
+            case 0: {
+                color = Red;
+                break;
+            }
+            case 1: {
+                color = Blue;
+                break;
+            }
+            default: {
+                break;
+            }
+            }
+        } else {
+            switch (clientComponent.m_playerID) {
+            case 0: {
+                playerID = 1;
+                color = Blue;
+                break;
+            }
+            case 1: {
+                playerID = 0;
+                color = Red;
+                break;
+            }
+            default: {
+                break;
+            }
+            }
+        }
+        std::weak_ptr<HealthComponent> healthComponent = g_gameClient->GetComponentManager().GetComponent<HealthComponent>(entity);
         glm::vec4 backgroundColor = Black;
         backgroundColor.a = 0.5f;
-        Draw(rendererComponent, transformComponent, healthComponent, color, backgroundColor);
+        Draw(rendererComponent, playerID, healthComponent, color, backgroundColor);
     }
 
     return true;

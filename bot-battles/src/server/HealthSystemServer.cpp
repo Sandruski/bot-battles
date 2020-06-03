@@ -124,13 +124,24 @@ bool HealthSystemServer::Render()
             continue;
         }
 
-        std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
         std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(entity);
-
         glm::vec4 color = White;
+        switch (playerID) {
+        case 0: {
+            color = Red;
+            break;
+        }
+        case 1: {
+            color = Blue;
+            break;
+        }
+        default: {
+            break;
+        }
+        }
         glm::vec4 backgroundColor = Black;
         backgroundColor.a = 0.5f;
-        Draw(rendererComponent, transformComponent, healthComponent, color, backgroundColor);
+        Draw(rendererComponent, playerID, healthComponent, color, backgroundColor);
     }
 
     return true;
