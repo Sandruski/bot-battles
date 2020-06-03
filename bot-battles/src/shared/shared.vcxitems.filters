@@ -366,9 +366,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)EventSystem.h">
       <Filter>Header Files\Systems\Unique</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)HUDSystem.h">
-      <Filter>Header Files\Systems\Unique</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)RendererSystem.h">
       <Filter>Header Files\Systems\Unique</Filter>
     </ClInclude>
@@ -429,7 +426,12 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)MapSystem.h">
       <Filter>Header Files\Systems\Unique</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)GUISystem.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)GUISystem.h">
+      <Filter>Header Files\Systems\Unique</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Projects\bot-battles\bot-battles\src\shared\LabelSystem.h">
+      <Filter>Header Files\Systems\Unique</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Log.cpp">
@@ -585,9 +587,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)EventSystem.cpp">
       <Filter>Source Files\Systems\Unique</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)HUDSystem.cpp">
-      <Filter>Source Files\Systems\Unique</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)RendererSystem.cpp">
       <Filter>Source Files\Systems\Unique</Filter>
     </ClCompile>
@@ -651,6 +650,11 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)MapSystem.cpp">
       <Filter>Source Files\Systems\Unique</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)GUISystem.cpp" />
+    <ClCompile Include="C:\Projects\bot-battles\bot-battles\src\shared\LabelSystem.cpp">
+      <Filter>Source Files\Systems\Unique</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)GUISystem.cpp">
+      <Filter>Source Files\Systems\Unique</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

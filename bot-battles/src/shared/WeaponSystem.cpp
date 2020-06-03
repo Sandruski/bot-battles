@@ -8,20 +8,37 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-void WeaponSystem::Draw(RendererComponent& rendererComponent, std::weak_ptr<WeaponComponent> weaponComponent, const glm::vec4& color) const
+void WeaponSystem::Draw(PlayerID playerID, std::weak_ptr<WeaponComponent> weaponComponent) const
 {
+    RendererComponent& rendererComponent = g_game->GetRendererComponent();
+
     glm::vec3 fromPosition = glm::vec3(weaponComponent.lock()->m_originLastShot.x, weaponComponent.lock()->m_originLastShot.y, static_cast<F32>(LayerType::WEAPON));
     glm::vec3 toPosition = glm::vec3(weaponComponent.lock()->m_destinationLastShot.x, weaponComponent.lock()->m_destinationLastShot.y, static_cast<F32>(LayerType::WEAPON));
+    glm::vec4 color = White;
+    switch (playerID) {
+    case 0: {
+        color = Red;
+        break;
+    }
+    case 1: {
+        color = Blue;
+        break;
+    }
+    default: {
+        break;
+    }
+    }
+
     glLineWidth(1.4f);
+
     rendererComponent.DrawLine(fromPosition, toPosition, color);
+
     glLineWidth(1.0f);
 }
 
 //----------------------------------------------------------------------------------------------------
-void WeaponSystem::DrawGui(PlayerID playerID, std::weak_ptr<WeaponComponent> weaponComponent, const glm::vec4& color) const
+void WeaponSystem::DrawGui(PlayerID playerID, std::weak_ptr<WeaponComponent> weaponComponent) const
 {
-    WindowComponent& windowComponent = g_game->GetWindowComponent();
-
     ImGuiWindowFlags windowFlags = 0;
     windowFlags |= ImGuiWindowFlags_NoMove;
     windowFlags |= ImGuiWindowFlags_NoScrollWithMouse;
@@ -34,28 +51,51 @@ void WeaponSystem::DrawGui(PlayerID playerID, std::weak_ptr<WeaponComponent> wea
     windowFlags |= ImGuiWindowFlags_NoDecoration;
     windowFlags |= ImGuiWindowFlags_NoInputs;
 
-    ImVec2 position = ImVec2(0.0f, 40.0f);
+    WindowComponent& windowComponent = g_game->GetWindowComponent();
+    glm::vec2 proportion = windowComponent.GetProportion();
+
+    ImVec2 windowPosition = ImVec2(0.0f, 45.0f);
+    ImVec2 windowPivot = ImVec2(0.0f, 0.5f);
     switch (playerID) {
     case 0: {
-        F32 positionX = static_cast<F32>(windowComponent.m_currentResolution.x) / 4.0f;
-        position.x = positionX - static_cast<F32>(windowComponent.m_currentResolution.x) / 3.0f / 2.0f;
-        ImGui::SetNextWindowPos(position, ImGuiCond_Always, ImVec2(0.0f, 0.5f));
+        F32 positionX = static_cast<F32>(windowComponent.m_baseResolution.x) / 4.0f;
+        F32 offsetX = static_cast<F32>(windowComponent.m_baseResolution.x) / 3.0f / 2.0f;
+        windowPosition.x = positionX - offsetX;
+        windowPivot.x = 0.0f;
         break;
     }
     case 1: {
-        F32 positionX = static_cast<F32>(windowComponent.m_currentResolution.x) - static_cast<F32>(windowComponent.m_currentResolution.x) / 4.0f;
-        position.x = positionX + static_cast<F32>(windowComponent.m_currentResolution.x) / 3.0f / 2.0f;
-        ImGui::SetNextWindowPos(position, ImGuiCond_Always, ImVec2(1.0f, 0.5f));
+        F32 positionX = static_cast<F32>(windowComponent.m_baseResolution.x) - static_cast<F32>(windowComponent.m_baseResolution.x) / 4.0f;
+        F32 offsetX = static_cast<F32>(windowComponent.m_baseResolution.x) / 3.0f / 2.0f;
+        windowPosition.x = positionX + offsetX;
+        windowPivot.x = 1.0f;
         break;
     }
     default: {
         break;
     }
     }
+    windowPosition.x *= proportion.x;
+    windowPosition.y *= proportion.y;
+    ImGui::SetNextWindowPos(windowPosition, ImGuiCond_Always, windowPivot);
 
-    std::string name = "##ammo";
-    name.append(std::to_string(playerID));
-    if (ImGui::Begin(name.c_str(), nullptr, windowFlags)) {
+    std::string windowName = "##ammo";
+    windowName.append(std::to_string(playerID));
+    if (ImGui::Begin(windowName.c_str(), nullptr, windowFlags)) {
+        glm::vec4 color = White;
+        switch (playerID) {
+        case 0: {
+            color = Red;
+            break;
+        }
+        case 1: {
+            color = Blue;
+            break;
+        }
+        default: {
+            break;
+        }
+        }
         ImVec4 colorText = ImVec4(color.r, color.g, color.b, color.a);
 
         std::string text = std::to_string(weaponComponent.lock()->m_currentAmmoPrimary);

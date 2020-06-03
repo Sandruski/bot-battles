@@ -8,7 +8,6 @@
 #include "InputComponent.h"
 #include "LinkingContext.h"
 #include "PhysicsComponent.h"
-#include "RendererComponent.h"
 #include "RigidbodyComponent.h"
 #include "State.h"
 #include "TransformComponent.h"
@@ -168,7 +167,6 @@ bool MovementSystemServer::DebugRender()
 {
     OPTICK_EVENT();
 
-    RendererComponent& rendererComponent = g_gameServer->GetRendererComponent();
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     for (const auto& entity : m_entities) {
         PlayerID playerID = serverComponent.GetPlayerID(entity);
@@ -177,10 +175,7 @@ bool MovementSystemServer::DebugRender()
         }
 
         std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
-
-        glm::vec4 color = Green;
-        color.a = 0.5f;
-        DebugDraw(rendererComponent, transformComponent, color);
+        DebugDraw(transformComponent);
     }
 
     return true;

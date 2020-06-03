@@ -6,7 +6,6 @@
 #include "GameClient.h"
 #include "HealthComponent.h"
 #include "LinkingContext.h"
-#include "RendererComponent.h"
 #include "SpriteComponent.h"
 
 namespace sand {
@@ -78,7 +77,6 @@ bool HealthSystemClient::Render()
 {
     OPTICK_EVENT();
 
-    RendererComponent& rendererComponent = g_gameClient->GetRendererComponent();
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
     LinkingContext& linkingContext = g_gameClient->GetLinkingContext();
     for (const auto& entity : m_entities) {
@@ -88,33 +86,17 @@ bool HealthSystemClient::Render()
         }
 
         PlayerID playerID = INVALID_PLAYER_ID;
-        glm::vec4 color = White;
         const bool isLocalEntity = clientComponent.IsLocalEntity(entity);
         if (isLocalEntity) {
             playerID = clientComponent.m_playerID;
-            switch (clientComponent.m_playerID) {
-            case 0: {
-                color = Red;
-                break;
-            }
-            case 1: {
-                color = Blue;
-                break;
-            }
-            default: {
-                break;
-            }
-            }
         } else {
             switch (clientComponent.m_playerID) {
             case 0: {
                 playerID = 1;
-                color = Blue;
                 break;
             }
             case 1: {
                 playerID = 0;
-                color = Red;
                 break;
             }
             default: {
@@ -123,9 +105,7 @@ bool HealthSystemClient::Render()
             }
         }
         std::weak_ptr<HealthComponent> healthComponent = g_gameClient->GetComponentManager().GetComponent<HealthComponent>(entity);
-        glm::vec4 backgroundColor = Black;
-        backgroundColor.a = 0.5f;
-        Draw(rendererComponent, playerID, healthComponent, color, backgroundColor);
+        Draw(playerID, healthComponent);
     }
 
     return true;

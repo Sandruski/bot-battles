@@ -44,7 +44,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)GuiComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GUISystem.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)HealthComponent.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)HUDSystem.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)LabelSystem.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)InputComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Interpolation.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)LabelComponent.h" />
@@ -143,7 +143,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)GameplayComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GuiComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GUISystem.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)HUDSystem.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)LabelSystem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)InputComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)LabelComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)LinkingContext.cpp" />

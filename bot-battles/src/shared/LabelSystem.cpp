@@ -1,4 +1,4 @@
-#include "HUDSystem.h"
+#include "LabelSystem.h"
 
 #include "ComponentManager.h"
 #include "Game.h"
@@ -9,13 +9,13 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-HUDSystem::HUDSystem()
+LabelSystem::LabelSystem()
 {
     m_signature |= 1 << static_cast<U16>(ComponentType::LABEL);
 }
 
 //----------------------------------------------------------------------------------------------------
-bool HUDSystem::RenderGui()
+bool LabelSystem::RenderGui()
 {
     OPTICK_EVENT();
 
@@ -40,16 +40,18 @@ bool HUDSystem::RenderGui()
         std::weak_ptr<LabelComponent> labelComponent = g_game->GetComponentManager().GetComponent<LabelComponent>(entity);
 
         glm::vec2 finalPosition = transformComponent.lock()->m_position + labelComponent.lock()->m_offset;
-        finalPosition *= proportion;
-        ImVec2 position = ImVec2(finalPosition.x, finalPosition.y);
-        ImGui::SetNextWindowPos(position, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+        ImVec2 windowPosition = ImVec2(finalPosition.x, finalPosition.y);
+        windowPosition.x *= proportion.x;
+        windowPosition.y *= proportion.y;
+        ImGui::SetNextWindowPos(windowPosition, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 
-        std::string name = "##";
-        name.append(std::to_string(i));
-        name.append(labelComponent.lock()->m_text);
-        if (ImGui::Begin(name.c_str(), nullptr, windowFlags)) {
-            ImVec4 color = ImVec4(labelComponent.lock()->m_color.r, labelComponent.lock()->m_color.g, labelComponent.lock()->m_color.b, labelComponent.lock()->m_color.a);
-            ImGui::TextColored(color, labelComponent.lock()->m_text.c_str());
+        std::string windowName = "#label";
+        windowName.append(std::to_string(i));
+        windowName.append(labelComponent.lock()->m_text);
+        if (ImGui::Begin(windowName.c_str(), nullptr, windowFlags)) {
+            ImVec4 colorText = ImVec4(labelComponent.lock()->m_color.r, labelComponent.lock()->m_color.g, labelComponent.lock()->m_color.b, labelComponent.lock()->m_color.a);
+
+            ImGui::TextColored(colorText, labelComponent.lock()->m_text.c_str());
 
             ImGui::End();
         }

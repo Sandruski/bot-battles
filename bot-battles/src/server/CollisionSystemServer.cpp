@@ -4,7 +4,6 @@
 #include "ComponentManager.h"
 #include "ComponentMemberTypes.h"
 #include "GameServer.h"
-#include "RendererComponent.h"
 #include "TransformComponent.h"
 
 namespace sand {
@@ -20,14 +19,10 @@ bool CollisionSystemServer::DebugRender()
 {
     OPTICK_EVENT();
 
-    RendererComponent& rendererComponent = g_gameServer->GetRendererComponent();
     for (const auto& entity : m_entities) {
         std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
         std::weak_ptr<ColliderComponent> colliderComponent = g_gameServer->GetComponentManager().GetComponent<ColliderComponent>(entity);
-
-        glm::vec4 color = Green;
-        color.a = 0.5f;
-        DebugDraw(rendererComponent, transformComponent, colliderComponent, color);
+        DebugDraw(transformComponent, colliderComponent);
     }
 
     return true;

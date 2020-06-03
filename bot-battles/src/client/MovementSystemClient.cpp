@@ -115,7 +115,6 @@ bool MovementSystemClient::DebugRender()
 {
     OPTICK_EVENT();
 
-    RendererComponent& rendererComponent = g_gameClient->GetRendererComponent();
     LinkingContext& linkingContext = g_gameClient->GetLinkingContext();
     for (const auto& entity : m_entities) {
         NetworkID networkID = linkingContext.GetNetworkID(entity);
@@ -124,10 +123,7 @@ bool MovementSystemClient::DebugRender()
         }
 
         std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
-
-        glm::vec4 color = Green;
-        color.a = 0.5f;
-        DebugDraw(rendererComponent, transformComponent, color);
+        DebugDraw(transformComponent);
     }
 
     return true;

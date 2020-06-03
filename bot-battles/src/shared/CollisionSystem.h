@@ -5,7 +5,6 @@
 
 namespace sand {
 
-struct RendererComponent;
 struct TransformComponent;
 struct ColliderComponent;
 
@@ -13,7 +12,7 @@ struct ColliderComponent;
 class CollisionSystem : public System {
 
 public:
-    void DebugDraw(RendererComponent& rendererComponent, std::weak_ptr<TransformComponent> transformComponent, std::weak_ptr<ColliderComponent> colliderComponent, const glm::vec4& color) const;
+    void DebugDraw(std::weak_ptr<TransformComponent> transformComponent, std::weak_ptr<ColliderComponent> colliderComponent) const;
 };
 }
 

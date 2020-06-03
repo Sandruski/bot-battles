@@ -4,7 +4,6 @@
 #include "ComponentMemberTypes.h"
 #include "GameClient.h"
 #include "LinkingContext.h"
-#include "RendererComponent.h"
 #include "SightComponent.h"
 #include "SpriteComponent.h"
 #include "TransformComponent.h"
@@ -24,7 +23,6 @@ bool SightSystemClient::Render()
 {
     OPTICK_EVENT();
 
-    RendererComponent& rendererComponent = g_gameClient->GetRendererComponent();
     LinkingContext& linkingContext = g_gameClient->GetLinkingContext();
     for (const auto& entity : m_entities) {
         NetworkID networkID = linkingContext.GetNetworkID(entity);
@@ -34,10 +32,7 @@ bool SightSystemClient::Render()
 
         std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
         std::weak_ptr<SightComponent> sightComponent = g_gameClient->GetComponentManager().GetComponent<SightComponent>(entity);
-
-        glm::vec4 color = White;
-        color.a = 0.5f;
-        Draw(rendererComponent, transformComponent, sightComponent, color);
+        Draw(transformComponent, sightComponent);
     }
 
     return true;

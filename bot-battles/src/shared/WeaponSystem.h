@@ -5,15 +5,14 @@
 
 namespace sand {
 
-struct RendererComponent;
 struct WeaponComponent;
 
 //----------------------------------------------------------------------------------------------------
 class WeaponSystem : public System {
 
 public:
-    void Draw(RendererComponent& rendererComponent, std::weak_ptr<WeaponComponent> weaponComponent, const glm::vec4& color) const;
-    void DrawGui(PlayerID playerID, std::weak_ptr<WeaponComponent> weaponComponent, const glm::vec4& color) const;
+    void Draw(PlayerID playerID, std::weak_ptr<WeaponComponent> weaponComponent) const;
+    void DrawGui(PlayerID playerID, std::weak_ptr<WeaponComponent> weaponComponent) const;
 };
 }
 

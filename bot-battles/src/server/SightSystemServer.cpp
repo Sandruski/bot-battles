@@ -158,7 +158,6 @@ bool SightSystemServer::Render()
 {
     OPTICK_EVENT();
 
-    RendererComponent& rendererComponent = g_gameServer->GetRendererComponent();
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     for (const auto& entity : m_entities) {
         PlayerID playerID = serverComponent.GetPlayerID(entity);
@@ -168,10 +167,7 @@ bool SightSystemServer::Render()
 
         std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
         std::weak_ptr<SightComponent> sightComponent = g_gameServer->GetComponentManager().GetComponent<SightComponent>(entity);
-
-        glm::vec4 color = White;
-        color.a = 0.5f;
-        Draw(rendererComponent, transformComponent, sightComponent, color);
+        Draw(transformComponent, sightComponent);
     }
 
     return true;

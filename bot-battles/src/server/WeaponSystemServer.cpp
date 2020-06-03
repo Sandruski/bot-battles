@@ -208,7 +208,6 @@ bool WeaponSystemServer::Render()
 {
     OPTICK_EVENT();
 
-    RendererComponent& rendererComponent = g_gameServer->GetRendererComponent();
     ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     for (const auto& entity : m_entities) {
         PlayerID playerID = serverComponent.GetPlayerID(entity);
@@ -216,28 +215,13 @@ bool WeaponSystemServer::Render()
             continue;
         }
 
-        std::weak_ptr<WeaponComponent> weaponComponent = g_gameServer->GetComponentManager().GetComponent<WeaponComponent>(entity);
         std::weak_ptr<BotComponent> botComponent = g_gameServer->GetComponentManager().GetComponent<BotComponent>(entity);
-
         if (botComponent.lock()->m_actionType != BotComponent::ActionType::SHOOT) {
             continue;
         }
 
-        glm::vec4 color = White;
-        switch (playerID) {
-        case 0: {
-            color = Red;
-            break;
-        }
-        case 1: {
-            color = Blue;
-            break;
-        }
-        default: {
-            break;
-        }
-        }
-        Draw(rendererComponent, weaponComponent, color);
+        std::weak_ptr<WeaponComponent> weaponComponent = g_gameServer->GetComponentManager().GetComponent<WeaponComponent>(entity);
+        Draw(playerID, weaponComponent);
     }
 
     return true;
@@ -255,22 +239,8 @@ bool WeaponSystemServer::RenderGui()
             continue;
         }
 
-        glm::vec4 color = White;
-        switch (playerID) {
-        case 0: {
-            color = Red;
-            break;
-        }
-        case 1: {
-            color = Blue;
-            break;
-        }
-        default: {
-            break;
-        }
-        }
         std::weak_ptr<WeaponComponent> weaponComponent = g_gameServer->GetComponentManager().GetComponent<WeaponComponent>(entity);
-        DrawGui(playerID, weaponComponent, color);
+        DrawGui(playerID, weaponComponent);
     }
 
     return true;

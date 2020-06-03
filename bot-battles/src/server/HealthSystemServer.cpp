@@ -116,32 +116,15 @@ bool HealthSystemServer::Render()
 {
     OPTICK_EVENT();
 
-    RendererComponent& rendererComponent = g_gameServer->GetRendererComponent();
+    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
     for (const auto& entity : m_entities) {
-        ServerComponent& serverComponent = g_gameServer->GetServerComponent();
         PlayerID playerID = serverComponent.GetPlayerID(entity);
         if (playerID >= INVALID_PLAYER_ID) {
             continue;
         }
 
         std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(entity);
-        glm::vec4 color = White;
-        switch (playerID) {
-        case 0: {
-            color = Red;
-            break;
-        }
-        case 1: {
-            color = Blue;
-            break;
-        }
-        default: {
-            break;
-        }
-        }
-        glm::vec4 backgroundColor = Black;
-        backgroundColor.a = 0.5f;
-        Draw(rendererComponent, playerID, healthComponent, color, backgroundColor);
+        Draw(playerID, healthComponent);
     }
 
     return true;

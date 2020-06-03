@@ -27,8 +27,8 @@
 #include "GUISystem.h"
 #include "GamePanel.h"
 #include "GraphicsPanel.h"
-#include "HUDSystem.h"
 #include "LabelComponent.h"
+#include "LabelSystem.h"
 #include "NetworkingPanel.h"
 #include "RendererSystem.h"
 #include "ShaderResource.h"
@@ -84,7 +84,7 @@ bool Game::Init()
     if (!ret) {
         return ret;
     }
-    ret = m_systemManager->RegisterSystem<HUDSystem>();
+    ret = m_systemManager->RegisterSystem<LabelSystem>();
     if (!ret) {
         return ret;
     }

@@ -5,7 +5,6 @@
 
 namespace sand {
 
-struct RendererComponent;
 struct TransformComponent;
 struct SightComponent;
 
@@ -13,7 +12,7 @@ struct SightComponent;
 class SightSystem : public System {
 
 public:
-    void Draw(RendererComponent& rendererComponent, std::weak_ptr<TransformComponent> transformComponent, std::weak_ptr<SightComponent> sightComponent, const glm::vec4& color) const;
+    void Draw(std::weak_ptr<TransformComponent> transformComponent, std::weak_ptr<SightComponent> sightComponent) const;
 };
 }
 

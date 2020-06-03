@@ -80,7 +80,7 @@
                         {
                          "name":"player",
                          "type":"int",
-                         "value":1
+                         "value":0
                         }, 
                         {
                          "name":"rangeWeapon",
@@ -138,7 +138,7 @@
                         {
                          "name":"player",
                          "type":"int",
-                         "value":0
+                         "value":1
                         }, 
                         {
                          "name":"rangeWeapon",

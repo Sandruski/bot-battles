@@ -5,14 +5,13 @@
 
 namespace sand {
 
-struct RendererComponent;
 struct TransformComponent;
 
 //----------------------------------------------------------------------------------------------------
 class MovementSystem : public System {
 
 public:
-    void DebugDraw(RendererComponent& rendererComponent, std::weak_ptr<TransformComponent> transformComponent, const glm::vec4& color) const;
+    void DebugDraw(std::weak_ptr<TransformComponent> transformComponent) const;
 };
 }
 

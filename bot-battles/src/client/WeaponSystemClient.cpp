@@ -5,7 +5,6 @@
 #include "ComponentMemberTypes.h"
 #include "GameClient.h"
 #include "LinkingContext.h"
-#include "RendererComponent.h"
 #include "SpriteComponent.h"
 #include "WeaponComponent.h"
 
@@ -100,45 +99,31 @@ bool WeaponSystemClient::Render()
 {
     OPTICK_EVENT();
 
-    RendererComponent& rendererComponent = g_gameClient->GetRendererComponent();
-    LinkingContext& linkingContext = g_gameClient->GetLinkingContext();
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    LinkingContext& linkingContext = g_gameClient->GetLinkingContext();
     for (const auto& entity : m_entities) {
         NetworkID networkID = linkingContext.GetNetworkID(entity);
         if (networkID >= INVALID_NETWORK_ID) {
             continue;
         }
 
-        std::weak_ptr<WeaponComponent> weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(entity);
         std::weak_ptr<BotComponent> botComponent = g_gameClient->GetComponentManager().GetComponent<BotComponent>(entity);
-
         if (botComponent.lock()->m_actionType != BotComponent::ActionType::SHOOT) {
             continue;
         }
 
-        glm::vec4 color = White;
-        if (clientComponent.IsLocalEntity(entity)) {
-            switch (clientComponent.m_playerID) {
-            case 0: {
-                color = Red;
-                break;
-            }
-            case 1: {
-                color = Blue;
-                break;
-            }
-            default: {
-                break;
-            }
-            }
+        PlayerID playerID = INVALID_PLAYER_ID;
+        const bool isLocalEntity = clientComponent.IsLocalEntity(entity);
+        if (isLocalEntity) {
+            playerID = clientComponent.m_playerID;
         } else {
             switch (clientComponent.m_playerID) {
             case 0: {
-                color = Blue;
+                playerID = 1;
                 break;
             }
             case 1: {
-                color = Red;
+                playerID = 0;
                 break;
             }
             default: {
@@ -146,7 +131,8 @@ bool WeaponSystemClient::Render()
             }
             }
         }
-        Draw(rendererComponent, weaponComponent, color);
+        std::weak_ptr<WeaponComponent> weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(entity);
+        Draw(playerID, weaponComponent);
     }
 
     return true;
@@ -157,8 +143,8 @@ bool WeaponSystemClient::RenderGui()
 {
     OPTICK_EVENT();
 
-    LinkingContext& linkingContext = g_gameClient->GetLinkingContext();
     ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    LinkingContext& linkingContext = g_gameClient->GetLinkingContext();
     for (const auto& entity : m_entities) {
         NetworkID networkID = linkingContext.GetNetworkID(entity);
         if (networkID >= INVALID_NETWORK_ID) {
@@ -166,33 +152,17 @@ bool WeaponSystemClient::RenderGui()
         }
 
         PlayerID playerID = INVALID_PLAYER_ID;
-        glm::vec4 color = White;
         const bool isLocalEntity = clientComponent.IsLocalEntity(entity);
         if (isLocalEntity) {
             playerID = clientComponent.m_playerID;
-            switch (clientComponent.m_playerID) {
-            case 0: {
-                color = Red;
-                break;
-            }
-            case 1: {
-                color = Blue;
-                break;
-            }
-            default: {
-                break;
-            }
-            }
         } else {
             switch (clientComponent.m_playerID) {
             case 0: {
                 playerID = 1;
-                color = Blue;
                 break;
             }
             case 1: {
                 playerID = 0;
-                color = Red;
                 break;
             }
             default: {
@@ -201,7 +171,7 @@ bool WeaponSystemClient::RenderGui()
             }
         }
         std::weak_ptr<WeaponComponent> weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(entity);
-        DrawGui(playerID, weaponComponent, color);
+        DrawGui(playerID, weaponComponent);
     }
 
     return true;
