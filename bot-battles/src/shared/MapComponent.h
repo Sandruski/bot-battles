@@ -30,12 +30,12 @@ struct MapComponent {
 
     Tile& GetTile(U32 i, U32 j)
     {
-        return m_tiles.at(i + m_tileCount.x * j);
+        return m_walkability.at(i + m_tileCount.x * j);
     }
 
     const Tile& GetTile(U32 i, U32 j) const
     {
-        return m_tiles.at(i + m_tileCount.x * j);
+        return m_walkability.at(i + m_tileCount.x * j);
     }
 
     U32 GetTileCount() const
@@ -67,7 +67,9 @@ struct MapComponent {
 
     glm::uvec2 RealWorldToMap(F32 x, F32 y) const;
 
-    std::vector<Tile> m_tiles;
+    void Reset();
+
+    std::vector<Tile> m_walkability;
 
     glm::uvec2 m_tileCount;
     glm::uvec2 m_tileSize;

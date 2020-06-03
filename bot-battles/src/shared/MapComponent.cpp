@@ -7,7 +7,7 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 MapComponent::MapComponent()
-    : m_tiles()
+    : m_walkability()
     , m_tileCount(0, 0)
     , m_tileSize(0, 0)
     , m_scale(1.0f)
@@ -46,5 +46,11 @@ glm::uvec2 MapComponent::RealWorldToMap(F32 x, F32 y) const
     glm::uvec2 map = WorldToMap(world.x, world.y);
 
     return map;
+}
+
+//----------------------------------------------------------------------------------------------------
+void MapComponent::Reset()
+{
+    m_walkability.clear();
 }
 }

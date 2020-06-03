@@ -5,6 +5,7 @@
 #include "GameplayComponent.h"
 #include "GuiComponent.h"
 #include "LinkingContext.h"
+#include "MapComponent.h"
 #include "PlayStateClient.h"
 #include "StartStateClient.h"
 
@@ -93,6 +94,9 @@ bool GameplayStateClient::Exit() const
 
     InputComponent& inputComponent = g_gameClient->GetInputComponent();
     inputComponent.FullReset();
+
+    MapComponent& mapComponent = g_game->GetMapComponent();
+    mapComponent.Reset();
 
     return true;
 }

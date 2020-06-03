@@ -6,6 +6,7 @@
 #include "GameplayComponent.h"
 #include "GuiComponent.h"
 #include "LinkingContext.h"
+#include "MapComponent.h"
 #include "PlayStateServer.h"
 #include "StartStateServer.h"
 
@@ -92,6 +93,9 @@ bool GameplayStateServer::Exit() const
         Entity entity = serverComponent.GetEntity(playerID);
         serverComponent.RemoveEntity(entity);
     }
+
+    MapComponent& mapComponent = g_game->GetMapComponent();
+    mapComponent.Reset();
 
     GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
     std::weak_ptr<State> emptyState = std::weak_ptr<State>();
