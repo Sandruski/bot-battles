@@ -61,14 +61,14 @@ bool WeaponSystemServer::Update()
         std::weak_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().GetComponent<SpriteComponent>(entity);
         std::weak_ptr<BotComponent> botComponent = g_gameServer->GetComponentManager().GetComponent<BotComponent>(entity);
 
-        if (botComponent.lock()->m_actionType != BotComponent::ActionType::NONE) {
-            continue;
-        }
-
         U64 characterDirtyState = 0;
 
         std::weak_ptr<ClientProxy> clientProxy = serverComponent.lock()->GetClientProxy(playerID);
         for (U32 i = clientProxy.lock()->m_inputBuffer.m_front; i < clientProxy.lock()->m_inputBuffer.m_back; ++i) {
+            if (botComponent.lock()->m_actionType != BotComponent::ActionType::NONE) {
+                continue;
+            }
+
             const Input& input = clientProxy.lock()->m_inputBuffer.Get(i);
             U64 dirtyState = input.GetDirtyState();
 

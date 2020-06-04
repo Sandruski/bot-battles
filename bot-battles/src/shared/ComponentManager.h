@@ -93,7 +93,6 @@ inline std::weak_ptr<Component> ComponentArray<T>::GetComponent(Entity entity)
 {
     auto entityToComponent = m_entitiesToComponents.find(entity);
     if (entityToComponent == m_entitiesToComponents.end()) {
-        WLOG("Entity %u does not have the component!", entity);
         return std::weak_ptr<Component>();
     }
 

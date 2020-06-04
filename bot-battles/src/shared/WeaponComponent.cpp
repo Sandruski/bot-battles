@@ -50,17 +50,19 @@ void WeaponComponent::ShootSecondary()
 //----------------------------------------------------------------------------------------------------
 bool WeaponComponent::CanReload() const
 {
-    I32 emptyAmmoPrimary = static_cast<I32>(m_maxAmmoPrimary) - m_currentAmmoPrimary;
-    I32 reloadAmmoPrimary = static_cast<I32>(m_ammoPrimary) - emptyAmmoPrimary;
-    return reloadAmmoPrimary > 0;
+    return m_ammoPrimary > 0;
 }
 
 //----------------------------------------------------------------------------------------------------
 void WeaponComponent::Reload()
 {
     I32 emptyAmmoPrimary = static_cast<I32>(m_maxAmmoPrimary) - m_currentAmmoPrimary;
-    I32 reloadAmmoPrimary = static_cast<I32>(m_ammoPrimary) - emptyAmmoPrimary;
-    m_currentAmmoPrimary += reloadAmmoPrimary;
-    m_ammoPrimary -= reloadAmmoPrimary;
+    if (static_cast<I32>(m_ammoPrimary) >= emptyAmmoPrimary) {
+        m_currentAmmoPrimary += emptyAmmoPrimary;
+        m_ammoPrimary -= emptyAmmoPrimary;
+    } else {
+        m_currentAmmoPrimary += m_ammoPrimary;
+        m_ammoPrimary = 0;
+    }
 }
 }
