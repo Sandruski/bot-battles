@@ -111,23 +111,39 @@ F32 InputComponent::GetAngularVelocity() const
 void InputComponent::ShootPrimaryWeapon()
 {
     m_dirtyState |= static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_PRIMARY_WEAPON);
+
+    m_dirtyState &= ~static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_SECONDARY_WEAPON);
+    m_dirtyState &= ~static_cast<U64>(InputComponentMemberType::INPUT_RELOAD);
+    m_dirtyState &= ~static_cast<U64>(InputComponentMemberType::INPUT_HEAL);
 }
 
 //----------------------------------------------------------------------------------------------------
 void InputComponent::ShootSecondaryWeapon()
 {
     m_dirtyState |= static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_SECONDARY_WEAPON);
+
+    m_dirtyState &= ~static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_PRIMARY_WEAPON);
+    m_dirtyState &= ~static_cast<U64>(InputComponentMemberType::INPUT_RELOAD);
+    m_dirtyState &= ~static_cast<U64>(InputComponentMemberType::INPUT_HEAL);
 }
 
 //----------------------------------------------------------------------------------------------------
 void InputComponent::Reload()
 {
     m_dirtyState |= static_cast<U64>(InputComponentMemberType::INPUT_RELOAD);
+
+    m_dirtyState &= ~static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_PRIMARY_WEAPON);
+    m_dirtyState &= ~static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_SECONDARY_WEAPON);
+    m_dirtyState &= ~static_cast<U64>(InputComponentMemberType::INPUT_HEAL);
 }
 
 //----------------------------------------------------------------------------------------------------
 void InputComponent::Heal()
 {
     m_dirtyState |= static_cast<U64>(InputComponentMemberType::INPUT_HEAL);
+
+    m_dirtyState &= ~static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_PRIMARY_WEAPON);
+    m_dirtyState &= ~static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_SECONDARY_WEAPON);
+    m_dirtyState &= ~static_cast<U64>(InputComponentMemberType::INPUT_RELOAD);
 }
 }

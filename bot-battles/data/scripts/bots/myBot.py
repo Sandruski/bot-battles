@@ -17,7 +17,7 @@ class MyBot(bot.Bot):
         #input.shootSecondaryWeapon()
         input.reloadPrimaryWeapon()
         input.shootPrimaryWeapon()
-        #input.heal()
+        input.heal()
 
     def onSeenNewBot(self, input):
         logging.info('onSeenNewBot')
