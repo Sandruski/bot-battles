@@ -294,7 +294,7 @@
                         {
                          "name":"cooldownShoot",
                          "type":"float",
-                         "value":5
+                         "value":20
                         }, 
                         {
                          "name":"cooldownSpawn",
@@ -357,7 +357,7 @@
                         {
                          "name":"cooldownShoot",
                          "type":"float",
-                         "value":5
+                         "value":20
                         }, 
                         {
                          "name":"cooldownSpawn",

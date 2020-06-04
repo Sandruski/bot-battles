@@ -14,9 +14,9 @@ class MyBot(bot.Bot):
             input.linearVelocityX = int(self.map.getTile(1, 1).tileType) * 100
             input.linearVelocityY = 0
         input.angularVelocity = 0
-        input.shootPrimaryWeapon()
         #input.shootSecondaryWeapon()
-        #input.reloadPrimaryWeapon()
+        input.reloadPrimaryWeapon()
+        input.shootPrimaryWeapon()
         #input.heal()
 
     def onSeenNewBot(self, input):

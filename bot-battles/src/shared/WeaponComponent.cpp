@@ -50,7 +50,7 @@ void WeaponComponent::ShootSecondary()
 //----------------------------------------------------------------------------------------------------
 bool WeaponComponent::CanReload() const
 {
-    return m_ammoPrimary > 0;
+    return (m_ammoPrimary > 0 && m_currentAmmoPrimary < static_cast<I32>(m_maxAmmoPrimary));
 }
 
 //----------------------------------------------------------------------------------------------------
