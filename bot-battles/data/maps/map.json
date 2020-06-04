@@ -187,7 +187,7 @@
                         {
                          "name":"HP",
                          "type":"int",
-                         "value":40
+                         "value":10
                         }, 
                         {
                          "name":"amountSpawn",
@@ -213,8 +213,8 @@
                  "type":"HealthSpawner",
                  "visible":true,
                  "width":64,
-                 "x":320,
-                 "y":256
+                 "x":384,
+                 "y":192
                 }, 
                 {
                  "gid":359,
@@ -225,12 +225,12 @@
                         {
                          "name":"HP",
                          "type":"int",
-                         "value":40
+                         "value":10
                         }, 
                         {
                          "name":"amountSpawn",
                          "type":"int",
-                         "value":2
+                         "value":-1
                         }, 
                         {
                          "name":"cooldownHeal",
@@ -251,8 +251,8 @@
                  "type":"HealthSpawner",
                  "visible":true,
                  "width":64,
-                 "x":384,
-                 "y":320
+                 "x":448,
+                 "y":384
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -326,7 +326,7 @@
                  "visible":true,
                  "width":64,
                  "x":384,
-                 "y":192
+                 "y":256
                 }, 
                 {
                  "gid":368,
@@ -389,7 +389,7 @@
                  "visible":true,
                  "width":64,
                  "x":448,
-                 "y":384
+                 "y":320
                 }],
          "opacity":1,
          "type":"objectgroup",

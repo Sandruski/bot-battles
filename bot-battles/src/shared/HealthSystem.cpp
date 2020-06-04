@@ -39,14 +39,15 @@ void HealthSystem::Draw(PlayerID playerID, std::weak_ptr<HealthComponent> health
     glm::vec3 scale = backgroundScale;
     scale.x *= static_cast<F32>(healthComponent.lock()->m_currentHP) / static_cast<F32>(healthComponent.lock()->m_maxHP);
     glm::vec3 position = backgroundPosition;
-    position.x -= (backgroundScale.x - scale.x) / 2.0f;
     glm::vec4 color = White;
     switch (playerID) {
     case 0: {
+        position.x += (backgroundScale.x - scale.x) / 2.0f;
         color = Red;
         break;
     }
     case 1: {
+        position.x -= (backgroundScale.x - scale.x) / 2.0f;
         color = Blue;
         break;
     }
