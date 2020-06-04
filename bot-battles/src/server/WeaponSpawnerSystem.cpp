@@ -153,7 +153,7 @@ bool WeaponSpawnerSystem::PickUpWeapon(Entity character, Entity weapon) const
         return false;
     }
 
-    U32 characterDirtyState = 0;
+    U64 characterDirtyState = 0;
 
     if (characterBotComponent.lock()->m_actionType == BotComponent::ActionType::COOLDOWN_SHOOT_PRIMARY
         || characterBotComponent.lock()->m_actionType == BotComponent::ActionType::COOLDOWN_RELOAD) {

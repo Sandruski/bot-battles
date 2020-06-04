@@ -148,7 +148,7 @@ bool HealthSpawnerSystem::PickUpHealth(Entity character, Entity health) const
         return false;
     }
 
-    U32 characterDirtyState = 0;
+    U64 characterDirtyState = 0;
 
     if (characterBotComponent.lock()->m_actionType == BotComponent::ActionType::COOLDOWN_HEAL) {
         characterBotComponent.lock()->m_actionType = BotComponent::ActionType::NONE;

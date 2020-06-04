@@ -39,7 +39,7 @@ bool BotSystem::Update()
         std::weak_ptr<BotComponent> botComponent = g_gameServer->GetComponentManager().GetComponent<BotComponent>(entity);
         std::weak_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().GetComponent<SpriteComponent>(entity);
 
-        U32 characterDirtyState = 0;
+        U64 characterDirtyState = 0;
 
         switch (botComponent.lock()->m_actionType) {
         case BotComponent::ActionType::SHOOT_PRIMARY: {
