@@ -20,7 +20,7 @@ RendererComponent::RendererComponent()
     , m_objectsMeshResource()
     , m_backgroundColor(0.0f, 0.0f, 0.0f, 0.0f)
     , m_isVSync(true)
-    , m_isDebugDraw(true)
+    , m_isDebugDraw(false)
 {
 }
 

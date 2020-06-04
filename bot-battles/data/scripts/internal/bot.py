@@ -1,11 +1,12 @@
 # coding: utf-8
 
 class Bot:
-    def __init__(self, transformComponent, rigidbodyComponent, weaponComponent, healthComponent):
-        self.transformComponent = transformComponent
-        self.rigidbodyComponent = rigidbodyComponent
-        self.weaponComponent = weaponComponent
-        self.healthComponent = healthComponent
+    def __init__(self, transformComponent, rigidbodyComponent, weaponComponent, healthComponent, mapComponent):
+        self.transform = transformComponent
+        self.rigidbody = rigidbodyComponent
+        self.weapon = weaponComponent
+        self.health = healthComponent
+        self.map = mapComponent
 
     def tick(self, input):
         pass

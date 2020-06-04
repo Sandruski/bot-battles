@@ -3,6 +3,7 @@
 
 #include "HealthComponent.h"
 #include "InputComponent.h"
+#include "MapComponent.h"
 #include "PhysicsComponent.h"
 #include "RigidbodyComponent.h"
 #include "TransformComponent.h"
@@ -12,8 +13,11 @@
 // TODO: remove this. We already have it in the pchClient.h
 #include <embed.h>
 #include <pybind11.h>
+#include <stl.h>
 
 namespace py = pybind11;
+
+//PYBIND11_MAKE_OPAQUE(std::vector<int>);
 
 namespace sand {
 
@@ -23,7 +27,7 @@ PYBIND11_EMBEDDED_MODULE(botbattles, m)
 
     m.def("log", &PyLog);
 
-    py::class_<InputComponent, std::unique_ptr<InputComponent, py::nodelete>>(m, "InputComponent")
+    py::class_<InputComponent, std::shared_ptr<InputComponent>>(m, "InputComponent")
         .def_property_readonly("maxLinearVelocity", &InputComponent::GetMaxLinearVelocity)
         .def_property_readonly("maxAngularVelocity", &InputComponent::GetMaxAngularVelocity)
         .def_property("linearVelocityX", &InputComponent::GetLinearVelocityX, &InputComponent::SetLinearVelocityX)
@@ -34,20 +38,20 @@ PYBIND11_EMBEDDED_MODULE(botbattles, m)
         .def("reloadPrimaryWeapon", &InputComponent::Reload)
         .def("heal", &InputComponent::Heal);
 
-    py::class_<TransformComponent, std::unique_ptr<TransformComponent, py::nodelete>>(m, "TransformComponent")
+    py::class_<TransformComponent, std::shared_ptr<TransformComponent>>(m, "TransformComponent")
         .def_property_readonly("positionX", &TransformComponent::GetPositionX)
         .def_property_readonly("positionY", &TransformComponent::GetPositionY)
         .def_property_readonly("rotation", &TransformComponent::GetRotation)
         .def_property_readonly("directionX", &TransformComponent::GetDirectionX)
         .def_property_readonly("directionY", &TransformComponent::GetDirectionY);
 
-    py::class_<RigidbodyComponent, std::unique_ptr<RigidbodyComponent, py::nodelete>>(m, "RigidbodyComponent")
+    py::class_<RigidbodyComponent, std::shared_ptr<RigidbodyComponent>>(m, "RigidbodyComponent")
         .def_property_readonly("linearVelocityX", &RigidbodyComponent::GetLinearVelocityX)
         .def_property_readonly("linearVelocityY", &RigidbodyComponent::GetLinearVelocityY)
         .def_property_readonly("angularVelocity", &RigidbodyComponent::GetAngularVelocity);
 
-    py::class_<WeaponComponent, std::unique_ptr<WeaponComponent, py::nodelete>>(m, "WeaponComponent");
-    py::class_<HealthComponent, std::unique_ptr<HealthComponent, py::nodelete>>(m, "HealthComponent");
+    py::class_<WeaponComponent, std::shared_ptr<WeaponComponent>>(m, "WeaponComponent");
+    py::class_<HealthComponent, std::shared_ptr<HealthComponent>>(m, "HealthComponent");
     // TODO: weaponComponent, healthComponent
 
     py::class_<PhysicsComponent::Collision>(m, "CollisionEvent")
@@ -55,6 +59,20 @@ PYBIND11_EMBEDDED_MODULE(botbattles, m)
         .def_property_readonly("normalY", &PhysicsComponent::Collision::GetNormalY)
         .def_property_readonly("relativeVelocityX", &PhysicsComponent::Collision::GetRelativeVelocityX)
         .def_property_readonly("relativeVelocityY", &PhysicsComponent::Collision::GetRelativeVelocityY);
+
+    py::enum_<MapComponent::Tile::TileType>(m, "Tile")
+        .value("None", MapComponent::Tile::TileType::NONE)
+        .value("Floor", MapComponent::Tile::TileType::FLOOR)
+        .value("BotSpawner", MapComponent::Tile::TileType::BOT_SPAWNER)
+        .value("WeaponSpawner", MapComponent::Tile::TileType::WEAPON_SPAWNER)
+        .value("HealthSpawner", MapComponent::Tile::TileType::HEALTH_SPAWNER)
+        .export_values();
+
+    py::class_<MapComponent::Tile>(m, "Tile")
+        .def_property_readonly("tileType", &MapComponent::Tile::GetTileType);
+
+    py::class_<MapComponent, std::shared_ptr<MapComponent>>(m, "MapComponent");
+    //.def_readonly("walkability", &MapComponent::m_walkability);
 }
 }
 

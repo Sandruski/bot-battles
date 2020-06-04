@@ -245,9 +245,6 @@ void RendererSystem::OnComponentMemberChanged(U64 dirtyState, Entity entity) con
     const bool hasColor = dirtyState & static_cast<U64>(ComponentMemberType::SPRITE_COLOR);
     const bool hasPct = dirtyState & static_cast<U64>(ComponentMemberType::SPRITE_PCT);
     const bool hasIsVisible = dirtyState & static_cast<U64>(ComponentMemberType::SPRITE_VISIBLE);
-    if (hasColor || hasPct) {
-        ILOG("a");
-    }
     if (!hasPosition && !hasRotation && !hasScale && !hasSpriteNameToTextureCoords && !hasColor && !hasPct && !hasIsVisible) {
         return;
     }

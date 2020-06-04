@@ -5,7 +5,7 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 // System Component
-struct MapComponent {
+struct MapComponent : public std::enable_shared_from_this<MapComponent> {
 
     struct Tile {
 
@@ -21,6 +21,11 @@ struct MapComponent {
         Tile()
             : m_tileType(TileType::NONE)
         {
+        }
+
+        TileType GetTileType() const
+        {
+            return m_tileType;
         }
 
         TileType m_tileType;

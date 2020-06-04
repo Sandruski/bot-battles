@@ -14,6 +14,7 @@
 
 #include <embed.h>
 #include <pybind11.h>
+#include <stl.h>
 
 namespace py = pybind11;
 

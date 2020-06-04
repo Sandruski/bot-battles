@@ -8,6 +8,7 @@
 #include "HealthComponent.h"
 #include "InputComponent.h"
 #include "LinkingContext.h"
+#include "MapComponent.h"
 #include "RigidbodyComponent.h"
 #include "ScriptingComponent.h"
 #include "SpriteComponent.h"
@@ -75,7 +76,10 @@ bool ScriptingSystem::Update()
     try {
         scriptingComponent.m_mainModule.attr("tick")(&inputComponent);
         scriptingComponent.m_mainModule.attr("log")();
-    } catch (const std::runtime_error& /*re*/) {
+    } catch (const std::runtime_error& re) {
+        OutputDebugStringA(re.what());
+        ::MessageBoxA(NULL, re.what(), "Error updating script", MB_OK);
+
         return false;
     }
 
@@ -186,11 +190,12 @@ void ScriptingSystem::InitScripts() const
         std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameClient->GetComponentManager().GetComponent<RigidbodyComponent>(entity);
         std::weak_ptr<HealthComponent> healthComponent = g_gameClient->GetComponentManager().GetComponent<HealthComponent>(entity);
         std::weak_ptr<WeaponComponent> weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(entity);
+        MapComponent& mapComponent = g_gameClient->GetMapComponent();
         try {
-            scriptingComponent.m_mainModule.attr("init")(clientComponent.m_script.c_str(), transformComponent.lock(), rigidbodyComponent.lock(), healthComponent.lock(), weaponComponent.lock());
+            scriptingComponent.m_mainModule.attr("init")(clientComponent.m_script.c_str(), transformComponent.lock(), rigidbodyComponent.lock(), healthComponent.lock(), weaponComponent.lock(), mapComponent);
         } catch (const std::runtime_error& re) {
             OutputDebugStringA(re.what());
-            ::MessageBoxA(NULL, re.what(), "Error importing script", MB_OK);
+            ::MessageBoxA(NULL, re.what(), "Error initializing script", MB_OK);
         }
     }
 }
@@ -227,7 +232,7 @@ void ScriptingSystem::OnCollisionEnter(Entity entityA, Entity entityB, glm::vec2
             scriptingComponent.m_mainModule.attr("log")();
         } catch (const std::runtime_error& re) {
             OutputDebugStringA(re.what());
-            ::MessageBoxA(NULL, re.what(), "Error importing script", MB_OK);
+            ::MessageBoxA(NULL, re.what(), "Error OnCollisionEnter", MB_OK);
         }
     }
 }
@@ -252,7 +257,7 @@ void ScriptingSystem::OnSeenNewEntity(Entity entity) const
             scriptingComponent.m_mainModule.attr("log")();
         } catch (const std::runtime_error& re) {
             OutputDebugStringA(re.what());
-            ::MessageBoxA(NULL, re.what(), "Error importing script", MB_OK);
+            ::MessageBoxA(NULL, re.what(), "Error OnSeenNewEntity", MB_OK);
         }
         return;
     }
@@ -264,7 +269,7 @@ void ScriptingSystem::OnSeenNewEntity(Entity entity) const
             scriptingComponent.m_mainModule.attr("log")();
         } catch (const std::runtime_error& re) {
             OutputDebugStringA(re.what());
-            ::MessageBoxA(NULL, re.what(), "Error importing script", MB_OK);
+            ::MessageBoxA(NULL, re.what(), "Error OnSeenNewEntity", MB_OK);
         }
         return;
     }
@@ -276,7 +281,7 @@ void ScriptingSystem::OnSeenNewEntity(Entity entity) const
             scriptingComponent.m_mainModule.attr("log")();
         } catch (const std::runtime_error& re) {
             OutputDebugStringA(re.what());
-            ::MessageBoxA(NULL, re.what(), "Error importing script", MB_OK);
+            ::MessageBoxA(NULL, re.what(), "Error OnSeenNewEntity", MB_OK);
         }
         return;
     }
@@ -302,7 +307,7 @@ void ScriptingSystem::OnSeenLostEntity(Entity entity) const
             scriptingComponent.m_mainModule.attr("log")();
         } catch (const std::runtime_error& re) {
             OutputDebugStringA(re.what());
-            ::MessageBoxA(NULL, re.what(), "Error importing script", MB_OK);
+            ::MessageBoxA(NULL, re.what(), "Error OnSeenLostEntity", MB_OK);
         }
     }
 
@@ -313,7 +318,7 @@ void ScriptingSystem::OnSeenLostEntity(Entity entity) const
             scriptingComponent.m_mainModule.attr("log")();
         } catch (const std::runtime_error& re) {
             OutputDebugStringA(re.what());
-            ::MessageBoxA(NULL, re.what(), "Error importing script", MB_OK);
+            ::MessageBoxA(NULL, re.what(), "Error OnSeenLostEntity", MB_OK);
         }
         return;
     }
@@ -325,7 +330,7 @@ void ScriptingSystem::OnSeenLostEntity(Entity entity) const
             scriptingComponent.m_mainModule.attr("log")();
         } catch (const std::runtime_error& re) {
             OutputDebugStringA(re.what());
-            ::MessageBoxA(NULL, re.what(), "Error importing script", MB_OK);
+            ::MessageBoxA(NULL, re.what(), "Error OnSeenLostEntity", MB_OK);
         }
         return;
     }
@@ -348,7 +353,7 @@ void ScriptingSystem::OnWeaponHit(Entity entity) const
         scriptingComponent.m_mainModule.attr("log")();
     } catch (const std::runtime_error& re) {
         OutputDebugStringA(re.what());
-        ::MessageBoxA(NULL, re.what(), "Error importing script", MB_OK);
+        ::MessageBoxA(NULL, re.what(), "Error OnWeaponHit", MB_OK);
     }
 }
 
@@ -369,7 +374,7 @@ void ScriptingSystem::OnWeaponMissed(Entity entity) const
         scriptingComponent.m_mainModule.attr("log")();
     } catch (const std::runtime_error& re) {
         OutputDebugStringA(re.what());
-        ::MessageBoxA(NULL, re.what(), "Error importing script", MB_OK);
+        ::MessageBoxA(NULL, re.what(), "Error OnWeaponMissed", MB_OK);
     }
 }
 
@@ -390,7 +395,7 @@ void ScriptingSystem::OnWeaponPrimaryGained(Entity entity) const
         scriptingComponent.m_mainModule.attr("log")();
     } catch (const std::runtime_error& re) {
         OutputDebugStringA(re.what());
-        ::MessageBoxA(NULL, re.what(), "Error importing script", MB_OK);
+        ::MessageBoxA(NULL, re.what(), "Error OnWeaponPrimaryGained", MB_OK);
     }
 }
 
@@ -413,7 +418,7 @@ void ScriptingSystem::OnHealthLost(Entity entity, U32 /*health*/) const
         scriptingComponent.m_mainModule.attr("log")();
     } catch (const std::runtime_error& re) {
         OutputDebugStringA(re.what());
-        ::MessageBoxA(NULL, re.what(), "Error importing script", MB_OK);
+        ::MessageBoxA(NULL, re.what(), "Error OnHealthLost", MB_OK);
     }
 }
 
@@ -436,7 +441,7 @@ void ScriptingSystem::OnHealthGained(Entity entity, U32 /*health*/) const
         scriptingComponent.m_mainModule.attr("log")();
     } catch (const std::runtime_error& re) {
         OutputDebugStringA(re.what());
-        ::MessageBoxA(NULL, re.what(), "Error importing script", MB_OK);
+        ::MessageBoxA(NULL, re.what(), "Error OnHealthGained", MB_OK);
     }
 }
 }
