@@ -1,5 +1,6 @@
 #include "HealthComponent.h"
 
+#include "ClientComponent.h"
 #include "ComponentMemberTypes.h"
 #include "GameClient.h"
 #include "ReplicationManagerClient.h"
@@ -23,8 +24,8 @@ void HealthComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /
                 newHealthEvent.health.health = m_currentHP - oldCurrentHP;
             }
             newHealthEvent.health.entity = entity;
-            ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-            clientComponent.m_replicationManager.NotifyEvent(newHealthEvent);
+            std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
+            clientComponent.lock()->m_replicationManager.NotifyEvent(newHealthEvent);
         }
     }
     if (dirtyState & static_cast<U64>(ComponentMemberType::HEALTH_MAX_HP)) {

@@ -1,5 +1,6 @@
 #include "ClientComponent.h"
 
+#include "FileSystem.h"
 #include "GameClient.h"
 
 namespace sand {

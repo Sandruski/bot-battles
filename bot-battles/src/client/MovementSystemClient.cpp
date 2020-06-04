@@ -4,7 +4,7 @@
 #include "ComponentManager.h"
 #include "ComponentMemberTypes.h"
 #include "GameClient.h"
-#include "InputComponent.h"
+#include "GameplayComponent.h"
 #include "LinkingContext.h"
 #include "PhysicsComponent.h"
 #include "RigidbodyComponent.h"
@@ -27,18 +27,18 @@ bool MovementSystemClient::Update()
 {
     OPTICK_EVENT();
 
-    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-    std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
+    std::weak_ptr<GameplayComponent> gameplayComponent = g_gameClient->GetGameplayComponent();
+    std::weak_ptr<State> currentState = gameplayComponent.lock()->m_fsm.GetCurrentState();
     if (currentState.expired()) {
         return true;
     }
 
-    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    if (!clientComponent.m_isClientPrediction) {
+    std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
+    if (!clientComponent.lock()->m_isClientPrediction) {
         return true;
     }
 
-    PhysicsComponent& physicsComponent = g_gameClient->GetPhysicsComponent();
+    std::weak_ptr<PhysicsComponent> physicsComponent = g_gameClient->GetPhysicsComponent();
 
     for (auto& entity : m_entities) {
         if (g_gameClient->GetLinkingContext().GetNetworkID(entity) >= INVALID_NETWORK_ID) {
@@ -48,10 +48,10 @@ bool MovementSystemClient::Update()
         std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
         std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameClient->GetComponentManager().GetComponent<RigidbodyComponent>(entity);
 
-        if (clientComponent.m_isLastMovementInputPending || clientComponent.m_isLastWeaponInputPending) {
-            const Input& input = clientComponent.m_inputBuffer.GetLast();
+        if (clientComponent.lock()->m_isLastMovementInputPending || clientComponent.lock()->m_isLastWeaponInputPending) {
+            const Input& input = clientComponent.lock()->m_inputBuffer.GetLast();
 
-            if (clientComponent.m_isLastMovementInputPending) {
+            if (clientComponent.lock()->m_isLastMovementInputPending) {
                 glm::vec2 linearVelocity = glm::vec2(0.0f, 0.0f);
                 F32 angularVelocity = 0.0f;
 
@@ -82,7 +82,7 @@ bool MovementSystemClient::Update()
 
                     rigidbodyComponent.lock()->m_body->SetActive(true);
 
-                    physicsComponent.Step();
+                    physicsComponent.lock()->Step();
 
                     b2Vec2 physicsPosition = rigidbodyComponent.lock()->m_body->GetPosition();
                     transformComponent.lock()->m_position = glm::vec2(METERS_TO_PIXELS(physicsPosition.x), METERS_TO_PIXELS(physicsPosition.y));
@@ -99,7 +99,7 @@ bool MovementSystemClient::Update()
                     NotifyEvent(newComponentEvent);
                 }
 
-                clientComponent.m_isLastMovementInputPending = false;
+                clientComponent.lock()->m_isLastMovementInputPending = false;
             }
 
             Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, input.GetFrame());

@@ -114,8 +114,8 @@ Entity BotSpawnerSystem::SpawnBot(PlayerID playerID) const
 
     // Label
     std::weak_ptr<LabelComponent> labelComponent = g_gameServer->GetComponentManager().AddComponent<LabelComponent>(character);
-    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
-    std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
+    std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
+    std::weak_ptr<ClientProxy> clientProxy = serverComponent.lock()->GetClientProxy(playerID);
     labelComponent.lock()->m_text = clientProxy.lock()->GetName();
     labelComponent.lock()->m_offset = glm::vec2(0.0f, 35.0f);
     switch (playerID) {
@@ -182,22 +182,22 @@ void BotSpawnerSystem::DespawnBot(Entity entity) const
 //----------------------------------------------------------------------------------------------------
 void BotSpawnerSystem::OnPlayerAdded(PlayerID playerID) const
 {
-    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
-    Entity entity = serverComponent.GetEntity(playerID);
+    std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
+    Entity entity = serverComponent.lock()->GetEntity(playerID);
     if (entity < INVALID_ENTITY) {
         WLOG("Entity not created because player %u already has an entity", playerID);
         return;
     }
 
     entity = SpawnBot(playerID);
-    serverComponent.AddEntity(entity, playerID);
+    serverComponent.lock()->AddEntity(entity, playerID);
 }
 
 //----------------------------------------------------------------------------------------------------
 void BotSpawnerSystem::OnPlayerRemoved(Entity entity) const
 {
     DespawnBot(entity);
-    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
-    serverComponent.RemoveEntity(entity);
+    std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
+    serverComponent.lock()->RemoveEntity(entity);
 }
 }

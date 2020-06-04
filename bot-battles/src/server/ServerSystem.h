@@ -24,32 +24,32 @@ public:
 
     void OnNotify(const Event& event) override;
 
-    void ReceiveIncomingPackets(ServerComponent& serverComponent);
-    void SendOutgoingPackets(ServerComponent& serverComponent);
+    void ReceiveIncomingPackets(std::weak_ptr<ServerComponent> serverComponent);
+    void SendOutgoingPackets(std::weak_ptr<ServerComponent> serverComponent);
 
 private:
-    void ReceivePacket(ServerComponent& serverComponent, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress);
-    void ReceiveHelloPacket(ServerComponent& serverComponent, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress, PlayerID& playerID);
-    void ReceiveReHelloPacket(ServerComponent& serverComponent, InputMemoryStream& inputStream, PlayerID& playerID) const;
-    void ReceiveByePacket(ServerComponent& serverComponent, InputMemoryStream& inputStream, PlayerID& playerID);
-    void ReceiveInputPacket(ServerComponent& serverComponent, InputMemoryStream& inputStream, PlayerID& playerID) const;
+    void ReceivePacket(std::weak_ptr<ServerComponent> serverComponent, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress);
+    void ReceiveHelloPacket(std::weak_ptr<ServerComponent> serverComponent, InputMemoryStream& inputStream, const SocketAddress& fromSocketAddress, PlayerID& playerID);
+    void ReceiveReHelloPacket(std::weak_ptr<ServerComponent> serverComponent, InputMemoryStream& inputStream, PlayerID& playerID) const;
+    void ReceiveByePacket(std::weak_ptr<ServerComponent> serverComponent, InputMemoryStream& inputStream, PlayerID& playerID);
+    void ReceiveInputPacket(std::weak_ptr<ServerComponent> serverComponent, InputMemoryStream& inputStream, PlayerID& playerID) const;
 
-    void SendWelcomePacket(const ServerComponent& serverComponent, PlayerID playerID, std::shared_ptr<ClientProxy> clientProxy) const;
-    void SendUnWelcomePacket(ServerComponent& serverComponent, const SocketAddress& toSocketAddress) const;
-    void SendReWelcomePacket(const ServerComponent& serverComponent, PlayerID playerID, std::shared_ptr<ClientProxy> clientProxy) const;
-    void SendPlayPacket(const ServerComponent& serverComponent, PlayerID playerID, std::shared_ptr<ClientProxy> clientProxy) const;
-    void SendResultsPacket(const ServerComponent& serverComponent, PlayerID playerID, std::shared_ptr<ClientProxy> clientProxy) const;
-    void SendByePacket(ServerComponent& serverComponent, PlayerID playerID, std::shared_ptr<ClientProxy> clientProxy);
-    void SendStatePacket(const ServerComponent& serverComponent, PlayerID playerID, std::shared_ptr<ClientProxy> clientProxy) const;
+    void SendWelcomePacket(const std::weak_ptr<ServerComponent> serverComponent, PlayerID playerID, std::shared_ptr<ClientProxy> clientProxy) const;
+    void SendUnWelcomePacket(std::weak_ptr<ServerComponent> serverComponent, const SocketAddress& toSocketAddress) const;
+    void SendReWelcomePacket(const std::weak_ptr<ServerComponent> serverComponent, PlayerID playerID, std::shared_ptr<ClientProxy> clientProxy) const;
+    void SendPlayPacket(const std::weak_ptr<ServerComponent> serverComponent, PlayerID playerID, std::shared_ptr<ClientProxy> clientProxy) const;
+    void SendResultsPacket(const std::weak_ptr<ServerComponent> serverComponent, PlayerID playerID, std::shared_ptr<ClientProxy> clientProxy) const;
+    void SendByePacket(std::weak_ptr<ServerComponent> serverComponent, PlayerID playerID, std::shared_ptr<ClientProxy> clientProxy);
+    void SendStatePacket(const std::weak_ptr<ServerComponent> serverComponent, PlayerID playerID, std::shared_ptr<ClientProxy> clientProxy) const;
 
-    bool SendUDPPacket(const ServerComponent& serverComponent, const OutputMemoryStream& outputStream, const SocketAddress& toSocketAddress) const;
-    bool SendTCPPacket(const ServerComponent& serverComponent, const OutputMemoryStream& outputStream, const SocketAddress& toSocketAddress) const;
+    bool SendUDPPacket(const std::weak_ptr<ServerComponent> serverComponent, const OutputMemoryStream& outputStream, const SocketAddress& toSocketAddress) const;
+    bool SendTCPPacket(const std::weak_ptr<ServerComponent> serverComponent, const OutputMemoryStream& outputStream, const SocketAddress& toSocketAddress) const;
 
-    bool ConnectSockets(ServerComponent& serverComponent);
-    bool DisconnectSockets(ServerComponent& serverComponent);
+    bool ConnectSockets(std::weak_ptr<ServerComponent> serverComponent);
+    bool DisconnectSockets(std::weak_ptr<ServerComponent> serverComponent);
 
-    void ConnectionReset(ServerComponent& serverComponent, const SocketAddress& socketAddress);
-    void Disconnect(ServerComponent& serverComponent, PlayerID playerID, Entity entity);
+    void ConnectionReset(std::weak_ptr<ServerComponent> serverComponent, const SocketAddress& socketAddress);
+    void Disconnect(std::weak_ptr<ServerComponent> serverComponent, PlayerID playerID, Entity entity);
 
     void OnPlayerAdded(PlayerID playerID) const;
     void OnNetworkEntityAdded(NetworkID networkID) const;

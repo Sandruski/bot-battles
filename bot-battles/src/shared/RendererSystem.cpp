@@ -25,8 +25,8 @@ RendererSystem::RendererSystem()
 //----------------------------------------------------------------------------------------------------
 bool RendererSystem::StartUp()
 {
-    RendererComponent& rendererComponent = g_game->GetRendererComponent();
-    WindowComponent& windowComponent = g_game->GetWindowComponent();
+    std::weak_ptr<RendererComponent> rendererComponent = g_game->GetRendererComponent();
+    std::weak_ptr<WindowComponent> windowComponent = g_game->GetWindowComponent();
 
     // GL 3.0 + GLSL 130
     //const char* glslVersion = "#version 130";
@@ -39,9 +39,9 @@ bool RendererSystem::StartUp()
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 
-    SDL_GLContext glContext = SDL_GL_CreateContext(windowComponent.m_window);
-    SDL_GL_MakeCurrent(windowComponent.m_window, glContext);
-    if (!rendererComponent.UpdateVSync()) {
+    SDL_GLContext glContext = SDL_GL_CreateContext(windowComponent.lock()->m_window);
+    SDL_GL_MakeCurrent(windowComponent.lock()->m_window, glContext);
+    if (!rendererComponent.lock()->UpdateVSync()) {
         return false;
     }
 
@@ -54,12 +54,12 @@ bool RendererSystem::StartUp()
         return false;
     }
 
-    if (!windowComponent.UpdateDisplayMode()) {
+    if (!windowComponent.lock()->UpdateDisplayMode()) {
         return false;
     }
-    windowComponent.UpdateResolution();
+    windowComponent.lock()->UpdateResolution();
 
-    rendererComponent.UpdateBackgroundColor();
+    rendererComponent.lock()->UpdateBackgroundColor();
     glClearDepth(1.0f);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
@@ -67,32 +67,32 @@ bool RendererSystem::StartUp()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    rendererComponent.m_defaultShaderResource = g_game->GetResourceManager().AddResource<ShaderResource>("", "", false);
-    rendererComponent.m_defaultShaderResource.lock()->ForceLoad(defaultVertexShaderSource, defaultFragmentShaderSource);
-    rendererComponent.m_instancingShaderResource = g_game->GetResourceManager().AddResource<ShaderResource>("", "", false);
-    rendererComponent.m_instancingShaderResource.lock()->ForceLoad(instancingVertexShaderSource, instancingFragmentShaderSource);
+    rendererComponent.lock()->m_defaultShaderResource = g_game->GetResourceManager().AddResource<ShaderResource>("", "", false);
+    rendererComponent.lock()->m_defaultShaderResource.lock()->ForceLoad(defaultVertexShaderSource, defaultFragmentShaderSource);
+    rendererComponent.lock()->m_instancingShaderResource = g_game->GetResourceManager().AddResource<ShaderResource>("", "", false);
+    rendererComponent.lock()->m_instancingShaderResource.lock()->ForceLoad(instancingVertexShaderSource, instancingFragmentShaderSource);
 
-    rendererComponent.m_lineMeshResource = g_game->GetResourceManager().AddResource<MeshResource>("", "", false);
-    rendererComponent.m_lineMeshResource.lock()->ForceLoad();
-    rendererComponent.m_circleMeshResource = g_game->GetResourceManager().AddResource<MeshResource>("", "", false);
-    rendererComponent.m_circleMeshResource.lock()->ForceLoad();
-    rendererComponent.m_quadMeshResource = g_game->GetResourceManager().AddResource<MeshResource>("", "", false);
-    rendererComponent.m_quadMeshResource.lock()->ForceLoad();
+    rendererComponent.lock()->m_lineMeshResource = g_game->GetResourceManager().AddResource<MeshResource>("", "", false);
+    rendererComponent.lock()->m_lineMeshResource.lock()->ForceLoad();
+    rendererComponent.lock()->m_circleMeshResource = g_game->GetResourceManager().AddResource<MeshResource>("", "", false);
+    rendererComponent.lock()->m_circleMeshResource.lock()->ForceLoad();
+    rendererComponent.lock()->m_quadMeshResource = g_game->GetResourceManager().AddResource<MeshResource>("", "", false);
+    rendererComponent.lock()->m_quadMeshResource.lock()->ForceLoad();
     const std::vector<MeshResource::Vertex> quadVertices = MeshResource::GetQuadVertices();
-    rendererComponent.m_quadMeshResource.lock()->ReLoadVertices(quadVertices);
+    rendererComponent.lock()->m_quadMeshResource.lock()->ReLoadVertices(quadVertices);
 
-    rendererComponent.m_mapMeshResource = g_game->GetResourceManager().AddResource<MeshResource>("", "", false);
-    rendererComponent.m_mapMeshResource.lock()->ForceLoad();
-    rendererComponent.m_mapMeshResource.lock()->ReLoadVertices(quadVertices);
-    rendererComponent.m_mapMeshResource.lock()->m_isStatic = true;
-    rendererComponent.m_charactersMeshResource = g_game->GetResourceManager().AddResource<MeshResource>("", "", false);
-    rendererComponent.m_charactersMeshResource.lock()->ForceLoad();
-    rendererComponent.m_charactersMeshResource.lock()->ReLoadVertices(quadVertices);
-    rendererComponent.m_charactersMeshResource.lock()->m_isStatic = false;
-    rendererComponent.m_objectsMeshResource = g_game->GetResourceManager().AddResource<MeshResource>("", "", false);
-    rendererComponent.m_objectsMeshResource.lock()->ForceLoad();
-    rendererComponent.m_objectsMeshResource.lock()->ReLoadVertices(quadVertices);
-    rendererComponent.m_objectsMeshResource.lock()->m_isStatic = false;
+    rendererComponent.lock()->m_mapMeshResource = g_game->GetResourceManager().AddResource<MeshResource>("", "", false);
+    rendererComponent.lock()->m_mapMeshResource.lock()->ForceLoad();
+    rendererComponent.lock()->m_mapMeshResource.lock()->ReLoadVertices(quadVertices);
+    rendererComponent.lock()->m_mapMeshResource.lock()->m_isStatic = true;
+    rendererComponent.lock()->m_charactersMeshResource = g_game->GetResourceManager().AddResource<MeshResource>("", "", false);
+    rendererComponent.lock()->m_charactersMeshResource.lock()->ForceLoad();
+    rendererComponent.lock()->m_charactersMeshResource.lock()->ReLoadVertices(quadVertices);
+    rendererComponent.lock()->m_charactersMeshResource.lock()->m_isStatic = false;
+    rendererComponent.lock()->m_objectsMeshResource = g_game->GetResourceManager().AddResource<MeshResource>("", "", false);
+    rendererComponent.lock()->m_objectsMeshResource.lock()->ForceLoad();
+    rendererComponent.lock()->m_objectsMeshResource.lock()->ReLoadVertices(quadVertices);
+    rendererComponent.lock()->m_objectsMeshResource.lock()->m_isStatic = false;
 
     return true;
 }
@@ -110,20 +110,20 @@ bool RendererSystem::Render()
 {
     OPTICK_EVENT();
 
-    RendererComponent& rendererComponent = g_game->GetRendererComponent();
+    std::weak_ptr<RendererComponent> rendererComponent = g_game->GetRendererComponent();
 
     ResourceManager& resourceManager = g_game->GetResourceManager();
     std::weak_ptr<SpriteResource> mapSpriteResource = resourceManager.GetResourceByFile<SpriteResource>("map.png");
     if (!mapSpriteResource.expired()) {
-        rendererComponent.DrawMapTexturedQuad(mapSpriteResource.lock()->GetTexture());
+        rendererComponent.lock()->DrawMapTexturedQuad(mapSpriteResource.lock()->GetTexture());
     }
     std::weak_ptr<SpriteResource> charactersSpriteResource = resourceManager.GetResourceByFile<SpriteResource>("characters.png");
     if (!charactersSpriteResource.expired()) {
-        rendererComponent.DrawCharactersTexturedQuad(charactersSpriteResource.lock()->GetTexture());
+        rendererComponent.lock()->DrawCharactersTexturedQuad(charactersSpriteResource.lock()->GetTexture());
     }
     std::weak_ptr<SpriteResource> objectsSpriteResource = resourceManager.GetResourceByFile<SpriteResource>("objects.png");
     if (!objectsSpriteResource.expired()) {
-        rendererComponent.DrawObjectsTexturedQuad(objectsSpriteResource.lock()->GetTexture());
+        rendererComponent.lock()->DrawObjectsTexturedQuad(objectsSpriteResource.lock()->GetTexture());
     }
 
     return true;
@@ -132,8 +132,8 @@ bool RendererSystem::Render()
 //----------------------------------------------------------------------------------------------------
 bool RendererSystem::PostRender()
 {
-    WindowComponent& windowComponent = g_game->GetWindowComponent();
-    SDL_GL_SwapWindow(windowComponent.m_window);
+    std::weak_ptr<WindowComponent> windowComponent = g_game->GetWindowComponent();
+    SDL_GL_SwapWindow(windowComponent.lock()->m_window);
 
     return true;
 }
@@ -264,9 +264,9 @@ void RendererSystem::RecalculateMapMesh() const
 {
     OPTICK_EVENT();
 
-    RendererComponent& rendererComponent = g_game->GetRendererComponent();
-    WindowComponent& windowComponent = g_game->GetWindowComponent();
-    glm::vec2 proportion = windowComponent.GetProportion();
+    std::weak_ptr<RendererComponent> rendererComponent = g_game->GetRendererComponent();
+    std::weak_ptr<WindowComponent> windowComponent = g_game->GetWindowComponent();
+    glm::vec2 proportion = windowComponent.lock()->GetProportion();
 
     std::vector<MeshResource::Instance> instances;
     for (const auto& entity : m_entities) {
@@ -316,7 +316,7 @@ void RendererSystem::RecalculateMapMesh() const
         instances.emplace_back(instance);
     }
 
-    rendererComponent.m_mapMeshResource.lock()->ReLoadInstances(instances);
+    rendererComponent.lock()->m_mapMeshResource.lock()->ReLoadInstances(instances);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -324,9 +324,9 @@ void RendererSystem::RecalculateCharactersMesh() const
 {
     OPTICK_EVENT();
 
-    RendererComponent& rendererComponent = g_game->GetRendererComponent();
-    WindowComponent& windowComponent = g_game->GetWindowComponent();
-    glm::vec2 proportion = windowComponent.GetProportion();
+    std::weak_ptr<RendererComponent> rendererComponent = g_game->GetRendererComponent();
+    std::weak_ptr<WindowComponent> windowComponent = g_game->GetWindowComponent();
+    glm::vec2 proportion = windowComponent.lock()->GetProportion();
 
     std::vector<MeshResource::Instance> instances;
     for (const auto& entity : m_entities) {
@@ -376,7 +376,7 @@ void RendererSystem::RecalculateCharactersMesh() const
         instances.emplace_back(instance);
     }
 
-    rendererComponent.m_charactersMeshResource.lock()->ReLoadInstances(instances);
+    rendererComponent.lock()->m_charactersMeshResource.lock()->ReLoadInstances(instances);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -384,9 +384,9 @@ void RendererSystem::RecalculateObjectsMesh() const
 {
     OPTICK_EVENT();
 
-    RendererComponent& rendererComponent = g_game->GetRendererComponent();
-    WindowComponent& windowComponent = g_game->GetWindowComponent();
-    glm::vec2 proportion = windowComponent.GetProportion();
+    std::weak_ptr<RendererComponent> rendererComponent = g_game->GetRendererComponent();
+    std::weak_ptr<WindowComponent> windowComponent = g_game->GetWindowComponent();
+    glm::vec2 proportion = windowComponent.lock()->GetProportion();
 
     std::vector<MeshResource::Instance> instances;
     for (const auto& entity : m_entities) {
@@ -436,7 +436,7 @@ void RendererSystem::RecalculateObjectsMesh() const
         instances.emplace_back(instance);
     }
 
-    rendererComponent.m_objectsMeshResource.lock()->ReLoadInstances(instances);
+    rendererComponent.lock()->m_objectsMeshResource.lock()->ReLoadInstances(instances);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -444,9 +444,9 @@ void RendererSystem::RecalculateAllMeshes() const
 {
     OPTICK_EVENT();
 
-    RendererComponent& rendererComponent = g_game->GetRendererComponent();
-    WindowComponent& windowComponent = g_game->GetWindowComponent();
-    glm::vec2 proportion = windowComponent.GetProportion();
+    std::weak_ptr<RendererComponent> rendererComponent = g_game->GetRendererComponent();
+    std::weak_ptr<WindowComponent> windowComponent = g_game->GetWindowComponent();
+    glm::vec2 proportion = windowComponent.lock()->GetProportion();
 
     std::vector<MeshResource::Instance> mapInstances;
     std::vector<MeshResource::Instance> charactersInstances;
@@ -500,8 +500,8 @@ void RendererSystem::RecalculateAllMeshes() const
         }
     }
 
-    rendererComponent.m_mapMeshResource.lock()->ReLoadInstances(mapInstances);
-    rendererComponent.m_charactersMeshResource.lock()->ReLoadInstances(charactersInstances);
-    rendererComponent.m_objectsMeshResource.lock()->ReLoadInstances(objectsInstances);
+    rendererComponent.lock()->m_mapMeshResource.lock()->ReLoadInstances(mapInstances);
+    rendererComponent.lock()->m_charactersMeshResource.lock()->ReLoadInstances(charactersInstances);
+    rendererComponent.lock()->m_objectsMeshResource.lock()->ReLoadInstances(objectsInstances);
 }
 }

@@ -22,32 +22,32 @@ public:
 
     void OnNotify(const Event& event) override;
 
-    void ReceiveIncomingPackets(ClientComponent& clientComponent);
-    void SendOutgoingPackets(ClientComponent& clientComponent);
+    void ReceiveIncomingPackets(std::weak_ptr<ClientComponent> clientComponent);
+    void SendOutgoingPackets(std::weak_ptr<ClientComponent> clientComponent);
 
 private:
-    void ReceivePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream);
-    void ReceiveWelcomePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream);
-    void ReceiveUnWelcomePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream);
-    void ReceiveReWelcomePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream);
-    void ReceivePlayPacket(ClientComponent& clientComponent, InputMemoryStream& inputStream);
-    void ReceiveResultsPacket(ClientComponent& clientComponent, InputMemoryStream& inputStream);
-    void ReceiveByePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream);
-    void ReceiveStatePacket(ClientComponent& clientComponent, InputMemoryStream& inputStream) const;
+    void ReceivePacket(std::weak_ptr<ClientComponent> clientComponent, InputMemoryStream& inputStream);
+    void ReceiveWelcomePacket(std::weak_ptr<ClientComponent> clientComponent, InputMemoryStream& inputStream);
+    void ReceiveUnWelcomePacket(std::weak_ptr<ClientComponent> clientComponent, InputMemoryStream& inputStream);
+    void ReceiveReWelcomePacket(std::weak_ptr<ClientComponent> clientComponent, InputMemoryStream& inputStream);
+    void ReceivePlayPacket(std::weak_ptr<ClientComponent> clientComponent, InputMemoryStream& inputStream);
+    void ReceiveResultsPacket(std::weak_ptr<ClientComponent> clientComponent, InputMemoryStream& inputStream);
+    void ReceiveByePacket(std::weak_ptr<ClientComponent> clientComponent, InputMemoryStream& inputStream);
+    void ReceiveStatePacket(std::weak_ptr<ClientComponent> clientComponent, InputMemoryStream& inputStream) const;
 
-    bool SendHelloPacket(const ClientComponent& clientComponent) const;
-    bool SendReHelloPacket(const ClientComponent& clientComponent) const;
-    bool SendByePacket(ClientComponent& clientComponent);
-    bool SendInputPacket(ClientComponent& clientComponent) const;
-    bool SendUDPPacket(const ClientComponent& clientComponent, const OutputMemoryStream& outputStream) const;
-    bool SendTCPPacket(const ClientComponent& clientComponent, const OutputMemoryStream& outputStream) const;
+    bool SendHelloPacket(const std::weak_ptr<ClientComponent> clientComponent) const;
+    bool SendReHelloPacket(const std::weak_ptr<ClientComponent> clientComponent) const;
+    bool SendByePacket(std::weak_ptr<ClientComponent> clientComponent);
+    bool SendInputPacket(std::weak_ptr<ClientComponent> clientComponent) const;
+    bool SendUDPPacket(const std::weak_ptr<ClientComponent> clientComponent, const OutputMemoryStream& outputStream) const;
+    bool SendTCPPacket(const std::weak_ptr<ClientComponent> clientComponent, const OutputMemoryStream& outputStream) const;
 
-    bool ConnectSockets(ClientComponent& clientComponent);
-    bool CheckConnect(ClientComponent& clientComponent);
-    bool DisconnectSockets(ClientComponent& clientComponent);
+    bool ConnectSockets(std::weak_ptr<ClientComponent> clientComponent);
+    bool CheckConnect(std::weak_ptr<ClientComponent> clientComponent);
+    bool DisconnectSockets(std::weak_ptr<ClientComponent> clientComponent);
 
-    void ConnectionReset(ClientComponent& clientComponent);
-    void Disconnect(ClientComponent& clientComponent);
+    void ConnectionReset(std::weak_ptr<ClientComponent> clientComponent);
+    void Disconnect(std::weak_ptr<ClientComponent> clientComponent);
 };
 }
 

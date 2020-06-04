@@ -1,24 +1,6 @@
 #ifndef __GAME_H__
 #define __GAME_H__
 
-#ifdef _DRAW
-#include "GuiComponent.h"
-#include "MeshImporter.h"
-#include "RendererComponent.h"
-#include "ShaderImporter.h"
-#include "TextureImporter.h"
-#include "WindowComponent.h"
-#endif
-#include "EventComponent.h"
-#include "FileSystem.h"
-#include "GameplayComponent.h"
-#include "MainMenuComponent.h"
-#include "MapComponent.h"
-#include "MapImporter.h"
-#include "PhysicsComponent.h"
-#include "ResourceManager.h"
-#include "ScoreboardComponent.h"
-
 namespace sand {
 
 struct Config;
@@ -28,6 +10,23 @@ class ComponentManager;
 class SystemManager;
 class FSM;
 class LinkingContext;
+class ResourceManager;
+class FileSystem;
+
+class TextureImporter;
+class MeshImporter;
+class ShaderImporter;
+class MapImporter;
+
+struct WindowComponent;
+struct RendererComponent;
+struct EventComponent;
+struct GuiComponent;
+struct PhysicsComponent;
+struct MapComponent;
+struct MainMenuComponent;
+struct GameplayComponent;
+struct ScoreboardComponent;
 
 //----------------------------------------------------------------------------------------------------
 class Game {
@@ -47,56 +46,23 @@ public:
     SystemManager& GetSystemManager() { return *m_systemManager; }
     FSM& GetFSM() { return *m_fsm; }
     LinkingContext& GetLinkingContext() { return *m_linkingContext; }
-#ifdef _DRAW
-    ShaderImporter& GetShaderImporter()
-    {
-        return m_shaderImporter;
-    }
-    TextureImporter& GetTextureImporter()
-    {
-        return m_textureImporter;
-    }
-    MeshImporter& GetMeshImporter()
-    {
-        return m_meshImporter;
-    }
-    WindowComponent& GetWindowComponent() { return m_windowComponent; }
-    RendererComponent& GetRendererComponent() { return m_rendererComponent; }
-    GuiComponent& GetGuiComponent() { return m_guiComponent; }
-#endif
-    FileSystem& GetFileSystem()
-    {
-        return m_fileSystem;
-    }
-    ResourceManager& GetResourceManager() { return m_resourceManager; }
-    MapImporter& GetMapImporter()
-    {
-        return m_mapImporter;
-    }
-    EventComponent& GetEventComponent()
-    {
-        return m_eventComponent;
-    }
-    PhysicsComponent& GetPhysicsComponent()
-    {
-        return m_physicsComponent;
-    }
-    MainMenuComponent& GetMainMenuComponent()
-    {
-        return m_mainMenuComponent;
-    }
-    GameplayComponent& GetGameplayComponent()
-    {
-        return m_gameplayComponent;
-    }
-    ScoreboardComponent& GetScoreboardComponent()
-    {
-        return m_scoreboardComponent;
-    }
-    MapComponent& GetMapComponent()
-    {
-        return m_mapComponent;
-    }
+    ResourceManager& GetResourceManager() { return *m_resourceManager; }
+    FileSystem& GetFileSystem() { return *m_fileSystem; }
+
+    TextureImporter& GetTextureImporter() { return *m_textureImporter; }
+    MeshImporter& GetMeshImporter() { return *m_meshImporter; }
+    ShaderImporter& GetShaderImporter() { return *m_shaderImporter; }
+    MapImporter& GetMapImporter() { return *m_mapImporter; }
+
+    std::weak_ptr<WindowComponent> GetWindowComponent() { return std::weak_ptr(m_windowComponent); }
+    std::weak_ptr<RendererComponent> GetRendererComponent() { return std::weak_ptr(m_rendererComponent); }
+    std::weak_ptr<EventComponent> GetEventComponent() { return std::weak_ptr(m_EventComponent); }
+    std::weak_ptr<GuiComponent> GetGuiComponent() { return std::weak_ptr(m_guiComponent); }
+    std::weak_ptr<PhysicsComponent> GetPhysicsComponent() { return std::weak_ptr(m_physicsComponent); }
+    std::weak_ptr<MapComponent> GetMapComponent() { return std::weak_ptr(m_mapComponent); }
+    std::weak_ptr<MainMenuComponent> GetMainMenuComponent() { return std::weak_ptr(m_mainMenuComponent); }
+    std::weak_ptr<GameplayComponent> GetGameplayComponent() { return std::weak_ptr(m_gameplayComponent); }
+    std::weak_ptr<ScoreboardComponent> GetScoreboardComponent() { return std::weak_ptr(m_scoreboardComponent); }
 
 private:
     bool PreUpdate();
@@ -119,23 +85,23 @@ protected:
     std::shared_ptr<SystemManager> m_systemManager;
     std::shared_ptr<FSM> m_fsm;
     std::shared_ptr<LinkingContext> m_linkingContext;
-#ifdef _DRAW
-    ShaderImporter m_shaderImporter;
-    TextureImporter m_textureImporter;
-    MeshImporter m_meshImporter;
-    WindowComponent m_windowComponent;
-    RendererComponent m_rendererComponent;
-    GuiComponent m_guiComponent;
-#endif
-    FileSystem m_fileSystem;
-    ResourceManager m_resourceManager;
-    MapImporter m_mapImporter;
-    EventComponent m_eventComponent;
-    PhysicsComponent m_physicsComponent;
-    MainMenuComponent m_mainMenuComponent;
-    GameplayComponent m_gameplayComponent;
-    ScoreboardComponent m_scoreboardComponent;
-    MapComponent m_mapComponent;
+    std::shared_ptr<ResourceManager> m_resourceManager;
+    std::shared_ptr<FileSystem> m_fileSystem;
+
+    std::shared_ptr<TextureImporter> m_textureImporter;
+    std::shared_ptr<MeshImporter> m_meshImporter;
+    std::shared_ptr<ShaderImporter> m_shaderImporter;
+    std::shared_ptr<MapImporter> m_mapImporter;
+
+    std::shared_ptr<WindowComponent> m_windowComponent;
+    std::shared_ptr<RendererComponent> m_rendererComponent;
+    std::shared_ptr<EventComponent> m_EventComponent;
+    std::shared_ptr<GuiComponent> m_guiComponent;
+    std::shared_ptr<PhysicsComponent> m_physicsComponent;
+    std::shared_ptr<MapComponent> m_mapComponent;
+    std::shared_ptr<MainMenuComponent> m_mainMenuComponent;
+    std::shared_ptr<GameplayComponent> m_gameplayComponent;
+    std::shared_ptr<ScoreboardComponent> m_scoreboardComponent;
 };
 
 extern Game* g_game;

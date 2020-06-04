@@ -40,17 +40,17 @@ bool SightSystemServer::Update()
 {
     OPTICK_EVENT();
 
-    GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
-    std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
+    std::weak_ptr<GameplayComponent> gameplayComponent = g_gameServer->GetGameplayComponent();
+    std::weak_ptr<State> currentState = gameplayComponent.lock()->m_fsm.GetCurrentState();
     if (currentState.expired()) {
         return true;
     }
 
-    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
+    std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
     LinkingContext& linkingContext = g_gameServer->GetLinkingContext();
-    PhysicsComponent& physicsComponent = g_gameServer->GetPhysicsComponent();
+    std::weak_ptr<PhysicsComponent> physicsComponent = g_gameServer->GetPhysicsComponent();
     for (const auto& entity : m_entities) {
-        PlayerID playerID = serverComponent.GetPlayerID(entity);
+        PlayerID playerID = serverComponent.lock()->GetPlayerID(entity);
         if (playerID >= INVALID_PLAYER_ID) {
             continue;
         }
@@ -63,7 +63,7 @@ bool SightSystemServer::Update()
         glm::vec2 center = transformComponent.lock()->m_position;
         glm::vec2 extents = glm::vec2(sightComponent.lock()->m_distance, sightComponent.lock()->m_distance);
         std::vector<Entity> overlapEntities;
-        const bool isOverlap = physicsComponent.Overlap(center, extents, overlapEntities);
+        const bool isOverlap = physicsComponent.lock()->Overlap(center, extents, overlapEntities);
         if (isOverlap) {
             glm::vec2 direction = transformComponent.lock()->GetDirection();
             for (const auto& overlapEntity : overlapEntities) {
@@ -107,7 +107,7 @@ bool SightSystemServer::Update()
                 glm::vec2 overlapCenter = overlapTransformComponent.lock()->m_position;
                 glm::vec2 overlapExtents = overlapColliderComponent.lock()->m_size / 2.0f;
                 std::vector<Entity> overlapOverlapEntities;
-                const bool isOverlapOverlap = physicsComponent.Overlap(overlapCenter, overlapExtents, overlapOverlapEntities);
+                const bool isOverlapOverlap = physicsComponent.lock()->Overlap(overlapCenter, overlapExtents, overlapOverlapEntities);
                 if (isOverlapOverlap) {
                     for (const auto& overlapOverlapEntity : overlapOverlapEntities) {
                         if (overlapOverlapEntity == entity) {
@@ -158,9 +158,9 @@ bool SightSystemServer::Render()
 {
     OPTICK_EVENT();
 
-    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
+    std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
     for (const auto& entity : m_entities) {
-        PlayerID playerID = serverComponent.GetPlayerID(entity);
+        PlayerID playerID = serverComponent.lock()->GetPlayerID(entity);
         if (playerID >= INVALID_PLAYER_ID) {
             continue;
         }
@@ -183,14 +183,14 @@ bool SightSystemServer::IsInFoV(glm::vec2 position, glm::vec2 targetPosition, gl
 }
 
 //----------------------------------------------------------------------------------------------------
-bool SightSystemServer::IsInLoS(PhysicsComponent& physicsComponent, glm::vec2 position, glm::vec2 targetPosition, F32 distance, Entity entity) const
+bool SightSystemServer::IsInLoS(std::weak_ptr<PhysicsComponent> physicsComponent, glm::vec2 position, glm::vec2 targetPosition, F32 distance, Entity entity) const
 {
     glm::vec2 vectorToTarget = targetPosition - position;
     glm::vec2 directionToTarget = glm::normalize(vectorToTarget);
     glm::vec2 distanceToTarget = position + directionToTarget * distance;
 
     PhysicsComponent::RaycastHit raycastHit;
-    if (physicsComponent.Raycast(position, distanceToTarget, raycastHit)) {
+    if (physicsComponent.lock()->Raycast(position, distanceToTarget, raycastHit)) {
         return raycastHit.m_entity == entity;
     }
 

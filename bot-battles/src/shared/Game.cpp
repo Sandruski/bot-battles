@@ -5,37 +5,48 @@
 #include "ColliderComponent.h"
 #include "ComponentManager.h"
 #include "Config.h"
+#include "DisplayPanel.h"
 #include "EntityManager.h"
+#include "EventComponent.h"
 #include "EventSystem.h"
 #include "FSM.h"
+#include "FileSystem.h"
+#include "GamePanel.h"
+#include "GameplayComponent.h"
+#include "GraphicsPanel.h"
+#include "GuiComponent.h"
+#include "GuiSystem.h"
 #include "HealthComponent.h"
 #include "HealthSpawnerComponent.h"
-#include "InputComponent.h"
+#include "LabelComponent.h"
+#include "LabelSystem.h"
 #include "LinkingContext.h"
+#include "MainMenuComponent.h"
+#include "MapComponent.h"
+#include "MapImporter.h"
 #include "MapSystem.h"
+#include "MeshImporter.h"
+#include "NetworkingPanel.h"
+#include "PhysicsComponent.h"
 #include "PhysicsSystem.h"
 #include "PlayerComponent.h"
+#include "RendererComponent.h"
+#include "RendererSystem.h"
+#include "ResourceManager.h"
 #include "RigidbodyComponent.h"
+#include "ScoreboardComponent.h"
+#include "ShaderImporter.h"
 #include "SightComponent.h"
+#include "SpriteComponent.h"
+#include "StatesPanel.h"
 #include "SystemManager.h"
+#include "TextureImporter.h"
 #include "TransformComponent.h"
 #include "WallComponent.h"
 #include "WeaponComponent.h"
 #include "WeaponSpawnerComponent.h"
-#ifdef _DRAW
-#include "DisplayPanel.h"
-#include "GUISystem.h"
-#include "GamePanel.h"
-#include "GraphicsPanel.h"
-#include "LabelComponent.h"
-#include "LabelSystem.h"
-#include "NetworkingPanel.h"
-#include "RendererSystem.h"
-#include "ShaderResource.h"
-#include "SpriteComponent.h"
-#include "StatesPanel.h"
+#include "WindowComponent.h"
 #include "WindowSystem.h"
-#endif
 
 namespace sand {
 
@@ -48,25 +59,42 @@ Game::Game()
     , m_systemManager()
     , m_fsm()
     , m_linkingContext()
-#ifdef _DRAW
-    , m_shaderImporter()
+    , m_resourceManager()
+    , m_fileSystem()
     , m_textureImporter()
+    , m_meshImporter()
+    , m_shaderImporter()
+    , m_mapImporter()
     , m_windowComponent()
     , m_rendererComponent()
-#endif
-    , m_resourceManager()
-    , m_mapImporter()
-    , m_eventComponent()
+    , m_EventComponent()
+    , m_guiComponent()
+    , m_physicsComponent()
+    , m_mapComponent()
     , m_mainMenuComponent()
     , m_gameplayComponent()
     , m_scoreboardComponent()
-    , m_mapComponent()
 {
     m_entityManager = std::make_shared<EntityManager>();
     m_componentManager = std::make_shared<ComponentManager>();
     m_systemManager = std::make_shared<SystemManager>();
     m_fsm = std::make_shared<FSM>();
     m_linkingContext = std::make_shared<LinkingContext>();
+    m_resourceManager = std::make_shared<ResourceManager>();
+    m_fileSystem = std::make_shared<FileSystem>();
+    m_textureImporter = std::make_shared<TextureImporter>();
+    m_meshImporter = std::make_shared<MeshImporter>();
+    m_shaderImporter = std::make_shared<ShaderImporter>();
+    m_mapImporter = std::make_shared<MapImporter>();
+    m_windowComponent = std::make_shared<WindowComponent>();
+    m_rendererComponent = std::make_shared<RendererComponent>();
+    m_EventComponent = std::make_shared<EventComponent>();
+    m_guiComponent = std::make_shared<GuiComponent>();
+    m_physicsComponent = std::make_shared<PhysicsComponent>();
+    m_mapComponent = std::make_shared<MapComponent>();
+    m_mainMenuComponent = std::make_shared<MainMenuComponent>();
+    m_gameplayComponent = std::make_shared<GameplayComponent>();
+    m_scoreboardComponent = std::make_shared<ScoreboardComponent>();
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -75,7 +103,6 @@ bool Game::Init()
     bool ret = false;
 
     // Systems
-#ifdef _DRAW
     ret = m_systemManager->RegisterSystem<WindowSystem>();
     if (!ret) {
         return ret;
@@ -88,11 +115,10 @@ bool Game::Init()
     if (!ret) {
         return ret;
     }
-    ret = m_systemManager->RegisterSystem<GUISystem>();
+    ret = m_systemManager->RegisterSystem<GuiSystem>();
     if (!ret) {
         return ret;
     }
-#endif
     ret = m_systemManager->RegisterSystem<EventSystem>();
     if (!ret) {
         return ret;
@@ -107,16 +133,6 @@ bool Game::Init()
     }
 
     // Components
-#ifdef _DRAW
-    ret = m_componentManager->RegisterComponent<LabelComponent>();
-    if (!ret) {
-        return ret;
-    }
-    ret = m_componentManager->RegisterComponent<SpriteComponent>();
-    if (!ret) {
-        return ret;
-    }
-#endif
     ret = m_componentManager->RegisterComponent<TransformComponent>();
     if (!ret) {
         return ret;
@@ -129,6 +145,18 @@ bool Game::Init()
     if (!ret) {
         return ret;
     }
+    ret = m_componentManager->RegisterComponent<LabelComponent>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_componentManager->RegisterComponent<SpriteComponent>();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_componentManager->RegisterComponent<PlayerComponent>();
+    if (!ret) {
+        return ret;
+    }
     ret = m_componentManager->RegisterComponent<WeaponComponent>();
     if (!ret) {
         return ret;
@@ -137,15 +165,15 @@ bool Game::Init()
     if (!ret) {
         return ret;
     }
+    ret = m_componentManager->RegisterComponent<SightComponent>();
+    if (!ret) {
+        return ret;
+    }
     ret = m_componentManager->RegisterComponent<BotComponent>();
     if (!ret) {
         return ret;
     }
     ret = m_componentManager->RegisterComponent<WallComponent>();
-    if (!ret) {
-        return ret;
-    }
-    ret = m_componentManager->RegisterComponent<SightComponent>();
     if (!ret) {
         return ret;
     }
@@ -161,43 +189,37 @@ bool Game::Init()
     if (!ret) {
         return ret;
     }
-    ret = m_componentManager->RegisterComponent<PlayerComponent>();
-    if (!ret) {
-        return ret;
-    }
 
     // Panels
-#ifdef _DRAW
-    ret = m_guiComponent.RegisterDebugOptionsPanel<GamePanel>();
+    ret = m_guiComponent->RegisterDebugOptionsPanel<GamePanel>();
     if (!ret) {
         return ret;
     }
-    ret = m_guiComponent.RegisterDebugOptionsPanel<GraphicsPanel>();
+    ret = m_guiComponent->RegisterDebugOptionsPanel<GraphicsPanel>();
     if (!ret) {
         return ret;
     }
-    ret = m_guiComponent.RegisterDebugOptionsPanel<StatesPanel>();
+    ret = m_guiComponent->RegisterDebugOptionsPanel<StatesPanel>();
     if (!ret) {
         return ret;
     }
-    ret = m_guiComponent.RegisterDebugOptionsPanel<NetworkingPanel>();
+    ret = m_guiComponent->RegisterDebugOptionsPanel<NetworkingPanel>();
     if (!ret) {
         return ret;
     }
-    ret = m_guiComponent.SetCurrentDebugOptionsPanel<GamePanel>();
+    ret = m_guiComponent->SetCurrentDebugOptionsPanel<GamePanel>();
     if (!ret) {
         return ret;
     }
 
-    ret = m_guiComponent.RegisterSettingsPanel<DisplayPanel>();
+    ret = m_guiComponent->RegisterSettingsPanel<DisplayPanel>();
     if (!ret) {
         return ret;
     }
-    ret = m_guiComponent.SetCurrentSettingsPanel<DisplayPanel>();
+    ret = m_guiComponent->SetCurrentSettingsPanel<DisplayPanel>();
     if (!ret) {
         return ret;
     }
-#endif
 
     ret = m_entityManager->AddObserver(std::weak_ptr<Observer>(m_componentManager));
     if (!ret) {
@@ -228,17 +250,15 @@ bool Game::Init()
     if (!ret) {
         return ret;
     }
-#ifdef _DRAW
     std::weak_ptr<RendererSystem> rendererSystem = m_systemManager->GetSystem<RendererSystem>();
     ret = m_systemManager->AddObserver(rendererSystem);
     if (!ret) {
         return ret;
     }
-    ret = m_windowComponent.AddObserver(rendererSystem);
+    ret = m_windowComponent->AddObserver(rendererSystem);
     if (!ret) {
         return ret;
     }
-#endif
 
     m_config->LoadFromJson();
 
@@ -327,12 +347,10 @@ bool Game::End()
     if (!ret) {
         return ret;
     }
-#ifdef _DRAW
-    ret = m_resourceManager.ShutDown();
+    ret = m_resourceManager->ShutDown();
     if (!ret) {
         return ret;
     }
-#endif
 
     return ret;
 }
@@ -342,11 +360,11 @@ bool Game::PreUpdate()
 {
     bool ret = false;
 
-    ret = m_physicsComponent.PreUpdate();
+    ret = m_physicsComponent->PreUpdate();
     if (!ret) {
         return ret;
     }
-    ret = m_windowComponent.PreUpdate();
+    ret = m_windowComponent->PreUpdate();
     if (!ret) {
         return ret;
     }
@@ -421,7 +439,7 @@ bool Game::DebugRender()
 {
     bool ret = true;
 
-    if (m_rendererComponent.m_isDebugDraw) {
+    if (m_rendererComponent->m_isDebugDraw) {
         ret = m_systemManager->DebugRender();
     }
 

@@ -60,19 +60,19 @@ PYBIND11_EMBEDDED_MODULE(botbattles, m)
         .def_property_readonly("relativeVelocityX", &PhysicsComponent::Collision::GetRelativeVelocityX)
         .def_property_readonly("relativeVelocityY", &PhysicsComponent::Collision::GetRelativeVelocityY);
 
-    py::enum_<MapComponent::Tile::TileType>(m, "Tile")
+    py::class_<MapComponent, std::shared_ptr<MapComponent>>(m, "MapComponent")
+        .def("getTile", &MapComponent::GetTile);
+
+    py::class_<MapComponent::Tile>(m, "Tile")
+        .def_property_readonly("tileType", &MapComponent::Tile::GetTileType);
+
+    py::enum_<MapComponent::Tile::TileType>(m, "TileType")
         .value("None", MapComponent::Tile::TileType::NONE)
         .value("Floor", MapComponent::Tile::TileType::FLOOR)
         .value("BotSpawner", MapComponent::Tile::TileType::BOT_SPAWNER)
         .value("WeaponSpawner", MapComponent::Tile::TileType::WEAPON_SPAWNER)
         .value("HealthSpawner", MapComponent::Tile::TileType::HEALTH_SPAWNER)
         .export_values();
-
-    py::class_<MapComponent::Tile>(m, "Tile")
-        .def_property_readonly("tileType", &MapComponent::Tile::GetTileType);
-
-    py::class_<MapComponent, std::shared_ptr<MapComponent>>(m, "MapComponent");
-    //.def_readonly("walkability", &MapComponent::m_walkability);
 }
 }
 

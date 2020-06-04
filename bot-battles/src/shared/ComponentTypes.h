@@ -5,23 +5,23 @@ namespace sand {
 
 enum class ComponentType : U16 {
 
+    // ENGINE
     TRANSFORM,
-    WEAPON,
     COLLIDER,
     RIGIDBODY,
+    LABEL,
+    SPRITE,
+    PLAYER,
+
+    // GAMEPLAY
+    WEAPON,
     HEALTH,
+    SIGHT,
     BOT,
     WALL,
-    SIGHT,
     BOT_SPAWNER,
     WEAPON_SPAWNER,
     HEALTH_SPAWNER,
-    PLAYER,
-
-#ifdef _DRAW
-    LABEL,
-    SPRITE,
-#endif
 
 #ifdef _CLIENT
     LOCAL_PLAYER,

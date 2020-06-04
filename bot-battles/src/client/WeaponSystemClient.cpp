@@ -1,9 +1,11 @@
 #include "WeaponSystemClient.h"
 
 #include "BotComponent.h"
+#include "ClientComponent.h"
 #include "ComponentManager.h"
 #include "ComponentMemberTypes.h"
 #include "GameClient.h"
+#include "GameplayComponent.h"
 #include "LinkingContext.h"
 #include "SpriteComponent.h"
 #include "WeaponComponent.h"
@@ -23,14 +25,14 @@ bool WeaponSystemClient::Update()
 {
     OPTICK_EVENT();
 
-    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-    std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
+    std::weak_ptr<GameplayComponent> gameplayComponent = g_gameClient->GetGameplayComponent();
+    std::weak_ptr<State> currentState = gameplayComponent.lock()->m_fsm.GetCurrentState();
     if (currentState.expired()) {
         return true;
     }
 
-    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    if (!clientComponent.m_isClientPrediction) {
+    std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
+    if (!clientComponent.lock()->m_isClientPrediction) {
         return true;
     }
 
@@ -39,7 +41,7 @@ bool WeaponSystemClient::Update()
             continue;
         }
 
-        if (!clientComponent.IsLocalEntity(entity)) {
+        if (!clientComponent.lock()->IsLocalEntity(entity)) {
             continue;
         }
 
@@ -47,14 +49,14 @@ bool WeaponSystemClient::Update()
         std::weak_ptr<BotComponent> botComponent = g_gameClient->GetComponentManager().GetComponent<BotComponent>(entity);
         std::weak_ptr<SpriteComponent> spriteComponent = g_gameClient->GetComponentManager().GetComponent<SpriteComponent>(entity);
 
-        if (clientComponent.m_isLastWeaponInputPending) {
-            clientComponent.m_isLastWeaponInputPending = false;
+        if (clientComponent.lock()->m_isLastWeaponInputPending) {
+            clientComponent.lock()->m_isLastWeaponInputPending = false;
 
             if (botComponent.lock()->m_actionType != BotComponent::ActionType::NONE) {
                 continue;
             }
 
-            const Input& input = clientComponent.m_inputBuffer.GetLast();
+            const Input& input = clientComponent.lock()->m_inputBuffer.GetLast();
             U64 dirtyState = input.GetDirtyState();
 
             // Reload
@@ -99,7 +101,7 @@ bool WeaponSystemClient::Render()
 {
     OPTICK_EVENT();
 
-    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
     LinkingContext& linkingContext = g_gameClient->GetLinkingContext();
     for (const auto& entity : m_entities) {
         NetworkID networkID = linkingContext.GetNetworkID(entity);
@@ -113,11 +115,11 @@ bool WeaponSystemClient::Render()
         }
 
         PlayerID playerID = INVALID_PLAYER_ID;
-        const bool isLocalEntity = clientComponent.IsLocalEntity(entity);
+        const bool isLocalEntity = clientComponent.lock()->IsLocalEntity(entity);
         if (isLocalEntity) {
-            playerID = clientComponent.m_playerID;
+            playerID = clientComponent.lock()->m_playerID;
         } else {
-            switch (clientComponent.m_playerID) {
+            switch (clientComponent.lock()->m_playerID) {
             case 0: {
                 playerID = 1;
                 break;
@@ -143,7 +145,7 @@ bool WeaponSystemClient::RenderGui()
 {
     OPTICK_EVENT();
 
-    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
     LinkingContext& linkingContext = g_gameClient->GetLinkingContext();
     for (const auto& entity : m_entities) {
         NetworkID networkID = linkingContext.GetNetworkID(entity);
@@ -152,11 +154,11 @@ bool WeaponSystemClient::RenderGui()
         }
 
         PlayerID playerID = INVALID_PLAYER_ID;
-        const bool isLocalEntity = clientComponent.IsLocalEntity(entity);
+        const bool isLocalEntity = clientComponent.lock()->IsLocalEntity(entity);
         if (isLocalEntity) {
-            playerID = clientComponent.m_playerID;
+            playerID = clientComponent.lock()->m_playerID;
         } else {
-            switch (clientComponent.m_playerID) {
+            switch (clientComponent.lock()->m_playerID) {
             case 0: {
                 playerID = 1;
                 break;

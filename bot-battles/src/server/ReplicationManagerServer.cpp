@@ -8,6 +8,7 @@
 #include "NetworkableWriteObject.h"
 #include "ReplicationCommand.h"
 #include "ReplicationResultManager.h"
+#include "ServerComponent.h"
 
 namespace sand {
 
@@ -169,9 +170,9 @@ void ReplicationManagerServer::Write(OutputMemoryStream& outputStream, Replicati
 //----------------------------------------------------------------------------------------------------
 U64 ReplicationManagerServer::WriteCreateAction(OutputMemoryStream& outputStream, NetworkID networkID, U64 dirtyState) const
 {
-    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
+    std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
     Entity entity = g_gameServer->GetLinkingContext().GetEntity(networkID);
-    PlayerID playerID = serverComponent.GetPlayerID(entity);
+    PlayerID playerID = serverComponent.lock()->GetPlayerID(entity);
     outputStream.Write(playerID);
 
     return WriteUpdateAction(outputStream, networkID, dirtyState);

@@ -1,5 +1,6 @@
 #include "ResultsStateClient.h"
 
+#include "ClientComponent.h"
 #include "ConfigClient.h"
 #include "GameClient.h"
 #include "ScoreboardComponent.h"
@@ -23,10 +24,10 @@ bool ResultsStateClient::Enter() const
 //----------------------------------------------------------------------------------------------------
 bool ResultsStateClient::Update() const
 {
-    ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
-    F32 mainMenuCurrentTime = static_cast<F32>(scoreboardComponent.m_mainMenuTimer.ReadSec());
+    std::weak_ptr<ScoreboardComponent> scoreboardComponent = g_gameClient->GetScoreboardComponent();
+    F32 mainMenuCurrentTime = static_cast<F32>(scoreboardComponent.lock()->m_mainMenuTimer.ReadSec());
     // X
-    if (mainMenuCurrentTime >= scoreboardComponent.m_mainMenuTimeout) {
+    if (mainMenuCurrentTime >= scoreboardComponent.lock()->m_mainMenuTimeout) {
         Event newEvent;
         newEvent.eventType = EventType::SEND_BYE;
         g_gameClient->GetFSM().NotifyEvent(newEvent);
@@ -40,16 +41,16 @@ bool ResultsStateClient::Update() const
 //----------------------------------------------------------------------------------------------------
 bool ResultsStateClient::RenderGui() const
 {
-    ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
-    F32 mainMenuCurrentTime = static_cast<F32>(scoreboardComponent.m_mainMenuTimer.ReadSec());
-    F32 mainMenuTimeLeft = scoreboardComponent.m_mainMenuTimeout - mainMenuCurrentTime;
+    std::weak_ptr<ScoreboardComponent> scoreboardComponent = g_gameClient->GetScoreboardComponent();
+    F32 mainMenuCurrentTime = static_cast<F32>(scoreboardComponent.lock()->m_mainMenuTimer.ReadSec());
+    F32 mainMenuTimeLeft = scoreboardComponent.lock()->m_mainMenuTimeout - mainMenuCurrentTime;
     ImGui::Text("%.0f", mainMenuTimeLeft);
 
-    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    if (scoreboardComponent.m_winnerPlayerID == INVALID_PLAYER_ID) {
+    std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
+    if (scoreboardComponent.lock()->m_winnerPlayerID == INVALID_PLAYER_ID) {
         ImGui::Text("Tie!");
     } else {
-        const bool isLocalPlayer = clientComponent.IsLocalPlayer(scoreboardComponent.m_winnerPlayerID);
+        const bool isLocalPlayer = clientComponent.lock()->IsLocalPlayer(scoreboardComponent.lock()->m_winnerPlayerID);
         if (isLocalPlayer) {
             ImGui::Text("You win :)");
         } else {
@@ -114,8 +115,8 @@ void ResultsStateClient::OnNotify(const Event& event)
 //----------------------------------------------------------------------------------------------------
 void ResultsStateClient::ChangeToRestart() const
 {
-    ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
-    scoreboardComponent.m_fsm.ChangeState("Restart");
+    std::weak_ptr<ScoreboardComponent> scoreboardComponent = g_gameClient->GetScoreboardComponent();
+    scoreboardComponent.lock()->m_fsm.ChangeState("Restart");
 }
 
 //----------------------------------------------------------------------------------------------------

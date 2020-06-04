@@ -15,10 +15,10 @@ bool WindowSystem::StartUp()
         return false;
     }
 
-    WindowComponent& windowComponent = g_game->GetWindowComponent();
+    std::weak_ptr<WindowComponent> windowComponent = g_game->GetWindowComponent();
     U32 flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI;
-    windowComponent.m_window = SDL_CreateWindow(g_game->GetConfig().m_name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowComponent.m_currentResolution.x, windowComponent.m_currentResolution.y, flags);
-    if (windowComponent.m_window == nullptr) {
+    windowComponent.lock()->m_window = SDL_CreateWindow(g_game->GetConfig().m_name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowComponent.lock()->m_currentResolution.x, windowComponent.lock()->m_currentResolution.y, flags);
+    if (windowComponent.lock()->m_window == nullptr) {
         ELOG("Window could not be created! SDL Error: %s", SDL_GetError());
         return false;
     }
@@ -29,10 +29,10 @@ bool WindowSystem::StartUp()
 //----------------------------------------------------------------------------------------------------
 bool WindowSystem::ShutDown()
 {
-    WindowComponent& windowComponent = g_game->GetWindowComponent();
+    std::weak_ptr<WindowComponent> windowComponent = g_game->GetWindowComponent();
 
-    SDL_DestroyWindow(windowComponent.m_window);
-    windowComponent.m_window = nullptr;
+    SDL_DestroyWindow(windowComponent.lock()->m_window);
+    windowComponent.lock()->m_window = nullptr;
 
     ILOG("Quitting SDL video subsystem");
     SDL_QuitSubSystem(SDL_INIT_VIDEO);

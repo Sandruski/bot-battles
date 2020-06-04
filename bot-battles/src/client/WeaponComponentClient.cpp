@@ -1,5 +1,6 @@
 #include "WeaponComponent.h"
 
+#include "ClientComponent.h"
 #include "ComponentMemberTypes.h"
 #include "GameClient.h"
 #include "ReplicationManagerClient.h"
@@ -14,7 +15,7 @@ void WeaponComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /
             Event newWeaponEvent;
             newWeaponEvent.eventType = EventType::WEAPON_PRIMARY_GAINED;
             newWeaponEvent.weapon.entity = entity;
-            ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+            std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
             clientComponent.m_replicationManager.NotifyEvent(newWeaponEvent);
         }
     */
@@ -74,8 +75,8 @@ void WeaponComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /
                 newWeaponEvent.eventType = EventType::WEAPON_MISSED;
             }
             newWeaponEvent.weapon.entity = entity;
-            ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-            clientComponent.m_replicationManager.NotifyEvent(newWeaponEvent);
+            std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
+            clientComponent.lock()->m_replicationManager.NotifyEvent(newWeaponEvent);
         }
     }
 }

@@ -29,8 +29,8 @@ bool BotSystem::Update()
 {
     OPTICK_EVENT();
 
-    GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
-    std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
+    std::weak_ptr<GameplayComponent> gameplayComponent = g_gameServer->GetGameplayComponent();
+    std::weak_ptr<State> currentState = gameplayComponent.lock()->m_fsm.GetCurrentState();
     if (currentState.expired()) {
         return true;
     }

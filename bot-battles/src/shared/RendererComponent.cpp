@@ -91,8 +91,8 @@ void RendererComponent::DrawLine(glm::vec3 fromPosition, glm::vec3 toPosition, g
 {
     glUseProgram(m_defaultShaderResource.lock()->GetProgram());
 
-    WindowComponent& windowComponent = g_game->GetWindowComponent();
-    glm::vec2 proportion = windowComponent.GetProportion();
+    std::weak_ptr<WindowComponent> windowComponent = g_game->GetWindowComponent();
+    glm::vec2 proportion = windowComponent.lock()->GetProportion();
 
     glm::mat4 model = glm::mat4(1.0f);
 
@@ -102,7 +102,7 @@ void RendererComponent::DrawLine(glm::vec3 fromPosition, glm::vec3 toPosition, g
     U32 modelLoc = glGetUniformLocation(m_defaultShaderResource.lock()->GetProgram(), "model");
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-    glm::mat4 projection = glm::ortho(0.0f, static_cast<F32>(windowComponent.m_currentResolution.x), -static_cast<F32>(windowComponent.m_currentResolution.y), 0.0f, static_cast<F32>(LayerType::NEAR_PLANE), -static_cast<F32>(LayerType::FAR_PLANE));
+    glm::mat4 projection = glm::ortho(0.0f, static_cast<F32>(windowComponent.lock()->m_currentResolution.x), -static_cast<F32>(windowComponent.lock()->m_currentResolution.y), 0.0f, static_cast<F32>(LayerType::NEAR_PLANE), -static_cast<F32>(LayerType::FAR_PLANE));
     U32 projectionLoc = glGetUniformLocation(m_defaultShaderResource.lock()->GetProgram(), "projection");
     glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
@@ -125,8 +125,8 @@ void RendererComponent::DrawCircle(glm::vec3 position, F32 rotation, glm::vec3 s
         SetWireframe(true);
     }
 
-    WindowComponent& windowComponent = g_game->GetWindowComponent();
-    glm::vec2 proportion = windowComponent.GetProportion();
+    std::weak_ptr<WindowComponent> windowComponent = g_game->GetWindowComponent();
+    glm::vec2 proportion = windowComponent.lock()->GetProportion();
 
     glm::mat4 model = glm::mat4(1.0f);
     position.x *= proportion.x;
@@ -144,7 +144,7 @@ void RendererComponent::DrawCircle(glm::vec3 position, F32 rotation, glm::vec3 s
     U32 modelLoc = glGetUniformLocation(m_defaultShaderResource.lock()->GetProgram(), "model");
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-    glm::mat4 projection = glm::ortho(0.0f, static_cast<F32>(windowComponent.m_currentResolution.x), -static_cast<F32>(windowComponent.m_currentResolution.y), 0.0f, static_cast<F32>(LayerType::NEAR_PLANE), -static_cast<F32>(LayerType::FAR_PLANE));
+    glm::mat4 projection = glm::ortho(0.0f, static_cast<F32>(windowComponent.lock()->m_currentResolution.x), -static_cast<F32>(windowComponent.lock()->m_currentResolution.y), 0.0f, static_cast<F32>(LayerType::NEAR_PLANE), -static_cast<F32>(LayerType::FAR_PLANE));
     U32 projectionLoc = glGetUniformLocation(m_defaultShaderResource.lock()->GetProgram(), "projection");
     glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
@@ -171,8 +171,8 @@ void RendererComponent::DrawQuad(glm::vec3 position, F32 rotation, glm::vec3 sca
         SetWireframe(true);
     }
 
-    WindowComponent& windowComponent = g_game->GetWindowComponent();
-    glm::vec2 proportion = windowComponent.GetProportion();
+    std::weak_ptr<WindowComponent> windowComponent = g_game->GetWindowComponent();
+    glm::vec2 proportion = windowComponent.lock()->GetProportion();
 
     glm::mat4 model = glm::mat4(1.0f);
     position.x *= proportion.x;
@@ -187,7 +187,7 @@ void RendererComponent::DrawQuad(glm::vec3 position, F32 rotation, glm::vec3 sca
     U32 modelLoc = glGetUniformLocation(m_defaultShaderResource.lock()->GetProgram(), "model");
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-    glm::mat4 projection = glm::ortho(0.0f, static_cast<F32>(windowComponent.m_currentResolution.x), -static_cast<F32>(windowComponent.m_currentResolution.y), 0.0f, static_cast<F32>(LayerType::NEAR_PLANE), -static_cast<F32>(LayerType::FAR_PLANE));
+    glm::mat4 projection = glm::ortho(0.0f, static_cast<F32>(windowComponent.lock()->m_currentResolution.x), -static_cast<F32>(windowComponent.lock()->m_currentResolution.y), 0.0f, static_cast<F32>(LayerType::NEAR_PLANE), -static_cast<F32>(LayerType::FAR_PLANE));
     U32 projectionLoc = glGetUniformLocation(m_defaultShaderResource.lock()->GetProgram(), "projection");
     glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
@@ -210,8 +210,8 @@ void RendererComponent::DrawMapTexturedQuad(U32 texture)
 {
     glUseProgram(m_instancingShaderResource.lock()->GetProgram());
 
-    WindowComponent& windowComponent = g_game->GetWindowComponent();
-    glm::mat4 projection = glm::ortho(0.0f, static_cast<F32>(windowComponent.m_currentResolution.x), -static_cast<F32>(windowComponent.m_currentResolution.y), 0.0f, static_cast<F32>(LayerType::NEAR_PLANE), -static_cast<F32>(LayerType::FAR_PLANE));
+    std::weak_ptr<WindowComponent> windowComponent = g_game->GetWindowComponent();
+    glm::mat4 projection = glm::ortho(0.0f, static_cast<F32>(windowComponent.lock()->m_currentResolution.x), -static_cast<F32>(windowComponent.lock()->m_currentResolution.y), 0.0f, static_cast<F32>(LayerType::NEAR_PLANE), -static_cast<F32>(LayerType::FAR_PLANE));
     U32 projectionLoc = glGetUniformLocation(m_instancingShaderResource.lock()->GetProgram(), "projection");
     glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
@@ -233,8 +233,8 @@ void RendererComponent::DrawCharactersTexturedQuad(U32 texture)
 {
     glUseProgram(m_instancingShaderResource.lock()->GetProgram());
 
-    WindowComponent& windowComponent = g_game->GetWindowComponent();
-    glm::mat4 projection = glm::ortho(0.0f, static_cast<F32>(windowComponent.m_currentResolution.x), -static_cast<F32>(windowComponent.m_currentResolution.y), 0.0f, static_cast<F32>(LayerType::NEAR_PLANE), -static_cast<F32>(LayerType::FAR_PLANE));
+    std::weak_ptr<WindowComponent> windowComponent = g_game->GetWindowComponent();
+    glm::mat4 projection = glm::ortho(0.0f, static_cast<F32>(windowComponent.lock()->m_currentResolution.x), -static_cast<F32>(windowComponent.lock()->m_currentResolution.y), 0.0f, static_cast<F32>(LayerType::NEAR_PLANE), -static_cast<F32>(LayerType::FAR_PLANE));
     U32 projectionLoc = glGetUniformLocation(m_instancingShaderResource.lock()->GetProgram(), "projection");
     glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
@@ -256,8 +256,8 @@ void RendererComponent::DrawObjectsTexturedQuad(U32 texture)
 {
     glUseProgram(m_instancingShaderResource.lock()->GetProgram());
 
-    WindowComponent& windowComponent = g_game->GetWindowComponent();
-    glm::mat4 projection = glm::ortho(0.0f, static_cast<F32>(windowComponent.m_currentResolution.x), -static_cast<F32>(windowComponent.m_currentResolution.y), 0.0f, static_cast<F32>(LayerType::NEAR_PLANE), -static_cast<F32>(LayerType::FAR_PLANE));
+    std::weak_ptr<WindowComponent> windowComponent = g_game->GetWindowComponent();
+    glm::mat4 projection = glm::ortho(0.0f, static_cast<F32>(windowComponent.lock()->m_currentResolution.x), -static_cast<F32>(windowComponent.lock()->m_currentResolution.y), 0.0f, static_cast<F32>(LayerType::NEAR_PLANE), -static_cast<F32>(LayerType::FAR_PLANE));
     U32 projectionLoc = glGetUniformLocation(m_instancingShaderResource.lock()->GetProgram(), "projection");
     glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 

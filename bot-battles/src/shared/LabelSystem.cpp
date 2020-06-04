@@ -19,8 +19,8 @@ bool LabelSystem::RenderGui()
 {
     OPTICK_EVENT();
 
-    WindowComponent& windowComponent = g_game->GetWindowComponent();
-    glm::vec2 proportion = windowComponent.GetProportion();
+    std::weak_ptr<WindowComponent> windowComponent = g_game->GetWindowComponent();
+    glm::vec2 proportion = windowComponent.lock()->GetProportion();
 
     ImGuiWindowFlags windowFlags = 0;
     windowFlags |= ImGuiWindowFlags_NoMove;

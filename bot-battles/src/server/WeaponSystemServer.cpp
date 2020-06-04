@@ -5,6 +5,7 @@
 #include "ComponentManager.h"
 #include "ComponentMemberTypes.h"
 #include "GameServer.h"
+#include "GameplayComponent.h"
 #include "HealthComponent.h"
 #include "LinkingContext.h"
 #include "MeshResource.h"
@@ -41,15 +42,15 @@ bool WeaponSystemServer::Update()
 {
     OPTICK_EVENT();
 
-    GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
-    std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
+    std::weak_ptr<GameplayComponent> gameplayComponent = g_gameServer->GetGameplayComponent();
+    std::weak_ptr<State> currentState = gameplayComponent.lock()->m_fsm.GetCurrentState();
     if (currentState.expired()) {
         return true;
     }
 
-    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
+    std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
     for (auto& entity : m_entities) {
-        PlayerID playerID = serverComponent.GetPlayerID(entity);
+        PlayerID playerID = serverComponent.lock()->GetPlayerID(entity);
         if (playerID >= INVALID_PLAYER_ID) {
             continue;
         }
@@ -66,7 +67,7 @@ bool WeaponSystemServer::Update()
 
         U64 characterDirtyState = 0;
 
-        std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
+        std::weak_ptr<ClientProxy> clientProxy = serverComponent.lock()->GetClientProxy(playerID);
         for (U32 i = clientProxy.lock()->m_inputBuffer.m_front; i < clientProxy.lock()->m_inputBuffer.m_back; ++i) {
             const Input& input = clientProxy.lock()->m_inputBuffer.Get(i);
             U64 dirtyState = input.GetDirtyState();
@@ -129,7 +130,7 @@ bool WeaponSystemServer::Update()
                 characterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_ACTION_TYPE);
                 botComponent.lock()->m_timerAction.Start();
 
-                if (serverComponent.m_isServerRewind) {
+                if (serverComponent.lock()->m_isServerRewind) {
                     Rewind(entity, input.m_interpolationFromFrame, input.m_interpolationToFrame, input.m_interpolationPercentage);
                 }
 
@@ -160,9 +161,9 @@ bool WeaponSystemServer::Update()
                 weaponComponent.lock()->m_hasHitLastShot = false;
                 characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_HAS_HIT_LAST_SHOT);
 
-                PhysicsComponent& physicsComponent = g_gameServer->GetPhysicsComponent();
+                std::weak_ptr<PhysicsComponent> physicsComponent = g_gameServer->GetPhysicsComponent();
                 PhysicsComponent::RaycastHit hitInfo;
-                const bool hasIntersected = physicsComponent.Raycast(weaponComponent.lock()->m_originLastShot, weaponComponent.lock()->m_destinationLastShot, hitInfo);
+                const bool hasIntersected = physicsComponent.lock()->Raycast(weaponComponent.lock()->m_originLastShot, weaponComponent.lock()->m_destinationLastShot, hitInfo);
                 if (hasIntersected) {
                     std::weak_ptr<TransformComponent> hitEntityTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(hitInfo.m_entity);
                     if (!hitEntityTransformComponent.expired()) {
@@ -185,7 +186,7 @@ bool WeaponSystemServer::Update()
 
                 rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(transformComponent.lock()->m_position.x), PIXELS_TO_METERS(transformComponent.lock()->m_position.y)), glm::radians(transformComponent.lock()->m_rotation));
 
-                if (serverComponent.m_isServerRewind) {
+                if (serverComponent.lock()->m_isServerRewind) {
                     Revert(entity);
                 }
             }
@@ -208,9 +209,9 @@ bool WeaponSystemServer::Render()
 {
     OPTICK_EVENT();
 
-    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
+    std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
     for (const auto& entity : m_entities) {
-        PlayerID playerID = serverComponent.GetPlayerID(entity);
+        PlayerID playerID = serverComponent.lock()->GetPlayerID(entity);
         if (playerID >= INVALID_PLAYER_ID) {
             continue;
         }
@@ -232,9 +233,9 @@ bool WeaponSystemServer::RenderGui()
 {
     OPTICK_EVENT();
 
-    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
+    std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
     for (const auto& entity : m_entities) {
-        PlayerID playerID = serverComponent.GetPlayerID(entity);
+        PlayerID playerID = serverComponent.lock()->GetPlayerID(entity);
         if (playerID >= INVALID_PLAYER_ID) {
             continue;
         }

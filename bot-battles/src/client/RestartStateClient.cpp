@@ -18,9 +18,9 @@ bool RestartStateClient::Enter() const
 {
     ILOG("Entering %s...", GetName().c_str());
 
-    ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
-    scoreboardComponent.m_reHelloTimer.Start();
-    scoreboardComponent.m_guiTimer.Start();
+    std::weak_ptr<ScoreboardComponent> scoreboardComponent = g_gameClient->GetScoreboardComponent();
+    scoreboardComponent.lock()->m_reHelloTimer.Start();
+    scoreboardComponent.lock()->m_guiTimer.Start();
 
     return true;
 }
@@ -28,19 +28,19 @@ bool RestartStateClient::Enter() const
 //----------------------------------------------------------------------------------------------------
 bool RestartStateClient::Update() const
 {
-    ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
-    F32 reHelloCurrentTime = static_cast<F32>(scoreboardComponent.m_reHelloTimer.ReadSec());
-    if (reHelloCurrentTime >= scoreboardComponent.m_secondsBetweenReHello) {
+    std::weak_ptr<ScoreboardComponent> scoreboardComponent = g_gameClient->GetScoreboardComponent();
+    F32 reHelloCurrentTime = static_cast<F32>(scoreboardComponent.lock()->m_reHelloTimer.ReadSec());
+    if (reHelloCurrentTime >= scoreboardComponent.lock()->m_secondsBetweenReHello) {
         Event newEvent;
         newEvent.eventType = EventType::SEND_REHELLO;
         g_gameClient->GetFSM().NotifyEvent(newEvent);
 
-        scoreboardComponent.m_reHelloTimer.Start();
+        scoreboardComponent.lock()->m_reHelloTimer.Start();
     }
 
-    F32 mainMenuCurrentTime = static_cast<F32>(scoreboardComponent.m_mainMenuTimer.ReadSec());
+    F32 mainMenuCurrentTime = static_cast<F32>(scoreboardComponent.lock()->m_mainMenuTimer.ReadSec());
     // X
-    if (mainMenuCurrentTime >= scoreboardComponent.m_mainMenuTimeout) {
+    if (mainMenuCurrentTime >= scoreboardComponent.lock()->m_mainMenuTimeout) {
         Event newEvent;
         newEvent.eventType = EventType::SEND_BYE;
         g_gameClient->GetFSM().NotifyEvent(newEvent);
@@ -54,17 +54,17 @@ bool RestartStateClient::Update() const
 //----------------------------------------------------------------------------------------------------
 bool RestartStateClient::RenderGui() const
 {
-    ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
-    F32 mainMenuCurrentTime = static_cast<F32>(scoreboardComponent.m_mainMenuTimer.ReadSec());
-    F32 mainMenuTimeLeft = scoreboardComponent.m_mainMenuTimeout - mainMenuCurrentTime;
+    std::weak_ptr<ScoreboardComponent> scoreboardComponent = g_gameClient->GetScoreboardComponent();
+    F32 mainMenuCurrentTime = static_cast<F32>(scoreboardComponent.lock()->m_mainMenuTimer.ReadSec());
+    F32 mainMenuTimeLeft = scoreboardComponent.lock()->m_mainMenuTimeout - mainMenuCurrentTime;
     ImGui::Text("%.0f", mainMenuTimeLeft);
 
-    GuiComponent& guiComponent = g_gameClient->GetGuiComponent();
-    F32 guiCurrentTime = static_cast<F32>(scoreboardComponent.m_guiTimer.ReadSec());
-    if (guiCurrentTime >= guiComponent.m_secondsBetweenEllipsis) {
-        scoreboardComponent.m_guiTimer.Start();
+    std::weak_ptr<GuiComponent> guiComponent = g_gameClient->GetGuiComponent();
+    F32 guiCurrentTime = static_cast<F32>(scoreboardComponent.lock()->m_guiTimer.ReadSec());
+    if (guiCurrentTime >= guiComponent.lock()->m_secondsBetweenEllipsis) {
+        scoreboardComponent.lock()->m_guiTimer.Start();
     }
-    F32 fractionSecondsBetweenEllipsis = guiComponent.m_secondsBetweenEllipsis / 3.0f;
+    F32 fractionSecondsBetweenEllipsis = guiComponent.lock()->m_secondsBetweenEllipsis / 3.0f;
     if (guiCurrentTime >= fractionSecondsBetweenEllipsis * 2.0f) {
         ImGui::Text("Waiting...");
     } else if (guiCurrentTime >= fractionSecondsBetweenEllipsis) {
@@ -128,8 +128,8 @@ void RestartStateClient::ChangeToGameplay() const
 //----------------------------------------------------------------------------------------------------
 void RestartStateClient::ChangeToResults() const
 {
-    ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
-    scoreboardComponent.m_fsm.ChangeState("Results");
+    std::weak_ptr<ScoreboardComponent> scoreboardComponent = g_gameClient->GetScoreboardComponent();
+    scoreboardComponent.lock()->m_fsm.ChangeState("Results");
 }
 
 //----------------------------------------------------------------------------------------------------

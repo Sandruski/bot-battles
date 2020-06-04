@@ -1,6 +1,8 @@
 #include "StartStateServer.h"
 
+#include "FSM.h"
 #include "GameServer.h"
+#include "GameplayComponent.h"
 #include "ServerComponent.h"
 #include "WindowComponent.h"
 
@@ -30,15 +32,15 @@ bool StartStateServer::RenderGui() const
     windowFlags |= ImGuiWindowFlags_NoCollapse;
     windowFlags |= ImGuiWindowFlags_NoSavedSettings;
 
-    WindowComponent& windowComponent = g_gameServer->GetWindowComponent();
-    ImVec2 position = ImVec2(static_cast<F32>(windowComponent.m_currentResolution.x) / 2.0f, static_cast<F32>(windowComponent.m_currentResolution.y) / 2.0f);
+    std::weak_ptr<WindowComponent> windowComponent = g_gameServer->GetWindowComponent();
+    ImVec2 position = ImVec2(static_cast<F32>(windowComponent.lock()->m_currentResolution.x) / 2.0f, static_cast<F32>(windowComponent.lock()->m_currentResolution.y) / 2.0f);
     ImGui::SetNextWindowPos(position, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-    ImVec2 size = ImVec2(static_cast<F32>(windowComponent.m_currentResolution.y) / 2.0f, static_cast<F32>(windowComponent.m_currentResolution.x) / 2.0f);
+    ImVec2 size = ImVec2(static_cast<F32>(windowComponent.lock()->m_currentResolution.y) / 2.0f, static_cast<F32>(windowComponent.lock()->m_currentResolution.x) / 2.0f);
     ImGui::SetNextWindowSize(size, ImGuiCond_Always);
 
     if (ImGui::Begin(GetName().c_str(), nullptr, windowFlags)) {
-        ServerComponent& serverComponent = g_gameServer->GetServerComponent();
-        const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.GetPlayerIDToClientProxyMap();
+        std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
+        const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.lock()->GetPlayerIDToClientProxyMap();
         for (const auto& pair : playerIDToClientProxy) {
             PlayerID playerID = pair.first;
             U32 playerNumber = playerID + 1;
@@ -111,8 +113,8 @@ void StartStateServer::OnNotify(const Event& event)
 //----------------------------------------------------------------------------------------------------
 void StartStateServer::OnPlayerAdded() const
 {
-    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
-    U32 entityCount = serverComponent.GetEntityCount();
+    std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
+    U32 entityCount = serverComponent.lock()->GetEntityCount();
     // V
     if (entityCount == MAX_PLAYER_IDS) {
         ChangeToPlay();
@@ -122,8 +124,8 @@ void StartStateServer::OnPlayerAdded() const
 //----------------------------------------------------------------------------------------------------
 void StartStateServer::ChangeToPlay() const
 {
-    GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
-    gameplayComponent.m_fsm.ChangeState("Play");
+    std::weak_ptr<GameplayComponent> gameplayComponent = g_gameServer->GetGameplayComponent();
+    gameplayComponent.lock()->m_fsm.ChangeState("Play");
 }
 
 //----------------------------------------------------------------------------------------------------

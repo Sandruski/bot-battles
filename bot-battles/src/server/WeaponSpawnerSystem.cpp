@@ -10,6 +10,7 @@
 #include "LinkingContext.h"
 #include "ResourceManager.h"
 #include "RigidbodyComponent.h"
+#include "ServerComponent.h"
 #include "SpriteComponent.h"
 #include "SpriteResource.h"
 #include "TransformComponent.h"
@@ -29,8 +30,8 @@ bool WeaponSpawnerSystem::Update()
 {
     OPTICK_EVENT();
 
-    GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
-    std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
+    std::weak_ptr<GameplayComponent> gameplayComponent = g_gameServer->GetGameplayComponent();
+    std::weak_ptr<State> currentState = gameplayComponent.lock()->m_fsm.GetCurrentState();
     if (currentState.expired()) {
         return true;
     }
@@ -193,9 +194,9 @@ bool WeaponSpawnerSystem::PickUpWeapon(Entity character, Entity weapon) const
 //----------------------------------------------------------------------------------------------------
 void WeaponSpawnerSystem::OnCollisionEnter(Entity entityA, Entity entityB) const
 {
-    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
-    PlayerID playerIDA = serverComponent.GetPlayerID(entityA);
-    PlayerID playerIDB = serverComponent.GetPlayerID(entityB);
+    std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
+    PlayerID playerIDA = serverComponent.lock()->GetPlayerID(entityA);
+    PlayerID playerIDB = serverComponent.lock()->GetPlayerID(entityB);
     if ((playerIDA < INVALID_PLAYER_ID && playerIDB < INVALID_PLAYER_ID)
         || (playerIDA >= INVALID_PLAYER_ID && playerIDB >= INVALID_PLAYER_ID)) {
         return;

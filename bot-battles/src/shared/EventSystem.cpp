@@ -21,11 +21,11 @@ bool EventSystem::Update()
 {
     OPTICK_EVENT();
 
-    EventComponent& eventComponent = g_game->GetEventComponent();
+    std::weak_ptr<EventComponent> eventComponent = g_game->GetEventComponent();
 
     const U8* keyboardState = SDL_GetKeyboardState(nullptr);
     for (U16 i = 0; i < SDL_NUM_SCANCODES; ++i) {
-        EventComponent::KeyState& keyState = eventComponent.m_keyboard.at(i);
+        EventComponent::KeyState& keyState = eventComponent.lock()->m_keyboard.at(i);
         if (keyboardState[i] == SDL_KEY_PRESSED) {
             if (keyState == EventComponent::KeyState::IDLE) {
                 keyState = EventComponent::KeyState::DOWN;
@@ -42,9 +42,9 @@ bool EventSystem::Update()
         }
     }
 
-    U32 mouseState = SDL_GetMouseState(&eventComponent.m_mousePosition.x, &eventComponent.m_mousePosition.y);
+    U32 mouseState = SDL_GetMouseState(&eventComponent.lock()->m_mousePosition.x, &eventComponent.lock()->m_mousePosition.y);
     for (U8 i = 0; i < SDL_BUTTON_X2; ++i) {
-        EventComponent::KeyState& keyState = eventComponent.m_mouse.at(i);
+        EventComponent::KeyState& keyState = eventComponent.lock()->m_mouse.at(i);
         if (mouseState & SDL_BUTTON(i + SDL_BUTTON_LEFT)) {
             if (keyState == EventComponent::KeyState::IDLE) {
                 keyState = EventComponent::KeyState::DOWN;

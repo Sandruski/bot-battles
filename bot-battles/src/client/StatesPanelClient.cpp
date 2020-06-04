@@ -1,6 +1,10 @@
 #include "StatesPanel.h"
 
+#include "FSM.h"
 #include "GameClient.h"
+#include "GameplayComponent.h"
+#include "MainMenuComponent.h"
+#include "ScoreboardComponent.h"
 #include "State.h"
 
 namespace sand {
@@ -20,7 +24,7 @@ bool StatesPanel::RenderBody() const
         ImGui::Spacing();
         ImGui::SameLine();
         if (name == "Main Menu") {
-            std::weak_ptr<State> mainMenuState = g_gameClient->GetMainMenuComponent().m_fsm.GetCurrentState();
+            std::weak_ptr<State> mainMenuState = g_gameClient->GetMainMenuComponent().lock()->m_fsm.GetCurrentState();
             if (!mainMenuState.expired()) {
                 std::string subName = mainMenuState.lock()->GetName();
                 ImGui::Text(subName.c_str());
@@ -28,7 +32,7 @@ bool StatesPanel::RenderBody() const
                 ImGui::Text("No substate...");
             }
         } else if (name == "Gameplay") {
-            std::weak_ptr<State> gameplayState = g_gameClient->GetGameplayComponent().m_fsm.GetCurrentState();
+            std::weak_ptr<State> gameplayState = g_gameClient->GetGameplayComponent().lock()->m_fsm.GetCurrentState();
             if (!gameplayState.expired()) {
                 std::string subName = gameplayState.lock()->GetName();
                 ImGui::Text(subName.c_str());
@@ -36,7 +40,7 @@ bool StatesPanel::RenderBody() const
                 ImGui::Text("No substate...");
             }
         } else if (name == "Scoreboard") {
-            std::weak_ptr<State> scoreboardState = g_gameClient->GetScoreboardComponent().m_fsm.GetCurrentState();
+            std::weak_ptr<State> scoreboardState = g_gameClient->GetScoreboardComponent().lock()->m_fsm.GetCurrentState();
             if (!scoreboardState.expired()) {
                 std::string subName = scoreboardState.lock()->GetName();
                 ImGui::Text(subName.c_str());

@@ -13,8 +13,8 @@ bool NetworkingPanel::RenderBody() const
     ImGui::Separator();
     ImGui::Spacing();
 
-    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
-    const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.GetPlayerIDToClientProxyMap();
+    std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
+    const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.lock()->GetPlayerIDToClientProxyMap();
     for (const auto& pair : playerIDToClientProxy) {
         PlayerID playerID = pair.first;
         std::shared_ptr<ClientProxy> clientProxy = pair.second;
@@ -53,7 +53,7 @@ bool NetworkingPanel::RenderBody() const
         ImGui::Spacing();
     }
 
-    ImGui::Checkbox("Server Rewind", &serverComponent.m_isServerRewind);
+    ImGui::Checkbox("Server Rewind", &serverComponent.lock()->m_isServerRewind);
 
     return true;
 }

@@ -1,11 +1,13 @@
 #include "GameplayStateClient.h"
 
+#include "ClientComponent.h"
 #include "EntityManager.h"
 #include "GameClient.h"
 #include "GameplayComponent.h"
 #include "GuiComponent.h"
 #include "LinkingContext.h"
 #include "MapComponent.h"
+#include "MapImporter.h"
 #include "PlayStateClient.h"
 #include "StartStateClient.h"
 
@@ -22,12 +24,12 @@ bool GameplayStateClient::Create() const
 {
     bool ret = false;
 
-    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-    ret = gameplayComponent.m_fsm.RegisterState<StartStateClient>();
+    std::weak_ptr<GameplayComponent> gameplayComponent = g_gameClient->GetGameplayComponent();
+    ret = gameplayComponent.lock()->m_fsm.RegisterState<StartStateClient>();
     if (!ret) {
         return ret;
     }
-    ret = gameplayComponent.m_fsm.RegisterState<PlayStateClient>();
+    ret = gameplayComponent.lock()->m_fsm.RegisterState<PlayStateClient>();
     if (!ret) {
         return ret;
     }
@@ -41,9 +43,9 @@ bool GameplayStateClient::Enter() const
     bool ret = false;
 
     // Scene
-    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
+    std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
     std::string path = MAPS_DIR;
-    path.append(clientComponent.m_map);
+    path.append(clientComponent.lock()->m_map);
     path.append(MAPS_EXTENSION);
     MapImporter::Tilemap tilemap;
     ret = g_gameClient->GetMapImporter().Load(path, tilemap);
@@ -52,12 +54,12 @@ bool GameplayStateClient::Enter() const
     }
     g_gameClient->GetMapImporter().Create(tilemap);
 
-    GuiComponent& guiComponent = g_gameClient->GetGuiComponent();
-    guiComponent.m_isSettings = false;
+    std::weak_ptr<GuiComponent> guiComponent = g_gameClient->GetGuiComponent();
+    guiComponent.lock()->m_isSettings = false;
 
-    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-    gameplayComponent.m_mainMenuTimer.Start();
-    ret = gameplayComponent.m_fsm.ChangeState("Start");
+    std::weak_ptr<GameplayComponent> gameplayComponent = g_gameClient->GetGameplayComponent();
+    gameplayComponent.lock()->m_mainMenuTimer.Start();
+    ret = gameplayComponent.lock()->m_fsm.ChangeState("Start");
 
     return ret;
 }
@@ -65,15 +67,15 @@ bool GameplayStateClient::Enter() const
 //----------------------------------------------------------------------------------------------------
 bool GameplayStateClient::Update() const
 {
-    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-    return gameplayComponent.m_fsm.Update();
+    std::weak_ptr<GameplayComponent> gameplayComponent = g_gameClient->GetGameplayComponent();
+    return gameplayComponent.lock()->m_fsm.Update();
 }
 
 //----------------------------------------------------------------------------------------------------
 bool GameplayStateClient::RenderGui() const
 {
-    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-    return gameplayComponent.m_fsm.RenderGui();
+    std::weak_ptr<GameplayComponent> gameplayComponent = g_gameClient->GetGameplayComponent();
+    return gameplayComponent.lock()->m_fsm.RenderGui();
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -83,20 +85,20 @@ bool GameplayStateClient::Exit() const
     g_gameClient->GetLinkingContext().ClearEntities();
     g_gameClient->GetEntityManager().ClearEntities();
 
-    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    clientComponent.Reset();
+    std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
+    clientComponent.lock()->Reset();
 
-    clientComponent.m_entity = INVALID_ENTITY;
+    clientComponent.lock()->m_entity = INVALID_ENTITY;
 
-    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
+    std::weak_ptr<GameplayComponent> gameplayComponent = g_gameClient->GetGameplayComponent();
     std::weak_ptr<State> emptyState = std::weak_ptr<State>();
-    gameplayComponent.m_fsm.ChangeState(emptyState);
+    gameplayComponent.lock()->m_fsm.ChangeState(emptyState);
 
-    InputComponent& inputComponent = g_gameClient->GetInputComponent();
-    inputComponent.FullReset();
+    std::weak_ptr<InputComponent> inputComponent = g_gameClient->GetInputComponent();
+    inputComponent.lock()->FullReset();
 
-    MapComponent& mapComponent = g_game->GetMapComponent();
-    mapComponent.Reset();
+    std::weak_ptr<MapComponent> mapComponent = g_game->GetMapComponent();
+    mapComponent.lock()->Reset();
 
     return true;
 }
@@ -104,7 +106,7 @@ bool GameplayStateClient::Exit() const
 //----------------------------------------------------------------------------------------------------
 void GameplayStateClient::OnNotify(const Event& event)
 {
-    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-    gameplayComponent.m_fsm.OnNotify(event);
+    std::weak_ptr<GameplayComponent> gameplayComponent = g_gameClient->GetGameplayComponent();
+    gameplayComponent.lock()->m_fsm.OnNotify(event);
 }
 }

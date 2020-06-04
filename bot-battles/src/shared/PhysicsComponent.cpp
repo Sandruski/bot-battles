@@ -23,7 +23,7 @@ void ContactListener::BeginContact(b2Contact* contact)
     glm::vec2 linearVelocityB = glm::vec2(METERS_TO_PIXELS(physicsLinearVelocityB.x), METERS_TO_PIXELS(physicsLinearVelocityB.y));
     glm::vec2 normal = glm::vec2(worldManifold.normal.x, worldManifold.normal.y);
 
-    g_game->GetPhysicsComponent().OnCollisionEnter(entityA, entityB, linearVelocityA, linearVelocityB, normal);
+    g_game->GetPhysicsComponent().lock()->OnCollisionEnter(entityA, entityB, linearVelocityA, linearVelocityB, normal);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -58,7 +58,7 @@ void ContactListener::EndContact(b2Contact* contact)
     glm::vec2 linearVelocityB = glm::vec2(METERS_TO_PIXELS(physicsLinearVelocityB.x), METERS_TO_PIXELS(physicsLinearVelocityB.y));
     glm::vec2 normal = glm::vec2(worldManifold.normal.x, worldManifold.normal.y);
 
-    g_game->GetPhysicsComponent().OnCollisionExit(entityA, entityB, linearVelocityA, linearVelocityB, normal);
+    g_game->GetPhysicsComponent().lock()->OnCollisionExit(entityA, entityB, linearVelocityA, linearVelocityB, normal);
 }
 
 //----------------------------------------------------------------------------------------------------

@@ -1,14 +1,15 @@
 #ifndef __GAME_CLIENT_H__
 #define __GAME_CLIENT_H__
 
-#include "ClientComponent.h"
 #include "Game.h"
-#include "InputComponent.h"
-#include "ScriptingComponent.h"
 
 namespace sand {
 
 struct ConfigClient;
+
+struct ClientComponent;
+struct ScriptingComponent;
+struct InputComponent;
 
 //----------------------------------------------------------------------------------------------------
 class GameClient : public Game {
@@ -18,16 +19,16 @@ public:
     bool Init() override;
     bool DoFrame() override;
 
-    ClientComponent& GetClientComponent() { return m_clientComponent; }
-    ScriptingComponent& GetScriptingComponent() { return m_scriptingComponent; }
-    InputComponent& GetInputComponent() { return m_inputComponent; }
+    std::weak_ptr<ClientComponent> GetClientComponent() { return std::weak_ptr(m_clientComponent); }
+    std::weak_ptr<ScriptingComponent> GetScriptingComponent() { return std::weak_ptr(m_scriptingComponent); }
+    std::weak_ptr<InputComponent> GetInputComponent() { return std::weak_ptr(m_inputComponent); }
 
 private:
     std::shared_ptr<ConfigClient> m_configClient;
 
-    ClientComponent m_clientComponent;
-    ScriptingComponent m_scriptingComponent;
-    InputComponent m_inputComponent;
+    std::shared_ptr<ClientComponent> m_clientComponent;
+    std::shared_ptr<ScriptingComponent> m_scriptingComponent;
+    std::shared_ptr<InputComponent> m_inputComponent;
 };
 
 extern GameClient* g_gameClient;

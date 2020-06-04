@@ -6,11 +6,10 @@ namespace sand {
 enum class SystemType : U16 {
 
 #ifdef _CLIENT
-#ifdef _DRAW
     EVENT,
     WINDOW,
     RENDERER,
-#endif
+
     CLIENT,
 
     REMOTE_PLAYER_MOVEMENT,
@@ -32,17 +31,14 @@ enum class SystemType : U16 {
 
     OUTPUT,
 
-#ifdef _DRAW
     LABEL,
     GUI,
-#endif
 
 #elif defined(_SERVER)
-#ifdef _DRAW
     EVENT,
     WINDOW,
     RENDERER,
-#endif
+
     SERVER,
 
     BOT_SPAWNER,
@@ -64,10 +60,8 @@ enum class SystemType : U16 {
 
     OUTPUT,
 
-#ifdef _DRAW
     LABEL,
     GUI,
-#endif
 #endif
 
     COUNT

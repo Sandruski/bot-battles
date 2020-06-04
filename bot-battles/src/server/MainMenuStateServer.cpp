@@ -7,6 +7,7 @@
 #include "GameServer.h"
 #include "GuiComponent.h"
 #include "MainMenuComponent.h"
+#include "ResourceManager.h"
 #include "SetupStateServer.h"
 #include "SpriteComponent.h"
 #include "SpriteResource.h"
@@ -26,12 +27,12 @@ bool MainMenuStateServer::Create() const
 {
     bool ret = false;
 
-    MainMenuComponent& mainMenuComponent = g_gameServer->GetMainMenuComponent();
-    ret = mainMenuComponent.m_fsm.RegisterState<SetupStateServer>();
+    std::weak_ptr<MainMenuComponent> mainMenuComponent = g_gameServer->GetMainMenuComponent();
+    ret = mainMenuComponent.lock()->m_fsm.RegisterState<SetupStateServer>();
     if (!ret) {
         return ret;
     }
-    ret = mainMenuComponent.m_fsm.RegisterState<ConnectStateServer>();
+    ret = mainMenuComponent.lock()->m_fsm.RegisterState<ConnectStateServer>();
     if (!ret) {
         return ret;
     }
@@ -45,32 +46,32 @@ bool MainMenuStateServer::Enter() const
     // Scene
     Entity background = g_gameServer->GetEntityManager().AddEntity();
     std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().AddComponent<TransformComponent>(background);
-    WindowComponent& windowComponent = g_gameServer->GetWindowComponent();
-    transformComponent.lock()->m_position += static_cast<glm::vec2>(windowComponent.m_baseResolution) / 2.0f;
+    std::weak_ptr<WindowComponent> windowComponent = g_gameServer->GetWindowComponent();
+    transformComponent.lock()->m_position += static_cast<glm::vec2>(windowComponent.lock()->m_baseResolution) / 2.0f;
     transformComponent.lock()->m_layerType = LayerType::BACKGROUND;
     std::weak_ptr<SpriteResource> spriteResource = g_gameServer->GetResourceManager().AddResource<SpriteResource>("mainMenuBackground.png", TEXTURES_DIR, true);
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().AddComponent<SpriteComponent>(background);
     spriteComponent.lock()->m_spriteResource = spriteResource;
 
-    GuiComponent& guiComponent = g_gameServer->GetGuiComponent();
-    guiComponent.m_isSettings = false;
+    std::weak_ptr<GuiComponent> guiComponent = g_gameServer->GetGuiComponent();
+    guiComponent.lock()->m_isSettings = false;
 
-    MainMenuComponent& mainMenuComponent = g_gameServer->GetMainMenuComponent();
-    return mainMenuComponent.m_fsm.ChangeState("Setup");
+    std::weak_ptr<MainMenuComponent> mainMenuComponent = g_gameServer->GetMainMenuComponent();
+    return mainMenuComponent.lock()->m_fsm.ChangeState("Setup");
 }
 
 //----------------------------------------------------------------------------------------------------
 bool MainMenuStateServer::Update() const
 {
-    MainMenuComponent& mainMenuComponent = g_gameServer->GetMainMenuComponent();
-    return mainMenuComponent.m_fsm.Update();
+    std::weak_ptr<MainMenuComponent> mainMenuComponent = g_gameServer->GetMainMenuComponent();
+    return mainMenuComponent.lock()->m_fsm.Update();
 }
 
 //----------------------------------------------------------------------------------------------------
 bool MainMenuStateServer::RenderGui() const
 {
-    MainMenuComponent& mainMenuComponent = g_gameServer->GetMainMenuComponent();
-    return mainMenuComponent.m_fsm.RenderGui();
+    std::weak_ptr<MainMenuComponent> mainMenuComponent = g_gameServer->GetMainMenuComponent();
+    return mainMenuComponent.lock()->m_fsm.RenderGui();
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -79,9 +80,9 @@ bool MainMenuStateServer::Exit() const
     // Scene
     g_gameServer->GetEntityManager().ClearEntities();
 
-    MainMenuComponent& mainMenuComponent = g_gameServer->GetMainMenuComponent();
+    std::weak_ptr<MainMenuComponent> mainMenuComponent = g_gameServer->GetMainMenuComponent();
     std::weak_ptr<State> emptyState = std::weak_ptr<State>();
-    mainMenuComponent.m_fsm.ChangeState(emptyState);
+    mainMenuComponent.lock()->m_fsm.ChangeState(emptyState);
 
     return true;
 }
@@ -89,7 +90,7 @@ bool MainMenuStateServer::Exit() const
 //----------------------------------------------------------------------------------------------------
 void MainMenuStateServer::OnNotify(const Event& event)
 {
-    MainMenuComponent& mainMenuComponent = g_gameServer->GetMainMenuComponent();
-    mainMenuComponent.m_fsm.OnNotify(event);
+    std::weak_ptr<MainMenuComponent> mainMenuComponent = g_gameServer->GetMainMenuComponent();
+    mainMenuComponent.lock()->m_fsm.OnNotify(event);
 }
 }

@@ -1,8 +1,10 @@
 #include "RemotePlayerMovementSystem.h"
 
+#include "ClientComponent.h"
 #include "ComponentManager.h"
 #include "ComponentMemberTypes.h"
 #include "GameClient.h"
+#include "GameplayComponent.h"
 #include "LinkingContext.h"
 #include "RigidbodyComponent.h"
 #include "State.h"
@@ -24,29 +26,29 @@ bool RemotePlayerMovementSystem::Update()
 {
     OPTICK_EVENT();
 
-    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-    std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
+    std::weak_ptr<GameplayComponent> gameplayComponent = g_gameClient->GetGameplayComponent();
+    std::weak_ptr<State> currentState = gameplayComponent.lock()->m_fsm.GetCurrentState();
     if (currentState.expired()) {
         return true;
     }
 
-    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    if (!clientComponent.m_isEntityInterpolation) {
+    std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
+    if (!clientComponent.lock()->m_isEntityInterpolation) {
         return true;
     }
 
-    if (clientComponent.m_frameBuffer.Count() >= 2) {
-        clientComponent.m_interpolationFromFrame = clientComponent.m_frameBuffer.GetFirst().GetFrame();
-        clientComponent.m_interpolationToFrame = clientComponent.m_frameBuffer.GetSecond().GetFrame();
+    if (clientComponent.lock()->m_frameBuffer.Count() >= 2) {
+        clientComponent.lock()->m_interpolationFromFrame = clientComponent.lock()->m_frameBuffer.GetFirst().GetFrame();
+        clientComponent.lock()->m_interpolationToFrame = clientComponent.lock()->m_frameBuffer.GetSecond().GetFrame();
         F32 startFrameTime = MyTime::GetInstance().GetStartFrameTime();
-        F32 outOfSyncTime = startFrameTime - clientComponent.m_frameBuffer.GetSecond().GetTimestamp();
-        clientComponent.m_interpolationPercentage = outOfSyncTime / clientComponent.m_entityInterpolationPeriod;
-        if (clientComponent.m_interpolationPercentage > 1.0f) {
-            clientComponent.m_interpolationPercentage = 1.0f;
+        F32 outOfSyncTime = startFrameTime - clientComponent.lock()->m_frameBuffer.GetSecond().GetTimestamp();
+        clientComponent.lock()->m_interpolationPercentage = outOfSyncTime / clientComponent.lock()->m_entityInterpolationPeriod;
+        if (clientComponent.lock()->m_interpolationPercentage > 1.0f) {
+            clientComponent.lock()->m_interpolationPercentage = 1.0f;
         }
 
-        if (clientComponent.m_interpolationPercentage == 1.0f) {
-            clientComponent.m_frameBuffer.RemoveFirst();
+        if (clientComponent.lock()->m_interpolationPercentage == 1.0f) {
+            clientComponent.lock()->m_frameBuffer.RemoveFirst();
         }
     }
 
@@ -63,7 +65,7 @@ bool RemotePlayerMovementSystem::Update()
             bool isFoundFrom = false;
             while (indexFrom < transformComponent.lock()->m_transformBuffer.m_back) {
                 const Transform& transform = transformComponent.lock()->m_transformBuffer.Get(indexFrom);
-                if (transform.GetFrame() == clientComponent.m_interpolationFromFrame) {
+                if (transform.GetFrame() == clientComponent.lock()->m_interpolationFromFrame) {
                     isFoundFrom = true;
                     break;
                 }
@@ -75,7 +77,7 @@ bool RemotePlayerMovementSystem::Update()
                 bool isFoundTo = false;
                 while (indexTo < transformComponent.lock()->m_transformBuffer.m_back) {
                     const Transform& transform = transformComponent.lock()->m_transformBuffer.Get(indexTo);
-                    if (transform.GetFrame() == clientComponent.m_interpolationToFrame) {
+                    if (transform.GetFrame() == clientComponent.lock()->m_interpolationToFrame) {
                         isFoundTo = true;
                         break;
                     }
@@ -85,8 +87,8 @@ bool RemotePlayerMovementSystem::Update()
                 if (isFoundFrom && isFoundTo) {
                     Transform fromTransform = transformComponent.lock()->m_transformBuffer.Get(indexFrom);
                     Transform toTransform = transformComponent.lock()->m_transformBuffer.Get(indexTo);
-                    glm::vec2 interpolatedPosition = Lerp(fromTransform.m_position, toTransform.m_position, clientComponent.m_interpolationPercentage);
-                    F32 interpolatedRotation = Lerp(fromTransform.m_rotation, toTransform.m_rotation, clientComponent.m_interpolationPercentage);
+                    glm::vec2 interpolatedPosition = Lerp(fromTransform.m_position, toTransform.m_position, clientComponent.lock()->m_interpolationPercentage);
+                    F32 interpolatedRotation = Lerp(fromTransform.m_rotation, toTransform.m_rotation, clientComponent.lock()->m_interpolationPercentage);
                     rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(interpolatedPosition.x), PIXELS_TO_METERS(interpolatedPosition.y)), glm::radians(interpolatedRotation));
 
                     b2Vec2 physicsPosition = rigidbodyComponent.lock()->m_body->GetPosition();
@@ -102,7 +104,7 @@ bool RemotePlayerMovementSystem::Update()
                 }
             }
 
-            if (clientComponent.m_interpolationPercentage == 1.0f) {
+            if (clientComponent.lock()->m_interpolationPercentage == 1.0f) {
                 if (isFoundFrom) {
                     transformComponent.lock()->m_transformBuffer.Remove(indexFrom);
                 }

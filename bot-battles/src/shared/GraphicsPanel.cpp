@@ -24,8 +24,8 @@ bool GraphicsPanel::RenderBody() const
     ImGui::Separator();
     ImGui::Spacing();
 
-    RendererComponent& rendererComponent = g_game->GetRendererComponent();
-    ImGui::Checkbox("Debug Draw", &rendererComponent.m_isDebugDraw);
+    std::weak_ptr<RendererComponent> rendererComponent = g_game->GetRendererComponent();
+    ImGui::Checkbox("Debug Draw", &rendererComponent.lock()->m_isDebugDraw);
 
     return true;
 }

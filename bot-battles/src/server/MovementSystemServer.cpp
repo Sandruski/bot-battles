@@ -4,11 +4,13 @@
 #include "ComponentManager.h"
 #include "ComponentMemberTypes.h"
 #include "GameServer.h"
+#include "GameplayComponent.h"
 #include "Input.h"
 #include "InputComponent.h"
 #include "LinkingContext.h"
 #include "PhysicsComponent.h"
 #include "RigidbodyComponent.h"
+#include "ServerComponent.h"
 #include "State.h"
 #include "TransformComponent.h"
 
@@ -35,20 +37,20 @@ bool MovementSystemServer::Update()
 {
     OPTICK_EVENT();
 
-    GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
-    std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
+    std::weak_ptr<GameplayComponent> gameplayComponent = g_gameServer->GetGameplayComponent();
+    std::weak_ptr<State> currentState = gameplayComponent.lock()->m_fsm.GetCurrentState();
     if (currentState.expired()) {
         return true;
     }
 
-    PhysicsComponent& physicsComponent = g_gameServer->GetPhysicsComponent();
+    std::weak_ptr<PhysicsComponent> physicsComponent = g_gameServer->GetPhysicsComponent();
 
-    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
-    for (U32 i = 0; i < serverComponent.m_maxInputsPerPaquet; ++i) {
+    std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
+    for (U32 i = 0; i < serverComponent.lock()->m_maxInputsPerPaquet; ++i) {
         bool hasInput = false;
 
         for (auto& entity : m_entities) {
-            PlayerID playerID = serverComponent.GetPlayerID(entity);
+            PlayerID playerID = serverComponent.lock()->GetPlayerID(entity);
             if (playerID >= INVALID_PLAYER_ID) {
                 continue;
             }
@@ -59,7 +61,7 @@ bool MovementSystemServer::Update()
             glm::vec2 linearVelocity = glm::vec2(0.0f, 0.0f);
             F32 angularVelocity = 0.0f;
 
-            std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
+            std::weak_ptr<ClientProxy> clientProxy = serverComponent.lock()->GetClientProxy(playerID);
             U32 inputCount = clientProxy.lock()->m_inputBuffer.Count();
             if (i < inputCount) {
                 hasInput = true;
@@ -100,10 +102,10 @@ bool MovementSystemServer::Update()
             break;
         }
 
-        physicsComponent.Step();
+        physicsComponent.lock()->Step();
 
         for (auto& entity : m_entities) {
-            PlayerID playerID = serverComponent.GetPlayerID(entity);
+            PlayerID playerID = serverComponent.lock()->GetPlayerID(entity);
             if (playerID >= INVALID_PLAYER_ID) {
                 continue;
             }
@@ -111,7 +113,7 @@ bool MovementSystemServer::Update()
             std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
             std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameServer->GetComponentManager().GetComponent<RigidbodyComponent>(entity);
 
-            std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
+            std::weak_ptr<ClientProxy> clientProxy = serverComponent.lock()->GetClientProxy(playerID);
             U32 inputCount = clientProxy.lock()->m_inputBuffer.Count();
             if (i < inputCount) {
                 U32 inputIndex = clientProxy.lock()->m_inputBuffer.m_front + i;
@@ -125,7 +127,6 @@ bool MovementSystemServer::Update()
                     transformComponent.lock()->m_position = glm::vec2(METERS_TO_PIXELS(physicsPosition.x), METERS_TO_PIXELS(physicsPosition.y));
                     float32 physicsRotation = rigidbodyComponent.lock()->m_body->GetAngle();
                     transformComponent.lock()->m_rotation = glm::degrees(physicsRotation);
-                    ILOG("Server position at frame %u is %f %f rotation %f", input.GetFrame(), transformComponent.lock()->m_position.x, transformComponent.lock()->m_position.y, transformComponent.lock()->m_rotation);
 
                     Event newEvent;
                     newEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
@@ -145,7 +146,7 @@ bool MovementSystemServer::Update()
     U32 frame = MyTime::GetInstance().GetFrame();
 
     for (auto& entity : m_entities) {
-        PlayerID playerID = serverComponent.GetPlayerID(entity);
+        PlayerID playerID = serverComponent.lock()->GetPlayerID(entity);
         if (playerID >= INVALID_PLAYER_ID) {
             continue;
         }
@@ -153,7 +154,7 @@ bool MovementSystemServer::Update()
         std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
         std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameServer->GetComponentManager().GetComponent<RigidbodyComponent>(entity);
 
-        if (serverComponent.m_isServerRewind) {
+        if (serverComponent.lock()->m_isServerRewind) {
             Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, frame);
             transformComponent.lock()->m_transformBuffer.Add(transform);
         }
@@ -167,9 +168,9 @@ bool MovementSystemServer::DebugRender()
 {
     OPTICK_EVENT();
 
-    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
+    std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
     for (const auto& entity : m_entities) {
-        PlayerID playerID = serverComponent.GetPlayerID(entity);
+        PlayerID playerID = serverComponent.lock()->GetPlayerID(entity);
         if (playerID >= INVALID_PLAYER_ID) {
             continue;
         }

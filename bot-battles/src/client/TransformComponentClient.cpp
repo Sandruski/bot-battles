@@ -38,11 +38,11 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U3
         characterDirtyState |= static_cast<U64>(ComponentMemberType::TRANSFORM_SCALE);
     }
 
-    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    const bool isLocalEntity = clientComponent.IsLocalEntity(entity);
+    std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
+    const bool isLocalEntity = clientComponent.lock()->IsLocalEntity(entity);
     if (isLocalEntity) {
         if (replicationActionType == ReplicationActionType::CREATE
-            || !clientComponent.m_isServerReconciliation) {
+            || !clientComponent.lock()->m_isServerReconciliation) {
             if (hasPosition) {
                 m_position = newPosition;
             }
@@ -78,7 +78,7 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U3
             Replay(hasPosition, hasRotation, newPosition, newRotation, entity);
         }
     } else {
-        if (clientComponent.m_isEntityInterpolation) {
+        if (clientComponent.lock()->m_isEntityInterpolation) {
             if (replicationActionType == ReplicationActionType::CREATE) {
                 if (hasPosition) {
                     m_position = newPosition;
@@ -146,15 +146,15 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U3
         newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
         newComponentEvent.component.dirtyState = characterDirtyState;
         newComponentEvent.component.entity = entity;
-        clientComponent.m_replicationManager.NotifyEvent(newComponentEvent);
+        clientComponent.lock()->m_replicationManager.NotifyEvent(newComponentEvent);
     }
 }
 
 //----------------------------------------------------------------------------------------------------
 void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::vec2 newPosition, F32 newRotation, Entity entity)
 {
-    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    if (m_inputTransformBuffer.IsEmpty() || clientComponent.m_inputBuffer.IsEmpty()) {
+    std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
+    if (m_inputTransformBuffer.IsEmpty() || clientComponent.lock()->m_inputBuffer.IsEmpty()) {
         return;
     }
 
@@ -167,7 +167,7 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::v
     bool isFound = false;
     while (index < m_inputTransformBuffer.m_back) {
         const Transform& transform = m_inputTransformBuffer.Get(index);
-        if (transform.GetFrame() == clientComponent.m_lastAckdFrame) {
+        if (transform.GetFrame() == clientComponent.lock()->m_lastAckdFrame) {
             isFound = true;
             break;
         }
@@ -177,7 +177,7 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::v
         return;
     }
 
-    PhysicsComponent& physicsComponent = g_gameClient->GetPhysicsComponent();
+    std::weak_ptr<PhysicsComponent> physicsComponent = g_gameClient->GetPhysicsComponent();
 
     Transform& firstTransform = m_inputTransformBuffer.Get(index);
     glm::vec2& position = firstTransform.m_position;
@@ -185,8 +185,8 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::v
 
     bool replayPosition = false;
     if (updatePosition) {
-        glm::vec2 minNewPosition = newPosition - physicsComponent.m_epsilon;
-        glm::vec2 maxNewPosition = newPosition + physicsComponent.m_epsilon;
+        glm::vec2 minNewPosition = newPosition - physicsComponent.lock()->m_epsilon;
+        glm::vec2 maxNewPosition = newPosition + physicsComponent.lock()->m_epsilon;
         if ((position.x < minNewPosition.x || position.y < minNewPosition.y)
             || (position.x > maxNewPosition.x || position.y > maxNewPosition.y)) {
             replayPosition = true;
@@ -195,8 +195,8 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::v
 
     bool replayRotation = false;
     if (updateRotation) {
-        F32 minNewRotation = newRotation - physicsComponent.m_epsilon;
-        F32 maxNewRotation = newRotation + physicsComponent.m_epsilon;
+        F32 minNewRotation = newRotation - physicsComponent.lock()->m_epsilon;
+        F32 maxNewRotation = newRotation + physicsComponent.lock()->m_epsilon;
         if (rotation < minNewRotation
             || rotation > maxNewRotation) {
             replayRotation = true;
@@ -205,15 +205,15 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::v
 
     if (replayPosition || replayRotation) {
         ILOG("REPLAY");
-        ILOG("Current vs new positions at frame %u is %f %f and %f %f", clientComponent.m_lastAckdFrame, position.x, position.y, newPosition.x, newPosition.y);
+        ILOG("Current vs new positions at frame %u is %f %f and %f %f", clientComponent.lock()->m_lastAckdFrame, position.x, position.y, newPosition.x, newPosition.y);
 
         position = newPosition;
         rotation = newRotation;
         rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(position.x), PIXELS_TO_METERS(position.y)), glm::radians(rotation));
 
-        ILOG("We loop %u transforms", clientComponent.m_inputBuffer.m_back - index - 1);
-        for (U32 i = index + 1; i < clientComponent.m_inputBuffer.m_back; ++i) {
-            const Input& input = clientComponent.m_inputBuffer.Get(i);
+        ILOG("We loop %u transforms", clientComponent.lock()->m_inputBuffer.m_back - index - 1);
+        for (U32 i = index + 1; i < clientComponent.lock()->m_inputBuffer.m_back; ++i) {
+            const Input& input = clientComponent.lock()->m_inputBuffer.Get(i);
             const InputComponent& inputComponent = input.GetInputComponent();
             U64 dirtyState = input.GetDirtyState();
 
@@ -243,7 +243,7 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::v
 
             rigidbodyComponent.lock()->m_body->SetActive(true);
 
-            physicsComponent.Step();
+            physicsComponent.lock()->Step();
 
             Transform& transform = m_inputTransformBuffer.Get(i);
             if (replayPosition) {

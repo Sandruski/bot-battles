@@ -4,7 +4,9 @@
 #include "ClientProxy.h"
 #include "ComponentManager.h"
 #include "ComponentMemberTypes.h"
+#include "EventComponent.h"
 #include "GameServer.h"
+#include "GameplayComponent.h"
 #include "HealthComponent.h"
 #include "ServerComponent.h"
 #include "SpriteComponent.h"
@@ -33,8 +35,8 @@ bool HealthSystemServer::Update()
 {
     OPTICK_EVENT();
 
-    GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
-    std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
+    std::weak_ptr<GameplayComponent> gameplayComponent = g_gameServer->GetGameplayComponent();
+    std::weak_ptr<State> currentState = gameplayComponent.lock()->m_fsm.GetCurrentState();
     if (currentState.expired()) {
         return true;
     }
@@ -42,9 +44,9 @@ bool HealthSystemServer::Update()
     Entity entityA = INVALID_ENTITY;
     Entity entityB = INVALID_ENTITY;
 
-    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
+    std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
     for (auto& entity : m_entities) {
-        PlayerID playerID = serverComponent.GetPlayerID(entity);
+        PlayerID playerID = serverComponent.lock()->GetPlayerID(entity);
         if (playerID >= INVALID_PLAYER_ID) {
             continue;
         }
@@ -65,7 +67,7 @@ bool HealthSystemServer::Update()
 
         U64 characterDirtyState = 0;
 
-        std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
+        std::weak_ptr<ClientProxy> clientProxy = serverComponent.lock()->GetClientProxy(playerID);
         for (U32 i = clientProxy.lock()->m_inputBuffer.m_front; i < clientProxy.lock()->m_inputBuffer.m_back; ++i) {
             const Input& input = clientProxy.lock()->m_inputBuffer.Get(i);
             U64 dirtyState = input.GetDirtyState();
@@ -102,9 +104,9 @@ bool HealthSystemServer::Update()
         }
     }
 
-    EventComponent& eventComponent = g_game->GetEventComponent();
-    if (eventComponent.m_keyboard.at(SDL_SCANCODE_LSHIFT) == EventComponent::KeyState::REPEAT
-        && eventComponent.m_keyboard.at(SDL_SCANCODE_W) == EventComponent::KeyState::DOWN) {
+    std::weak_ptr<EventComponent> eventComponent = g_game->GetEventComponent();
+    if (eventComponent.lock()->m_keyboard.at(SDL_SCANCODE_LSHIFT) == EventComponent::KeyState::REPEAT
+        && eventComponent.lock()->m_keyboard.at(SDL_SCANCODE_W) == EventComponent::KeyState::DOWN) {
         OnCollisionEnter(entityA, entityB);
     }
 
@@ -116,9 +118,9 @@ bool HealthSystemServer::Render()
 {
     OPTICK_EVENT();
 
-    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
+    std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
     for (const auto& entity : m_entities) {
-        PlayerID playerID = serverComponent.GetPlayerID(entity);
+        PlayerID playerID = serverComponent.lock()->GetPlayerID(entity);
         if (playerID >= INVALID_PLAYER_ID) {
             continue;
         }
@@ -154,9 +156,9 @@ void HealthSystemServer::OnNotify(const Event& event)
 //----------------------------------------------------------------------------------------------------
 void HealthSystemServer::OnCollisionEnter(Entity entityA, Entity entityB) const
 {
-    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
-    PlayerID playerIDA = serverComponent.GetPlayerID(entityA);
-    PlayerID playerIDB = serverComponent.GetPlayerID(entityB);
+    std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
+    PlayerID playerIDA = serverComponent.lock()->GetPlayerID(entityA);
+    PlayerID playerIDB = serverComponent.lock()->GetPlayerID(entityB);
     if (playerIDA >= INVALID_PLAYER_ID || playerIDB >= INVALID_PLAYER_ID) {
         return;
     }

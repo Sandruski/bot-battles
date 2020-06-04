@@ -10,7 +10,7 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 void WeaponSystem::Draw(PlayerID playerID, std::weak_ptr<WeaponComponent> weaponComponent) const
 {
-    RendererComponent& rendererComponent = g_game->GetRendererComponent();
+    std::weak_ptr<RendererComponent> rendererComponent = g_game->GetRendererComponent();
 
     glm::vec3 fromPosition = glm::vec3(weaponComponent.lock()->m_originLastShot.x, weaponComponent.lock()->m_originLastShot.y, static_cast<F32>(LayerType::WEAPON));
     glm::vec3 toPosition = glm::vec3(weaponComponent.lock()->m_destinationLastShot.x, weaponComponent.lock()->m_destinationLastShot.y, static_cast<F32>(LayerType::WEAPON));
@@ -31,7 +31,7 @@ void WeaponSystem::Draw(PlayerID playerID, std::weak_ptr<WeaponComponent> weapon
 
     glLineWidth(1.4f);
 
-    rendererComponent.DrawLine(fromPosition, toPosition, color);
+    rendererComponent.lock()->DrawLine(fromPosition, toPosition, color);
 
     glLineWidth(1.0f);
 }
@@ -51,22 +51,22 @@ void WeaponSystem::DrawGui(PlayerID playerID, std::weak_ptr<WeaponComponent> wea
     windowFlags |= ImGuiWindowFlags_NoDecoration;
     windowFlags |= ImGuiWindowFlags_NoInputs;
 
-    WindowComponent& windowComponent = g_game->GetWindowComponent();
-    glm::vec2 proportion = windowComponent.GetProportion();
+    std::weak_ptr<WindowComponent> windowComponent = g_game->GetWindowComponent();
+    glm::vec2 proportion = windowComponent.lock()->GetProportion();
 
     ImVec2 windowPosition = ImVec2(0.0f, 45.0f);
     ImVec2 windowPivot = ImVec2(0.0f, 0.5f);
     switch (playerID) {
     case 0: {
-        F32 positionX = static_cast<F32>(windowComponent.m_baseResolution.x) / 4.0f;
-        F32 offsetX = static_cast<F32>(windowComponent.m_baseResolution.x) / 3.0f / 2.0f;
+        F32 positionX = static_cast<F32>(windowComponent.lock()->m_baseResolution.x) / 4.0f;
+        F32 offsetX = static_cast<F32>(windowComponent.lock()->m_baseResolution.x) / 3.0f / 2.0f;
         windowPosition.x = positionX - offsetX;
         windowPivot.x = 0.0f;
         break;
     }
     case 1: {
-        F32 positionX = static_cast<F32>(windowComponent.m_baseResolution.x) - static_cast<F32>(windowComponent.m_baseResolution.x) / 4.0f;
-        F32 offsetX = static_cast<F32>(windowComponent.m_baseResolution.x) / 3.0f / 2.0f;
+        F32 positionX = static_cast<F32>(windowComponent.lock()->m_baseResolution.x) - static_cast<F32>(windowComponent.lock()->m_baseResolution.x) / 4.0f;
+        F32 offsetX = static_cast<F32>(windowComponent.lock()->m_baseResolution.x) / 3.0f / 2.0f;
         windowPosition.x = positionX + offsetX;
         windowPivot.x = 1.0f;
         break;

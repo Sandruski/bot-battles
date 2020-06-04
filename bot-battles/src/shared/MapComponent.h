@@ -5,7 +5,7 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 // System Component
-struct MapComponent : public std::enable_shared_from_this<MapComponent> {
+struct MapComponent {
 
     struct Tile {
 
@@ -34,11 +34,6 @@ struct MapComponent : public std::enable_shared_from_this<MapComponent> {
     MapComponent();
 
     Tile& GetTile(U32 i, U32 j)
-    {
-        return m_walkability.at(i + m_tileCount.x * j);
-    }
-
-    const Tile& GetTile(U32 i, U32 j) const
     {
         return m_walkability.at(i + m_tileCount.x * j);
     }

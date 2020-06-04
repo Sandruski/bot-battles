@@ -6,11 +6,13 @@
 #include "FSM.h"
 #include "GameClient.h"
 #include "GuiComponent.h"
+#include "ResourceManager.h"
 #include "RestartStateClient.h"
 #include "ResultsStateClient.h"
 #include "ScoreboardComponent.h"
 #include "SpriteComponent.h"
 #include "SpriteResource.h"
+#include "TransformComponent.h"
 #include "WindowComponent.h"
 
 namespace sand {
@@ -26,12 +28,12 @@ bool ScoreboardStateClient::Create() const
 {
     bool ret = false;
 
-    ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
-    ret = scoreboardComponent.m_fsm.RegisterState<ResultsStateClient>();
+    std::weak_ptr<ScoreboardComponent> scoreboardComponent = g_gameClient->GetScoreboardComponent();
+    ret = scoreboardComponent.lock()->m_fsm.RegisterState<ResultsStateClient>();
     if (!ret) {
         return ret;
     }
-    ret = scoreboardComponent.m_fsm.RegisterState<RestartStateClient>();
+    ret = scoreboardComponent.lock()->m_fsm.RegisterState<RestartStateClient>();
     if (!ret) {
         return ret;
     }
@@ -45,26 +47,26 @@ bool ScoreboardStateClient::Enter() const
     // Scene
     Entity background = g_gameClient->GetEntityManager().AddEntity();
     std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().AddComponent<TransformComponent>(background);
-    WindowComponent& windowComponent = g_gameClient->GetWindowComponent();
-    transformComponent.lock()->m_position += static_cast<glm::vec2>(windowComponent.m_baseResolution) / 2.0f;
+    std::weak_ptr<WindowComponent> windowComponent = g_gameClient->GetWindowComponent();
+    transformComponent.lock()->m_position += static_cast<glm::vec2>(windowComponent.lock()->m_baseResolution) / 2.0f;
     transformComponent.lock()->m_layerType = LayerType::BACKGROUND;
     std::weak_ptr<SpriteResource> spriteResource = g_gameClient->GetResourceManager().AddResource<SpriteResource>("scoreboardBackground.png", TEXTURES_DIR, true);
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameClient->GetComponentManager().AddComponent<SpriteComponent>(background);
     spriteComponent.lock()->m_spriteResource = spriteResource;
 
-    GuiComponent& guiComponent = g_gameClient->GetGuiComponent();
-    guiComponent.m_isSettings = false;
+    std::weak_ptr<GuiComponent> guiComponent = g_gameClient->GetGuiComponent();
+    guiComponent.lock()->m_isSettings = false;
 
-    ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
-    scoreboardComponent.m_mainMenuTimer.Start();
-    return scoreboardComponent.m_fsm.ChangeState("Results");
+    std::weak_ptr<ScoreboardComponent> scoreboardComponent = g_gameClient->GetScoreboardComponent();
+    scoreboardComponent.lock()->m_mainMenuTimer.Start();
+    return scoreboardComponent.lock()->m_fsm.ChangeState("Results");
 }
 
 //----------------------------------------------------------------------------------------------------
 bool ScoreboardStateClient::Update() const
 {
-    ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
-    return scoreboardComponent.m_fsm.Update();
+    std::weak_ptr<ScoreboardComponent> scoreboardComponent = g_gameClient->GetScoreboardComponent();
+    return scoreboardComponent.lock()->m_fsm.Update();
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -79,15 +81,15 @@ bool ScoreboardStateClient::RenderGui() const
     windowFlags |= ImGuiWindowFlags_NoCollapse;
     windowFlags |= ImGuiWindowFlags_NoSavedSettings;
 
-    WindowComponent& windowComponent = g_gameClient->GetWindowComponent();
-    ImVec2 position = ImVec2(static_cast<F32>(windowComponent.m_currentResolution.x) / 2.0f, static_cast<F32>(windowComponent.m_currentResolution.y) / 2.0f);
+    std::weak_ptr<WindowComponent> windowComponent = g_gameClient->GetWindowComponent();
+    ImVec2 position = ImVec2(static_cast<F32>(windowComponent.lock()->m_currentResolution.x) / 2.0f, static_cast<F32>(windowComponent.lock()->m_currentResolution.y) / 2.0f);
     ImGui::SetNextWindowPos(position, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-    ImVec2 size = ImVec2(static_cast<F32>(windowComponent.m_currentResolution.y) / 2.0f, static_cast<F32>(windowComponent.m_currentResolution.x) / 2.0f);
+    ImVec2 size = ImVec2(static_cast<F32>(windowComponent.lock()->m_currentResolution.y) / 2.0f, static_cast<F32>(windowComponent.lock()->m_currentResolution.x) / 2.0f);
     ImGui::SetNextWindowSize(size, ImGuiCond_Always);
 
     if (ImGui::Begin(GetName().c_str(), nullptr, windowFlags)) {
-        ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
-        ret = scoreboardComponent.m_fsm.RenderGui();
+        std::weak_ptr<ScoreboardComponent> scoreboardComponent = g_gameClient->GetScoreboardComponent();
+        ret = scoreboardComponent.lock()->m_fsm.RenderGui();
 
         ImGui::End();
     }
@@ -101,9 +103,9 @@ bool ScoreboardStateClient::Exit() const
     // Scene
     g_gameClient->GetEntityManager().ClearEntities();
 
-    ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
+    std::weak_ptr<ScoreboardComponent> scoreboardComponent = g_gameClient->GetScoreboardComponent();
     std::weak_ptr<State> emptyState = std::weak_ptr<State>();
-    scoreboardComponent.m_fsm.ChangeState(emptyState);
+    scoreboardComponent.lock()->m_fsm.ChangeState(emptyState);
 
     return true;
 }
@@ -111,7 +113,7 @@ bool ScoreboardStateClient::Exit() const
 //----------------------------------------------------------------------------------------------------
 void ScoreboardStateClient::OnNotify(const Event& event)
 {
-    ScoreboardComponent& scoreboardComponent = g_gameClient->GetScoreboardComponent();
-    scoreboardComponent.m_fsm.OnNotify(event);
+    std::weak_ptr<ScoreboardComponent> scoreboardComponent = g_gameClient->GetScoreboardComponent();
+    scoreboardComponent.lock()->m_fsm.OnNotify(event);
 }
 }

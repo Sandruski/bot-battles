@@ -1,8 +1,10 @@
 #include "SetupStateServer.h"
 
 #include "FSM.h"
+#include "FileSystem.h"
 #include "GameServer.h"
 #include "MainMenuComponent.h"
+#include "MapImporter.h"
 #include "ServerComponent.h"
 #include "WindowComponent.h"
 
@@ -32,29 +34,29 @@ bool SetupStateServer::RenderGui() const
     windowFlags |= ImGuiWindowFlags_NoCollapse;
     windowFlags |= ImGuiWindowFlags_NoSavedSettings;
 
-    WindowComponent& windowComponent = g_gameServer->GetWindowComponent();
-    ImVec2 position = ImVec2(static_cast<F32>(windowComponent.m_currentResolution.x) / 2.0f, static_cast<F32>(windowComponent.m_currentResolution.y) / 2.0f);
+    std::weak_ptr<WindowComponent> windowComponent = g_gameServer->GetWindowComponent();
+    ImVec2 position = ImVec2(static_cast<F32>(windowComponent.lock()->m_currentResolution.x) / 2.0f, static_cast<F32>(windowComponent.lock()->m_currentResolution.y) / 2.0f);
     ImGui::SetNextWindowPos(position, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-    ImVec2 size = ImVec2(static_cast<F32>(windowComponent.m_currentResolution.y) / 2.0f, static_cast<F32>(windowComponent.m_currentResolution.x) / 2.0f);
+    ImVec2 size = ImVec2(static_cast<F32>(windowComponent.lock()->m_currentResolution.y) / 2.0f, static_cast<F32>(windowComponent.lock()->m_currentResolution.x) / 2.0f);
     ImGui::SetNextWindowSize(size, ImGuiCond_Always);
 
     if (ImGui::Begin("Main Menu", nullptr, windowFlags)) {
-        ServerComponent& serverComponent = g_gameServer->GetServerComponent();
-        ImGui::InputText("Port", &serverComponent.m_port);
+        std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
+        ImGui::InputText("Port", &serverComponent.lock()->m_port);
 
-        if (ImGui::BeginCombo("Map", serverComponent.m_map.c_str())) {
+        if (ImGui::BeginCombo("Map", serverComponent.lock()->m_map.c_str())) {
             std::vector<std::string> entries = g_gameServer->GetFileSystem().GetFilesFromDirectory(MAPS_DIR, MAPS_EXTENSION);
             for (const auto& entry : entries) {
                 std::string name = g_gameServer->GetFileSystem().GetName(entry);
                 if (ImGui::Selectable(name.c_str())) {
-                    serverComponent.m_map = name;
+                    serverComponent.lock()->m_map = name;
                 }
             }
             ImGui::EndCombo();
         }
 
-        MainMenuComponent& mainMenuComponent = g_gameServer->GetMainMenuComponent();
-        LogTypes logType = mainMenuComponent.m_log.second;
+        std::weak_ptr<MainMenuComponent> mainMenuComponent = g_gameServer->GetMainMenuComponent();
+        LogTypes logType = mainMenuComponent.lock()->m_log.second;
         ImVec4 color;
         switch (logType) {
         case LogTypes::ILOG: {
@@ -73,7 +75,7 @@ bool SetupStateServer::RenderGui() const
             break;
         }
         }
-        ImGui::TextColored(color, mainMenuComponent.m_log.first.c_str());
+        ImGui::TextColored(color, mainMenuComponent.lock()->m_log.first.c_str());
 
         const char* start = "Start";
         ImVec2 textSize = ImGui::CalcTextSize(start);
@@ -100,8 +102,8 @@ bool SetupStateServer::Exit() const
 {
     ILOG("Exiting %s...", GetName().c_str());
 
-    MainMenuComponent& mainMenuComponent = g_gameServer->GetMainMenuComponent();
-    mainMenuComponent.m_log = std::pair<std::string, LogTypes>();
+    std::weak_ptr<MainMenuComponent> mainMenuComponent = g_gameServer->GetMainMenuComponent();
+    mainMenuComponent.lock()->m_log = std::pair<std::string, LogTypes>();
 
     return true;
 }
@@ -122,8 +124,8 @@ void SetupStateServer::OnNotify(const Event& event)
     }
 
     case EventType::CONNECT_FAILED: {
-        MainMenuComponent& mainMenuComponent = g_gameServer->GetMainMenuComponent();
-        mainMenuComponent.m_log = std::make_pair("Map failed", LogTypes::ELOG);
+        std::weak_ptr<MainMenuComponent> mainMenuComponent = g_gameServer->GetMainMenuComponent();
+        mainMenuComponent.lock()->m_log = std::make_pair("Map failed", LogTypes::ELOG);
         break;
     }
 
@@ -136,16 +138,16 @@ void SetupStateServer::OnNotify(const Event& event)
 //----------------------------------------------------------------------------------------------------
 void SetupStateServer::ChangeToConnect() const
 {
-    MainMenuComponent& mainMenuComponent = g_gameServer->GetMainMenuComponent();
-    mainMenuComponent.m_fsm.ChangeState("Connect");
+    std::weak_ptr<MainMenuComponent> mainMenuComponent = g_gameServer->GetMainMenuComponent();
+    mainMenuComponent.lock()->m_fsm.ChangeState("Connect");
 }
 
 //----------------------------------------------------------------------------------------------------
 void SetupStateServer::ImportMap() const
 {
     std::string path = MAPS_DIR;
-    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
-    path.append(serverComponent.m_map);
+    std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
+    path.append(serverComponent.lock()->m_map);
     path.append(MAPS_EXTENSION);
     MapImporter::Tilemap tilemap;
     const bool result = g_gameServer->GetMapImporter().Load(path, tilemap);

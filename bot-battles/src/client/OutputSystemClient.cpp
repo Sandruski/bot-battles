@@ -23,14 +23,14 @@ bool OutputSystemClient::Update()
 {
     OPTICK_EVENT();
 
-    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-    std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
+    std::weak_ptr<GameplayComponent> gameplayComponent = g_gameClient->GetGameplayComponent();
+    std::weak_ptr<State> currentState = gameplayComponent.lock()->m_fsm.GetCurrentState();
     if (currentState.expired()) {
         return true;
     }
 
-    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    if (clientComponent.m_isServerReconciliation) {
+    std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
+    if (clientComponent.lock()->m_isServerReconciliation) {
         for (auto& entity : m_entities) {
             if (g_gameClient->GetLinkingContext().GetNetworkID(entity) >= INVALID_NETWORK_ID) {
                 continue;
@@ -41,7 +41,7 @@ bool OutputSystemClient::Update()
             bool isFound = false;
             while (index < transformComponent.lock()->m_inputTransformBuffer.m_back) {
                 const Transform& transform = transformComponent.lock()->m_inputTransformBuffer.Get(index);
-                if (transform.GetFrame() == clientComponent.m_lastAckdFrame) {
+                if (transform.GetFrame() == clientComponent.lock()->m_lastAckdFrame) {
                     isFound = true;
                     break;
                 }
@@ -53,22 +53,22 @@ bool OutputSystemClient::Update()
         }
     }
 
-    U32 index = clientComponent.m_inputBuffer.m_front;
+    U32 index = clientComponent.lock()->m_inputBuffer.m_front;
     bool isFound = false;
-    while (index < clientComponent.m_inputBuffer.m_back) {
-        const Input& input = clientComponent.m_inputBuffer.Get(index);
-        if (input.GetFrame() == clientComponent.m_lastAckdFrame) {
+    while (index < clientComponent.lock()->m_inputBuffer.m_back) {
+        const Input& input = clientComponent.lock()->m_inputBuffer.Get(index);
+        if (input.GetFrame() == clientComponent.lock()->m_lastAckdFrame) {
             isFound = true;
             break;
         }
         ++index;
     }
     if (isFound) {
-        clientComponent.m_inputBuffer.Remove(index);
+        clientComponent.lock()->m_inputBuffer.Remove(index);
     }
 
-    InputComponent& inputComponent = g_gameClient->GetInputComponent();
-    inputComponent.Reset();
+    std::weak_ptr<InputComponent> inputComponent = g_gameClient->GetInputComponent();
+    inputComponent.lock()->Reset();
 
     return true;
 }

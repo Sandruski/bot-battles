@@ -36,18 +36,18 @@ bool ResultsStateServer::RenderGui() const
     windowFlags |= ImGuiWindowFlags_NoCollapse;
     windowFlags |= ImGuiWindowFlags_NoSavedSettings;
 
-    WindowComponent& windowComponent = g_gameServer->GetWindowComponent();
-    ImVec2 position = ImVec2(static_cast<F32>(windowComponent.m_currentResolution.x) / 2.0f, static_cast<F32>(windowComponent.m_currentResolution.y) / 2.0f);
+    std::weak_ptr<WindowComponent> windowComponent = g_gameServer->GetWindowComponent();
+    ImVec2 position = ImVec2(static_cast<F32>(windowComponent.lock()->m_currentResolution.x) / 2.0f, static_cast<F32>(windowComponent.lock()->m_currentResolution.y) / 2.0f);
     ImGui::SetNextWindowPos(position, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-    ImVec2 size = ImVec2(static_cast<F32>(windowComponent.m_currentResolution.y) / 2.0f, static_cast<F32>(windowComponent.m_currentResolution.x) / 2.0f);
+    ImVec2 size = ImVec2(static_cast<F32>(windowComponent.lock()->m_currentResolution.y) / 2.0f, static_cast<F32>(windowComponent.lock()->m_currentResolution.x) / 2.0f);
     ImGui::SetNextWindowSize(size, ImGuiCond_Always);
 
     if (ImGui::Begin("Scoreboard", nullptr, windowFlags)) {
-        ScoreboardComponent& scoreboardComponent = g_gameServer->GetScoreboardComponent();
-        if (scoreboardComponent.m_winnerPlayerID == INVALID_PLAYER_ID) {
+        std::weak_ptr<ScoreboardComponent> scoreboardComponent = g_gameServer->GetScoreboardComponent();
+        if (scoreboardComponent.lock()->m_winnerPlayerID == INVALID_PLAYER_ID) {
             ImGui::Text("Tie!");
         } else {
-            U32 playerNumber = scoreboardComponent.m_winnerPlayerID + 1;
+            U32 playerNumber = scoreboardComponent.lock()->m_winnerPlayerID + 1;
             ImGui::Text("Player %u wins :)", playerNumber);
         }
 
@@ -94,8 +94,8 @@ bool ResultsStateServer::Exit() const
 //----------------------------------------------------------------------------------------------------
 void ResultsStateServer::ChangeToRestart() const
 {
-    ScoreboardComponent& scoreboardComponent = g_gameServer->GetScoreboardComponent();
-    scoreboardComponent.m_fsm.ChangeState("Restart");
+    std::weak_ptr<ScoreboardComponent> scoreboardComponent = g_gameServer->GetScoreboardComponent();
+    scoreboardComponent.lock()->m_fsm.ChangeState("Restart");
 }
 
 //----------------------------------------------------------------------------------------------------

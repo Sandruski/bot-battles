@@ -20,20 +20,20 @@ bool OutputSystemServer::Update()
 {
     OPTICK_EVENT();
 
-    GameplayComponent& gameplayComponent = g_gameServer->GetGameplayComponent();
-    std::weak_ptr<State> currentState = gameplayComponent.m_fsm.GetCurrentState();
+    std::weak_ptr<GameplayComponent> gameplayComponent = g_gameServer->GetGameplayComponent();
+    std::weak_ptr<State> currentState = gameplayComponent.lock()->m_fsm.GetCurrentState();
     if (currentState.expired()) {
         return true;
     }
 
-    ServerComponent& serverComponent = g_gameServer->GetServerComponent();
+    std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
     for (auto& entity : m_entities) {
-        PlayerID playerID = serverComponent.GetPlayerID(entity);
+        PlayerID playerID = serverComponent.lock()->GetPlayerID(entity);
         if (playerID >= INVALID_PLAYER_ID) {
             continue;
         }
 
-        std::weak_ptr<ClientProxy> clientProxy = serverComponent.GetClientProxy(playerID);
+        std::weak_ptr<ClientProxy> clientProxy = serverComponent.lock()->GetClientProxy(playerID);
         if (clientProxy.expired()) {
             continue;
         }

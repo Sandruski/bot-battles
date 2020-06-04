@@ -2,7 +2,6 @@
 #define __PCH_CLIENT_H__
 
 #define _CLIENT
-#define _DRAW
 
 #define USE_OPTICK 1
 

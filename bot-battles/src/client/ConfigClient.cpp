@@ -19,6 +19,6 @@ void ConfigClient::LoadFromConfig(const rapidjson::Document& document)
     assert(document.HasMember("client"));
     assert(document["client"].IsObject());
     const rapidjson::Value& client = document["client"];
-    g_gameClient->GetClientComponent().LoadFromConfig(client);
+    g_gameClient->GetClientComponent().lock()->LoadFromConfig(client);
 }
 }

@@ -10,7 +10,7 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 void CollisionSystem::DebugDraw(std::weak_ptr<TransformComponent> transformComponent, std::weak_ptr<ColliderComponent> colliderComponent) const
 {
-    RendererComponent& rendererComponent = g_game->GetRendererComponent();
+    std::weak_ptr<RendererComponent> rendererComponent = g_game->GetRendererComponent();
 
     glm::vec3 position = transformComponent.lock()->GetDebugPositionAndLayer();
     F32 rotation = transformComponent.lock()->m_rotation;
@@ -19,11 +19,11 @@ void CollisionSystem::DebugDraw(std::weak_ptr<TransformComponent> transformCompo
     color.a = 0.5f;
     switch (colliderComponent.lock()->m_shapeType) {
     case ColliderComponent::ShapeType::CIRCLE: {
-        rendererComponent.DrawCircle(position, rotation, scale, 36, 360.0f, 0.5f, color, false);
+        rendererComponent.lock()->DrawCircle(position, rotation, scale, 36, 360.0f, 0.5f, color, false);
         break;
     }
     case ColliderComponent::ShapeType::BOX: {
-        rendererComponent.DrawQuad(position, rotation, scale, color, false);
+        rendererComponent.lock()->DrawQuad(position, rotation, scale, color, false);
         break;
     }
     default: {

@@ -5,6 +5,7 @@
 #include "ComponentMemberTypes.h"
 #include "GameClient.h"
 #include "ReplicationManagerClient.h"
+#include "ResourceManager.h"
 #include "SpriteResource.h"
 
 namespace sand {
@@ -39,8 +40,8 @@ void SpriteComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /
         newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
         newComponentEvent.component.dirtyState = characterDirtyState;
         newComponentEvent.component.entity = entity;
-        ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-        clientComponent.m_replicationManager.NotifyEvent(newComponentEvent);
+        std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
+        clientComponent.lock()->m_replicationManager.NotifyEvent(newComponentEvent);
     }
 }
 }

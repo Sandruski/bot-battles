@@ -21,9 +21,9 @@ bool ConnectStateClient::Enter() const
 {
     ILOG("Entering %s...", GetName().c_str());
 
-    MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
-    mainMenuComponent.m_helloTimer.Start();
-    mainMenuComponent.m_guiTimer.Start();
+    std::weak_ptr<MainMenuComponent> mainMenuComponent = g_gameClient->GetMainMenuComponent();
+    mainMenuComponent.lock()->m_helloTimer.Start();
+    mainMenuComponent.lock()->m_guiTimer.Start();
 
     Event newEvent;
     newEvent.eventType = EventType::CONNECT_SOCKETS;
@@ -45,13 +45,13 @@ bool ConnectStateClient::Update() const
 //----------------------------------------------------------------------------------------------------
 bool ConnectStateClient::RenderGui() const
 {
-    MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
-    GuiComponent& guiComponent = g_gameClient->GetGuiComponent();
-    F32 guiCurrentTime = static_cast<F32>(mainMenuComponent.m_guiTimer.ReadSec());
-    if (guiCurrentTime >= guiComponent.m_secondsBetweenEllipsis) {
-        mainMenuComponent.m_guiTimer.Start();
+    std::weak_ptr<MainMenuComponent> mainMenuComponent = g_gameClient->GetMainMenuComponent();
+    std::weak_ptr<GuiComponent> guiComponent = g_gameClient->GetGuiComponent();
+    F32 guiCurrentTime = static_cast<F32>(mainMenuComponent.lock()->m_guiTimer.ReadSec());
+    if (guiCurrentTime >= guiComponent.lock()->m_secondsBetweenEllipsis) {
+        mainMenuComponent.lock()->m_guiTimer.Start();
     }
-    F32 fractionSecondsBetweenEllipsis = guiComponent.m_secondsBetweenEllipsis / 3.0f;
+    F32 fractionSecondsBetweenEllipsis = guiComponent.lock()->m_secondsBetweenEllipsis / 3.0f;
     if (guiCurrentTime >= fractionSecondsBetweenEllipsis * 2.0f) {
         ImGui::Text("Connecting...");
     } else if (guiCurrentTime >= fractionSecondsBetweenEllipsis) {
@@ -84,8 +84,8 @@ bool ConnectStateClient::Exit() const
 {
     ILOG("Exiting %s...", GetName().c_str());
 
-    MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
-    mainMenuComponent.m_log = std::pair<std::string, LogTypes>();
+    std::weak_ptr<MainMenuComponent> mainMenuComponent = g_gameClient->GetMainMenuComponent();
+    mainMenuComponent.lock()->m_log = std::pair<std::string, LogTypes>();
 
     return true;
 }
@@ -96,14 +96,14 @@ void ConnectStateClient::OnNotify(const Event& event)
     switch (event.eventType) {
 
     case EventType::SOCKETS_CONNECTED: {
-        MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
-        F32 helloCurrentTime = static_cast<F32>(mainMenuComponent.m_helloTimer.ReadSec());
-        if (helloCurrentTime >= mainMenuComponent.m_secondsBetweenHello) {
+        std::weak_ptr<MainMenuComponent> mainMenuComponent = g_gameClient->GetMainMenuComponent();
+        F32 helloCurrentTime = static_cast<F32>(mainMenuComponent.lock()->m_helloTimer.ReadSec());
+        if (helloCurrentTime >= mainMenuComponent.lock()->m_secondsBetweenHello) {
             Event newEvent;
             newEvent.eventType = EventType::SEND_HELLO;
             g_gameClient->GetFSM().NotifyEvent(newEvent);
 
-            mainMenuComponent.m_helloTimer.Start();
+            mainMenuComponent.lock()->m_helloTimer.Start();
         }
         break;
     }
@@ -139,7 +139,7 @@ void ConnectStateClient::ChangeToGameplay() const
 //----------------------------------------------------------------------------------------------------
 void ConnectStateClient::ChangeToSetup() const
 {
-    MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
-    mainMenuComponent.m_fsm.ChangeState("Setup");
+    std::weak_ptr<MainMenuComponent> mainMenuComponent = g_gameClient->GetMainMenuComponent();
+    mainMenuComponent.lock()->m_fsm.ChangeState("Setup");
 }
 }

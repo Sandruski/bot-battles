@@ -1,5 +1,6 @@
 #include "GameClient.h"
 
+#include "ClientComponent.h"
 #include "ClientSystem.h"
 #include "CollisionSystemClient.h"
 #include "ComponentManager.h"
@@ -7,15 +8,18 @@
 #include "FSM.h"
 #include "GameplayStateClient.h"
 #include "HealthSystemClient.h"
+#include "InputComponent.h"
 #include "InputSystem.h"
 #include "LocalPlayerComponent.h"
 #include "MainMenuStateClient.h"
 #include "MovementSystemClient.h"
 #include "OutputSystemClient.h"
+#include "PhysicsComponent.h"
 #include "RemotePlayerComponent.h"
 #include "RemotePlayerMovementSystem.h"
 #include "RendererSystem.h"
 #include "ScoreboardStateClient.h"
+#include "ScriptingComponent.h"
 #include "ScriptingSystem.h"
 #include "SightSystemClient.h"
 #include "SystemManager.h"
@@ -27,9 +31,14 @@ namespace sand {
 GameClient::GameClient(const std::string& configPath)
     : m_configClient(nullptr)
     , m_clientComponent()
+    , m_scriptingComponent()
     , m_inputComponent()
 {
     m_config = m_configClient = std::make_shared<ConfigClient>(configPath);
+
+    m_clientComponent = std::make_shared<ClientComponent>();
+    m_scriptingComponent = std::make_shared<ScriptingComponent>();
+    m_inputComponent = std::make_shared<InputComponent>();
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -127,20 +136,19 @@ bool GameClient::Init()
     if (!ret) {
         return ret;
     }
-    ret = m_physicsComponent.AddObserver(scriptingSystem);
+    ret = m_physicsComponent->AddObserver(scriptingSystem);
     if (!ret) {
         return ret;
     }
-    ret = m_clientComponent.m_replicationManager.AddObserver(scriptingSystem);
+    ret = m_clientComponent->m_replicationManager.AddObserver(scriptingSystem);
     if (!ret) {
         return ret;
     }
     std::weak_ptr<SightSystemClient> sightSystemClient = m_systemManager->GetSystem<SightSystemClient>();
-    ret = m_clientComponent.m_replicationManager.AddObserver(sightSystemClient);
+    ret = m_clientComponent->m_replicationManager.AddObserver(sightSystemClient);
     if (!ret) {
         return ret;
     }
-#ifdef _DRAW
     std::weak_ptr<RendererSystem> rendererSystem = m_systemManager->GetSystem<RendererSystem>();
     ret = sightSystemClient.lock()->AddObserver(rendererSystem);
     if (!ret) {
@@ -156,11 +164,10 @@ bool GameClient::Init()
     if (!ret) {
         return ret;
     }
-    ret = m_clientComponent.m_replicationManager.AddObserver(rendererSystem);
+    ret = m_clientComponent->m_replicationManager.AddObserver(rendererSystem);
     if (!ret) {
         return ret;
     }
-#endif
 
     return ret;
 }

@@ -1,6 +1,7 @@
 #include "SetupStateClient.h"
 
 #include "ClientComponent.h"
+#include "FileSystem.h"
 #include "GameClient.h"
 #include "MainMenuComponent.h"
 #include "WindowComponent.h"
@@ -24,25 +25,25 @@ bool SetupStateClient::Enter() const
 //----------------------------------------------------------------------------------------------------
 bool SetupStateClient::RenderGui() const
 {
-    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    ImGui::InputText("IP", &clientComponent.m_ip);
-    ImGui::InputText("Port", &clientComponent.m_port);
+    std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
+    ImGui::InputText("IP", &clientComponent.lock()->m_ip);
+    ImGui::InputText("Port", &clientComponent.lock()->m_port);
 
-    ImGui::InputText("Name", &clientComponent.m_name);
+    ImGui::InputText("Name", &clientComponent.lock()->m_name);
 
-    if (ImGui::BeginCombo("Script", clientComponent.m_script.c_str())) {
+    if (ImGui::BeginCombo("Script", clientComponent.lock()->m_script.c_str())) {
         std::vector<std::string> entries = g_gameClient->GetFileSystem().GetFilesFromDirectory(BOTS_SCRIPTS_DIR, SCRIPTS_EXTENSION);
         for (const auto& entry : entries) {
             std::string name = g_gameClient->GetFileSystem().GetName(entry);
             if (ImGui::Selectable(name.c_str())) {
-                clientComponent.m_script = name;
+                clientComponent.lock()->m_script = name;
             }
         }
         ImGui::EndCombo();
     }
 
-    MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
-    LogTypes logType = mainMenuComponent.m_log.second;
+    std::weak_ptr<MainMenuComponent> mainMenuComponent = g_gameClient->GetMainMenuComponent();
+    LogTypes logType = mainMenuComponent.lock()->m_log.second;
     ImVec4 color;
     switch (logType) {
     case LogTypes::ILOG: {
@@ -61,7 +62,7 @@ bool SetupStateClient::RenderGui() const
         break;
     }
     }
-    ImGui::TextColored(color, mainMenuComponent.m_log.first.c_str());
+    ImGui::TextColored(color, mainMenuComponent.lock()->m_log.first.c_str());
 
     const char* start = "Start";
     ImVec2 textSize = ImGui::CalcTextSize(start);
@@ -85,8 +86,8 @@ bool SetupStateClient::Exit() const
 {
     ILOG("Exiting %s...", GetName().c_str());
 
-    MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
-    mainMenuComponent.m_log = std::pair<std::string, LogTypes>();
+    std::weak_ptr<MainMenuComponent> mainMenuComponent = g_gameClient->GetMainMenuComponent();
+    mainMenuComponent.lock()->m_log = std::pair<std::string, LogTypes>();
 
     return true;
 }
@@ -102,8 +103,8 @@ void SetupStateClient::OnNotify(const Event& event)
     }
 
     case EventType::CONNECT_FAILED: {
-        MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
-        mainMenuComponent.m_log = std::make_pair("Script failed", LogTypes::ELOG);
+        std::weak_ptr<MainMenuComponent> mainMenuComponent = g_gameClient->GetMainMenuComponent();
+        mainMenuComponent.lock()->m_log = std::make_pair("Script failed", LogTypes::ELOG);
         break;
     }
 
@@ -116,7 +117,7 @@ void SetupStateClient::OnNotify(const Event& event)
 //----------------------------------------------------------------------------------------------------
 void SetupStateClient::ChangeToConnect() const
 {
-    MainMenuComponent& mainMenuComponent = g_gameClient->GetMainMenuComponent();
-    mainMenuComponent.m_fsm.ChangeState("Connect");
+    std::weak_ptr<MainMenuComponent> mainMenuComponent = g_gameClient->GetMainMenuComponent();
+    mainMenuComponent.lock()->m_fsm.ChangeState("Connect");
 }
 }

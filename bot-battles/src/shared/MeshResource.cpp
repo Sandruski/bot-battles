@@ -9,8 +9,8 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 const std::vector<MeshResource::Vertex> MeshResource::GetLineVertices(glm::vec3 fromPosition, glm::vec3 toPosition)
 {
-    WindowComponent& windowComponent = g_game->GetWindowComponent();
-    glm::vec2 proportion = windowComponent.GetProportion();
+    std::weak_ptr<WindowComponent> windowComponent = g_game->GetWindowComponent();
+    glm::vec2 proportion = windowComponent.lock()->GetProportion();
 
     U32 verticesCount = 2;
 

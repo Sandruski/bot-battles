@@ -10,7 +10,7 @@ void PyLog(const char* log)
 {
     //PYLOG(log);
 
-    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-    gameplayComponent.AddLog(log);
+    std::weak_ptr<GameplayComponent> gameplayComponent = g_gameClient->GetGameplayComponent();
+    gameplayComponent.lock()->AddLog(log);
 }
 }

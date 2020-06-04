@@ -22,10 +22,10 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream)
     inputStream.Read(frame);
     ILOG("Frame received %u", frame);
 
-    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    if (clientComponent.m_isEntityInterpolation) {
+    std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
+    if (clientComponent.lock()->m_isEntityInterpolation) {
         F32 startFrameTime = MyTime::GetInstance().GetStartFrameTime();
-        clientComponent.m_frameBuffer.Add(Frame(frame, startFrameTime));
+        clientComponent.lock()->m_frameBuffer.Add(Frame(frame, startFrameTime));
     }
 
     LinkingContext& linkingContext = g_gameClient->GetLinkingContext();
@@ -84,7 +84,7 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream)
         }
     }
 
-    if (clientComponent.m_isEntityInterpolation) {
+    if (clientComponent.lock()->m_isEntityInterpolation) {
         const std::unordered_map<NetworkID, Entity>& networkIDToEntityMap = linkingContext.GetNetworkIDToEntityMap();
         for (const auto& pair : networkIDToEntityMap) {
             Entity entity = pair.second;
@@ -126,9 +126,9 @@ void ReplicationManagerClient::ReadCreateAction(InputMemoryStream& inputStream, 
         g_gameClient->GetLinkingContext().AddEntity(entity, networkID);
 
         Signature signature = g_gameClient->GetEntityManager().GetSignature(entity);
-        ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-        if (playerID == clientComponent.m_playerID) {
-            clientComponent.m_entity = entity;
+        std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
+        if (playerID == clientComponent.lock()->m_playerID) {
+            clientComponent.lock()->m_entity = entity;
             const bool hasLocalPlayer = signature & static_cast<U16>(ComponentType::LOCAL_PLAYER);
             if (!hasLocalPlayer) {
                 g_gameClient->GetComponentManager().AddComponent<LocalPlayerComponent>(entity);
@@ -184,9 +184,9 @@ void ReplicationManagerClient::ReadRemoveAction(NetworkID networkID) const
         return;
     }
 
-    ClientComponent& clientComponent = g_gameClient->GetClientComponent();
-    if (entity == clientComponent.m_entity) {
-        clientComponent.m_entity = INVALID_ENTITY;
+    std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
+    if (entity == clientComponent.lock()->m_entity) {
+        clientComponent.lock()->m_entity = INVALID_ENTITY;
     }
 
     g_gameClient->GetLinkingContext().RemoveEntity(entity);

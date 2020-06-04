@@ -1,5 +1,6 @@
 #include "Config.h"
 
+#include "FileSystem.h"
 #include "Game.h"
 #include "RendererComponent.h"
 #include "WindowComponent.h"
@@ -44,11 +45,11 @@ void Config::LoadFromConfig(const rapidjson::Document& document)
     assert(document.HasMember("window"));
     assert(document["window"].IsObject());
     const rapidjson::Value& window = document["window"];
-    g_game->GetWindowComponent().LoadFromConfig(window);
+    g_game->GetWindowComponent().lock()->LoadFromConfig(window);
 
     assert(document.HasMember("renderer"));
     assert(document["renderer"].IsObject());
     const rapidjson::Value& renderer = document["renderer"];
-    g_game->GetRendererComponent().LoadFromConfig(renderer);
+    g_game->GetRendererComponent().lock()->LoadFromConfig(renderer);
 }
 }

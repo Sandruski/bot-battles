@@ -1,6 +1,7 @@
 #include "ServerComponent.h"
 
 #include "ClientProxy.h"
+#include "FileSystem.h"
 #include "GameServer.h"
 #include "SocketAddress.h"
 #include "TCPSocket.h"

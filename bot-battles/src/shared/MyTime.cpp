@@ -42,10 +42,10 @@ void MyTime::FinishUpdate()
 {
     m_lastFrameMs = m_dtTimer.ReadMs();
 
-    RendererComponent& rendererComponent = g_game->GetRendererComponent();
-    WindowComponent& windowComponent = g_game->GetWindowComponent();
-    if (!rendererComponent.m_isVSync && windowComponent.m_isCap) {
-        F64 desiredLastFrameMs = 1000.0 / windowComponent.m_fps;
+    std::weak_ptr<RendererComponent> rendererComponent = g_game->GetRendererComponent();
+    std::weak_ptr<WindowComponent> windowComponent = g_game->GetWindowComponent();
+    if (!rendererComponent.lock()->m_isVSync && windowComponent.lock()->m_isCap) {
+        F64 desiredLastFrameMs = 1000.0 / windowComponent.lock()->m_fps;
         if (m_lastFrameMs < desiredLastFrameMs) {
             SDL_Delay(static_cast<U32>(desiredLastFrameMs - m_lastFrameMs));
             m_lastFrameMs = m_dtTimer.ReadMs();

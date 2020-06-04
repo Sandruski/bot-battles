@@ -32,6 +32,8 @@ GameServer::GameServer(const std::string& configPath)
     , m_serverComponent()
 {
     m_config = m_configServer = std::make_shared<ConfigServer>(configPath);
+
+    m_serverComponent = std::make_shared<ServerComponent>();
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -148,7 +150,7 @@ bool GameServer::Init()
     if (!ret) {
         return ret;
     }
-    ret = m_physicsComponent.AddObserver(healthSystemServer);
+    ret = m_physicsComponent->AddObserver(healthSystemServer);
     if (!ret) {
         return ret;
     }
@@ -162,7 +164,7 @@ bool GameServer::Init()
     if (!ret) {
         return ret;
     }
-    ret = m_physicsComponent.AddObserver(weaponSpawnerSystem);
+    ret = m_physicsComponent->AddObserver(weaponSpawnerSystem);
     if (!ret) {
         return ret;
     }
@@ -175,7 +177,7 @@ bool GameServer::Init()
     if (!ret) {
         return ret;
     }
-    ret = m_physicsComponent.AddObserver(healthSpawnerSystem);
+    ret = m_physicsComponent->AddObserver(healthSpawnerSystem);
     if (!ret) {
         return ret;
     }
@@ -188,13 +190,11 @@ bool GameServer::Init()
     if (!ret) {
         return ret;
     }
-#ifdef _DRAW
     std::weak_ptr<RendererSystem> rendererSystem = m_systemManager->GetSystem<RendererSystem>();
     ret = movementSystemServer.lock()->AddObserver(rendererSystem);
     if (!ret) {
         return ret;
     }
-#endif
 
     return ret;
 }

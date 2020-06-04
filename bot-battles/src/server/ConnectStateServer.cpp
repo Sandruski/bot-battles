@@ -3,6 +3,7 @@
 #include "ConfigServer.h"
 #include "FSM.h"
 #include "GameServer.h"
+#include "MainMenuComponent.h"
 #include "ServerComponent.h"
 
 namespace sand {
@@ -36,8 +37,8 @@ bool ConnectStateServer::Exit() const
 {
     ILOG("Exiting %s...", GetName().c_str());
 
-    MainMenuComponent& mainMenuComponent = g_gameServer->GetMainMenuComponent();
-    mainMenuComponent.m_log = std::pair<std::string, LogTypes>();
+    std::weak_ptr<MainMenuComponent> mainMenuComponent = g_gameServer->GetMainMenuComponent();
+    mainMenuComponent.lock()->m_log = std::pair<std::string, LogTypes>();
 
     return true;
 }

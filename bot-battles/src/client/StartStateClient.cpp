@@ -3,6 +3,7 @@
 #include "ConfigClient.h"
 #include "FSM.h"
 #include "GameClient.h"
+#include "GameplayComponent.h"
 #include "WindowComponent.h"
 
 namespace sand {
@@ -24,10 +25,10 @@ bool StartStateClient::Enter() const
 //----------------------------------------------------------------------------------------------------
 bool StartStateClient::Update() const
 {
-    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-    F32 mainMenuCurrentTime = static_cast<F32>(gameplayComponent.m_mainMenuTimer.ReadSec());
+    std::weak_ptr<GameplayComponent> gameplayComponent = g_gameClient->GetGameplayComponent();
+    F32 mainMenuCurrentTime = static_cast<F32>(gameplayComponent.lock()->m_mainMenuTimer.ReadSec());
     // X
-    if (mainMenuCurrentTime >= gameplayComponent.m_mainMenuTimeout) {
+    if (mainMenuCurrentTime >= gameplayComponent.lock()->m_mainMenuTimeout) {
         Event newEvent;
         newEvent.eventType = EventType::SEND_BYE;
         g_gameClient->GetFSM().NotifyEvent(newEvent);
@@ -48,16 +49,16 @@ bool StartStateClient::RenderGui() const
     windowFlags |= ImGuiWindowFlags_NoCollapse;
     windowFlags |= ImGuiWindowFlags_NoSavedSettings;
 
-    WindowComponent& windowComponent = g_gameClient->GetWindowComponent();
-    ImVec2 position = ImVec2(static_cast<F32>(windowComponent.m_currentResolution.x) / 2.0f, static_cast<F32>(windowComponent.m_currentResolution.y) / 2.0f);
+    std::weak_ptr<WindowComponent> windowComponent = g_gameClient->GetWindowComponent();
+    ImVec2 position = ImVec2(static_cast<F32>(windowComponent.lock()->m_currentResolution.x) / 2.0f, static_cast<F32>(windowComponent.lock()->m_currentResolution.y) / 2.0f);
     ImGui::SetNextWindowPos(position, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-    ImVec2 size = ImVec2(static_cast<F32>(windowComponent.m_currentResolution.y) / 2.0f, static_cast<F32>(windowComponent.m_currentResolution.x) / 2.0f);
+    ImVec2 size = ImVec2(static_cast<F32>(windowComponent.lock()->m_currentResolution.y) / 2.0f, static_cast<F32>(windowComponent.lock()->m_currentResolution.x) / 2.0f);
     ImGui::SetNextWindowSize(size, ImGuiCond_Always);
 
     if (ImGui::Begin(GetName().c_str(), nullptr, windowFlags)) {
-        GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-        F32 mainMenuCurrentTime = static_cast<F32>(gameplayComponent.m_mainMenuTimer.ReadSec());
-        F32 mainMenuTimeLeft = gameplayComponent.m_mainMenuTimeout - mainMenuCurrentTime;
+        std::weak_ptr<GameplayComponent> gameplayComponent = g_gameClient->GetGameplayComponent();
+        F32 mainMenuCurrentTime = static_cast<F32>(gameplayComponent.lock()->m_mainMenuTimer.ReadSec());
+        F32 mainMenuTimeLeft = gameplayComponent.lock()->m_mainMenuTimeout - mainMenuCurrentTime;
         ImGui::Text("%.0f", mainMenuTimeLeft);
 
         ImGui::End();
@@ -100,8 +101,8 @@ void StartStateClient::OnNotify(const Event& event)
 //----------------------------------------------------------------------------------------------------
 void StartStateClient::ChangeToPlay() const
 {
-    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-    gameplayComponent.m_fsm.ChangeState("Play");
+    std::weak_ptr<GameplayComponent> gameplayComponent = g_gameClient->GetGameplayComponent();
+    gameplayComponent.lock()->m_fsm.ChangeState("Play");
 }
 
 //----------------------------------------------------------------------------------------------------

@@ -3,11 +3,11 @@
 
 #include "Game.h"
 
-#include "ServerComponent.h"
-
 namespace sand {
 
 struct ConfigServer;
+
+struct ServerComponent;
 
 //----------------------------------------------------------------------------------------------------
 class GameServer : public Game {
@@ -17,12 +17,12 @@ public:
     bool Init() override;
     bool DoFrame() override;
 
-    ServerComponent& GetServerComponent() { return m_serverComponent; }
+    std::weak_ptr<ServerComponent> GetServerComponent() { return std::weak_ptr(m_serverComponent); }
 
 private:
     std::shared_ptr<ConfigServer> m_configServer;
 
-    ServerComponent m_serverComponent;
+    std::shared_ptr<ServerComponent> m_serverComponent;
 };
 
 extern GameServer* g_gameServer;

@@ -2,8 +2,10 @@
 
 #include "ConfigClient.h"
 #include "EntityManager.h"
+#include "EventComponent.h"
 #include "FSM.h"
 #include "GameClient.h"
+#include "GameplayComponent.h"
 #include "LinkingContext.h"
 #include "WindowComponent.h"
 
@@ -26,10 +28,10 @@ bool PlayStateClient::Enter() const
 //----------------------------------------------------------------------------------------------------
 bool PlayStateClient::Update() const
 {
-    EventComponent& eventComponent = g_game->GetEventComponent();
-    if (eventComponent.m_keyboard.at(SDL_SCANCODE_O) == EventComponent::KeyState::DOWN) {
-        GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-        gameplayComponent.m_isLog = !gameplayComponent.m_isLog;
+    std::weak_ptr<EventComponent> eventComponent = g_game->GetEventComponent();
+    if (eventComponent.lock()->m_keyboard.at(SDL_SCANCODE_O) == EventComponent::KeyState::DOWN) {
+        std::weak_ptr<GameplayComponent> gameplayComponent = g_gameClient->GetGameplayComponent();
+        gameplayComponent.lock()->m_isLog = !gameplayComponent.lock()->m_isLog;
     }
 
     return true;
@@ -38,8 +40,8 @@ bool PlayStateClient::Update() const
 //----------------------------------------------------------------------------------------------------
 bool PlayStateClient::RenderGui() const
 {
-    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-    if (!gameplayComponent.m_isLog) {
+    std::weak_ptr<GameplayComponent> gameplayComponent = g_gameClient->GetGameplayComponent();
+    if (!gameplayComponent.lock()->m_isLog) {
         return true;
     }
 
@@ -49,24 +51,24 @@ bool PlayStateClient::RenderGui() const
     windowFlags |= ImGuiWindowFlags_NoCollapse;
     windowFlags |= ImGuiWindowFlags_NoSavedSettings;
 
-    WindowComponent& windowComponent = g_gameClient->GetWindowComponent();
-    ImVec2 position = ImVec2(static_cast<F32>(windowComponent.m_currentResolution.x) / 2.0f, static_cast<F32>(windowComponent.m_currentResolution.y) / 1.15f);
+    std::weak_ptr<WindowComponent> windowComponent = g_gameClient->GetWindowComponent();
+    ImVec2 position = ImVec2(static_cast<F32>(windowComponent.lock()->m_currentResolution.x) / 2.0f, static_cast<F32>(windowComponent.lock()->m_currentResolution.y) / 1.15f);
     ImGui::SetNextWindowPos(position, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-    ImVec2 size = ImVec2(static_cast<F32>(windowComponent.m_currentResolution.y), static_cast<F32>(windowComponent.m_currentResolution.x) / 8.0f);
+    ImVec2 size = ImVec2(static_cast<F32>(windowComponent.lock()->m_currentResolution.y), static_cast<F32>(windowComponent.lock()->m_currentResolution.x) / 8.0f);
     ImGui::SetNextWindowSize(size, ImGuiCond_Always);
 
     if (ImGui::Begin("Output", nullptr, windowFlags)) {
         if (ImGui::BeginChild("##console", ImVec2(0, 0), false, windowFlags)) {
             ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
 
-            const char* bufBegin = gameplayComponent.m_buf.begin();
-            const char* bufEnd = gameplayComponent.m_buf.end();
+            const char* bufBegin = gameplayComponent.lock()->m_buf.begin();
+            const char* bufEnd = gameplayComponent.lock()->m_buf.end();
             ImGuiListClipper clipper;
-            clipper.Begin(gameplayComponent.m_lineOffsets.Size);
+            clipper.Begin(gameplayComponent.lock()->m_lineOffsets.Size);
             while (clipper.Step()) {
                 for (I32 lineNumber = clipper.DisplayStart; lineNumber < clipper.DisplayEnd; ++lineNumber) {
-                    const char* lineStart = bufBegin + gameplayComponent.m_lineOffsets[lineNumber];
-                    const char* lineEnd = (lineNumber + 1 < gameplayComponent.m_lineOffsets.Size) ? (bufBegin + gameplayComponent.m_lineOffsets[lineNumber + 1] - 1) : bufEnd;
+                    const char* lineStart = bufBegin + gameplayComponent.lock()->m_lineOffsets[lineNumber];
+                    const char* lineEnd = (lineNumber + 1 < gameplayComponent.lock()->m_lineOffsets.Size) ? (bufBegin + gameplayComponent.lock()->m_lineOffsets[lineNumber + 1] - 1) : bufEnd;
                     ImGui::TextUnformatted(lineStart, lineEnd);
                 }
             }
@@ -92,8 +94,8 @@ bool PlayStateClient::Exit() const
 {
     ILOG("Exiting %s...", GetName().c_str());
 
-    GameplayComponent& gameplayComponent = g_gameClient->GetGameplayComponent();
-    gameplayComponent.ClearLogs();
+    std::weak_ptr<GameplayComponent> gameplayComponent = g_gameClient->GetGameplayComponent();
+    gameplayComponent.lock()->ClearLogs();
 
     return true;
 }

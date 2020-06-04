@@ -19,8 +19,8 @@ RigidbodyComponent::RigidbodyComponent()
 RigidbodyComponent::~RigidbodyComponent()
 {
     if (m_body != nullptr) {
-        PhysicsComponent& physicsComponent = g_game->GetPhysicsComponent();
-        physicsComponent.m_world.DestroyBody(m_body);
+        std::weak_ptr<PhysicsComponent> physicsComponent = g_game->GetPhysicsComponent();
+        physicsComponent.lock()->m_world.DestroyBody(m_body);
     }
 }
 
@@ -79,8 +79,8 @@ void RigidbodyComponent::SetAsCircle(glm::vec2 position, F32 rotation, F32 radiu
     bodyDef.userData = const_cast<Entity*>(&entity);
     bodyDef.position.Set(PIXELS_TO_METERS(position.x), PIXELS_TO_METERS(position.y));
     bodyDef.angle = glm::radians(rotation);
-    PhysicsComponent& physicsComponent = g_game->GetPhysicsComponent();
-    m_body = physicsComponent.m_world.CreateBody(&bodyDef);
+    std::weak_ptr<PhysicsComponent> physicsComponent = g_game->GetPhysicsComponent();
+    m_body = physicsComponent.lock()->m_world.CreateBody(&bodyDef);
 
     b2FixtureDef fixtureDef;
     b2CircleShape shape;
@@ -107,8 +107,8 @@ void RigidbodyComponent::SetAsBox(glm::vec2 position, F32 rotation, glm::vec2 ha
     bodyDef.userData = const_cast<Entity*>(&entity);
     bodyDef.position.Set(PIXELS_TO_METERS(position.x), PIXELS_TO_METERS(position.y));
     bodyDef.angle = glm::radians(rotation);
-    PhysicsComponent& physicsComponent = g_game->GetPhysicsComponent();
-    m_body = physicsComponent.m_world.CreateBody(&bodyDef);
+    std::weak_ptr<PhysicsComponent> physicsComponent = g_game->GetPhysicsComponent();
+    m_body = physicsComponent.lock()->m_world.CreateBody(&bodyDef);
 
     b2FixtureDef fixtureDef;
     b2PolygonShape shape;
