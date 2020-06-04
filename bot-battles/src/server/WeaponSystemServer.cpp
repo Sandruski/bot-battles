@@ -110,8 +110,11 @@ bool WeaponSystemServer::Update()
                     spriteComponent.lock()->m_spriteName = "shootPrimary";
                     characterDirtyState |= static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME);
 
+                    botComponent.lock()->m_actionType = BotComponent::ActionType::SHOOT_PRIMARY;
+                    characterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_ACTION_TYPE);
                     botComponent.lock()->m_timeAction = weaponComponent.lock()->m_timeShootPrimary;
                     botComponent.lock()->m_cooldownAction = weaponComponent.lock()->m_cooldownShootPrimary;
+                    botComponent.lock()->m_timerAction.Start();
                 } else {
                     const bool result = weaponComponent.lock()->CanShootSecondary();
                     if (!result) {
@@ -123,12 +126,12 @@ bool WeaponSystemServer::Update()
                     spriteComponent.lock()->m_spriteName = "shootSecondary";
                     characterDirtyState |= static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME);
 
+                    botComponent.lock()->m_actionType = BotComponent::ActionType::SHOOT_SECONDARY;
+                    characterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_ACTION_TYPE);
                     botComponent.lock()->m_timeAction = weaponComponent.lock()->m_timeShootSecondary;
                     botComponent.lock()->m_cooldownAction = weaponComponent.lock()->m_cooldownShootSecondary;
+                    botComponent.lock()->m_timerAction.Start();
                 }
-                botComponent.lock()->m_actionType = BotComponent::ActionType::SHOOT;
-                characterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_ACTION_TYPE);
-                botComponent.lock()->m_timerAction.Start();
 
                 if (serverComponent.lock()->m_isServerRewind) {
                     Rewind(entity, input.m_interpolationFromFrame, input.m_interpolationToFrame, input.m_interpolationPercentage);
@@ -217,7 +220,8 @@ bool WeaponSystemServer::Render()
         }
 
         std::weak_ptr<BotComponent> botComponent = g_gameServer->GetComponentManager().GetComponent<BotComponent>(entity);
-        if (botComponent.lock()->m_actionType != BotComponent::ActionType::SHOOT) {
+        if (botComponent.lock()->m_actionType != BotComponent::ActionType::SHOOT_PRIMARY
+            && botComponent.lock()->m_actionType != BotComponent::ActionType::SHOOT_SECONDARY) {
             continue;
         }
 

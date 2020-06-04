@@ -42,13 +42,23 @@ bool BotSystem::Update()
         U32 characterDirtyState = 0;
 
         switch (botComponent.lock()->m_actionType) {
-
-        case BotComponent::ActionType::SHOOT: {
+        case BotComponent::ActionType::SHOOT_PRIMARY: {
             if (botComponent.lock()->m_timerAction.ReadSec() >= botComponent.lock()->m_timeAction) {
                 spriteComponent.lock()->m_spriteName = "idle";
                 characterDirtyState |= static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME);
 
-                botComponent.lock()->m_actionType = BotComponent::ActionType::COOLDOWN_SHOOT;
+                botComponent.lock()->m_actionType = BotComponent::ActionType::COOLDOWN_SHOOT_PRIMARY;
+                characterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_ACTION_TYPE);
+            }
+            break;
+        }
+
+        case BotComponent::ActionType::SHOOT_SECONDARY: {
+            if (botComponent.lock()->m_timerAction.ReadSec() >= botComponent.lock()->m_timeAction) {
+                spriteComponent.lock()->m_spriteName = "idle";
+                characterDirtyState |= static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME);
+
+                botComponent.lock()->m_actionType = BotComponent::ActionType::COOLDOWN_SHOOT_SECONDARY;
                 characterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_ACTION_TYPE);
             }
             break;
@@ -76,13 +86,15 @@ bool BotSystem::Update()
             break;
         }
 
-        case BotComponent::ActionType::COOLDOWN_SHOOT:
+        case BotComponent::ActionType::COOLDOWN_SHOOT_PRIMARY:
+        case BotComponent::ActionType::COOLDOWN_SHOOT_SECONDARY:
         case BotComponent::ActionType::COOLDOWN_RELOAD:
         case BotComponent::ActionType::COOLDOWN_HEAL: {
             if (botComponent.lock()->m_timerAction.ReadSec() >= botComponent.lock()->m_timeAction + botComponent.lock()->m_cooldownAction) {
                 botComponent.lock()->m_actionType = BotComponent::ActionType::NONE;
                 characterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_ACTION_TYPE);
             }
+            break;
         }
 
         case BotComponent::ActionType::NONE:

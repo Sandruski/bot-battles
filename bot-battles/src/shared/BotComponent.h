@@ -21,11 +21,13 @@ struct BotComponent : public Component
                       public NetworkableWriteObject
 #endif
 {
-    enum class ActionType : U8 {
+    enum class ActionType : U16 {
 
         NONE,
-        SHOOT,
-        COOLDOWN_SHOOT,
+        SHOOT_PRIMARY,
+        COOLDOWN_SHOOT_PRIMARY,
+        SHOOT_SECONDARY,
+        COOLDOWN_SHOOT_SECONDARY,
         RELOAD,
         COOLDOWN_RELOAD,
         HEAL,

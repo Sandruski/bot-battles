@@ -110,7 +110,8 @@ bool WeaponSystemClient::Render()
         }
 
         std::weak_ptr<BotComponent> botComponent = g_gameClient->GetComponentManager().GetComponent<BotComponent>(entity);
-        if (botComponent.lock()->m_actionType != BotComponent::ActionType::SHOOT) {
+        if (botComponent.lock()->m_actionType != BotComponent::ActionType::SHOOT_PRIMARY
+            && botComponent.lock()->m_actionType != BotComponent::ActionType::SHOOT_SECONDARY) {
             continue;
         }
 

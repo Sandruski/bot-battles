@@ -148,13 +148,15 @@ bool WeaponSpawnerSystem::PickUpWeapon(Entity character, Entity weapon) const
         return false;
     }
 
-    if (characterBotComponent.lock()->m_actionType == BotComponent::ActionType::SHOOT && characterBotComponent.lock()->m_actionType == BotComponent::ActionType::RELOAD) {
+    if (characterBotComponent.lock()->m_actionType == BotComponent::ActionType::SHOOT_PRIMARY
+        || characterBotComponent.lock()->m_actionType == BotComponent::ActionType::RELOAD) {
         return false;
     }
 
     U32 characterDirtyState = 0;
 
-    if (characterBotComponent.lock()->m_actionType == BotComponent::ActionType::COOLDOWN_SHOOT || characterBotComponent.lock()->m_actionType == BotComponent::ActionType::COOLDOWN_RELOAD) {
+    if (characterBotComponent.lock()->m_actionType == BotComponent::ActionType::COOLDOWN_SHOOT_PRIMARY
+        || characterBotComponent.lock()->m_actionType == BotComponent::ActionType::COOLDOWN_RELOAD) {
         characterBotComponent.lock()->m_actionType = BotComponent::ActionType::NONE;
         characterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_ACTION_TYPE);
     }
