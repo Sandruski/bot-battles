@@ -65,9 +65,14 @@ bool PlayStateClient::RenderGui() const
         glm::vec4 color = White;
         ImVec4 colorText = ImVec4(color.r, color.g, color.b, color.a);
 
+        std::string text;
         std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
-        F32 timeDiff = static_cast<F32>(clientComponent.lock()->m_duration) - clientComponent.lock()->m_durationTime;
-        std::string text = std::to_string(static_cast<I32>(std::ceil(timeDiff)));
+        if (clientComponent.lock()->m_duration <= 0) {
+            text = "-";
+        } else {
+            F32 timeDiff = static_cast<F32>(clientComponent.lock()->m_duration) - clientComponent.lock()->m_durationTime;
+            text = std::to_string(static_cast<I32>(std::ceil(timeDiff)));
+        }
 
         ImGui::TextColored(colorText, text.c_str());
 

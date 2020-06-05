@@ -82,9 +82,14 @@ bool PlayStateServer::RenderGui() const
         glm::vec4 color = White;
         ImVec4 colorText = ImVec4(color.r, color.g, color.b, color.a);
 
+        std::string text;
         std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
-        F32 timeDiff = static_cast<F32>(serverComponent.lock()->m_duration) - static_cast<F32>(serverComponent.lock()->m_durationTimer.ReadSec());
-        std::string text = std::to_string(static_cast<I32>(std::ceil(timeDiff)));
+        if (serverComponent.lock()->m_duration <= 0) {
+            text = "-";
+        } else {
+            F32 timeDiff = static_cast<F32>(serverComponent.lock()->m_duration) - static_cast<F32>(serverComponent.lock()->m_durationTimer.ReadSec());
+            text = std::to_string(static_cast<I32>(std::ceil(timeDiff)));
+        }
 
         ImGui::TextColored(colorText, text.c_str());
 
