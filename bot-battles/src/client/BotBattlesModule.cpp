@@ -35,7 +35,7 @@ PYBIND11_EMBEDDED_MODULE(botbattles, m)
         .def_property("angularVelocity", &InputComponent::GetAngularVelocity, &InputComponent::SetAngularVelocity)
         .def("shootPrimaryWeapon", &InputComponent::ShootPrimaryWeapon)
         .def("shootSecondaryWeapon", &InputComponent::ShootSecondaryWeapon)
-        .def("reloadPrimaryWeapon", &InputComponent::Reload)
+        .def("reload", &InputComponent::Reload)
         .def("heal", &InputComponent::Heal);
 
     py::class_<TransformComponent, std::shared_ptr<TransformComponent>>(m, "TransformComponent")
@@ -74,22 +74,22 @@ PYBIND11_EMBEDDED_MODULE(botbattles, m)
         .def_property_readonly("healingTime", &HealthComponent::GetHealingTime)
         .def_property_readonly("healingCooldown", &HealthComponent::GetHealingCooldown);
 
+    py::class_<MapComponent, std::shared_ptr<MapComponent>>(m, "MapComponent")
+        .def("getTileType", &MapComponent::GetTileType);
+
+    py::enum_<MapComponent::TileType>(m, "TileType")
+        .value("NONE", MapComponent::TileType::NONE)
+        .value("FLOOR", MapComponent::TileType::FLOOR)
+        .value("BOT_SPAWNER", MapComponent::TileType::BOT_SPAWNER)
+        .value("WEAPON_SPAWNER", MapComponent::TileType::WEAPON_SPAWNER)
+        .value("HEALTH_SPAWNER", MapComponent::TileType::HEALTH_SPAWNER)
+        .export_values();
+
     py::class_<PhysicsComponent::Collision>(m, "CollisionEvent")
         .def_property_readonly("normalX", &PhysicsComponent::Collision::GetNormalX)
         .def_property_readonly("normalY", &PhysicsComponent::Collision::GetNormalY)
         .def_property_readonly("relativeVelocityX", &PhysicsComponent::Collision::GetRelativeVelocityX)
         .def_property_readonly("relativeVelocityY", &PhysicsComponent::Collision::GetRelativeVelocityY);
-
-    py::class_<MapComponent, std::shared_ptr<MapComponent>>(m, "MapComponent")
-        .def("getTileType", &MapComponent::GetTileType);
-
-    py::enum_<MapComponent::TileType>(m, "TileType")
-        .value("None", MapComponent::TileType::NONE)
-        .value("Floor", MapComponent::TileType::FLOOR)
-        .value("BotSpawner", MapComponent::TileType::BOT_SPAWNER)
-        .value("WeaponSpawner", MapComponent::TileType::WEAPON_SPAWNER)
-        .value("HealthSpawner", MapComponent::TileType::HEALTH_SPAWNER)
-        .export_values();
 }
 }
 

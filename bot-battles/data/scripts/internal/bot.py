@@ -1,7 +1,13 @@
 # coding: utf-8
 
+from botbattles import TransformComponent
+from botbattles import RigidbodyComponent
+from botbattles import WeaponComponent
+from botbattles import HealthComponent
+from botbattles import MapComponent
+
 class Bot:
-    def __init__(self, transformComponent, rigidbodyComponent, weaponComponent, healthComponent, mapComponent):
+    def __init__(self, transformComponent : TransformComponent, rigidbodyComponent : RigidbodyComponent, weaponComponent : WeaponComponent, healthComponent : HealthComponent, mapComponent : MapComponent):
         self.transform = transformComponent
         self.rigidbody = rigidbodyComponent
         self.weapon = weaponComponent
