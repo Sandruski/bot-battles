@@ -11,7 +11,7 @@ class MyBot(bot.Bot):
 
     def tick(self, input):
         if self.wallHit == False:
-            input.linearVelocityX = int(self.map.getTile(1, 1).tileType) * 100
+            input.linearVelocityX = int(self.map.getTileType(1, 1)) * 100
             input.linearVelocityY = 0
         input.angularVelocity = 0
         #input.shootSecondaryWeapon()
