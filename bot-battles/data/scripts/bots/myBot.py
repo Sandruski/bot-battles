@@ -16,41 +16,23 @@ class MyBot(bot.Bot):
         input.angularVelocity = 0
         #input.shootSecondaryWeapon()
         input.reloadPrimaryWeapon()
-        input.shootPrimaryWeapon()
-        input.heal()
+        #input.shootPrimaryWeapon()
+        #input.heal()
 
-    def onSeenNewBot(self, input):
-        logging.info('onSeenNewBot')
+    def onWeaponPickedUp(self, input):
+        logging.info('onWeaponPickedUp')
 
-    def onSeenNewWeapon(self, input):
-        logging.info('onSeenNewWeapon')
-
-    def onSeenNewHealth(self, input):
-        logging.info('onSeenNewHealth')
-
-    def onSeenLostBot(self, input):
-        logging.info('onSeenLostBot')
-
-    def onSeenLostWeapon(self, input):
-        logging.info('onSeenLostWeapon')
-
-    def onSeenLostHealth(self, input):
-        logging.info('onSeenLostHealth')
-
-    def onWeaponPicked(self, input):
-        logging.info('onWeaponPicked')
-
-    def onHealthPicked(self, input):
-        logging.info('onHealthPicked')
-
-    def onBulletHit(self, input):
-        logging.info('onBulletHit')
+    def onReloaded(self, input):
+        logging.info('onReloaded')
 
     def onBulletMiss(self, input):
         logging.info('onBulletMiss')
 
-    def onHitByBullet(self, input):
-        logging.info('onHitByBullet')
+    def onHealthPickedUp(self, input):
+        logging.info('onHealthPickedUp')
+
+    def onHealed(self, input):
+        logging.info('onHealed')
 
     def onHitWall(self, input, collisionEvent):
         self.wallHit = True

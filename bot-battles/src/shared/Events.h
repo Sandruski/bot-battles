@@ -53,6 +53,7 @@ struct WeaponEvent {
     EventType eventType;
     Entity entity;
     U32 damage;
+    U32 ammo;
 };
 
 // Health

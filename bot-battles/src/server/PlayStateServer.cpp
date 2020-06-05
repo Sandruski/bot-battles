@@ -112,13 +112,13 @@ void PlayStateServer::OnNotify(const Event& event)
 {
     switch (event.eventType) {
 
-    case EventType::HEALTH_EMPTIED: {
-        OnHealthEmptied(event.health.entity);
+    case EventType::HEALTH_HURT: {
+        OnHealthLost(event.health.entity);
         break;
     }
 
     case EventType::PLAYER_REMOVED: {
-        OnHealthEmptied(event.networking.entity);
+        OnHealthLost(event.networking.entity);
         break;
     }
 
@@ -129,7 +129,7 @@ void PlayStateServer::OnNotify(const Event& event)
 }
 
 //----------------------------------------------------------------------------------------------------
-void PlayStateServer::OnHealthEmptied(Entity entity) const
+void PlayStateServer::OnHealthLost(Entity entity) const
 {
     U32 aliveCount = 0;
     Entity winnerEntity = INVALID_ENTITY;

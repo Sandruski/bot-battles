@@ -69,12 +69,13 @@ enum class EventType : U64 {
     // Weapon
     WEAPON_HIT,
     WEAPON_MISSED,
-    WEAPON_PRIMARY_GAINED,
+    WEAPON_PRIMARY_PICKED_UP,
+    WEAPON_PRIMARY_RELOADED,
 
     // Health
-    HEALTH_LOST,
-    HEALTH_EMPTIED,
-    HEALTH_GAINED,
+    HEALTH_HURT,
+    HEALTH_HEALED,
+    HEALTH_PICKED_UP,
 
     // Sight
     SEEN_NEW_ENTITY,

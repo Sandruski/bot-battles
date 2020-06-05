@@ -10,23 +10,35 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 void WeaponComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /*frame*/, ReplicationActionType replicationActionType, Entity entity)
 {
-    /* TODO GAIN PRIMARY WEAPON
-            if (replicationActionType != ReplicationActionType::CREATE) {
-            Event newWeaponEvent;
-            newWeaponEvent.eventType = EventType::WEAPON_PRIMARY_GAINED;
-            newWeaponEvent.weapon.entity = entity;
-            std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
-            clientComponent.m_replicationManager.NotifyEvent(newWeaponEvent);
-        }
-    */
     if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_DAMAGE_PRIMARY)) {
         inputStream.Read(m_damagePrimary);
+
+        if (replicationActionType != ReplicationActionType::CREATE) {
+            Event newWeaponEvent;
+            newWeaponEvent.eventType = EventType::WEAPON_PRIMARY_PICKED_UP;
+            newWeaponEvent.weapon.entity = entity;
+            std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
+            clientComponent.lock()->m_replicationManager.NotifyEvent(newWeaponEvent);
+        }
     }
     if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_DAMAGE_SECONDARY)) {
         inputStream.Read(m_damageSecondary);
     }
     if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_CURRENT_AMMO_PRIMARY)) {
+        I32 oldCurrentAmmoPrimary = m_currentAmmoPrimary;
         inputStream.Read(m_currentAmmoPrimary);
+
+        if (replicationActionType != ReplicationActionType::CREATE) {
+            const bool hasWeaponPrimaryPickedUp = dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_DAMAGE_PRIMARY);
+            if (!hasWeaponPrimaryPickedUp && oldCurrentAmmoPrimary < m_currentAmmoPrimary) {
+                Event newWeaponEvent;
+                newWeaponEvent.eventType = EventType::WEAPON_PRIMARY_RELOADED;
+                newWeaponEvent.weapon.entity = entity;
+                newWeaponEvent.weapon.ammo = m_currentAmmoPrimary - oldCurrentAmmoPrimary;
+                std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
+                clientComponent.lock()->m_replicationManager.NotifyEvent(newWeaponEvent);
+            }
+        }
     }
     if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_MAX_AMMO_PRIMARY)) {
         inputStream.Read(m_maxAmmoPrimary);

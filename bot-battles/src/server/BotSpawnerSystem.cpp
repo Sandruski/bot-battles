@@ -157,6 +157,7 @@ Entity BotSpawnerSystem::SpawnBot(PlayerID playerID) const
     // Health
     std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().AddComponent<HealthComponent>(character);
     healthComponent.lock()->m_maxHP = healthComponent.lock()->m_currentHP = botSpawnerComponent.lock()->m_HP;
+    healthComponent.lock()->m_currentHP = 10;
 
     // Sight
     std::weak_ptr<SightComponent> sightComponent = g_gameServer->GetComponentManager().AddComponent<SightComponent>(character);

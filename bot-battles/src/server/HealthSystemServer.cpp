@@ -158,7 +158,7 @@ void HealthSystemServer::OnCollisionEnter(Entity entityA, Entity entityB) const
     healthComponentB.lock()->m_currentHP = 0;
 
     Event newHealthEvent;
-    newHealthEvent.eventType = EventType::HEALTH_EMPTIED;
+    newHealthEvent.eventType = EventType::HEALTH_HURT;
     newHealthEvent.health.entity = entityA;
     NotifyEvent(newHealthEvent);
     newHealthEvent.health.entity = entityB;
@@ -184,12 +184,12 @@ void HealthSystemServer::OnWeaponHit(Entity entity, U32 damage) const
     healthComponent.lock()->m_currentHP -= damage;
     if (healthComponent.lock()->m_currentHP <= 0) {
         healthComponent.lock()->m_currentHP = 0;
-
-        Event newHealthEvent;
-        newHealthEvent.eventType = EventType::HEALTH_EMPTIED;
-        newHealthEvent.health.entity = entity;
-        NotifyEvent(newHealthEvent);
     }
+
+    Event newHealthEvent;
+    newHealthEvent.eventType = EventType::HEALTH_HURT;
+    newHealthEvent.health.entity = entity;
+    NotifyEvent(newHealthEvent);
 
     Event newComponentEvent;
     newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;

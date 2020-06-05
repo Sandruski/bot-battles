@@ -17,10 +17,10 @@ void HealthComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /
         if (replicationActionType != ReplicationActionType::CREATE) {
             Event newHealthEvent;
             if (oldCurrentHP > m_currentHP) {
-                newHealthEvent.eventType = EventType::HEALTH_LOST;
+                newHealthEvent.eventType = EventType::HEALTH_HURT;
                 newHealthEvent.health.health = oldCurrentHP - m_currentHP;
             } else if (oldCurrentHP < m_currentHP) {
-                newHealthEvent.eventType = EventType::HEALTH_GAINED;
+                newHealthEvent.eventType = EventType::HEALTH_HEALED;
                 newHealthEvent.health.health = m_currentHP - oldCurrentHP;
             }
             newHealthEvent.health.entity = entity;
@@ -33,6 +33,17 @@ void HealthComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /
     }
     if (dirtyState & static_cast<U64>(ComponentMemberType::HEALTH_HP)) {
         inputStream.Read(m_HP);
+
+        if (replicationActionType != ReplicationActionType::CREATE) {
+            if (m_HP > 0) {
+                Event newHealthEvent;
+                newHealthEvent.eventType = EventType::HEALTH_PICKED_UP;
+                newHealthEvent.health.health = m_HP;
+                newHealthEvent.health.entity = entity;
+                std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
+                clientComponent.lock()->m_replicationManager.NotifyEvent(newHealthEvent);
+            }
+        }
     }
     if (dirtyState & static_cast<U64>(ComponentMemberType::HEALTH_TIME_HEAL)) {
         inputStream.Read(m_timeHeal);

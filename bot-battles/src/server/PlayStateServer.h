@@ -24,7 +24,7 @@ public:
     void OnNotify(const Event& event) override;
 
 private:
-    void OnHealthEmptied(Entity entity) const;
+    void OnHealthLost(Entity entity) const;
 
     void ChangeToScoreboard() const; // OnHealthEmptied (== 1 player alive) or player disconnected
 };
