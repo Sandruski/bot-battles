@@ -50,9 +50,29 @@ PYBIND11_EMBEDDED_MODULE(botbattles, m)
         .def_property_readonly("linearVelocityY", &RigidbodyComponent::GetLinearVelocityY)
         .def_property_readonly("angularVelocity", &RigidbodyComponent::GetAngularVelocity);
 
-    py::class_<WeaponComponent, std::shared_ptr<WeaponComponent>>(m, "WeaponComponent");
-    py::class_<HealthComponent, std::shared_ptr<HealthComponent>>(m, "HealthComponent");
-    // TODO: weaponComponent, healthComponent
+    py::class_<WeaponComponent, std::shared_ptr<WeaponComponent>>(m, "WeaponComponent")
+        .def_property_readonly("primaryWeaponDamage", &WeaponComponent::GetPrimaryWeaponDamage)
+        .def_property_readonly("secondaryWeaponDamage", &WeaponComponent::GetSecondaryWeaponDamage)
+        .def_property_readonly("currentAmmo", &WeaponComponent::GetCurrentAmmo)
+        .def_property_readonly("maxAmmo", &WeaponComponent::GetMaxAmmo)
+        .def("hasAmmoBox", &WeaponComponent::HasAmmoBox)
+        .def_property_readonly("ammoBoxAmmo", &WeaponComponent::GetAmmoBoxAmmo)
+        .def_property_readonly("primaryWeaponRange", &WeaponComponent::GetPrimaryWeaponRange)
+        .def_property_readonly("secondaryWeaponRange", &WeaponComponent::GetSecondaryWeaponRange)
+        .def_property_readonly("primaryWeaponShootingTime", &WeaponComponent::GetPrimaryWeaponShootingTime)
+        .def_property_readonly("primaryWeaponShootingCooldown", &WeaponComponent::GetPrimaryWeaponShootingCooldown)
+        .def_property_readonly("secondaryWeaponShootingTime", &WeaponComponent::GetSecondaryWeaponShootingTime)
+        .def_property_readonly("secondaryWeaponShootingCooldown", &WeaponComponent::GetSecondaryWeaponShootingCooldown)
+        .def_property_readonly("reloadingTime", &WeaponComponent::GetReloadingTime)
+        .def_property_readonly("reloadingCooldown", &WeaponComponent::GetReloadingCooldown);
+
+    py::class_<HealthComponent, std::shared_ptr<HealthComponent>>(m, "HealthComponent")
+        .def_property_readonly("currentHP", &HealthComponent::GetCurrentHP)
+        .def_property_readonly("maxHP", &HealthComponent::GetMaxHP)
+        .def("hasFirstAidBox", &HealthComponent::HasFirstAidBox)
+        .def_property_readonly("firstAidBoxHP", &HealthComponent::GetFirstAidBoxHP)
+        .def_property_readonly("healingTime", &HealthComponent::GetHealingTime)
+        .def_property_readonly("healingCooldown", &HealthComponent::GetHealingCooldown);
 
     py::class_<PhysicsComponent::Collision>(m, "CollisionEvent")
         .def_property_readonly("normalX", &PhysicsComponent::Collision::GetNormalX)

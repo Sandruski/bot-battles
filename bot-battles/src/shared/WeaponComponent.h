@@ -38,6 +38,77 @@ struct WeaponComponent : public Component
     bool CanReload() const;
     void Reload();
 
+    // Bot
+    U32 GetPrimaryWeaponDamage() const
+    {
+        return m_damagePrimary;
+    }
+
+    U32 GetSecondaryWeaponDamage() const
+    {
+        return m_damageSecondary;
+    }
+
+    U32 GetCurrentAmmo() const
+    {
+        return static_cast<U32>(m_currentAmmoPrimary);
+    }
+
+    U32 GetMaxAmmo() const
+    {
+        return static_cast<U32>(m_maxAmmoPrimary);
+    }
+
+    bool HasAmmoBox() const
+    {
+        return m_ammoPrimary > 0;
+    }
+
+    U32 GetAmmoBoxAmmo() const
+    {
+        return m_ammoPrimary;
+    }
+
+    F32 GetPrimaryWeaponRange() const
+    {
+        return m_rangePrimary;
+    }
+
+    F32 GetSecondaryWeaponRange() const
+    {
+        return m_rangeSecondary;
+    }
+
+    F32 GetPrimaryWeaponShootingTime() const
+    {
+        return m_timeShootPrimary;
+    }
+
+    F32 GetPrimaryWeaponShootingCooldown() const
+    {
+        return m_cooldownShootPrimary;
+    }
+
+    F32 GetSecondaryWeaponShootingTime() const
+    {
+        return m_timeShootSecondary;
+    }
+
+    F32 GetSecondaryWeaponShootingCooldown() const
+    {
+        return m_cooldownShootSecondary;
+    }
+
+    F32 GetReloadingTime() const
+    {
+        return m_timeReload;
+    }
+
+    F32 GetReloadingCooldown() const
+    {
+        return m_cooldownReload;
+    }
+
     // Networked
     U32 m_damagePrimary;
     U32 m_damageSecondary;

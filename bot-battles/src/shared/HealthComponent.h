@@ -34,6 +34,37 @@ struct HealthComponent : public Component
     bool CanHeal() const;
     void Heal();
 
+    // Bot
+    U32 GetCurrentHP() const
+    {
+        return static_cast<U32>(m_currentHP);
+    }
+
+    U32 GetMaxHP() const
+    {
+        return m_maxHP;
+    }
+
+    bool HasFirstAidBox() const
+    {
+        return m_HP > 0;
+    }
+
+    U32 GetFirstAidBoxHP() const
+    {
+        return m_HP;
+    }
+
+    F32 GetHealingTime() const
+    {
+        return m_timeHeal;
+    }
+
+    F32 GetHealingCooldown() const
+    {
+        return m_cooldownHeal;
+    }
+
     // Networked
     I32 m_currentHP;
     U32 m_maxHP;
