@@ -162,7 +162,7 @@ void ScriptingSystem::ImportScripts() const
     try {
         std::weak_ptr<ScriptingComponent> scriptingComponent = g_gameClient->GetScriptingComponent();
         std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
-        scriptingComponent.lock()->m_myBotModule = py::module::import(clientComponent.lock()->m_script.c_str());
+        scriptingComponent.lock()->m_myBotModule = py::module::import(clientComponent.lock()->m_bot.c_str());
         //scriptingComponent.m_myBotModule.reload(); // TODO
 
         newEvent.eventType = EventType::CONNECT_SUCCESSFUL;
@@ -193,7 +193,7 @@ void ScriptingSystem::InitScripts() const
         std::weak_ptr<WeaponComponent> weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(entity);
         std::weak_ptr<MapComponent> mapComponent = g_gameClient->GetMapComponent();
         try {
-            scriptingComponent.lock()->m_mainModule.attr("init")(clientComponent.lock()->m_script.c_str(), transformComponent.lock(), rigidbodyComponent.lock(), healthComponent.lock(), weaponComponent.lock(), mapComponent.lock());
+            scriptingComponent.lock()->m_mainModule.attr("init")(clientComponent.lock()->m_bot.c_str(), transformComponent.lock(), rigidbodyComponent.lock(), healthComponent.lock(), weaponComponent.lock(), mapComponent.lock());
         } catch (const std::runtime_error& re) {
             OutputDebugStringA(re.what());
             ::MessageBoxA(NULL, re.what(), "Error initializing script", MB_OK);

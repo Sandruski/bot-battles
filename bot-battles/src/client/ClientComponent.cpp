@@ -29,7 +29,7 @@ ClientComponent::ClientComponent()
     , m_port()
     , m_map()
     , m_name()
-    , m_script()
+    , m_bot()
     , m_playerID(INVALID_PLAYER_ID)
     , m_entity(INVALID_ENTITY)
     , m_incomingPacketsTimer()
@@ -41,7 +41,7 @@ ClientComponent::ClientComponent()
     , m_interpolationFromFrame(0)
     , m_interpolationToFrame(0)
     , m_interpolationPercentage(0.0f)
-    , m_entityInterpolationPeriod(0.0f)
+    , m_entityInterpolationPeriod(1.0f / (1 / 20.0f))
     , m_frameBuffer()
     , m_inputBuffer()
     , m_isLastMovementInputPending(false)
@@ -72,13 +72,13 @@ void ClientComponent::LoadFromConfig(const rapidjson::Value& value)
     assert(value.HasMember("defaultName"));
     m_name = value["defaultName"].GetString();
 
-    assert(value.HasMember("defaultScript"));
-    m_script = value["defaultScript"].GetString();
+    assert(value.HasMember("defaultBot"));
+    m_bot = value["defaultBot"].GetString();
     std::vector<std::string> entries = g_gameClient->GetFileSystem().GetFilesFromDirectory(BOTS_SCRIPTS_DIR, SCRIPTS_EXTENSION);
     bool hasScript = false;
     for (const auto& entry : entries) {
         std::string name = g_gameClient->GetFileSystem().GetName(entry);
-        if (name == m_script) {
+        if (name == m_bot) {
             hasScript = true;
             break;
         }
@@ -86,15 +86,11 @@ void ClientComponent::LoadFromConfig(const rapidjson::Value& value)
     if (!hasScript) {
         if (!entries.empty()) {
             std::string name = g_gameClient->GetFileSystem().GetName(entries.front());
-            m_script = name;
+            m_bot = name;
         } else {
-            m_script = "";
+            m_bot = "";
         }
     }
-
-    assert(value.HasMember("serverFps"));
-    F32 serverFps = value["serverFps"].GetFloat();
-    m_entityInterpolationPeriod = 1.0f / serverFps;
 }
 
 //----------------------------------------------------------------------------------------------------
