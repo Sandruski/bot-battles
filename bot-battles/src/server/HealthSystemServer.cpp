@@ -41,20 +41,11 @@ bool HealthSystemServer::Update()
         return true;
     }
 
-    Entity entityA = INVALID_ENTITY;
-    Entity entityB = INVALID_ENTITY;
-
     std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
     for (auto& entity : m_entities) {
         PlayerID playerID = serverComponent.lock()->GetPlayerID(entity);
         if (playerID >= INVALID_PLAYER_ID) {
             continue;
-        }
-
-        if (entityA == INVALID_ENTITY) {
-            entityA = entity;
-        } else if (entityB == INVALID_ENTITY) {
-            entityB = entity;
         }
 
         std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(entity);
@@ -102,12 +93,6 @@ bool HealthSystemServer::Update()
             newEvent.component.dirtyState = characterDirtyState;
             NotifyEvent(newEvent);
         }
-    }
-
-    std::weak_ptr<EventComponent> eventComponent = g_game->GetEventComponent();
-    if (eventComponent.lock()->m_keyboard.at(SDL_SCANCODE_LSHIFT) == EventComponent::KeyState::REPEAT
-        && eventComponent.lock()->m_keyboard.at(SDL_SCANCODE_W) == EventComponent::KeyState::DOWN) {
-        OnCollisionEnter(entityA, entityB);
     }
 
     return true;

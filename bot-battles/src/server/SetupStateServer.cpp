@@ -55,6 +55,8 @@ bool SetupStateServer::RenderGui() const
             ImGui::EndCombo();
         }
 
+        ImGui::InputInt("Duration", &serverComponent.lock()->m_duration);
+
         std::weak_ptr<MainMenuComponent> mainMenuComponent = g_gameServer->GetMainMenuComponent();
         LogTypes logType = mainMenuComponent.lock()->m_log.second;
         ImVec4 color;

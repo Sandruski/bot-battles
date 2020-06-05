@@ -45,6 +45,9 @@ struct ServerComponent : public Component {
 
     std::string m_map;
 
+    I32 m_duration;
+    MyTimer m_durationTimer;
+
     std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>> m_playerIDToClientProxy;
     std::unordered_map<Entity, PlayerID> m_entityToPlayerID;
     std::priority_queue<PlayerID, std::vector<PlayerID>, std::greater<PlayerID>> m_availablePlayerIDs;

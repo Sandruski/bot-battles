@@ -299,6 +299,7 @@ void ClientSystem::ReceiveWelcomePacket(std::weak_ptr<ClientComponent> clientCom
     inputStream.Read(clientComponent.lock()->m_playerID);
     assert(clientComponent.lock()->m_playerID < INVALID_PLAYER_ID);
     inputStream.Read(clientComponent.lock()->m_map);
+    inputStream.Read(clientComponent.lock()->m_duration);
 
     std::weak_ptr<ScoreboardComponent> scoreboardComponent = g_gameClient->GetScoreboardComponent();
     inputStream.Read(scoreboardComponent.lock()->m_gameCount);
@@ -460,6 +461,10 @@ void ClientSystem::ReceiveStatePacket(std::weak_ptr<ClientComponent> clientCompo
 
     inputStream.Read(clientComponent.lock()->m_lastAckdFrame);
     ILOG("Last ackd %u", clientComponent.lock()->m_lastAckdFrame);
+
+    if (clientComponent.lock()->m_duration > 0) {
+        inputStream.Read(clientComponent.lock()->m_durationTime);
+    }
 
     Entity entity = clientComponent.lock()->m_entity;
     clientComponent.lock()->m_replicationManager.Read(inputStream);

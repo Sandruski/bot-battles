@@ -8,6 +8,7 @@
 #include "HealthComponent.h"
 #include "ScoreboardComponent.h"
 #include "ServerComponent.h"
+#include "WindowComponent.h"
 
 namespace sand {
 
@@ -22,9 +23,73 @@ bool PlayStateServer::Enter() const
 {
     ILOG("Entering %s...", GetName().c_str());
 
+    std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
+    serverComponent.lock()->m_durationTimer.Start();
+
     Event newEvent;
     newEvent.eventType = EventType::SEND_PLAY;
     g_gameServer->GetFSM().NotifyEvent(newEvent);
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool PlayStateServer::Update() const
+{
+    std::weak_ptr<EventComponent> eventComponent = g_game->GetEventComponent();
+    if (eventComponent.lock()->m_keyboard.at(SDL_SCANCODE_LSHIFT) == EventComponent::KeyState::REPEAT
+        && eventComponent.lock()->m_keyboard.at(SDL_SCANCODE_W) == EventComponent::KeyState::DOWN) {
+        ChangeToScoreboard();
+    }
+
+    std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
+    if (serverComponent.lock()->m_duration <= 0) {
+        return true;
+    }
+
+    F32 durationCurrentTime = static_cast<F32>(serverComponent.lock()->m_durationTimer.ReadSec());
+    if (durationCurrentTime >= static_cast<F32>(serverComponent.lock()->m_duration)) {
+        ChangeToScoreboard();
+    }
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool PlayStateServer::RenderGui() const
+{
+    ImGuiWindowFlags windowFlags = 0;
+    windowFlags |= ImGuiWindowFlags_NoMove;
+    windowFlags |= ImGuiWindowFlags_NoScrollWithMouse;
+    windowFlags |= ImGuiWindowFlags_AlwaysAutoResize;
+    windowFlags |= ImGuiWindowFlags_NoBackground;
+    windowFlags |= ImGuiWindowFlags_NoSavedSettings;
+    windowFlags |= ImGuiWindowFlags_NoFocusOnAppearing;
+    windowFlags |= ImGuiWindowFlags_NoBringToFrontOnFocus;
+
+    windowFlags |= ImGuiWindowFlags_NoDecoration;
+    windowFlags |= ImGuiWindowFlags_NoInputs;
+
+    std::weak_ptr<WindowComponent> windowComponent = g_game->GetWindowComponent();
+    glm::vec2 proportion = windowComponent.lock()->GetProportion();
+
+    ImVec2 windowPosition = ImVec2(windowComponent.lock()->m_baseResolution.x / 2.0f, 20.0f);
+    windowPosition.x *= proportion.x;
+    windowPosition.y *= proportion.y;
+    ImGui::SetNextWindowPos(windowPosition, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+
+    if (ImGui::Begin("Time", nullptr, windowFlags)) {
+        glm::vec4 color = White;
+        ImVec4 colorText = ImVec4(color.r, color.g, color.b, color.a);
+
+        std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
+        F32 timeDiff = static_cast<F32>(serverComponent.lock()->m_duration) - static_cast<F32>(serverComponent.lock()->m_durationTimer.ReadSec());
+        std::string text = std::to_string(static_cast<I32>(std::ceil(timeDiff)));
+
+        ImGui::TextColored(colorText, text.c_str());
+
+        ImGui::End();
+    }
 
     return true;
 }

@@ -507,6 +507,7 @@ void ServerSystem::SendWelcomePacket(const std::weak_ptr<ServerComponent> server
 
     welcomePacket.Write(playerID);
     welcomePacket.Write(serverComponent.lock()->m_map);
+    welcomePacket.Write(serverComponent.lock()->m_duration);
 
     std::weak_ptr<ScoreboardComponent> scoreboardComponent = g_gameServer->GetScoreboardComponent();
     welcomePacket.Write(scoreboardComponent.lock()->m_gameCount);
@@ -619,6 +620,10 @@ void ServerSystem::SendStatePacket(const std::weak_ptr<ServerComponent> serverCo
     statePacket.Write(clientProxy->m_timestamp);
 
     statePacket.Write(clientProxy->m_lastAckdFrame);
+
+    if (serverComponent.lock()->m_duration > 0.0f) {
+        statePacket.Write(static_cast<F32>(serverComponent.lock()->m_durationTimer.ReadSec()));
+    }
 
     clientProxy->m_replicationManager->Write(statePacket, *delivery.m_replicationResultManager);
 

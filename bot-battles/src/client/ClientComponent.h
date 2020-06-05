@@ -40,6 +40,9 @@ struct ClientComponent : public Component {
 
     std::string m_map;
 
+    I32 m_duration;
+    F32 m_durationTime;
+
     std::string m_name;
     std::string m_bot;
 

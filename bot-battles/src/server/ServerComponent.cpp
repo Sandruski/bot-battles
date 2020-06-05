@@ -27,6 +27,8 @@ ServerComponent::ServerComponent()
     , m_maxPacketsPerFrame(10) // same as client
     , m_maxInputsPerPaquet(30) // same as client
     , m_map()
+    , m_duration(0)
+    , m_durationTimer()
     , m_isServerRewind(true)
 {
     m_playerIDToClientProxy.reserve(MAX_PLAYER_IDS);
@@ -62,6 +64,9 @@ void ServerComponent::LoadFromConfig(const rapidjson::Value& value)
             m_map = "";
         }
     }
+
+    assert(value.HasMember("defaultDuration"));
+    m_duration = value["defaultDuration"].GetInt();
 }
 
 //----------------------------------------------------------------------------------------------------
