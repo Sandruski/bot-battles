@@ -17,11 +17,8 @@ class MyBot(bot.Bot):
             input.linearVelocityX = int(self.map.getTile(1, 1).tileType) * 100
             input.linearVelocityY = 0
         input.angularVelocity = 0
-        #input.shootSecondaryWeapon()
-        input.reload()
-        self.health.hasFirstAidBox()
-        #input.shootPrimaryWeapon()
-        #input.heal()      
+        worldPosition = self.map.getWorldPosition(0, 0)
+        logging.info('%f %f', worldPosition[0], worldPosition[1])
 
     def onWeaponPickedUp(self, input):
         logging.info('onWeaponPickedUp')
@@ -57,6 +54,16 @@ class PriorityQueue:
     
     def get(self):
         return heapq.heappop(self.elements)[1]
+
+def reconstruct_path(came_from, start, goal):
+    current = goal
+    path = []
+    while current != start:
+        path.append(current)
+        current = came_from[current]
+    path.append(start) # optional
+    path.reverse() # optional
+    return path
 
 def heuristic(a, b):
     (x1, y1) = a

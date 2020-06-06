@@ -6,12 +6,48 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
+MapComponent::Tile::Tile()
+    : m_tileType(TileType::NONE)
+{
+}
+
+//----------------------------------------------------------------------------------------------------
 MapComponent::MapComponent()
     : m_walkability()
     , m_tileCount(0, 0)
     , m_tileSize(0, 0)
     , m_scale(1.0f)
 {
+}
+
+//----------------------------------------------------------------------------------------------------
+MapComponent::Tile& MapComponent::GetTile(U32 i, U32 j)
+{
+    return m_walkability.at(i + m_tileCount.x * j);
+}
+
+//----------------------------------------------------------------------------------------------------
+bool MapComponent::IsInBounds(U32 i, U32 j)
+{
+    return ((0 <= i && i < m_tileCount.x) && (0 <= j && j < m_tileCount.y));
+}
+
+//----------------------------------------------------------------------------------------------------
+bool MapComponent::IsWalkable(U32 i, U32 j)
+{
+    Tile& tile = GetTile(i, j);
+    return tile.m_tileType != Tile::TileType::NONE;
+}
+
+//----------------------------------------------------------------------------------------------------
+glm::vec2 MapComponent::MapToWorld(U32 i, U32 j) const
+{
+    glm::vec2 world;
+
+    world.x = static_cast<F32>(i) * static_cast<F32>(m_tileSize.x);
+    world.y = static_cast<F32>(j) * static_cast<F32>(m_tileSize.y);
+
+    return world;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -29,6 +65,17 @@ glm::vec2 MapComponent::MapToRealWorld(U32 i, U32 j) const
     realWorld += static_cast<glm::vec2>(windowComponent.lock()->m_baseResolution) / 2.0f;
 
     return realWorld;
+}
+
+//----------------------------------------------------------------------------------------------------
+glm::uvec2 MapComponent::WorldToMap(F32 x, F32 y) const
+{
+    glm::uvec2 map;
+
+    map.x = static_cast<U32>(x / static_cast<F32>(m_tileSize.x));
+    map.y = static_cast<U32>(y / static_cast<F32>(m_tileSize.y));
+
+    return map;
 }
 
 //----------------------------------------------------------------------------------------------------

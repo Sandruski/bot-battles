@@ -103,7 +103,7 @@ void MapImporter::Create(const Tilemap& tilemap) const
     mapComponent.lock()->m_tileCount = tilemap.m_tileCount;
     mapComponent.lock()->m_tileSize = tilemap.m_tileSize;
     mapComponent.lock()->m_scale = 1.0f;
-    U32 tileCount = mapComponent.lock()->GetTileCount();
+    U32 tileCount = mapComponent.lock()->m_tileCount.x * mapComponent.lock()->m_tileCount.y;
     mapComponent.lock()->m_walkability.resize(tileCount);
     for (auto& tile : mapComponent.lock()->m_walkability) {
         // Walkability

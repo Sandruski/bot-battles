@@ -75,7 +75,11 @@ PYBIND11_EMBEDDED_MODULE(botbattles, m)
         .def_property_readonly("healingCooldown", &HealthComponent::GetHealingCooldown);
 
     py::class_<MapComponent, std::shared_ptr<MapComponent>>(m, "MapComponent")
-        .def("getTile", &MapComponent::GetTile);
+        .def("getTile", &MapComponent::GetTile)
+        .def("getWorldPosition", &MapComponent::GetRealWorldPosition)
+        //.def("getMapPosition", &MapComponent::RealWorldToMap)
+        .def_property_readonly("tileCountX", &MapComponent::GetTileCountX)
+        .def_property_readonly("tileCountY", &MapComponent::GetTileCountY);
 
     py::class_<MapComponent::Tile>(m, "Tile")
         .def_property_readonly("tileType", &MapComponent::Tile::GetTileType);

@@ -18,10 +18,7 @@ struct MapComponent {
             HEALTH_SPAWNER
         };
 
-        Tile()
-            : m_tileType(TileType::NONE)
-        {
-        }
+        Tile();
 
         // Bot
         TileType GetTileType() const
@@ -34,42 +31,35 @@ struct MapComponent {
 
     MapComponent();
 
-    // Bot
-    Tile& GetTile(U32 i, U32 j)
-    {
-        return m_walkability.at(i + m_tileCount.x * j);
-    }
+    Tile& GetTile(U32 i, U32 j);
+    //std::vector<Tile&> GetTileNeighbors(U32 i, U32 j);
 
-    U32 GetTileCount() const
-    {
-        return m_tileCount.x * m_tileCount.y;
-    }
+    bool IsInBounds(U32 i, U32 j);
+    bool IsWalkable(U32 i, U32 j);
 
-    glm::uvec2 MapToWorld(U32 i, U32 j) const
-    {
-        glm::vec2 world;
-
-        world.x = static_cast<F32>(i) * static_cast<F32>(m_tileSize.x);
-        world.y = static_cast<F32>(j) * static_cast<F32>(m_tileSize.y);
-
-        return world;
-    }
-
+    glm::vec2 MapToWorld(U32 i, U32 j) const;
     glm::vec2 MapToRealWorld(U32 i, U32 j) const;
-
-    glm::uvec2 WorldToMap(F32 x, F32 y) const
-    {
-        glm::uvec2 map;
-
-        map.x = static_cast<U32>(x / static_cast<F32>(m_tileSize.x));
-        map.y = static_cast<U32>(y / static_cast<F32>(m_tileSize.y));
-
-        return map;
-    }
-
+    glm::uvec2 WorldToMap(F32 x, F32 y) const;
     glm::uvec2 RealWorldToMap(F32 x, F32 y) const;
 
     void Reset();
+
+    // Bot
+    std::tuple<F32, F32> GetRealWorldPosition(U32 i, U32 j) const
+    {
+        glm::vec2 realWorld = MapToRealWorld(i, j);
+        return std::make_tuple(realWorld.x, realWorld.y);
+    }
+
+    U32 GetTileCountX() const
+    {
+        return m_tileCount.x;
+    }
+
+    U32 GetTileCountY() const
+    {
+        return m_tileCount.y;
+    }
 
     std::vector<Tile> m_walkability;
 
