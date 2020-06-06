@@ -255,12 +255,17 @@ bool WeaponSystemServer::RenderGui()
 //----------------------------------------------------------------------------------------------------
 void WeaponSystemServer::Rewind(Entity localEntity, U32 from, U32 to, F32 percentage) const
 {
+    std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
     LinkingContext& linkingContext = g_gameServer->GetLinkingContext();
     const std::unordered_map<NetworkID, Entity>& newtorkIDToEntity = linkingContext.GetNetworkIDToEntityMap();
-
     for (const auto& pair : newtorkIDToEntity) {
         Entity remoteEntity = pair.second;
         if (localEntity == remoteEntity) {
+            continue;
+        }
+
+        PlayerID playerID = serverComponent.lock()->GetPlayerID(remoteEntity);
+        if (playerID >= INVALID_PLAYER_ID) {
             continue;
         }
 
@@ -299,12 +304,17 @@ void WeaponSystemServer::Rewind(Entity localEntity, U32 from, U32 to, F32 percen
 //----------------------------------------------------------------------------------------------------
 void WeaponSystemServer::Revert(Entity localEntity) const
 {
+    std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
     LinkingContext& linkingContext = g_gameServer->GetLinkingContext();
     const std::unordered_map<NetworkID, Entity>& newtorkIDToEntity = linkingContext.GetNetworkIDToEntityMap();
-
     for (const auto& pair : newtorkIDToEntity) {
         Entity remoteEntity = pair.second;
         if (localEntity == remoteEntity) {
+            continue;
+        }
+
+        PlayerID playerID = serverComponent.lock()->GetPlayerID(remoteEntity);
+        if (playerID >= INVALID_PLAYER_ID) {
             continue;
         }
 

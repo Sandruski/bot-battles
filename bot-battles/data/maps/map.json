@@ -73,7 +73,7 @@
                         {
                          "name":"rangeWeapon",
                          "type":"float",
-                         "value":500
+                         "value":250
                         }, 
                         {
                          "name":"sightAngle",
@@ -94,7 +94,7 @@
                  "type":"BotSpawner",
                  "visible":true,
                  "width":64,
-                 "x":512,
+                 "x":320,
                  "y":384
                 }, 
                 {
@@ -131,7 +131,7 @@
                         {
                          "name":"rangeWeapon",
                          "type":"float",
-                         "value":500
+                         "value":250
                         }, 
                         {
                          "name":"sightAngle",
@@ -152,7 +152,7 @@
                  "type":"BotSpawner",
                  "visible":true,
                  "width":64,
-                 "x":704,
+                 "x":512,
                  "y":384
                 }],
          "opacity":1,
@@ -239,8 +239,8 @@
                  "type":"HealthSpawner",
                  "visible":true,
                  "width":64,
-                 "x":384,
-                 "y":320
+                 "x":448,
+                 "y":256
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -376,8 +376,8 @@
                  "type":"WeaponSpawner",
                  "visible":true,
                  "width":64,
-                 "x":448,
-                 "y":384
+                 "x":192,
+                 "y":256
                 }],
          "opacity":1,
          "type":"objectgroup",
