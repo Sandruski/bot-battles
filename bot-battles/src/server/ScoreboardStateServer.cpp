@@ -100,7 +100,17 @@ bool ScoreboardStateServer::Exit() const
     // Scene
     g_gameServer->GetEntityManager().ClearEntities();
 
+    std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
+    const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.lock()->GetPlayerIDToClientProxyMap();
+    for (const auto& pair : playerIDToClientProxy) {
+        std::shared_ptr<ClientProxy> clientProxy = pair.second;
+        clientProxy->m_damageInflicted = 0;
+        clientProxy->m_damageReceived = 0;
+    }
+
     std::weak_ptr<ScoreboardComponent> scoreboardComponent = g_gameServer->GetScoreboardComponent();
+    scoreboardComponent.lock()->m_winnerPlayerID = INVALID_PLAYER_ID;
+
     std::weak_ptr<State> emptyState = std::weak_ptr<State>();
     scoreboardComponent.lock()->m_fsm.ChangeState(emptyState);
 

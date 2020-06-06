@@ -187,20 +187,19 @@ void HealthSystemServer::OnWeaponHit(Entity shooterEntity, Entity targetEntity, 
         healthComponent.lock()->m_currentHP = 0;
     }
 
+    I32 currentHPDiff = oldCurrentHP - healthComponent.lock()->m_currentHP;
+    std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
+    PlayerID shooterPlayerID = serverComponent.lock()->GetPlayerID(shooterEntity);
+    std::weak_ptr<ClientProxy> shooterClientProxy = serverComponent.lock()->GetClientProxy(shooterPlayerID);
+    shooterClientProxy.lock()->m_damageInflicted += currentHPDiff;
+    PlayerID targetPlayerID = serverComponent.lock()->GetPlayerID(targetEntity);
+    std::weak_ptr<ClientProxy> targetClientProxy = serverComponent.lock()->GetClientProxy(targetPlayerID);
+    targetClientProxy.lock()->m_damageReceived += currentHPDiff;
+
     Event newHealthEvent;
     newHealthEvent.eventType = EventType::HEALTH_HURT;
     newHealthEvent.health.entity = targetEntity;
     NotifyEvent(newHealthEvent);
-
-    std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
-    PlayerID shooterPlayerID = serverComponent.lock()->GetPlayerID(shooterEntity);
-    std::weak_ptr<ClientProxy> shooterClientProxy = serverComponent.lock()->GetClientProxy(shooterPlayerID);
-    PlayerID targetPlayerID = serverComponent.lock()->GetPlayerID(targetEntity);
-    std::weak_ptr<ClientProxy> targetClientProxy = serverComponent.lock()->GetClientProxy(targetPlayerID);
-
-    I32 currentHPDiff = oldCurrentHP - healthComponent.lock()->m_currentHP;
-    shooterClientProxy.lock()->m_damageInflicted = currentHPDiff;
-    targetClientProxy.lock()->m_damageReceived = currentHPDiff;
 
     Event newComponentEvent;
     newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
