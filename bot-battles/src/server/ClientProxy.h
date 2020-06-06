@@ -18,7 +18,8 @@ public:
     const char* GetName() const;
 
     void UpdateLastPacketTime();
-    F32 GetLastPacketTime() const;
+
+    F32 GetRatio() const;
 
     void Reset();
 

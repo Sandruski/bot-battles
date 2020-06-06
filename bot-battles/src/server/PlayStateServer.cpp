@@ -118,7 +118,7 @@ void PlayStateServer::OnNotify(const Event& event)
     }
 
     case EventType::PLAYER_REMOVED: {
-        ChangeToScoreboard();
+        OnHealthHurt();
         break;
     }
 

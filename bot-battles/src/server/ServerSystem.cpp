@@ -262,7 +262,7 @@ void ServerSystem::ReceiveIncomingPackets(std::weak_ptr<ServerComponent> serverC
                 std::shared_ptr<ClientProxy> clientProxy = pair.second;
                 Entity entity = serverComponent.lock()->GetEntity(playerID);
                 if (entity < INVALID_ENTITY) {
-                    F32 timeDiff = MyTime::GetInstance().GetTime() - clientProxy->GetLastPacketTime();
+                    F32 timeDiff = MyTime::GetInstance().GetTime() - clientProxy->m_lastPacketTime;
                     if (timeDiff >= serverComponent.lock()->m_disconnectTimeout) {
                         disconnections.insert(std::make_pair(playerID, clientProxy));
                         continue;

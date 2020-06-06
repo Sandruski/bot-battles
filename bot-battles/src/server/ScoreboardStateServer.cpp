@@ -56,10 +56,26 @@ bool ScoreboardStateServer::Enter() const
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().AddComponent<SpriteComponent>(background);
     spriteComponent.lock()->m_spriteResource = spriteResource;
 
+    std::weak_ptr<ScoreboardComponent> scoreboardComponent = g_gameServer->GetScoreboardComponent();
+    if (scoreboardComponent.lock()->m_winnerPlayerID == INVALID_PLAYER_ID) {
+        std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
+        F32 ratio = 0.0f;
+        const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.lock()->GetPlayerIDToClientProxyMap();
+        for (const auto& pair : playerIDToClientProxy) {
+            PlayerID playerID = pair.first;
+            std::shared_ptr<ClientProxy> clientProxy = pair.second;
+
+            F32 clientProxyRatio = clientProxy->GetRatio();
+            if (clientProxyRatio > ratio) {
+                scoreboardComponent.lock()->m_winnerPlayerID = playerID;
+                ratio = clientProxyRatio;
+            }
+        }
+    }
+
     std::weak_ptr<GuiComponent> guiComponent = g_gameServer->GetGuiComponent();
     guiComponent.lock()->m_isSettings = false;
 
-    std::weak_ptr<ScoreboardComponent> scoreboardComponent = g_gameServer->GetScoreboardComponent();
     ++scoreboardComponent.lock()->m_gameCount;
     return scoreboardComponent.lock()->m_fsm.ChangeState("Results");
 }

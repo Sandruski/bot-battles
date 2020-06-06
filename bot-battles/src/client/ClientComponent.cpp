@@ -116,6 +116,12 @@ bool ClientComponent::IsLocalPlayer(PlayerID playerID) const
 }
 
 //----------------------------------------------------------------------------------------------------
+F32 ClientComponent::GetRatio() const
+{
+    return static_cast<F32>(m_damageInflicted) / static_cast<F32>(m_damageReceived);
+}
+
+//----------------------------------------------------------------------------------------------------
 void ClientComponent::Reset()
 {
     m_deliveryManager.Reset();

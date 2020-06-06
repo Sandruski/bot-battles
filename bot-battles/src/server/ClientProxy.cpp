@@ -39,9 +39,9 @@ void ClientProxy::UpdateLastPacketTime()
 }
 
 //----------------------------------------------------------------------------------------------------
-F32 ClientProxy::GetLastPacketTime() const
+F32 ClientProxy::GetRatio() const
 {
-    return m_lastPacketTime;
+    return static_cast<F32>(m_damageInflicted) / static_cast<F32>(m_damageReceived);
 }
 
 //----------------------------------------------------------------------------------------------------

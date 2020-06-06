@@ -26,6 +26,8 @@ struct ClientComponent : public Component {
     bool IsLocalEntity(Entity entity) const;
     bool IsLocalPlayer(PlayerID playerID) const;
 
+    F32 GetRatio() const;
+
     void Reset();
 
     ReplicationManagerClient m_replicationManager;

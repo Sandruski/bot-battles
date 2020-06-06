@@ -17,7 +17,7 @@ class MyBot(bot.Bot):
             input.linearVelocityX = int(self.map.getTile(1, 1).tileType) * 100
             input.linearVelocityY = 0
         input.angularVelocity = 0
-        input.shootSecondaryWeapon()
+        #input.shootSecondaryWeapon()
         worldPosition = self.map.getWorldPosition(0, 0)
         logging.info('%f %f', worldPosition[0], worldPosition[1])
 

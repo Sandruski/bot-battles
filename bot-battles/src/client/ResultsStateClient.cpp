@@ -82,17 +82,17 @@ bool ResultsStateClient::RenderGui() const
     ImGui::NextColumn();
     ImGui::TextWrapped(std::to_string(clientComponent.lock()->m_damageReceived).c_str());
     ImGui::NextColumn();
-    F32 proportion = static_cast<F32>(clientComponent.lock()->m_damageInflicted) / static_cast<F32>(clientComponent.lock()->m_damageReceived);
-    F32 proportionRounded = std::roundf(proportion * 100.0f) / 100.0f;
-    std::string proportionRoundedString = std::to_string(proportionRounded).c_str();
+    F32 ratio = clientComponent.lock()->GetRatio();
+    F32 ratioRounded = std::roundf(ratio * 100.0f) / 100.0f;
+    std::string ratioRoundedString = std::to_string(ratioRounded).c_str();
     if (clientComponent.lock()->m_damageReceived > 0) {
-        std::size_t i = proportionRoundedString.find_last_of(".");
+        std::size_t i = ratioRoundedString.find_last_of(".");
         i += 2;
         if (i != std::string::npos) {
-            proportionRoundedString = proportionRoundedString.substr(0, i + 1);
+            ratioRoundedString = ratioRoundedString.substr(0, i + 1);
         }
     }
-    ImGui::TextWrapped(proportionRoundedString.c_str());
+    ImGui::TextWrapped(ratioRoundedString.c_str());
     ImGui::NextColumn();
     ImGui::Columns(1);
     ImGui::Separator();
