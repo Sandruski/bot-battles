@@ -118,22 +118,22 @@ void ScriptingSystem::OnNotify(const Event& event)
     }
 
     case EventType::WEAPON_HIT: {
-        OnWeaponHit(event.weapon.entity);
+        OnWeaponHit(event.weapon.shooterEntity);
         break;
     }
 
     case EventType::WEAPON_MISSED: {
-        OnWeaponMissed(event.weapon.entity);
+        OnWeaponMissed(event.weapon.shooterEntity);
         break;
     }
 
     case EventType::WEAPON_PRIMARY_PICKED_UP: {
-        OnWeaponPrimaryPickedUp(event.weapon.entity);
+        OnWeaponPrimaryPickedUp(event.weapon.shooterEntity);
         break;
     }
 
     case EventType::WEAPON_PRIMARY_RELOADED: {
-        OnWeaponPrimaryReloaded(event.weapon.entity);
+        OnWeaponPrimaryReloaded(event.weapon.shooterEntity);
         break;
     }
 

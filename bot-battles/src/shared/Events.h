@@ -51,7 +51,8 @@ struct NetworkingEvent {
 // Weapon
 struct WeaponEvent {
     EventType eventType;
-    Entity entity;
+    Entity shooterEntity;
+    Entity targetEntity;
     U32 damage;
     U32 ammo;
 };

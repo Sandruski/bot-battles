@@ -128,7 +128,7 @@ void HealthSystemServer::OnNotify(const Event& event)
     }
 
     case EventType::WEAPON_HIT: {
-        OnWeaponHit(event.weapon.entity, event.weapon.damage);
+        OnWeaponHit(event.weapon.shooterEntity, event.weapon.targetEntity, event.weapon.damage);
         break;
     }
 
@@ -174,13 +174,14 @@ void HealthSystemServer::OnCollisionEnter(Entity entityA, Entity entityB) const
 }
 
 //----------------------------------------------------------------------------------------------------
-void HealthSystemServer::OnWeaponHit(Entity entity, U32 damage) const
+void HealthSystemServer::OnWeaponHit(Entity shooterEntity, Entity targetEntity, U32 damage) const
 {
-    std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(entity);
+    std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(targetEntity);
     if (healthComponent.expired()) {
         return;
     }
 
+    I32 oldCurrentHP = healthComponent.lock()->m_currentHP;
     healthComponent.lock()->m_currentHP -= damage;
     if (healthComponent.lock()->m_currentHP <= 0) {
         healthComponent.lock()->m_currentHP = 0;
@@ -188,13 +189,23 @@ void HealthSystemServer::OnWeaponHit(Entity entity, U32 damage) const
 
     Event newHealthEvent;
     newHealthEvent.eventType = EventType::HEALTH_HURT;
-    newHealthEvent.health.entity = entity;
+    newHealthEvent.health.entity = targetEntity;
     NotifyEvent(newHealthEvent);
+
+    std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
+    PlayerID shooterPlayerID = serverComponent.lock()->GetPlayerID(shooterEntity);
+    std::weak_ptr<ClientProxy> shooterClientProxy = serverComponent.lock()->GetClientProxy(shooterPlayerID);
+    PlayerID targetPlayerID = serverComponent.lock()->GetPlayerID(targetEntity);
+    std::weak_ptr<ClientProxy> targetClientProxy = serverComponent.lock()->GetClientProxy(targetPlayerID);
+
+    I32 currentHPDiff = oldCurrentHP - healthComponent.lock()->m_currentHP;
+    shooterClientProxy.lock()->m_damageInflicted = currentHPDiff;
+    targetClientProxy.lock()->m_damageReceived = currentHPDiff;
 
     Event newComponentEvent;
     newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
     newComponentEvent.component.dirtyState = static_cast<U64>(ComponentMemberType::HEALTH_CURRENT_HP);
-    newComponentEvent.component.entity = entity;
+    newComponentEvent.component.entity = targetEntity;
     NotifyEvent(newComponentEvent);
 }
 }

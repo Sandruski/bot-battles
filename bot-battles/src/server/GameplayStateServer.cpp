@@ -55,6 +55,13 @@ bool GameplayStateServer::Enter() const
     }
     g_gameServer->GetMapImporter().Create(tilemap);
 
+    const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.lock()->GetPlayerIDToClientProxyMap();
+    for (const auto& pair : playerIDToClientProxy) {
+        std::shared_ptr<ClientProxy> clientProxy = pair.second;
+        clientProxy->m_damageInflicted = 0;
+        clientProxy->m_damageReceived = 0;
+    }
+
     std::weak_ptr<GuiComponent> guiComponent = g_gameServer->GetGuiComponent();
     guiComponent.lock()->m_isSettings = false;
 

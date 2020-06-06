@@ -1,9 +1,11 @@
 #include "ResultsStateServer.h"
 
+#include "ClientProxy.h"
 #include "ConfigServer.h"
 #include "FSM.h"
 #include "GameServer.h"
 #include "ScoreboardComponent.h"
+#include "ServerComponent.h"
 #include "WindowComponent.h"
 
 namespace sand {
@@ -62,6 +64,46 @@ bool ResultsStateServer::RenderGui() const
             ImGui::SetCursorPosX(contentRegionMax.x / 2.0f - winnerStringTextSize.x / 2.0f);
             ImGui::Text(winnerString.c_str());
         }
+
+        ImGui::Spacing();
+
+        ImGui::Columns(4);
+        ImGui::Separator();
+        ImGui::TextWrapped("Player");
+        ImGui::NextColumn();
+        ImGui::TextWrapped("Damage Inflicted");
+        ImGui::NextColumn();
+        ImGui::TextWrapped("Damage Received");
+        ImGui::NextColumn();
+        ImGui::TextWrapped("Ratio");
+        ImGui::NextColumn();
+        std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
+        const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.lock()->GetPlayerIDToClientProxyMap();
+        for (const auto& pair : playerIDToClientProxy) {
+            std::shared_ptr<ClientProxy> clientProxy = pair.second;
+
+            ImGui::Separator();
+            ImGui::TextWrapped(clientProxy->GetName());
+            ImGui::NextColumn();
+            ImGui::TextWrapped(std::to_string(clientProxy->m_damageInflicted).c_str());
+            ImGui::NextColumn();
+            ImGui::TextWrapped(std::to_string(clientProxy->m_damageReceived).c_str());
+            ImGui::NextColumn();
+            F32 proportion = static_cast<F32>(clientProxy->m_damageInflicted) / static_cast<F32>(clientProxy->m_damageReceived);
+            F32 proportionRounded = std::roundf(proportion * 100.0f) / 100.0f;
+            std::string proportionRoundedString = std::to_string(proportionRounded).c_str();
+            if (clientProxy->m_damageReceived > 0) {
+                std::size_t i = proportionRoundedString.find_last_of(".");
+                i += 2;
+                if (i != std::string::npos) {
+                    proportionRoundedString = proportionRoundedString.substr(0, i + 1);
+                }
+            }
+            ImGui::TextWrapped(proportionRoundedString.c_str());
+            ImGui::NextColumn();
+        }
+        ImGui::Columns(1);
+        ImGui::Separator();
 
         std::string playAgainString = "Play again";
         std::string mainMenuString = "Main menu";

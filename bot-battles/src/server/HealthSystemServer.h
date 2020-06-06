@@ -24,7 +24,7 @@ public:
 
 private:
     void OnCollisionEnter(Entity entityA, Entity entityB) const;
-    void OnWeaponHit(Entity entity, U32 damage) const;
+    void OnWeaponHit(Entity shooterEntity, Entity targetEntity, U32 damage) const;
 };
 }
 

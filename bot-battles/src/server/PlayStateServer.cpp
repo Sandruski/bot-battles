@@ -113,12 +113,12 @@ void PlayStateServer::OnNotify(const Event& event)
     switch (event.eventType) {
 
     case EventType::HEALTH_HURT: {
-        OnHealthLost(event.health.entity);
+        OnHealthHurt();
         break;
     }
 
     case EventType::PLAYER_REMOVED: {
-        OnHealthLost(event.networking.entity);
+        ChangeToScoreboard();
         break;
     }
 
@@ -129,7 +129,7 @@ void PlayStateServer::OnNotify(const Event& event)
 }
 
 //----------------------------------------------------------------------------------------------------
-void PlayStateServer::OnHealthLost(Entity entity) const
+void PlayStateServer::OnHealthHurt() const
 {
     U32 aliveCount = 0;
     Entity winnerEntity = INVALID_ENTITY;
@@ -140,10 +140,6 @@ void PlayStateServer::OnHealthLost(Entity entity) const
         Entity ownerEntity = pair.first;
         PlayerID playerID = serverComponent.lock()->GetPlayerID(ownerEntity);
         if (playerID >= INVALID_PLAYER_ID) {
-            continue;
-        }
-
-        if (ownerEntity == entity) {
             continue;
         }
 

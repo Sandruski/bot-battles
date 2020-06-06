@@ -46,6 +46,9 @@ struct ClientComponent : public Component {
     std::string m_name;
     std::string m_bot;
 
+    U32 m_damageInflicted;
+    U32 m_damageReceived;
+
     PlayerID m_playerID;
     Entity m_entity;
 

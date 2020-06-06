@@ -404,6 +404,8 @@ void ClientSystem::ReceiveResultsPacket(std::weak_ptr<ClientComponent> clientCom
 
     std::weak_ptr<ScoreboardComponent> scoreboardComponent = g_gameClient->GetScoreboardComponent();
     inputStream.Read(scoreboardComponent.lock()->m_winnerPlayerID);
+    inputStream.Read(clientComponent.lock()->m_damageInflicted);
+    inputStream.Read(clientComponent.lock()->m_damageReceived);
 
     Event newEvent;
     newEvent.eventType = EventType::RESULTS_RECEIVED;

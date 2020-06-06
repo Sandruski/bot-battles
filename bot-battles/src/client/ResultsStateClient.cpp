@@ -46,13 +46,13 @@ bool ResultsStateClient::RenderGui() const
     ImVec2 itemSpacing = ImGui::GetStyle().ItemSpacing;
 
     std::weak_ptr<ScoreboardComponent> scoreboardComponent = g_gameClient->GetScoreboardComponent();
+    std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
     if (scoreboardComponent.lock()->m_winnerPlayerID == INVALID_PLAYER_ID) {
         std::string tie = "Tie!";
         ImVec2 tieTextSize = ImGui::CalcTextSize(tie.c_str());
         ImGui::SetCursorPosX(contentRegionMax.x / 2.0f - tieTextSize.x / 2.0f);
         ImGui::Text(tie.c_str());
     } else {
-        std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
         const bool isLocalPlayer = clientComponent.lock()->IsLocalPlayer(scoreboardComponent.lock()->m_winnerPlayerID);
         if (isLocalPlayer) {
             std::string youWin = "You win :)";
@@ -69,7 +69,33 @@ bool ResultsStateClient::RenderGui() const
 
     ImGui::Spacing();
 
-    // TODO
+    ImGui::Columns(3);
+    ImGui::Separator();
+    ImGui::TextWrapped("Damage Inflicted");
+    ImGui::NextColumn();
+    ImGui::TextWrapped("Damage Received");
+    ImGui::NextColumn();
+    ImGui::TextWrapped("Ratio");
+    ImGui::NextColumn();
+    ImGui::Separator();
+    ImGui::TextWrapped(std::to_string(clientComponent.lock()->m_damageInflicted).c_str());
+    ImGui::NextColumn();
+    ImGui::TextWrapped(std::to_string(clientComponent.lock()->m_damageReceived).c_str());
+    ImGui::NextColumn();
+    F32 proportion = static_cast<F32>(clientComponent.lock()->m_damageInflicted) / static_cast<F32>(clientComponent.lock()->m_damageReceived);
+    F32 proportionRounded = std::roundf(proportion * 100.0f) / 100.0f;
+    std::string proportionRoundedString = std::to_string(proportionRounded).c_str();
+    if (clientComponent.lock()->m_damageReceived > 0) {
+        std::size_t i = proportionRoundedString.find_last_of(".");
+        i += 2;
+        if (i != std::string::npos) {
+            proportionRoundedString = proportionRoundedString.substr(0, i + 1);
+        }
+    }
+    ImGui::TextWrapped(proportionRoundedString.c_str());
+    ImGui::NextColumn();
+    ImGui::Columns(1);
+    ImGui::Separator();
 
     F32 mainMenuCurrentTime = static_cast<F32>(scoreboardComponent.lock()->m_mainMenuTimer.ReadSec());
     F32 mainMenuTimeLeft = scoreboardComponent.lock()->m_mainMenuTimeout - mainMenuCurrentTime;

@@ -54,6 +54,9 @@ bool GameplayStateClient::Enter() const
     }
     g_gameClient->GetMapImporter().Create(tilemap);
 
+    clientComponent.lock()->m_damageInflicted = 0;
+    clientComponent.lock()->m_damageReceived = 0;
+
     std::weak_ptr<GuiComponent> guiComponent = g_gameClient->GetGuiComponent();
     guiComponent.lock()->m_isSettings = false;
 

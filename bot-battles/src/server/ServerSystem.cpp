@@ -576,6 +576,8 @@ void ServerSystem::SendResultsPacket(const std::weak_ptr<ServerComponent> server
 
     std::weak_ptr<ScoreboardComponent> scoreboardComponent = g_gameServer->GetScoreboardComponent();
     resultsPacket.Write(scoreboardComponent.lock()->m_winnerPlayerID);
+    resultsPacket.Write(clientProxy->m_damageInflicted);
+    resultsPacket.Write(clientProxy->m_damageReceived);
 
     const bool result = SendTCPPacket(serverComponent, resultsPacket, clientProxy->GetSocketAddress());
     if (result) {

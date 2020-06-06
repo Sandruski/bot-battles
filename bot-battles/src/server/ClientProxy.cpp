@@ -12,6 +12,8 @@ ClientProxy::ClientProxy(const SocketAddress& socketAddress, const char* name)
     , m_lastAckdFrame(0)
     , m_lastPacketTime(0.0f)
     , m_timestamp(0.0f)
+    , m_damageInflicted(0)
+    , m_damageReceived(0)
     , m_socketAddress(socketAddress)
     , m_name(name)
 {

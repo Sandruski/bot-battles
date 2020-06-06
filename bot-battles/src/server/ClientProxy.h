@@ -35,6 +35,9 @@ public:
     F32 m_lastPacketTime;
     F32 m_timestamp;
 
+    U32 m_damageInflicted;
+    U32 m_damageReceived;
+
 private:
     SocketAddress m_socketAddress;
     std::string m_name;

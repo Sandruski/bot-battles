@@ -178,11 +178,12 @@ bool WeaponSystemServer::Update()
                         if (!hitEntityHealthComponent.expired()) {
                             weaponComponent.lock()->m_hasHitLastShot = true;
 
-                            Event newEvent;
-                            newEvent.eventType = EventType::WEAPON_HIT;
-                            newEvent.weapon.entity = entity;
-                            newEvent.weapon.damage = hasShootPrimaryWeapon ? weaponComponent.lock()->m_damagePrimary : weaponComponent.lock()->m_damageSecondary;
-                            PushEvent(newEvent);
+                            Event newWeaponEvent;
+                            newWeaponEvent.eventType = EventType::WEAPON_HIT;
+                            newWeaponEvent.weapon.shooterEntity = entity;
+                            newWeaponEvent.weapon.targetEntity = hitInfo.m_entity;
+                            newWeaponEvent.weapon.damage = hasShootPrimaryWeapon ? weaponComponent.lock()->m_damagePrimary : weaponComponent.lock()->m_damageSecondary;
+                            PushEvent(newWeaponEvent);
                         }
                     }
                 }

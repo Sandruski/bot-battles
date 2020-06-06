@@ -16,7 +16,7 @@ void WeaponComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /
         if (replicationActionType != ReplicationActionType::CREATE) {
             Event newWeaponEvent;
             newWeaponEvent.eventType = EventType::WEAPON_PRIMARY_PICKED_UP;
-            newWeaponEvent.weapon.entity = entity;
+            newWeaponEvent.weapon.shooterEntity = entity;
             std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
             clientComponent.lock()->m_replicationManager.NotifyEvent(newWeaponEvent);
         }
@@ -33,7 +33,7 @@ void WeaponComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /
             if (!hasWeaponPrimaryPickedUp && oldCurrentAmmoPrimary < m_currentAmmoPrimary) {
                 Event newWeaponEvent;
                 newWeaponEvent.eventType = EventType::WEAPON_PRIMARY_RELOADED;
-                newWeaponEvent.weapon.entity = entity;
+                newWeaponEvent.weapon.shooterEntity = entity;
                 newWeaponEvent.weapon.ammo = m_currentAmmoPrimary - oldCurrentAmmoPrimary;
                 std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
                 clientComponent.lock()->m_replicationManager.NotifyEvent(newWeaponEvent);
@@ -86,7 +86,7 @@ void WeaponComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /
             } else {
                 newWeaponEvent.eventType = EventType::WEAPON_MISSED;
             }
-            newWeaponEvent.weapon.entity = entity;
+            newWeaponEvent.weapon.shooterEntity = entity;
             std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
             clientComponent.lock()->m_replicationManager.NotifyEvent(newWeaponEvent);
         }
