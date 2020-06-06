@@ -92,6 +92,7 @@ bool InputSystem::Update()
                 || (inputComponent.lock()->m_dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_RELOAD));
             clientComponent.lock()->m_isLastHealthInputPending = (inputComponent.lock()->m_dirtyState & static_cast<U64>(InputComponentMemberType::INPUT_HEAL));
 
+            ILOG("INTERPOLATION FROM %u TO %u", clientComponent.lock()->m_interpolationFromFrame, clientComponent.lock()->m_interpolationToFrame);
             Input input = Input(*inputComponent.lock(), inputComponent.lock()->m_dirtyState, clientComponent.lock()->m_inputBuffer.m_back, clientComponent.lock()->m_interpolationFromFrame, clientComponent.lock()->m_interpolationToFrame, clientComponent.lock()->m_interpolationPercentage);
             clientComponent.lock()->m_inputBuffer.Add(input);
         }

@@ -277,21 +277,33 @@ void WeaponSystemServer::Rewind(Entity localEntity, U32 from, U32 to, F32 percen
 
         if (!transformComponent.lock()->m_transformBuffer.IsEmpty()) {
             Transform fromTransform;
+            bool isFound = false;
             for (U32 i = transformComponent.lock()->m_transformBuffer.m_front; i < transformComponent.lock()->m_transformBuffer.m_back; ++i) {
                 Transform& t = transformComponent.lock()->m_transformBuffer.Get(i);
                 if (t.GetFrame() == from) {
                     fromTransform = t;
+                    isFound = true;
                     break;
                 }
             }
 
+            if (!isFound) {
+                return;
+            }
+
             Transform toTransform;
+            isFound = false;
             for (U32 i = transformComponent.lock()->m_transformBuffer.m_front; i < transformComponent.lock()->m_transformBuffer.m_back; ++i) {
                 Transform& t = transformComponent.lock()->m_transformBuffer.Get(i);
                 if (t.GetFrame() == to) {
                     toTransform = t;
+                    isFound = true;
                     break;
                 }
+            }
+
+            if (!isFound) {
+                return;
             }
 
             glm::vec2 interpolatedPosition = Lerp(fromTransform.m_position, toTransform.m_position, percentage);
