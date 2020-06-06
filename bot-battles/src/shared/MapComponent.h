@@ -7,18 +7,35 @@ namespace sand {
 // System Component
 struct MapComponent {
 
-    enum class TileType : U8 {
+    struct Tile {
 
-        NONE,
-        FLOOR,
-        BOT_SPAWNER,
-        WEAPON_SPAWNER,
-        HEALTH_SPAWNER
+        enum class TileType : U8 {
+
+            NONE,
+            FLOOR,
+            BOT_SPAWNER,
+            WEAPON_SPAWNER,
+            HEALTH_SPAWNER
+        };
+
+        Tile()
+            : m_tileType(TileType::NONE)
+        {
+        }
+
+        // Bot
+        TileType GetTileType() const
+        {
+            return m_tileType;
+        }
+
+        TileType m_tileType;
     };
 
     MapComponent();
 
-    TileType GetTileType(U32 i, U32 j)
+    // Bot
+    Tile& GetTile(U32 i, U32 j)
     {
         return m_walkability.at(i + m_tileCount.x * j);
     }
@@ -54,7 +71,7 @@ struct MapComponent {
 
     void Reset();
 
-    std::vector<TileType> m_walkability;
+    std::vector<Tile> m_walkability;
 
     glm::uvec2 m_tileCount;
     glm::uvec2 m_tileSize;

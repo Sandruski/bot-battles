@@ -14,8 +14,8 @@ bool MapSystem::DebugRender()
 
     for (U32 i = 0; i < mapComponent.lock()->m_tileCount.x; ++i) {
         for (U32 j = 0; j < mapComponent.lock()->m_tileCount.y; ++j) {
-            MapComponent::TileType tileType = mapComponent.lock()->GetTileType(i, j);
-            if (tileType == MapComponent::TileType::NONE) {
+            MapComponent::Tile& tile = mapComponent.lock()->GetTile(i, j);
+            if (tile.m_tileType == MapComponent::Tile::TileType::NONE) {
                 continue;
             }
 
@@ -26,20 +26,20 @@ bool MapSystem::DebugRender()
             scale *= mapComponent.lock()->m_scale;
 
             glm::vec4 color = White;
-            switch (tileType) {
-            case MapComponent::TileType::FLOOR: {
+            switch (tile.m_tileType) {
+            case MapComponent::Tile::TileType::FLOOR: {
                 color = Yellow;
                 break;
             }
-            case MapComponent::TileType::BOT_SPAWNER: {
+            case MapComponent::Tile::TileType::BOT_SPAWNER: {
                 color = Red;
                 break;
             }
-            case MapComponent::TileType::WEAPON_SPAWNER: {
+            case MapComponent::Tile::TileType::WEAPON_SPAWNER: {
                 color = Green;
                 break;
             }
-            case MapComponent::TileType::HEALTH_SPAWNER: {
+            case MapComponent::Tile::TileType::HEALTH_SPAWNER: {
                 color = Blue;
                 break;
             }

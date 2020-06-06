@@ -75,14 +75,17 @@ PYBIND11_EMBEDDED_MODULE(botbattles, m)
         .def_property_readonly("healingCooldown", &HealthComponent::GetHealingCooldown);
 
     py::class_<MapComponent, std::shared_ptr<MapComponent>>(m, "MapComponent")
-        .def("getTileType", &MapComponent::GetTileType);
+        .def("getTile", &MapComponent::GetTile);
 
-    py::enum_<MapComponent::TileType>(m, "TileType")
-        .value("NONE", MapComponent::TileType::NONE)
-        .value("FLOOR", MapComponent::TileType::FLOOR)
-        .value("BOT_SPAWNER", MapComponent::TileType::BOT_SPAWNER)
-        .value("WEAPON_SPAWNER", MapComponent::TileType::WEAPON_SPAWNER)
-        .value("HEALTH_SPAWNER", MapComponent::TileType::HEALTH_SPAWNER)
+    py::class_<MapComponent::Tile>(m, "Tile")
+        .def_property_readonly("tileType", &MapComponent::Tile::GetTileType);
+
+    py::enum_<MapComponent::Tile::TileType>(m, "TileType")
+        .value("NONE", MapComponent::Tile::TileType::NONE)
+        .value("FLOOR", MapComponent::Tile::TileType::FLOOR)
+        .value("BOT_SPAWNER", MapComponent::Tile::TileType::BOT_SPAWNER)
+        .value("WEAPON_SPAWNER", MapComponent::Tile::TileType::WEAPON_SPAWNER)
+        .value("HEALTH_SPAWNER", MapComponent::Tile::TileType::HEALTH_SPAWNER)
         .export_values();
 
     py::class_<PhysicsComponent::Collision>(m, "CollisionEvent")

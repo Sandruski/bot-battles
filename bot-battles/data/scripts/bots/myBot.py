@@ -4,6 +4,7 @@
 import glm
 import logging
 import bot
+import heapq
 
 from botbattles import InputComponent
 
@@ -13,14 +14,14 @@ class MyBot(bot.Bot):
 
     def tick(self, input : InputComponent):
         if self.wallHit == False:
-            input.linearVelocityX = int(self.map.getTileType(1, 1)) * 100
+            input.linearVelocityX = int(self.map.getTile(1, 1).tileType) * 100
             input.linearVelocityY = 0
         input.angularVelocity = 0
         #input.shootSecondaryWeapon()
         input.reload()
         self.health.hasFirstAidBox()
         #input.shootPrimaryWeapon()
-        #input.heal()
+        #input.heal()      
 
     def onWeaponPickedUp(self, input):
         logging.info('onWeaponPickedUp')
@@ -43,3 +44,45 @@ class MyBot(bot.Bot):
         input.linearVelocityX = reflectionVector.x
         input.linearVelocityY = reflectionVector.y
         logging.info('onHitWall')
+
+class PriorityQueue:
+    def __init__(self):
+        self.elements = []
+    
+    def empty(self):
+        return len(self.elements) == 0
+    
+    def put(self, item, priority):
+        heapq.heappush(self.elements, (priority, item))
+    
+    def get(self):
+        return heapq.heappop(self.elements)[1]
+
+def heuristic(a, b):
+    (x1, y1) = a
+    (x2, y2) = b
+    return abs(x1 - x2) + abs(y1 - y2)
+
+def a_star_search(graph, start, goal):
+    frontier = PriorityQueue()
+    frontier.put(start, 0)
+    came_from = {}
+    cost_so_far = {}
+    came_from[start] = None
+    cost_so_far[start] = 0
+    
+    while not frontier.empty():
+        current = frontier.get()
+        
+        if current == goal:
+            break
+        
+        for next in graph.neighbors(current):
+            new_cost = cost_so_far[current] + graph.cost(current, next)
+            if next not in cost_so_far or new_cost < cost_so_far[next]:
+                cost_so_far[next] = new_cost
+                priority = new_cost + heuristic(goal, next)
+                frontier.put(next, priority)
+                came_from[next] = current
+    
+    return came_from, cost_so_far

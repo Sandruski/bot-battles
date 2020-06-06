@@ -105,9 +105,9 @@ void MapImporter::Create(const Tilemap& tilemap) const
     mapComponent.lock()->m_scale = 1.0f;
     U32 tileCount = mapComponent.lock()->GetTileCount();
     mapComponent.lock()->m_walkability.resize(tileCount);
-    for (auto& tileType : mapComponent.lock()->m_walkability) {
+    for (auto& tile : mapComponent.lock()->m_walkability) {
         // Walkability
-        tileType = MapComponent::TileType::FLOOR;
+        tile.m_tileType = MapComponent::Tile::TileType::FLOOR;
     }
 
     std::weak_ptr<WindowComponent> windowComponent = g_game->GetWindowComponent();
@@ -149,8 +149,8 @@ void MapImporter::Create(const Tilemap& tilemap) const
                 if (tilelayer.m_name == "wall") {
                     // Walkability
                     glm::uvec2 map = mapComponent.lock()->RealWorldToMap(transformComponent.lock()->m_position.x, transformComponent.lock()->m_position.y);
-                    MapComponent::TileType tileType = mapComponent.lock()->GetTileType(map.x, map.y);
-                    tileType = MapComponent::TileType::NONE;
+                    MapComponent::Tile& tile = mapComponent.lock()->GetTile(map.x, map.y);
+                    tile.m_tileType = MapComponent::Tile::TileType::NONE;
 
                     g_game->GetComponentManager().AddComponent<WallComponent>(entity);
 
@@ -207,9 +207,9 @@ void MapImporter::Create(const Tilemap& tilemap) const
             if (object.m_type == "BotSpawner") {
                 // Walkability
                 glm::uvec2 map = mapComponent.lock()->RealWorldToMap(transformComponent.lock()->m_position.x, transformComponent.lock()->m_position.y);
-                MapComponent::TileType tileType = mapComponent.lock()->GetTileType(map.x, map.y);
-                if (tileType != MapComponent::TileType::NONE) {
-                    tileType = MapComponent::TileType::BOT_SPAWNER;
+                MapComponent::Tile& tile = mapComponent.lock()->GetTile(map.x, map.y);
+                if (tile.m_tileType != MapComponent::Tile::TileType::NONE) {
+                    tile.m_tileType = MapComponent::Tile::TileType::BOT_SPAWNER;
                 }
 
                 std::weak_ptr<BotSpawnerComponent> botSpawnerComponent = g_game->GetComponentManager().AddComponent<BotSpawnerComponent>(entity);
@@ -240,9 +240,9 @@ void MapImporter::Create(const Tilemap& tilemap) const
             if (object.m_type == "WeaponSpawner") {
                 // Walkability
                 glm::uvec2 map = mapComponent.lock()->RealWorldToMap(transformComponent.lock()->m_position.x, transformComponent.lock()->m_position.y);
-                MapComponent::TileType tileType = mapComponent.lock()->GetTileType(map.x, map.y);
-                if (tileType != MapComponent::TileType::NONE) {
-                    tileType = MapComponent::TileType::WEAPON_SPAWNER;
+                MapComponent::Tile& tile = mapComponent.lock()->GetTile(map.x, map.y);
+                if (tile.m_tileType != MapComponent::Tile::TileType::NONE) {
+                    tile.m_tileType = MapComponent::Tile::TileType::WEAPON_SPAWNER;
                 }
 
                 std::weak_ptr<WeaponSpawnerComponent> weaponSpawnerComponent = g_game->GetComponentManager().AddComponent<WeaponSpawnerComponent>(entity);
@@ -274,9 +274,9 @@ void MapImporter::Create(const Tilemap& tilemap) const
             if (object.m_type == "HealthSpawner") {
                 // Walkability
                 glm::uvec2 map = mapComponent.lock()->RealWorldToMap(transformComponent.lock()->m_position.x, transformComponent.lock()->m_position.y);
-                MapComponent::TileType tileType = mapComponent.lock()->GetTileType(map.x, map.y);
-                if (tileType != MapComponent::TileType::NONE) {
-                    tileType = MapComponent::TileType::HEALTH_SPAWNER;
+                MapComponent::Tile& tile = mapComponent.lock()->GetTile(map.x, map.y);
+                if (tile.m_tileType != MapComponent::Tile::TileType::NONE) {
+                    tile.m_tileType = MapComponent::Tile::TileType::HEALTH_SPAWNER;
                 }
 
                 std::weak_ptr<HealthSpawnerComponent> healthSpawnerComponent = g_game->GetComponentManager().AddComponent<HealthSpawnerComponent>(entity);

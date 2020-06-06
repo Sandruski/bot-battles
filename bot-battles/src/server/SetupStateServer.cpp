@@ -46,12 +46,19 @@ bool SetupStateServer::RenderGui() const
 
         if (ImGui::BeginCombo("Map", serverComponent.lock()->m_map.c_str())) {
             std::vector<std::string> entries = g_gameServer->GetFileSystem().GetFilesFromDirectory(MAPS_DIR, MAPS_EXTENSION);
-            for (const auto& entry : entries) {
-                std::string name = g_gameServer->GetFileSystem().GetName(entry);
-                if (ImGui::Selectable(name.c_str())) {
-                    serverComponent.lock()->m_map = name;
+            if (!entries.empty()) {
+                for (const auto& entry : entries) {
+                    std::string name = g_gameServer->GetFileSystem().GetName(entry);
+                    if (ImGui::Selectable(name.c_str())) {
+                        serverComponent.lock()->m_map = name;
+                    }
+                }
+
+                if (ImGui::Selectable("Random")) {
+                    serverComponent.lock()->m_map = "Random";
                 }
             }
+
             ImGui::EndCombo();
         }
 
@@ -147,8 +154,17 @@ void SetupStateServer::ChangeToConnect() const
 //----------------------------------------------------------------------------------------------------
 void SetupStateServer::ImportMap() const
 {
-    std::string path = MAPS_DIR;
     std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
+    if (serverComponent.lock()->m_map == "Random") {
+        std::vector<std::string> entries = g_gameServer->GetFileSystem().GetFilesFromDirectory(MAPS_DIR, MAPS_EXTENSION);
+        I32 min = 0;
+        I32 max = static_cast<I32>(entries.size()) - 1;
+        I32 random = RandomInt(min, max);
+        std::string name = g_gameServer->GetFileSystem().GetName(entries.at(random));
+        serverComponent.lock()->m_map = name;
+    }
+
+    std::string path = MAPS_DIR;
     path.append(serverComponent.lock()->m_map);
     path.append(MAPS_EXTENSION);
     MapImporter::Tilemap tilemap;
