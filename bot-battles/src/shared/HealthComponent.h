@@ -34,7 +34,7 @@ struct HealthComponent : public Component
     bool CanHeal() const;
     void Heal();
 
-    // Bot
+    // Python
     U32 GetCurrentHP() const
     {
         return static_cast<U32>(m_currentHP);

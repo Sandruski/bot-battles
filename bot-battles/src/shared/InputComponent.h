@@ -20,7 +20,7 @@ struct InputComponent : public Component,
     void Reset();
     void FullReset();
 
-    // Bot
+    // Python
     F32 GetMaxLinearVelocity() const;
     F32 GetMaxAngularVelocity() const;
 

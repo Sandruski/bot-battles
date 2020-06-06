@@ -39,15 +39,12 @@ PYBIND11_EMBEDDED_MODULE(botbattles, m)
         .def("heal", &InputComponent::Heal);
 
     py::class_<TransformComponent, std::shared_ptr<TransformComponent>>(m, "TransformComponent")
-        .def_property_readonly("positionX", &TransformComponent::GetPositionX)
-        .def_property_readonly("positionY", &TransformComponent::GetPositionY)
-        .def_property_readonly("rotation", &TransformComponent::GetRotation)
-        .def_property_readonly("directionX", &TransformComponent::GetDirectionX)
-        .def_property_readonly("directionY", &TransformComponent::GetDirectionY);
+        .def_property_readonly("position", &TransformComponent::GetPyPosition)
+        .def_property_readonly("rotation", &TransformComponent::GetPyRotation)
+        .def_property_readonly("direction", &TransformComponent::GetPyDirection);
 
     py::class_<RigidbodyComponent, std::shared_ptr<RigidbodyComponent>>(m, "RigidbodyComponent")
-        .def_property_readonly("linearVelocityX", &RigidbodyComponent::GetLinearVelocityX)
-        .def_property_readonly("linearVelocityY", &RigidbodyComponent::GetLinearVelocityY)
+        .def_property_readonly("linearVelocity", &RigidbodyComponent::GetPyLinearVelocity)
         .def_property_readonly("angularVelocity", &RigidbodyComponent::GetAngularVelocity);
 
     py::class_<WeaponComponent, std::shared_ptr<WeaponComponent>>(m, "WeaponComponent")
@@ -76,10 +73,9 @@ PYBIND11_EMBEDDED_MODULE(botbattles, m)
 
     py::class_<MapComponent, std::shared_ptr<MapComponent>>(m, "MapComponent")
         .def("getTile", &MapComponent::GetTile)
-        .def("getWorldPosition", &MapComponent::GetRealWorldPosition)
+        .def("getWorldPosition", &MapComponent::GetPyRealWorldPosition)
         //.def("getMapPosition", &MapComponent::RealWorldToMap)
-        .def_property_readonly("tileCountX", &MapComponent::GetTileCountX)
-        .def_property_readonly("tileCountY", &MapComponent::GetTileCountY);
+        .def_property_readonly("tileCount", &MapComponent::GetPyTileCount);
 
     py::class_<MapComponent::Tile>(m, "Tile")
         .def_property_readonly("tileType", &MapComponent::Tile::GetTileType);

@@ -191,18 +191,6 @@ glm::vec2 RigidbodyComponent::GetLinearVelocity() const
 }
 
 //----------------------------------------------------------------------------------------------------
-F32 RigidbodyComponent::GetLinearVelocityX() const
-{
-    return GetLinearVelocity().x;
-}
-
-//----------------------------------------------------------------------------------------------------
-F32 RigidbodyComponent::GetLinearVelocityY() const
-{
-    return GetLinearVelocity().y;
-}
-
-//----------------------------------------------------------------------------------------------------
 F32 RigidbodyComponent::GetAngularVelocity() const
 {
     F32 angularVelocity = 0.0f;
@@ -213,5 +201,12 @@ F32 RigidbodyComponent::GetAngularVelocity() const
     }
 
     return angularVelocity;
+}
+
+//----------------------------------------------------------------------------------------------------
+std::tuple<F32, F32> RigidbodyComponent::GetPyLinearVelocity() const
+{
+    glm::vec2 linearVelocity = GetLinearVelocity();
+    return std::make_tuple(linearVelocity.x, linearVelocity.y);
 }
 }

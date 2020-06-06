@@ -25,9 +25,14 @@ bool SetupStateClient::Enter() const
 //----------------------------------------------------------------------------------------------------
 bool SetupStateClient::RenderGui() const
 {
+    ImVec2 contentRegionMax = ImGui::GetWindowContentRegionMax();
+    ImVec2 framePadding = ImGui::GetStyle().FramePadding;
+
     std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
     ImGui::InputText("IP", &clientComponent.lock()->m_ip);
     ImGui::InputText("Port", &clientComponent.lock()->m_port);
+
+    ImGui::Spacing();
 
     ImGui::InputText("Name", &clientComponent.lock()->m_name);
 
@@ -64,15 +69,13 @@ bool SetupStateClient::RenderGui() const
     }
     ImGui::TextColored(color, mainMenuComponent.lock()->m_log.first.c_str());
 
-    const char* start = "Start";
-    ImVec2 textSize = ImGui::CalcTextSize(start);
-    ImVec2 framePadding = ImGui::GetStyle().FramePadding;
-    ImVec2 buttonSize = ImVec2(textSize.x + framePadding.x * 2.0f, textSize.y + framePadding.y * 2.0f);
-    ImVec2 contentRegionMax = ImGui::GetWindowContentRegionMax();
-    ImGui::SetCursorPosX(contentRegionMax.x - buttonSize.x);
-    ImGui::SetCursorPosY(contentRegionMax.y - buttonSize.y);
+    std::string startString = "Start";
+    ImVec2 startTextSize = ImGui::CalcTextSize(startString.c_str());
+    ImVec2 startButtonSize = ImVec2(startTextSize.x + framePadding.x * 2.0f, startTextSize.y + framePadding.y * 2.0f);
+    ImGui::SetCursorPosX(contentRegionMax.x - startButtonSize.x);
+    ImGui::SetCursorPosY(contentRegionMax.y - startButtonSize.y);
     // V
-    if (ImGui::Button(start)) {
+    if (ImGui::Button(startString.c_str())) {
         Event newEvent;
         newEvent.eventType = EventType::TRY_CONNECT;
         g_gameClient->GetFSM().NotifyEvent(newEvent);

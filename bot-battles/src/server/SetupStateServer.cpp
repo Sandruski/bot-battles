@@ -41,8 +41,13 @@ bool SetupStateServer::RenderGui() const
     ImGui::SetNextWindowSize(size, ImGuiCond_Always);
 
     if (ImGui::Begin("Main Menu", nullptr, windowFlags)) {
+        ImVec2 contentRegionMax = ImGui::GetWindowContentRegionMax();
+        ImVec2 framePadding = ImGui::GetStyle().FramePadding;
+
         std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
         ImGui::InputText("Port", &serverComponent.lock()->m_port);
+
+        ImGui::Spacing();
 
         if (ImGui::BeginCombo("Map", serverComponent.lock()->m_map.c_str())) {
             std::vector<std::string> entries = g_gameServer->GetFileSystem().GetFilesFromDirectory(MAPS_DIR, MAPS_EXTENSION);
@@ -86,15 +91,13 @@ bool SetupStateServer::RenderGui() const
         }
         ImGui::TextColored(color, mainMenuComponent.lock()->m_log.first.c_str());
 
-        const char* start = "Start";
-        ImVec2 textSize = ImGui::CalcTextSize(start);
-        ImVec2 framePadding = ImGui::GetStyle().FramePadding;
-        ImVec2 buttonSize = ImVec2(textSize.x + framePadding.x * 2.0f, textSize.y + framePadding.y * 2.0f);
-        ImVec2 contentRegionMax = ImGui::GetWindowContentRegionMax();
-        ImGui::SetCursorPosX(contentRegionMax.x - buttonSize.x);
-        ImGui::SetCursorPosY(contentRegionMax.y - buttonSize.y);
+        std::string startText = "Start";
+        ImVec2 startTextSize = ImGui::CalcTextSize(startText.c_str());
+        ImVec2 startButtonSize = ImVec2(startTextSize.x + framePadding.x * 2.0f, startTextSize.y + framePadding.y * 2.0f);
+        ImGui::SetCursorPosX(contentRegionMax.x - startButtonSize.x);
+        ImGui::SetCursorPosY(contentRegionMax.y - startButtonSize.y);
         // V
-        if (ImGui::Button(start)) {
+        if (ImGui::Button(startText.c_str())) {
             Event newEvent;
             newEvent.eventType = EventType::TRY_CONNECT;
             g_gameServer->GetFSM().NotifyEvent(newEvent);

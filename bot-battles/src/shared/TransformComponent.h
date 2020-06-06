@@ -39,12 +39,10 @@ struct TransformComponent : public Component
     glm::vec3 GetDebugPositionAndLayer() const;
     glm::vec2 GetDirection() const;
 
-    // Bot
-    F32 GetPositionX() const;
-    F32 GetPositionY() const;
-    F32 GetRotation() const;
-    F32 GetDirectionX() const;
-    F32 GetDirectionY() const;
+    // Python
+    std::tuple<F32, F32> GetPyPosition() const;
+    F32 GetPyRotation() const;
+    std::tuple<F32, F32> GetPyDirection() const;
 
     // Networked
     glm::vec2 m_position;

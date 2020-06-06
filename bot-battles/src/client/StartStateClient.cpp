@@ -56,10 +56,30 @@ bool StartStateClient::RenderGui() const
     ImGui::SetNextWindowSize(size, ImGuiCond_Always);
 
     if (ImGui::Begin(GetName().c_str(), nullptr, windowFlags)) {
+        ImVec2 contentRegionMax = ImGui::GetWindowContentRegionMax();
+        ImVec2 framePadding = ImGui::GetStyle().FramePadding;
+
         std::weak_ptr<GameplayComponent> gameplayComponent = g_gameClient->GetGameplayComponent();
         F32 mainMenuCurrentTime = static_cast<F32>(gameplayComponent.lock()->m_mainMenuTimer.ReadSec());
         F32 mainMenuTimeLeft = gameplayComponent.lock()->m_mainMenuTimeout - mainMenuCurrentTime;
-        ImGui::Text("%.0f", mainMenuTimeLeft);
+        std::string mainMenuTimeLeftString = std::to_string(static_cast<U32>(std::ceil(mainMenuTimeLeft)));
+        ImVec2 mainMenuTimeLeftTextSize = ImGui::CalcTextSize(mainMenuTimeLeftString.c_str());
+        ImGui::SetCursorPosY(contentRegionMax.y - mainMenuTimeLeftTextSize.y);
+        ImGui::Text(mainMenuTimeLeftString.c_str());
+
+        std::string mainMenuString = "Main menu";
+        ImVec2 mainMenuTextSize = ImGui::CalcTextSize(mainMenuString.c_str());
+        ImVec2 mainMenuButtonSize = ImVec2(mainMenuTextSize.x + framePadding.x * 2.0f, mainMenuTextSize.y + framePadding.y * 2.0f);
+        ImGui::SetCursorPosX(contentRegionMax.x - mainMenuButtonSize.x);
+        ImGui::SetCursorPosY(contentRegionMax.y - mainMenuButtonSize.y);
+        // X
+        if (ImGui::Button(mainMenuString.c_str())) {
+            Event newEvent;
+            newEvent.eventType = EventType::SEND_BYE;
+            g_gameClient->GetFSM().NotifyEvent(newEvent);
+
+            ChangeToMainMenu();
+        }
 
         ImGui::End();
     }

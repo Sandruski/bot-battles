@@ -38,7 +38,7 @@ struct WeaponComponent : public Component
     bool CanReload() const;
     void Reload();
 
-    // Bot
+    // Python
     U32 GetPrimaryWeaponDamage() const
     {
         return m_damagePrimary;

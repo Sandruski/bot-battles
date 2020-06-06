@@ -45,6 +45,9 @@ bool ConnectStateClient::Update() const
 //----------------------------------------------------------------------------------------------------
 bool ConnectStateClient::RenderGui() const
 {
+    ImVec2 contentRegionMax = ImGui::GetWindowContentRegionMax();
+    ImVec2 framePadding = ImGui::GetStyle().FramePadding;
+
     std::weak_ptr<MainMenuComponent> mainMenuComponent = g_gameClient->GetMainMenuComponent();
     std::weak_ptr<GuiComponent> guiComponent = g_gameClient->GetGuiComponent();
     F32 guiCurrentTime = static_cast<F32>(mainMenuComponent.lock()->m_guiTimer.ReadSec());
@@ -60,15 +63,13 @@ bool ConnectStateClient::RenderGui() const
         ImGui::Text("Connecting.");
     }
 
-    const char* cancel = "Cancel";
-    ImVec2 textSize = ImGui::CalcTextSize(cancel);
-    ImVec2 framePadding = ImGui::GetStyle().FramePadding;
-    ImVec2 buttonSize = ImVec2(textSize.x + framePadding.x * 2.0f, textSize.y + framePadding.y * 2.0f);
-    ImVec2 contentRegionMax = ImGui::GetWindowContentRegionMax();
-    ImGui::SetCursorPosX(contentRegionMax.x - buttonSize.x);
-    ImGui::SetCursorPosY(contentRegionMax.y - buttonSize.y);
+    std::string cancelString = "Cancel";
+    ImVec2 cancelTextSize = ImGui::CalcTextSize(cancelString.c_str());
+    ImVec2 cancelButtonSize = ImVec2(cancelTextSize.x + framePadding.x * 2.0f, cancelTextSize.y + framePadding.y * 2.0f);
+    ImGui::SetCursorPosX(contentRegionMax.x - cancelButtonSize.x);
+    ImGui::SetCursorPosY(contentRegionMax.y - cancelButtonSize.y);
     // X
-    if (ImGui::Button(cancel)) {
+    if (ImGui::Button(cancelString.c_str())) {
         Event newEvent;
         newEvent.eventType = EventType::DISCONNECT_SOCKETS;
         g_gameClient->GetFSM().NotifyEvent(newEvent);

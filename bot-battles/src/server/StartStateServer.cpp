@@ -39,6 +39,10 @@ bool StartStateServer::RenderGui() const
     ImGui::SetNextWindowSize(size, ImGuiCond_Always);
 
     if (ImGui::Begin(GetName().c_str(), nullptr, windowFlags)) {
+        ImVec2 contentRegionMax = ImGui::GetWindowContentRegionMax();
+        ImVec2 framePadding = ImGui::GetStyle().FramePadding;
+        ImVec2 itemSpacing = ImGui::GetStyle().ItemSpacing;
+
         std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
         const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.lock()->GetPlayerIDToClientProxyMap();
         for (const auto& pair : playerIDToClientProxy) {
@@ -47,16 +51,13 @@ bool StartStateServer::RenderGui() const
             ImGui::Text("Player %u", playerNumber);
         }
 
-        const char* mainMenu = "Main menu";
-        ImVec2 mainMenuTextSize = ImGui::CalcTextSize(mainMenu);
-        ImVec2 framePadding = ImGui::GetStyle().FramePadding;
+        std::string mainMenuString = "Main menu";
+        ImVec2 mainMenuTextSize = ImGui::CalcTextSize(mainMenuString.c_str());
         ImVec2 mainMenuButtonSize = ImVec2(mainMenuTextSize.x + framePadding.x * 2.0f, mainMenuTextSize.y + framePadding.y * 2.0f);
-        ImVec2 contentRegionMax = ImGui::GetWindowContentRegionMax();
-        ImVec2 itemSpacing = ImGui::GetStyle().ItemSpacing;
         ImGui::SetCursorPosX(contentRegionMax.x - mainMenuButtonSize.x);
         ImGui::SetCursorPosY(contentRegionMax.y - mainMenuButtonSize.y);
         // X
-        if (ImGui::Button(mainMenu)) {
+        if (ImGui::Button(mainMenuString.c_str())) {
             Event newEvent;
             newEvent.eventType = EventType::SEND_BYE;
             g_gameServer->GetFSM().NotifyEvent(newEvent);

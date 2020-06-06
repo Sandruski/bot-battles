@@ -20,7 +20,7 @@ struct MapComponent {
 
         Tile();
 
-        // Bot
+        // Python
         TileType GetTileType() const
         {
             return m_tileType;
@@ -44,21 +44,16 @@ struct MapComponent {
 
     void Reset();
 
-    // Bot
-    std::tuple<F32, F32> GetRealWorldPosition(U32 i, U32 j) const
+    // Python
+    std::tuple<F32, F32> GetPyRealWorldPosition(U32 i, U32 j) const
     {
         glm::vec2 realWorld = MapToRealWorld(i, j);
         return std::make_tuple(realWorld.x, realWorld.y);
     }
 
-    U32 GetTileCountX() const
+    std::tuple<U32, U32> GetPyTileCount() const
     {
-        return m_tileCount.x;
-    }
-
-    U32 GetTileCountY() const
-    {
-        return m_tileCount.y;
+        return std::make_tuple(m_tileCount.x, m_tileCount.y);
     }
 
     std::vector<Tile> m_walkability;

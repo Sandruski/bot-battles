@@ -43,33 +43,42 @@ bool ResultsStateServer::RenderGui() const
     ImGui::SetNextWindowSize(size, ImGuiCond_Always);
 
     if (ImGui::Begin("Scoreboard", nullptr, windowFlags)) {
+        ImVec2 contentRegionMax = ImGui::GetWindowContentRegionMax();
+        ImVec2 framePadding = ImGui::GetStyle().FramePadding;
+        ImVec2 itemSpacing = ImGui::GetStyle().ItemSpacing;
+
         std::weak_ptr<ScoreboardComponent> scoreboardComponent = g_gameServer->GetScoreboardComponent();
         if (scoreboardComponent.lock()->m_winnerPlayerID == INVALID_PLAYER_ID) {
-            ImGui::Text("Tie!");
+            std::string tieString = "Tie!";
+            ImVec2 tieStringTextSize = ImGui::CalcTextSize(tieString.c_str());
+            ImGui::SetCursorPosX(contentRegionMax.x / 2.0f - tieStringTextSize.x / 2.0f);
+            ImGui::Text(tieString.c_str());
         } else {
             U32 playerNumber = scoreboardComponent.lock()->m_winnerPlayerID + 1;
-            ImGui::Text("Player %u wins :)", playerNumber);
+            std::string winnerString = "Player ";
+            winnerString.append(std::to_string(playerNumber));
+            winnerString.append(" wins :)");
+            ImVec2 winnerStringTextSize = ImGui::CalcTextSize(winnerString.c_str());
+            ImGui::SetCursorPosX(contentRegionMax.x / 2.0f - winnerStringTextSize.x / 2.0f);
+            ImGui::Text(winnerString.c_str());
         }
 
-        const char* playAgain = "Play again";
-        const char* mainMenu = "Main menu";
-        ImVec2 playAgainTextSize = ImGui::CalcTextSize(playAgain);
-        ImVec2 mainMenuTextSize = ImGui::CalcTextSize(mainMenu);
-        ImVec2 framePadding = ImGui::GetStyle().FramePadding;
+        std::string playAgainString = "Play again";
+        std::string mainMenuString = "Main menu";
+        ImVec2 playAgainTextSize = ImGui::CalcTextSize(playAgainString.c_str());
+        ImVec2 mainMenuTextSize = ImGui::CalcTextSize(mainMenuString.c_str());
         ImVec2 playAgainButtonSize = ImVec2(playAgainTextSize.x + framePadding.x * 2.0f, playAgainTextSize.y + framePadding.y * 2.0f);
         ImVec2 mainMenuButtonSize = ImVec2(mainMenuTextSize.x + framePadding.x * 2.0f, mainMenuTextSize.y + framePadding.y * 2.0f);
-        ImVec2 contentRegionMax = ImGui::GetWindowContentRegionMax();
-        ImVec2 itemSpacing = ImGui::GetStyle().ItemSpacing;
         ImGui::SetCursorPosX(contentRegionMax.x - playAgainButtonSize.x - mainMenuButtonSize.x - itemSpacing.x);
         ImGui::SetCursorPosY(contentRegionMax.y - playAgainButtonSize.y);
         // V
-        if (ImGui::Button(playAgain)) {
+        if (ImGui::Button(playAgainString.c_str())) {
             ChangeToRestart();
         }
         ImGui::SetCursorPosX(contentRegionMax.x - mainMenuButtonSize.x);
         ImGui::SetCursorPosY(contentRegionMax.y - mainMenuButtonSize.y);
         // X
-        if (ImGui::Button(mainMenu)) {
+        if (ImGui::Button(mainMenuString.c_str())) {
             Event newEvent;
             newEvent.eventType = EventType::SEND_BYE;
             g_gameServer->GetFSM().NotifyEvent(newEvent);
