@@ -7,48 +7,50 @@ namespace sand {
 // System Component
 struct MapComponent {
 
-    struct Tile {
+    enum class TileType : U8 {
 
-        enum class TileType : U8 {
-
-            NONE,
-            FLOOR,
-            BOT_SPAWNER,
-            WEAPON_SPAWNER,
-            HEALTH_SPAWNER
-        };
-
-        Tile();
-
-        // Python
-        TileType GetTileType() const
-        {
-            return m_tileType;
-        }
-
-        TileType m_tileType;
+        NONE,
+        WALL,
+        FLOOR,
+        BOT_SPAWNER,
+        WEAPON_SPAWNER,
+        HEALTH_SPAWNER
     };
 
     MapComponent();
 
-    Tile& GetTile(U32 i, U32 j);
-    //std::vector<Tile&> GetTileNeighbors(U32 i, U32 j);
+    TileType& GetTileType(const glm::uvec2& mapPosition);
+    TileType GetTileType(const glm::uvec2& mapPosition) const;
 
-    bool IsInBounds(U32 i, U32 j);
-    bool IsWalkable(U32 i, U32 j);
+    bool IsInBounds(const glm::uvec2& mapPosition) const;
+    bool IsWalkable(const glm::uvec2& mapPosition) const;
 
-    glm::vec2 MapToWorld(U32 i, U32 j) const;
-    glm::vec2 MapToRealWorld(U32 i, U32 j) const;
-    glm::uvec2 WorldToMap(F32 x, F32 y) const;
-    glm::uvec2 RealWorldToMap(F32 x, F32 y) const;
+    glm::vec2 MapToWorld(const glm::uvec2& mapPosition) const;
+    glm::vec2 MapToRealWorld(const glm::uvec2& mapPosition) const;
+    glm::uvec2 WorldToMap(const glm::vec2& worldPosition) const;
+    glm::uvec2 RealWorldToMap(const glm::vec2& realWorldPosition) const;
 
     void Reset();
 
     // Python
-    std::tuple<F32, F32> GetPyRealWorldPosition(U32 i, U32 j) const
+    TileType GetPyTileType(std::tuple<U32, U32> mapPosition) const
     {
-        glm::vec2 realWorld = MapToRealWorld(i, j);
+        glm::uvec2 newMapPosition = glm::uvec2(std::get<0>(mapPosition), std::get<1>(mapPosition));
+        return GetTileType(newMapPosition);
+    }
+
+    std::tuple<F32, F32> GetPyRealWorldPosition(std::tuple<U32, U32> mapPosition) const
+    {
+        glm::uvec2 newMapPosition = glm::uvec2(std::get<0>(mapPosition), std::get<1>(mapPosition));
+        glm::vec2 realWorld = MapToRealWorld(newMapPosition);
         return std::make_tuple(realWorld.x, realWorld.y);
+    }
+
+    std::tuple<U32, U32> GetPyMapPosition(std::tuple<F32, F32> realWorldPosition) const
+    {
+        glm::vec2 newRealWorldPosition = glm::vec2(std::get<0>(realWorldPosition), std::get<1>(realWorldPosition));
+        glm::uvec2 map = RealWorldToMap(newRealWorldPosition);
+        return std::make_tuple(map.x, map.y);
     }
 
     std::tuple<U32, U32> GetPyTileCount() const
@@ -56,11 +58,10 @@ struct MapComponent {
         return std::make_tuple(m_tileCount.x, m_tileCount.y);
     }
 
-    std::vector<Tile> m_walkability;
-
+    std::vector<TileType> m_tileTypes;
     glm::uvec2 m_tileCount;
     glm::uvec2 m_tileSize;
-    F32 m_scale;
+    F32 m_mapScale;
 };
 }
 

@@ -14,12 +14,13 @@ class MyBot(bot.Bot):
 
     def tick(self, input : InputComponent):
         if self.wallHit == False:
-            input.linearVelocityX = int(self.map.getTile(1, 1).tileType) * 100
+            input.linearVelocityX = 0#int(self.map.getTile(1, 1).tileType) * 100
             input.linearVelocityY = 0
         input.angularVelocity = 0
         input.shootSecondaryWeapon()
-        worldPosition = self.map.getWorldPosition(0, 0)
+        worldPosition = self.map.getWorldPosition((0,0))
         logging.info('%f %f', worldPosition[0], worldPosition[1])
+        #a_star_search(self.map, (1,1),(5,5))
 
     def onWeaponPickedUp(self, input):
         logging.info('onWeaponPickedUp')
@@ -71,6 +72,19 @@ def heuristic(a, b):
     (x2, y2) = b
     return abs(x1 - x2) + abs(y1 - y2)
 
+def neighbors(map, id, diagonals):
+    results = []
+    north = (id[0], id[1] + 1)
+    
+    [(x+1, y), (x, y-1), (x-1, y), (x, y+1)]
+    if (x + y) % 2 == 0: results.reverse() # aesthetics
+    results = filter(self.in_bounds, results)
+    results = filter(self.passable, results)
+    return results
+
+def cost(from_node, to_node):
+    return self.weights.get(to_node, 1)
+
 def a_star_search(graph, start, goal):
     frontier = PriorityQueue()
     frontier.put(start, 0)
@@ -85,7 +99,7 @@ def a_star_search(graph, start, goal):
         if current == goal:
             break
         
-        for next in graph.neighbors(current):
+        for next in graph.getNeighbors(current, True):
             new_cost = cost_so_far[current] + graph.cost(current, next)
             if next not in cost_so_far or new_cost < cost_so_far[next]:
                 cost_so_far[next] = new_cost

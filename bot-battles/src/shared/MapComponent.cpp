@@ -6,91 +6,87 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-MapComponent::Tile::Tile()
-    : m_tileType(TileType::NONE)
-{
-}
-
-//----------------------------------------------------------------------------------------------------
 MapComponent::MapComponent()
-    : m_walkability()
+    : m_tileTypes()
     , m_tileCount(0, 0)
     , m_tileSize(0, 0)
-    , m_scale(1.0f)
+    , m_mapScale(1.0f)
 {
 }
 
 //----------------------------------------------------------------------------------------------------
-MapComponent::Tile& MapComponent::GetTile(U32 i, U32 j)
+MapComponent::TileType& MapComponent::GetTileType(const glm::uvec2& mapPosition)
 {
-    return m_walkability.at(i + m_tileCount.x * j);
+    return m_tileTypes.at(mapPosition.x + m_tileCount.x * mapPosition.y);
 }
 
 //----------------------------------------------------------------------------------------------------
-bool MapComponent::IsInBounds(U32 i, U32 j)
+MapComponent::TileType MapComponent::GetTileType(const glm::uvec2& mapPosition) const
 {
-    return ((0 <= i && i < m_tileCount.x) && (0 <= j && j < m_tileCount.y));
+    return m_tileTypes.at(mapPosition.x + m_tileCount.x * mapPosition.y);
 }
 
 //----------------------------------------------------------------------------------------------------
-bool MapComponent::IsWalkable(U32 i, U32 j)
+bool MapComponent::IsInBounds(const glm::uvec2& mapPosition) const
 {
-    Tile& tile = GetTile(i, j);
-    return tile.m_tileType != Tile::TileType::NONE;
+    return ((0 <= mapPosition.x && mapPosition.x < m_tileCount.x) && (0 <= mapPosition.y && mapPosition.y < m_tileCount.y));
 }
 
 //----------------------------------------------------------------------------------------------------
-glm::vec2 MapComponent::MapToWorld(U32 i, U32 j) const
+bool MapComponent::IsWalkable(const glm::uvec2& mapPosition) const
+{
+    return IsInBounds(mapPosition) && GetTileType(mapPosition) != TileType::NONE;
+}
+
+//----------------------------------------------------------------------------------------------------
+glm::vec2 MapComponent::MapToWorld(const glm::uvec2& mapPosition) const
 {
     glm::vec2 world;
 
-    world.x = static_cast<F32>(i) * static_cast<F32>(m_tileSize.x);
-    world.y = static_cast<F32>(j) * static_cast<F32>(m_tileSize.y);
+    world.x = static_cast<F32>(mapPosition.x) * static_cast<F32>(m_tileSize.x);
+    world.y = static_cast<F32>(mapPosition.y) * static_cast<F32>(m_tileSize.y);
 
     return world;
 }
 
 //----------------------------------------------------------------------------------------------------
-glm::vec2 MapComponent::MapToRealWorld(U32 i, U32 j) const
+glm::vec2 MapComponent::MapToRealWorld(const glm::uvec2& mapPosition) const
 {
-    glm::uvec2 world = MapToWorld(i, j);
-
-    glm::vec2 realWorld = static_cast<glm::vec2>(world);
+    glm::vec2 realWorld = MapToWorld(mapPosition);
     realWorld += static_cast<glm::vec2>(m_tileSize) / 2.0f;
     realWorld *= 2.0f;
     realWorld -= static_cast<glm::vec2>(m_tileSize * m_tileCount);
     realWorld *= 0.5f;
-    realWorld *= m_scale;
+    realWorld *= m_mapScale;
     std::weak_ptr<WindowComponent> windowComponent = g_game->GetWindowComponent();
     realWorld += static_cast<glm::vec2>(windowComponent.lock()->m_baseResolution) / 2.0f;
-
     return realWorld;
 }
 
 //----------------------------------------------------------------------------------------------------
-glm::uvec2 MapComponent::WorldToMap(F32 x, F32 y) const
+glm::uvec2 MapComponent::WorldToMap(const glm::vec2& worldPosition) const
 {
     glm::uvec2 map;
 
-    map.x = static_cast<U32>(x / static_cast<F32>(m_tileSize.x));
-    map.y = static_cast<U32>(y / static_cast<F32>(m_tileSize.y));
+    map.x = static_cast<U32>(worldPosition.x / static_cast<F32>(m_tileSize.x));
+    map.y = static_cast<U32>(worldPosition.y / static_cast<F32>(m_tileSize.y));
 
     return map;
 }
 
 //----------------------------------------------------------------------------------------------------
-glm::uvec2 MapComponent::RealWorldToMap(F32 x, F32 y) const
+glm::uvec2 MapComponent::RealWorldToMap(const glm::vec2& worldPosition) const
 {
-    glm::vec2 world = glm::vec2(x, y);
+    glm::vec2 world = worldPosition;
     std::weak_ptr<WindowComponent> windowComponent = g_game->GetWindowComponent();
     world -= static_cast<glm::vec2>(windowComponent.lock()->m_baseResolution) / 2.0f;
-    world /= m_scale;
+    world /= m_mapScale;
     world /= 0.5f;
     world += static_cast<glm::vec2>(m_tileSize * m_tileCount);
     world /= 2.0f;
     world -= static_cast<glm::vec2>(m_tileSize) / 2.0f;
 
-    glm::uvec2 map = WorldToMap(world.x, world.y);
+    glm::uvec2 map = WorldToMap(world);
 
     return map;
 }
@@ -98,6 +94,6 @@ glm::uvec2 MapComponent::RealWorldToMap(F32 x, F32 y) const
 //----------------------------------------------------------------------------------------------------
 void MapComponent::Reset()
 {
-    m_walkability.clear();
+    m_tileTypes.clear();
 }
 }

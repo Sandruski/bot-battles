@@ -23,7 +23,6 @@ struct InputComponent : public Component,
     // Python
     F32 GetMaxLinearVelocity() const;
     F32 GetMaxAngularVelocity() const;
-
     void SetLinearVelocityX(F32 linearVelocityX);
     void SetLinearVelocityY(F32 linearVelocityY);
     F32 GetLinearVelocityX() const;
