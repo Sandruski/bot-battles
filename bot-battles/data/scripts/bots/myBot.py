@@ -14,7 +14,7 @@ class MyBot(bot.Bot):
 
     def tick(self, input : InputComponent):
         if self.wallHit == False:
-            input.linearVelocityX = 0#int(self.map.getTile(1, 1).tileType) * 100
+            input.linearVelocityX = int(self.map.getTile(1, 1).tileType) * 100
             input.linearVelocityY = 0
         input.angularVelocity = 0
         input.shootSecondaryWeapon()
@@ -38,7 +38,7 @@ class MyBot(bot.Bot):
 
     def onHitWall(self, input, collisionEvent):
         self.wallHit = True
-        reflectionVector = glm.reflect(glm.vec2(-collisionEvent.relativeVelocityX, -collisionEvent.relativeVelocityY), glm.vec2(collisionEvent.normalX, collisionEvent.normalY))
+        reflectionVector = glm.reflect(glm.vec2(-collisionEvent.relativeVelocity[0], -collisionEvent.relativeVelocity[1]), glm.vec2(collisionEvent.normal[0], collisionEvent.normal[1]))
         input.linearVelocityX = reflectionVector.x
         input.linearVelocityY = reflectionVector.y
         logging.info('onHitWall')
