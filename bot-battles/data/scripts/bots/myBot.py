@@ -6,26 +6,48 @@ import logging
 import bot
 import heapq
 
-from botbattles import TileType
+from botbattles import TransformComponent
+from botbattles import RigidbodyComponent
+from botbattles import WeaponComponent
+from botbattles import HealthComponent
+from botbattles import MapComponent
 from botbattles import InputComponent
+from botbattles import TileType
 
 class MyBot(bot.Bot):
 
     wallHit = False
 
+    def __init__(self, transformComponent : TransformComponent, rigidbodyComponent : RigidbodyComponent, weaponComponent : WeaponComponent, healthComponent : HealthComponent, mapComponent : MapComponent):
+        super().__init__(transformComponent, rigidbodyComponent, weaponComponent, healthComponent, mapComponent)
+        self.pathfinder = Pathfinder(Graph(self.map))
+        self.path = None
+        self.pathIndex = None
+        self.calculatePath = True
+
     def tick(self, input : InputComponent):
-        if self.wallHit == False:
-            input.linearVelocityX = 0#int(self.map.getTile(1, 1).tileType) * 100
-            input.linearVelocityY = 0
-        input.angularVelocity = 0
-        input.shootSecondaryWeapon()
-        worldPosition = self.map.getWorldPosition((0,0))
-        logging.info('%f %f', worldPosition[0], worldPosition[1])
-        start = (1, 1)
-        goal = (5, 5)
-        came_from = a_star_search(Graph(self.map), start, goal)
-        path = reconstruct_path(came_from, start, goal)
-        logging.info('path size %f', len(path))
+        if self.calculatePath:
+            origin = self.map.getMapPosition(self.transform.position)
+            destination = (5, 5)
+            cameFrom = self.pathfinder.aStarSearch(origin, destination)
+            self.path = self.pathfinder.reconstructPath(origin, destination, cameFrom)
+            self.pathIndex = 0
+            self.calculatePath = False
+
+        currentTile = self.map.getMapPosition(self.transform.position)
+        nextTile = self.path[self.pathIndex]
+        if currentTile == nextTile and len(self.path) < self.pathIndex - 1:
+            self.pathIndex += 1
+        nextPosition = self.map.getWorldPosition(nextTile)
+        direction = []
+        direction.append(nextPosition[0] - self.transform.position[0])   
+        direction.append(nextPosition[1] - self.transform.position[1])
+        glmDirection = glm.vec2(direction[0], direction[1])
+        glmDirection = glm.normalize(glmDirection)
+        direction[0] = glmDirection.x
+        direction[1] = glmDirection.y
+        input.linearVelocityX = direction[0] * input.maxLinearVelocity
+        input.linearVelocityY = direction[1] * input.maxLinearVelocity
 
     def onWeaponPickedUp(self, input):
         logging.info('onWeaponPickedUp')
@@ -48,6 +70,19 @@ class MyBot(bot.Bot):
         input.linearVelocityX = reflectionVector.x
         input.linearVelocityY = reflectionVector.y
         logging.info('onHitWall')
+
+class PriorityQueue:
+    def __init__(self):
+        self.elements = []
+    
+    def empty(self):
+        return len(self.elements) == 0
+    
+    def put(self, item, priority):
+        heapq.heappush(self.elements, (priority, item))
+    
+    def get(self):
+        return heapq.heappop(self.elements)[1]
 
 class Graph:
     def __init__(self, map):
@@ -81,54 +116,45 @@ class Graph:
         neighbors = filter(self.isWalkable, neighbors)
         return neighbors
 
-class PriorityQueue:
-    def __init__(self):
-        self.elements = []
-    
-    def empty(self):
-        return len(self.elements) == 0
-    
-    def put(self, item, priority):
-        heapq.heappush(self.elements, (priority, item))
-    
-    def get(self):
-        return heapq.heappop(self.elements)[1]
+class Pathfinder:
+    def __init__(self, graph):
+        self.graph = graph
 
-def reconstruct_path(came_from, start, goal):
-    current = goal
-    path = []
-    while current != start:
-        path.append(current)
-        current = came_from[current]
-    path.append(start) # optional
-    path.reverse() # optional
-    return path
+    def reconstructPath(self, origin, destination, cameFrom):
+       current = destination
+       path = []
+       while current != origin:
+           path.append(current)
+           current = cameFrom[current]
+       #path.append(origin)
+       path.reverse()
+       return path
 
-def heuristic(a, b):
-    (x1, y1) = a
-    (x2, y2) = b
-    return abs(x1 - x2) + abs(y1 - y2)
+    def calculateHeuristic(self, a, b):
+        (x1, y1) = a
+        (x2, y2) = b
+        return abs(x1 - x2) + abs(y1 - y2)
 
-def a_star_search(graph, start, goal):
-    frontier = PriorityQueue()
-    frontier.put(start, 0)
-    came_from = {}
-    cost_so_far = {}
-    came_from[start] = None
-    cost_so_far[start] = 0
-    
-    while not frontier.empty():
-        current = frontier.get()
+    def aStarSearch(self, origin, destination):
+        frontier = PriorityQueue()
+        frontier.put(origin, 0)
+        cameFrom = {}
+        costSoFar = {}
+        cameFrom[origin] = None
+        costSoFar[origin] = 0
         
-        if current == goal:
-            break
+        while not frontier.empty():
+            current = frontier.get()
+            
+            if current == destination:
+                break
+            
+            for next in self.graph.getNeighbors(current, True):
+                newCost = costSoFar[current] + self.graph.getCost(next)
+                if next not in costSoFar or newCost < costSoFar[next]:
+                    costSoFar[next] = newCost
+                    priority = newCost + self.calculateHeuristic(destination, next)
+                    frontier.put(next, priority)
+                    cameFrom[next] = current
         
-        for next in graph.getNeighbors(current, True):
-            new_cost = cost_so_far[current] + graph.getCost(next)
-            if next not in cost_so_far or new_cost < cost_so_far[next]:
-                cost_so_far[next] = new_cost
-                priority = new_cost + heuristic(goal, next)
-                frontier.put(next, priority)
-                came_from[next] = current
-    
-    return came_from
+        return cameFrom
