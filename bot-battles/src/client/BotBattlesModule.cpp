@@ -73,12 +73,14 @@ PYBIND11_EMBEDDED_MODULE(botbattles, m)
 
     py::class_<MapComponent, std::shared_ptr<MapComponent>>(m, "MapComponent")
         .def("getTileType", &MapComponent::GetPyTileType)
+        .def("isInBounds", &MapComponent::IsPyInBounds)
         .def("getWorldPosition", &MapComponent::GetPyRealWorldPosition)
         .def("getMapPosition", &MapComponent::GetPyMapPosition)
         .def_property_readonly("tileCount", &MapComponent::GetPyTileCount);
 
     py::enum_<MapComponent::TileType>(m, "TileType")
         .value("NONE", MapComponent::TileType::NONE)
+        .value("WALL", MapComponent::TileType::WALL)
         .value("FLOOR", MapComponent::TileType::FLOOR)
         .value("BOT_SPAWNER", MapComponent::TileType::BOT_SPAWNER)
         .value("WEAPON_SPAWNER", MapComponent::TileType::WEAPON_SPAWNER)

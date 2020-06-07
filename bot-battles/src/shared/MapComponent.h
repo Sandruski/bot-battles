@@ -23,7 +23,6 @@ struct MapComponent {
     TileType GetTileType(const glm::uvec2& mapPosition) const;
 
     bool IsInBounds(const glm::uvec2& mapPosition) const;
-    bool IsWalkable(const glm::uvec2& mapPosition) const;
 
     glm::vec2 MapToWorld(const glm::uvec2& mapPosition) const;
     glm::vec2 MapToRealWorld(const glm::uvec2& mapPosition) const;
@@ -33,20 +32,26 @@ struct MapComponent {
     void Reset();
 
     // Python
-    TileType GetPyTileType(std::tuple<U32, U32> mapPosition) const
+    TileType GetPyTileType(const std::tuple<U32, U32>& mapPosition) const
     {
         glm::uvec2 newMapPosition = glm::uvec2(std::get<0>(mapPosition), std::get<1>(mapPosition));
         return GetTileType(newMapPosition);
     }
 
-    std::tuple<F32, F32> GetPyRealWorldPosition(std::tuple<U32, U32> mapPosition) const
+    bool IsPyInBounds(const std::tuple<U32, U32>& mapPosition) const
+    {
+        glm::uvec2 newMapPosition = glm::uvec2(std::get<0>(mapPosition), std::get<1>(mapPosition));
+        return IsInBounds(newMapPosition);
+    }
+
+    std::tuple<F32, F32> GetPyRealWorldPosition(const std::tuple<U32, U32>& mapPosition) const
     {
         glm::uvec2 newMapPosition = glm::uvec2(std::get<0>(mapPosition), std::get<1>(mapPosition));
         glm::vec2 realWorld = MapToRealWorld(newMapPosition);
         return std::make_tuple(realWorld.x, realWorld.y);
     }
 
-    std::tuple<U32, U32> GetPyMapPosition(std::tuple<F32, F32> realWorldPosition) const
+    std::tuple<U32, U32> GetPyMapPosition(const std::tuple<F32, F32>& realWorldPosition) const
     {
         glm::vec2 newRealWorldPosition = glm::vec2(std::get<0>(realWorldPosition), std::get<1>(realWorldPosition));
         glm::uvec2 map = RealWorldToMap(newRealWorldPosition);

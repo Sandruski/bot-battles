@@ -33,12 +33,6 @@ bool MapComponent::IsInBounds(const glm::uvec2& mapPosition) const
 }
 
 //----------------------------------------------------------------------------------------------------
-bool MapComponent::IsWalkable(const glm::uvec2& mapPosition) const
-{
-    return IsInBounds(mapPosition) && GetTileType(mapPosition) != TileType::NONE;
-}
-
-//----------------------------------------------------------------------------------------------------
 glm::vec2 MapComponent::MapToWorld(const glm::uvec2& mapPosition) const
 {
     glm::vec2 world;
