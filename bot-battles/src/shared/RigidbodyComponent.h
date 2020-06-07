@@ -49,6 +49,7 @@ struct RigidbodyComponent : public Component
     glm::vec2 GetLinearVelocity() const;
     F32 GetAngularVelocity() const;
 
+#ifdef _CLIENT
     // Python
     std::tuple<F32, F32> GetPyLinearVelocity() const
     {
@@ -60,6 +61,7 @@ struct RigidbodyComponent : public Component
     {
         return GetAngularVelocity();
     }
+#endif
 
     // Networked
     BodyType m_bodyType;

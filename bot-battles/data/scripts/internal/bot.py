@@ -4,14 +4,16 @@ from botbattles import TransformComponent
 from botbattles import RigidbodyComponent
 from botbattles import WeaponComponent
 from botbattles import HealthComponent
+from botbattles import SightComponent
 from botbattles import MapComponent
 
 class Bot:
-    def __init__(self, transformComponent : TransformComponent, rigidbodyComponent : RigidbodyComponent, weaponComponent : WeaponComponent, healthComponent : HealthComponent, mapComponent : MapComponent):
+    def __init__(self, transformComponent : TransformComponent, rigidbodyComponent : RigidbodyComponent, weaponComponent : WeaponComponent, healthComponent : HealthComponent, sightComponent : SightComponent, mapComponent : MapComponent):
         self.transform = transformComponent
         self.rigidbody = rigidbodyComponent
         self.weapon = weaponComponent
         self.health = healthComponent
+        self.sight = sightComponent
         self.map = mapComponent
 
     def tick(self, input):

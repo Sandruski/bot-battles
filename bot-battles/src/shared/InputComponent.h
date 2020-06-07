@@ -20,19 +20,44 @@ struct InputComponent : public Component,
     void Reset();
     void FullReset();
 
+#ifdef _CLIENT
     // Python
-    F32 GetMaxLinearVelocity() const;
-    F32 GetMaxAngularVelocity() const;
+    F32 GetMaxLinearVelocity() const
+    {
+        return m_maxLinearVelocity;
+    }
+
+    F32 GetMaxAngularVelocity() const
+    {
+        return m_maxAngularVelocity;
+    }
+
     void SetLinearVelocityX(F32 linearVelocityX);
+
+    F32 GetLinearVelocityX() const
+    {
+        return m_linearVelocity.x;
+    }
+
     void SetLinearVelocityY(F32 linearVelocityY);
-    F32 GetLinearVelocityX() const;
-    F32 GetLinearVelocityY() const;
+
+    F32 GetLinearVelocityY() const
+    {
+        return m_linearVelocity.y;
+    }
+
     void SetAngularVelocity(F32 angularVelocity);
-    F32 GetAngularVelocity() const;
+
+    F32 GetAngularVelocity() const
+    {
+        return m_angularVelocity;
+    }
+
     void ShootPrimaryWeapon();
     void ShootSecondaryWeapon();
     void Reload();
     void Heal();
+#endif
 
     F32 m_maxLinearVelocity; // pixels
     F32 m_maxAngularVelocity; // degrees

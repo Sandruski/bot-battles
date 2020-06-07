@@ -10,6 +10,13 @@
 
 namespace sand {
 
+#ifdef _CLIENT
+struct TransformComponent;
+struct RigidbodyComponent;
+struct WeaponComponent;
+struct HealthComponent;
+#endif
+
 //----------------------------------------------------------------------------------------------------
 // Entity Component
 struct SightComponent : public Component
@@ -21,7 +28,81 @@ struct SightComponent : public Component
                         public NetworkableWriteObject
 #endif
 {
-    static ComponentType GetType() { return ComponentType::SIGHT; }
+#ifdef _CLIENT
+    struct SeenBotInfo {
+
+        SeenBotInfo();
+
+        // Python
+        std::shared_ptr<TransformComponent> GetTransformComponent()
+        {
+            return m_transformComponent;
+        }
+
+        std::shared_ptr<RigidbodyComponent> GetRigidbodyComponent()
+        {
+            return m_rigidbodyComponent;
+        }
+
+        std::shared_ptr<WeaponComponent> GetWeaponComponent()
+        {
+            return m_weaponComponent;
+        }
+
+        std::shared_ptr<HealthComponent> GetHealthComponent()
+        {
+            return m_healthComponent;
+        }
+
+        std::shared_ptr<TransformComponent> m_transformComponent;
+        std::shared_ptr<RigidbodyComponent> m_rigidbodyComponent;
+        std::shared_ptr<WeaponComponent> m_weaponComponent;
+        std::shared_ptr<HealthComponent> m_healthComponent;
+    };
+
+    struct SeenWeaponInfo {
+
+        SeenWeaponInfo();
+
+        // Python
+        std::shared_ptr<TransformComponent> GetTransformComponent()
+        {
+            return m_transformComponent;
+        }
+
+        std::shared_ptr<WeaponComponent> GetWeaponComponent()
+        {
+            return m_weaponComponent;
+        }
+
+        std::shared_ptr<TransformComponent> m_transformComponent;
+        std::shared_ptr<WeaponComponent> m_weaponComponent;
+    };
+
+    struct SeenHealthInfo {
+
+        SeenHealthInfo();
+
+        // Python
+        std::shared_ptr<TransformComponent> GetTransformComponent()
+        {
+            return m_transformComponent;
+        }
+
+        std::shared_ptr<HealthComponent> GetHealthComponent()
+        {
+            return m_healthComponent;
+        }
+
+        std::shared_ptr<TransformComponent> m_transformComponent;
+        std::shared_ptr<HealthComponent> m_healthComponent;
+    };
+#endif
+
+    static ComponentType GetType()
+    {
+        return ComponentType::SIGHT;
+    }
 
     SightComponent();
 
@@ -32,6 +113,16 @@ struct SightComponent : public Component
 #endif
 
     bool IsSeen(Entity entity);
+
+#ifdef _CLIENT
+    // Python
+    std::vector<Entity> GetPySeenBotEntities() const;
+    SeenBotInfo GetPySeenBotInfo(Entity entity) const;
+    std::vector<Entity> GetPySeenWeaponEntities() const;
+    SeenWeaponInfo GetPySeenWeaponInfo(Entity entity) const;
+    std::vector<Entity> GetPySeenHealthEntities() const;
+    SeenHealthInfo GetPySeenHealthInfo(Entity entity) const;
+#endif
 
     // Networked
     F32 m_angle;

@@ -38,6 +38,7 @@ struct WeaponComponent : public Component
     bool CanReload() const;
     void Reload();
 
+#ifdef _CLIENT
     // Python
     U32 GetPyPrimaryWeaponDamage() const
     {
@@ -103,6 +104,7 @@ struct WeaponComponent : public Component
     {
         return m_cooldownReload;
     }
+#endif
 
     // Networked
     U32 m_damagePrimary;

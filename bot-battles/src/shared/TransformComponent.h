@@ -39,6 +39,7 @@ struct TransformComponent : public Component
     glm::vec3 GetDebugPositionAndLayer() const;
     glm::vec2 GetDirection() const;
 
+#ifdef _CLIENT
     // Python
     std::tuple<F32, F32> GetPyPosition() const
     {
@@ -55,6 +56,7 @@ struct TransformComponent : public Component
         glm::vec2 direction = GetDirection();
         return std::make_tuple(direction.x, direction.y);
     }
+#endif
 
     // Networked
     glm::vec2 m_position;

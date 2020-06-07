@@ -201,8 +201,8 @@
                  "type":"HealthSpawner",
                  "visible":true,
                  "width":64,
-                 "x":320,
-                 "y":256
+                 "x":256,
+                 "y":192
                 }, 
                 {
                  "gid":359,

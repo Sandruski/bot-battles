@@ -29,6 +29,7 @@ struct MapComponent {
 
     void Reset();
 
+#ifdef _CLIENT
     // Python
     TileType GetPyTileType(const std::tuple<U32, U32>& mapPosition) const
     {
@@ -54,6 +55,7 @@ struct MapComponent {
     {
         return std::make_tuple(m_tileCount.x, m_tileCount.y);
     }
+#endif
 
     std::vector<TileType> m_tileTypes;
     glm::uvec2 m_tileCount;

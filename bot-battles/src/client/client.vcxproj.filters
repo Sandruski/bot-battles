@@ -246,6 +246,9 @@
     <ClCompile Include="WeaponComponentClient.cpp">
       <Filter>Source Files\Components\Entity Components</Filter>
     </ClCompile>
+    <ClCompile Include="SightComponentClient.cpp">
+      <Filter>Source Files\Components\Entity Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ReplicationManagerClient.h">

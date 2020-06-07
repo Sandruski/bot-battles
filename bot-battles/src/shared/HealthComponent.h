@@ -34,6 +34,7 @@ struct HealthComponent : public Component
     bool CanHeal() const;
     void Heal();
 
+#ifdef _CLIENT
     // Python
     U32 GetPyCurrentHP() const
     {
@@ -59,6 +60,7 @@ struct HealthComponent : public Component
     {
         return m_cooldownHeal;
     }
+#endif
 
     // Networked
     I32 m_currentHP;

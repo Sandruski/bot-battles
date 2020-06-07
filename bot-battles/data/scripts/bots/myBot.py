@@ -10,6 +10,7 @@ from botbattles import TransformComponent
 from botbattles import RigidbodyComponent
 from botbattles import WeaponComponent
 from botbattles import HealthComponent
+from botbattles import SightComponent
 from botbattles import MapComponent
 from botbattles import InputComponent
 from botbattles import TileType
@@ -18,8 +19,8 @@ class MyBot(bot.Bot):
 
     wallHit = False
 
-    def __init__(self, transformComponent : TransformComponent, rigidbodyComponent : RigidbodyComponent, weaponComponent : WeaponComponent, healthComponent : HealthComponent, mapComponent : MapComponent):
-        super().__init__(transformComponent, rigidbodyComponent, weaponComponent, healthComponent, mapComponent)
+    def __init__(self, transformComponent : TransformComponent, rigidbodyComponent : RigidbodyComponent, weaponComponent : WeaponComponent, healthComponent : HealthComponent, sightComponent : SightComponent, mapComponent : MapComponent):
+        super().__init__(transformComponent, rigidbodyComponent, weaponComponent, healthComponent, sightComponent, mapComponent)
         self.graph = Graph(self.map)
         self.pathfinder = Pathfinder(self.graph)
         self.path = None
@@ -27,30 +28,33 @@ class MyBot(bot.Bot):
         self.calculatePath = True
 
     def tick(self, input : InputComponent):
-        if self.calculatePath:
-            origin = self.map.getMapPosition(self.transform.position)
-            destination = (5, 5)
-            cameFrom = self.pathfinder.aStarSearch(origin, destination)
-            self.path = self.pathfinder.reconstructPath(origin, destination, cameFrom)
-            self.pathIndex = 0
-            self.calculatePath = False
-
-        currentTile = self.map.getMapPosition(self.transform.position)
-        nextTile = self.path[self.pathIndex]
-        if currentTile == nextTile and len(self.path) < self.pathIndex - 1:
-            self.pathIndex += 1
-        nextPosition = self.map.getWorldPosition(nextTile)
-        direction = []
-        direction.append(nextPosition[0] - self.transform.position[0])   
-        direction.append(nextPosition[1] - self.transform.position[1])
-        glmDirection = glm.vec2(direction[0], direction[1])
-        glmDirection = glm.normalize(glmDirection)
-        direction[0] = glmDirection.x
-        direction[1] = glmDirection.y
-        input.linearVelocityX = direction[0] * input.maxLinearVelocity
-        input.linearVelocityY = direction[1] * input.maxLinearVelocity
-        total = self.graph.getTilesOfType(TileType.BOT_SPAWNER)      
-        logging.info("%i" % len(total))
+        #if self.calculatePath:
+        #    origin = self.map.getMapPosition(self.transform.position)
+        #    destination = (5, 5)
+        #    cameFrom = self.pathfinder.aStarSearch(origin, destination)
+        #    self.path = self.pathfinder.reconstructPath(origin, destination, cameFrom)
+        #    self.pathIndex = 0
+        #    self.calculatePath = False
+        #
+        #currentTile = self.map.getMapPosition(self.transform.position)
+        #nextTile = self.path[self.pathIndex]
+        #if currentTile == nextTile and len(self.path) < self.pathIndex - 1:
+        #    self.pathIndex += 1
+        #nextPosition = self.map.getWorldPosition(nextTile)
+        #direction = []
+        #direction.append(nextPosition[0] - self.transform.position[0])   
+        #direction.append(nextPosition[1] - self.transform.position[1])
+        #glmDirection = glm.vec2(direction[0], direction[1])
+        #glmDirection = glm.normalize(glmDirection)
+        #direction[0] = glmDirection.x
+        #direction[1] = glmDirection.y
+        #input.linearVelocityX = direction[0] * input.maxLinearVelocity
+        #input.linearVelocityY = direction[1] * input.maxLinearVelocity
+        #total = self.graph.getTilesOfType(TileType.BOT_SPAWNER)      
+        
+        if (len(self.sight.seenHealthEntities) > 0):
+            healthInfo = self.sight.getSeenHealthInfo(self.sight.seenHealthEntities[0])
+            logging.info("%i" % healthInfo.health.firstAidBoxHP)
 
     def onWeaponPickedUp(self, input):
         logging.info('onWeaponPickedUp')

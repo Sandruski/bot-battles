@@ -6,6 +6,7 @@
 #include "MapComponent.h"
 #include "PhysicsComponent.h"
 #include "RigidbodyComponent.h"
+#include "SightComponent.h"
 #include "TransformComponent.h"
 #include "UtilsClient.h"
 #include "WeaponComponent.h"
@@ -68,6 +69,28 @@ PYBIND11_EMBEDDED_MODULE(botbattles, m)
         .def_property_readonly("firstAidBoxHP", &HealthComponent::GetPyFirstAidBoxHP)
         .def_property_readonly("healingTime", &HealthComponent::GetPyHealingTime)
         .def_property_readonly("healingCooldown", &HealthComponent::GetPyHealingCooldown);
+
+    py::class_<SightComponent, std::shared_ptr<SightComponent>>(m, "SightComponent")
+        .def_property_readonly("seenBotEntities", &SightComponent::GetPySeenBotEntities)
+        .def("getSeenBotInfo", &SightComponent::GetPySeenBotInfo)
+        .def_property_readonly("seenWeaponEntities", &SightComponent::GetPySeenWeaponEntities)
+        .def("getSeenWeaponInfo", &SightComponent::GetPySeenWeaponInfo)
+        .def_property_readonly("seenHealthEntities", &SightComponent::GetPySeenHealthEntities)
+        .def("getSeenHealthInfo", &SightComponent::GetPySeenHealthInfo);
+
+    py::class_<SightComponent::SeenBotInfo>(m, "SeenBotInfo")
+        .def_property_readonly("transform", &SightComponent::SeenBotInfo::GetTransformComponent)
+        .def_property_readonly("rigidbody", &SightComponent::SeenBotInfo::GetRigidbodyComponent)
+        .def_property_readonly("weapon", &SightComponent::SeenBotInfo::GetWeaponComponent)
+        .def_property_readonly("health", &SightComponent::SeenBotInfo::GetHealthComponent);
+
+    py::class_<SightComponent::SeenWeaponInfo>(m, "SeenWeaponInfo")
+        .def_property_readonly("transform", &SightComponent::SeenWeaponInfo::GetTransformComponent)
+        .def_property_readonly("weapon", &SightComponent::SeenWeaponInfo::GetWeaponComponent);
+
+    py::class_<SightComponent::SeenHealthInfo>(m, "SeenHealthInfo")
+        .def_property_readonly("transform", &SightComponent::SeenHealthInfo::GetTransformComponent)
+        .def_property_readonly("health", &SightComponent::SeenHealthInfo::GetHealthComponent);
 
     py::class_<MapComponent, std::shared_ptr<MapComponent>>(m, "MapComponent")
         .def("getTileType", &MapComponent::GetPyTileType)

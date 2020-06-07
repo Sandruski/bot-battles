@@ -12,6 +12,7 @@
 #include "PhysicsComponent.h"
 #include "RigidbodyComponent.h"
 #include "ScriptingComponent.h"
+#include "SightComponent.h"
 #include "SpriteComponent.h"
 #include "State.h"
 #include "TransformComponent.h"
@@ -201,9 +202,10 @@ void ScriptingSystem::InitScripts() const
         std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameClient->GetComponentManager().GetComponent<RigidbodyComponent>(entity);
         std::weak_ptr<HealthComponent> healthComponent = g_gameClient->GetComponentManager().GetComponent<HealthComponent>(entity);
         std::weak_ptr<WeaponComponent> weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(entity);
+        std::weak_ptr<SightComponent> sightComponent = g_gameClient->GetComponentManager().GetComponent<SightComponent>(entity);
         std::weak_ptr<MapComponent> mapComponent = g_gameClient->GetMapComponent();
         try {
-            scriptingComponent.lock()->m_mainModule.attr("init")(clientComponent.lock()->m_bot.c_str(), transformComponent.lock(), rigidbodyComponent.lock(), weaponComponent.lock(), healthComponent.lock(), mapComponent.lock());
+            scriptingComponent.lock()->m_mainModule.attr("init")(clientComponent.lock()->m_bot.c_str(), transformComponent.lock(), rigidbodyComponent.lock(), weaponComponent.lock(), healthComponent.lock(), sightComponent.lock(), mapComponent.lock());
         } catch (const std::runtime_error& re) {
             OutputDebugStringA(re.what());
             ::MessageBoxA(NULL, re.what(), "Error initializing script", MB_OK);

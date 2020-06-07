@@ -231,6 +231,7 @@
     <ClCompile Include="ScriptingComponent.cpp" />
     <ClCompile Include="ScriptingSystem.cpp" />
     <ClCompile Include="SetupStateClient.cpp" />
+    <ClCompile Include="SightComponentClient.cpp" />
     <ClCompile Include="SightSystemClient.cpp" />
     <ClCompile Include="SpriteComponentClient.cpp" />
     <ClCompile Include="StartStateClient.cpp" />

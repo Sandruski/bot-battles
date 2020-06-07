@@ -56,18 +56,7 @@ void InputComponent::FullReset()
     m_dirtyState = 0;
 }
 
-//----------------------------------------------------------------------------------------------------
-F32 InputComponent::GetMaxLinearVelocity() const
-{
-    return m_maxLinearVelocity;
-}
-
-//----------------------------------------------------------------------------------------------------
-F32 InputComponent::GetMaxAngularVelocity() const
-{
-    return m_maxAngularVelocity;
-}
-
+#ifdef _CLIENT
 //----------------------------------------------------------------------------------------------------
 void InputComponent::SetLinearVelocityX(F32 linearVelocityX)
 {
@@ -83,28 +72,10 @@ void InputComponent::SetLinearVelocityY(F32 linearVelocityY)
 }
 
 //----------------------------------------------------------------------------------------------------
-F32 InputComponent::GetLinearVelocityX() const
-{
-    return m_linearVelocity.x;
-}
-
-//----------------------------------------------------------------------------------------------------
-F32 InputComponent::GetLinearVelocityY() const
-{
-    return m_linearVelocity.y;
-}
-
-//----------------------------------------------------------------------------------------------------
 void InputComponent::SetAngularVelocity(F32 angularVelocity)
 {
     m_angularVelocity = angularVelocity;
     m_dirtyState |= static_cast<U64>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
-}
-
-//----------------------------------------------------------------------------------------------------
-F32 InputComponent::GetAngularVelocity() const
-{
-    return m_angularVelocity;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -146,4 +117,5 @@ void InputComponent::Heal()
     m_dirtyState &= ~static_cast<U64>(InputComponentMemberType::INPUT_SHOOT_SECONDARY_WEAPON);
     m_dirtyState &= ~static_cast<U64>(InputComponentMemberType::INPUT_RELOAD);
 }
+#endif
 }
