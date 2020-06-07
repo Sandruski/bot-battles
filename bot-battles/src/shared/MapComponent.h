@@ -22,8 +22,6 @@ struct MapComponent {
     TileType& GetTileType(const glm::uvec2& mapPosition);
     TileType GetTileType(const glm::uvec2& mapPosition) const;
 
-    bool IsInBounds(const glm::uvec2& mapPosition) const;
-
     glm::vec2 MapToWorld(const glm::uvec2& mapPosition) const;
     glm::vec2 MapToRealWorld(const glm::uvec2& mapPosition) const;
     glm::uvec2 WorldToMap(const glm::vec2& worldPosition) const;
@@ -36,12 +34,6 @@ struct MapComponent {
     {
         glm::uvec2 newMapPosition = glm::uvec2(std::get<0>(mapPosition), std::get<1>(mapPosition));
         return GetTileType(newMapPosition);
-    }
-
-    bool IsPyInBounds(const std::tuple<U32, U32>& mapPosition) const
-    {
-        glm::uvec2 newMapPosition = glm::uvec2(std::get<0>(mapPosition), std::get<1>(mapPosition));
-        return IsInBounds(newMapPosition);
     }
 
     std::tuple<F32, F32> GetPyRealWorldPosition(const std::tuple<U32, U32>& mapPosition) const

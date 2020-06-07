@@ -20,7 +20,8 @@ class MyBot(bot.Bot):
 
     def __init__(self, transformComponent : TransformComponent, rigidbodyComponent : RigidbodyComponent, weaponComponent : WeaponComponent, healthComponent : HealthComponent, mapComponent : MapComponent):
         super().__init__(transformComponent, rigidbodyComponent, weaponComponent, healthComponent, mapComponent)
-        self.pathfinder = Pathfinder(Graph(self.map))
+        self.graph = Graph(self.map)
+        self.pathfinder = Pathfinder(self.graph)
         self.path = None
         self.pathIndex = None
         self.calculatePath = True
@@ -48,6 +49,8 @@ class MyBot(bot.Bot):
         direction[1] = glmDirection.y
         input.linearVelocityX = direction[0] * input.maxLinearVelocity
         input.linearVelocityY = direction[1] * input.maxLinearVelocity
+        total = self.graph.getTilesOfType(TileType.BOT_SPAWNER)      
+        logging.info("%i" % len(total))
 
     def onWeaponPickedUp(self, input):
         logging.info('onWeaponPickedUp')
@@ -85,15 +88,18 @@ class PriorityQueue:
         return heapq.heappop(self.elements)[1]
 
 class Graph:
-    def __init__(self, map):
+    def __init__(self, map : MapComponent):
         self.map = map
 
     def getCost(self, mapPosition):
         return 1
 
+    def isInBounds(self, mapPosition):
+        return ((0 <= mapPosition[0] and mapPosition[0] < self.map.tileCount[0]) and (0 <= mapPosition[1] and mapPosition[1] < self.map.tileCount[1]))
+
     def isWalkable(self, mapPosition):
         tileType = self.map.getTileType(mapPosition)
-        return self.map.isInBounds(mapPosition) and tileType != TileType.NONE and tileType != TileType.WALL
+        return self.isInBounds(mapPosition) and tileType != TileType.NONE and tileType != TileType.WALL
 
     def getNeighbors(self, mapPosition, diagonals):
         north = (mapPosition[0], mapPosition[1] + 1)
@@ -112,9 +118,19 @@ class Graph:
             neighbors.append(southEast)
             neighbors.append(southWest)
         
-        neighbors = filter(self.map.isInBounds, neighbors)
         neighbors = filter(self.isWalkable, neighbors)
         return neighbors
+
+    def getTilesOfType(self, type):
+        tiles = []
+
+        for i in range(0, self.map.tileCount[0]):
+            for j in range(0, self.map.tileCount[1]):
+                mapPosition = (i, j)
+                tileType = self.map.getTileType(mapPosition)
+                if tileType == type:
+                    tiles.append(mapPosition)
+        return tiles
 
 class Pathfinder:
     def __init__(self, graph):

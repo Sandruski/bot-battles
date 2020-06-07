@@ -73,7 +73,6 @@ PYBIND11_EMBEDDED_MODULE(botbattles, m)
 
     py::class_<MapComponent, std::shared_ptr<MapComponent>>(m, "MapComponent")
         .def("getTileType", &MapComponent::GetPyTileType)
-        .def("isInBounds", &MapComponent::IsPyInBounds)
         .def("getWorldPosition", &MapComponent::GetPyRealWorldPosition)
         .def("getMapPosition", &MapComponent::GetPyMapPosition)
         .def_property_readonly("tileCount", &MapComponent::GetPyTileCount);

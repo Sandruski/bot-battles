@@ -27,12 +27,6 @@ MapComponent::TileType MapComponent::GetTileType(const glm::uvec2& mapPosition) 
 }
 
 //----------------------------------------------------------------------------------------------------
-bool MapComponent::IsInBounds(const glm::uvec2& mapPosition) const
-{
-    return ((0 <= mapPosition.x && mapPosition.x < m_tileCount.x) && (0 <= mapPosition.y && mapPosition.y < m_tileCount.y));
-}
-
-//----------------------------------------------------------------------------------------------------
 glm::vec2 MapComponent::MapToWorld(const glm::uvec2& mapPosition) const
 {
     glm::vec2 world;
