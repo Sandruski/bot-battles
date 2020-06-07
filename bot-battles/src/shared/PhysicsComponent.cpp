@@ -106,17 +106,6 @@ PhysicsComponent::Collision::Collision()
     : m_normal(0.0f, 0.0f)
 {
 }
-//----------------------------------------------------------------------------------------------------
-std::tuple<F32, F32> PhysicsComponent::Collision::GetNormal() const
-{
-    return std::make_tuple(m_normal.x, m_normal.y);
-}
-
-//----------------------------------------------------------------------------------------------------
-std::tuple<F32, F32> PhysicsComponent::Collision::GetRelativeVelocity() const
-{
-    return std::make_tuple(m_relativeVelocity.x, m_relativeVelocity.y);
-}
 
 //----------------------------------------------------------------------------------------------------
 PhysicsComponent::PhysicsComponent()

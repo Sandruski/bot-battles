@@ -54,8 +54,15 @@ struct PhysicsComponent : public Subject {
         Collision();
 
         // Python
-        std::tuple<F32, F32> GetNormal() const;
-        std::tuple<F32, F32> GetRelativeVelocity() const;
+        std::tuple<F32, F32> GetPyNormal() const
+        {
+            return std::make_tuple(m_normal.x, m_normal.y);
+        }
+
+        std::tuple<F32, F32> GetPyRelativeVelocity() const
+        {
+            return std::make_tuple(m_relativeVelocity.x, m_relativeVelocity.y);
+        }
 
         glm::vec2 m_normal;
         glm::vec2 m_relativeVelocity;

@@ -39,72 +39,67 @@ struct WeaponComponent : public Component
     void Reload();
 
     // Python
-    U32 GetPrimaryWeaponDamage() const
+    U32 GetPyPrimaryWeaponDamage() const
     {
         return m_damagePrimary;
     }
 
-    U32 GetSecondaryWeaponDamage() const
+    U32 GetPySecondaryWeaponDamage() const
     {
         return m_damageSecondary;
     }
 
-    U32 GetCurrentAmmo() const
+    U32 GetPyCurrentAmmo() const
     {
         return static_cast<U32>(m_currentAmmoPrimary);
     }
 
-    U32 GetMaxAmmo() const
+    U32 GetPyMaxAmmo() const
     {
         return static_cast<U32>(m_maxAmmoPrimary);
     }
 
-    bool HasAmmoBox() const
-    {
-        return m_ammoPrimary > 0;
-    }
-
-    U32 GetAmmoBoxAmmo() const
+    U32 GetPyAmmoBoxAmmo() const
     {
         return m_ammoPrimary;
     }
 
-    F32 GetPrimaryWeaponRange() const
+    F32 GetPyPrimaryWeaponRange() const
     {
         return m_rangePrimary;
     }
 
-    F32 GetSecondaryWeaponRange() const
+    F32 GetPySecondaryWeaponRange() const
     {
         return m_rangeSecondary;
     }
 
-    F32 GetPrimaryWeaponShootingTime() const
+    F32 GetPyPrimaryWeaponShootingTime() const
     {
         return m_timeShootPrimary;
     }
 
-    F32 GetPrimaryWeaponShootingCooldown() const
+    F32 GetPyPrimaryWeaponShootingCooldown() const
     {
         return m_cooldownShootPrimary;
     }
 
-    F32 GetSecondaryWeaponShootingTime() const
+    F32 GetPySecondaryWeaponShootingTime() const
     {
         return m_timeShootSecondary;
     }
 
-    F32 GetSecondaryWeaponShootingCooldown() const
+    F32 GetPySecondaryWeaponShootingCooldown() const
     {
         return m_cooldownShootSecondary;
     }
 
-    F32 GetReloadingTime() const
+    F32 GetPyReloadingTime() const
     {
         return m_timeReload;
     }
 
-    F32 GetReloadingCooldown() const
+    F32 GetPyReloadingCooldown() const
     {
         return m_cooldownReload;
     }

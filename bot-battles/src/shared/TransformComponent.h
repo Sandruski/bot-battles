@@ -40,9 +40,21 @@ struct TransformComponent : public Component
     glm::vec2 GetDirection() const;
 
     // Python
-    std::tuple<F32, F32> GetPyPosition() const;
-    F32 GetPyRotation() const;
-    std::tuple<F32, F32> GetPyDirection() const;
+    std::tuple<F32, F32> GetPyPosition() const
+    {
+        return std::make_tuple(m_position.x, m_position.y);
+    }
+
+    F32 GetPyRotation() const
+    {
+        return m_rotation;
+    }
+
+    std::tuple<F32, F32> GetPyDirection() const
+    {
+        glm::vec2 direction = GetDirection();
+        return std::make_tuple(direction.x, direction.y);
+    }
 
     // Networked
     glm::vec2 m_position;

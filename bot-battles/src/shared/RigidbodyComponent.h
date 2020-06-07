@@ -47,10 +47,19 @@ struct RigidbodyComponent : public Component
     void UpdateBullet() const;
 
     glm::vec2 GetLinearVelocity() const;
-    F32 GetAngularVelocity() const; // also Python
+    F32 GetAngularVelocity() const;
 
     // Python
-    std::tuple<F32, F32> GetPyLinearVelocity() const;
+    std::tuple<F32, F32> GetPyLinearVelocity() const
+    {
+        glm::vec2 linearVelocity = GetLinearVelocity();
+        return std::make_tuple(linearVelocity.x, linearVelocity.y);
+    }
+
+    F32 GetPyAngularVelocity() const
+    {
+        return GetAngularVelocity();
+    }
 
     // Networked
     BodyType m_bodyType;

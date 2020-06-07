@@ -35,23 +35,4 @@ glm::vec2 TransformComponent::GetDirection() const
 
     return glm::vec2(x, y);
 }
-
-//----------------------------------------------------------------------------------------------------
-std::tuple<F32, F32> TransformComponent::GetPyPosition() const
-{
-    return std::make_tuple(m_position.x, m_position.y);
-}
-
-//----------------------------------------------------------------------------------------------------
-F32 TransformComponent::GetPyRotation() const
-{
-    return m_rotation;
-}
-
-//----------------------------------------------------------------------------------------------------
-std::tuple<F32, F32> TransformComponent::GetPyDirection() const
-{
-    glm::vec2 direction = GetDirection();
-    return std::make_tuple(direction.x, direction.y);
-}
 }

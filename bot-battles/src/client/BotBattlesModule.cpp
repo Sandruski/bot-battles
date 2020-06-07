@@ -45,31 +45,29 @@ PYBIND11_EMBEDDED_MODULE(botbattles, m)
 
     py::class_<RigidbodyComponent, std::shared_ptr<RigidbodyComponent>>(m, "RigidbodyComponent")
         .def_property_readonly("linearVelocity", &RigidbodyComponent::GetPyLinearVelocity)
-        .def_property_readonly("angularVelocity", &RigidbodyComponent::GetAngularVelocity);
+        .def_property_readonly("angularVelocity", &RigidbodyComponent::GetPyAngularVelocity);
 
     py::class_<WeaponComponent, std::shared_ptr<WeaponComponent>>(m, "WeaponComponent")
-        .def_property_readonly("primaryWeaponDamage", &WeaponComponent::GetPrimaryWeaponDamage)
-        .def_property_readonly("secondaryWeaponDamage", &WeaponComponent::GetSecondaryWeaponDamage)
-        .def_property_readonly("currentAmmo", &WeaponComponent::GetCurrentAmmo)
-        .def_property_readonly("maxAmmo", &WeaponComponent::GetMaxAmmo)
-        .def("hasAmmoBox", &WeaponComponent::HasAmmoBox)
-        .def_property_readonly("ammoBoxAmmo", &WeaponComponent::GetAmmoBoxAmmo)
-        .def_property_readonly("primaryWeaponRange", &WeaponComponent::GetPrimaryWeaponRange)
-        .def_property_readonly("secondaryWeaponRange", &WeaponComponent::GetSecondaryWeaponRange)
-        .def_property_readonly("primaryWeaponShootingTime", &WeaponComponent::GetPrimaryWeaponShootingTime)
-        .def_property_readonly("primaryWeaponShootingCooldown", &WeaponComponent::GetPrimaryWeaponShootingCooldown)
-        .def_property_readonly("secondaryWeaponShootingTime", &WeaponComponent::GetSecondaryWeaponShootingTime)
-        .def_property_readonly("secondaryWeaponShootingCooldown", &WeaponComponent::GetSecondaryWeaponShootingCooldown)
-        .def_property_readonly("reloadingTime", &WeaponComponent::GetReloadingTime)
-        .def_property_readonly("reloadingCooldown", &WeaponComponent::GetReloadingCooldown);
+        .def_property_readonly("primaryWeaponDamage", &WeaponComponent::GetPyPrimaryWeaponDamage)
+        .def_property_readonly("secondaryWeaponDamage", &WeaponComponent::GetPySecondaryWeaponDamage)
+        .def_property_readonly("currentAmmo", &WeaponComponent::GetPyCurrentAmmo)
+        .def_property_readonly("maxAmmo", &WeaponComponent::GetPyMaxAmmo)
+        .def_property_readonly("ammoBoxAmmo", &WeaponComponent::GetPyAmmoBoxAmmo)
+        .def_property_readonly("primaryWeaponRange", &WeaponComponent::GetPyPrimaryWeaponRange)
+        .def_property_readonly("secondaryWeaponRange", &WeaponComponent::GetPySecondaryWeaponRange)
+        .def_property_readonly("primaryWeaponShootingTime", &WeaponComponent::GetPyPrimaryWeaponShootingTime)
+        .def_property_readonly("primaryWeaponShootingCooldown", &WeaponComponent::GetPyPrimaryWeaponShootingCooldown)
+        .def_property_readonly("secondaryWeaponShootingTime", &WeaponComponent::GetPySecondaryWeaponShootingTime)
+        .def_property_readonly("secondaryWeaponShootingCooldown", &WeaponComponent::GetPySecondaryWeaponShootingCooldown)
+        .def_property_readonly("reloadingTime", &WeaponComponent::GetPyReloadingTime)
+        .def_property_readonly("reloadingCooldown", &WeaponComponent::GetPyReloadingCooldown);
 
     py::class_<HealthComponent, std::shared_ptr<HealthComponent>>(m, "HealthComponent")
-        .def_property_readonly("currentHP", &HealthComponent::GetCurrentHP)
-        .def_property_readonly("maxHP", &HealthComponent::GetMaxHP)
-        .def("hasFirstAidBox", &HealthComponent::HasFirstAidBox)
-        .def_property_readonly("firstAidBoxHP", &HealthComponent::GetFirstAidBoxHP)
-        .def_property_readonly("healingTime", &HealthComponent::GetHealingTime)
-        .def_property_readonly("healingCooldown", &HealthComponent::GetHealingCooldown);
+        .def_property_readonly("currentHP", &HealthComponent::GetPyCurrentHP)
+        .def_property_readonly("maxHP", &HealthComponent::GetPyMaxHP)
+        .def_property_readonly("firstAidBoxHP", &HealthComponent::GetPyFirstAidBoxHP)
+        .def_property_readonly("healingTime", &HealthComponent::GetPyHealingTime)
+        .def_property_readonly("healingCooldown", &HealthComponent::GetPyHealingCooldown);
 
     py::class_<MapComponent, std::shared_ptr<MapComponent>>(m, "MapComponent")
         .def("getTileType", &MapComponent::GetPyTileType)
@@ -87,8 +85,8 @@ PYBIND11_EMBEDDED_MODULE(botbattles, m)
         .export_values();
 
     py::class_<PhysicsComponent::Collision>(m, "CollisionEvent")
-        .def_property_readonly("normal", &PhysicsComponent::Collision::GetNormal)
-        .def_property_readonly("relativeVelocity", &PhysicsComponent::Collision::GetRelativeVelocity);
+        .def_property_readonly("normal", &PhysicsComponent::Collision::GetPyNormal)
+        .def_property_readonly("relativeVelocity", &PhysicsComponent::Collision::GetPyRelativeVelocity);
 }
 }
 

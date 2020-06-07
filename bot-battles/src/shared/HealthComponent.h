@@ -35,32 +35,27 @@ struct HealthComponent : public Component
     void Heal();
 
     // Python
-    U32 GetCurrentHP() const
+    U32 GetPyCurrentHP() const
     {
         return static_cast<U32>(m_currentHP);
     }
 
-    U32 GetMaxHP() const
+    U32 GetPyMaxHP() const
     {
         return m_maxHP;
     }
 
-    bool HasFirstAidBox() const
-    {
-        return m_HP > 0;
-    }
-
-    U32 GetFirstAidBoxHP() const
+    U32 GetPyFirstAidBoxHP() const
     {
         return m_HP;
     }
 
-    F32 GetHealingTime() const
+    F32 GetPyHealingTime() const
     {
         return m_timeHeal;
     }
 
-    F32 GetHealingCooldown() const
+    F32 GetPyHealingCooldown() const
     {
         return m_cooldownHeal;
     }
