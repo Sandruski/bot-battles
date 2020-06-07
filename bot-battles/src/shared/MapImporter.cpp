@@ -99,18 +99,20 @@ bool MapImporter::Load(const std::string& path, Tilemap& tilemap) const
 //----------------------------------------------------------------------------------------------------
 void MapImporter::Create(const Tilemap& tilemap) const
 {
+    std::weak_ptr<WindowComponent> windowComponent = g_game->GetWindowComponent();
     std::weak_ptr<MapComponent> mapComponent = g_game->GetMapComponent();
     mapComponent.lock()->m_tileCount = tilemap.m_tileCount;
     mapComponent.lock()->m_tileSize = tilemap.m_tileSize;
-    mapComponent.lock()->m_scale = 1.0f;
+    glm::uvec2 mapSize = mapComponent.lock()->m_tileCount * mapComponent.lock()->m_tileSize;
+    glm::vec2 proportion = static_cast<glm::vec2>(windowComponent.lock()->m_baseResolution) / static_cast<glm::vec2>(mapSize);
+    mapComponent.lock()->m_scale = proportion.x <= proportion.y ? proportion.x : proportion.y;
     U32 tileCount = mapComponent.lock()->m_tileCount.x * mapComponent.lock()->m_tileCount.y;
+
     mapComponent.lock()->m_walkability.resize(tileCount);
     for (auto& tile : mapComponent.lock()->m_walkability) {
         // Walkability
         tile.m_tileType = MapComponent::Tile::TileType::FLOOR;
     }
-
-    std::weak_ptr<WindowComponent> windowComponent = g_game->GetWindowComponent();
 
     for (const auto& tilelayer : tilemap.m_tilelayers) {
         for (U32 i = 0; i < tilemap.m_tileCount.x; ++i) {
