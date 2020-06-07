@@ -6,6 +6,7 @@ import logging
 import bot
 import heapq
 
+from botbattles import TileType
 from botbattles import InputComponent
 
 class MyBot(bot.Bot):
@@ -20,7 +21,11 @@ class MyBot(bot.Bot):
         input.shootSecondaryWeapon()
         worldPosition = self.map.getWorldPosition((0,0))
         logging.info('%f %f', worldPosition[0], worldPosition[1])
-        #a_star_search(self.map, (1,1),(5,5))
+        start = (1, 1)
+        goal = (5, 5)
+        came_from = a_star_search(Graph(self.map), start, goal)
+        path = reconstruct_path(came_from, start, goal)
+        logging.info('path size %f', len(path))
 
     def onWeaponPickedUp(self, input):
         logging.info('onWeaponPickedUp')
@@ -43,6 +48,38 @@ class MyBot(bot.Bot):
         input.linearVelocityX = reflectionVector.x
         input.linearVelocityY = reflectionVector.y
         logging.info('onHitWall')
+
+class Graph:
+    def __init__(self, map):
+        self.map = map
+
+    def getCost(self, mapPosition):
+        return 1
+
+    def isWalkable(self, mapPosition):
+        tileType = self.map.getTileType(mapPosition)
+        return self.map.isInBounds(mapPosition) and tileType != TileType.NONE and tileType != TileType.WALL
+
+    def getNeighbors(self, mapPosition, diagonals):
+        north = (mapPosition[0], mapPosition[1] + 1)
+        south = (mapPosition[0], mapPosition[1] - 1)
+        east = (mapPosition[0] + 1, mapPosition[1])
+        west = (mapPosition[0] - 1, mapPosition[1])
+        neighbors = [north, south, east, west]
+
+        if diagonals:
+            northEast = (mapPosition[0] + 1, mapPosition[1] + 1)
+            northWest = (mapPosition[0] - 1, mapPosition[1] + 1)
+            southEast = (mapPosition[0] + 1, mapPosition[1] - 1)
+            southWest = (mapPosition[0] - 1, mapPosition[1] - 1)
+            neighbors.append(northEast)
+            neighbors.append(northWest)
+            neighbors.append(southEast)
+            neighbors.append(southWest)
+        
+        neighbors = filter(self.map.isInBounds, neighbors)
+        neighbors = filter(self.isWalkable, neighbors)
+        return neighbors
 
 class PriorityQueue:
     def __init__(self):
@@ -72,19 +109,6 @@ def heuristic(a, b):
     (x2, y2) = b
     return abs(x1 - x2) + abs(y1 - y2)
 
-def neighbors(map, id, diagonals):
-    results = []
-    north = (id[0], id[1] + 1)
-    
-    [(x+1, y), (x, y-1), (x-1, y), (x, y+1)]
-    if (x + y) % 2 == 0: results.reverse() # aesthetics
-    results = filter(self.in_bounds, results)
-    results = filter(self.passable, results)
-    return results
-
-def cost(from_node, to_node):
-    return self.weights.get(to_node, 1)
-
 def a_star_search(graph, start, goal):
     frontier = PriorityQueue()
     frontier.put(start, 0)
@@ -100,11 +124,11 @@ def a_star_search(graph, start, goal):
             break
         
         for next in graph.getNeighbors(current, True):
-            new_cost = cost_so_far[current] + graph.cost(current, next)
+            new_cost = cost_so_far[current] + graph.getCost(next)
             if next not in cost_so_far or new_cost < cost_so_far[next]:
                 cost_so_far[next] = new_cost
                 priority = new_cost + heuristic(goal, next)
                 frontier.put(next, priority)
                 came_from[next] = current
     
-    return came_from, cost_so_far
+    return came_from
