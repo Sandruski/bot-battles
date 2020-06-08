@@ -47,25 +47,30 @@ class MyBot(bot.Bot):
         worldDestination = self.map.getWorldPosition(mapDestination)
         #self.seek(input, worldDestination)adf
         self.align(input)
-        glm.quatLookAt(i, i)
         
     def seek(self, input : InputComponent, worldDestination):
-        direction = glm.vec2(worldDestination[0] - self.transform.position[0], worldDestination[1] - self.transform.position[1])
-        direction = glm.normalize(direction)
+        vector = glm.vec2(worldDestination[0] - self.transform.position[0], worldDestination[1] - self.transform.position[1])
+        if glm.length(vector) <= self.minPosition:
+            input.linearVelocityX = 0
+            input.linearVelocityY = 0
+            return
+        
+        direction = glm.normalize(vector)
         acceleration = direction * input.maxLinearVelocity
         input.linearVelocityX = acceleration.x
         input.linearVelocityY = acceleration.y
 
     def align(self, input : InputComponent):
         rotation = self.destinationRotation - self.transform.rotation
+        rotation = (rotation + 180.0) % 360.0 - 180.0
         absRotation = glm.abs(rotation)
 
-        logging.info('rotation is %f', absRotation)
         if absRotation <= self.minRotation:
             input.angularVelocity = 0.0
             return
 
-        angularAcceleration = (rotation / absRotation) * input.maxAngularVelocity
+        direction = rotation / absRotation
+        angularAcceleration = direction * input.maxAngularVelocity
         input.angularVelocity = angularAcceleration
 
     def onHitWall(self, input, collision):

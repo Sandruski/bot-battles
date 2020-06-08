@@ -93,8 +93,7 @@ bool MovementSystemServer::Update()
                 }
 
                 F32 linearVelocityLength = glm::length(linearVelocity);
-                F32 linearVelocityAbsLength = glm::abs(linearVelocityLength);
-                if (linearVelocityAbsLength > inputComponent.m_maxLinearVelocity) {
+                if (linearVelocityLength > inputComponent.m_maxLinearVelocity) {
                     linearVelocity = glm::normalize(linearVelocity);
                     linearVelocity *= inputComponent.m_maxLinearVelocity;
                 }

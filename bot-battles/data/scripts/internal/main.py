@@ -34,10 +34,10 @@ def init(scriptName, transformComponent, rigidbodyComponent, weaponComponent, he
     logger.addHandler(fileHandler)
 
 def tick(input):
-    try:
-        myBot.tick(input)
-    except:
-        pass
+    #try:
+    myBot.tick(input)
+    #except:
+        #pass
 
 def onSeenNewBot(input, seenBotEntity):
     try:
