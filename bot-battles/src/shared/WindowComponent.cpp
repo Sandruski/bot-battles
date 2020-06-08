@@ -60,16 +60,31 @@ void WindowComponent::UpdateCurrentResolution()
 
     case Resolution::LOW: {
         m_currentResolution = glm::vec2(896, 504);
+
+        m_isResized = true;
+        Event newEvent;
+        newEvent.eventType = EventType::WINDOW_RESIZED;
+        NotifyEvent(newEvent);
         break;
     }
 
     case Resolution::MEDIUM: {
         m_currentResolution = glm::vec2(1280, 720);
+
+        m_isResized = true;
+        Event newEvent;
+        newEvent.eventType = EventType::WINDOW_RESIZED;
+        NotifyEvent(newEvent);
         break;
     }
 
     case Resolution::HIGH: {
         m_currentResolution = glm::vec2(1920, 1080);
+
+        m_isResized = true;
+        Event newEvent;
+        newEvent.eventType = EventType::WINDOW_RESIZED;
+        NotifyEvent(newEvent);
         break;
     }
 
@@ -77,11 +92,6 @@ void WindowComponent::UpdateCurrentResolution()
         break;
     }
     }
-
-    m_isResized = true;
-    Event newEvent;
-    newEvent.eventType = EventType::WINDOW_RESIZED;
-    NotifyEvent(newEvent);
 }
 
 //----------------------------------------------------------------------------------------------------
