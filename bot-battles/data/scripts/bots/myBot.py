@@ -22,38 +22,51 @@ class MyBot(bot.Bot):
     def __init__(self, transformComponent : TransformComponent, rigidbodyComponent : RigidbodyComponent, weaponComponent : WeaponComponent, healthComponent : HealthComponent, sightComponent : SightComponent, mapComponent : MapComponent):
         super().__init__(transformComponent, rigidbodyComponent, weaponComponent, healthComponent, sightComponent, mapComponent)
         self.graph = Graph(self.map)
-        self.pathfinder = Pathfinder(self.graph)
-        self.path = None
-        self.pathIndex = None
+        self.pathFinder = PathFinder(self.graph)
+        self.pathFollower = PathFollower()
         self.calculatePath = True
+        self.originPosition = None
+        self.destinationPosition = None
+        self.originRotation = None
+        self.destinationRotation = None
+
+        self.minRotation = 5.0
+        self.minPosition = 1.0
 
     def tick(self, input : InputComponent):
-        #if self.calculatePath:
-        #    origin = self.map.getMapPosition(self.transform.position)
-        #    destination = (5, 5)
-        #    cameFrom = self.pathfinder.aStarSearch(origin, destination)
-        #    self.path = self.pathfinder.reconstructPath(origin, destination, cameFrom)
-        #    self.pathIndex = 0
-        #    self.calculatePath = False
-        #
-        #currentTile = self.map.getMapPosition(self.transform.position)
-        #nextTile = self.path[self.pathIndex]
-        #if currentTile == nextTile and len(self.path) < self.pathIndex - 1:
-        #    self.pathIndex += 1
-        #nextPosition = self.map.getWorldPosition(nextTile)
-        #direction = []
-        #direction.append(nextPosition[0] - self.transform.position[0])   
-        #direction.append(nextPosition[1] - self.transform.position[1])
-        #glmDirection = glm.vec2(direction[0], direction[1])
-        #glmDirection = glm.normalize(glmDirection)
-        #direction[0] = glmDirection.x
-        #direction[1] = glmDirection.y
-        #input.linearVelocityX = direction[0] * input.maxLinearVelocity
-        #input.linearVelocityY = direction[1] * input.maxLinearVelocity
-        #total = self.graph.getTilesOfType(TileType.BOT_SPAWNER)      
-        if (len(self.sight.seenHealthEntities) > 0):
-            healthInfo = self.sight.getSeenHealthInfo(self.sight.seenHealthEntities[0])
-            logging.info("%i" % healthInfo.health.firstAidBoxHP)
+        if self.calculatePath:
+            origin = self.map.getMapPosition(self.transform.position)
+            destination = (5, 4)
+            cameFrom = self.pathFinder.aStarSearch(origin, destination)
+            self.pathFollower.path = self.pathFinder.reconstructPath(origin, destination, cameFrom)
+            self.pathFollower.index = 0
+            self.calculatePath = False
+            self.destinationRotation = -45
+
+        mapDestination = self.pathFollower.getCurrentMapDestination()
+        worldDestination = self.map.getWorldPosition(mapDestination)
+        #self.seek(input, worldDestination)adf
+        self.align(input)
+        glm.quatLookAt(i, i)
+        
+    def seek(self, input : InputComponent, worldDestination):
+        direction = glm.vec2(worldDestination[0] - self.transform.position[0], worldDestination[1] - self.transform.position[1])
+        direction = glm.normalize(direction)
+        acceleration = direction * input.maxLinearVelocity
+        input.linearVelocityX = acceleration.x
+        input.linearVelocityY = acceleration.y
+
+    def align(self, input : InputComponent):
+        rotation = self.destinationRotation - self.transform.rotation
+        absRotation = glm.abs(rotation)
+
+        logging.info('rotation is %f', absRotation)
+        if absRotation <= self.minRotation:
+            input.angularVelocity = 0.0
+            return
+
+        angularAcceleration = (rotation / absRotation) * input.maxAngularVelocity
+        input.angularVelocity = angularAcceleration
 
     def onHitWall(self, input, collision):
         self.wallHit = True
@@ -120,7 +133,7 @@ class Graph:
                     tiles.append(mapPosition)
         return tiles
 
-class Pathfinder:
+class PathFinder:
     def __init__(self, graph):
         self.graph = graph
 
@@ -162,3 +175,11 @@ class Pathfinder:
                     cameFrom[next] = current
         
         return cameFrom
+
+class PathFollower:
+    def __init__(self):
+        self.path = None
+        self.index = 0
+
+    def getCurrentMapDestination(self):
+        return self.path[self.index]

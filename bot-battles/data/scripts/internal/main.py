@@ -4,6 +4,7 @@ import sys
 import inspect
 import logging
 import io
+import os
 
 import bot
 import botbattles
@@ -31,6 +32,96 @@ def init(scriptName, transformComponent, rigidbodyComponent, weaponComponent, he
     fileHandler.setFormatter(formatter)
     logger.addHandler(streamHandler)
     logger.addHandler(fileHandler)
+
+def tick(input):
+    try:
+        myBot.tick(input)
+    except:
+        pass
+
+def onSeenNewBot(input, seenBotEntity):
+    try:
+        myBot.onSeenNewBot(input, seenBotEntity)
+    except:
+        pass
+
+def onSeenNewWeapon(input, seenWeaponEntity):
+    try:
+        myBot.onSeenNewWeapon(input, seenWeaponEntity)
+    except:
+        pass
+
+def onSeenNewHealth(input, seenHealthEntity):
+    try:
+        myBot.onSeenNewHealth(input, seenHealthEntity)
+    except:
+        pass
+
+def onSeenLostBot(input, seenBotEntity):
+    try:
+        myBot.onSeenLostBot(input, seenBotEntity)
+    except:
+        pass
+
+def onSeenLostWeapon(input, seenWeaponEntity):
+    try:
+        myBot.onSeenLostWeapon(input, seenWeaponEntity)
+    except:
+        pass
+
+def onSeenLostHealth(input, seenHealthEntity):
+    try:
+        myBot.onSeenLostHealth(input, seenHealthEntity)
+    except:
+        pass
+
+def onWeaponPickedUp(input):
+    try:
+        myBot.onWeaponPickedUp(input)
+    except:
+        pass
+
+def onHealthPickedUp(input):
+    try:
+        myBot.onHealthPickedUp(input)
+    except:
+        pass
+
+def onBulletHit(input, seenBotEntity, seenBotInfo):
+    try:
+        myBot.onBulletHit(input, seenBotEntity, seenBotInfo)
+    except:
+        pass
+
+def onBulletMiss(input):
+    try:
+        myBot.onBulletMiss(input)
+    except:
+        pass
+
+def onReloaded(input, ammo):
+    try:
+        myBot.onReloaded(input, ammo)
+    except:
+        pass
+
+def onHitByBullet(input, health, seenBotEntity, seenBotInfo):
+    try:
+        myBot.onHitByBullet(input, health, seenBotEntity, seenBotInfo)
+    except:
+        pass
+
+def onHealed(input, health):
+    try:
+        myBot.onHealed(input, health)
+    except:
+        pass
+
+def onHitWall(input, collision):
+    try:
+        myBot.onHitWall(input, collision)
+    except:
+        pass
 
 def log():
     content = stream.getvalue()

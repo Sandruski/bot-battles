@@ -20,9 +20,9 @@
   <data encoding="csv">
 129,129,129,129,129,129,129,129,129,129,129,129,129,129,
 129,0,0,0,0,0,0,0,0,0,0,0,0,129,
-129,0,0,0,0,0,0,0,0,0,0,0,0,129,
-129,0,0,0,0,0,0,0,0,0,0,0,0,129,
-129,0,0,0,0,0,0,0,0,0,0,0,0,129,
+129,0,0,130,0,0,0,0,0,0,0,0,0,129,
+129,0,130,130,130,0,0,0,0,0,0,0,0,129,
+129,0,0,0,130,0,0,0,0,0,0,0,0,129,
 129,0,0,0,0,0,0,0,0,0,0,0,0,129,
 129,0,0,0,0,0,0,0,0,0,0,0,0,129,
 129,129,129,129,129,129,129,129,129,129,129,129,129,129
@@ -57,7 +57,7 @@
   </object>
  </objectgroup>
  <objectgroup id="9" name="healthSpawner">
-  <object id="34" name="healthSpawner1" type="HealthSpawner" gid="359" x="256" y="192" width="64" height="64">
+  <object id="34" name="healthSpawner1" type="HealthSpawner" gid="359" x="256" y="128" width="64" height="64">
    <properties>
     <property name="HP" type="int" value="10"/>
     <property name="amountSpawn" type="int" value="-1"/>
@@ -66,7 +66,7 @@
     <property name="timeHeal" type="float" value="1"/>
    </properties>
   </object>
-  <object id="38" name="healthSpawner1" type="HealthSpawner" gid="359" x="448" y="256" width="64" height="64">
+  <object id="38" name="healthSpawner1" type="HealthSpawner" gid="359" x="640" y="256" width="64" height="64">
    <properties>
     <property name="HP" type="int" value="10"/>
     <property name="amountSpawn" type="int" value="-1"/>
@@ -77,7 +77,7 @@
   </object>
  </objectgroup>
  <objectgroup id="8" name="weaponSpawner">
-  <object id="35" name="weaponSpawner2" type="WeaponSpawner" gid="368" x="384" y="192" width="64" height="64">
+  <object id="35" name="weaponSpawner2" type="WeaponSpawner" gid="368" x="576" y="448" width="64" height="64">
    <properties>
     <property name="ammo" type="int" value="100"/>
     <property name="ammoWeapon" type="int" value="20"/>
@@ -91,7 +91,7 @@
     <property name="timeShoot" type="float" value="1"/>
    </properties>
   </object>
-  <object id="36" name="weaponSpawner1" type="WeaponSpawner" gid="368" x="192" y="256" width="64" height="64">
+  <object id="36" name="weaponSpawner1" type="WeaponSpawner" gid="368" x="128" y="448" width="64" height="64">
    <properties>
     <property name="ammo" type="int" value="100"/>
     <property name="ammoWeapon" type="int" value="20"/>
