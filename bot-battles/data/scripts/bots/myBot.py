@@ -55,24 +55,9 @@ class MyBot(bot.Bot):
             healthInfo = self.sight.getSeenHealthInfo(self.sight.seenHealthEntities[0])
             logging.info("%i" % healthInfo.health.firstAidBoxHP)
 
-    def onWeaponPickedUp(self, input):
-        logging.info('onWeaponPickedUp')
-
-    def onReloaded(self, input):
-        logging.info('onReloaded')
-
-    def onBulletMiss(self, input):
-        logging.info('onBulletMiss')
-
-    def onHealthPickedUp(self, input):
-        logging.info('onHealthPickedUp')
-
-    def onHealed(self, input):
-        logging.info('onHealed')
-
-    def onHitWall(self, input, collisionEvent):
+    def onHitWall(self, input, collision):
         self.wallHit = True
-        reflectionVector = glm.reflect(glm.vec2(-collisionEvent.relativeVelocity[0], -collisionEvent.relativeVelocity[1]), glm.vec2(collisionEvent.normal[0], collisionEvent.normal[1]))
+        reflectionVector = glm.reflect(glm.vec2(-collision.relativeVelocity[0], -collision.relativeVelocity[1]), glm.vec2(collision.normal[0], collision.normal[1]))
         input.linearVelocityX = reflectionVector.x
         input.linearVelocityY = reflectionVector.y
         logging.info('onHitWall')

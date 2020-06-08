@@ -19,22 +19,22 @@ class Bot:
     def tick(self, input):
         pass
 
-    def onSeenNewBot(self, input):
+    def onSeenNewBot(self, input, seenBotEntity):
         pass
 
-    def onSeenNewWeapon(self, input):
+    def onSeenNewWeapon(self, input, seenWeaponEntity):
         pass
 
-    def onSeenNewHealth(self, input):
+    def onSeenNewHealth(self, input, seenHealthEntity):
         pass
 
-    def onSeenLostBot(self, input):
+    def onSeenLostBot(self, input, seenBotEntity):
         pass
 
-    def onSeenLostWeapon(self, input):
+    def onSeenLostWeapon(self, input, seenWeaponEntity):
         pass
 
-    def onSeenLostHealth(self, input):
+    def onSeenLostHealth(self, input, seenHealthEntity):
         pass
 
     def onWeaponPickedUp(self, input):
@@ -43,20 +43,20 @@ class Bot:
     def onHealthPickedUp(self, input):
         pass
 
-    def onBulletHit(self, input):
+    def onBulletHit(self, input, seenBotEntity, seenBotInfo):
         pass
 
     def onBulletMiss(self, input):
         pass
 
-    def onReloaded(self, input):
+    def onReloaded(self, input, ammo):
         pass
 
-    def onHitByBullet(self, input):
+    def onHitByBullet(self, input, health, seenBotEntity, seenBotInfo):
         pass
 
-    def onHealed(self, input):
+    def onHealed(self, input, health):
         pass
 
-    def onHitWall(self, input, collisionEvent):
+    def onHitWall(self, input, collision):
         pass

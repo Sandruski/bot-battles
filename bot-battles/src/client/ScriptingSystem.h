@@ -37,7 +37,7 @@ private:
     void OnWeaponHit(Entity entity) const;
     void OnWeaponMissed(Entity entity) const;
     void OnWeaponPrimaryPickedUp(Entity entity) const;
-    void OnWeaponPrimaryReloaded(Entity entity) const;
+    void OnWeaponPrimaryReloaded(Entity entity, U32 ammo) const;
     void OnHealthHurt(Entity entity, U32 health) const;
     void OnHealthHealed(Entity entity, U32 health) const;
     void OnHealthPickedUp(Entity entity) const;
