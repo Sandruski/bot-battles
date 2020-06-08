@@ -244,9 +244,7 @@ void ScriptingSystem::OnCollisionEnter(Entity entityA, Entity entityB, glm::vec2
         try {
             scriptingComponent.lock()->m_mainModule.attr("onHitWall")(inputComponent.lock(), collision);
             scriptingComponent.lock()->m_mainModule.attr("log")();
-        } catch (const std::runtime_error& re) {
-            OutputDebugStringA(re.what());
-            ::MessageBoxA(NULL, re.what(), "Error OnCollisionEnter", MB_OK);
+        } catch (const std::runtime_error& /*re*/) {
         }
     }
 }
@@ -269,9 +267,7 @@ void ScriptingSystem::OnSeenNewEntity(Entity seenEntity) const
         try {
             scriptingComponent.lock()->m_mainModule.attr("onSeenNewBot")(inputComponent.lock(), seenEntity);
             scriptingComponent.lock()->m_mainModule.attr("log")();
-        } catch (const std::runtime_error& re) {
-            OutputDebugStringA(re.what());
-            ::MessageBoxA(NULL, re.what(), "Error OnSeenNewEntity", MB_OK);
+        } catch (const std::runtime_error& /*re*/) {
         }
         return;
     }
@@ -281,9 +277,7 @@ void ScriptingSystem::OnSeenNewEntity(Entity seenEntity) const
         try {
             scriptingComponent.lock()->m_mainModule.attr("onSeenNewWeapon")(inputComponent.lock(), seenEntity);
             scriptingComponent.lock()->m_mainModule.attr("log")();
-        } catch (const std::runtime_error& re) {
-            OutputDebugStringA(re.what());
-            ::MessageBoxA(NULL, re.what(), "Error OnSeenNewEntity", MB_OK);
+        } catch (const std::runtime_error& /*re*/) {
         }
         return;
     }
@@ -293,9 +287,7 @@ void ScriptingSystem::OnSeenNewEntity(Entity seenEntity) const
         try {
             scriptingComponent.lock()->m_mainModule.attr("onSeenNewHealth")(inputComponent.lock(), seenEntity);
             scriptingComponent.lock()->m_mainModule.attr("log")();
-        } catch (const std::runtime_error& re) {
-            OutputDebugStringA(re.what());
-            ::MessageBoxA(NULL, re.what(), "Error OnSeenNewEntity", MB_OK);
+        } catch (const std::runtime_error& /*re*/) {
         }
         return;
     }
@@ -319,9 +311,7 @@ void ScriptingSystem::OnSeenLostEntity(Entity seenEntity) const
         try {
             scriptingComponent.lock()->m_mainModule.attr("onSeenLostBot")(inputComponent.lock(), seenEntity);
             scriptingComponent.lock()->m_mainModule.attr("log")();
-        } catch (const std::runtime_error& re) {
-            OutputDebugStringA(re.what());
-            ::MessageBoxA(NULL, re.what(), "Error OnSeenLostEntity", MB_OK);
+        } catch (const std::runtime_error& /*re*/) {
         }
     }
 
@@ -330,9 +320,7 @@ void ScriptingSystem::OnSeenLostEntity(Entity seenEntity) const
         try {
             scriptingComponent.lock()->m_mainModule.attr("onSeenLostWeapon")(inputComponent.lock(), seenEntity);
             scriptingComponent.lock()->m_mainModule.attr("log")();
-        } catch (const std::runtime_error& re) {
-            OutputDebugStringA(re.what());
-            ::MessageBoxA(NULL, re.what(), "Error OnSeenLostEntity", MB_OK);
+        } catch (const std::runtime_error& /*re*/) {
         }
         return;
     }
@@ -342,9 +330,7 @@ void ScriptingSystem::OnSeenLostEntity(Entity seenEntity) const
         try {
             scriptingComponent.lock()->m_mainModule.attr("onSeenLostHealth")(inputComponent.lock(), seenEntity);
             scriptingComponent.lock()->m_mainModule.attr("log")();
-        } catch (const std::runtime_error& re) {
-            OutputDebugStringA(re.what());
-            ::MessageBoxA(NULL, re.what(), "Error OnSeenLostEntity", MB_OK);
+        } catch (const std::runtime_error& /*re*/) {
         }
         return;
     }
@@ -371,9 +357,7 @@ void ScriptingSystem::OnWeaponHit(Entity shooterEntity, Entity targetEntity) con
     try {
         scriptingComponent.lock()->m_mainModule.attr("onBulletHit")(inputComponent.lock(), targetEntity, seenBotInfo);
         scriptingComponent.lock()->m_mainModule.attr("log")();
-    } catch (const std::runtime_error& re) {
-        OutputDebugStringA(re.what());
-        ::MessageBoxA(NULL, re.what(), "Error OnWeaponHit", MB_OK);
+    } catch (const std::runtime_error& /*re*/) {
     }
 }
 
@@ -392,9 +376,7 @@ void ScriptingSystem::OnWeaponMissed(Entity shooterEntity) const
     try {
         scriptingComponent.lock()->m_mainModule.attr("onBulletMiss")(inputComponent.lock());
         scriptingComponent.lock()->m_mainModule.attr("log")();
-    } catch (const std::runtime_error& re) {
-        OutputDebugStringA(re.what());
-        ::MessageBoxA(NULL, re.what(), "Error OnWeaponMissed", MB_OK);
+    } catch (const std::runtime_error& /*re*/) {
     }
 }
 
@@ -413,9 +395,7 @@ void ScriptingSystem::OnWeaponPrimaryPickedUp(Entity shooterEntity) const
     try {
         scriptingComponent.lock()->m_mainModule.attr("onWeaponPickedUp")(inputComponent.lock());
         scriptingComponent.lock()->m_mainModule.attr("log")();
-    } catch (const std::runtime_error& re) {
-        OutputDebugStringA(re.what());
-        ::MessageBoxA(NULL, re.what(), "Error OnWeaponPrimaryPickedUp", MB_OK);
+    } catch (const std::runtime_error& /*re*/) {
     }
 }
 
@@ -434,9 +414,7 @@ void ScriptingSystem::OnWeaponPrimaryReloaded(Entity shooterEntity, U32 ammo) co
     try {
         scriptingComponent.lock()->m_mainModule.attr("onReloaded")(inputComponent.lock(), ammo);
         scriptingComponent.lock()->m_mainModule.attr("log")();
-    } catch (const std::runtime_error& re) {
-        OutputDebugStringA(re.what());
-        ::MessageBoxA(NULL, re.what(), "Error OnWeaponPrimaryReloaded", MB_OK);
+    } catch (const std::runtime_error& /*re*/) {
     }
 }
 
@@ -461,9 +439,7 @@ void ScriptingSystem::OnHealthHurt(Entity targetEntity, Entity shooterEntity, U3
     try {
         scriptingComponent.lock()->m_mainModule.attr("onHitByBullet")(inputComponent.lock(), health, shooterEntity, seenBotInfo);
         scriptingComponent.lock()->m_mainModule.attr("log")();
-    } catch (const std::runtime_error& re) {
-        OutputDebugStringA(re.what());
-        ::MessageBoxA(NULL, re.what(), "Error OnHealthHurt", MB_OK);
+    } catch (const std::runtime_error& /*re*/) {
     }
 }
 
@@ -482,9 +458,7 @@ void ScriptingSystem::OnHealthHealed(Entity targetEntity, U32 health) const
     try {
         scriptingComponent.lock()->m_mainModule.attr("onHealed")(inputComponent.lock(), health);
         scriptingComponent.lock()->m_mainModule.attr("log")();
-    } catch (const std::runtime_error& re) {
-        OutputDebugStringA(re.what());
-        ::MessageBoxA(NULL, re.what(), "Error OnHealthHealed", MB_OK);
+    } catch (const std::runtime_error& /*re*/) {
     }
 }
 
@@ -503,9 +477,7 @@ void ScriptingSystem::OnHealthPickedUp(Entity targetEntity) const
     try {
         scriptingComponent.lock()->m_mainModule.attr("onHealthPickedUp")(inputComponent.lock());
         scriptingComponent.lock()->m_mainModule.attr("log")();
-    } catch (const std::runtime_error& re) {
-        OutputDebugStringA(re.what());
-        ::MessageBoxA(NULL, re.what(), "Error OnHealthPickedUp", MB_OK);
+    } catch (const std::runtime_error& /*re*/) {
     }
 }
 }
