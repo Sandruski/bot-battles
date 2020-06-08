@@ -13,7 +13,6 @@ struct Config {
     virtual void LoadFromConfig(const rapidjson::Document& document);
 
     std::string m_configPath;
-    std::string m_name;
 };
 }
 

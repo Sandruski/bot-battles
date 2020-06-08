@@ -16,8 +16,14 @@ bool WindowSystem::StartUp()
     }
 
     std::weak_ptr<WindowComponent> windowComponent = g_game->GetWindowComponent();
-    U32 flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI;
-    windowComponent.lock()->m_window = SDL_CreateWindow(g_game->GetConfig().m_name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowComponent.lock()->m_currentResolution.x, windowComponent.lock()->m_currentResolution.y, flags);
+    U32 windowFlags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI;
+    std::string name;
+#ifdef _CLIENT
+    name = "Bot Battles (Client)";
+#elif defined(_SERVER)
+    name = "Bot Battles (Server)";
+#endif
+    windowComponent.lock()->m_window = SDL_CreateWindow(name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowComponent.lock()->m_currentResolution.x, windowComponent.lock()->m_currentResolution.y, windowFlags);
     if (windowComponent.lock()->m_window == nullptr) {
         ELOG("Window could not be created! SDL Error: %s", SDL_GetError());
         return false;

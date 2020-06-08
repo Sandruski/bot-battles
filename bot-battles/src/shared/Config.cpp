@@ -10,7 +10,6 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 Config::Config(const std::string& configPath)
     : m_configPath(configPath)
-    , m_name()
 {
 }
 
@@ -33,14 +32,6 @@ bool Config::LoadFromJson()
 void Config::LoadFromConfig(const rapidjson::Document& document)
 {
     assert(document.IsObject());
-
-    assert(document.HasMember("game"));
-    assert(document["game"].IsObject());
-    const rapidjson::Value& game = document["game"];
-
-    assert(game.HasMember("name"));
-    assert(game["name"].IsString());
-    m_name = game["name"].GetString();
 
     assert(document.HasMember("window"));
     assert(document["window"].IsObject());
