@@ -431,7 +431,18 @@ bool Game::PreRender()
 //----------------------------------------------------------------------------------------------------
 bool Game::Render()
 {
-    return m_systemManager->Render();
+    bool ret = false;
+
+    ret = m_fsm->Render();
+    if (!ret) {
+        return ret;
+    }
+    ret = m_systemManager->Render();
+    if (!ret) {
+        return ret;
+    }
+
+    return ret;
 }
 
 //----------------------------------------------------------------------------------------------------

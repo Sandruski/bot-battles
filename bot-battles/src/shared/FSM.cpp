@@ -47,6 +47,16 @@ bool FSM::Update()
 }
 
 //----------------------------------------------------------------------------------------------------
+bool FSM::Render()
+{
+    if (!m_currentState.expired()) {
+        return m_currentState.lock()->Render();
+    }
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
 bool FSM::RenderGui()
 {
     if (!m_currentState.expired()) {

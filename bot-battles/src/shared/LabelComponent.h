@@ -33,6 +33,7 @@ struct LabelComponent : public Component
 
     // Networked
     glm::vec2 m_offset;
+    glm::vec2 m_extraOffset;
     std::string m_text;
     glm::vec4 m_color;
 };

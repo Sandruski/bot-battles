@@ -23,6 +23,12 @@ bool GuiSystem::StartUp()
     const char* glslVersion = "#version 130";
     ImGui_ImplOpenGL3_Init(glslVersion);
 
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplSDL2_NewFrame(windowComponent.lock()->m_window);
+    ImGui::NewFrame();
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
     return true;
 }
 

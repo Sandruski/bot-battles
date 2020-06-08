@@ -7,6 +7,7 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 LabelComponent::LabelComponent()
     : m_offset(0.0f, 0.0f)
+    , m_extraOffset(0.0f, 0.0f)
     , m_text()
     , m_color(0.0f, 0.0f, 0.0f, 0.0f)
 {
@@ -18,6 +19,9 @@ void LabelComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /*
 {
     if (dirtyState & static_cast<U64>(ComponentMemberType::LABEL_OFFSET)) {
         inputStream.Read(m_offset);
+    }
+    if (dirtyState & static_cast<U64>(ComponentMemberType::LABEL_EXTRA_OFFSET)) {
+        inputStream.Read(m_extraOffset);
     }
     if (dirtyState & static_cast<U64>(ComponentMemberType::LABEL_TEXT)) {
         inputStream.Read(m_text);
@@ -35,6 +39,10 @@ U64 LabelComponent::Write(OutputMemoryStream& outputStream, U64 dirtyState) cons
     if (dirtyState & static_cast<U64>(ComponentMemberType::LABEL_OFFSET)) {
         outputStream.Write(m_offset);
         writtenState |= static_cast<U64>(ComponentMemberType::LABEL_OFFSET);
+    }
+    if (dirtyState & static_cast<U64>(ComponentMemberType::LABEL_EXTRA_OFFSET)) {
+        outputStream.Write(m_extraOffset);
+        writtenState |= static_cast<U64>(ComponentMemberType::LABEL_EXTRA_OFFSET);
     }
     if (dirtyState & static_cast<U64>(ComponentMemberType::LABEL_TEXT)) {
         outputStream.Write(m_text);

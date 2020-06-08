@@ -25,6 +25,11 @@ public:
         return true;
     }
 
+    virtual bool Render() const
+    {
+        return true;
+    }
+
     virtual bool RenderGui() const
     {
         return true;

@@ -43,6 +43,8 @@ bool LabelSystem::RenderGui()
         ImVec2 windowPosition = ImVec2(finalPosition.x, finalPosition.y);
         windowPosition.x *= proportion.x;
         windowPosition.y *= proportion.y;
+        windowPosition.x += labelComponent.lock()->m_extraOffset.x;
+        windowPosition.y += labelComponent.lock()->m_extraOffset.y;
         ImGui::SetNextWindowPos(windowPosition, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 
         std::string windowName = "#label";

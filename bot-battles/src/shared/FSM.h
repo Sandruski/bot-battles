@@ -15,6 +15,7 @@ public:
     bool StartUp();
     bool PreUpdate();
     bool Update();
+    bool Render();
     bool RenderGui();
     bool ShutDown();
 
