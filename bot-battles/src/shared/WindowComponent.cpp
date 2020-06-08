@@ -5,6 +5,7 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 WindowComponent::WindowComponent()
     : m_window(nullptr)
+    , m_iconSurface(nullptr)
     , m_resolution(Resolution::LOW)
     , m_currentResolution(0, 0)
     , m_baseResolution(896, 504)
@@ -140,6 +141,12 @@ bool WindowComponent::UpdateDisplayMode()
     }
 
     return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+void WindowComponent::UpdateIcon()
+{
+    SDL_SetWindowIcon(m_window, m_iconSurface);
 }
 
 //----------------------------------------------------------------------------------------------------

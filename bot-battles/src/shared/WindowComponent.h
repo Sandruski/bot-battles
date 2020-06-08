@@ -28,9 +28,12 @@ struct WindowComponent : public Subject {
     void UpdateResolution();
     bool UpdateDisplayMode();
 
+    void UpdateIcon();
+
     glm::vec2 GetProportion() const;
 
     SDL_Window* m_window;
+    SDL_Surface* m_iconSurface;
 
     Resolution m_resolution;
     glm::uvec2 m_currentResolution;

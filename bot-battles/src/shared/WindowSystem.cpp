@@ -29,6 +29,11 @@ bool WindowSystem::StartUp()
         return false;
     }
 
+    std::string iconPath = TEXTURES_DIR;
+    iconPath.append("icon.png");
+    windowComponent.lock()->m_iconSurface = IMG_Load(iconPath.c_str());
+    windowComponent.lock()->UpdateIcon();
+
     return true;
 }
 
@@ -36,6 +41,9 @@ bool WindowSystem::StartUp()
 bool WindowSystem::ShutDown()
 {
     std::weak_ptr<WindowComponent> windowComponent = g_game->GetWindowComponent();
+
+    SDL_FreeSurface(windowComponent.lock()->m_iconSurface);
+    windowComponent.lock()->m_iconSurface = nullptr;
 
     SDL_DestroyWindow(windowComponent.lock()->m_window);
     windowComponent.lock()->m_window = nullptr;
