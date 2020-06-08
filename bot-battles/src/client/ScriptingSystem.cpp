@@ -110,12 +110,12 @@ void ScriptingSystem::OnNotify(const Event& event)
     }
 
     case EventType::SEEN_NEW_ENTITY: {
-        OnSeenNewEntity(event.sight.entity);
+        OnSeenNewEntity(event.sight.seenEntity);
         break;
     }
 
     case EventType::SEEN_LOST_ENTITY: {
-        OnSeenLostEntity(event.sight.entity);
+        OnSeenLostEntity(event.sight.seenEntity);
         break;
     }
 
@@ -399,12 +399,12 @@ void ScriptingSystem::OnWeaponMissed(Entity shooterEntity) const
 }
 
 //----------------------------------------------------------------------------------------------------
-void ScriptingSystem::OnWeaponPrimaryPickedUp(Entity entity) const
+void ScriptingSystem::OnWeaponPrimaryPickedUp(Entity shooterEntity) const
 {
-    assert(entity < INVALID_ENTITY);
+    assert(shooterEntity < INVALID_ENTITY);
 
     std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
-    if (entity != clientComponent.lock()->m_entity) {
+    if (shooterEntity != clientComponent.lock()->m_entity) {
         return;
     }
 
@@ -420,12 +420,12 @@ void ScriptingSystem::OnWeaponPrimaryPickedUp(Entity entity) const
 }
 
 //----------------------------------------------------------------------------------------------------
-void ScriptingSystem::OnWeaponPrimaryReloaded(Entity entity, U32 ammo) const
+void ScriptingSystem::OnWeaponPrimaryReloaded(Entity shooterEntity, U32 ammo) const
 {
-    assert(entity < INVALID_ENTITY);
+    assert(shooterEntity < INVALID_ENTITY);
 
     std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
-    if (entity != clientComponent.lock()->m_entity) {
+    if (shooterEntity != clientComponent.lock()->m_entity) {
         return;
     }
 
@@ -468,12 +468,12 @@ void ScriptingSystem::OnHealthHurt(Entity targetEntity, Entity shooterEntity, U3
 }
 
 //----------------------------------------------------------------------------------------------------
-void ScriptingSystem::OnHealthHealed(Entity entity, U32 health) const
+void ScriptingSystem::OnHealthHealed(Entity targetEntity, U32 health) const
 {
-    assert(entity < INVALID_ENTITY);
+    assert(targetEntity < INVALID_ENTITY);
 
     std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
-    if (entity != clientComponent.lock()->m_entity) {
+    if (targetEntity != clientComponent.lock()->m_entity) {
         return;
     }
 
@@ -489,12 +489,12 @@ void ScriptingSystem::OnHealthHealed(Entity entity, U32 health) const
 }
 
 //----------------------------------------------------------------------------------------------------
-void ScriptingSystem::OnHealthPickedUp(Entity entity) const
+void ScriptingSystem::OnHealthPickedUp(Entity targetEntity) const
 {
-    assert(entity < INVALID_ENTITY);
+    assert(targetEntity < INVALID_ENTITY);
 
     std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
-    if (entity != clientComponent.lock()->m_entity) {
+    if (targetEntity != clientComponent.lock()->m_entity) {
         return;
     }
 

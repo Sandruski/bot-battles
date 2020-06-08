@@ -126,7 +126,7 @@ bool SightSystemServer::Update()
                 Event newSightEvent;
                 newSightEvent.eventType = EventType::SEEN_LOST_ENTITY;
                 newSightEvent.sight.playerID = playerID;
-                newSightEvent.sight.entity = seenEntity;
+                newSightEvent.sight.seenEntity = seenEntity;
                 PushEvent(newSightEvent);
 
                 it = sightComponent.lock()->m_seenEntities.erase(it);
@@ -142,7 +142,7 @@ bool SightSystemServer::Update()
                 Event newSightEvent;
                 newSightEvent.eventType = EventType::SEEN_NEW_ENTITY;
                 newSightEvent.sight.playerID = playerID;
-                newSightEvent.sight.entity = seenEntity;
+                newSightEvent.sight.seenEntity = seenEntity;
                 PushEvent(newSightEvent);
 
                 sightComponent.lock()->m_seenEntities.emplace_back(seenEntity);

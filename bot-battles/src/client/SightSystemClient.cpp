@@ -44,12 +44,12 @@ void SightSystemClient::OnNotify(const Event& event)
     switch (event.eventType) {
 
     case EventType::SEEN_NEW_ENTITY: {
-        OnSeenNewEntity(event.sight.entity);
+        OnSeenNewEntity(event.sight.seenEntity);
         break;
     }
 
     case EventType::SEEN_LOST_ENTITY: {
-        OnSeenLostEntity(event.sight.entity);
+        OnSeenLostEntity(event.sight.seenEntity);
         break;
     }
 

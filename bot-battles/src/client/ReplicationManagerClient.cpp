@@ -73,13 +73,13 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream)
             Event newEvent;
             newEvent.eventType = EventType::SEEN_LOST_ENTITY;
             Entity entity = linkingContext.GetEntity(networkID);
-            newEvent.sight.entity = entity;
+            newEvent.sight.seenEntity = entity;
             PushEvent(newEvent);
         } else if (isReplicated && !wasReplicated) {
             Event newEvent;
             newEvent.eventType = EventType::SEEN_NEW_ENTITY;
             Entity entity = linkingContext.GetEntity(networkID);
-            newEvent.sight.entity = entity;
+            newEvent.sight.seenEntity = entity;
             PushEvent(newEvent);
         }
     }

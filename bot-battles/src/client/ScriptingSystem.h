@@ -36,11 +36,11 @@ private:
     void OnSeenLostEntity(Entity seenEntity) const;
     void OnWeaponHit(Entity shooterEntity, Entity targetEntity) const;
     void OnWeaponMissed(Entity shooterEntity) const;
-    void OnWeaponPrimaryPickedUp(Entity entity) const;
-    void OnWeaponPrimaryReloaded(Entity entity, U32 ammo) const;
+    void OnWeaponPrimaryPickedUp(Entity shooterEntity) const;
+    void OnWeaponPrimaryReloaded(Entity shooterEntity, U32 ammo) const;
     void OnHealthHurt(Entity targetEntity, Entity shooterEntity, U32 health) const;
-    void OnHealthHealed(Entity entity, U32 health) const;
-    void OnHealthPickedUp(Entity entity) const;
+    void OnHealthHealed(Entity targetEntity, U32 health) const;
+    void OnHealthPickedUp(Entity targetEntity) const;
 };
 }
 

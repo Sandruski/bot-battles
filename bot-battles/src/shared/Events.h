@@ -69,7 +69,7 @@ struct HealthEvent {
 struct SightEvent {
     EventType eventType;
     PlayerID playerID;
-    Entity entity;
+    Entity seenEntity;
 };
 
 //----------------------------------------------------------------------------------------------------

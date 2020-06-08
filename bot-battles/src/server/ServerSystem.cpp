@@ -87,12 +87,12 @@ void ServerSystem::OnNotify(const Event& event)
     }
 
     case EventType::SEEN_NEW_ENTITY: {
-        OnSeenNewEntity(event.sight.playerID, event.sight.entity);
+        OnSeenNewEntity(event.sight.playerID, event.sight.seenEntity);
         break;
     }
 
     case EventType::SEEN_LOST_ENTITY: {
-        OnSeenLostEntity(event.sight.playerID, event.sight.entity);
+        OnSeenLostEntity(event.sight.playerID, event.sight.seenEntity);
         break;
     }
 
@@ -817,12 +817,12 @@ void ServerSystem::OnComponentMemberChanged(U64 dirtyState, Entity entity) const
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerSystem::OnSeenNewEntity(PlayerID playerID, Entity entity) const
+void ServerSystem::OnSeenNewEntity(PlayerID playerID, Entity seenEntity) const
 {
-    assert(playerID < INVALID_PLAYER_ID && entity < INVALID_ENTITY);
+    assert(playerID < INVALID_PLAYER_ID && seenEntity < INVALID_ENTITY);
 
     LinkingContext& linkingContext = g_gameServer->GetLinkingContext();
-    NetworkID networkID = linkingContext.GetNetworkID(entity);
+    NetworkID networkID = linkingContext.GetNetworkID(seenEntity);
     if (networkID >= INVALID_NETWORK_ID) {
         return;
     }
@@ -833,12 +833,12 @@ void ServerSystem::OnSeenNewEntity(PlayerID playerID, Entity entity) const
 }
 
 //----------------------------------------------------------------------------------------------------
-void ServerSystem::OnSeenLostEntity(PlayerID playerID, Entity entity) const
+void ServerSystem::OnSeenLostEntity(PlayerID playerID, Entity seenEntity) const
 {
-    assert(playerID < INVALID_PLAYER_ID && entity < INVALID_ENTITY);
+    assert(playerID < INVALID_PLAYER_ID && seenEntity < INVALID_ENTITY);
 
     LinkingContext& linkingContext = g_gameServer->GetLinkingContext();
-    NetworkID networkID = linkingContext.GetNetworkID(entity);
+    NetworkID networkID = linkingContext.GetNetworkID(seenEntity);
     if (networkID >= INVALID_NETWORK_ID) {
         return;
     }
