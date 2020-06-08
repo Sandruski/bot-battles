@@ -60,7 +60,8 @@ struct WeaponEvent {
 // Health
 struct HealthEvent {
     EventType eventType;
-    Entity entity;
+    Entity shooterEntity;
+    Entity targetEntity;
     U32 health;
 };
 

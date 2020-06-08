@@ -9,6 +9,10 @@ U64 HealthComponent::Write(OutputMemoryStream& outputStream, U64 dirtyState) con
 {
     U64 writtenState = 0;
 
+    if (dirtyState & static_cast<U64>(ComponentMemberType::HEALTH_HIT_ENTITY_LAST_SHOT)) {
+        outputStream.Write(m_hitEntityLastShot);
+        writtenState |= static_cast<U64>(ComponentMemberType::HEALTH_HIT_ENTITY_LAST_SHOT);
+    }
     if (dirtyState & static_cast<U64>(ComponentMemberType::HEALTH_CURRENT_HP)) {
         outputStream.Write(m_currentHP);
         writtenState |= static_cast<U64>(ComponentMemberType::HEALTH_CURRENT_HP);

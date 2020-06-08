@@ -107,6 +107,10 @@ struct WeaponComponent : public Component
 #endif
 
     // Networked
+    glm::vec2 m_originLastShot;
+    glm::vec2 m_destinationLastShot;
+    Entity m_hitEntityLastShot;
+
     U32 m_damagePrimary;
     U32 m_damageSecondary;
     I32 m_currentAmmoPrimary;
@@ -120,10 +124,6 @@ struct WeaponComponent : public Component
     F32 m_cooldownShootSecondary;
     F32 m_timeReload;
     F32 m_cooldownReload;
-
-    glm::vec2 m_originLastShot;
-    glm::vec2 m_destinationLastShot;
-    bool m_hasHitLastShot;
 
     // Local (server)
     bool m_isPickedUp;

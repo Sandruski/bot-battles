@@ -63,6 +63,8 @@ struct HealthComponent : public Component
 #endif
 
     // Networked
+    Entity m_hitEntityLastShot;
+
     I32 m_currentHP;
     U32 m_maxHP;
     U32 m_HP;

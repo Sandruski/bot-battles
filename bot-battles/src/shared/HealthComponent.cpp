@@ -4,7 +4,8 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 HealthComponent::HealthComponent()
-    : m_currentHP(0)
+    : m_hitEntityLastShot(INVALID_ENTITY)
+    , m_currentHP(0)
     , m_maxHP(0)
     , m_HP(0)
     , m_timeHeal(0.0f)

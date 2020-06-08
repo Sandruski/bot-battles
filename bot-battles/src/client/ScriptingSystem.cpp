@@ -120,7 +120,7 @@ void ScriptingSystem::OnNotify(const Event& event)
     }
 
     case EventType::WEAPON_HIT: {
-        OnWeaponHit(event.weapon.shooterEntity);
+        OnWeaponHit(event.weapon.shooterEntity, event.weapon.targetEntity);
         break;
     }
 
@@ -140,17 +140,17 @@ void ScriptingSystem::OnNotify(const Event& event)
     }
 
     case EventType::HEALTH_HURT: {
-        OnHealthHurt(event.health.entity, event.health.health);
+        OnHealthHurt(event.health.targetEntity, event.health.shooterEntity, event.health.health);
         break;
     }
 
     case EventType::HEALTH_HEALED: {
-        OnHealthHealed(event.health.entity, event.health.health);
+        OnHealthHealed(event.health.targetEntity, event.health.health);
         break;
     }
 
     case EventType::HEALTH_PICKED_UP: {
-        OnHealthPickedUp(event.health.entity);
+        OnHealthPickedUp(event.health.targetEntity);
         break;
     }
 
@@ -252,22 +252,22 @@ void ScriptingSystem::OnCollisionEnter(Entity entityA, Entity entityB, glm::vec2
 }
 
 //----------------------------------------------------------------------------------------------------
-void ScriptingSystem::OnSeenNewEntity(Entity entity) const
+void ScriptingSystem::OnSeenNewEntity(Entity seenEntity) const
 {
-    assert(entity < INVALID_ENTITY);
+    assert(seenEntity < INVALID_ENTITY);
 
     std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
-    if (entity == clientComponent.lock()->m_entity) {
+    if (seenEntity == clientComponent.lock()->m_entity) {
         return;
     }
 
     std::weak_ptr<ScriptingComponent> scriptingComponent = g_gameClient->GetScriptingComponent();
     std::weak_ptr<InputComponent> inputComponent = g_gameClient->GetInputComponent();
 
-    std::weak_ptr<BotComponent> botComponent = g_gameClient->GetComponentManager().GetComponent<BotComponent>(entity);
+    std::weak_ptr<BotComponent> botComponent = g_gameClient->GetComponentManager().GetComponent<BotComponent>(seenEntity);
     if (!botComponent.expired()) {
         try {
-            scriptingComponent.lock()->m_mainModule.attr("myBot").attr("onSeenNewBot")(inputComponent.lock(), entity);
+            scriptingComponent.lock()->m_mainModule.attr("myBot").attr("onSeenNewBot")(inputComponent.lock(), seenEntity);
             scriptingComponent.lock()->m_mainModule.attr("log")();
         } catch (const std::runtime_error& re) {
             OutputDebugStringA(re.what());
@@ -276,10 +276,10 @@ void ScriptingSystem::OnSeenNewEntity(Entity entity) const
         return;
     }
 
-    std::weak_ptr<WeaponComponent> weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(entity);
+    std::weak_ptr<WeaponComponent> weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(seenEntity);
     if (!botComponent.expired()) {
         try {
-            scriptingComponent.lock()->m_mainModule.attr("myBot").attr("onSeenNewWeapon")(inputComponent.lock(), entity);
+            scriptingComponent.lock()->m_mainModule.attr("myBot").attr("onSeenNewWeapon")(inputComponent.lock(), seenEntity);
             scriptingComponent.lock()->m_mainModule.attr("log")();
         } catch (const std::runtime_error& re) {
             OutputDebugStringA(re.what());
@@ -288,10 +288,10 @@ void ScriptingSystem::OnSeenNewEntity(Entity entity) const
         return;
     }
 
-    std::weak_ptr<HealthComponent> healthComponent = g_gameClient->GetComponentManager().GetComponent<HealthComponent>(entity);
+    std::weak_ptr<HealthComponent> healthComponent = g_gameClient->GetComponentManager().GetComponent<HealthComponent>(seenEntity);
     if (!botComponent.expired()) {
         try {
-            scriptingComponent.lock()->m_mainModule.attr("myBot").attr("onSeenNewHealth")(inputComponent.lock(), entity);
+            scriptingComponent.lock()->m_mainModule.attr("myBot").attr("onSeenNewHealth")(inputComponent.lock(), seenEntity);
             scriptingComponent.lock()->m_mainModule.attr("log")();
         } catch (const std::runtime_error& re) {
             OutputDebugStringA(re.what());
@@ -302,22 +302,22 @@ void ScriptingSystem::OnSeenNewEntity(Entity entity) const
 }
 
 //----------------------------------------------------------------------------------------------------
-void ScriptingSystem::OnSeenLostEntity(Entity entity) const
+void ScriptingSystem::OnSeenLostEntity(Entity seenEntity) const
 {
-    assert(entity < INVALID_ENTITY);
+    assert(seenEntity < INVALID_ENTITY);
 
     std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
-    if (entity == clientComponent.lock()->m_entity) {
+    if (seenEntity == clientComponent.lock()->m_entity) {
         return;
     }
 
     std::weak_ptr<ScriptingComponent> scriptingComponent = g_gameClient->GetScriptingComponent();
     std::weak_ptr<InputComponent> inputComponent = g_gameClient->GetInputComponent();
 
-    std::weak_ptr<BotComponent> botComponent = g_gameClient->GetComponentManager().GetComponent<BotComponent>(entity);
+    std::weak_ptr<BotComponent> botComponent = g_gameClient->GetComponentManager().GetComponent<BotComponent>(seenEntity);
     if (!botComponent.expired()) {
         try {
-            scriptingComponent.lock()->m_mainModule.attr("myBot").attr("onSeenLostBot")(inputComponent.lock(), entity);
+            scriptingComponent.lock()->m_mainModule.attr("myBot").attr("onSeenLostBot")(inputComponent.lock(), seenEntity);
             scriptingComponent.lock()->m_mainModule.attr("log")();
         } catch (const std::runtime_error& re) {
             OutputDebugStringA(re.what());
@@ -325,10 +325,10 @@ void ScriptingSystem::OnSeenLostEntity(Entity entity) const
         }
     }
 
-    std::weak_ptr<WeaponComponent> weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(entity);
+    std::weak_ptr<WeaponComponent> weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(seenEntity);
     if (!botComponent.expired()) {
         try {
-            scriptingComponent.lock()->m_mainModule.attr("myBot").attr("onSeenLostWeapon")(inputComponent.lock(), entity);
+            scriptingComponent.lock()->m_mainModule.attr("myBot").attr("onSeenLostWeapon")(inputComponent.lock(), seenEntity);
             scriptingComponent.lock()->m_mainModule.attr("log")();
         } catch (const std::runtime_error& re) {
             OutputDebugStringA(re.what());
@@ -337,10 +337,10 @@ void ScriptingSystem::OnSeenLostEntity(Entity entity) const
         return;
     }
 
-    std::weak_ptr<HealthComponent> healthComponent = g_gameClient->GetComponentManager().GetComponent<HealthComponent>(entity);
+    std::weak_ptr<HealthComponent> healthComponent = g_gameClient->GetComponentManager().GetComponent<HealthComponent>(seenEntity);
     if (!botComponent.expired()) {
         try {
-            scriptingComponent.lock()->m_mainModule.attr("myBot").attr("onSeenLostHealth")(inputComponent.lock(), entity);
+            scriptingComponent.lock()->m_mainModule.attr("myBot").attr("onSeenLostHealth")(inputComponent.lock(), seenEntity);
             scriptingComponent.lock()->m_mainModule.attr("log")();
         } catch (const std::runtime_error& re) {
             OutputDebugStringA(re.what());
@@ -351,39 +351,25 @@ void ScriptingSystem::OnSeenLostEntity(Entity entity) const
 }
 
 //----------------------------------------------------------------------------------------------------
-void ScriptingSystem::OnWeaponHit(Entity entity) const
+void ScriptingSystem::OnWeaponHit(Entity shooterEntity, Entity targetEntity) const
 {
-    assert(entity < INVALID_ENTITY);
+    assert(shooterEntity < INVALID_ENTITY);
 
     std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
-    if (entity != clientComponent.lock()->m_entity) {
-        return;
-    }
-
-    Entity seenBotEntity = INVALID_PLAYER_ID;
-    std::vector<std::pair<Entity, std::weak_ptr<PlayerComponent>>> playerComponents = g_gameClient->GetComponentManager().GetComponents<PlayerComponent>();
-    for (const auto& pair : playerComponents) {
-        Entity playerEntity = pair.first;
-        if (playerEntity == entity) {
-            continue;
-        }
-
-        seenBotEntity = playerEntity;
-    }
-    if (seenBotEntity == INVALID_ENTITY) {
+    if (shooterEntity != clientComponent.lock()->m_entity) {
         return;
     }
 
     SightComponent::SeenBotInfo seenBotInfo;
-    seenBotInfo.m_transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(seenBotEntity).lock();
-    seenBotInfo.m_rigidbodyComponent = g_gameClient->GetComponentManager().GetComponent<RigidbodyComponent>(seenBotEntity).lock();
-    seenBotInfo.m_weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(seenBotEntity).lock();
-    seenBotInfo.m_healthComponent = g_gameClient->GetComponentManager().GetComponent<HealthComponent>(seenBotEntity).lock();
+    seenBotInfo.m_transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(targetEntity).lock();
+    seenBotInfo.m_rigidbodyComponent = g_gameClient->GetComponentManager().GetComponent<RigidbodyComponent>(targetEntity).lock();
+    seenBotInfo.m_weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(targetEntity).lock();
+    seenBotInfo.m_healthComponent = g_gameClient->GetComponentManager().GetComponent<HealthComponent>(targetEntity).lock();
 
     std::weak_ptr<ScriptingComponent> scriptingComponent = g_gameClient->GetScriptingComponent();
     std::weak_ptr<InputComponent> inputComponent = g_gameClient->GetInputComponent();
     try {
-        scriptingComponent.lock()->m_mainModule.attr("myBot").attr("onBulletHit")(inputComponent.lock(), seenBotEntity, seenBotInfo);
+        scriptingComponent.lock()->m_mainModule.attr("myBot").attr("onBulletHit")(inputComponent.lock(), targetEntity, seenBotInfo);
         scriptingComponent.lock()->m_mainModule.attr("log")();
     } catch (const std::runtime_error& re) {
         OutputDebugStringA(re.what());
@@ -392,12 +378,12 @@ void ScriptingSystem::OnWeaponHit(Entity entity) const
 }
 
 //----------------------------------------------------------------------------------------------------
-void ScriptingSystem::OnWeaponMissed(Entity entity) const
+void ScriptingSystem::OnWeaponMissed(Entity shooterEntity) const
 {
-    assert(entity < INVALID_ENTITY);
+    assert(shooterEntity < INVALID_ENTITY);
 
     std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
-    if (entity != clientComponent.lock()->m_entity) {
+    if (shooterEntity != clientComponent.lock()->m_entity) {
         return;
     }
 
@@ -455,39 +441,25 @@ void ScriptingSystem::OnWeaponPrimaryReloaded(Entity entity, U32 ammo) const
 }
 
 //----------------------------------------------------------------------------------------------------
-void ScriptingSystem::OnHealthHurt(Entity entity, U32 health) const
+void ScriptingSystem::OnHealthHurt(Entity targetEntity, Entity shooterEntity, U32 health) const
 {
-    assert(entity < INVALID_ENTITY);
+    assert(targetEntity < INVALID_ENTITY);
 
     std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
-    if (entity != clientComponent.lock()->m_entity) {
-        return;
-    }
-
-    Entity seenBotEntity = INVALID_PLAYER_ID;
-    std::vector<std::pair<Entity, std::weak_ptr<PlayerComponent>>> playerComponents = g_gameClient->GetComponentManager().GetComponents<PlayerComponent>();
-    for (const auto& pair : playerComponents) {
-        Entity playerEntity = pair.first;
-        if (playerEntity == entity) {
-            continue;
-        }
-
-        seenBotEntity = playerEntity;
-    }
-    if (seenBotEntity == INVALID_ENTITY) {
+    if (targetEntity != clientComponent.lock()->m_entity) {
         return;
     }
 
     SightComponent::SeenBotInfo seenBotInfo;
-    seenBotInfo.m_transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(seenBotEntity).lock();
-    seenBotInfo.m_rigidbodyComponent = g_gameClient->GetComponentManager().GetComponent<RigidbodyComponent>(seenBotEntity).lock();
-    seenBotInfo.m_weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(seenBotEntity).lock();
-    seenBotInfo.m_healthComponent = g_gameClient->GetComponentManager().GetComponent<HealthComponent>(seenBotEntity).lock();
+    seenBotInfo.m_transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(shooterEntity).lock();
+    seenBotInfo.m_rigidbodyComponent = g_gameClient->GetComponentManager().GetComponent<RigidbodyComponent>(shooterEntity).lock();
+    seenBotInfo.m_weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(shooterEntity).lock();
+    seenBotInfo.m_healthComponent = g_gameClient->GetComponentManager().GetComponent<HealthComponent>(shooterEntity).lock();
 
     std::weak_ptr<ScriptingComponent> scriptingComponent = g_gameClient->GetScriptingComponent();
     std::weak_ptr<InputComponent> inputComponent = g_gameClient->GetInputComponent();
     try {
-        scriptingComponent.lock()->m_mainModule.attr("myBot").attr("onHitByBullet")(inputComponent.lock(), health, seenBotEntity, seenBotInfo);
+        scriptingComponent.lock()->m_mainModule.attr("myBot").attr("onHitByBullet")(inputComponent.lock(), health, shooterEntity, seenBotInfo);
         scriptingComponent.lock()->m_mainModule.attr("log")();
     } catch (const std::runtime_error& re) {
         OutputDebugStringA(re.what());

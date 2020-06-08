@@ -159,9 +159,9 @@ void HealthSystemServer::OnCollisionEnter(Entity entityA, Entity entityB) const
 
     Event newHealthEvent;
     newHealthEvent.eventType = EventType::HEALTH_HURT;
-    newHealthEvent.health.entity = entityA;
+    newHealthEvent.health.targetEntity = entityA;
     NotifyEvent(newHealthEvent);
-    newHealthEvent.health.entity = entityB;
+    newHealthEvent.health.targetEntity = entityB;
     NotifyEvent(newHealthEvent);
 
     Event newComponentEvent;
@@ -198,7 +198,7 @@ void HealthSystemServer::OnWeaponHit(Entity shooterEntity, Entity targetEntity, 
 
     Event newHealthEvent;
     newHealthEvent.eventType = EventType::HEALTH_HURT;
-    newHealthEvent.health.entity = targetEntity;
+    newHealthEvent.health.targetEntity = targetEntity;
     NotifyEvent(newHealthEvent);
 
     Event newComponentEvent;

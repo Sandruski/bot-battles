@@ -32,13 +32,13 @@ private:
     void InitScripts() const;
 
     void OnCollisionEnter(Entity entityA, Entity entityB, glm::vec2 linearVelocityA, glm::vec2 linearVelocityB, glm::vec2 normal) const;
-    void OnSeenNewEntity(Entity entity) const;
-    void OnSeenLostEntity(Entity entity) const;
-    void OnWeaponHit(Entity entity) const;
-    void OnWeaponMissed(Entity entity) const;
+    void OnSeenNewEntity(Entity seenEntity) const;
+    void OnSeenLostEntity(Entity seenEntity) const;
+    void OnWeaponHit(Entity shooterEntity, Entity targetEntity) const;
+    void OnWeaponMissed(Entity shooterEntity) const;
     void OnWeaponPrimaryPickedUp(Entity entity) const;
     void OnWeaponPrimaryReloaded(Entity entity, U32 ammo) const;
-    void OnHealthHurt(Entity entity, U32 health) const;
+    void OnHealthHurt(Entity targetEntity, Entity shooterEntity, U32 health) const;
     void OnHealthHealed(Entity entity, U32 health) const;
     void OnHealthPickedUp(Entity entity) const;
 };

@@ -161,8 +161,8 @@ bool WeaponSystemServer::Update()
                 weaponComponent.lock()->m_destinationLastShot = position + rotation * maxLength;
                 characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_DESTINATION_LAST_SHOT);
 
-                weaponComponent.lock()->m_hasHitLastShot = false;
-                characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_HAS_HIT_LAST_SHOT);
+                weaponComponent.lock()->m_hitEntityLastShot = INVALID_ENTITY;
+                characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_HIT_ENTITY_LAST_SHOT);
 
                 std::weak_ptr<PhysicsComponent> physicsComponent = g_gameServer->GetPhysicsComponent();
                 PhysicsComponent::RaycastHit hitInfo;
@@ -176,7 +176,7 @@ bool WeaponSystemServer::Update()
                     if (hitInfo.m_entity != entity) {
                         std::weak_ptr<HealthComponent> hitEntityHealthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(hitInfo.m_entity);
                         if (!hitEntityHealthComponent.expired()) {
-                            weaponComponent.lock()->m_hasHitLastShot = true;
+                            weaponComponent.lock()->m_hitEntityLastShot = hitInfo.m_entity;
 
                             Event newWeaponEvent;
                             newWeaponEvent.eventType = EventType::WEAPON_HIT;

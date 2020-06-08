@@ -4,7 +4,10 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 WeaponComponent::WeaponComponent()
-    : m_damagePrimary(0)
+    : m_originLastShot(0.0f, 0.0f)
+    , m_destinationLastShot(0.0f, 0.0f)
+    , m_hitEntityLastShot(INVALID_ENTITY)
+    , m_damagePrimary(0)
     , m_damageSecondary(0)
     , m_currentAmmoPrimary(0)
     , m_maxAmmoPrimary(0)
@@ -17,9 +20,6 @@ WeaponComponent::WeaponComponent()
     , m_cooldownShootSecondary(0.0f)
     , m_timeReload(0.0f)
     , m_cooldownReload(0.0f)
-    , m_originLastShot(0.0f, 0.0f)
-    , m_destinationLastShot(0.0f, 0.0f)
-    , m_hasHitLastShot(false)
     , m_isPickedUp(false)
 {
 }

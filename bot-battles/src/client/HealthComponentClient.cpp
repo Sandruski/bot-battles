@@ -10,6 +10,9 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 void HealthComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /*frame*/, ReplicationActionType replicationActionType, Entity entity)
 {
+    if (dirtyState & static_cast<U64>(ComponentMemberType::HEALTH_HIT_ENTITY_LAST_SHOT)) {
+        inputStream.Read(m_hitEntityLastShot);
+    }
     if (dirtyState & static_cast<U64>(ComponentMemberType::HEALTH_CURRENT_HP)) {
         I32 oldCurrentHP = m_currentHP;
         inputStream.Read(m_currentHP);
@@ -19,11 +22,12 @@ void HealthComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /
             if (oldCurrentHP > m_currentHP) {
                 newHealthEvent.eventType = EventType::HEALTH_HURT;
                 newHealthEvent.health.health = oldCurrentHP - m_currentHP;
+                newHealthEvent.health.shooterEntity = m_hitEntityLastShot;
             } else if (oldCurrentHP < m_currentHP) {
                 newHealthEvent.eventType = EventType::HEALTH_HEALED;
                 newHealthEvent.health.health = m_currentHP - oldCurrentHP;
             }
-            newHealthEvent.health.entity = entity;
+            newHealthEvent.health.targetEntity = entity;
             std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
             clientComponent.lock()->m_replicationManager.NotifyEvent(newHealthEvent);
         }
@@ -39,7 +43,7 @@ void HealthComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /
                 Event newHealthEvent;
                 newHealthEvent.eventType = EventType::HEALTH_PICKED_UP;
                 newHealthEvent.health.health = m_HP;
-                newHealthEvent.health.entity = entity;
+                newHealthEvent.health.targetEntity = entity;
                 std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
                 clientComponent.lock()->m_replicationManager.NotifyEvent(newHealthEvent);
             }

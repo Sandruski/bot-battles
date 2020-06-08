@@ -10,6 +10,28 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 void WeaponComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /*frame*/, ReplicationActionType replicationActionType, Entity entity)
 {
+    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_ORIGIN_LAST_SHOT)) {
+        inputStream.Read(m_originLastShot);
+    }
+    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_DESTINATION_LAST_SHOT)) {
+        inputStream.Read(m_destinationLastShot);
+    }
+    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_HIT_ENTITY_LAST_SHOT)) {
+        inputStream.Read(m_hitEntityLastShot);
+
+        if (replicationActionType != ReplicationActionType::CREATE) {
+            Event newWeaponEvent;
+            if (m_hitEntityLastShot == INVALID_ENTITY) {
+                newWeaponEvent.eventType = EventType::WEAPON_MISSED;
+            } else {
+                newWeaponEvent.eventType = EventType::WEAPON_HIT;
+                newWeaponEvent.weapon.targetEntity = m_hitEntityLastShot;
+            }
+            newWeaponEvent.weapon.shooterEntity = entity;
+            std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
+            clientComponent.lock()->m_replicationManager.NotifyEvent(newWeaponEvent);
+        }
+    }
     if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_DAMAGE_PRIMARY)) {
         inputStream.Read(m_damagePrimary);
 
@@ -69,27 +91,6 @@ void WeaponComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /
     }
     if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_COOLDOWN_RELOAD)) {
         inputStream.Read(m_cooldownReload);
-    }
-    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_ORIGIN_LAST_SHOT)) {
-        inputStream.Read(m_originLastShot);
-    }
-    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_DESTINATION_LAST_SHOT)) {
-        inputStream.Read(m_destinationLastShot);
-    }
-    if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_HAS_HIT_LAST_SHOT)) {
-        inputStream.Read(m_hasHitLastShot);
-
-        if (replicationActionType != ReplicationActionType::CREATE) {
-            Event newWeaponEvent;
-            if (m_hasHitLastShot) {
-                newWeaponEvent.eventType = EventType::WEAPON_HIT;
-            } else {
-                newWeaponEvent.eventType = EventType::WEAPON_MISSED;
-            }
-            newWeaponEvent.weapon.shooterEntity = entity;
-            std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
-            clientComponent.lock()->m_replicationManager.NotifyEvent(newWeaponEvent);
-        }
     }
 }
 }
