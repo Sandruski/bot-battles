@@ -41,6 +41,7 @@ struct WindowComponent : public Subject {
     DisplayMode m_displayMode;
     F32 m_fps;
     bool m_isCap;
+    bool m_isResized;
 };
 }
 

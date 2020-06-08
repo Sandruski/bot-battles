@@ -12,6 +12,7 @@ WindowComponent::WindowComponent()
     , m_displayMode(DisplayMode::WINDOWED)
     , m_fps(0.0f)
     , m_isCap(true)
+    , m_isResized(false)
 {
 }
 
@@ -76,6 +77,11 @@ void WindowComponent::UpdateCurrentResolution()
         break;
     }
     }
+
+    m_isResized = true;
+    Event newEvent;
+    newEvent.eventType = EventType::WINDOW_RESIZED;
+    NotifyEvent(newEvent);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -83,10 +89,6 @@ void WindowComponent::UpdateResolution()
 {
     SDL_SetWindowSize(m_window, m_currentResolution.x, m_currentResolution.y);
     glViewport(0, 0, m_currentResolution.x, m_currentResolution.y);
-
-    Event newEvent;
-    newEvent.eventType = EventType::WINDOW_RESIZED;
-    NotifyEvent(newEvent);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -107,7 +109,11 @@ bool WindowComponent::UpdateDisplayMode()
         }
 
         m_currentResolution = glm::uvec2(dm.w, dm.h);
-        UpdateResolution();
+
+        m_isResized = true;
+        Event newEvent;
+        newEvent.eventType = EventType::WINDOW_RESIZED;
+        NotifyEvent(newEvent);
         break;
     }
 
@@ -119,7 +125,6 @@ bool WindowComponent::UpdateDisplayMode()
         SDL_SetWindowBordered(m_window, SDL_TRUE);
 
         UpdateCurrentResolution();
-        UpdateResolution();
         break;
     }
 
@@ -131,7 +136,6 @@ bool WindowComponent::UpdateDisplayMode()
         SDL_SetWindowBordered(m_window, SDL_FALSE);
 
         UpdateCurrentResolution();
-        UpdateResolution();
         break;
     }
 

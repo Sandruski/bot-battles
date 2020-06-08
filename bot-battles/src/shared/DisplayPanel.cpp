@@ -32,7 +32,6 @@ bool DisplayPanel::RenderBody() const
         if (ImGui::Combo("Resolution", &currentResolution, resolutions, IM_ARRAYSIZE(resolutions))) {
             windowComponent.lock()->m_resolution = static_cast<WindowComponent::Resolution>(currentResolution);
             windowComponent.lock()->UpdateCurrentResolution();
-            windowComponent.lock()->UpdateResolution();
         }
     }
 

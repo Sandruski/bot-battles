@@ -133,6 +133,11 @@ bool RendererSystem::Render()
 bool RendererSystem::PostRender()
 {
     std::weak_ptr<WindowComponent> windowComponent = g_game->GetWindowComponent();
+    if (windowComponent.lock()->m_isResized) {
+        windowComponent.lock()->UpdateResolution();
+        windowComponent.lock()->m_isResized = false;
+    }
+
     SDL_GL_SwapWindow(windowComponent.lock()->m_window);
 
     return true;
