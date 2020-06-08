@@ -51,7 +51,6 @@ class MyBot(bot.Bot):
         #input.linearVelocityX = direction[0] * input.maxLinearVelocity
         #input.linearVelocityY = direction[1] * input.maxLinearVelocity
         #total = self.graph.getTilesOfType(TileType.BOT_SPAWNER)      
-        
         if (len(self.sight.seenHealthEntities) > 0):
             healthInfo = self.sight.getSeenHealthInfo(self.sight.seenHealthEntities[0])
             logging.info("%i" % healthInfo.health.firstAidBoxHP)

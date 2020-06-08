@@ -229,6 +229,18 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::v
                 angularVelocity += inputComponent.m_angularVelocity;
             }
 
+            if (!std::isfinite(linearVelocity.x)) {
+                linearVelocity.x = 0.0f;
+            }
+
+            if (!std::isfinite(linearVelocity.y)) {
+                linearVelocity.y = 0.0f;
+            }
+
+            if (!std::isfinite(angularVelocity)) {
+                angularVelocity = 0.0f;
+            }
+
             F32 linearVelocityLength = glm::length(linearVelocity);
             F32 linearVelocityAbsLength = glm::abs(linearVelocityLength);
             if (linearVelocityAbsLength > inputComponent.m_maxLinearVelocity) {
