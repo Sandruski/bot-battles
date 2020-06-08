@@ -137,8 +137,8 @@ bool SightSystemServer::Update()
 
         for (std::vector<Entity>::const_iterator it = seenEntities.begin(); it != seenEntities.end(); ++it) {
             Entity seenEntity = *it;
-            const bool isSeen = sightComponent.lock()->IsSeen(seenEntity);
-            if (!isSeen) {
+            const bool isEntitySeen = sightComponent.lock()->IsEntitySeen(seenEntity);
+            if (!isEntitySeen) {
                 Event newSightEvent;
                 newSightEvent.eventType = EventType::SEEN_NEW_ENTITY;
                 newSightEvent.sight.playerID = playerID;

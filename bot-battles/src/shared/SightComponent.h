@@ -112,7 +112,7 @@ struct SightComponent : public Component
     U64 Write(OutputMemoryStream& outputStream, U64 dirtyState) const override;
 #endif
 
-    bool IsSeen(Entity entity);
+    bool IsEntitySeen(Entity entity);
 
 #ifdef _CLIENT
     // Python

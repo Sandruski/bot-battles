@@ -43,7 +43,7 @@ U64 SightComponent::Write(OutputMemoryStream& outputStream, U64 dirtyState) cons
 #endif
 
 //----------------------------------------------------------------------------------------------------
-bool SightComponent::IsSeen(Entity entity)
+bool SightComponent::IsEntitySeen(Entity entity)
 {
     return std::find(m_seenEntities.begin(), m_seenEntities.end(), entity) != m_seenEntities.end();
 }
