@@ -123,11 +123,11 @@ bool MeshResource::ForceLoad()
 //----------------------------------------------------------------------------------------------------
 bool MeshResource::ReLoadVertices(const std::vector<Vertex>& vertices)
 {
-    assert(m_VAO > 0 && m_VBO > 0);
-
     if (vertices.empty()) {
         return false;
     }
+
+    assert(m_VAO > 0 && m_VBO > 0);
 
     m_vertices = vertices;
 
@@ -139,11 +139,11 @@ bool MeshResource::ReLoadVertices(const std::vector<Vertex>& vertices)
 //----------------------------------------------------------------------------------------------------
 bool MeshResource::ReLoadInstances(const std::vector<Instance>& instances)
 {
-    assert(m_VAO > 0 && m_instanceVBO > 0);
-
     if (instances.empty()) {
         return false;
     }
+
+    assert(m_VAO > 0 && m_instanceVBO > 0);
 
     m_instances = instances;
 

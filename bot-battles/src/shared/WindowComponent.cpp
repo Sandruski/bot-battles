@@ -86,7 +86,7 @@ void WindowComponent::UpdateResolution()
 
     Event newEvent;
     newEvent.eventType = EventType::WINDOW_RESIZED;
-    PushEvent(newEvent);
+    NotifyEvent(newEvent);
 }
 
 //----------------------------------------------------------------------------------------------------
