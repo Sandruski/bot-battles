@@ -5,6 +5,7 @@ import inspect
 import logging
 import io
 import os
+import datetime
 
 import bot
 import botbattles
@@ -26,7 +27,9 @@ def init(scriptName, transformComponent, rigidbodyComponent, weaponComponent, he
     global stream
     stream = io.StringIO()
     streamHandler = logging.StreamHandler(stream)
-    fileHandler = logging.FileHandler('%s.log' % myBot.__class__.__name__)
+    now = datetime.datetime.now()
+    nowText = now.strftime("%d.%m.%Y-%H.%M.%S")
+    fileHandler = logging.FileHandler('%s_%s.log' % (nowText, myBot.__class__.__name__))
     formatter = logging.Formatter('[%(levelname)s] %(message)s')
     streamHandler.setFormatter(formatter)
     fileHandler.setFormatter(formatter)
