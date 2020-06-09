@@ -4,6 +4,7 @@
 #include "ComponentManager.h"
 #include "ComponentMemberTypes.h"
 #include "GameServer.h"
+#include "RendererComponent.h"
 #include "TransformComponent.h"
 
 namespace sand {
@@ -18,6 +19,11 @@ CollisionSystemServer::CollisionSystemServer()
 bool CollisionSystemServer::DebugRender()
 {
     OPTICK_EVENT();
+
+    std::weak_ptr<RendererComponent> rendererComponent = g_gameServer->GetRendererComponent();
+    if (!rendererComponent.lock()->m_isDebugDrawColliders) {
+        return true;
+    }
 
     for (const auto& entity : m_entities) {
         std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);

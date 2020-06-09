@@ -41,6 +41,9 @@ struct RendererComponent {
     bool m_isVSync;
     bool m_isCap;
     bool m_isDebugDraw;
+    bool m_isDebugDrawColliders;
+    bool m_isDebugDrawBot;
+    bool m_isDebugDrawMap;
 };
 }
 

@@ -9,6 +9,7 @@
 #include "InputComponent.h"
 #include "LinkingContext.h"
 #include "PhysicsComponent.h"
+#include "RendererComponent.h"
 #include "RigidbodyComponent.h"
 #include "ServerComponent.h"
 #include "State.h"
@@ -178,6 +179,11 @@ bool MovementSystemServer::Update()
 bool MovementSystemServer::DebugRender()
 {
     OPTICK_EVENT();
+
+    std::weak_ptr<RendererComponent> rendererComponent = g_gameServer->GetRendererComponent();
+    if (!rendererComponent.lock()->m_isDebugDrawBot) {
+        return true;
+    }
 
     std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
     for (const auto& entity : m_entities) {

@@ -6,6 +6,7 @@
 #include "GameClient.h"
 #include "GameplayComponent.h"
 #include "LinkingContext.h"
+#include "RendererComponent.h"
 #include "RigidbodyComponent.h"
 #include "State.h"
 #include "TransformComponent.h"
@@ -119,6 +120,11 @@ bool RemotePlayerMovementSystem::Update()
 bool RemotePlayerMovementSystem::DebugRender()
 {
     OPTICK_EVENT();
+
+    std::weak_ptr<RendererComponent> rendererComponent = g_gameClient->GetRendererComponent();
+    if (!rendererComponent.lock()->m_isDebugDrawBot) {
+        return true;
+    }
 
     LinkingContext& linkingContext = g_gameClient->GetLinkingContext();
     for (const auto& entity : m_entities) {

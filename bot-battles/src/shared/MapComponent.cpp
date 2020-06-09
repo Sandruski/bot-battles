@@ -83,5 +83,8 @@ glm::uvec2 MapComponent::RealWorldToMap(const glm::vec2& worldPosition) const
 void MapComponent::Reset()
 {
     m_tileTypes.clear();
+    m_tileCount = glm::uvec2(0, 0);
+    m_tileSize = glm::uvec2(0, 0);
+    m_mapScale = 0.0f;
 }
 }

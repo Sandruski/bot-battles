@@ -11,6 +11,9 @@ bool MapSystem::DebugRender()
 {
     std::weak_ptr<MapComponent> mapComponent = g_game->GetMapComponent();
     std::weak_ptr<RendererComponent> rendererComponent = g_game->GetRendererComponent();
+    if (!rendererComponent.lock()->m_isDebugDrawMap) {
+        return true;
+    }
 
     for (U32 i = 0; i < mapComponent.lock()->m_tileCount.x; ++i) {
         for (U32 j = 0; j < mapComponent.lock()->m_tileCount.y; ++j) {
@@ -37,15 +40,15 @@ bool MapSystem::DebugRender()
                 break;
             }
             case MapComponent::TileType::BOT_SPAWNER: {
-                color = Red;
+                color = Blue;
                 break;
             }
             case MapComponent::TileType::WEAPON_SPAWNER: {
-                color = Green;
+                color = Red;
                 break;
             }
             case MapComponent::TileType::HEALTH_SPAWNER: {
-                color = Blue;
+                color = Green;
                 break;
             }
             default: {
