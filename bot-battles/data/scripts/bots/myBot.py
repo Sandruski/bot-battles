@@ -45,7 +45,7 @@ class MyBot(bot.Bot):
 
         mapDestination = self.pathFollower.getCurrentMapDestination()
         worldDestination = self.map.getWorldPosition(mapDestination)
-        #self.seek(input, worldDestination)adf
+        self.seek(input, worldDestination)
         self.align(input)
         
     def seek(self, input : InputComponent, worldDestination):
@@ -171,7 +171,7 @@ class PathFinder:
             if current == destination:
                 break
             
-            for next in self.graph.getNeighbors(current, True):
+            for next in self.graph.getNeighbors(current, False):
                 newCost = costSoFar[current] + self.graph.getCost(next)
                 if next not in costSoFar or newCost < costSoFar[next]:
                     costSoFar[next] = newCost
