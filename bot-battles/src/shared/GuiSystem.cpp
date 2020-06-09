@@ -23,6 +23,12 @@ bool GuiSystem::StartUp()
     const char* glslVersion = "#version 130";
     ImGui_ImplOpenGL3_Init(glslVersion);
 
+    std::weak_ptr<GuiComponent> guiComponent = g_game->GetGuiComponent();
+    io.Fonts->AddFontDefault();
+    ImFontConfig imFontConfig;
+    imFontConfig.SizePixels = 26.0f;
+    guiComponent.lock()->m_bigFont = io.Fonts->AddFontDefault(&imFontConfig);
+
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame(windowComponent.lock()->m_window);
     ImGui::NewFrame();

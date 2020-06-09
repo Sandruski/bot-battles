@@ -7,6 +7,7 @@
 #include "FSM.h"
 #include "GameClient.h"
 #include "GameplayComponent.h"
+#include "GuiComponent.h"
 #include "LinkingContext.h"
 #include "WindowComponent.h"
 
@@ -29,7 +30,7 @@ bool PlayStateClient::Enter() const
 //----------------------------------------------------------------------------------------------------
 bool PlayStateClient::Update() const
 {
-    std::weak_ptr<EventComponent> eventComponent = g_game->GetEventComponent();
+    std::weak_ptr<EventComponent> eventComponent = g_gameClient->GetEventComponent();
     if (eventComponent.lock()->m_keyboard.at(SDL_SCANCODE_O) == EventComponent::KeyState::DOWN) {
         std::weak_ptr<GameplayComponent> gameplayComponent = g_gameClient->GetGameplayComponent();
         gameplayComponent.lock()->m_isLog = !gameplayComponent.lock()->m_isLog;
@@ -53,7 +54,7 @@ bool PlayStateClient::RenderGui() const
     windowFlags |= ImGuiWindowFlags_NoDecoration;
     windowFlags |= ImGuiWindowFlags_NoInputs;
 
-    std::weak_ptr<WindowComponent> windowComponent = g_game->GetWindowComponent();
+    std::weak_ptr<WindowComponent> windowComponent = g_gameClient->GetWindowComponent();
     glm::vec2 proportion = windowComponent.lock()->GetProportion();
 
     ImVec2 windowPosition = ImVec2(windowComponent.lock()->m_baseResolution.x / 2.0f, 20.0f);
@@ -61,6 +62,8 @@ bool PlayStateClient::RenderGui() const
     windowPosition.y *= proportion.y;
     ImGui::SetNextWindowPos(windowPosition, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 
+    std::weak_ptr<GuiComponent> guiComponent = g_gameClient->GetGuiComponent();
+    ImGui::PushFont(guiComponent.lock()->m_bigFont);
     if (ImGui::Begin("Time", nullptr, windowFlags)) {
         glm::vec4 color = White;
         ImVec4 colorText = ImVec4(color.r, color.g, color.b, color.a);
@@ -78,6 +81,7 @@ bool PlayStateClient::RenderGui() const
 
         ImGui::End();
     }
+    ImGui::PopFont();
 
     std::weak_ptr<GameplayComponent> gameplayComponent = g_gameClient->GetGameplayComponent();
     if (!gameplayComponent.lock()->m_isLog) {
