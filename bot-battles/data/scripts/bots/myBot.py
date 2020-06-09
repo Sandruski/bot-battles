@@ -31,7 +31,7 @@ class MyBot(bot.Bot):
         self.destinationRotation = None
 
         self.minRotation = 5.0
-        self.minPosition = 1.0
+        self.minDistance = 1.0
 
     def tick(self, input : InputComponent):
         if self.calculatePath:
@@ -41,16 +41,23 @@ class MyBot(bot.Bot):
             self.pathFollower.path = self.pathFinder.reconstructPath(origin, destination, cameFrom)
             self.pathFollower.index = 0
             self.calculatePath = False
-            self.destinationRotation = -45
 
-        mapDestination = self.pathFollower.getCurrentMapDestination()
-        worldDestination = self.map.getWorldPosition(mapDestination)
-        self.seek(input, worldDestination)
-        self.align(input)
+        mapDestinationPosition = self.pathFollower.getCurrentMapDestination()
+        worldDestinationPosition = self.map.getWorldPosition(mapDestinationPosition)
+        self.seek(input, worldDestinationPosition)
         
-    def seek(self, input : InputComponent, worldDestination):
-        vector = glm.vec2(worldDestination[0] - self.transform.position[0], worldDestination[1] - self.transform.position[1])
-        if glm.length(vector) <= self.minPosition:
+        worldDestinationVector = glm.vec2(worldDestinationPosition[0] - self.transform.position[0], worldDestinationPosition[1] - self.transform.position[1])
+        if glm.length(worldDestinationVector) <= self.minDistance:
+            input.angularVelocity = 0.0
+            return
+
+        worldDestinationDirection = glm.normalize(worldDestinationVector)        
+        worldDestinationAngle = glm.atan(worldDestinationDirection[1], worldDestinationDirection[0]) * 180.0 / glm.pi()          
+        self.align(input, worldDestinationAngle)
+        
+    def seek(self, input : InputComponent, destinationPosition):
+        vector = glm.vec2(destinationPosition[0] - self.transform.position[0], destinationPosition[1] - self.transform.position[1])
+        if glm.length(vector) <= self.minDistance:
             input.linearVelocityX = 0
             input.linearVelocityY = 0
             return
@@ -60,16 +67,16 @@ class MyBot(bot.Bot):
         input.linearVelocityX = acceleration.x
         input.linearVelocityY = acceleration.y
 
-    def align(self, input : InputComponent):
-        rotation = self.destinationRotation - self.transform.rotation
-        rotation = (rotation + 180.0) % 360.0 - 180.0
-        absRotation = glm.abs(rotation)
-
-        if absRotation <= self.minRotation:
+    def align(self, input : InputComponent, destinationRotation):
+        angle = destinationRotation - self.transform.rotation
+        angle = (angle + 180.0) % 360.0 - 180.0
+        absAngle = glm.abs(angle)
+        logging.info('angle %f', angle)
+        if absAngle <= self.minRotation:
             input.angularVelocity = 0.0
             return
 
-        direction = rotation / absRotation
+        direction = angle / absAngle
         angularAcceleration = direction * input.maxAngularVelocity
         input.angularVelocity = angularAcceleration
 
