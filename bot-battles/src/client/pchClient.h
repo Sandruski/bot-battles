@@ -3,7 +3,11 @@
 
 #define _CLIENT
 
+#ifdef _WIN64
 #define USE_OPTICK 1
+#else
+#define USE_OPTICK 0
+#endif
 
 //----------------------------------------------------------------------------------------------------
 
