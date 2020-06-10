@@ -94,7 +94,7 @@ PYBIND11_EMBEDDED_MODULE(botbattles, m)
         .def_property_readonly("health", &SightComponent::SeenHealthInfo::GetHealthComponent);
 
     py::class_<BotComponent, std::shared_ptr<BotComponent>>(m, "ActionComponent")
-        .def("canPerformAction", &BotComponent::CanPyPerformAction);
+        .def_property_readonly("canPerformAction", &BotComponent::CanPyPerformAction);
 
     py::class_<MapComponent, std::shared_ptr<MapComponent>>(m, "MapComponent")
         .def("getTileType", &MapComponent::GetPyTileType)

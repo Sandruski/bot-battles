@@ -136,7 +136,7 @@ class Agent:
         return linearVelocity
 
     def rotate(self):
-        if self.autoRotate:
+        if self.autoRotate == True:
             linearVelocity = glm.vec2(self.bot.rigidbody.linearVelocity[0], self.bot.rigidbody.linearVelocity[1])
             direction = glm.normalize(linearVelocity)
             self.lookAt((direction.x, direction.y))
