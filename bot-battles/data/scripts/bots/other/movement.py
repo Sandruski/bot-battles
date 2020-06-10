@@ -34,7 +34,7 @@ class PathFinder:
        while current != origin:
            path.append(current)
            current = cameFrom[current]
-       #path.append(origin)
+       path.append(origin)
        path.reverse()
        return path
 
@@ -110,14 +110,12 @@ class Agent:
         linearVelocity = self.seek(self.bot.transform.position, worldDestination)
         if glm.length(linearVelocity) == 0.0:
             self.pathFollower.increaseWaypoint()
+
         # Rotation
-        angularVelocity = glm.vec2(0, 0)
         if self.lookAtMovement:
             direction = glm.normalize(linearVelocity)
             self.lookAt((direction.x, direction.y))
-            angularVelocity = self.align(self.bot.transform.rotation, self.worldDestination)
-        else:
-            angularVelocity = self.align(self.bot.transform.rotation, self.worldDestination)
+        angularVelocity = self.align(self.bot.transform.rotation, self.worldDestination)
 
         input.linearVelocityX = linearVelocity.x
         input.linearVelocityY = linearVelocity.y
