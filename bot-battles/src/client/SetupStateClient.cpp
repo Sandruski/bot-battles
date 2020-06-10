@@ -37,7 +37,7 @@ bool SetupStateClient::RenderGui() const
     ImGui::InputText("Name", &clientComponent.lock()->m_name);
 
     if (ImGui::BeginCombo("Bot", clientComponent.lock()->m_bot.c_str())) {
-        std::vector<std::string> entries = g_gameClient->GetFileSystem().GetFilesFromDirectory(BOTS_SCRIPTS_DIR, SCRIPTS_EXTENSION);
+        std::vector<std::string> entries = g_gameClient->GetFileSystem().GetFilesFromDirectory(BOTS_SCRIPTS_DIR, SCRIPTS_EXTENSION, false);
         for (const auto& entry : entries) {
             std::string name = g_gameClient->GetFileSystem().GetName(entry);
             if (ImGui::Selectable(name.c_str())) {

@@ -28,18 +28,32 @@ bool FileSystem::ParseJsonFromFile(const std::string& path, rapidjson::Document&
 }
 
 //----------------------------------------------------------------------------------------------------
-std::vector<std::string> FileSystem::GetFilesFromDirectory(const std::string& path, const std::string& extension) const
+std::vector<std::string> FileSystem::GetFilesFromDirectory(const std::string& path, const std::string& extension, bool recursive) const
 {
     std::vector<std::string> entries;
 
-    for (const auto& entry : std::filesystem::recursive_directory_iterator(path)) {
-        std::string entryPath = entry.path().string();
-        std::string entryExtension = GetExtension(entryPath);
-        if (entryExtension == extension) {
-            std::size_t i = entryPath.find(path);
-            if (i != std::string::npos) {
-                entryPath.erase(i, path.size());
-                entries.emplace_back(entryPath);
+    if (recursive) {
+        for (const auto& entry : std::filesystem::recursive_directory_iterator(path)) {
+            std::string entryPath = entry.path().string();
+            std::string entryExtension = GetExtension(entryPath);
+            if (entryExtension == extension) {
+                std::size_t i = entryPath.find(path);
+                if (i != std::string::npos) {
+                    entryPath.erase(i, path.size());
+                    entries.emplace_back(entryPath);
+                }
+            }
+        }
+    } else {
+        for (const auto& entry : std::filesystem::directory_iterator(path)) {
+            std::string entryPath = entry.path().string();
+            std::string entryExtension = GetExtension(entryPath);
+            if (entryExtension == extension) {
+                std::size_t i = entryPath.find(path);
+                if (i != std::string::npos) {
+                    entryPath.erase(i, path.size());
+                    entries.emplace_back(entryPath);
+                }
             }
         }
     }

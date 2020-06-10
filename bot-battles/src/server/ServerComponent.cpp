@@ -47,7 +47,7 @@ void ServerComponent::LoadFromConfig(const rapidjson::Value& value)
 
     assert(value.HasMember("defaultMap"));
     m_map = value["defaultMap"].GetString();
-    std::vector<std::string> entries = g_gameServer->GetFileSystem().GetFilesFromDirectory(MAPS_DIR, MAPS_EXTENSION);
+    std::vector<std::string> entries = g_gameServer->GetFileSystem().GetFilesFromDirectory(MAPS_DIR, MAPS_EXTENSION, false);
     bool hasMap = false;
     for (const auto& entry : entries) {
         std::string name = g_gameServer->GetFileSystem().GetName(entry);

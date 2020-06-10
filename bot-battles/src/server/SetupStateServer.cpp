@@ -50,7 +50,7 @@ bool SetupStateServer::RenderGui() const
         ImGui::Spacing();
 
         if (ImGui::BeginCombo("Map", serverComponent.lock()->m_map.c_str())) {
-            std::vector<std::string> entries = g_gameServer->GetFileSystem().GetFilesFromDirectory(MAPS_DIR, MAPS_EXTENSION);
+            std::vector<std::string> entries = g_gameServer->GetFileSystem().GetFilesFromDirectory(MAPS_DIR, MAPS_EXTENSION, false);
             if (!entries.empty()) {
                 for (const auto& entry : entries) {
                     std::string name = g_gameServer->GetFileSystem().GetName(entry);
@@ -159,7 +159,7 @@ void SetupStateServer::ImportMap() const
 {
     std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
     if (serverComponent.lock()->m_map == "Random") {
-        std::vector<std::string> entries = g_gameServer->GetFileSystem().GetFilesFromDirectory(MAPS_DIR, MAPS_EXTENSION);
+        std::vector<std::string> entries = g_gameServer->GetFileSystem().GetFilesFromDirectory(MAPS_DIR, MAPS_EXTENSION, false);
         I32 min = 0;
         I32 max = static_cast<I32>(entries.size()) - 1;
         I32 random = RandomInt(min, max);

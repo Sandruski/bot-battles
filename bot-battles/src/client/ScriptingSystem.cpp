@@ -33,11 +33,17 @@ ScriptingSystem::ScriptingSystem()
 //----------------------------------------------------------------------------------------------------
 bool ScriptingSystem::StartUp()
 {
-    std::string scriptsDir = "import sys\n";
-    scriptsDir.append("sys.path.append(\"");
-    scriptsDir.append(BOTS_SCRIPTS_DIR);
-    scriptsDir.append("\")\n");
-    py::exec(scriptsDir);
+    std::string botsScriptsDir = "import sys\n";
+    botsScriptsDir.append("sys.path.append(\"");
+    botsScriptsDir.append(BOTS_SCRIPTS_DIR);
+    botsScriptsDir.append("\")\n");
+    py::exec(botsScriptsDir);
+
+    std::string botsOtherScriptsDir = "import sys\n";
+    botsOtherScriptsDir.append("sys.path.append(\"");
+    botsOtherScriptsDir.append(BOTS_OTHER_SCRIPTS_DIR);
+    botsOtherScriptsDir.append("\")\n");
+    py::exec(botsOtherScriptsDir);
 
     std::string internalScriptsDir = "import sys\n";
     internalScriptsDir.append("sys.path.append(\"");
