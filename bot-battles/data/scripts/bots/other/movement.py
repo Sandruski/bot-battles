@@ -2,6 +2,7 @@
 
 import glm
 import heapq
+import logging
 
 import bot
 from botbattles import TransformComponent
@@ -100,8 +101,8 @@ class Agent:
         self.minSeekDistance = 1.0
         # Rotation
         self.lookAtMovement = False
-        self.worldDestination = 0
-        self.minAlignDistance = 5.0
+        self.worldDestination = None
+        self.minAlignDistance = 1.0
 
     def move(self, input):
         # Movement

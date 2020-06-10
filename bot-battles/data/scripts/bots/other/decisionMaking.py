@@ -1,5 +1,7 @@
 # coding: utf-8
 
+import logging
+
 import bot
 from botbattles import TransformComponent
 from botbattles import RigidbodyComponent
