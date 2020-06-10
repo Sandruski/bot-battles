@@ -14,9 +14,9 @@ struct HealthSpawnerComponent : public Component {
     HealthSpawnerComponent();
 
     // Local (server)
-    U32 m_HP;
-    F32 m_timeHeal;
-    F32 m_cooldownHeal;
+    U32 m_healthHP;
+    F32 m_healthTimeHeal;
+    F32 m_healthCooldownHeal;
 
     I32 m_amountSpawn;
     F32 m_cooldownSpawn;

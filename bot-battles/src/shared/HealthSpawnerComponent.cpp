@@ -4,9 +4,9 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 HealthSpawnerComponent::HealthSpawnerComponent()
-    : m_HP(0)
-    , m_timeHeal(0.0f)
-    , m_cooldownHeal(0.0f)
+    : m_healthHP(0)
+    , m_healthTimeHeal(0.0f)
+    , m_healthCooldownHeal(0.0f)
     , m_amountSpawn(0)
     , m_cooldownSpawn(0.0f)
     , m_timerSpawn()

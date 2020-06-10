@@ -118,9 +118,9 @@ Entity HealthSpawnerSystem::SpawnHealth(Entity spawner) const
 
     // Health
     std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().AddComponent<HealthComponent>(entity);
-    healthComponent.lock()->m_HP = healthSpawnerComponent.lock()->m_HP;
-    healthComponent.lock()->m_timeHeal = healthSpawnerComponent.lock()->m_timeHeal;
-    healthComponent.lock()->m_cooldownHeal = healthSpawnerComponent.lock()->m_cooldownHeal;
+    healthComponent.lock()->m_HP = healthSpawnerComponent.lock()->m_healthHP;
+    healthComponent.lock()->m_timeHeal = healthSpawnerComponent.lock()->m_healthTimeHeal;
+    healthComponent.lock()->m_cooldownHeal = healthSpawnerComponent.lock()->m_healthCooldownHeal;
 
     return entity;
 }

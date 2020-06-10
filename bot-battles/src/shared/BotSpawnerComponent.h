@@ -13,21 +13,28 @@ struct BotSpawnerComponent : public Component {
 
     BotSpawnerComponent();
 
-    // TODO: separate per components
-
     // Local (server)
-    F32 m_facing;
-    F32 m_maxLinearVelocity;
-    F32 m_maxAngularVelocity;
+    PlayerID m_playerID;
+
+    /// Transform
+    F32 m_transformRotation;
+
+    /// Rigidbody
+    F32 m_rigidbodyMaxLinearVelocity;
+    F32 m_rigidbodyMaxAngularVelocity;
+
+    /// Weapon (secondary)
+    U32 m_weaponDamage;
+    F32 m_weaponRange;
+    F32 m_weaponTimeShoot;
+    F32 m_weaponCooldownShoot;
+
+    /// Health
+    U32 m_healthMaxHP;
+
+    /// Sight
     F32 m_sightAngle;
     F32 m_sightDistance;
-    PlayerID m_playerID;
-    U32 m_HP;
-
-    U32 m_damageWeapon;
-    F32 m_rangeWeapon;
-    F32 m_timeShoot;
-    F32 m_cooldownShoot;
 };
 }
 

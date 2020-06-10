@@ -218,28 +218,28 @@ void MapImporter::Create(const Tilemap& tilemap) const
 
                 std::weak_ptr<BotSpawnerComponent> botSpawnerComponent = g_game->GetComponentManager().AddComponent<BotSpawnerComponent>(entity);
                 for (const auto& property : object.m_properties) {
-                    if (property.m_name == "facing") {
-                        botSpawnerComponent.lock()->m_facing = property.m_value.floatValue;
-                    } else if (property.m_name == "maxLinearVelocity") {
-                        botSpawnerComponent.lock()->m_maxLinearVelocity = property.m_value.floatValue;
-                    } else if (property.m_name == "maxAngularVelocity") {
-                        botSpawnerComponent.lock()->m_maxAngularVelocity = property.m_value.floatValue;
+                    if (property.m_name == "player") {
+                        botSpawnerComponent.lock()->m_playerID = property.m_value.intValue;
+                    } else if (property.m_name == "transformRotation") {
+                        botSpawnerComponent.lock()->m_transformRotation = property.m_value.floatValue;
+                    } else if (property.m_name == "rigidbodyMaxLinearVelocity") {
+                        botSpawnerComponent.lock()->m_rigidbodyMaxLinearVelocity = property.m_value.floatValue;
+                    } else if (property.m_name == "rigidbodyMaxAngularVelocity") {
+                        botSpawnerComponent.lock()->m_rigidbodyMaxAngularVelocity = property.m_value.floatValue;
+                    } else if (property.m_name == "weaponDamage") {
+                        botSpawnerComponent.lock()->m_weaponDamage = property.m_value.intValue;
+                    } else if (property.m_name == "weaponRange") {
+                        botSpawnerComponent.lock()->m_weaponRange = property.m_value.floatValue;
+                    } else if (property.m_name == "weaponTimeShoot") {
+                        botSpawnerComponent.lock()->m_weaponTimeShoot = property.m_value.floatValue;
+                    } else if (property.m_name == "weaponCooldownShoot") {
+                        botSpawnerComponent.lock()->m_weaponCooldownShoot = property.m_value.floatValue;
+                    } else if (property.m_name == "healthMaxHP") {
+                        botSpawnerComponent.lock()->m_healthMaxHP = property.m_value.intValue;
                     } else if (property.m_name == "sightAngle") {
                         botSpawnerComponent.lock()->m_sightAngle = property.m_value.floatValue;
                     } else if (property.m_name == "sightDistance") {
                         botSpawnerComponent.lock()->m_sightDistance = property.m_value.floatValue;
-                    } else if (property.m_name == "player") {
-                        botSpawnerComponent.lock()->m_playerID = property.m_value.intValue;
-                    } else if (property.m_name == "HP") {
-                        botSpawnerComponent.lock()->m_HP = property.m_value.intValue;
-                    } else if (property.m_name == "damageWeapon") {
-                        botSpawnerComponent.lock()->m_damageWeapon = property.m_value.intValue;
-                    } else if (property.m_name == "rangeWeapon") {
-                        botSpawnerComponent.lock()->m_rangeWeapon = property.m_value.floatValue;
-                    } else if (property.m_name == "timeShoot") {
-                        botSpawnerComponent.lock()->m_timeShoot = property.m_value.floatValue;
-                    } else if (property.m_name == "cooldownShoot") {
-                        botSpawnerComponent.lock()->m_cooldownShoot = property.m_value.floatValue;
                     }
                 }
             }
@@ -253,22 +253,22 @@ void MapImporter::Create(const Tilemap& tilemap) const
 
                 std::weak_ptr<WeaponSpawnerComponent> weaponSpawnerComponent = g_game->GetComponentManager().AddComponent<WeaponSpawnerComponent>(entity);
                 for (const auto& property : object.m_properties) {
-                    if (property.m_name == "damageWeapon") {
-                        weaponSpawnerComponent.lock()->m_damageWeapon = property.m_value.intValue;
-                    } else if (property.m_name == "ammoWeapon") {
-                        weaponSpawnerComponent.lock()->m_ammoWeapon = property.m_value.intValue;
-                    } else if (property.m_name == "ammo") {
-                        weaponSpawnerComponent.lock()->m_ammo = property.m_value.intValue;
-                    } else if (property.m_name == "rangeWeapon") {
-                        weaponSpawnerComponent.lock()->m_rangeWeapon = property.m_value.floatValue;
-                    } else if (property.m_name == "timeShoot") {
-                        weaponSpawnerComponent.lock()->m_timeShoot = property.m_value.floatValue;
-                    } else if (property.m_name == "cooldownShoot") {
-                        weaponSpawnerComponent.lock()->m_cooldownShoot = property.m_value.floatValue;
-                    } else if (property.m_name == "timeReload") {
-                        weaponSpawnerComponent.lock()->m_timeReload = property.m_value.floatValue;
-                    } else if (property.m_name == "cooldownReload") {
-                        weaponSpawnerComponent.lock()->m_cooldownReload = property.m_value.floatValue;
+                    if (property.m_name == "weaponDamage") {
+                        weaponSpawnerComponent.lock()->m_weaponDamage = property.m_value.intValue;
+                    } else if (property.m_name == "weaponMaxAmmo") {
+                        weaponSpawnerComponent.lock()->m_weaponMaxAmmo = property.m_value.intValue;
+                    } else if (property.m_name == "weaponAmmo") {
+                        weaponSpawnerComponent.lock()->m_weaponAmmo = property.m_value.intValue;
+                    } else if (property.m_name == "weaponRange") {
+                        weaponSpawnerComponent.lock()->m_weaponRange = property.m_value.floatValue;
+                    } else if (property.m_name == "weaponTimeShoot") {
+                        weaponSpawnerComponent.lock()->m_weaponTimeShoot = property.m_value.floatValue;
+                    } else if (property.m_name == "weaponCooldownShoot") {
+                        weaponSpawnerComponent.lock()->m_weaponCooldownShoot = property.m_value.floatValue;
+                    } else if (property.m_name == "weaponTimeReload") {
+                        weaponSpawnerComponent.lock()->m_weaponTimeReload = property.m_value.floatValue;
+                    } else if (property.m_name == "weaponCooldownReload") {
+                        weaponSpawnerComponent.lock()->m_weaponCooldownReload = property.m_value.floatValue;
                     } else if (property.m_name == "amountSpawn") {
                         weaponSpawnerComponent.lock()->m_amountSpawn = property.m_value.intValue;
                     } else if (property.m_name == "cooldownSpawn") {
@@ -285,12 +285,12 @@ void MapImporter::Create(const Tilemap& tilemap) const
 
                 std::weak_ptr<HealthSpawnerComponent> healthSpawnerComponent = g_game->GetComponentManager().AddComponent<HealthSpawnerComponent>(entity);
                 for (const auto& property : object.m_properties) {
-                    if (property.m_name == "HP") {
-                        healthSpawnerComponent.lock()->m_HP = property.m_value.intValue;
-                    } else if (property.m_name == "timeHeal") {
-                        healthSpawnerComponent.lock()->m_timeHeal = property.m_value.floatValue;
-                    } else if (property.m_name == "cooldownHeal") {
-                        healthSpawnerComponent.lock()->m_cooldownHeal = property.m_value.floatValue;
+                    if (property.m_name == "healthHP") {
+                        healthSpawnerComponent.lock()->m_healthHP = property.m_value.intValue;
+                    } else if (property.m_name == "healthTimeHeal") {
+                        healthSpawnerComponent.lock()->m_healthTimeHeal = property.m_value.floatValue;
+                    } else if (property.m_name == "healthCooldownHeal") {
+                        healthSpawnerComponent.lock()->m_healthCooldownHeal = property.m_value.floatValue;
                     } else if (property.m_name == "amountSpawn") {
                         healthSpawnerComponent.lock()->m_amountSpawn = property.m_value.intValue;
                     } else if (property.m_name == "cooldownSpawn") {

@@ -71,7 +71,7 @@ Entity BotSpawnerSystem::SpawnBot(PlayerID playerID) const
     std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().AddComponent<TransformComponent>(character);
     transformComponent.lock()->m_position = botSpawnerTransformComponent.lock()->m_position;
     transformComponent.lock()->m_layerType = LayerType::PLAYER;
-    transformComponent.lock()->m_rotation = botSpawnerComponent.lock()->m_facing;
+    transformComponent.lock()->m_rotation = botSpawnerComponent.lock()->m_transformRotation;
     transformComponent.lock()->m_scale = 1.0f;
 
     // Sprite
@@ -140,8 +140,8 @@ Entity BotSpawnerSystem::SpawnBot(PlayerID playerID) const
 
     // Rigidbody
     std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameServer->GetComponentManager().AddComponent<RigidbodyComponent>(character);
-    rigidbodyComponent.lock()->m_maxLinearVelocity = botSpawnerComponent.lock()->m_maxLinearVelocity;
-    rigidbodyComponent.lock()->m_maxAngularVelocity = botSpawnerComponent.lock()->m_maxAngularVelocity;
+    rigidbodyComponent.lock()->m_maxLinearVelocity = botSpawnerComponent.lock()->m_rigidbodyMaxLinearVelocity;
+    rigidbodyComponent.lock()->m_maxAngularVelocity = botSpawnerComponent.lock()->m_rigidbodyMaxAngularVelocity;
     rigidbodyComponent.lock()->m_bodyType = RigidbodyComponent::BodyType::DYNAMIC;
     rigidbodyComponent.lock()->UpdateBodyType();
     rigidbodyComponent.lock()->m_groupIndex = 1;
@@ -151,14 +151,15 @@ Entity BotSpawnerSystem::SpawnBot(PlayerID playerID) const
 
     // Weapon
     std::weak_ptr<WeaponComponent> weaponComponent = g_gameServer->GetComponentManager().AddComponent<WeaponComponent>(character);
-    weaponComponent.lock()->m_damageSecondary = botSpawnerComponent.lock()->m_damageWeapon;
-    weaponComponent.lock()->m_rangeSecondary = botSpawnerComponent.lock()->m_rangeWeapon;
-    weaponComponent.lock()->m_timeShootSecondary = botSpawnerComponent.lock()->m_timeShoot;
-    weaponComponent.lock()->m_cooldownShootSecondary = botSpawnerComponent.lock()->m_cooldownShoot;
+    weaponComponent.lock()->m_damageSecondary = botSpawnerComponent.lock()->m_weaponDamage;
+    weaponComponent.lock()->m_rangeSecondary = botSpawnerComponent.lock()->m_weaponRange;
+    weaponComponent.lock()->m_timeShootSecondary = botSpawnerComponent.lock()->m_weaponTimeShoot;
+    weaponComponent.lock()->m_cooldownShootSecondary = botSpawnerComponent.lock()->m_weaponCooldownShoot;
 
     // Health
     std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().AddComponent<HealthComponent>(character);
-    healthComponent.lock()->m_maxHP = healthComponent.lock()->m_currentHP = botSpawnerComponent.lock()->m_HP;
+    healthComponent.lock()->m_maxHP = botSpawnerComponent.lock()->m_healthMaxHP;
+    healthComponent.lock()->m_currentHP = healthComponent.lock()->m_maxHP;
 
     // Sight
     std::weak_ptr<SightComponent> sightComponent = g_gameServer->GetComponentManager().AddComponent<SightComponent>(character);

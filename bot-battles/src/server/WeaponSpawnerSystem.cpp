@@ -118,14 +118,14 @@ Entity WeaponSpawnerSystem::SpawnWeapon(Entity spawner) const
 
     // Weapon
     std::weak_ptr<WeaponComponent> weaponComponent = g_gameServer->GetComponentManager().AddComponent<WeaponComponent>(entity);
-    weaponComponent.lock()->m_damagePrimary = weaponSpawnerComponent.lock()->m_damageWeapon;
-    weaponComponent.lock()->m_maxAmmoPrimary = weaponSpawnerComponent.lock()->m_ammoWeapon;
-    weaponComponent.lock()->m_ammoPrimary = weaponSpawnerComponent.lock()->m_ammo;
-    weaponComponent.lock()->m_rangePrimary = weaponSpawnerComponent.lock()->m_rangeWeapon;
-    weaponComponent.lock()->m_timeShootPrimary = weaponSpawnerComponent.lock()->m_timeShoot;
-    weaponComponent.lock()->m_cooldownShootPrimary = weaponSpawnerComponent.lock()->m_cooldownShoot;
-    weaponComponent.lock()->m_timeReload = weaponSpawnerComponent.lock()->m_timeReload;
-    weaponComponent.lock()->m_cooldownReload = weaponSpawnerComponent.lock()->m_cooldownReload;
+    weaponComponent.lock()->m_damagePrimary = weaponSpawnerComponent.lock()->m_weaponDamage;
+    weaponComponent.lock()->m_maxAmmoPrimary = weaponSpawnerComponent.lock()->m_weaponMaxAmmo;
+    weaponComponent.lock()->m_ammoPrimary = weaponSpawnerComponent.lock()->m_weaponAmmo;
+    weaponComponent.lock()->m_rangePrimary = weaponSpawnerComponent.lock()->m_weaponRange;
+    weaponComponent.lock()->m_timeShootPrimary = weaponSpawnerComponent.lock()->m_weaponTimeShoot;
+    weaponComponent.lock()->m_cooldownShootPrimary = weaponSpawnerComponent.lock()->m_weaponCooldownShoot;
+    weaponComponent.lock()->m_timeReload = weaponSpawnerComponent.lock()->m_weaponTimeReload;
+    weaponComponent.lock()->m_cooldownReload = weaponSpawnerComponent.lock()->m_weaponCooldownReload;
 
     return entity;
 }

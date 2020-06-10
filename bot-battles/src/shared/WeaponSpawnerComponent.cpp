@@ -4,19 +4,19 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 WeaponSpawnerComponent::WeaponSpawnerComponent()
-    : m_damageWeapon(0)
-    , m_ammoWeapon(0)
-    , m_ammo(0)
-    , m_rangeWeapon(0.0f)
-    , m_timeShoot(0.0f)
-    , m_cooldownShoot(0.0f)
-    , m_timeReload(0.0f)
-    , m_cooldownReload(0.0f)
+    : m_weaponDamage(0)
+    , m_weaponMaxAmmo(0)
+    , m_weaponAmmo(0)
+    , m_weaponRange(0.0f)
+    , m_weaponTimeShoot(0.0f)
+    , m_weaponCooldownShoot(0.0f)
+    , m_weaponTimeReload(0.0f)
+    , m_weaponCooldownReload(0.0f)
     , m_amountSpawn(0)
     , m_cooldownSpawn(0.0f)
     , m_timerSpawn()
     , m_entitySpawned(INVALID_ENTITY)
-    , m_amountSpawned()
+    , m_amountSpawned(0)
 {
 }
 }
