@@ -67,32 +67,36 @@ ClientComponent::ClientComponent()
 //----------------------------------------------------------------------------------------------------
 void ClientComponent::LoadFromConfig(const rapidjson::Value& value)
 {
-    assert(value.HasMember("ip"));
-    m_ip = value["ip"].GetString();
-
-    assert(value.HasMember("port"));
-    m_port = value["port"].GetString();
-
-    assert(value.HasMember("defaultName"));
-    m_name = value["defaultName"].GetString();
-
-    assert(value.HasMember("defaultBot"));
-    m_bot = value["defaultBot"].GetString();
-    std::vector<std::string> entries = g_gameClient->GetFileSystem().GetFilesFromDirectory(BOTS_SCRIPTS_DIR, SCRIPTS_EXTENSION, false);
-    bool hasScript = false;
-    for (const auto& entry : entries) {
-        std::string name = g_gameClient->GetFileSystem().GetName(entry);
-        if (name == m_bot) {
-            hasScript = true;
-            break;
-        }
+    if (value.HasMember("ip") && value["ip"].IsString()) {
+        m_ip = value["ip"].GetString();
     }
-    if (!hasScript) {
-        if (!entries.empty()) {
-            std::string name = g_gameClient->GetFileSystem().GetName(entries.front());
-            m_bot = name;
-        } else {
-            m_bot = "";
+
+    if (value.HasMember("port") && value["port"].IsString()) {
+        m_port = value["port"].GetString();
+    }
+
+    if (value.HasMember("name") && value["name"].IsString()) {
+        m_name = value["name"].GetString();
+    }
+
+    if (value.HasMember("bot") && value["bot"].IsString()) {
+        m_bot = value["bot"].GetString();
+        std::vector<std::string> entries = g_gameClient->GetFileSystem().GetFilesFromDirectory(BOTS_SCRIPTS_DIR, SCRIPTS_EXTENSION, false);
+        bool hasScript = false;
+        for (const auto& entry : entries) {
+            std::string name = g_gameClient->GetFileSystem().GetName(entry);
+            if (name == m_bot) {
+                hasScript = true;
+                break;
+            }
+        }
+        if (!hasScript) {
+            if (!entries.empty()) {
+                std::string name = g_gameClient->GetFileSystem().GetName(entries.front());
+                m_bot = name;
+            } else {
+                m_bot = "";
+            }
         }
     }
 }

@@ -27,30 +27,33 @@ bool WindowComponent::PreUpdate()
 //----------------------------------------------------------------------------------------------------
 void WindowComponent::LoadFromConfig(const rapidjson::Value& value)
 {
-    assert(value.HasMember("resolution"));
-    std::string resolution = value["resolution"].GetString();
-    if (resolution == "low") {
-        m_resolution = Resolution::LOW;
-    } else if (resolution == "medium") {
-        m_resolution = Resolution::MEDIUM;
-    } else if (resolution == "high") {
-        m_resolution = Resolution::HIGH;
+    if (value.HasMember("resolution") && value["resolution"].IsString()) {
+        std::string resolution = value["resolution"].GetString();
+        if (resolution == "low") {
+            m_resolution = Resolution::LOW;
+        } else if (resolution == "medium") {
+            m_resolution = Resolution::MEDIUM;
+        } else if (resolution == "high") {
+            m_resolution = Resolution::HIGH;
+        }
+
+        UpdateCurrentResolution();
     }
 
-    UpdateCurrentResolution();
-
-    assert(value.HasMember("displayMode"));
-    std::string displayMode = value["displayMode"].GetString();
-    if (displayMode == "fullscreen") {
-        m_displayMode = DisplayMode::FULLSCREEN;
-    } else if (displayMode == "windowed") {
-        m_displayMode = DisplayMode::WINDOWED;
-    } else if (displayMode == "borderless") {
-        m_displayMode = DisplayMode::BORDERLESS;
+    if (value.HasMember("displayMode") && value["displayMode"].IsString()) {
+        std::string displayMode = value["displayMode"].GetString();
+        if (displayMode == "fullscreen") {
+            m_displayMode = DisplayMode::FULLSCREEN;
+        } else if (displayMode == "windowed") {
+            m_displayMode = DisplayMode::WINDOWED;
+        } else if (displayMode == "borderless") {
+            m_displayMode = DisplayMode::BORDERLESS;
+        }
     }
 
-    assert(value.HasMember("fps"));
-    m_fps = value["fps"].GetFloat();
+    if (value.HasMember("fps") && value["fps"].IsFloat()) {
+        m_fps = value["fps"].GetFloat();
+    }
 }
 
 //----------------------------------------------------------------------------------------------------

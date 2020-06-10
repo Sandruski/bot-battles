@@ -57,8 +57,9 @@ RendererComponent::~RendererComponent()
 //----------------------------------------------------------------------------------------------------
 void RendererComponent::LoadFromConfig(const rapidjson::Value& value)
 {
-    assert(value.HasMember("VSync"));
-    m_isVSync = value["VSync"].GetBool();
+    if (value.HasMember("VSync") && value["VSync"].IsBool()) {
+        m_isVSync = value["VSync"].GetBool();
+    }
 }
 
 //----------------------------------------------------------------------------------------------------

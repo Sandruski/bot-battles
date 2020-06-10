@@ -31,16 +31,14 @@ bool Config::LoadFromJson()
 //----------------------------------------------------------------------------------------------------
 void Config::LoadFromConfig(const rapidjson::Document& document)
 {
-    assert(document.IsObject());
+    if (document.HasMember("window") && document["window"].IsObject()) {
+        const rapidjson::Value& window = document["window"];
+        g_game->GetWindowComponent().lock()->LoadFromConfig(window);
+    }
 
-    assert(document.HasMember("window"));
-    assert(document["window"].IsObject());
-    const rapidjson::Value& window = document["window"];
-    g_game->GetWindowComponent().lock()->LoadFromConfig(window);
-
-    assert(document.HasMember("renderer"));
-    assert(document["renderer"].IsObject());
-    const rapidjson::Value& renderer = document["renderer"];
-    g_game->GetRendererComponent().lock()->LoadFromConfig(renderer);
+    if (document.HasMember("renderer") && document["renderer"].IsObject()) {
+        const rapidjson::Value& renderer = document["renderer"];
+        g_game->GetRendererComponent().lock()->LoadFromConfig(renderer);
+    }
 }
 }

@@ -42,31 +42,34 @@ ServerComponent::ServerComponent()
 //----------------------------------------------------------------------------------------------------
 void ServerComponent::LoadFromConfig(const rapidjson::Value& value)
 {
-    assert(value.HasMember("port"));
-    m_port = value["port"].GetString();
-
-    assert(value.HasMember("defaultMap"));
-    m_map = value["defaultMap"].GetString();
-    std::vector<std::string> entries = g_gameServer->GetFileSystem().GetFilesFromDirectory(MAPS_DIR, MAPS_EXTENSION, false);
-    bool hasMap = false;
-    for (const auto& entry : entries) {
-        std::string name = g_gameServer->GetFileSystem().GetName(entry);
-        if (name == m_map) {
-            hasMap = true;
-            break;
-        }
-    }
-    if (!hasMap) {
-        if (!entries.empty()) {
-            std::string name = g_gameServer->GetFileSystem().GetName(entries.front());
-            m_map = name;
-        } else {
-            m_map = "";
-        }
+    if (value.HasMember("port") && value["port"].IsString()) {
+        m_port = value["port"].GetString();
     }
 
-    assert(value.HasMember("defaultDuration"));
-    m_duration = value["defaultDuration"].GetInt();
+    if (value.HasMember("map") && value["map"].IsString()) {
+        m_map = value["map"].GetString();
+        std::vector<std::string> entries = g_gameServer->GetFileSystem().GetFilesFromDirectory(MAPS_DIR, MAPS_EXTENSION, false);
+        bool hasMap = false;
+        for (const auto& entry : entries) {
+            std::string name = g_gameServer->GetFileSystem().GetName(entry);
+            if (name == m_map) {
+                hasMap = true;
+                break;
+            }
+        }
+        if (!hasMap) {
+            if (!entries.empty()) {
+                std::string name = g_gameServer->GetFileSystem().GetName(entries.front());
+                m_map = name;
+            } else {
+                m_map = "";
+            }
+        }
+    }
+
+    if (value.HasMember("duration") && value["duration"].IsInt()) {
+        m_duration = value["duration"].GetInt();
+    }
 }
 
 //----------------------------------------------------------------------------------------------------
