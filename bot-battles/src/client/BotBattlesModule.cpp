@@ -29,8 +29,6 @@ PYBIND11_EMBEDDED_MODULE(botbattles, m)
     m.def("log", &PyLog);
 
     py::class_<InputComponent, std::shared_ptr<InputComponent>>(m, "InputComponent")
-        .def_property_readonly("maxLinearVelocity", &InputComponent::GetMaxLinearVelocity)
-        .def_property_readonly("maxAngularVelocity", &InputComponent::GetMaxAngularVelocity)
         .def_property("linearVelocityX", &InputComponent::GetLinearVelocityX, &InputComponent::SetLinearVelocityX)
         .def_property("linearVelocityY", &InputComponent::GetLinearVelocityY, &InputComponent::SetLinearVelocityY)
         .def_property("angularVelocity", &InputComponent::GetAngularVelocity, &InputComponent::SetAngularVelocity)
@@ -45,6 +43,8 @@ PYBIND11_EMBEDDED_MODULE(botbattles, m)
         .def_property_readonly("direction", &TransformComponent::GetPyDirection);
 
     py::class_<RigidbodyComponent, std::shared_ptr<RigidbodyComponent>>(m, "RigidbodyComponent")
+        .def_property_readonly("maxLinearVelocity", &RigidbodyComponent::GetPyMaxLinearVelocity)
+        .def_property_readonly("maxAngularVelocity", &RigidbodyComponent::GetPyMaxAngularVelocity)
         .def_property_readonly("linearVelocity", &RigidbodyComponent::GetPyLinearVelocity)
         .def_property_readonly("angularVelocity", &RigidbodyComponent::GetPyAngularVelocity);
 

@@ -140,6 +140,8 @@ Entity BotSpawnerSystem::SpawnBot(PlayerID playerID) const
 
     // Rigidbody
     std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameServer->GetComponentManager().AddComponent<RigidbodyComponent>(character);
+    rigidbodyComponent.lock()->m_maxLinearVelocity = botSpawnerComponent.lock()->m_maxLinearVelocity;
+    rigidbodyComponent.lock()->m_maxAngularVelocity = botSpawnerComponent.lock()->m_maxAngularVelocity;
     rigidbodyComponent.lock()->m_bodyType = RigidbodyComponent::BodyType::DYNAMIC;
     rigidbodyComponent.lock()->UpdateBodyType();
     rigidbodyComponent.lock()->m_groupIndex = 1;

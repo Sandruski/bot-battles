@@ -13,8 +13,12 @@ struct BotSpawnerComponent : public Component {
 
     BotSpawnerComponent();
 
+    // TODO: separate per components
+
     // Local (server)
     F32 m_facing;
+    F32 m_maxLinearVelocity;
+    F32 m_maxAngularVelocity;
     F32 m_sightAngle;
     F32 m_sightDistance;
     PlayerID m_playerID;

@@ -8,7 +8,9 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 RigidbodyComponent::RigidbodyComponent()
-    : m_bodyType(BodyType::NONE)
+    : m_maxLinearVelocity(0.0f)
+    , m_maxAngularVelocity(0.0f)
+    , m_bodyType(BodyType::NONE)
     , m_groupIndex(0)
     , m_isBullet(false)
     , m_body(nullptr)
@@ -28,6 +30,12 @@ RigidbodyComponent::~RigidbodyComponent()
 //----------------------------------------------------------------------------------------------------
 void RigidbodyComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /*frame*/, ReplicationActionType /*replicationActionType*/, Entity /*entity*/)
 {
+    if (dirtyState & static_cast<U64>(ComponentMemberType::RIGIDBODY_MAX_LINEAR_VELOCITY)) {
+        inputStream.Read(m_maxLinearVelocity);
+    }
+    if (dirtyState & static_cast<U64>(ComponentMemberType::RIGIDBODY_MAX_ANGULAR_VELOCITY)) {
+        inputStream.Read(m_maxAngularVelocity);
+    }
     if (dirtyState & static_cast<U64>(ComponentMemberType::RIGIDBODY_BODY_TYPE)) {
         inputStream.Read(m_bodyType);
         UpdateBodyType();
@@ -47,6 +55,14 @@ U64 RigidbodyComponent::Write(OutputMemoryStream& outputStream, U64 dirtyState) 
 {
     U64 writtenState = 0;
 
+    if (dirtyState & static_cast<U64>(ComponentMemberType::RIGIDBODY_MAX_LINEAR_VELOCITY)) {
+        outputStream.Write(m_maxLinearVelocity);
+        writtenState |= static_cast<U64>(ComponentMemberType::RIGIDBODY_MAX_LINEAR_VELOCITY);
+    }
+    if (dirtyState & static_cast<U64>(ComponentMemberType::RIGIDBODY_MAX_ANGULAR_VELOCITY)) {
+        outputStream.Write(m_maxAngularVelocity);
+        writtenState |= static_cast<U64>(ComponentMemberType::RIGIDBODY_MAX_ANGULAR_VELOCITY);
+    }
     if (dirtyState & static_cast<U64>(ComponentMemberType::RIGIDBODY_BODY_TYPE)) {
         outputStream.Write(m_bodyType);
         writtenState |= static_cast<U64>(ComponentMemberType::RIGIDBODY_BODY_TYPE);

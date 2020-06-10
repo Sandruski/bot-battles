@@ -66,6 +66,16 @@
                          "value":0
                         }, 
                         {
+                         "name":"maxAngularVelocity",
+                         "type":"float",
+                         "value":180
+                        }, 
+                        {
+                         "name":"maxLinearVelocity",
+                         "type":"float",
+                         "value":80
+                        }, 
+                        {
                          "name":"player",
                          "type":"int",
                          "value":0
@@ -122,6 +132,16 @@
                          "name":"facing",
                          "type":"float",
                          "value":180
+                        }, 
+                        {
+                         "name":"maxAngularVelocity",
+                         "type":"float",
+                         "value":180
+                        }, 
+                        {
+                         "name":"maxLinearVelocity",
+                         "type":"float",
+                         "value":80
                         }, 
                         {
                          "name":"player",

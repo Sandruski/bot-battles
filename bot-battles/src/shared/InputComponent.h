@@ -22,16 +22,6 @@ struct InputComponent : public Component,
 
 #ifdef _CLIENT
     // Python
-    F32 GetMaxLinearVelocity() const
-    {
-        return m_maxLinearVelocity;
-    }
-
-    F32 GetMaxAngularVelocity() const
-    {
-        return m_maxAngularVelocity;
-    }
-
     void SetLinearVelocityX(F32 linearVelocityX);
 
     F32 GetLinearVelocityX() const
@@ -59,11 +49,8 @@ struct InputComponent : public Component,
     void Heal();
 #endif
 
-    F32 m_maxLinearVelocity; // pixels
-    F32 m_maxAngularVelocity; // degrees
-
-    glm::vec2 m_linearVelocity; // pixels
-    F32 m_angularVelocity; // degrees
+    glm::vec2 m_linearVelocity;
+    F32 m_angularVelocity;
 
     U64 m_dirtyState;
 };

@@ -242,12 +242,12 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::v
             }
 
             F32 linearVelocityLength = glm::length(linearVelocity);
-            if (linearVelocityLength > inputComponent.m_maxLinearVelocity) {
+            if (linearVelocityLength > rigidbodyComponent.lock()->m_maxLinearVelocity) {
                 linearVelocity = glm::normalize(linearVelocity);
-                linearVelocity *= inputComponent.m_maxLinearVelocity;
+                linearVelocity *= rigidbodyComponent.lock()->m_maxLinearVelocity;
             }
 
-            glm::clamp(angularVelocity, -inputComponent.m_maxAngularVelocity, inputComponent.m_maxAngularVelocity);
+            glm::clamp(angularVelocity, -rigidbodyComponent.lock()->m_maxAngularVelocity, rigidbodyComponent.lock()->m_maxAngularVelocity);
 
             rigidbodyComponent.lock()->m_body->SetLinearVelocity(b2Vec2(PIXELS_TO_METERS(linearVelocity.x), PIXELS_TO_METERS(linearVelocity.y)));
             rigidbodyComponent.lock()->m_body->SetAngularVelocity(glm::radians(angularVelocity));

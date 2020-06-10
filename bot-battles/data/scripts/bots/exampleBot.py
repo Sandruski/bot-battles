@@ -15,8 +15,7 @@ from botbattles import MapComponent
 from botbattles import InputComponent
 from botbattles import TileType
 
-class MyBot(bot.Bot):
-
+class ExampleBot(bot.Bot):
     def __init__(self, transformComponent : TransformComponent, rigidbodyComponent : RigidbodyComponent, weaponComponent : WeaponComponent, healthComponent : HealthComponent, sightComponent : SightComponent, mapComponent : MapComponent):
         super().__init__(transformComponent, rigidbodyComponent, weaponComponent, healthComponent, sightComponent, mapComponent)
         self.graph = Graph(self.map)
@@ -28,6 +27,7 @@ class MyBot(bot.Bot):
         if self.calculatePath:
             worldDestination = self.map.getWorldPosition((5, 4))
             self.agent.goTo(self.transform.position, worldDestination)
+            self.agent.lookAtMovement = True
             self.calculatePath = False
             
         self.agent.move(input)

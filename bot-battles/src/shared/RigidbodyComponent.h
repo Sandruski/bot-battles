@@ -51,6 +51,16 @@ struct RigidbodyComponent : public Component
 
 #ifdef _CLIENT
     // Python
+    F32 GetPyMaxLinearVelocity() const
+    {
+        return m_maxLinearVelocity;
+    }
+
+    F32 GetPyMaxAngularVelocity() const
+    {
+        return m_maxAngularVelocity;
+    }
+
     std::tuple<F32, F32> GetPyLinearVelocity() const
     {
         glm::vec2 linearVelocity = GetLinearVelocity();
@@ -64,6 +74,8 @@ struct RigidbodyComponent : public Component
 #endif
 
     // Networked
+    F32 m_maxLinearVelocity;
+    F32 m_maxAngularVelocity;
     BodyType m_bodyType;
     I16 m_groupIndex;
     bool m_isBullet;

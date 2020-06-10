@@ -220,6 +220,10 @@ void MapImporter::Create(const Tilemap& tilemap) const
                 for (const auto& property : object.m_properties) {
                     if (property.m_name == "facing") {
                         botSpawnerComponent.lock()->m_facing = property.m_value.floatValue;
+                    } else if (property.m_name == "maxLinearVelocity") {
+                        botSpawnerComponent.lock()->m_maxLinearVelocity = property.m_value.floatValue;
+                    } else if (property.m_name == "maxAngularVelocity") {
+                        botSpawnerComponent.lock()->m_maxAngularVelocity = property.m_value.floatValue;
                     } else if (property.m_name == "sightAngle") {
                         botSpawnerComponent.lock()->m_sightAngle = property.m_value.floatValue;
                     } else if (property.m_name == "sightDistance") {
