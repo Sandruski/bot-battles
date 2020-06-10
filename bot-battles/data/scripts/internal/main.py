@@ -36,7 +36,7 @@ def init(scriptName, transformComponent, rigidbodyComponent, weaponComponent, he
     logger.addHandler(streamHandler)
     logger.addHandler(fileHandler)
 
-def tick(input):
+def tick(input): # TODO: uncomment
     #try:
     myBot.tick(input)
     #except:

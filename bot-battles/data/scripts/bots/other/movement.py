@@ -95,32 +95,44 @@ class PathFollower:
 class Agent:
     def __init__(self, bot):
         self.bot = bot
-
         # Movement
+        self.stopMove = False
         self.pathFollower = PathFollower(PathFinder(self.bot.graph))
         self.minSeekDistance = 1.0
         # Rotation
-        self.lookAtMovement = False
+        self.stopRotate = False
+        self.autoRotate = False
         self.worldDestination = None
         self.minAlignDistance = 1.0
 
-    def move(self, input):
+    def update(self, input):
         # Movement
+        if self.stopMove == False:
+            linearVelocity = self.move()
+            input.linearVelocityX = linearVelocity.x
+            input.linearVelocityY = linearVelocity.y
+        # Rotation
+        if self.stopRotate == False:
+            angularVelocity = self.rotate()
+            input.angularVelocity = angularVelocity
+
+    def move(self):
         mapDestination = self.pathFollower.getWaypoint()
         worldDestination = self.bot.map.getWorldPosition(mapDestination)
         linearVelocity = self.seek(self.bot.transform.position, worldDestination)
+
         if glm.length(linearVelocity) == 0.0:
             self.pathFollower.increaseWaypoint()
+        return linearVelocity
 
-        # Rotation
-        if self.lookAtMovement:
+    def rotate(self):
+        if self.autoRotate:
+            linearVelocity = glm.vec2(self.bot.rigidbody.linearVelocity[0], self.bot.rigidbody.linearVelocity[1])
             direction = glm.normalize(linearVelocity)
             self.lookAt((direction.x, direction.y))
-        angularVelocity = self.align(self.bot.transform.rotation, self.worldDestination)
 
-        input.linearVelocityX = linearVelocity.x
-        input.linearVelocityY = linearVelocity.y
-        input.angularVelocity = angularVelocity
+        angularVelocity = self.align(self.bot.transform.rotation, self.worldDestination)
+        return angularVelocity
 
     def goTo(self, worldOriginPosition, worldDestinationPosition): # positions
         mapOriginPosition = self.bot.map.getMapPosition(worldOriginPosition)

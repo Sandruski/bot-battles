@@ -27,10 +27,11 @@ class ExampleBot(bot.Bot):
         if self.calculatePath:
             worldDestination = self.map.getWorldPosition((5, 4))
             self.agent.goTo(self.transform.position, worldDestination)
-            self.agent.lookAtMovement = True
+            self.agent.autoRotate = True
             self.calculatePath = False
             
-        self.agent.move(input)
+        self.agent.update(input)
+        #self.fsm.updateCurrentState(input)
 
     def onHitWall(self, input, collision):
         #reflectionVector = glm.reflect(glm.vec2(-collision.relativeVelocity[0], -collision.relativeVelocity[1]), glm.vec2(collision.normal[0], collision.normal[1]))
