@@ -102,7 +102,7 @@ class Agent:
         # Rotation
         self.stopRotate = False
         self.autoRotate = False
-        self.worldDestination = None
+        self.worldDestinationRotation = None
         self.minAlignDistance = 1.0
 
     def update(self, input):
@@ -117,9 +117,9 @@ class Agent:
             input.angularVelocity = angularVelocity
 
     def move(self):
-        mapDestination = self.pathFollower.getWaypoint()
-        worldDestination = self.bot.map.getWorldPosition(mapDestination)
-        linearVelocity = self.seek(self.bot.transform.position, worldDestination)
+        mapDestinationPosition = self.pathFollower.getWaypoint()
+        worldDestinationPosition = self.bot.map.getWorldPosition(mapDestinationPosition)
+        linearVelocity = self.seek(self.bot.transform.position, worldDestinationPosition)
 
         if glm.length(linearVelocity) == 0.0:
             self.pathFollower.increaseWaypoint()
@@ -131,7 +131,7 @@ class Agent:
             direction = glm.normalize(linearVelocity)
             self.lookAt((direction.x, direction.y))
 
-        angularVelocity = self.align(self.bot.transform.rotation, self.worldDestination)
+        angularVelocity = self.align(self.bot.transform.rotation, self.worldDestinationRotation)
         return angularVelocity
 
     def goTo(self, worldOriginPosition, worldDestinationPosition): # positions
@@ -140,10 +140,10 @@ class Agent:
         self.pathFollower.createPath(mapOriginPosition, mapDestinationPosition)
 
     def lookAt(self, worldDestinationDirection): # direction
-        self.worldDestination = glm.atan(worldDestinationDirection[1], worldDestinationDirection[0]) * 180.0 / glm.pi()
+        self.worldDestinationRotation = glm.atan(worldDestinationDirection[1], worldDestinationDirection[0]) * 180.0 / glm.pi()
 
-    def seek(self, worldOrigin, worldDestination):
-        vector = glm.vec2(worldDestination[0] - worldOrigin[0], worldDestination[1] - worldOrigin[1])
+    def seek(self, worldOriginPosition, worldDestinationPosition): # positions
+        vector = glm.vec2(worldDestinationPosition[0] - worldOriginPosition[0], worldDestinationPosition[1] - worldOriginPosition[1])
         if glm.length(vector) <= self.minSeekDistance:
             return glm.vec2(0.0, 0.0)
         
@@ -151,8 +151,8 @@ class Agent:
         acceleration = direction * self.bot.rigidbody.maxLinearVelocity
         return acceleration
 
-    def align(self, worldOrigin, worldDestination):
-        angle = worldDestination - worldOrigin
+    def align(self, worldOriginRotation, worldDestinationRotation): # rotations
+        angle = worldDestinationRotation - worldOriginRotation
         angle = (angle + 180.0) % 360.0 - 180.0
         absAngle = glm.abs(angle)
         if absAngle <= self.minAlignDistance:
