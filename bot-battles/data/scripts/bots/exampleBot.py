@@ -11,27 +11,26 @@ from botbattles import RigidbodyComponent
 from botbattles import WeaponComponent
 from botbattles import HealthComponent
 from botbattles import SightComponent
+from botbattles import ActionComponent
 from botbattles import MapComponent
 from botbattles import InputComponent
 from botbattles import TileType
 
 class ExampleBot(bot.Bot):
-    def __init__(self, transformComponent : TransformComponent, rigidbodyComponent : RigidbodyComponent, weaponComponent : WeaponComponent, healthComponent : HealthComponent, sightComponent : SightComponent, mapComponent : MapComponent):
-        super().__init__(transformComponent, rigidbodyComponent, weaponComponent, healthComponent, sightComponent, mapComponent)
+    def __init__(self, transformComponent : TransformComponent, rigidbodyComponent : RigidbodyComponent, weaponComponent : WeaponComponent, healthComponent : HealthComponent, sightComponent : SightComponent, actionComponent : ActionComponent, mapComponent : MapComponent):
+        super().__init__(transformComponent, rigidbodyComponent, weaponComponent, healthComponent, sightComponent, actionComponent, mapComponent)
         self.graph = Graph(self.map)
         self.agent = movement.Agent(self)
-        self.fsm = decisionMaking.FSM(self, None)
-        self.calculatePath = True
+        self.fsm = decisionMaking.FSM(self, decisionMaking.Idle())
 
     def tick(self, input : InputComponent):
-        if self.calculatePath:
-            worldDestination = self.map.getWorldPosition((5, 4))
-            self.agent.goTo(self.transform.position, worldDestination)
-            self.agent.autoRotate = True
-            self.calculatePath = False
-            
+        if self.action.canPerformAction:
+            logging.info('change current state')
+            self.fsm.changeCurrentState(decisionMaking.Shoot())
+        else:
+            logging.info('false')
         self.agent.update(input)
-        #self.fsm.updateCurrentState(input)
+        self.fsm.updateCurrentState(input)
 
     def onHitWall(self, input, collision):
         #reflectionVector = glm.reflect(glm.vec2(-collision.relativeVelocity[0], -collision.relativeVelocity[1]), glm.vec2(collision.normal[0], collision.normal[1]))

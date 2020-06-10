@@ -65,7 +65,8 @@ bool WeaponSystemServer::Update()
 
         std::weak_ptr<ClientProxy> clientProxy = serverComponent.lock()->GetClientProxy(playerID);
         for (U32 i = clientProxy.lock()->m_inputBuffer.m_front; i < clientProxy.lock()->m_inputBuffer.m_back; ++i) {
-            if (botComponent.lock()->m_actionType != BotComponent::ActionType::NONE) {
+            const bool canPerformAction = botComponent.lock()->CanPerformAction();
+            if (!canPerformAction) {
                 continue;
             }
 

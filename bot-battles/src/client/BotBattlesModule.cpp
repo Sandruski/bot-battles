@@ -1,6 +1,7 @@
 #ifndef __BOT_BATTLES_MODULE_H__
 #define __BOT_BATTLES_MODULE_H__
 
+#include "BotComponent.h"
 #include "HealthComponent.h"
 #include "InputComponent.h"
 #include "MapComponent.h"
@@ -91,6 +92,9 @@ PYBIND11_EMBEDDED_MODULE(botbattles, m)
     py::class_<SightComponent::SeenHealthInfo>(m, "SeenHealthInfo")
         .def_property_readonly("transform", &SightComponent::SeenHealthInfo::GetTransformComponent)
         .def_property_readonly("health", &SightComponent::SeenHealthInfo::GetHealthComponent);
+
+    py::class_<BotComponent, std::shared_ptr<BotComponent>>(m, "ActionComponent")
+        .def("canPerformAction", &BotComponent::CanPyPerformAction);
 
     py::class_<MapComponent, std::shared_ptr<MapComponent>>(m, "MapComponent")
         .def("getTileType", &MapComponent::GetPyTileType)

@@ -35,4 +35,10 @@ U64 BotComponent::Write(OutputMemoryStream& outputStream, U64 dirtyState) const
     return writtenState;
 }
 #endif
+
+//----------------------------------------------------------------------------------------------------
+bool BotComponent::CanPerformAction() const
+{
+    return m_actionType == BotComponent::ActionType::NONE;
+}
 }

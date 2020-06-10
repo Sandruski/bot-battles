@@ -44,6 +44,16 @@ struct BotComponent : public Component
     U64 Write(OutputMemoryStream& outputStream, U64 dirtyState) const override;
 #endif
 
+    bool CanPerformAction() const;
+
+#ifdef _CLIENT
+    // Python
+    bool CanPyPerformAction() const
+    {
+        return CanPerformAction();
+    }
+#endif
+
     // Networked
     ActionType m_actionType;
 

@@ -10,6 +10,7 @@ from botbattles import RigidbodyComponent
 from botbattles import WeaponComponent
 from botbattles import HealthComponent
 from botbattles import SightComponent
+from botbattles import ActionComponent
 from botbattles import MapComponent
 
 class PriorityQueue:
@@ -80,12 +81,18 @@ class PathFollower:
         self.index = 0
 
     def getWaypoint(self):
+        if self.path == None:
+            return None
+
         if self.index >= len(self.path):
             return None
 
         return self.path[self.index]
 
     def increaseWaypoint(self):
+        if self.path == None:
+            return None
+
         if self.index >= len(self.path) - 1:
             return False
 
@@ -118,6 +125,9 @@ class Agent:
 
     def move(self):
         mapDestinationPosition = self.pathFollower.getWaypoint()
+        if mapDestinationPosition == None:
+            return glm.vec2(0.0, 0.0)
+
         worldDestinationPosition = self.bot.map.getWorldPosition(mapDestinationPosition)
         linearVelocity = self.seek(self.bot.transform.position, worldDestinationPosition)
 
@@ -130,6 +140,9 @@ class Agent:
             linearVelocity = glm.vec2(self.bot.rigidbody.linearVelocity[0], self.bot.rigidbody.linearVelocity[1])
             direction = glm.normalize(linearVelocity)
             self.lookAt((direction.x, direction.y))
+
+        if self.worldDestinationRotation == None:
+            return 0.0
 
         angularVelocity = self.align(self.bot.transform.rotation, self.worldDestinationRotation)
         return angularVelocity

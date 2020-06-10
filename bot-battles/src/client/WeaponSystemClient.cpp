@@ -52,7 +52,8 @@ bool WeaponSystemClient::Update()
         if (clientComponent.lock()->m_isLastWeaponInputPending) {
             clientComponent.lock()->m_isLastWeaponInputPending = false;
 
-            if (botComponent.lock()->m_actionType != BotComponent::ActionType::NONE) {
+            const bool canPerformAction = botComponent.lock()->CanPerformAction();
+            if (!canPerformAction) {
                 continue;
             }
 
