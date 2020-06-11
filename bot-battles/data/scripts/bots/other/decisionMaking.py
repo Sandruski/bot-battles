@@ -60,11 +60,11 @@ class GoToClosestWeaponSpawner(State):
                 closestWeaponSpawnerTile = weaponSpawnerTile
                 continue
 
-            currentVector = glm.vec2(closestWeaponSpawnerTile[0] - bot.transform.position[0], closestWeaponSpawnerTile[1] - bot.transform.position[1])
-            currentDistance = glm.length(currentVector)
-            newVector = glm.vec2(weaponSpawnerTile[0] - bot.transform.position[0], weaponSpawnerTile[1] - bot.transform.position[1])
-            newDistance = glm.length(newVector)
-            if newDistance < currentDistance:
+            closestWeaponSpawnerWorldPosition = bot.map.getWorldPosition(closestWeaponSpawnerTile)
+            closestWeaponSpawnerDistance = glm.distance(glm.vec2(closestWeaponSpawnerWorldPosition[0], closestWeaponSpawnerWorldPosition[1]),  glm.vec2(bot.transform.position[0], bot.transform.position[1]))
+            weaponSpawnerWorldPosition = bot.map.getWorldPosition(weaponSpawnerTile)
+            weaponSpawnerDistance = glm.distance(glm.vec2(weaponSpawnerWorldPosition[0], weaponSpawnerWorldPosition[1]),  glm.vec2(bot.transform.position[0], bot.transform.position[1]))
+            if weaponSpawnerDistance < closestWeaponSpawnerDistance:
                 closestWeaponSpawnerTile = weaponSpawnerTile
         
         if closestWeaponSpawnerTile == None:

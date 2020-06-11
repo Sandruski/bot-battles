@@ -181,7 +181,7 @@ void ScriptingSystem::ImportScripts() const
         std::weak_ptr<ScriptingComponent> scriptingComponent = g_gameClient->GetScriptingComponent();
         std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
         scriptingComponent.lock()->m_myBotModule = py::module::import(clientComponent.lock()->m_bot.c_str());
-        //scriptingComponent.m_myBotModule.reload(); // TODO
+        scriptingComponent.lock()->m_myBotModule.reload();
 
         newEvent.eventType = EventType::CONNECT_SUCCESSFUL;
     } catch (const std::runtime_error& re) {
