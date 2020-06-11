@@ -1,6 +1,7 @@
 # coding: utf-8
 
 import logging
+import glm
 
 import bot
 from botbattles import TransformComponent
@@ -42,15 +43,24 @@ class GoTo(State):
         bot.agent.goTo(self.worldOriginPosition, self.worldDestinationPosition)
         bot.agent.autoRotate = True
 
+    def exit(self, bot):
+        bot.agent.autoRotate = False
+
 class Shoot(State):
+    def __init__(self, targetEntity):
+        self.targetEntity = targetEntity
+
     def update(self, bot, input):
-        if bot.weapon.currentAmmo > 0:
-            input.shootPrimaryWeapon()
-        else:
-            if bot.weapon.ammoBoxAmmo > 0:
-                input.reload()
-            else:
-                input.shootSecondaryWeapon()
+        seenBotInfo = bot.sight.getSeenBotInfo(self.targetEntity)
+        if seenBotInfo == None:
+            return
+
+        vector = glm.vec2(seenBotInfo.transform.position[0] - bot.transform.position[0], seenBotInfo.transform.position[1] - bot.transform.position[1])
+        direction = glm.normalize(vector)
+        bot.agent.lookAt((direction.x, direction.y))
+
+        if bot.agent.finishedRotate:
+            input.shootSecondaryWeapon()
 
 class FSM:
     def __init__(self, bot, initialState):
@@ -58,14 +68,18 @@ class FSM:
         self.currentState = initialState
 
     def changeCurrentState(self, newState):
-        if self.currentState != None and self.bot != None:
-            self.currentState.exit(self.bot)
+        if newState == None:
+            return
+
+        if self.currentState != None:
+           if self.currentState.__class__.__name__ == newState.__class__.__name__:
+               return
+
+           self.currentState.exit(self.bot)
 
         self.currentState = newState
-
-        if self.currentState != None and self.bot != None:
-            self.currentState.enter(self.bot)
+        self.currentState.enter(self.bot)
 
     def updateCurrentState(self, input):
-        if self.currentState != None and self.bot != None:
+        if self.currentState != None:
             self.currentState.update(self.bot, input)

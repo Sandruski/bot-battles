@@ -73,7 +73,7 @@
                         {
                          "name":"sightDistance",
                          "type":"float",
-                         "value":100
+                         "value":400
                         }, 
                         {
                          "name":"transformRotation",
@@ -104,8 +104,8 @@
                  "type":"BotSpawner",
                  "visible":true,
                  "width":64,
-                 "x":128,
-                 "y":192
+                 "x":448,
+                 "y":320
                 }, 
                 {
                  "gid":198,
@@ -141,7 +141,7 @@
                         {
                          "name":"sightDistance",
                          "type":"float",
-                         "value":100
+                         "value":400
                         }, 
                         {
                          "name":"transformRotation",
@@ -172,7 +172,7 @@
                  "type":"BotSpawner",
                  "visible":true,
                  "width":64,
-                 "x":704,
+                 "x":640,
                  "y":384
                 }],
          "opacity":1,

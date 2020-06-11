@@ -155,8 +155,14 @@ void HealthSystemServer::OnCollisionEnter(Entity entityA, Entity entityB) const
         return;
     }
 
+    U64 characterDirtyState = 0;
+
     healthComponentA.lock()->m_currentHP = 0;
+    characterDirtyState |= static_cast<U64>(ComponentMemberType::HEALTH_CURRENT_HP);
+    healthComponentA.lock()->m_hitEntityLastShot = entityB;
+    characterDirtyState |= static_cast<U64>(ComponentMemberType::HEALTH_HIT_ENTITY_LAST_SHOT);
     healthComponentB.lock()->m_currentHP = 0;
+    healthComponentA.lock()->m_hitEntityLastShot = entityA;
 
     Event newHealthEvent;
     newHealthEvent.eventType = EventType::HEALTH_HURT;
@@ -167,7 +173,7 @@ void HealthSystemServer::OnCollisionEnter(Entity entityA, Entity entityB) const
 
     Event newComponentEvent;
     newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
-    newComponentEvent.component.dirtyState = static_cast<U64>(ComponentMemberType::HEALTH_CURRENT_HP);
+    newComponentEvent.component.dirtyState = characterDirtyState;
     newComponentEvent.component.entity = entityA;
     NotifyEvent(newComponentEvent);
     newComponentEvent.component.entity = entityB;
@@ -182,11 +188,16 @@ void HealthSystemServer::OnWeaponHit(Entity shooterEntity, Entity targetEntity, 
         return;
     }
 
+    U64 characterDirtyState = 0;
+
     I32 oldCurrentHP = healthComponent.lock()->m_currentHP;
     healthComponent.lock()->m_currentHP -= damage;
     if (healthComponent.lock()->m_currentHP <= 0) {
         healthComponent.lock()->m_currentHP = 0;
     }
+    characterDirtyState |= static_cast<U64>(ComponentMemberType::HEALTH_CURRENT_HP);
+    healthComponent.lock()->m_hitEntityLastShot = shooterEntity;
+    characterDirtyState |= static_cast<U64>(ComponentMemberType::HEALTH_HIT_ENTITY_LAST_SHOT);
 
     I32 currentHPDiff = oldCurrentHP - healthComponent.lock()->m_currentHP;
     std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
@@ -204,7 +215,7 @@ void HealthSystemServer::OnWeaponHit(Entity shooterEntity, Entity targetEntity, 
 
     Event newComponentEvent;
     newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
-    newComponentEvent.component.dirtyState = static_cast<U64>(ComponentMemberType::HEALTH_CURRENT_HP);
+    newComponentEvent.component.dirtyState = characterDirtyState;
     newComponentEvent.component.entity = targetEntity;
     NotifyEvent(newComponentEvent);
 }

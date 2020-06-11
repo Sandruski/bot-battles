@@ -22,21 +22,21 @@ class ExampleBot(bot.Bot):
         self.graph = Graph(self.map)
         self.agent = movement.Agent(self)
         self.fsm = decisionMaking.FSM(self, decisionMaking.Idle())
+        self.lastSeenBotEntity = None
 
     def tick(self, input : InputComponent):
-        if self.action.canPerformAction:
-            logging.info('change current state')
-            self.fsm.changeCurrentState(decisionMaking.Shoot())
-        else:
-            logging.info('false')
-        self.agent.update(input)
-        self.fsm.updateCurrentState(input)
+        if self.action.canPerformAction == True:
+            if self.lastSeenBotEntity != None:
+                self.fsm.changeCurrentState(decisionMaking.Shoot(self.lastSeenBotEntity))
 
-    def onHitWall(self, input, collision):
-        #reflectionVector = glm.reflect(glm.vec2(-collision.relativeVelocity[0], -collision.relativeVelocity[1]), glm.vec2(collision.normal[0], collision.normal[1]))
-        #input.linearVelocityX = reflectionVector.x
-        #input.linearVelocityY = reflectionVector.y
-        pass
+        self.fsm.updateCurrentState(input)
+        self.agent.update(input)
+
+    def onSeenNewBot(self, input, seenBotEntity):
+        self.lastSeenBotEntity = seenBotEntity
+
+    def onSeenLostBot(self, input, seenBotEntity):
+        self.lastSeenBotEntity = None
 
 class Graph:
     def __init__(self, map : MapComponent):

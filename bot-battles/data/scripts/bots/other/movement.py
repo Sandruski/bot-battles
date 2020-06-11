@@ -90,37 +90,43 @@ class PathFollower:
         return self.path[self.index]
 
     def increaseWaypoint(self):
-        if self.path == None:
-            return None
-
-        if self.index >= len(self.path) - 1:
-            return False
-
         self.index += 1
-        return True
 
 class Agent:
     def __init__(self, bot):
         self.bot = bot
         # Movement
         self.stopMove = False
+        self.finishedMove = False
         self.pathFollower = PathFollower(PathFinder(self.bot.graph))
         self.minSeekDistance = 1.0
         # Rotation
         self.stopRotate = False
+        self.finishedRotate = False
         self.autoRotate = False
         self.worldDestinationRotation = None
         self.minAlignDistance = 1.0
 
     def update(self, input):
         # Movement
+        self.finishedMove = True
+
         if self.stopMove == False:
             linearVelocity = self.move()
+            if linearVelocity != glm.vec2(0.0, 0.0):
+                self.finishedMove = False
+
             input.linearVelocityX = linearVelocity.x
             input.linearVelocityY = linearVelocity.y
+
         # Rotation
+        self.finishedRotate = True
+
         if self.stopRotate == False:
             angularVelocity = self.rotate()
+            if angularVelocity != 0.0:
+                self.finishedRotate = False
+
             input.angularVelocity = angularVelocity
 
     def move(self):
@@ -137,8 +143,8 @@ class Agent:
 
     def rotate(self):
         if self.autoRotate == True:
-            linearVelocity = glm.vec2(self.bot.rigidbody.linearVelocity[0], self.bot.rigidbody.linearVelocity[1])
-            direction = glm.normalize(linearVelocity)
+            vector = glm.vec2(self.bot.rigidbody.linearVelocity[0], self.bot.rigidbody.linearVelocity[1])
+            direction = glm.normalize(vector)
             self.lookAt((direction.x, direction.y))
 
         if self.worldDestinationRotation == None:
