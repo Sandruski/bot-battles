@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.3.4" orientation="orthogonal" renderorder="left-down" width="14" height="8" tilewidth="64" tileheight="64" infinite="0" nextlayerid="11" nextobjectid="39">
+<map version="1.2" tiledversion="1.3.4" orientation="orthogonal" renderorder="left-down" width="14" height="8" tilewidth="64" tileheight="64" infinite="0" nextlayerid="11" nextobjectid="40">
  <editorsettings>
   <export target="../maps/map.json" format="json"/>
  </editorsettings>
@@ -72,7 +72,21 @@
   </object>
  </objectgroup>
  <objectgroup id="8" name="weaponSpawner">
-  <object id="36" name="weaponSpawner1" type="WeaponSpawner" gid="368" x="192" y="448" width="64" height="64">
+  <object id="36" name="weaponSpawner1" type="WeaponSpawner" gid="368" x="320" y="384" width="64" height="64">
+   <properties>
+    <property name="amountSpawn" type="int" value="-1"/>
+    <property name="cooldownSpawn" type="float" value="1"/>
+    <property name="weaponAmmo" type="int" value="100"/>
+    <property name="weaponCooldownReload" type="float" value="1"/>
+    <property name="weaponCooldownShoot" type="float" value="1"/>
+    <property name="weaponDamage" type="int" value="10"/>
+    <property name="weaponMaxAmmo" type="int" value="50"/>
+    <property name="weaponRange" type="float" value="100"/>
+    <property name="weaponTimeReload" type="float" value="1"/>
+    <property name="weaponTimeShoot" type="float" value="1"/>
+   </properties>
+  </object>
+  <object id="39" name="weaponSpawner1" type="WeaponSpawner" gid="368" x="768" y="320" width="64" height="64">
    <properties>
     <property name="amountSpawn" type="int" value="-1"/>
     <property name="cooldownSpawn" type="float" value="1"/>

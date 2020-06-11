@@ -1,9 +1,12 @@
 # coding: utf-8
 
-import logging
 import glm
+import heapq
+import logging
 
 import bot
+import movement
+import decisionMaking
 from botbattles import TransformComponent
 from botbattles import RigidbodyComponent
 from botbattles import WeaponComponent
@@ -11,6 +14,8 @@ from botbattles import HealthComponent
 from botbattles import SightComponent
 from botbattles import ActionComponent
 from botbattles import MapComponent
+from botbattles import InputComponent
+from botbattles import TileType
 
 class State:
     def __init__(self):
@@ -46,7 +51,33 @@ class GoTo(State):
     def exit(self, bot):
         bot.agent.autoRotate = False
 
-class Shoot(State):
+class GoToClosestWeaponSpawner(State):
+    def enter(self, bot):
+        weaponSpawnerTiles = bot.graph.getTilesOfType(TileType.WEAPON_SPAWNER)
+        closestWeaponSpawnerTile = None
+        for weaponSpawnerTile in weaponSpawnerTiles:
+            if closestWeaponSpawnerTile == None:
+                closestWeaponSpawnerTile = weaponSpawnerTile
+                continue
+
+            currentVector = glm.vec2(closestWeaponSpawnerTile[0] - bot.transform.position[0], closestWeaponSpawnerTile[1] - bot.transform.position[1])
+            currentDistance = glm.length(currentVector)
+            newVector = glm.vec2(weaponSpawnerTile[0] - bot.transform.position[0], weaponSpawnerTile[1] - bot.transform.position[1])
+            newDistance = glm.length(newVector)
+            if newDistance < currentDistance:
+                closestWeaponSpawnerTile = weaponSpawnerTile
+        
+        if closestWeaponSpawnerTile == None:
+            return
+
+        worldDestinationPosition = bot.map.getWorldPosition(closestWeaponSpawnerTile)
+        bot.agent.goTo(bot.transform.position, worldDestinationPosition)
+        bot.agent.autoRotate = True
+
+    def exit(self, bot):
+        bot.agent.autoRotate = False
+
+class ShootPrimaryWeapon(State):
     def __init__(self, targetEntity):
         self.targetEntity = targetEntity
 
@@ -60,13 +91,32 @@ class Shoot(State):
         bot.agent.lookAt((direction.x, direction.y))
 
         if bot.agent.finishedRotate:
-            logging.info('finished rotate %f', bot.transform.rotation)
+            input.shootPrimaryWeapon()
+
+class Reload(State):
+    def update(self, bot, input):
+        input.Reload()
+
+class ShootSecondaryWeapon(State):
+    def __init__(self, targetEntity):
+        self.targetEntity = targetEntity
+
+    def update(self, bot, input):
+        seenBotInfo = bot.sight.getSeenBotInfo(self.targetEntity)
+        if seenBotInfo == None:
+            return
+
+        vector = glm.vec2(seenBotInfo.transform.position[0] - bot.transform.position[0], seenBotInfo.transform.position[1] - bot.transform.position[1])
+        direction = glm.normalize(vector)
+        bot.agent.lookAt((direction.x, direction.y))
+
+        if bot.agent.finishedRotate:
             input.shootSecondaryWeapon()
 
 class FSM:
-    def __init__(self, bot, initialState):
+    def __init__(self, bot):
         self.bot = bot
-        self.currentState = initialState
+        self.currentState = None
 
     def changeCurrentState(self, newState):
         if newState == None:

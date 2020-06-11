@@ -1,6 +1,7 @@
 # coding: utf-8
 
 import glm
+import heapq
 import logging
 
 import bot
@@ -21,14 +22,14 @@ class ExampleBot(bot.Bot):
         super().__init__(transformComponent, rigidbodyComponent, weaponComponent, healthComponent, sightComponent, actionComponent, mapComponent)
         self.graph = Graph(self.map)
         self.agent = movement.Agent(self)
-        self.fsm = decisionMaking.FSM(self, decisionMaking.Idle())
+        self.fsm = decisionMaking.FSM(self)
         self.lastSeenBotEntity = None
 
     def tick(self, input : InputComponent):
-        if self.action.canPerformAction == True:
-            if self.lastSeenBotEntity != None:
-                self.fsm.changeCurrentState(decisionMaking.Shoot(self.lastSeenBotEntity))
-
+        #if self.action.canPerformAction == True:
+        #    if self.lastSeenBotEntity != None:
+        #        self.fsm.changeCurrentState(decisionMaking.ShootPrimaryWeapon(self.lastSeenBotEntity))
+        self.fsm.changeCurrentState(decisionMaking.GoToClosestWeaponSpawner())
         self.fsm.updateCurrentState(input)
         self.agent.update(input)
 

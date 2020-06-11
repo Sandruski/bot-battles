@@ -5,6 +5,8 @@ import heapq
 import logging
 
 import bot
+import movement
+import decisionMaking
 from botbattles import TransformComponent
 from botbattles import RigidbodyComponent
 from botbattles import WeaponComponent
@@ -12,6 +14,8 @@ from botbattles import HealthComponent
 from botbattles import SightComponent
 from botbattles import ActionComponent
 from botbattles import MapComponent
+from botbattles import InputComponent
+from botbattles import TileType
 
 class PriorityQueue:
     def __init__(self):
@@ -152,7 +156,7 @@ class Agent:
     def goTo(self, worldOriginPosition, worldDestinationPosition): # positions
         mapOriginPosition = self.bot.map.getMapPosition(worldOriginPosition)
         mapDestinationPosition = self.bot.map.getMapPosition(worldDestinationPosition)
-        if len(self.pathFollower.path) > 0:
+        if mapOriginPosition != mapDestinationPosition:
             self.finishedMove = False
 
         self.pathFollower.createPath(mapOriginPosition, mapDestinationPosition)
