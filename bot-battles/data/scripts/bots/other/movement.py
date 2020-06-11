@@ -109,23 +109,19 @@ class Agent:
 
     def update(self, input):
         # Movement
-        self.finishedMove = True
-
         if self.stopMove == False:
             linearVelocity = self.move()
-            if linearVelocity != glm.vec2(0.0, 0.0):
-                self.finishedMove = False
+            if linearVelocity == glm.vec2(0.0, 0.0):
+                self.finishedMove = True
 
             input.linearVelocityX = linearVelocity.x
             input.linearVelocityY = linearVelocity.y
 
         # Rotation
-        self.finishedRotate = True
-
         if self.stopRotate == False:
             angularVelocity = self.rotate()
-            if angularVelocity != 0.0:
-                self.finishedRotate = False
+            if angularVelocity == 0.0:
+                self.finishedRotate = True
 
             input.angularVelocity = angularVelocity
 
@@ -156,10 +152,17 @@ class Agent:
     def goTo(self, worldOriginPosition, worldDestinationPosition): # positions
         mapOriginPosition = self.bot.map.getMapPosition(worldOriginPosition)
         mapDestinationPosition = self.bot.map.getMapPosition(worldDestinationPosition)
+        if len(self.pathFollower.path) > 0:
+            self.finishedMove = False
+
         self.pathFollower.createPath(mapOriginPosition, mapDestinationPosition)
 
     def lookAt(self, worldDestinationDirection): # direction
-        self.worldDestinationRotation = glm.atan(worldDestinationDirection[1], worldDestinationDirection[0]) * 180.0 / glm.pi()
+        newWorldDestinationRotation = glm.atan(worldDestinationDirection[1], worldDestinationDirection[0]) * 180.0 / glm.pi()
+        if newWorldDestinationRotation != self.worldDestinationRotation:
+            self.finishedRotate = False
+        
+        self.worldDestinationRotation = newWorldDestinationRotation
 
     def seek(self, worldOriginPosition, worldDestinationPosition): # positions
         vector = glm.vec2(worldDestinationPosition[0] - worldOriginPosition[0], worldDestinationPosition[1] - worldOriginPosition[1])

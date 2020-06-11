@@ -60,6 +60,7 @@ class Shoot(State):
         bot.agent.lookAt((direction.x, direction.y))
 
         if bot.agent.finishedRotate:
+            logging.info('finished rotate %f', bot.transform.rotation)
             input.shootSecondaryWeapon()
 
 class FSM:
