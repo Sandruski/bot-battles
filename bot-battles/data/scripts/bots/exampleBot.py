@@ -35,6 +35,18 @@ class ExampleBot(bot.Bot):
             self.fsm.changeCurrentState(decisionMaking.GoToClosestWeaponSpawner())
             self.doOnce = False
 
+        if self.lastSeenBotEntity != None:
+            seenBotInfo = self.sight.getSeenBotInfo(self.lastSeenBotEntity)
+            distance = glm.distance(glm.vec2(seenBotInfo.transform.position[0], seenBotInfo.transform.position[1]),  glm.vec2(self.transform.position[0], self.transform.position[1]))
+
+            if self.weapon.currentAmmo > 0:
+                if distance <= self.weapon.primaryWeaponRange:
+                    self.fsm.changeCurrentState(decisionMaking.ShootPrimaryWeapon(self.lastSeenBotEntity))
+            #elif self.weapon.ammoBoxAmmo > 0:
+            else:
+                if distance <= self.weapon.secondaryWeaponRange:
+                    self.fsm.changeCurrentState(decisionMaking.ShootSecondaryWeapon(self.lastSeenBotEntity))
+
         self.fsm.updateCurrentState(input)
         self.agent.update(input)
 

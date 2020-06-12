@@ -135,11 +135,12 @@ class Reload(State):
         input.Reload()
 
 class ShootSecondaryWeapon(State):
-    def __init__(self, targetEntity):
-        self.targetEntity = targetEntity
+    def __init__(self, seenBotEntity):
+        self.seenBotEntity = seenBotEntity
 
     def update(self, bot, input):
-        seenBotInfo = bot.sight.getSeenBotInfo(self.targetEntity)
+        logging.info('update')
+        seenBotInfo = bot.sight.getSeenBotInfo(self.seenBotEntity)
         if seenBotInfo == None:
             return
 
@@ -149,6 +150,10 @@ class ShootSecondaryWeapon(State):
 
         if bot.agent.finishedRotate:
             input.shootSecondaryWeapon()
+
+class Heal(State):
+    def update(self, bot, input):
+        input.Heal()
 
 class FSM:
     def __init__(self, bot):
