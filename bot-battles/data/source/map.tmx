@@ -29,7 +29,7 @@
 </data>
  </layer>
  <objectgroup draworder="index" id="6" name="botSpawner">
-  <object id="18" name="botSpawner2" type="BotSpawner" gid="198" x="320" y="384" width="64" height="64">
+  <object id="18" name="botSpawner2" type="BotSpawner" gid="198" x="384" y="384" width="64" height="64">
    <properties>
     <property name="healthMaxHP" type="int" value="100"/>
     <property name="player" type="int" value="0"/>
@@ -86,7 +86,7 @@
     <property name="weaponTimeShoot" type="float" value="1"/>
    </properties>
   </object>
-  <object id="40" name="weaponSpawner1" type="WeaponSpawner" gid="368" x="448" y="384" width="64" height="64">
+  <object id="40" name="weaponSpawner1" type="WeaponSpawner" gid="368" x="256" y="384" width="64" height="64">
    <properties>
     <property name="amountSpawn" type="int" value="-1"/>
     <property name="cooldownSpawn" type="float" value="1"/>

@@ -24,12 +24,17 @@ class ExampleBot(bot.Bot):
         self.agent = movement.Agent(self)
         self.fsm = decisionMaking.FSM(self)
         self.lastSeenBotEntity = None
+        self.doOnce = True
 
     def tick(self, input : InputComponent):
         #if self.action.canPerformAction == True:
         #    if self.lastSeenBotEntity != None:
         #        self.fsm.changeCurrentState(decisionMaking.ShootPrimaryWeapon(self.lastSeenBotEntity))
-        self.fsm.changeCurrentState(decisionMaking.GoToClosestWeaponSpawner())
+        if self.doOnce:
+            logging.info('doOnce')
+            self.fsm.changeCurrentState(decisionMaking.GoToClosestWeaponSpawner())
+            self.doOnce = False
+
         self.fsm.updateCurrentState(input)
         self.agent.update(input)
 
@@ -38,6 +43,9 @@ class ExampleBot(bot.Bot):
 
     def onSeenLostBot(self, input, seenBotEntity):
         self.lastSeenBotEntity = None
+
+        seenBotInfo = self.sight.getSeenBotInfo(seenBotEntity)
+        self.fsm.changeCurrentState(decisionMaking.GoToLastKnownPosition(seenBotInfo))
 
 class Graph:
     def __init__(self, map : MapComponent):

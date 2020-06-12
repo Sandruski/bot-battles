@@ -77,12 +77,49 @@ class GoToClosestWeaponSpawner(State):
     def exit(self, bot):
         bot.agent.autoRotate = False
 
+class GoToClosestHealthSpawner(State):
+    def enter(self, bot):
+        healthSpawnerTiles = bot.graph.getTilesOfType(TileType.HEALTH_SPAWNER)
+        closestHealthSpawnerTile = None
+        for healthSpawnerTile in healthSpawnerTiles:
+            if closestHealthSpawnerTile == None:
+                closestHealthSpawnerTile = healthSpawnerTile
+                continue
+
+            closestHealthSpawnerWorldPosition = bot.map.getWorldPosition(closestHealthSpawnerTile)
+            closestHealthSpawnerDistance = glm.distance(glm.vec2(closestHealthSpawnerWorldPosition[0], closestHealthSpawnerWorldPosition[1]),  glm.vec2(bot.transform.position[0], bot.transform.position[1]))
+            healthSpawnerWorldPosition = bot.map.getWorldPosition(healthSpawnerTile)
+            healthSpawnerDistance = glm.distance(glm.vec2(healthSpawnerWorldPosition[0], healthSpawnerWorldPosition[1]),  glm.vec2(bot.transform.position[0], bot.transform.position[1]))
+            if healthSpawnerDistance < closestHealthSpawnerDistance:
+                closestHealthSpawnerTile = healthSpawnerTile
+        
+        if closestHealthSpawnerTile == None:
+            return
+
+        worldDestinationPosition = bot.map.getWorldPosition(closestHealthSpawnerTile)
+        bot.agent.goTo(bot.transform.position, worldDestinationPosition)
+        bot.agent.autoRotate = True
+
+    def exit(self, bot):
+        bot.agent.autoRotate = False
+
+class GoToLastKnownPosition(State):
+    def __init__(self, seenBotInfo):
+        self.seenBotInfo = seenBotInfo
+
+    def enter(self, bot):
+        bot.agent.goTo(bot.transform.position, self.seenBotInfo.transform.position)
+        bot.agent.autoRotate = True
+
+    def exit(self, bot):
+        bot.agent.autoRotate = False
+
 class ShootPrimaryWeapon(State):
-    def __init__(self, targetEntity):
-        self.targetEntity = targetEntity
+    def __init__(self, seenBotEntity):
+        self.seenBotEntity = seenBotEntity
 
     def update(self, bot, input):
-        seenBotInfo = bot.sight.getSeenBotInfo(self.targetEntity)
+        seenBotInfo = bot.sight.getSeenBotInfo(self.seenBotEntity)
         if seenBotInfo == None:
             return
 
