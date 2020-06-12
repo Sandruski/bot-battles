@@ -112,7 +112,7 @@ class Agent:
         self.finishedRotate = False
         self.autoRotate = False
         self.worldDestinationRotation = None
-        self.minAlignDistance = 1.0
+        self.minAlignDistance = 1.5
 
     def update(self, input):
         # Movement
@@ -210,6 +210,7 @@ class Agent:
         angle = worldDestinationRotation - worldOriginRotation
         angle = (angle + 180.0) % 360.0 - 180.0
         absAngle = glm.abs(angle)
+        logging.info('abs angle %f', absAngle)
         if absAngle <= self.minAlignDistance:
             return 0.0
 

@@ -161,6 +161,7 @@ bool WeaponSystemServer::Update()
                 F32 maxLength = hasShootPrimaryWeapon ? weaponComponent.lock()->m_rangePrimary : weaponComponent.lock()->m_rangeSecondary;
                 weaponComponent.lock()->m_destinationLastShot = position + rotation * maxLength;
                 characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_DESTINATION_LAST_SHOT);
+                weaponComponent.lock()->m_alpha = 1.0f;
 
                 weaponComponent.lock()->m_hitEntityLastShot = INVALID_ENTITY;
                 characterDirtyState |= static_cast<U64>(ComponentMemberType::WEAPON_HIT_ENTITY_LAST_SHOT);

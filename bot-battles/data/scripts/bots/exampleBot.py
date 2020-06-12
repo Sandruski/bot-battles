@@ -60,14 +60,11 @@ class ExampleBot(bot.Bot):
     def attack(self, seenBotInfo):
         distance = glm.distance(glm.vec2(seenBotInfo.transform.position[0], seenBotInfo.transform.position[1]),  glm.vec2(self.transform.position[0], self.transform.position[1]))
         colliderRange = self.collider.size[0] / 2.0 + seenBotInfo.collider.size[0] / 2.0
-        logging.info('my bot pos %f %f', self.transform.position[0], self.transform.position[1])
-        logging.info('seen bot pos %f %f', seenBotInfo.transform.position[0], seenBotInfo.transform.position[1])
         if self.weapon.currentAmmo == 1000: # TODO
             if distance <= self.weapon.primaryWeaponRange and distance >= colliderRange:
                 self.fsm.changeCurrentState(decisionMaking.ShootPrimaryWeapon(self.lastSeenBotEntity))
         #elif self.weapon.ammoBoxAmmo > 0:
         else:
-            logging.info('distance %f', distance)
             if distance <= self.weapon.secondaryWeaponRange:
                 if distance >= colliderRange:
                     self.fsm.changeCurrentState(decisionMaking.ShootSecondaryWeapon(self.lastSeenBotEntity))

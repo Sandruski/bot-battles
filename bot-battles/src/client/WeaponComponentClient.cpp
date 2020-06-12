@@ -12,12 +12,15 @@ void WeaponComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /
 {
     if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_ORIGIN_LAST_SHOT)) {
         inputStream.Read(m_originLastShot);
+        m_alpha = 1.0f;
     }
     if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_DESTINATION_LAST_SHOT)) {
         inputStream.Read(m_destinationLastShot);
+        m_alpha = 1.0f;
     }
     if (dirtyState & static_cast<U64>(ComponentMemberType::WEAPON_HIT_ENTITY_LAST_SHOT)) {
         inputStream.Read(m_hitEntityLastShot);
+        m_alpha = 1.0f;
 
         if (replicationActionType != ReplicationActionType::CREATE) {
             Event newWeaponEvent;

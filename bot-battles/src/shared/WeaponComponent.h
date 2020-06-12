@@ -125,7 +125,10 @@ struct WeaponComponent : public Component
     F32 m_timeReload;
     F32 m_cooldownReload;
 
-    // Local (server)
+    // Local
+    F32 m_alpha;
+
+    /// Server
     bool m_isPickedUp;
 };
 }

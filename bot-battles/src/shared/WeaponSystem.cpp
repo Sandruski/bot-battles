@@ -28,11 +28,15 @@ void WeaponSystem::Draw(PlayerID playerID, std::weak_ptr<WeaponComponent> weapon
         break;
     }
     }
+    F32 dt = MyTime::GetInstance().GetDt();
+    weaponComponent.lock()->m_alpha -= dt;
+    if (weaponComponent.lock()->m_alpha <= 0.0f) {
+        weaponComponent.lock()->m_alpha = 0.0f;
+    }
+    color.a = weaponComponent.lock()->m_alpha;
 
-    glLineWidth(1.4f);
-
+    glLineWidth(1.5f);
     rendererComponent.lock()->DrawLine(fromPosition, toPosition, color);
-
     glLineWidth(1.0f);
 }
 

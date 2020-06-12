@@ -20,6 +20,7 @@ WeaponComponent::WeaponComponent()
     , m_cooldownShootSecondary(0.0f)
     , m_timeReload(0.0f)
     , m_cooldownReload(0.0f)
+    , m_alpha(0.0f)
     , m_isPickedUp(false)
 {
 }
