@@ -91,7 +91,7 @@ void RendererComponent::UpdateBackgroundColor() const
 }
 
 //----------------------------------------------------------------------------------------------------
-void RendererComponent::DrawLine(glm::vec3 fromPosition, glm::vec3 toPosition, glm::vec4 color)
+void RendererComponent::DrawLine(glm::vec2 fromPosition, glm::vec2 toPosition, F32 positionZ, glm::vec4 color)
 {
     glUseProgram(m_defaultShaderResource.lock()->GetProgram());
 
@@ -99,6 +99,8 @@ void RendererComponent::DrawLine(glm::vec3 fromPosition, glm::vec3 toPosition, g
     glm::vec2 proportion = windowComponent.lock()->GetProportion();
 
     glm::mat4 model = glm::mat4(1.0f);
+    glm::vec3 position = glm::vec3(0.0f, 0.0f, positionZ);
+    model = glm::translate(model, position);
 
     std::vector<MeshResource::Vertex> lineVertices = MeshResource::GetLineVertices(fromPosition, toPosition);
     m_lineMeshResource.lock()->ReLoadVertices(lineVertices);

@@ -19,7 +19,7 @@ struct RendererComponent {
     bool UpdateVSync() const;
     void UpdateBackgroundColor() const;
 
-    void DrawLine(glm::vec3 fromPosition, glm::vec3 toPosition, glm::vec4 color);
+    void DrawLine(glm::vec2 fromPosition, glm::vec2 toPosition, F32 positionZ, glm::vec4 color);
     void DrawCircle(glm::vec3 position, F32 rotation, glm::vec3 scale, U32 sides, F32 angle, F32 radius, glm::vec4 color, bool filled);
     void DrawQuad(glm::vec3 position, F32 rotation, glm::vec3 scale, glm::vec4 color, bool filled);
     void DrawMapTexturedQuad(U32 texture);

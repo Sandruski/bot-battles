@@ -11,11 +11,11 @@ void MovementSystem::DebugDraw(std::weak_ptr<TransformComponent> transformCompon
 {
     std::weak_ptr<RendererComponent> rendererComponent = g_game->GetRendererComponent();
 
-    glm::vec3 fromPosition = transformComponent.lock()->GetDebugPositionAndLayer();
+    glm::vec2 fromPosition = transformComponent.lock()->m_position;
     glm::vec2 direction = transformComponent.lock()->GetDirection();
-    glm::vec3 toPosition = fromPosition + glm::vec3(direction.x, direction.y, 0.0f) * 40.0f;
+    glm::vec2 toPosition = fromPosition + direction * 40.0f;
     glm::vec4 color = Green;
     color.a = 0.5f;
-    rendererComponent.lock()->DrawLine(fromPosition, toPosition, color);
+    rendererComponent.lock()->DrawLine(fromPosition, toPosition, static_cast<F32>(transformComponent.lock()->m_layerType), color);
 }
 }

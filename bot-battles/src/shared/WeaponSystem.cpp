@@ -12,8 +12,8 @@ void WeaponSystem::Draw(PlayerID playerID, std::weak_ptr<WeaponComponent> weapon
 {
     std::weak_ptr<RendererComponent> rendererComponent = g_game->GetRendererComponent();
 
-    glm::vec3 fromPosition = glm::vec3(weaponComponent.lock()->m_originLastShot.x, weaponComponent.lock()->m_originLastShot.y, static_cast<F32>(LayerType::WEAPON));
-    glm::vec3 toPosition = glm::vec3(weaponComponent.lock()->m_destinationLastShot.x, weaponComponent.lock()->m_destinationLastShot.y, static_cast<F32>(LayerType::WEAPON));
+    glm::vec2 fromPosition = weaponComponent.lock()->m_originLastShot;
+    glm::vec2 toPosition = weaponComponent.lock()->m_destinationLastShot;
     glm::vec4 color = White;
     switch (playerID) {
     case 0: {
@@ -36,7 +36,7 @@ void WeaponSystem::Draw(PlayerID playerID, std::weak_ptr<WeaponComponent> weapon
     color.a = weaponComponent.lock()->m_alpha;
 
     glLineWidth(1.5f);
-    rendererComponent.lock()->DrawLine(fromPosition, toPosition, color);
+    rendererComponent.lock()->DrawLine(fromPosition, toPosition, static_cast<F32>(LayerType::WEAPON), color);
     glLineWidth(1.0f);
 }
 

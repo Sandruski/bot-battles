@@ -210,7 +210,6 @@ class Agent:
         angle = worldDestinationRotation - worldOriginRotation
         angle = (angle + 180.0) % 360.0 - 180.0
         absAngle = glm.abs(angle)
-        logging.info('abs angle %f', absAngle)
         if absAngle <= self.minAlignDistance:
             return 0.0
 
