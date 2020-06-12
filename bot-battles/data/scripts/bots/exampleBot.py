@@ -53,7 +53,7 @@ class ExampleBot(bot.Bot):
         seenBotInfo = self.sight.getSeenBotInfo(seenBotEntity)
         self.fsm.changeCurrentState(decisionMaking.GoToLastKnownPosition(seenBotInfo))
 
-    def onHitByBullet(self, input, health, seenBotEntity, seenBotInfo):
+    def onHitByBullet(self, input, health):
         self.attack(seenBotInfo)
 
     def attack(self, seenBotInfo):

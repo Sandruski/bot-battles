@@ -47,7 +47,7 @@ class Bot:
     def onHealthPickedUp(self, input):
         pass
 
-    def onBulletHit(self, input, seenBotEntity, seenBotInfo):
+    def onBulletHit(self, input):
         pass
 
     def onBulletMiss(self, input):
@@ -56,7 +56,7 @@ class Bot:
     def onReloaded(self, input, ammo):
         pass
 
-    def onHitByBullet(self, input, health, seenBotEntity, seenBotInfo):
+    def onHitByBullet(self, input, health):
         pass
 
     def onHealed(self, input, health):

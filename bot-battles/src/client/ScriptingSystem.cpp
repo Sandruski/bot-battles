@@ -127,7 +127,7 @@ void ScriptingSystem::OnNotify(const Event& event)
     }
 
     case EventType::WEAPON_HIT: {
-        OnWeaponHit(event.weapon.shooterEntity, event.weapon.targetEntity);
+        OnWeaponHit(event.weapon.shooterEntity);
         break;
     }
 
@@ -147,7 +147,7 @@ void ScriptingSystem::OnNotify(const Event& event)
     }
 
     case EventType::HEALTH_HURT: {
-        OnHealthHurt(event.health.targetEntity, event.health.shooterEntity, event.health.health);
+        OnHealthHurt(event.health.targetEntity, event.health.health);
         break;
     }
 
@@ -350,7 +350,7 @@ void ScriptingSystem::OnSeenLostEntity(Entity seenEntity) const
 }
 
 //----------------------------------------------------------------------------------------------------
-void ScriptingSystem::OnWeaponHit(Entity shooterEntity, Entity targetEntity) const
+void ScriptingSystem::OnWeaponHit(Entity shooterEntity) const
 {
     assert(shooterEntity < INVALID_ENTITY);
 
@@ -359,18 +359,10 @@ void ScriptingSystem::OnWeaponHit(Entity shooterEntity, Entity targetEntity) con
         return;
     }
 
-    SightComponent::SeenBotInfo seenBotInfo;
-    seenBotInfo.m_transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(targetEntity).lock();
-    seenBotInfo.m_colliderComponent = g_gameClient->GetComponentManager().GetComponent<ColliderComponent>(targetEntity).lock();
-    seenBotInfo.m_rigidbodyComponent = g_gameClient->GetComponentManager().GetComponent<RigidbodyComponent>(targetEntity).lock();
-    seenBotInfo.m_weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(targetEntity).lock();
-    seenBotInfo.m_healthComponent = g_gameClient->GetComponentManager().GetComponent<HealthComponent>(targetEntity).lock();
-    seenBotInfo.m_botComponent = g_gameClient->GetComponentManager().GetComponent<BotComponent>(targetEntity).lock();
-
     std::weak_ptr<ScriptingComponent> scriptingComponent = g_gameClient->GetScriptingComponent();
     std::weak_ptr<InputComponent> inputComponent = g_gameClient->GetInputComponent();
     try {
-        scriptingComponent.lock()->m_mainModule.attr("onBulletHit")(inputComponent.lock(), targetEntity, seenBotInfo);
+        scriptingComponent.lock()->m_mainModule.attr("onBulletHit")(inputComponent.lock());
         scriptingComponent.lock()->m_mainModule.attr("log")();
     } catch (const std::runtime_error& /*re*/) {
     }
@@ -434,7 +426,7 @@ void ScriptingSystem::OnWeaponPrimaryReloaded(Entity shooterEntity, U32 ammo) co
 }
 
 //----------------------------------------------------------------------------------------------------
-void ScriptingSystem::OnHealthHurt(Entity targetEntity, Entity shooterEntity, U32 health) const
+void ScriptingSystem::OnHealthHurt(Entity targetEntity, U32 health) const
 {
     assert(targetEntity < INVALID_ENTITY);
 
@@ -443,18 +435,10 @@ void ScriptingSystem::OnHealthHurt(Entity targetEntity, Entity shooterEntity, U3
         return;
     }
 
-    SightComponent::SeenBotInfo seenBotInfo;
-    seenBotInfo.m_transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(shooterEntity).lock();
-    seenBotInfo.m_colliderComponent = g_gameClient->GetComponentManager().GetComponent<ColliderComponent>(shooterEntity).lock();
-    seenBotInfo.m_rigidbodyComponent = g_gameClient->GetComponentManager().GetComponent<RigidbodyComponent>(shooterEntity).lock();
-    seenBotInfo.m_weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(shooterEntity).lock();
-    seenBotInfo.m_healthComponent = g_gameClient->GetComponentManager().GetComponent<HealthComponent>(shooterEntity).lock();
-    seenBotInfo.m_botComponent = g_gameClient->GetComponentManager().GetComponent<BotComponent>(shooterEntity).lock();
-
     std::weak_ptr<ScriptingComponent> scriptingComponent = g_gameClient->GetScriptingComponent();
     std::weak_ptr<InputComponent> inputComponent = g_gameClient->GetInputComponent();
     try {
-        scriptingComponent.lock()->m_mainModule.attr("onHitByBullet")(inputComponent.lock(), health, shooterEntity, seenBotInfo);
+        scriptingComponent.lock()->m_mainModule.attr("onHitByBullet")(inputComponent.lock(), health);
         scriptingComponent.lock()->m_mainModule.attr("log")();
     } catch (const std::runtime_error& /*re*/) {
     }
