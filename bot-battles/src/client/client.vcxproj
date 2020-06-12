@@ -225,6 +225,7 @@
     </ClCompile>
     <ClCompile Include="PlayStateClient.cpp" />
     <ClCompile Include="RemotePlayerMovementSystem.cpp" />
+    <ClCompile Include="RemotePlayerWeaponSystem.cpp" />
     <ClCompile Include="RestartStateClient.cpp" />
     <ClCompile Include="ResultsStateClient.cpp" />
     <ClCompile Include="ScoreboardStateClient.cpp" />
@@ -262,6 +263,7 @@
     <ClInclude Include="PlayStateClient.h" />
     <ClInclude Include="RemotePlayerComponent.h" />
     <ClInclude Include="RemotePlayerMovementSystem.h" />
+    <ClInclude Include="RemotePlayerWeaponSystem.h" />
     <ClInclude Include="ReplicationManagerClient.h" />
     <ClInclude Include="ClientComponent.h" />
     <ClInclude Include="GameClient.h" />
