@@ -104,7 +104,7 @@ Entity WeaponSpawnerSystem::SpawnWeapon(Entity spawner) const
 
     // Collider
     std::weak_ptr<ColliderComponent> colliderComponent = g_game->GetComponentManager().AddComponent<ColliderComponent>(entity);
-    colliderComponent.lock()->m_size = glm::vec2(64.0f, 64.0f);
+    colliderComponent.lock()->m_size = glm::vec2(16.0f, 16.0f);
     colliderComponent.lock()->m_size *= transformComponent.lock()->m_scale;
     colliderComponent.lock()->m_shapeType = ColliderComponent::ShapeType::BOX;
     colliderComponent.lock()->m_isTrigger = true;

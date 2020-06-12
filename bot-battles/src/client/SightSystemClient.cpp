@@ -62,7 +62,9 @@ void SightSystemClient::OnNotify(const Event& event)
 //----------------------------------------------------------------------------------------------------
 void SightSystemClient::OnSeenNewEntity(Entity seenEntity) const
 {
-    assert(seenEntity < INVALID_ENTITY);
+    if (seenEntity >= INVALID_ENTITY) {
+        return;
+    }
 
     LinkingContext& linkingContext = g_gameClient->GetLinkingContext();
     for (const auto& entity : m_entities) {
@@ -90,7 +92,9 @@ void SightSystemClient::OnSeenNewEntity(Entity seenEntity) const
 //----------------------------------------------------------------------------------------------------
 void SightSystemClient::OnSeenLostEntity(Entity seenEntity) const
 {
-    assert(seenEntity < INVALID_ENTITY);
+    if (seenEntity >= INVALID_ENTITY) {
+        return;
+    }
 
     LinkingContext& linkingContext = g_gameClient->GetLinkingContext();
     for (const auto& entity : m_entities) {
