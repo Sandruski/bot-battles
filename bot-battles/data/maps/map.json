@@ -238,69 +238,6 @@
                 {
                  "gid":368,
                  "height":64,
-                 "id":36,
-                 "name":"weaponSpawner1",
-                 "properties":[
-                        {
-                         "name":"amountSpawn",
-                         "type":"int",
-                         "value":-1
-                        }, 
-                        {
-                         "name":"cooldownSpawn",
-                         "type":"float",
-                         "value":1
-                        }, 
-                        {
-                         "name":"weaponAmmo",
-                         "type":"int",
-                         "value":100
-                        }, 
-                        {
-                         "name":"weaponCooldownReload",
-                         "type":"float",
-                         "value":1
-                        }, 
-                        {
-                         "name":"weaponCooldownShoot",
-                         "type":"float",
-                         "value":1
-                        }, 
-                        {
-                         "name":"weaponDamage",
-                         "type":"int",
-                         "value":10
-                        }, 
-                        {
-                         "name":"weaponMaxAmmo",
-                         "type":"int",
-                         "value":50
-                        }, 
-                        {
-                         "name":"weaponRange",
-                         "type":"float",
-                         "value":100
-                        }, 
-                        {
-                         "name":"weaponTimeReload",
-                         "type":"float",
-                         "value":1
-                        }, 
-                        {
-                         "name":"weaponTimeShoot",
-                         "type":"float",
-                         "value":1
-                        }],
-                 "rotation":0,
-                 "type":"WeaponSpawner",
-                 "visible":true,
-                 "width":64,
-                 "x":192,
-                 "y":384
-                }, 
-                {
-                 "gid":368,
-                 "height":64,
                  "id":39,
                  "name":"weaponSpawner1",
                  "properties":[

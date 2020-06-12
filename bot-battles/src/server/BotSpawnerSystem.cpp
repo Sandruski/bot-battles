@@ -144,7 +144,7 @@ Entity BotSpawnerSystem::SpawnBot(PlayerID playerID) const
     rigidbodyComponent.lock()->m_maxAngularVelocity = botSpawnerComponent.lock()->m_rigidbodyMaxAngularVelocity;
     rigidbodyComponent.lock()->m_bodyType = RigidbodyComponent::BodyType::DYNAMIC;
     rigidbodyComponent.lock()->UpdateBodyType();
-    rigidbodyComponent.lock()->m_groupIndex = 1;
+    rigidbodyComponent.lock()->m_groupIndex = -1;
     rigidbodyComponent.lock()->UpdateGroupIndex();
     rigidbodyComponent.lock()->m_isBullet = true;
     rigidbodyComponent.lock()->UpdateBullet();
