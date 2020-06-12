@@ -64,6 +64,7 @@ struct HealthComponent : public Component
 
     // Networked
     Entity m_hitEntityLastShot;
+    glm::vec2 m_directionLastShot;
 
     I32 m_currentHP;
     U32 m_maxHP;

@@ -53,8 +53,9 @@ class ExampleBot(bot.Bot):
         seenBotInfo = self.sight.getSeenBotInfo(seenBotEntity)
         self.fsm.changeCurrentState(decisionMaking.GoToLastKnownPosition(seenBotInfo))
 
-    def onHitByBullet(self, input, health):
-        self.attack(seenBotInfo)
+    def onHitByBullet(self, input, health, direction):
+        logging.info('onHitByBullet')
+        self.fsm.changeCurrentState(decisionMaking.LookAt((-direction[0], -direction[1])))
 
     def attack(self, seenBotInfo):
         distance = glm.distance(glm.vec2(seenBotInfo.transform.position[0], seenBotInfo.transform.position[1]),  glm.vec2(self.transform.position[0], self.transform.position[1]))

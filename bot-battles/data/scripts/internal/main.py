@@ -91,9 +91,9 @@ def onHealthPickedUp(input):
     except:
         pass
 
-def onBulletHit(input, seenBotEntity, seenBotInfo):
+def onBulletHit(input):
     try:
-        myBot.onBulletHit(input, seenBotEntity, seenBotInfo)
+        myBot.onBulletHit(input)
     except:
         pass
 
@@ -109,9 +109,9 @@ def onReloaded(input, ammo):
     except:
         pass
 
-def onHitByBullet(input, health, seenBotEntity, seenBotInfo):
+def onHitByBullet(input, health, direction):
     try:
-        myBot.onHitByBullet(input, health, seenBotEntity, seenBotInfo)
+        myBot.onHitByBullet(input, health, direction)
     except:
         pass
 

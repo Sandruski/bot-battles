@@ -13,6 +13,9 @@ void HealthComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /
     if (dirtyState & static_cast<U64>(ComponentMemberType::HEALTH_HIT_ENTITY_LAST_SHOT)) {
         inputStream.Read(m_hitEntityLastShot);
     }
+    if (dirtyState & static_cast<U64>(ComponentMemberType::HEALTH_DIRECTION_LAST_SHOT)) {
+        inputStream.Read(m_directionLastShot);
+    }
     if (dirtyState & static_cast<U64>(ComponentMemberType::HEALTH_CURRENT_HP)) {
         I32 oldCurrentHP = m_currentHP;
         inputStream.Read(m_currentHP);
@@ -23,6 +26,7 @@ void HealthComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /
                 newHealthEvent.eventType = EventType::HEALTH_HURT;
                 newHealthEvent.health.health = oldCurrentHP - m_currentHP;
                 newHealthEvent.health.shooterEntity = m_hitEntityLastShot;
+                newHealthEvent.health.direction = m_directionLastShot;
             } else if (oldCurrentHP < m_currentHP) {
                 newHealthEvent.eventType = EventType::HEALTH_HEALED;
                 newHealthEvent.health.health = m_currentHP - oldCurrentHP;

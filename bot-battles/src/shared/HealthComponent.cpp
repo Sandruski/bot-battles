@@ -5,6 +5,7 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 HealthComponent::HealthComponent()
     : m_hitEntityLastShot(INVALID_ENTITY)
+    , m_directionLastShot(0.0f, 0.0f)
     , m_currentHP(0)
     , m_maxHP(0)
     , m_HP(0)

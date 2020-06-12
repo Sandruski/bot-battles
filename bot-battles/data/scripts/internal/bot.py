@@ -56,7 +56,7 @@ class Bot:
     def onReloaded(self, input, ammo):
         pass
 
-    def onHitByBullet(self, input, health):
+    def onHitByBullet(self, input, health, direction):
         pass
 
     def onHealed(self, input, health):

@@ -184,6 +184,7 @@ bool WeaponSystemServer::Update()
                             newWeaponEvent.weapon.shooterEntity = entity;
                             newWeaponEvent.weapon.targetEntity = hitInfo.m_entity;
                             newWeaponEvent.weapon.damage = hasShootPrimaryWeapon ? weaponComponent.lock()->m_damagePrimary : weaponComponent.lock()->m_damageSecondary;
+                            newWeaponEvent.weapon.direction = glm::normalize(weaponComponent.lock()->m_destinationLastShot - weaponComponent.lock()->m_originLastShot);
                             PushEvent(newWeaponEvent);
                         }
                     }

@@ -53,6 +53,7 @@ struct WeaponEvent {
     EventType eventType;
     Entity shooterEntity;
     Entity targetEntity;
+    glm::vec2 direction;
     U32 damage;
     U32 ammo;
 };
@@ -63,6 +64,7 @@ struct HealthEvent {
     Entity shooterEntity;
     Entity targetEntity;
     U32 health;
+    glm::vec2 direction;
 };
 
 // Sight

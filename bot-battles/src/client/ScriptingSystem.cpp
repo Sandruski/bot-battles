@@ -147,7 +147,7 @@ void ScriptingSystem::OnNotify(const Event& event)
     }
 
     case EventType::HEALTH_HURT: {
-        OnHealthHurt(event.health.targetEntity, event.health.health);
+        OnHealthHurt(event.health.targetEntity, event.health.health, event.health.direction);
         break;
     }
 
@@ -426,7 +426,7 @@ void ScriptingSystem::OnWeaponPrimaryReloaded(Entity shooterEntity, U32 ammo) co
 }
 
 //----------------------------------------------------------------------------------------------------
-void ScriptingSystem::OnHealthHurt(Entity targetEntity, U32 health) const
+void ScriptingSystem::OnHealthHurt(Entity targetEntity, U32 health, const glm::vec2& direction) const
 {
     assert(targetEntity < INVALID_ENTITY);
 
@@ -438,7 +438,7 @@ void ScriptingSystem::OnHealthHurt(Entity targetEntity, U32 health) const
     std::weak_ptr<ScriptingComponent> scriptingComponent = g_gameClient->GetScriptingComponent();
     std::weak_ptr<InputComponent> inputComponent = g_gameClient->GetInputComponent();
     try {
-        scriptingComponent.lock()->m_mainModule.attr("onHitByBullet")(inputComponent.lock(), health);
+        scriptingComponent.lock()->m_mainModule.attr("onHitByBullet")(inputComponent.lock(), health, std::tuple<F32, F32>(direction.x, direction.y));
         scriptingComponent.lock()->m_mainModule.attr("log")();
     } catch (const std::runtime_error& /*re*/) {
     }

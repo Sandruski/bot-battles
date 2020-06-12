@@ -129,7 +129,7 @@ void HealthSystemServer::OnNotify(const Event& event)
     }
 
     case EventType::WEAPON_HIT: {
-        OnWeaponHit(event.weapon.shooterEntity, event.weapon.targetEntity, event.weapon.damage);
+        OnWeaponHit(event.weapon.shooterEntity, event.weapon.targetEntity, event.weapon.damage, event.weapon.direction);
         break;
     }
 
@@ -181,7 +181,7 @@ void HealthSystemServer::OnCollisionEnter(Entity entityA, Entity entityB) const
 }
 
 //----------------------------------------------------------------------------------------------------
-void HealthSystemServer::OnWeaponHit(Entity shooterEntity, Entity targetEntity, U32 damage) const
+void HealthSystemServer::OnWeaponHit(Entity shooterEntity, Entity targetEntity, U32 damage, const glm::vec2& direction) const
 {
     std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(targetEntity);
     if (healthComponent.expired()) {
@@ -196,6 +196,8 @@ void HealthSystemServer::OnWeaponHit(Entity shooterEntity, Entity targetEntity, 
         healthComponent.lock()->m_currentHP = 0;
     }
     characterDirtyState |= static_cast<U64>(ComponentMemberType::HEALTH_CURRENT_HP);
+    healthComponent.lock()->m_directionLastShot = direction;
+    characterDirtyState |= static_cast<U64>(ComponentMemberType::HEALTH_DIRECTION_LAST_SHOT);
     healthComponent.lock()->m_hitEntityLastShot = shooterEntity;
     characterDirtyState |= static_cast<U64>(ComponentMemberType::HEALTH_HIT_ENTITY_LAST_SHOT);
 

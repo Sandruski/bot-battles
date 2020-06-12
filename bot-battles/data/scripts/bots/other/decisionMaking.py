@@ -40,6 +40,25 @@ class Idle(State):
         bot.agent.stopMove = False
         bot.agent.stopRotate = False
 
+class GoTo(State):
+    def __init__(self, worldOriginPosition, worldDestinationPosition):
+        self.worldOriginPosition = worldOriginPosition
+        self.worldDestinationPosition = worldDestinationPosition
+
+    def enter(self, bot):
+        bot.agent.goTo(self.worldOriginPosition, self.worldDestinationPosition)
+        bot.agent.autoRotate = True
+
+    def exit(self, bot):
+        bot.agent.autoRotate = False
+
+class LookAt(State):
+    def __init__(self, worldDestinationDirection):
+        self.worldDestinationDirection = worldDestinationDirection
+
+    def enter(self, bot):
+        bot.agent.lookAt(self.worldDestinationDirection)
+
 class GoToClosestWeaponSpawner(State):
     def enter(self, bot):
         weaponSpawnerTiles = bot.graph.getTilesOfType(TileType.WEAPON_SPAWNER)
