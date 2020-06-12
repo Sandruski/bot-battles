@@ -2,6 +2,7 @@
 
 #include "BotComponent.h"
 #include "ClientComponent.h"
+#include "ColliderComponent.h"
 #include "ComponentManager.h"
 #include "GameClient.h"
 #include "GameplayComponent.h"
@@ -206,6 +207,7 @@ void ScriptingSystem::InitScripts() const
         }
 
         std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
+        std::weak_ptr<ColliderComponent> colliderComponent = g_gameClient->GetComponentManager().GetComponent<ColliderComponent>(entity);
         std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameClient->GetComponentManager().GetComponent<RigidbodyComponent>(entity);
         std::weak_ptr<HealthComponent> healthComponent = g_gameClient->GetComponentManager().GetComponent<HealthComponent>(entity);
         std::weak_ptr<WeaponComponent> weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(entity);
@@ -213,7 +215,7 @@ void ScriptingSystem::InitScripts() const
         std::weak_ptr<BotComponent> botComponent = g_gameClient->GetComponentManager().GetComponent<BotComponent>(entity);
         std::weak_ptr<MapComponent> mapComponent = g_gameClient->GetMapComponent();
         try {
-            scriptingComponent.lock()->m_mainModule.attr("init")(clientComponent.lock()->m_bot.c_str(), clientComponent.lock()->m_playerID, transformComponent.lock(), rigidbodyComponent.lock(), weaponComponent.lock(), healthComponent.lock(), sightComponent.lock(), botComponent.lock(), mapComponent.lock());
+            scriptingComponent.lock()->m_mainModule.attr("init")(clientComponent.lock()->m_bot.c_str(), clientComponent.lock()->m_playerID, transformComponent.lock(), colliderComponent.lock(), rigidbodyComponent.lock(), weaponComponent.lock(), healthComponent.lock(), sightComponent.lock(), botComponent.lock(), mapComponent.lock());
         } catch (const std::runtime_error& re) {
             OutputDebugStringA(re.what());
             ::MessageBoxA(NULL, re.what(), "Error initializing script", MB_OK);
@@ -359,9 +361,11 @@ void ScriptingSystem::OnWeaponHit(Entity shooterEntity, Entity targetEntity) con
 
     SightComponent::SeenBotInfo seenBotInfo;
     seenBotInfo.m_transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(targetEntity).lock();
+    seenBotInfo.m_colliderComponent = g_gameClient->GetComponentManager().GetComponent<ColliderComponent>(targetEntity).lock();
     seenBotInfo.m_rigidbodyComponent = g_gameClient->GetComponentManager().GetComponent<RigidbodyComponent>(targetEntity).lock();
     seenBotInfo.m_weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(targetEntity).lock();
     seenBotInfo.m_healthComponent = g_gameClient->GetComponentManager().GetComponent<HealthComponent>(targetEntity).lock();
+    seenBotInfo.m_botComponent = g_gameClient->GetComponentManager().GetComponent<BotComponent>(targetEntity).lock();
 
     std::weak_ptr<ScriptingComponent> scriptingComponent = g_gameClient->GetScriptingComponent();
     std::weak_ptr<InputComponent> inputComponent = g_gameClient->GetInputComponent();
@@ -441,9 +445,11 @@ void ScriptingSystem::OnHealthHurt(Entity targetEntity, Entity shooterEntity, U3
 
     SightComponent::SeenBotInfo seenBotInfo;
     seenBotInfo.m_transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(shooterEntity).lock();
+    seenBotInfo.m_colliderComponent = g_gameClient->GetComponentManager().GetComponent<ColliderComponent>(shooterEntity).lock();
     seenBotInfo.m_rigidbodyComponent = g_gameClient->GetComponentManager().GetComponent<RigidbodyComponent>(shooterEntity).lock();
     seenBotInfo.m_weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(shooterEntity).lock();
     seenBotInfo.m_healthComponent = g_gameClient->GetComponentManager().GetComponent<HealthComponent>(shooterEntity).lock();
+    seenBotInfo.m_botComponent = g_gameClient->GetComponentManager().GetComponent<BotComponent>(shooterEntity).lock();
 
     std::weak_ptr<ScriptingComponent> scriptingComponent = g_gameClient->GetScriptingComponent();
     std::weak_ptr<InputComponent> inputComponent = g_gameClient->GetInputComponent();

@@ -12,9 +12,11 @@ namespace sand {
 
 #ifdef _CLIENT
 struct TransformComponent;
+struct ColliderComponent;
 struct RigidbodyComponent;
 struct WeaponComponent;
 struct HealthComponent;
+struct BotComponent;
 #endif
 
 //----------------------------------------------------------------------------------------------------
@@ -34,30 +36,42 @@ struct SightComponent : public Component
         SeenBotInfo();
 
         // Python
-        std::shared_ptr<TransformComponent> GetTransformComponent()
+        std::shared_ptr<TransformComponent> GetPyTransformComponent()
         {
             return m_transformComponent;
         }
 
-        std::shared_ptr<RigidbodyComponent> GetRigidbodyComponent()
+        std::shared_ptr<ColliderComponent> GetPyColliderComponent()
+        {
+            return m_colliderComponent;
+        }
+
+        std::shared_ptr<RigidbodyComponent> GetPyRigidbodyComponent()
         {
             return m_rigidbodyComponent;
         }
 
-        std::shared_ptr<WeaponComponent> GetWeaponComponent()
+        std::shared_ptr<WeaponComponent> GetPyWeaponComponent()
         {
             return m_weaponComponent;
         }
 
-        std::shared_ptr<HealthComponent> GetHealthComponent()
+        std::shared_ptr<HealthComponent> GetPyHealthComponent()
         {
             return m_healthComponent;
         }
 
+        std::shared_ptr<BotComponent> GetPyBotComponent()
+        {
+            return m_botComponent;
+        }
+
         std::shared_ptr<TransformComponent> m_transformComponent;
+        std::shared_ptr<ColliderComponent> m_colliderComponent;
         std::shared_ptr<RigidbodyComponent> m_rigidbodyComponent;
         std::shared_ptr<WeaponComponent> m_weaponComponent;
         std::shared_ptr<HealthComponent> m_healthComponent;
+        std::shared_ptr<BotComponent> m_botComponent;
     };
 
     struct SeenWeaponInfo {
@@ -65,17 +79,23 @@ struct SightComponent : public Component
         SeenWeaponInfo();
 
         // Python
-        std::shared_ptr<TransformComponent> GetTransformComponent()
+        std::shared_ptr<TransformComponent> GetPyTransformComponent()
         {
             return m_transformComponent;
         }
 
-        std::shared_ptr<WeaponComponent> GetWeaponComponent()
+        std::shared_ptr<ColliderComponent> GetPyColliderComponent()
+        {
+            return m_colliderComponent;
+        }
+
+        std::shared_ptr<WeaponComponent> GetPyWeaponComponent()
         {
             return m_weaponComponent;
         }
 
         std::shared_ptr<TransformComponent> m_transformComponent;
+        std::shared_ptr<ColliderComponent> m_colliderComponent;
         std::shared_ptr<WeaponComponent> m_weaponComponent;
     };
 
@@ -84,17 +104,23 @@ struct SightComponent : public Component
         SeenHealthInfo();
 
         // Python
-        std::shared_ptr<TransformComponent> GetTransformComponent()
+        std::shared_ptr<TransformComponent> GetPyTransformComponent()
         {
             return m_transformComponent;
         }
 
-        std::shared_ptr<HealthComponent> GetHealthComponent()
+        std::shared_ptr<ColliderComponent> GetPyColliderComponent()
+        {
+            return m_colliderComponent;
+        }
+
+        std::shared_ptr<HealthComponent> GetPyHealthComponent()
         {
             return m_healthComponent;
         }
 
         std::shared_ptr<TransformComponent> m_transformComponent;
+        std::shared_ptr<ColliderComponent> m_colliderComponent;
         std::shared_ptr<HealthComponent> m_healthComponent;
     };
 #endif

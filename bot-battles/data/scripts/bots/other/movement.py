@@ -8,6 +8,7 @@ import bot
 import movement
 import decisionMaking
 from botbattles import TransformComponent
+from botbattles import ColliderComponent
 from botbattles import RigidbodyComponent
 from botbattles import WeaponComponent
 from botbattles import HealthComponent
@@ -102,7 +103,9 @@ class Agent:
         # Movement
         self.stopMove = False
         self.finishedMove = False
+        self.followPath = False
         self.pathFollower = PathFollower(PathFinder(self.bot.graph))
+        self.worldDestinationDirection = None
         self.minSeekDistance = 1.0
         # Rotation
         self.stopRotate = False
@@ -120,6 +123,9 @@ class Agent:
 
             input.linearVelocityX = linearVelocity.x
             input.linearVelocityY = linearVelocity.y
+        else:
+            input.linearVelocityX = 0
+            input.linearVelocityY = 0
 
         # Rotation
         if self.stopRotate == False:
@@ -128,17 +134,28 @@ class Agent:
                 self.finishedRotate = True
 
             input.angularVelocity = angularVelocity
+        else:
+            input.angularVelocity = 0
 
     def move(self):
-        mapDestinationPosition = self.pathFollower.getWaypoint()
-        if mapDestinationPosition == None:
-            return glm.vec2(0.0, 0.0)
+        linearVelocity = glm.vec2(0.0, 0.0)
 
-        worldDestinationPosition = self.bot.map.getWorldPosition(mapDestinationPosition)
-        linearVelocity = self.seek(self.bot.transform.position, worldDestinationPosition)
+        if self.followPath:
+            mapDestinationPosition = self.pathFollower.getWaypoint()
+            if mapDestinationPosition == None:
+                return glm.vec2(0.0, 0.0)
 
-        if glm.length(linearVelocity) == 0.0:
-            self.pathFollower.increaseWaypoint()
+            worldDestinationPosition = self.bot.map.getWorldPosition(mapDestinationPosition)
+            linearVelocity = self.seekPosition(self.bot.transform.position, worldDestinationPosition)
+
+            if glm.length(linearVelocity) == 0.0:
+                self.pathFollower.increaseWaypoint()
+        else:
+            if self.worldDestinationDirection == None:
+                return 0.0
+
+            linearVelocity = self.seekDirection(self.worldDestinationDirection)
+
         return linearVelocity
 
     def rotate(self):
@@ -153,13 +170,20 @@ class Agent:
         angularVelocity = self.align(self.bot.transform.rotation, self.worldDestinationRotation)
         return angularVelocity
 
-    def goTo(self, worldOriginPosition, worldDestinationPosition): # positions
+    def goToPosition(self, worldOriginPosition, worldDestinationPosition): # positions
         mapOriginPosition = self.bot.map.getMapPosition(worldOriginPosition)
         mapDestinationPosition = self.bot.map.getMapPosition(worldDestinationPosition)
         if mapOriginPosition != mapDestinationPosition:
             self.finishedMove = False
 
         self.pathFollower.createPath(mapOriginPosition, mapDestinationPosition)
+        self.followPath = True
+
+    def goToDirection(self, worldDestinationDirection): # direction
+        self.worldDestinationDirection = worldDestinationDirection
+        self.finishedMove = False
+
+        self.followPath = False
 
     def lookAt(self, worldDestinationDirection): # direction
         newWorldDestinationRotation = glm.atan(worldDestinationDirection[1], worldDestinationDirection[0]) * 180.0 / glm.pi()
@@ -168,12 +192,17 @@ class Agent:
         
         self.worldDestinationRotation = newWorldDestinationRotation
 
-    def seek(self, worldOriginPosition, worldDestinationPosition): # positions
+    def seekPosition(self, worldOriginPosition, worldDestinationPosition): # positions
         vector = glm.vec2(worldDestinationPosition[0] - worldOriginPosition[0], worldDestinationPosition[1] - worldOriginPosition[1])
         if glm.length(vector) <= self.minSeekDistance:
             return glm.vec2(0.0, 0.0)
         
         direction = glm.normalize(vector)
+        acceleration = direction * self.bot.rigidbody.maxLinearVelocity
+        return acceleration
+
+    def seekDirection(self, worldDestinationDirection): # direction
+        direction = glm.vec2(worldDestinationDirection[0], worldDestinationDirection[1])
         acceleration = direction * self.bot.rigidbody.maxLinearVelocity
         return acceleration
 

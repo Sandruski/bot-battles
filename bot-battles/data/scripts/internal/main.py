@@ -13,11 +13,11 @@ import botbattles
 stream = None
 myBot = None
 
-def init(scriptName, player, transformComponent, rigidbodyComponent, weaponComponent, healthComponent, sightComponent, actionComponent, mapComponent):
+def init(scriptName, player, transformComponent, colliderComponent, rigidbodyComponent, weaponComponent, healthComponent, sightComponent, actionComponent, mapComponent):
     for name, obj in inspect.getmembers(sys.modules[scriptName]):
         if inspect.isclass(obj) and issubclass(obj, bot.Bot):
             global myBot
-            myBot = obj(transformComponent, rigidbodyComponent, weaponComponent, healthComponent, sightComponent, actionComponent, mapComponent)
+            myBot = obj(transformComponent, colliderComponent, rigidbodyComponent, weaponComponent, healthComponent, sightComponent, actionComponent, mapComponent)
             break
 
     logger = logging.getLogger('')

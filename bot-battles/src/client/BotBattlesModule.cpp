@@ -2,6 +2,7 @@
 #define __BOT_BATTLES_MODULE_H__
 
 #include "BotComponent.h"
+#include "ColliderComponent.h"
 #include "HealthComponent.h"
 #include "InputComponent.h"
 #include "MapComponent.h"
@@ -43,6 +44,9 @@ PYBIND11_EMBEDDED_MODULE(botbattles, m)
         .def_property_readonly("rotation", &TransformComponent::GetPyRotation)
         .def_property_readonly("direction", &TransformComponent::GetPyDirection);
 
+    py::class_<ColliderComponent, std::shared_ptr<ColliderComponent>>(m, "ColliderComponent")
+        .def_property_readonly("size", &ColliderComponent::GetPySize);
+
     py::class_<RigidbodyComponent, std::shared_ptr<RigidbodyComponent>>(m, "RigidbodyComponent")
         .def_property_readonly("maxLinearVelocity", &RigidbodyComponent::GetPyMaxLinearVelocity)
         .def_property_readonly("maxAngularVelocity", &RigidbodyComponent::GetPyMaxAngularVelocity)
@@ -80,18 +84,22 @@ PYBIND11_EMBEDDED_MODULE(botbattles, m)
         .def("getSeenHealthInfo", &SightComponent::GetPySeenHealthInfo);
 
     py::class_<SightComponent::SeenBotInfo>(m, "SeenBotInfo")
-        .def_property_readonly("transform", &SightComponent::SeenBotInfo::GetTransformComponent)
-        .def_property_readonly("rigidbody", &SightComponent::SeenBotInfo::GetRigidbodyComponent)
-        .def_property_readonly("weapon", &SightComponent::SeenBotInfo::GetWeaponComponent)
-        .def_property_readonly("health", &SightComponent::SeenBotInfo::GetHealthComponent);
+        .def_property_readonly("transform", &SightComponent::SeenBotInfo::GetPyTransformComponent)
+        .def_property_readonly("collider", &SightComponent::SeenBotInfo::GetPyColliderComponent)
+        .def_property_readonly("rigidbody", &SightComponent::SeenBotInfo::GetPyRigidbodyComponent)
+        .def_property_readonly("weapon", &SightComponent::SeenBotInfo::GetPyWeaponComponent)
+        .def_property_readonly("health", &SightComponent::SeenBotInfo::GetPyHealthComponent)
+        .def_property_readonly("action", &SightComponent::SeenBotInfo::GetPyBotComponent);
 
     py::class_<SightComponent::SeenWeaponInfo>(m, "SeenWeaponInfo")
-        .def_property_readonly("transform", &SightComponent::SeenWeaponInfo::GetTransformComponent)
-        .def_property_readonly("weapon", &SightComponent::SeenWeaponInfo::GetWeaponComponent);
+        .def_property_readonly("transform", &SightComponent::SeenWeaponInfo::GetPyTransformComponent)
+        .def_property_readonly("collider", &SightComponent::SeenWeaponInfo::GetPyColliderComponent)
+        .def_property_readonly("weapon", &SightComponent::SeenWeaponInfo::GetPyWeaponComponent);
 
     py::class_<SightComponent::SeenHealthInfo>(m, "SeenHealthInfo")
-        .def_property_readonly("transform", &SightComponent::SeenHealthInfo::GetTransformComponent)
-        .def_property_readonly("health", &SightComponent::SeenHealthInfo::GetHealthComponent);
+        .def_property_readonly("transform", &SightComponent::SeenHealthInfo::GetPyTransformComponent)
+        .def_property_readonly("collider", &SightComponent::SeenHealthInfo::GetPyColliderComponent)
+        .def_property_readonly("health", &SightComponent::SeenHealthInfo::GetPyHealthComponent);
 
     py::class_<BotComponent, std::shared_ptr<BotComponent>>(m, "ActionComponent")
         .def_property_readonly("canPerformAction", &BotComponent::CanPyPerformAction);

@@ -8,6 +8,7 @@ import bot
 import movement
 import decisionMaking
 from botbattles import TransformComponent
+from botbattles import ColliderComponent
 from botbattles import RigidbodyComponent
 from botbattles import WeaponComponent
 from botbattles import HealthComponent
@@ -39,18 +40,6 @@ class Idle(State):
         bot.agent.stopMove = False
         bot.agent.stopRotate = False
 
-class GoTo(State):
-    def __init__(self, worldOriginPosition, worldDestinationPosition):
-        self.worldOriginPosition = worldOriginPosition
-        self.worldDestinationPosition = worldDestinationPosition
-
-    def enter(self, bot):
-        bot.agent.goTo(self.worldOriginPosition, self.worldDestinationPosition)
-        bot.agent.autoRotate = True
-
-    def exit(self, bot):
-        bot.agent.autoRotate = False
-
 class GoToClosestWeaponSpawner(State):
     def enter(self, bot):
         weaponSpawnerTiles = bot.graph.getTilesOfType(TileType.WEAPON_SPAWNER)
@@ -71,7 +60,7 @@ class GoToClosestWeaponSpawner(State):
             return
 
         worldDestinationPosition = bot.map.getWorldPosition(closestWeaponSpawnerTile)
-        bot.agent.goTo(bot.transform.position, worldDestinationPosition)
+        bot.agent.goToPosition(bot.transform.position, worldDestinationPosition)
         bot.agent.autoRotate = True
 
     def exit(self, bot):
@@ -97,7 +86,7 @@ class GoToClosestHealthSpawner(State):
             return
 
         worldDestinationPosition = bot.map.getWorldPosition(closestHealthSpawnerTile)
-        bot.agent.goTo(bot.transform.position, worldDestinationPosition)
+        bot.agent.goToPosition(bot.transform.position, worldDestinationPosition)
         bot.agent.autoRotate = True
 
     def exit(self, bot):
@@ -108,15 +97,28 @@ class GoToLastKnownPosition(State):
         self.seenBotInfo = seenBotInfo
 
     def enter(self, bot):
-        bot.agent.goTo(bot.transform.position, self.seenBotInfo.transform.position)
+        bot.agent.goToPosition(bot.transform.position, self.seenBotInfo.transform.position)
         bot.agent.autoRotate = True
 
     def exit(self, bot):
         bot.agent.autoRotate = False
 
+class GoForward(State):
+    def enter(self, bot):
+        direction = (bot.transform.direction[0], bot.transform.direction[1])
+        bot.agent.goToDirection(direction)
+
+class GoBackward(State):
+    def enter(self, bot):
+        direction = (-bot.transform.direction[0], -bot.transform.direction[1])
+        bot.agent.goToDirection(direction)
+
 class ShootPrimaryWeapon(State):
     def __init__(self, seenBotEntity):
         self.seenBotEntity = seenBotEntity
+
+    def enter(self, bot):
+        bot.agent.stopMove = True
 
     def update(self, bot, input):
         seenBotInfo = bot.sight.getSeenBotInfo(self.seenBotEntity)
@@ -130,16 +132,29 @@ class ShootPrimaryWeapon(State):
         if bot.agent.finishedRotate:
             input.shootPrimaryWeapon()
 
+    def exit(self, bot):
+        bot.agent.stopMove = False
+
 class Reload(State):
+    def enter(self, bot):
+        bot.agent.stopMove = True
+        bot.agent.stopRotate = True
+
     def update(self, bot, input):
         input.Reload()
+
+    def exit(self, bot):
+        bot.agent.stopMove = False
+        bot.agent.stopRotate = False
 
 class ShootSecondaryWeapon(State):
     def __init__(self, seenBotEntity):
         self.seenBotEntity = seenBotEntity
 
+    def enter(self, bot):
+        bot.agent.stopMove = True
+
     def update(self, bot, input):
-        logging.info('update')
         seenBotInfo = bot.sight.getSeenBotInfo(self.seenBotEntity)
         if seenBotInfo == None:
             return
@@ -149,11 +164,25 @@ class ShootSecondaryWeapon(State):
         bot.agent.lookAt((direction.x, direction.y))
 
         if bot.agent.finishedRotate:
+            logging.info('finished rotating')
             input.shootSecondaryWeapon()
+        else:
+            logging.info('not finished rotating')
+
+    def exit(self, bot):
+        bot.agent.stopMove = False
 
 class Heal(State):
+    def enter(self, bot):
+        bot.agent.stopMove = True
+        bot.agent.stopRotate = True
+
     def update(self, bot, input):
         input.Heal()
+
+    def enter(self, bot):
+        bot.agent.stopMove = False
+        bot.agent.stopRotate = False
 
 class FSM:
     def __init__(self, bot):
@@ -170,6 +199,7 @@ class FSM:
 
            self.currentState.exit(self.bot)
 
+        logging.info('CHANGE STATE: %s', newState.__class__.__name__)
         self.currentState = newState
         self.currentState.enter(self.bot)
 

@@ -38,6 +38,14 @@ struct ColliderComponent : public Component
     U64 Write(OutputMemoryStream& outputStream, U64 dirtyState) const override;
 #endif
 
+#ifdef _CLIENT
+    // Python
+    std::tuple<F32, F32> GetPySize() const
+    {
+        return std::make_tuple(m_size.x, m_size.y);
+    }
+#endif
+
     // Networked
     glm::vec2 m_size;
     ShapeType m_shapeType;

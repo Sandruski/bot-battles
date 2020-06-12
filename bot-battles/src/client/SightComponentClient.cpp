@@ -2,6 +2,7 @@
 
 #include "BotComponent.h"
 #include "ClientComponent.h"
+#include "ColliderComponent.h"
 #include "ComponentManager.h"
 #include "GameClient.h"
 #include "HealthComponent.h"
@@ -14,15 +15,18 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 SightComponent::SeenBotInfo::SeenBotInfo()
     : m_transformComponent()
+    , m_colliderComponent()
     , m_rigidbodyComponent()
     , m_weaponComponent()
     , m_healthComponent()
+    , m_botComponent()
 {
 }
 
 //----------------------------------------------------------------------------------------------------
 SightComponent::SeenWeaponInfo::SeenWeaponInfo()
     : m_transformComponent()
+    , m_colliderComponent()
     , m_weaponComponent()
 {
 }
@@ -30,6 +34,7 @@ SightComponent::SeenWeaponInfo::SeenWeaponInfo()
 //----------------------------------------------------------------------------------------------------
 SightComponent::SeenHealthInfo::SeenHealthInfo()
     : m_transformComponent()
+    , m_colliderComponent()
     , m_healthComponent()
 {
 }
@@ -64,9 +69,11 @@ SightComponent::SeenBotInfo SightComponent::GetPySeenBotInfo(Entity entity) cons
     std::vector<Entity>::const_iterator it = std::find(seenBots.begin(), seenBots.end(), entity);
     if (it != seenBots.end()) {
         seenBotInfo.m_transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity).lock();
+        seenBotInfo.m_colliderComponent = g_gameClient->GetComponentManager().GetComponent<ColliderComponent>(entity).lock();
         seenBotInfo.m_rigidbodyComponent = g_gameClient->GetComponentManager().GetComponent<RigidbodyComponent>(entity).lock();
         seenBotInfo.m_weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(entity).lock();
         seenBotInfo.m_healthComponent = g_gameClient->GetComponentManager().GetComponent<HealthComponent>(entity).lock();
+        seenBotInfo.m_botComponent = g_gameClient->GetComponentManager().GetComponent<BotComponent>(entity).lock();
     }
 
     return seenBotInfo;
@@ -102,6 +109,7 @@ SightComponent::SeenWeaponInfo SightComponent::GetPySeenWeaponInfo(Entity entity
     std::vector<Entity>::const_iterator it = std::find(seenWeapons.begin(), seenWeapons.end(), entity);
     if (it != seenWeapons.end()) {
         seenWeaponInfo.m_transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity).lock();
+        seenWeaponInfo.m_colliderComponent = g_gameClient->GetComponentManager().GetComponent<ColliderComponent>(entity).lock();
         seenWeaponInfo.m_weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(entity).lock();
     }
 
@@ -138,6 +146,7 @@ SightComponent::SeenHealthInfo SightComponent::GetPySeenHealthInfo(Entity entity
     std::vector<Entity>::const_iterator it = std::find(seenHealths.begin(), seenHealths.end(), entity);
     if (it != seenHealths.end()) {
         seenHealthInfo.m_transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity).lock();
+        seenHealthInfo.m_colliderComponent = g_gameClient->GetComponentManager().GetComponent<ColliderComponent>(entity).lock();
         seenHealthInfo.m_healthComponent = g_gameClient->GetComponentManager().GetComponent<HealthComponent>(entity).lock();
     }
 

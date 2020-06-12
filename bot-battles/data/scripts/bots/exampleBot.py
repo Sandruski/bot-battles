@@ -8,6 +8,7 @@ import bot
 import movement
 import decisionMaking
 from botbattles import TransformComponent
+from botbattles import ColliderComponent
 from botbattles import RigidbodyComponent
 from botbattles import WeaponComponent
 from botbattles import HealthComponent
@@ -18,8 +19,8 @@ from botbattles import InputComponent
 from botbattles import TileType
 
 class ExampleBot(bot.Bot):
-    def __init__(self, transformComponent : TransformComponent, rigidbodyComponent : RigidbodyComponent, weaponComponent : WeaponComponent, healthComponent : HealthComponent, sightComponent : SightComponent, actionComponent : ActionComponent, mapComponent : MapComponent):
-        super().__init__(transformComponent, rigidbodyComponent, weaponComponent, healthComponent, sightComponent, actionComponent, mapComponent)
+    def __init__(self, transformComponent : TransformComponent, colliderComponent : ColliderComponent, rigidbodyComponent : RigidbodyComponent, weaponComponent : WeaponComponent, healthComponent : HealthComponent, sightComponent : SightComponent, actionComponent : ActionComponent, mapComponent : MapComponent):
+        super().__init__(transformComponent, colliderComponent, rigidbodyComponent, weaponComponent, healthComponent, sightComponent, actionComponent, mapComponent)
         self.graph = Graph(self.map)
         self.agent = movement.Agent(self)
         self.fsm = decisionMaking.FSM(self)
@@ -31,33 +32,48 @@ class ExampleBot(bot.Bot):
         #    if self.lastSeenBotEntity != None:
         #        self.fsm.changeCurrentState(decisionMaking.ShootPrimaryWeapon(self.lastSeenBotEntity))
         if self.doOnce:
-            logging.info('doOnce')
             self.fsm.changeCurrentState(decisionMaking.GoToClosestWeaponSpawner())
             self.doOnce = False
 
         if self.lastSeenBotEntity != None:
             seenBotInfo = self.sight.getSeenBotInfo(self.lastSeenBotEntity)
-            distance = glm.distance(glm.vec2(seenBotInfo.transform.position[0], seenBotInfo.transform.position[1]),  glm.vec2(self.transform.position[0], self.transform.position[1]))
-
-            if self.weapon.currentAmmo > 0:
-                if distance <= self.weapon.primaryWeaponRange:
-                    self.fsm.changeCurrentState(decisionMaking.ShootPrimaryWeapon(self.lastSeenBotEntity))
-            #elif self.weapon.ammoBoxAmmo > 0:
-            else:
-                if distance <= self.weapon.secondaryWeaponRange:
-                    self.fsm.changeCurrentState(decisionMaking.ShootSecondaryWeapon(self.lastSeenBotEntity))
+            self.attack(seenBotInfo)                    
 
         self.fsm.updateCurrentState(input)
         self.agent.update(input)
 
     def onSeenNewBot(self, input, seenBotEntity):
+        logging.info('onSeenNewBot')
         self.lastSeenBotEntity = seenBotEntity
 
     def onSeenLostBot(self, input, seenBotEntity):
+        logging.info('onSeenLostBot')
         self.lastSeenBotEntity = None
 
         seenBotInfo = self.sight.getSeenBotInfo(seenBotEntity)
         self.fsm.changeCurrentState(decisionMaking.GoToLastKnownPosition(seenBotInfo))
+
+    def onHitByBullet(self, input, health, seenBotEntity, seenBotInfo):
+        self.attack(seenBotInfo)
+
+    def attack(self, seenBotInfo):
+        distance = glm.distance(glm.vec2(seenBotInfo.transform.position[0], seenBotInfo.transform.position[1]),  glm.vec2(self.transform.position[0], self.transform.position[1]))
+        colliderRange = self.collider.size[0] / 2.0 + seenBotInfo.collider.size[0] / 2.0
+        logging.info('my bot pos %f %f', self.transform.position[0], self.transform.position[1])
+        logging.info('seen bot pos %f %f', seenBotInfo.transform.position[0], seenBotInfo.transform.position[1])
+        if self.weapon.currentAmmo == 1000: # TODO
+            if distance <= self.weapon.primaryWeaponRange and distance >= colliderRange:
+                self.fsm.changeCurrentState(decisionMaking.ShootPrimaryWeapon(self.lastSeenBotEntity))
+        #elif self.weapon.ammoBoxAmmo > 0:
+        else:
+            logging.info('distance %f', distance)
+            if distance <= self.weapon.secondaryWeaponRange:
+                if distance >= colliderRange:
+                    self.fsm.changeCurrentState(decisionMaking.ShootSecondaryWeapon(self.lastSeenBotEntity))
+                else:
+                    self.fsm.changeCurrentState(decisionMaking.GoBackward())
+            else:
+                self.fsm.changeCurrentState(decisionMaking.GoForward())
 
 class Graph:
     def __init__(self, map : MapComponent):
