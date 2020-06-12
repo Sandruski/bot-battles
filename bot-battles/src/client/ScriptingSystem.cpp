@@ -213,7 +213,7 @@ void ScriptingSystem::InitScripts() const
         std::weak_ptr<BotComponent> botComponent = g_gameClient->GetComponentManager().GetComponent<BotComponent>(entity);
         std::weak_ptr<MapComponent> mapComponent = g_gameClient->GetMapComponent();
         try {
-            scriptingComponent.lock()->m_mainModule.attr("init")(clientComponent.lock()->m_bot.c_str(), transformComponent.lock(), rigidbodyComponent.lock(), weaponComponent.lock(), healthComponent.lock(), sightComponent.lock(), botComponent.lock(), mapComponent.lock());
+            scriptingComponent.lock()->m_mainModule.attr("init")(clientComponent.lock()->m_bot.c_str(), clientComponent.lock()->m_playerID, transformComponent.lock(), rigidbodyComponent.lock(), weaponComponent.lock(), healthComponent.lock(), sightComponent.lock(), botComponent.lock(), mapComponent.lock());
         } catch (const std::runtime_error& re) {
             OutputDebugStringA(re.what());
             ::MessageBoxA(NULL, re.what(), "Error initializing script", MB_OK);

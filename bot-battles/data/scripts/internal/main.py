@@ -13,7 +13,7 @@ import botbattles
 stream = None
 myBot = None
 
-def init(scriptName, transformComponent, rigidbodyComponent, weaponComponent, healthComponent, sightComponent, actionComponent, mapComponent):
+def init(scriptName, player, transformComponent, rigidbodyComponent, weaponComponent, healthComponent, sightComponent, actionComponent, mapComponent):
     for name, obj in inspect.getmembers(sys.modules[scriptName]):
         if inspect.isclass(obj) and issubclass(obj, bot.Bot):
             global myBot
@@ -29,7 +29,8 @@ def init(scriptName, transformComponent, rigidbodyComponent, weaponComponent, he
     streamHandler = logging.StreamHandler(stream)
     now = datetime.datetime.now()
     nowText = now.strftime("%d.%m.%Y-%H.%M.%S")
-    fileHandler = logging.FileHandler('%s_%s.log' % (nowText, myBot.__class__.__name__))
+    playerNumber = player + 1
+    fileHandler = logging.FileHandler('%s_%s_P%u.log' % (nowText, myBot.__class__.__name__, playerNumber))
     formatter = logging.Formatter('[%(levelname)s] %(message)s')
     streamHandler.setFormatter(formatter)
     fileHandler.setFormatter(formatter)

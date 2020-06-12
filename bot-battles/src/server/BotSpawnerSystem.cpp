@@ -117,6 +117,9 @@ Entity BotSpawnerSystem::SpawnBot(PlayerID playerID) const
     std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
     std::weak_ptr<ClientProxy> clientProxy = serverComponent.lock()->GetClientProxy(playerID);
     labelComponent.lock()->m_text = clientProxy.lock()->GetName();
+    labelComponent.lock()->m_text.append(" (P");
+    labelComponent.lock()->m_text.append(std::to_string(playerNumber));
+    labelComponent.lock()->m_text.append(")");
     labelComponent.lock()->m_offset = glm::vec2(0.0f, 35.0f);
     switch (playerID) {
     case 0: {
