@@ -37,7 +37,8 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream)
         inputStream.Read(isReplicated);
         bool wasReplicated = false;
         inputStream.Read(wasReplicated);
-
+        ILOG("NEW LOOP for networkID %u", networkID);
+        ILOG("remainingbitcount %u length %u", inputStream.GetRemainingBitCount(), inputStream.GetByteLength());
         if (isReplicated) {
             ReplicationActionType replicationActionType = ReplicationActionType::NONE;
             inputStream.Read(replicationActionType, 2);
@@ -63,6 +64,7 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream)
             }
 
             default: {
+                assert(false);
                 WLOG("Unknown replication action received from networkID %u", networkID);
                 break;
             }

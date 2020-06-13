@@ -110,6 +110,7 @@ void ReplicationManagerServer::Write(OutputMemoryStream& outputStream, Replicati
         const bool hasReplicationAction = replicationCommand.m_replicationActionType != ReplicationActionType::NONE;
         if ((!isReplicated && wasReplicated) || (isReplicated && !wasReplicated) || (isReplicated && hasDirtyState && hasReplicationAction)) {
             NetworkID networkID = pair.first;
+            ILOG("Write networkID %u", networkID);
             outputStream.Write(networkID);
             outputStream.Write(isReplicated);
             outputStream.Write(wasReplicated);

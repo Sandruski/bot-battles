@@ -46,9 +46,9 @@ enum class ComponentMemberType : U64 {
     SPRITE_FILE = 1ULL << 16,
     SPRITE_SPRITE_NAME_TO_TEXTURE_COORDS = 1ULL << 17,
     SPRITE_SPRITE_NAME = 1ULL << 18,
-    SPRITE_COLOR = 1ULL << 19,
-    SPRITE_PCT = 1ULL << 20,
-    SPRITE_VISIBLE = 1ULL << 21,
+    SPRITE_VISIBLE = 1ULL << 19,
+    SPRITE_COLOR = 1ULL << 20,
+    SPRITE_PCT = 1ULL << 21,
 
     // GAMEPLAY
     // Weapon
@@ -75,7 +75,7 @@ enum class ComponentMemberType : U64 {
     HEALTH_HP = 1ULL << 40,
     HEALTH_TIME_HEAL = 1ULL << 41,
     HEALTH_COOLDOWN_HEAL = 1ULL << 42,
-    HEALTH_HIT_ENTITY_LAST_SHOT = 1LL << 43,
+    HEALTH_HIT_ENTITY_LAST_SHOT = 1ULL << 43,
     HEALTH_DIRECTION_LAST_SHOT = 1ULL << 44,
 
     // Sight
