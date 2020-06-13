@@ -65,9 +65,12 @@ class LookAt(State):
         bot.agent.lookAt(self.worldDestinationDirection)
 
 class Rotate(State):
+    def __init__(self, angularVelocity):
+        self.angularVelocity = angularVelocity
+
     def enter(self, bot):
         bot.agent.stopMove = True
-        bot.agent.angularVelocity = bot.rigidbody.maxAngularVelocity
+        bot.agent.angularVelocity = self.angularVelocity
         bot.agent.useAngularVelocity = True
 
     def exit(self, bot):
@@ -83,10 +86,6 @@ class GoToCenterMap(State):
         bot.agent.followPath = True
         bot.agent.autoRotate = True
 
-    def update(self, bot, input):
-        if bot.agent.finishedMove == True:
-            bot.fsm.changeCurrentState(Rotate())
-
     def exit(self, bot):
         bot.agent.followPath = False
         bot.agent.autoRotate = False
@@ -101,9 +100,9 @@ class GoToClosestWeaponSpawner(State):
                 continue
 
             closestWeaponSpawnerWorldPosition = bot.map.getWorldPosition(closestWeaponSpawnerTile)
-            closestWeaponSpawnerDistance = glm.distance(glm.vec2(closestWeaponSpawnerWorldPosition[0], closestWeaponSpawnerWorldPosition[1]),  glm.vec2(bot.transform.position[0], bot.transform.position[1]))
+            closestWeaponSpawnerDistance = glm.distance(glm.vec2(closestWeaponSpawnerWorldPosition[0], closestWeaponSpawnerWorldPosition[1]), glm.vec2(bot.transform.position[0], bot.transform.position[1]))
             weaponSpawnerWorldPosition = bot.map.getWorldPosition(weaponSpawnerTile)
-            weaponSpawnerDistance = glm.distance(glm.vec2(weaponSpawnerWorldPosition[0], weaponSpawnerWorldPosition[1]),  glm.vec2(bot.transform.position[0], bot.transform.position[1]))
+            weaponSpawnerDistance = glm.distance(glm.vec2(weaponSpawnerWorldPosition[0], weaponSpawnerWorldPosition[1]), glm.vec2(bot.transform.position[0], bot.transform.position[1]))
             if weaponSpawnerDistance < closestWeaponSpawnerDistance:
                 closestWeaponSpawnerTile = weaponSpawnerTile
         
@@ -129,9 +128,9 @@ class GoToClosestHealthSpawner(State):
                 continue
 
             closestHealthSpawnerWorldPosition = bot.map.getWorldPosition(closestHealthSpawnerTile)
-            closestHealthSpawnerDistance = glm.distance(glm.vec2(closestHealthSpawnerWorldPosition[0], closestHealthSpawnerWorldPosition[1]),  glm.vec2(bot.transform.position[0], bot.transform.position[1]))
+            closestHealthSpawnerDistance = glm.distance(glm.vec2(closestHealthSpawnerWorldPosition[0], closestHealthSpawnerWorldPosition[1]), glm.vec2(bot.transform.position[0], bot.transform.position[1]))
             healthSpawnerWorldPosition = bot.map.getWorldPosition(healthSpawnerTile)
-            healthSpawnerDistance = glm.distance(glm.vec2(healthSpawnerWorldPosition[0], healthSpawnerWorldPosition[1]),  glm.vec2(bot.transform.position[0], bot.transform.position[1]))
+            healthSpawnerDistance = glm.distance(glm.vec2(healthSpawnerWorldPosition[0], healthSpawnerWorldPosition[1]), glm.vec2(bot.transform.position[0], bot.transform.position[1]))
             if healthSpawnerDistance < closestHealthSpawnerDistance:
                 closestHealthSpawnerTile = healthSpawnerTile
         
@@ -242,7 +241,7 @@ class Heal(State):
     def update(self, bot, input):
         input.heal()
 
-    def enter(self, bot):
+    def exit(self, bot):
         bot.agent.stopMove = False
         bot.agent.stopRotate = False
 
@@ -264,7 +263,7 @@ class FSM:
         self.currentState = newState
         self.currentState.enter(self.bot)
 
-        logging.info('CHANGE STATE: %s', newState.getName())
+        logging.info('CHANGE STATE: %s', self.currentState.getName())
 
     def updateCurrentState(self, input):
         if self.currentState != None:

@@ -41,7 +41,7 @@ class PathFinder:
        while current != origin:
            path.append(current)
            current = cameFrom[current]
-       path.append(origin)
+       #path.append(origin)
        path.reverse()
        return path
 
@@ -124,8 +124,9 @@ class Agent:
             input.linearVelocityX = linearVelocity.x
             input.linearVelocityY = linearVelocity.y
         else:
-            input.linearVelocityX = 0
-            input.linearVelocityY = 0
+            logging.info('stop move')
+            input.linearVelocityX = 0.0
+            input.linearVelocityY = 0.0
 
         # Rotation
         if self.stopRotate == False:
@@ -135,7 +136,8 @@ class Agent:
 
             input.angularVelocity = angularVelocity
         else:
-            input.angularVelocity = 0
+            logging.info('stop rotate')
+            input.angularVelocity = 0.0
 
     def move(self):
         linearVelocity = glm.vec2(0.0, 0.0)

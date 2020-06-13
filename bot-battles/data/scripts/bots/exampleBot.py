@@ -51,10 +51,15 @@ class ExampleBot(bot.Bot):
                 else:
                     self.fsm.changeCurrentState(decisionMaking.GoForward())
         else:
+            centerTile = (self.map.tileCount[0] // 2, self.map.tileCount[1] // 2)
+            centerWorldPosition = self.map.getWorldPosition(centerTile)
+
             if self.health.currentHP <= self.health.maxHP / 2.0:
                 self.fsm.changeCurrentState(decisionMaking.GoToClosestHealthSpawner())
             elif self.weapon.ammoBoxAmmo <= 0:
                 self.fsm.changeCurrentState(decisionMaking.GoToClosestWeaponSpawner())
+            elif glm.distance(glm.vec2(centerWorldPosition[0], centerWorldPosition[1]),  glm.vec2(self.transform.position[0], self.transform.position[1])) <= self.agent.minSeekDistance:
+                self.fsm.changeCurrentState(decisionMaking.Rotate(self.rigidbody.maxAngularVelocity / 2.0))
             else:
                 self.fsm.changeCurrentState(decisionMaking.GoToCenterMap())
 
