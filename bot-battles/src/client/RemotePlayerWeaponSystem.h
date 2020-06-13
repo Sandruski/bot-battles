@@ -17,6 +17,7 @@ public:
     RemotePlayerWeaponSystem();
 
     bool Render() override;
+    bool RenderGui() override;
 };
 }
 

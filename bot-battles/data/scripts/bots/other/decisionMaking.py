@@ -67,7 +67,7 @@ class LookAt(State):
 class GoToCenterMap(State):
     def enter(self, bot):
         centerTile = (bot.map.tileCount[0] // 2, bot.map.tileCount[1] // 2)
-        logging.info('tile is %i %i', centerTile[0], centerTile[1])
+
         worldDestinationPosition = bot.map.getWorldPosition(centerTile)
         bot.agent.goToPosition(bot.transform.position, worldDestinationPosition)
         bot.agent.followPath = True

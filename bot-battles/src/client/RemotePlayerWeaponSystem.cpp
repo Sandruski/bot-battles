@@ -61,4 +61,43 @@ bool RemotePlayerWeaponSystem::Render()
 
     return true;
 }
+
+//----------------------------------------------------------------------------------------------------
+bool RemotePlayerWeaponSystem::RenderGui()
+{
+    OPTICK_EVENT();
+
+    std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
+    LinkingContext& linkingContext = g_gameClient->GetLinkingContext();
+    for (const auto& entity : m_entities) {
+        NetworkID networkID = linkingContext.GetNetworkID(entity);
+        if (networkID >= INVALID_NETWORK_ID) {
+            continue;
+        }
+
+        PlayerID playerID = INVALID_PLAYER_ID;
+        const bool isLocalEntity = clientComponent.lock()->IsLocalEntity(entity);
+        if (isLocalEntity) {
+            playerID = clientComponent.lock()->m_playerID;
+        } else {
+            switch (clientComponent.lock()->m_playerID) {
+            case 0: {
+                playerID = 1;
+                break;
+            }
+            case 1: {
+                playerID = 0;
+                break;
+            }
+            default: {
+                break;
+            }
+            }
+        }
+        std::weak_ptr<WeaponComponent> weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(entity);
+        DrawGui(playerID, weaponComponent);
+    }
+
+    return true;
+}
 }
