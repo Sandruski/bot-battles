@@ -25,17 +25,31 @@ class ExampleBot(bot.Bot):
         self.agent = movement.Agent(self)
         self.fsm = decisionMaking.FSM(self)
         self.lastSeenBotEntity = None
+        self.hitByBullet = False
 
         closestCenter = self.getClosestCenter()
         self.closestCenterWorldPosition = self.map.getWorldPosition(closestCenter)
 
     def tick(self, input : InputComponent):
         if self.lastSeenBotEntity != None:
+            self.hitByBullet = False
+
             seenBotInfo = self.sight.getSeenBotInfo(self.lastSeenBotEntity)
             distance = glm.distance(glm.vec2(seenBotInfo.transform.position[0], seenBotInfo.transform.position[1]),  glm.vec2(self.transform.position[0], self.transform.position[1]))
             colliderRange = self.collider.size[0] / 2.0 + seenBotInfo.collider.size[0] / 2.0
 
-            if self.weapon.currentAmmo > 0:
+            # Health
+            if self.health.currentHP < seenBotInfo.health.currentHP:
+                if self.health.firstAidBoxHP > 0:
+                    if self.fsm.isCurrentState("Heal") == False:
+                        self.fsm.changeCurrentState(decisionMaking.Heal())
+                else:
+                    if self.fsm.isCurrentState("GoToHealthSpawner") == False:
+                        closestHealthSpawner = self.getClosestHealthSpawner()
+                        worldDestinationPosition = self.map.getWorldPosition(closestHealthSpawner)
+                        self.fsm.changeCurrentState(decisionMaking.GoToHealthSpawner(self.transform.position, worldDestinationPosition))
+            # Weapon
+            elif self.weapon.currentAmmo > 0:
                 if distance <= self.weapon.primaryWeaponRange:
                     if distance >= colliderRange:
                         if self.fsm.isCurrentState("ShootPrimaryWeapon") == False:
@@ -64,24 +78,36 @@ class ExampleBot(bot.Bot):
                     if self.fsm.isCurrentState("GoForward") == False:
                         worldDestinationDirection = self.transform.direction
                         self.fsm.changeCurrentState(decisionMaking.GoForward(worldDestinationDirection))  
-        else:
-            if self.health.currentHP <= self.health.maxHP / 2.0:
-                if self.fsm.isCurrentState("GoToHealthSpawner") == False:
-                    closestHealthSpawner = self.getClosestHealthSpawner()
-                    worldDestinationPosition = self.map.getWorldPosition(closestHealthSpawner)
-                    self.fsm.changeCurrentState(decisionMaking.GoToHealthSpawner(self.transform.position, worldDestinationPosition))
-            elif self.weapon.ammoBoxAmmo <= 0:
-                if self.fsm.isCurrentState("GoToWeaponSpawner") == False:
-                    closestWeaponSpawner = self.getClosestWeaponSpawner()
-                    worldDestinationPosition = self.map.getWorldPosition(closestWeaponSpawner)
-                    self.fsm.changeCurrentState(decisionMaking.GoToWeaponSpawner(self.transform.position, worldDestinationPosition))
-            elif glm.distance(glm.vec2(self.closestCenterWorldPosition[0], self.closestCenterWorldPosition[1]),  glm.vec2(self.transform.position[0], self.transform.position[1])) <= self.agent.minSeekDistance:
-                if self.fsm.isCurrentState("Rotate") == False:
-                    self.fsm.changeCurrentState(decisionMaking.Rotate(self.rigidbody.maxAngularVelocity / 2.0))
+        elif self.hitByBullet == False:
+            # Health
+            if self.health.currentHP < self.health.maxHP:
+                if self.health.firstAidBoxHP > 0:
+                    if self.fsm.isCurrentState("Heal") == False:
+                        self.fsm.changeCurrentState(decisionMaking.Heal())
+                else:
+                    if self.fsm.isCurrentState("GoToHealthSpawner") == False:
+                        closestHealthSpawner = self.getClosestHealthSpawner()
+                        worldDestinationPosition = self.map.getWorldPosition(closestHealthSpawner)
+                        self.fsm.changeCurrentState(decisionMaking.GoToHealthSpawner(self.transform.position, worldDestinationPosition))
+            # Weapon
+            elif self.weapon.currentAmmo < self.weapon.maxAmmo:
+                if self.weapon.ammoBoxAmmo > 0:
+                    if self.fsm.isCurrentState("Reload") == False:
+                        self.fsm.changeCurrentState(decisionMaking.Reload())
+                else:
+                    if self.fsm.isCurrentState("GoToWeaponSpawner") == False:
+                        closestWeaponSpawner = self.getClosestWeaponSpawner()
+                        worldDestinationPosition = self.map.getWorldPosition(closestWeaponSpawner)
+                        self.fsm.changeCurrentState(decisionMaking.GoToWeaponSpawner(self.transform.position, worldDestinationPosition))
+            # ...
             else:
-                if self.fsm.isCurrentState("GoToCenterMap") == False:
-                    worldDestinationPosition = self.closestCenterWorldPosition
-                    self.fsm.changeCurrentState(decisionMaking.GoToCenterMap(self.transform.position, worldDestinationPosition))
+                if glm.distance(glm.vec2(self.closestCenterWorldPosition[0], self.closestCenterWorldPosition[1]),  glm.vec2(self.transform.position[0], self.transform.position[1])) <= self.agent.minSeekDistance:
+                    if self.fsm.isCurrentState("Rotate") == False:
+                        self.fsm.changeCurrentState(decisionMaking.Rotate(self.rigidbody.maxAngularVelocity / 2.0))
+                else:
+                    if self.fsm.isCurrentState("GoToCenterMap") == False:
+                        worldDestinationPosition = self.closestCenterWorldPosition
+                        self.fsm.changeCurrentState(decisionMaking.GoToCenterMap(self.transform.position, worldDestinationPosition))
 
         self.fsm.updateCurrentState(input)
         self.agent.update(input)
@@ -100,13 +126,10 @@ class ExampleBot(bot.Bot):
 
     def onHitByBullet(self, input, health, direction):
         logging.info('EVENT: onHitByBullet')
+        self.hitByBullet = True
+
         if self.fsm.isCurrentState("LookAt") == False:
             self.fsm.changeCurrentState(decisionMaking.LookAt((-direction[0], -direction[1])))
-
-    def onHealthPickedUp(self, input):
-        logging.info('EVENT: onHealthPickedUp')
-        if self.fsm.isCurrentState("Heal") == False:
-            self.fsm.changeCurrentState(decisionMaking.Heal())
 
     def getClosestWeaponSpawner(self):
         weaponSpawnerTiles = self.graph.getTilesOfType(TileType.WEAPON_SPAWNER)

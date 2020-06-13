@@ -205,10 +205,14 @@ void HealthSystemServer::OnWeaponHit(Entity shooterEntity, Entity targetEntity, 
     std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
     PlayerID shooterPlayerID = serverComponent.lock()->GetPlayerID(shooterEntity);
     std::weak_ptr<ClientProxy> shooterClientProxy = serverComponent.lock()->GetClientProxy(shooterPlayerID);
-    shooterClientProxy.lock()->m_damageInflicted += currentHPDiff;
+    if (!shooterClientProxy.expired()) {
+        shooterClientProxy.lock()->m_damageInflicted += currentHPDiff;
+    }
     PlayerID targetPlayerID = serverComponent.lock()->GetPlayerID(targetEntity);
     std::weak_ptr<ClientProxy> targetClientProxy = serverComponent.lock()->GetClientProxy(targetPlayerID);
-    targetClientProxy.lock()->m_damageReceived += currentHPDiff;
+    if (!targetClientProxy.expired()) {
+        targetClientProxy.lock()->m_damageReceived += currentHPDiff;
+    }
 
     Event newHealthEvent;
     newHealthEvent.eventType = EventType::HEALTH_HURT;
