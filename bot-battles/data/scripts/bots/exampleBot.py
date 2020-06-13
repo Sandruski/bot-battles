@@ -26,6 +26,9 @@ class ExampleBot(bot.Bot):
         self.fsm = decisionMaking.FSM(self)
         self.lastSeenBotEntity = None
 
+        closestCenter = self.getClosestCenter()
+        self.closestCenterWorldPosition = self.map.getWorldPosition(closestCenter)
+
     def tick(self, input : InputComponent):
         if self.lastSeenBotEntity != None:
             seenBotInfo = self.sight.getSeenBotInfo(self.lastSeenBotEntity)
@@ -62,9 +65,6 @@ class ExampleBot(bot.Bot):
                         worldDestinationDirection = self.transform.direction
                         self.fsm.changeCurrentState(decisionMaking.GoForward(worldDestinationDirection))  
         else:
-            centerMap = (self.map.tileCount[0] // 2, self.map.tileCount[1] // 2)
-            centerWorldPosition = self.map.getWorldPosition(centerMap)
-
             if self.health.currentHP <= self.health.maxHP / 2.0:
                 if self.fsm.isCurrentState("GoToHealthSpawner") == False:
                     closestHealthSpawner = self.getClosestHealthSpawner()
@@ -75,23 +75,23 @@ class ExampleBot(bot.Bot):
                     closestWeaponSpawner = self.getClosestWeaponSpawner()
                     worldDestinationPosition = self.map.getWorldPosition(closestWeaponSpawner)
                     self.fsm.changeCurrentState(decisionMaking.GoToWeaponSpawner(self.transform.position, worldDestinationPosition))
-            elif glm.distance(glm.vec2(centerWorldPosition[0], centerWorldPosition[1]),  glm.vec2(self.transform.position[0], self.transform.position[1])) <= self.agent.minSeekDistance:
+            elif glm.distance(glm.vec2(self.closestCenterWorldPosition[0], self.closestCenterWorldPosition[1]),  glm.vec2(self.transform.position[0], self.transform.position[1])) <= self.agent.minSeekDistance:
                 if self.fsm.isCurrentState("Rotate") == False:
                     self.fsm.changeCurrentState(decisionMaking.Rotate(self.rigidbody.maxAngularVelocity / 2.0))
             else:
                 if self.fsm.isCurrentState("GoToCenterMap") == False:
-                    worldDestinationPosition = self.map.getWorldPosition(centerMap)
+                    worldDestinationPosition = self.closestCenterWorldPosition
                     self.fsm.changeCurrentState(decisionMaking.GoToCenterMap(self.transform.position, worldDestinationPosition))
 
         self.fsm.updateCurrentState(input)
         self.agent.update(input)
 
     def onSeenNewBot(self, input, seenBotEntity):
-        logging.info('onSeenNewBot')
+        logging.info('EVENT: onSeenNewBot')
         self.lastSeenBotEntity = seenBotEntity
 
     def onSeenLostBot(self, input, seenBotEntity):
-        logging.info('onSeenLostBot')
+        logging.info('EVENT: onSeenLostBot')
         self.lastSeenBotEntity = None
 
         if self.fsm.isCurrentState("GoToLastKnownPosition") == False:
@@ -99,12 +99,12 @@ class ExampleBot(bot.Bot):
             self.fsm.changeCurrentState(decisionMaking.GoToLastKnownPosition(self.transform.position, seenBotInfo.transform.position))
 
     def onHitByBullet(self, input, health, direction):
-        logging.info('onHitByBullet')
+        logging.info('EVENT: onHitByBullet')
         if self.fsm.isCurrentState("LookAt") == False:
             self.fsm.changeCurrentState(decisionMaking.LookAt((-direction[0], -direction[1])))
 
     def onHealthPickedUp(self, input):
-        logging.info('onHealthPickedUp')
+        logging.info('EVENT: onHealthPickedUp')
         if self.fsm.isCurrentState("Heal") == False:
             self.fsm.changeCurrentState(decisionMaking.Heal())
 
@@ -141,6 +141,30 @@ class ExampleBot(bot.Bot):
                 closestHealthSpawnerTile = healthSpawnerTile
 
         return closestHealthSpawnerTile
+
+    def getClosestCenter(self):
+        center = (self.map.tileCount[0] // 2, self.map.tileCount[1] // 2)
+        if self.graph.isWalkable(center) == True:
+            return center
+
+        closestCenterTile = None
+        for i in range(0, self.map.tileCount[0]):
+            for j in range(0, self.map.tileCount[1]):
+                tile = (i, j)
+
+                if self.graph.isWalkable(tile) == False:
+                    continue
+
+                if closestCenterTile == None:
+                    closestCenterTile = tile
+                    continue
+
+                closestCenterDistance = glm.distance(glm.vec2(closestCenterTile[0], closestCenterTile[1]), glm.vec2(center[0], center[1]))
+                tileDistance = glm.distance(glm.vec2(tile[0], tile[1]), glm.vec2(center[0], center[1]))
+                if tileDistance < closestCenterDistance:
+                    closestCenterTile = tile
+
+        return closestCenterTile
 
 class Graph:
     def __init__(self, map : MapComponent):

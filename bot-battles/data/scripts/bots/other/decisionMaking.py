@@ -74,7 +74,7 @@ class GoToDirection(State):
         self.worldDestinationDirection = worldDestinationDirection
 
     def enter(self, bot):
-        bot.agent.goToDirection(worldDestinationDirection)
+        bot.agent.goToDirection(self.worldDestinationDirection)
         bot.agent.autoRotate = True
 
     def exit(self, bot):
