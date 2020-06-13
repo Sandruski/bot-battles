@@ -43,7 +43,7 @@ class Idle(State):
         bot.agent.stopMove = False
         bot.agent.stopRotate = False
 
-class GoTo(State):
+class GoToPosition(State):
     def __init__(self, worldOriginPosition, worldDestinationPosition):
         self.worldOriginPosition = worldOriginPosition
         self.worldDestinationPosition = worldDestinationPosition
@@ -56,6 +56,35 @@ class GoTo(State):
     def exit(self, bot):
         bot.agent.followPath = False
         bot.agent.autoRotate = False
+
+class GoToWeaponSpawner(GoToPosition):
+    ...
+
+class GoToHealthSpawner(GoToPosition):
+    ...
+
+class GoToLastKnownPosition(GoToPosition):
+    ...
+
+class GoToCenterMap(GoToPosition):
+    ...
+
+class GoToDirection(State):
+    def __init__(self, worldDestinationDirection):
+        self.worldDestinationDirection = worldDestinationDirection
+
+    def enter(self, bot):
+        bot.agent.goToDirection(worldDestinationDirection)
+        bot.agent.autoRotate = True
+
+    def exit(self, bot):
+        bot.agent.autoRotate = False
+
+class GoForward(GoToDirection):
+    ...
+
+class GoBackward(GoToDirection):
+    ...
 
 class LookAt(State):
     def __init__(self, worldDestinationDirection):
@@ -76,106 +105,6 @@ class Rotate(State):
     def exit(self, bot):
         bot.agent.stopMove = False
         bot.agent.useAngularVelocity = False
-
-class GoToCenterMap(State):
-    def enter(self, bot):
-        centerTile = (bot.map.tileCount[0] // 2, bot.map.tileCount[1] // 2)
-
-        worldDestinationPosition = bot.map.getWorldPosition(centerTile)
-        bot.agent.goToPosition(bot.transform.position, worldDestinationPosition)
-        bot.agent.followPath = True
-        bot.agent.autoRotate = True
-
-    def exit(self, bot):
-        bot.agent.followPath = False
-        bot.agent.autoRotate = False
-
-class GoToClosestWeaponSpawner(State):
-    def enter(self, bot):
-        weaponSpawnerTiles = bot.graph.getTilesOfType(TileType.WEAPON_SPAWNER)
-        closestWeaponSpawnerTile = None
-        for weaponSpawnerTile in weaponSpawnerTiles:
-            if closestWeaponSpawnerTile == None:
-                closestWeaponSpawnerTile = weaponSpawnerTile
-                continue
-
-            closestWeaponSpawnerWorldPosition = bot.map.getWorldPosition(closestWeaponSpawnerTile)
-            closestWeaponSpawnerDistance = glm.distance(glm.vec2(closestWeaponSpawnerWorldPosition[0], closestWeaponSpawnerWorldPosition[1]), glm.vec2(bot.transform.position[0], bot.transform.position[1]))
-            weaponSpawnerWorldPosition = bot.map.getWorldPosition(weaponSpawnerTile)
-            weaponSpawnerDistance = glm.distance(glm.vec2(weaponSpawnerWorldPosition[0], weaponSpawnerWorldPosition[1]), glm.vec2(bot.transform.position[0], bot.transform.position[1]))
-            if weaponSpawnerDistance < closestWeaponSpawnerDistance:
-                closestWeaponSpawnerTile = weaponSpawnerTile
-        
-        if closestWeaponSpawnerTile == None:
-            return
-
-        worldDestinationPosition = bot.map.getWorldPosition(closestWeaponSpawnerTile)
-        bot.agent.goToPosition(bot.transform.position, worldDestinationPosition)
-        bot.agent.followPath = True
-        bot.agent.autoRotate = True
-
-    def exit(self, bot):
-        bot.agent.followPath = False
-        bot.agent.autoRotate = False
-
-class GoToClosestHealthSpawner(State):
-    def enter(self, bot):
-        healthSpawnerTiles = bot.graph.getTilesOfType(TileType.HEALTH_SPAWNER)
-        closestHealthSpawnerTile = None
-        for healthSpawnerTile in healthSpawnerTiles:
-            if closestHealthSpawnerTile == None:
-                closestHealthSpawnerTile = healthSpawnerTile
-                continue
-
-            closestHealthSpawnerWorldPosition = bot.map.getWorldPosition(closestHealthSpawnerTile)
-            closestHealthSpawnerDistance = glm.distance(glm.vec2(closestHealthSpawnerWorldPosition[0], closestHealthSpawnerWorldPosition[1]), glm.vec2(bot.transform.position[0], bot.transform.position[1]))
-            healthSpawnerWorldPosition = bot.map.getWorldPosition(healthSpawnerTile)
-            healthSpawnerDistance = glm.distance(glm.vec2(healthSpawnerWorldPosition[0], healthSpawnerWorldPosition[1]), glm.vec2(bot.transform.position[0], bot.transform.position[1]))
-            if healthSpawnerDistance < closestHealthSpawnerDistance:
-                closestHealthSpawnerTile = healthSpawnerTile
-        
-        if closestHealthSpawnerTile == None:
-            return
-
-        worldDestinationPosition = bot.map.getWorldPosition(closestHealthSpawnerTile)
-        bot.agent.goToPosition(bot.transform.position, worldDestinationPosition)
-        bot.agent.followPath = True
-        bot.agent.autoRotate = True
-
-    def exit(self, bot):
-        bot.agent.followPath = False
-        bot.agent.autoRotate = False
-
-class GoToLastKnownPosition(State):
-    def __init__(self, seenBotInfo):
-        self.seenBotInfo = seenBotInfo
-
-    def enter(self, bot):
-        bot.agent.goToPosition(bot.transform.position, self.seenBotInfo.transform.position)
-        bot.agent.followPath = True
-        bot.agent.autoRotate = True
-
-    def exit(self, bot):
-        bot.agent.followPath = False
-        bot.agent.autoRotate = False
-
-class GoForward(State):
-    def enter(self, bot):
-        direction = (bot.transform.direction[0], bot.transform.direction[1])
-        bot.agent.goToDirection(direction)
-        bot.agent.autoRotate = True
-
-    def exit(self, bot):
-        bot.agent.autoRotate = False
-
-class GoBackward(State):
-    def enter(self, bot):
-        direction = (-bot.transform.direction[0], -bot.transform.direction[1])
-        bot.agent.goToDirection(direction)
-        bot.agent.autoRotate = True
-
-    def exit(self, bot):
-        bot.agent.autoRotate = False
 
 class ShootPrimaryWeapon(State):
     def __init__(self, seenBotEntity):
@@ -255,16 +184,22 @@ class FSM:
             return
 
         if self.currentState != None:
-           if self.currentState.__class__.__name__ == newState.__class__.__name__:
-               return
-
            self.currentState.exit(self.bot)
 
         self.currentState = newState
         self.currentState.enter(self.bot)
 
-        logging.info('CHANGE STATE: %s', self.currentState.getName())
+        logging.info('NEW STATE: %s', self.currentState.getName())
 
     def updateCurrentState(self, input):
         if self.currentState != None:
             self.currentState.update(self.bot, input)
+
+    def isCurrentState(self, state):
+        if self.currentState == None:
+            return False
+
+        if self.currentState.getName() == state:
+            return True
+
+        return False

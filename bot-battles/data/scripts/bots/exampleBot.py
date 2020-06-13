@@ -35,33 +35,53 @@ class ExampleBot(bot.Bot):
             if self.weapon.currentAmmo > 0:
                 if distance <= self.weapon.primaryWeaponRange:
                     if distance >= colliderRange:
-                        self.fsm.changeCurrentState(decisionMaking.ShootPrimaryWeapon(self.lastSeenBotEntity))
+                        if self.fsm.isCurrentState("ShootPrimaryWeapon") == False:
+                            self.fsm.changeCurrentState(decisionMaking.ShootPrimaryWeapon(self.lastSeenBotEntity))
                     else:
-                        self.fsm.changeCurrentState(decisionMaking.GoBackward())
+                        if self.fsm.isCurrentState("GoBackward") == False:
+                            worldDestinationDirection = (-self.transform.direction[0], -self.transform.direction[1])
+                            self.fsm.changeCurrentState(decisionMaking.GoBackward(worldDestinationDirection))
                 else:
-                    self.fsm.changeCurrentState(decisionMaking.GoForward())    
+                    if self.fsm.isCurrentState("GoForward") == False:
+                        worldDestinationDirection = self.transform.direction
+                        self.fsm.changeCurrentState(decisionMaking.GoForward(worldDestinationDirection))  
             elif self.weapon.ammoBoxAmmo > 0:
-                self.fsm.changeCurrentState(decisionMaking.Reload())
+                if self.fsm.isCurrentState("Reload") == False:
+                    self.fsm.changeCurrentState(decisionMaking.Reload())
             else:
                 if distance <= self.weapon.secondaryWeaponRange:
                     if distance >= colliderRange:
-                        self.fsm.changeCurrentState(decisionMaking.ShootSecondaryWeapon(self.lastSeenBotEntity))
+                        if self.fsm.isCurrentState("ShootSecondaryWeapon") == False:
+                            self.fsm.changeCurrentState(decisionMaking.ShootSecondaryWeapon(self.lastSeenBotEntity))
                     else:
-                        self.fsm.changeCurrentState(decisionMaking.GoBackward())
+                        if self.fsm.isCurrentState("GoBackward") == False:
+                            worldDestinationDirection = (-self.transform.direction[0], -self.transform.direction[1])
+                            self.fsm.changeCurrentState(decisionMaking.GoBackward(worldDestinationDirection))
                 else:
-                    self.fsm.changeCurrentState(decisionMaking.GoForward())
+                    if self.fsm.isCurrentState("GoForward") == False:
+                        worldDestinationDirection = self.transform.direction
+                        self.fsm.changeCurrentState(decisionMaking.GoForward(worldDestinationDirection))  
         else:
-            centerTile = (self.map.tileCount[0] // 2, self.map.tileCount[1] // 2)
-            centerWorldPosition = self.map.getWorldPosition(centerTile)
+            centerMap = (self.map.tileCount[0] // 2, self.map.tileCount[1] // 2)
+            centerWorldPosition = self.map.getWorldPosition(centerMap)
 
             if self.health.currentHP <= self.health.maxHP / 2.0:
-                self.fsm.changeCurrentState(decisionMaking.GoToClosestHealthSpawner())
+                if self.fsm.isCurrentState("GoToHealthSpawner") == False:
+                    closestHealthSpawner = self.getClosestHealthSpawner()
+                    worldDestinationPosition = self.map.getWorldPosition(closestHealthSpawner)
+                    self.fsm.changeCurrentState(decisionMaking.GoToHealthSpawner(self.transform.position, worldDestinationPosition))
             elif self.weapon.ammoBoxAmmo <= 0:
-                self.fsm.changeCurrentState(decisionMaking.GoToClosestWeaponSpawner())
+                if self.fsm.isCurrentState("GoToWeaponSpawner") == False:
+                    closestWeaponSpawner = self.getClosestWeaponSpawner()
+                    worldDestinationPosition = self.map.getWorldPosition(closestWeaponSpawner)
+                    self.fsm.changeCurrentState(decisionMaking.GoToWeaponSpawner(self.transform.position, worldDestinationPosition))
             elif glm.distance(glm.vec2(centerWorldPosition[0], centerWorldPosition[1]),  glm.vec2(self.transform.position[0], self.transform.position[1])) <= self.agent.minSeekDistance:
-                self.fsm.changeCurrentState(decisionMaking.Rotate(self.rigidbody.maxAngularVelocity / 2.0))
+                if self.fsm.isCurrentState("Rotate") == False:
+                    self.fsm.changeCurrentState(decisionMaking.Rotate(self.rigidbody.maxAngularVelocity / 2.0))
             else:
-                self.fsm.changeCurrentState(decisionMaking.GoToCenterMap())
+                if self.fsm.isCurrentState("GoToCenterMap") == False:
+                    worldDestinationPosition = self.map.getWorldPosition(centerMap)
+                    self.fsm.changeCurrentState(decisionMaking.GoToCenterMap(self.transform.position, worldDestinationPosition))
 
         self.fsm.updateCurrentState(input)
         self.agent.update(input)
@@ -74,16 +94,53 @@ class ExampleBot(bot.Bot):
         logging.info('onSeenLostBot')
         self.lastSeenBotEntity = None
 
-        seenBotInfo = self.sight.getSeenBotInfo(seenBotEntity)
-        self.fsm.changeCurrentState(decisionMaking.GoToLastKnownPosition(seenBotInfo))
+        if self.fsm.isCurrentState("GoToLastKnownPosition") == False:
+            seenBotInfo = self.sight.getSeenBotInfo(seenBotEntity)
+            self.fsm.changeCurrentState(decisionMaking.GoToLastKnownPosition(self.transform.position, seenBotInfo.transform.position))
 
     def onHitByBullet(self, input, health, direction):
         logging.info('onHitByBullet')
-        self.fsm.changeCurrentState(decisionMaking.LookAt((-direction[0], -direction[1])))
+        if self.fsm.isCurrentState("LookAt") == False:
+            self.fsm.changeCurrentState(decisionMaking.LookAt((-direction[0], -direction[1])))
 
     def onHealthPickedUp(self, input):
         logging.info('onHealthPickedUp')
-        self.fsm.changeCurrentState(decisionMaking.Heal())
+        if self.fsm.isCurrentState("Heal") == False:
+            self.fsm.changeCurrentState(decisionMaking.Heal())
+
+    def getClosestWeaponSpawner(self):
+        weaponSpawnerTiles = self.graph.getTilesOfType(TileType.WEAPON_SPAWNER)
+        closestWeaponSpawnerTile = None
+        for weaponSpawnerTile in weaponSpawnerTiles:
+            if closestWeaponSpawnerTile == None:
+                closestWeaponSpawnerTile = weaponSpawnerTile
+                continue
+
+            closestWeaponSpawnerWorldPosition = self.map.getWorldPosition(closestWeaponSpawnerTile)
+            closestWeaponSpawnerDistance = glm.distance(glm.vec2(closestWeaponSpawnerWorldPosition[0], closestWeaponSpawnerWorldPosition[1]), glm.vec2(self.transform.position[0], self.transform.position[1]))
+            weaponSpawnerWorldPosition = self.map.getWorldPosition(weaponSpawnerTile)
+            weaponSpawnerDistance = glm.distance(glm.vec2(weaponSpawnerWorldPosition[0], weaponSpawnerWorldPosition[1]), glm.vec2(self.transform.position[0], self.transform.position[1]))
+            if weaponSpawnerDistance < closestWeaponSpawnerDistance:
+                closestWeaponSpawnerTile = weaponSpawnerTile
+        
+        return closestWeaponSpawnerTile
+
+    def getClosestHealthSpawner(self):
+        healthSpawnerTiles = self.graph.getTilesOfType(TileType.HEALTH_SPAWNER)
+        closestHealthSpawnerTile = None
+        for healthSpawnerTile in healthSpawnerTiles:
+            if closestHealthSpawnerTile == None:
+                closestHealthSpawnerTile = healthSpawnerTile
+                continue
+
+            closestHealthSpawnerWorldPosition = self.map.getWorldPosition(closestHealthSpawnerTile)
+            closestHealthSpawnerDistance = glm.distance(glm.vec2(closestHealthSpawnerWorldPosition[0], closestHealthSpawnerWorldPosition[1]), glm.vec2(self.transform.position[0], self.transform.position[1]))
+            healthSpawnerWorldPosition = self.map.getWorldPosition(healthSpawnerTile)
+            healthSpawnerDistance = glm.distance(glm.vec2(healthSpawnerWorldPosition[0], healthSpawnerWorldPosition[1]), glm.vec2(self.transform.position[0], self.transform.position[1]))
+            if healthSpawnerDistance < closestHealthSpawnerDistance:
+                closestHealthSpawnerTile = healthSpawnerTile
+
+        return closestHealthSpawnerTile
 
 class Graph:
     def __init__(self, map : MapComponent):

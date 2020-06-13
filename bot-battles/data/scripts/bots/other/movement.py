@@ -124,7 +124,6 @@ class Agent:
             input.linearVelocityX = linearVelocity.x
             input.linearVelocityY = linearVelocity.y
         else:
-            logging.info('stop move')
             input.linearVelocityX = 0.0
             input.linearVelocityY = 0.0
 
@@ -136,7 +135,6 @@ class Agent:
 
             input.angularVelocity = angularVelocity
         else:
-            logging.info('stop rotate')
             input.angularVelocity = 0.0
 
     def move(self):
