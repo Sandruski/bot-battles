@@ -91,7 +91,11 @@ class LookAt(State):
         self.worldDestinationDirection = worldDestinationDirection
 
     def enter(self, bot):
+        bot.agent.stopMove = True
         bot.agent.lookAt(self.worldDestinationDirection)
+
+    def exit(self, bot):
+        bot.agent.stopMove = False
 
 class Rotate(State):
     def __init__(self, angularVelocity):
@@ -193,7 +197,7 @@ class FSM:
         self.currentState = newState
         self.currentState.enter(self.bot)
 
-        logging.info('NEW STATE: %s', self.currentState.getName())
+        logging.info('STATE: %s', self.currentState.getName())
 
     def updateCurrentState(self, input):
         if self.currentState != None:
@@ -203,7 +207,4 @@ class FSM:
         if self.currentState == None:
             return False
 
-        if self.currentState.getName() == state:
-            return True
-
-        return False
+        return self.currentState.getName() == state

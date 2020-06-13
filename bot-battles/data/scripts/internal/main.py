@@ -1,11 +1,11 @@
 # coding: utf-8
 
 import sys
-import inspect
-import logging
-import io
 import os
 import datetime
+import io
+import inspect
+import logging
 
 import bot
 import botbattles

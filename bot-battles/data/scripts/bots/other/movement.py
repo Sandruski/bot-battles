@@ -70,8 +70,7 @@ class PathFinder:
                     costSoFar[next] = newCost
                     priority = newCost + self.calculateHeuristic(destination, next)
                     frontier.put(next, priority)
-                    cameFrom[next] = current
-        
+                    cameFrom[next] = current      
         return cameFrom
 
 class PathFollower:
@@ -158,7 +157,6 @@ class Agent:
             linearVelocity = self.seekDirection(self.worldDestinationDirection)
             if glm.length(linearVelocity) == 0.0:
                 self.finishedMove = True
-
         return linearVelocity
 
     def rotate(self):

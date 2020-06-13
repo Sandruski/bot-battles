@@ -2,5 +2,5 @@
 
 import bot
 
-class MyBot(bot.Bot):
+class NothingBot(bot.Bot):
     ...

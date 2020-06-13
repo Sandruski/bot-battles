@@ -142,8 +142,7 @@ class ExampleBot(bot.Bot):
             weaponSpawnerWorldPosition = self.map.getWorldPosition(weaponSpawnerTile)
             weaponSpawnerDistance = glm.distance(glm.vec2(weaponSpawnerWorldPosition[0], weaponSpawnerWorldPosition[1]), glm.vec2(self.transform.position[0], self.transform.position[1]))
             if weaponSpawnerDistance < closestWeaponSpawnerDistance:
-                closestWeaponSpawnerTile = weaponSpawnerTile
-        
+                closestWeaponSpawnerTile = weaponSpawnerTile     
         return closestWeaponSpawnerTile
 
     def getClosestHealthSpawner(self):
@@ -160,7 +159,6 @@ class ExampleBot(bot.Bot):
             healthSpawnerDistance = glm.distance(glm.vec2(healthSpawnerWorldPosition[0], healthSpawnerWorldPosition[1]), glm.vec2(self.transform.position[0], self.transform.position[1]))
             if healthSpawnerDistance < closestHealthSpawnerDistance:
                 closestHealthSpawnerTile = healthSpawnerTile
-
         return closestHealthSpawnerTile
 
     def getFarthestHealthSpawner(self, worldPosition):
@@ -177,7 +175,6 @@ class ExampleBot(bot.Bot):
             healthSpawnerDistance = glm.distance(glm.vec2(healthSpawnerWorldPosition[0], healthSpawnerWorldPosition[1]), glm.vec2(worldPosition[0], worldPosition[1]))
             if healthSpawnerDistance > farthestHealthSpawnerDistance:
                 farthestHealthSpawnerTile = healthSpawnerTile
-
         return farthestHealthSpawnerTile
 
     def getClosestCenter(self):
@@ -201,7 +198,6 @@ class ExampleBot(bot.Bot):
                 tileDistance = glm.distance(glm.vec2(tile[0], tile[1]), glm.vec2(center[0], center[1]))
                 if tileDistance < closestCenterDistance:
                     closestCenterTile = tile
-
         return closestCenterTile
 
 class Graph:
@@ -224,7 +220,7 @@ class Graph:
         west = (mapPosition[0] - 1, mapPosition[1])
         neighbors = [north, south, east, west]
 
-        if diagonals:
+        if diagonals == True:
             northEast = (mapPosition[0] + 1, mapPosition[1] + 1)
             northWest = (mapPosition[0] - 1, mapPosition[1] + 1)
             southEast = (mapPosition[0] + 1, mapPosition[1] - 1)

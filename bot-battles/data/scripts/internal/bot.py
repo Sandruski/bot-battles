@@ -6,8 +6,8 @@ from botbattles import RigidbodyComponent
 from botbattles import WeaponComponent
 from botbattles import HealthComponent
 from botbattles import SightComponent
-from botbattles import MapComponent
 from botbattles import ActionComponent
+from botbattles import MapComponent
 
 class Bot:
     def __init__(self, transformComponent : TransformComponent,  colliderComponent : ColliderComponent, rigidbodyComponent : RigidbodyComponent, weaponComponent : WeaponComponent, healthComponent : HealthComponent, sightComponent : SightComponent, actionComponent : ActionComponent, mapComponent : MapComponent):
