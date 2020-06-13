@@ -170,9 +170,6 @@ void ServerSystem::ReceiveIncomingPackets(std::weak_ptr<ServerComponent> serverC
 
     serverComponent.lock()->m_incomingPacketsTimer.Start();
 
-    InputMemoryStream packet;
-    U32 byteCapacity = packet.GetByteCapacity();
-
     // TCP
     if (!serverComponent.lock()->m_TCPListenSocket.expired()) {
         fd_set readSet;
@@ -204,7 +201,8 @@ void ServerSystem::ReceiveIncomingPackets(std::weak_ptr<ServerComponent> serverC
                             }
                         }
                     } else {
-                        I32 readByteCount = TCPSock->Receive(packet.GetPtr(), byteCapacity);
+                        InputMemoryStream packet;
+                        I32 readByteCount = TCPSock->Receive(packet.GetPtr(), packet.GetByteCapacity());
                         ILOG("readByteCount %i", readByteCount);
                         if (readByteCount > 0) {
                             packet.SetCapacity(readByteCount);
@@ -238,7 +236,8 @@ void ServerSystem::ReceiveIncomingPackets(std::weak_ptr<ServerComponent> serverC
         U32 receivedPacketCount = 0;
         while (receivedPacketCount < serverComponent.lock()->m_maxPacketsPerFrame) {
             SocketAddress fromSocketAddress;
-            I32 readByteCount = serverComponent.lock()->m_UDPSocket->ReceiveFrom(packet.GetPtr(), byteCapacity, fromSocketAddress);
+            InputMemoryStream packet;
+            I32 readByteCount = serverComponent.lock()->m_UDPSocket->ReceiveFrom(packet.GetPtr(), packet.GetByteCapacity(), fromSocketAddress);
             if (readByteCount > 0) {
                 packet.SetCapacity(readByteCount);
                 packet.ResetHead();

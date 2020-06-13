@@ -41,10 +41,12 @@ void OutputMemoryStream::WriteBits(const void* data, U32 bitCount)
 void OutputMemoryStream::WriteBits(U8 data, U32 bitCount)
 {
     U32 nextHead = m_head + bitCount;
+    assert(nextHead <= m_capacity);
+    /*
     if (nextHead > m_capacity) {
-        assert(false);
         Realloc(std::max(m_capacity * 2, nextHead));
     }
+    */
 
     U32 currentByteOffset = BITS_TO_BYTES(m_head);
     // 1 byte = 8 bits

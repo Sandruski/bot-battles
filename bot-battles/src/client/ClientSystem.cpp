@@ -118,9 +118,6 @@ void ClientSystem::ReceiveIncomingPackets(std::weak_ptr<ClientComponent> clientC
 
     clientComponent.lock()->m_incomingPacketsTimer.Start();
 
-    InputMemoryStream packet;
-    U32 byteCapacity = packet.GetByteCapacity();
-
     // TCP
     if (clientComponent.lock()->m_TCPSocket != nullptr) {
         fd_set readSet;
@@ -133,7 +130,8 @@ void ClientSystem::ReceiveIncomingPackets(std::weak_ptr<ClientComponent> clientC
         int iResult = select(0, &readSet, nullptr, nullptr, &timeout);
         if (iResult != 0 && iResult != SOCKET_ERROR) {
             if (FD_ISSET(clientComponent.lock()->m_TCPSocket->GetSocket(), &readSet)) {
-                I32 readByteCount = clientComponent.lock()->m_TCPSocket->Receive(packet.GetPtr(), byteCapacity);
+                InputMemoryStream packet;
+                I32 readByteCount = clientComponent.lock()->m_TCPSocket->Receive(packet.GetPtr(), packet.GetByteCapacity());
                 if (readByteCount > 0) {
                     packet.SetCapacity(readByteCount);
                     packet.ResetHead();
@@ -162,7 +160,8 @@ void ClientSystem::ReceiveIncomingPackets(std::weak_ptr<ClientComponent> clientC
         U32 receivedPacketCount = 0;
         while (receivedPacketCount < clientComponent.lock()->m_maxPacketsPerFrame) {
             SocketAddress fromSocketAddress;
-            I32 readByteCount = clientComponent.lock()->m_UDPSocket->ReceiveFrom(packet.GetPtr(), byteCapacity, fromSocketAddress);
+            InputMemoryStream packet;
+            I32 readByteCount = clientComponent.lock()->m_UDPSocket->ReceiveFrom(packet.GetPtr(), packet.GetByteCapacity(), fromSocketAddress);
             if (readByteCount > 0) {
                 packet.SetCapacity(readByteCount);
                 packet.ResetHead();
