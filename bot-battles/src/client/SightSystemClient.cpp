@@ -105,7 +105,9 @@ void SightSystemClient::OnSeenLostEntity(Entity seenEntity) const
 
         std::weak_ptr<SightComponent> sightComponent = g_gameClient->GetComponentManager().GetComponent<SightComponent>(entity);
         std::vector<Entity>::const_iterator it = std::find(sightComponent.lock()->m_seenEntities.begin(), sightComponent.lock()->m_seenEntities.end(), seenEntity);
-        sightComponent.lock()->m_seenEntities.erase(it);
+        if (it != sightComponent.lock()->m_seenEntities.end()) {
+            sightComponent.lock()->m_seenEntities.erase(it);
+        }
 
         std::weak_ptr<SpriteComponent> seenSpriteComponent = g_gameClient->GetComponentManager().GetComponent<SpriteComponent>(seenEntity);
         if (!seenSpriteComponent.expired()) {

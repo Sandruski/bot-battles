@@ -73,7 +73,7 @@
                         {
                          "name":"sightDistance",
                          "type":"float",
-                         "value":200
+                         "value":300
                         }, 
                         {
                          "name":"transformRotation",
@@ -88,24 +88,24 @@
                         {
                          "name":"weaponDamage",
                          "type":"int",
-                         "value":10
+                         "value":5
                         }, 
                         {
                          "name":"weaponRange",
                          "type":"float",
-                         "value":250
+                         "value":150
                         }, 
                         {
                          "name":"weaponTimeShoot",
                          "type":"float",
-                         "value":1
+                         "value":0.5
                         }],
                  "rotation":0,
                  "type":"BotSpawner",
                  "visible":true,
                  "width":64,
-                 "x":320,
-                 "y":384
+                 "x":128,
+                 "y":192
                 }, 
                 {
                  "gid":198,
@@ -141,12 +141,12 @@
                         {
                          "name":"sightDistance",
                          "type":"float",
-                         "value":200
+                         "value":300
                         }, 
                         {
                          "name":"transformRotation",
                          "type":"float",
-                         "value":180
+                         "value":0
                         }, 
                         {
                          "name":"weaponCooldownShoot",
@@ -156,17 +156,17 @@
                         {
                          "name":"weaponDamage",
                          "type":"int",
-                         "value":10
+                         "value":5
                         }, 
                         {
                          "name":"weaponRange",
                          "type":"float",
-                         "value":250
+                         "value":150
                         }, 
                         {
                          "name":"weaponTimeShoot",
                          "type":"float",
-                         "value":1
+                         "value":0.5
                         }],
                  "rotation":0,
                  "type":"BotSpawner",
@@ -200,22 +200,22 @@
                         {
                          "name":"cooldownSpawn",
                          "type":"float",
-                         "value":10
+                         "value":15
                         }, 
                         {
                          "name":"healthCooldownHeal",
                          "type":"float",
-                         "value":1
+                         "value":0
                         }, 
                         {
                          "name":"healthHP",
                          "type":"int",
-                         "value":60
+                         "value":30
                         }, 
                         {
                          "name":"healthTimeHeal",
                          "type":"float",
-                         "value":1
+                         "value":5
                         }],
                  "rotation":0,
                  "type":"HealthSpawner",
@@ -249,17 +249,17 @@
                         {
                          "name":"cooldownSpawn",
                          "type":"float",
-                         "value":1
+                         "value":10
                         }, 
                         {
                          "name":"weaponAmmo",
                          "type":"int",
-                         "value":100
+                         "value":6
                         }, 
                         {
                          "name":"weaponCooldownReload",
                          "type":"float",
-                         "value":1
+                         "value":0
                         }, 
                         {
                          "name":"weaponCooldownShoot",
@@ -274,7 +274,7 @@
                         {
                          "name":"weaponMaxAmmo",
                          "type":"int",
-                         "value":50
+                         "value":3
                         }, 
                         {
                          "name":"weaponRange",
@@ -284,7 +284,7 @@
                         {
                          "name":"weaponTimeReload",
                          "type":"float",
-                         "value":1
+                         "value":2
                         }, 
                         {
                          "name":"weaponTimeShoot",

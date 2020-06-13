@@ -25,19 +25,38 @@ class ExampleBot(bot.Bot):
         self.agent = movement.Agent(self)
         self.fsm = decisionMaking.FSM(self)
         self.lastSeenBotEntity = None
-        self.doOnce = True
 
     def tick(self, input : InputComponent):
-        #if self.action.canPerformAction == True:
-        #    if self.lastSeenBotEntity != None:
-        #        self.fsm.changeCurrentState(decisionMaking.ShootPrimaryWeapon(self.lastSeenBotEntity))
-        if self.doOnce:
-            self.fsm.changeCurrentState(decisionMaking.GoToClosestWeaponSpawner())
-            self.doOnce = False
-
         if self.lastSeenBotEntity != None:
             seenBotInfo = self.sight.getSeenBotInfo(self.lastSeenBotEntity)
-            self.attack(seenBotInfo)                    
+            distance = glm.distance(glm.vec2(seenBotInfo.transform.position[0], seenBotInfo.transform.position[1]),  glm.vec2(self.transform.position[0], self.transform.position[1]))
+            colliderRange = self.collider.size[0] / 2.0 + seenBotInfo.collider.size[0] / 2.0
+            
+            if self.weapon.currentAmmo > 0:
+                if distance <= self.weapon.primaryWeaponRange:
+                    if distance >= colliderRange:
+                        self.fsm.changeCurrentState(decisionMaking.ShootPrimaryWeapon(self.lastSeenBotEntity))
+                    else:
+                        self.fsm.changeCurrentState(decisionMaking.GoBackward())
+                else:
+                    self.fsm.changeCurrentState(decisionMaking.GoForward())    
+            elif self.weapon.ammoBoxAmmo > 0:
+                self.fsm.changeCurrentState(decisionMaking.Reload())
+            else:
+                if distance <= self.weapon.secondaryWeaponRange:
+                    if distance >= colliderRange:
+                        self.fsm.changeCurrentState(decisionMaking.ShootSecondaryWeapon(self.lastSeenBotEntity))
+                    else:
+                        self.fsm.changeCurrentState(decisionMaking.GoBackward())
+                else:
+                    self.fsm.changeCurrentState(decisionMaking.GoForward())
+        else:
+            if self.health.currentHP <= self.health.maxHP / 2.0:
+                self.fsm.changeCurrentState(decisionMaking.GoToClosestHealthSpawner())
+            elif self.weapon.ammoBoxAmmo <= 0:
+                self.fsm.changeCurrentState(decisionMaking.GoToClosestWeaponSpawner())
+            else:
+                self.fsm.changeCurrentState(decisionMaking.Idle())
 
         self.fsm.updateCurrentState(input)
         self.agent.update(input)
@@ -57,21 +76,9 @@ class ExampleBot(bot.Bot):
         logging.info('onHitByBullet')
         self.fsm.changeCurrentState(decisionMaking.LookAt((-direction[0], -direction[1])))
 
-    def attack(self, seenBotInfo):
-        distance = glm.distance(glm.vec2(seenBotInfo.transform.position[0], seenBotInfo.transform.position[1]),  glm.vec2(self.transform.position[0], self.transform.position[1]))
-        colliderRange = self.collider.size[0] / 2.0 + seenBotInfo.collider.size[0] / 2.0
-        if self.weapon.currentAmmo == 1000: # TODO
-            if distance <= self.weapon.primaryWeaponRange and distance >= colliderRange:
-                self.fsm.changeCurrentState(decisionMaking.ShootPrimaryWeapon(self.lastSeenBotEntity))
-        #elif self.weapon.ammoBoxAmmo > 0:
-        else:
-            if distance <= self.weapon.secondaryWeaponRange:
-                if distance >= colliderRange:
-                    self.fsm.changeCurrentState(decisionMaking.ShootSecondaryWeapon(self.lastSeenBotEntity))
-                else:
-                    self.fsm.changeCurrentState(decisionMaking.GoBackward())
-            else:
-                self.fsm.changeCurrentState(decisionMaking.GoForward())
+    def onHealthPickedUp(self, input):
+        logging.info('onHealthPickedUp')
+        self.fsm.changeCurrentState(decisionMaking.Heal())
 
 class Graph:
     def __init__(self, map : MapComponent):

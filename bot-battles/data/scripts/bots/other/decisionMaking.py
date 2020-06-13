@@ -22,6 +22,9 @@ class State:
     def __init__(self):
         pass
 
+    def getName(self):
+        return self.__class__.__name__
+
     def enter(self, bot):
         pass
 
@@ -46,10 +49,12 @@ class GoTo(State):
         self.worldDestinationPosition = worldDestinationPosition
 
     def enter(self, bot):
-        bot.agent.goTo(self.worldOriginPosition, self.worldDestinationPosition)
+        bot.agent.goToPosition(self.worldOriginPosition, self.worldDestinationPosition)
+        bot.agent.followPath = True
         bot.agent.autoRotate = True
 
     def exit(self, bot):
+        bot.agent.followPath = False
         bot.agent.autoRotate = False
 
 class LookAt(State):
@@ -80,9 +85,11 @@ class GoToClosestWeaponSpawner(State):
 
         worldDestinationPosition = bot.map.getWorldPosition(closestWeaponSpawnerTile)
         bot.agent.goToPosition(bot.transform.position, worldDestinationPosition)
+        bot.agent.followPath = True
         bot.agent.autoRotate = True
 
     def exit(self, bot):
+        bot.agent.followPath = False
         bot.agent.autoRotate = False
 
 class GoToClosestHealthSpawner(State):
@@ -106,9 +113,11 @@ class GoToClosestHealthSpawner(State):
 
         worldDestinationPosition = bot.map.getWorldPosition(closestHealthSpawnerTile)
         bot.agent.goToPosition(bot.transform.position, worldDestinationPosition)
+        bot.agent.followPath = True
         bot.agent.autoRotate = True
 
     def exit(self, bot):
+        bot.agent.followPath = False
         bot.agent.autoRotate = False
 
 class GoToLastKnownPosition(State):
@@ -117,9 +126,11 @@ class GoToLastKnownPosition(State):
 
     def enter(self, bot):
         bot.agent.goToPosition(bot.transform.position, self.seenBotInfo.transform.position)
+        bot.agent.followPath = True
         bot.agent.autoRotate = True
 
     def exit(self, bot):
+        bot.agent.followPath = False
         bot.agent.autoRotate = False
 
 class GoForward(State):
@@ -183,10 +194,7 @@ class ShootSecondaryWeapon(State):
         bot.agent.lookAt((direction.x, direction.y))
 
         if bot.agent.finishedRotate:
-            logging.info('finished rotating')
             input.shootSecondaryWeapon()
-        else:
-            logging.info('not finished rotating')
 
     def exit(self, bot):
         bot.agent.stopMove = False
@@ -218,9 +226,10 @@ class FSM:
 
            self.currentState.exit(self.bot)
 
-        logging.info('CHANGE STATE: %s', newState.__class__.__name__)
         self.currentState = newState
         self.currentState.enter(self.bot)
+
+        logging.info('CHANGE STATE: %s', newState.getName())
 
     def updateCurrentState(self, input):
         if self.currentState != None:

@@ -29,19 +29,19 @@
 </data>
  </layer>
  <objectgroup draworder="index" id="6" name="botSpawner">
-  <object id="18" name="botSpawner2" type="BotSpawner" gid="198" x="320" y="384" width="64" height="64">
+  <object id="18" name="botSpawner2" type="BotSpawner" gid="198" x="128" y="192" width="64" height="64">
    <properties>
     <property name="healthMaxHP" type="int" value="100"/>
     <property name="player" type="int" value="0"/>
     <property name="rigidbodyMaxAngularVelocity" type="float" value="180"/>
     <property name="rigidbodyMaxLinearVelocity" type="float" value="80"/>
     <property name="sightAngle" type="float" value="90"/>
-    <property name="sightDistance" type="float" value="200"/>
+    <property name="sightDistance" type="float" value="300"/>
     <property name="transformRotation" type="float" value="0"/>
     <property name="weaponCooldownShoot" type="float" value="0.5"/>
-    <property name="weaponDamage" type="int" value="10"/>
-    <property name="weaponRange" type="float" value="250"/>
-    <property name="weaponTimeShoot" type="float" value="1"/>
+    <property name="weaponDamage" type="int" value="5"/>
+    <property name="weaponRange" type="float" value="150"/>
+    <property name="weaponTimeShoot" type="float" value="0.5"/>
    </properties>
   </object>
   <object id="17" name="botSpawner1" type="BotSpawner" gid="198" x="640" y="384" width="64" height="64">
@@ -51,12 +51,12 @@
     <property name="rigidbodyMaxAngularVelocity" type="float" value="180"/>
     <property name="rigidbodyMaxLinearVelocity" type="float" value="80"/>
     <property name="sightAngle" type="float" value="90"/>
-    <property name="sightDistance" type="float" value="200"/>
-    <property name="transformRotation" type="float" value="180"/>
+    <property name="sightDistance" type="float" value="300"/>
+    <property name="transformRotation" type="float" value="0"/>
     <property name="weaponCooldownShoot" type="float" value="0.5"/>
-    <property name="weaponDamage" type="int" value="10"/>
-    <property name="weaponRange" type="float" value="250"/>
-    <property name="weaponTimeShoot" type="float" value="1"/>
+    <property name="weaponDamage" type="int" value="5"/>
+    <property name="weaponRange" type="float" value="150"/>
+    <property name="weaponTimeShoot" type="float" value="0.5"/>
    </properties>
   </object>
  </objectgroup>
@@ -64,10 +64,10 @@
   <object id="34" name="healthSpawner1" type="HealthSpawner" gid="359" x="384" y="128" width="64" height="64">
    <properties>
     <property name="amountSpawn" type="int" value="-1"/>
-    <property name="cooldownSpawn" type="float" value="10"/>
-    <property name="healthCooldownHeal" type="float" value="1"/>
-    <property name="healthHP" type="int" value="60"/>
-    <property name="healthTimeHeal" type="float" value="1"/>
+    <property name="cooldownSpawn" type="float" value="15"/>
+    <property name="healthCooldownHeal" type="float" value="0"/>
+    <property name="healthHP" type="int" value="30"/>
+    <property name="healthTimeHeal" type="float" value="5"/>
    </properties>
   </object>
  </objectgroup>
@@ -75,14 +75,14 @@
   <object id="40" name="weaponSpawner1" type="WeaponSpawner" gid="368" x="448" y="192" width="64" height="64">
    <properties>
     <property name="amountSpawn" type="int" value="-1"/>
-    <property name="cooldownSpawn" type="float" value="1"/>
-    <property name="weaponAmmo" type="int" value="100"/>
-    <property name="weaponCooldownReload" type="float" value="1"/>
+    <property name="cooldownSpawn" type="float" value="10"/>
+    <property name="weaponAmmo" type="int" value="6"/>
+    <property name="weaponCooldownReload" type="float" value="0"/>
     <property name="weaponCooldownShoot" type="float" value="1"/>
     <property name="weaponDamage" type="int" value="10"/>
-    <property name="weaponMaxAmmo" type="int" value="50"/>
+    <property name="weaponMaxAmmo" type="int" value="3"/>
     <property name="weaponRange" type="float" value="100"/>
-    <property name="weaponTimeReload" type="float" value="1"/>
+    <property name="weaponTimeReload" type="float" value="2"/>
     <property name="weaponTimeShoot" type="float" value="1"/>
    </properties>
   </object>
