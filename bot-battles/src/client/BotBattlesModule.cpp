@@ -20,8 +20,6 @@
 
 namespace py = pybind11;
 
-//PYBIND11_MAKE_OPAQUE(std::vector<int>); // TODO
-
 namespace sand {
 
 PYBIND11_EMBEDDED_MODULE(botbattles, m)

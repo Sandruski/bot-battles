@@ -120,16 +120,14 @@ class ExampleBot(bot.Bot):
         logging.info('EVENT: onSeenLostBot')
         self.lastSeenBotEntity = None
 
-        if self.fsm.isCurrentState("GoToLastKnownPosition") == False:
-            seenBotInfo = self.sight.getSeenBotInfo(seenBotEntity)
-            self.fsm.changeCurrentState(decisionMaking.GoToLastKnownPosition(self.transform.position, seenBotInfo.transform.position))
+        seenBotInfo = self.sight.getSeenBotInfo(seenBotEntity)
+        self.fsm.changeCurrentState(decisionMaking.GoToLastKnownPosition(self.transform.position, seenBotInfo.transform.position))
 
     def onHitByBullet(self, input, health, direction):
         logging.info('EVENT: onHitByBullet')
         self.hitByBullet = True
 
-        if self.fsm.isCurrentState("LookAt") == False:
-            self.fsm.changeCurrentState(decisionMaking.LookAt((-direction[0], -direction[1])))
+        self.fsm.changeCurrentState(decisionMaking.LookAt((-direction[0], -direction[1])))
 
     def getClosestWeaponSpawner(self):
         weaponSpawnerTiles = self.graph.getTilesOfType(TileType.WEAPON_SPAWNER)
