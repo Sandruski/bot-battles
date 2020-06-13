@@ -31,7 +31,7 @@ class ExampleBot(bot.Bot):
             seenBotInfo = self.sight.getSeenBotInfo(self.lastSeenBotEntity)
             distance = glm.distance(glm.vec2(seenBotInfo.transform.position[0], seenBotInfo.transform.position[1]),  glm.vec2(self.transform.position[0], self.transform.position[1]))
             colliderRange = self.collider.size[0] / 2.0 + seenBotInfo.collider.size[0] / 2.0
-            
+
             if self.weapon.currentAmmo > 0:
                 if distance <= self.weapon.primaryWeaponRange:
                     if distance >= colliderRange:

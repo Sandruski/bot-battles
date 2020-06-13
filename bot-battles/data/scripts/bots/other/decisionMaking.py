@@ -64,6 +64,16 @@ class LookAt(State):
     def enter(self, bot):
         bot.agent.lookAt(self.worldDestinationDirection)
 
+class Rotate(State):
+    def enter(self, bot):
+        bot.agent.stopMove = True
+        bot.agent.angularVelocity = bot.rigidbody.maxAngularVelocity
+        bot.agent.useAngularVelocity = True
+
+    def exit(self, bot):
+        bot.agent.stopMove = False
+        bot.agent.useAngularVelocity = False
+
 class GoToCenterMap(State):
     def enter(self, bot):
         centerTile = (bot.map.tileCount[0] // 2, bot.map.tileCount[1] // 2)
@@ -72,6 +82,10 @@ class GoToCenterMap(State):
         bot.agent.goToPosition(bot.transform.position, worldDestinationPosition)
         bot.agent.followPath = True
         bot.agent.autoRotate = True
+
+    def update(self, bot, input):
+        if bot.agent.finishedMove == True:
+            bot.fsm.changeCurrentState(Rotate())
 
     def exit(self, bot):
         bot.agent.followPath = False
@@ -150,11 +164,19 @@ class GoForward(State):
     def enter(self, bot):
         direction = (bot.transform.direction[0], bot.transform.direction[1])
         bot.agent.goToDirection(direction)
+        bot.agent.autoRotate = True
+
+    def exit(self, bot):
+        bot.agent.autoRotate = False
 
 class GoBackward(State):
     def enter(self, bot):
         direction = (-bot.transform.direction[0], -bot.transform.direction[1])
         bot.agent.goToDirection(direction)
+        bot.agent.autoRotate = True
+
+    def exit(self, bot):
+        bot.agent.autoRotate = False
 
 class ShootPrimaryWeapon(State):
     def __init__(self, seenBotEntity):

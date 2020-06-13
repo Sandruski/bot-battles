@@ -111,15 +111,15 @@ class Agent:
         self.stopRotate = False
         self.finishedRotate = False
         self.autoRotate = False
+        self.useAngularVelocity = False
         self.worldDestinationRotation = None
+        self.angularVelocity = None
         self.minAlignDistance = 1.5
 
     def update(self, input):
         # Movement
         if self.stopMove == False:
             linearVelocity = self.move()
-            if linearVelocity == glm.vec2(0.0, 0.0):
-                self.finishedMove = True
 
             input.linearVelocityX = linearVelocity.x
             input.linearVelocityY = linearVelocity.y
@@ -139,22 +139,26 @@ class Agent:
 
     def move(self):
         linearVelocity = glm.vec2(0.0, 0.0)
-
-        if self.followPath:
+        if self.followPath == True:
             mapDestinationPosition = self.pathFollower.getWaypoint()
             if mapDestinationPosition == None:
+                self.finishedMove = True
                 return glm.vec2(0.0, 0.0)
 
             worldDestinationPosition = self.bot.map.getWorldPosition(mapDestinationPosition)
             linearVelocity = self.seekPosition(self.bot.transform.position, worldDestinationPosition)
 
             if glm.length(linearVelocity) == 0.0:
-                self.pathFollower.increaseWaypoint()
+                if self.pathFollower.increaseWaypoint() == False:
+                    self.finishedMove = True
         else:
             if self.worldDestinationDirection == None:
-                return 0.0
+                self.finishedMove = True
+                return glm.vec2(0.0, 0.0)
 
             linearVelocity = self.seekDirection(self.worldDestinationDirection)
+            if glm.length(linearVelocity) == 0.0:
+                self.finishedMove = True
 
         return linearVelocity
 
@@ -164,10 +168,17 @@ class Agent:
             direction = glm.normalize(vector)
             self.lookAt((direction.x, direction.y))
 
-        if self.worldDestinationRotation == None:
-            return 0.0
+        angularVelocity = 0.0
+        if self.useAngularVelocity == True:
+            if self.angularVelocity == None:
+                return 0.0
 
-        angularVelocity = self.align(self.bot.transform.rotation, self.worldDestinationRotation)
+            angularVelocity = self.angularVelocity
+        else:
+            if self.worldDestinationRotation == None:
+                return 0.0
+
+            angularVelocity = self.align(self.bot.transform.rotation, self.worldDestinationRotation)
         return angularVelocity
 
     def goToPosition(self, worldOriginPosition, worldDestinationPosition): # positions
