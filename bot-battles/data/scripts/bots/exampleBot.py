@@ -80,7 +80,7 @@ class ExampleBot(bot.Bot):
                         self.fsm.changeCurrentState(decisionMaking.GoForward(worldDestinationDirection))  
         elif self.hitByBullet == False:
             # Health
-            if self.health.currentHP < self.health.maxHP:
+            if self.health.currentHP < self.health.maxHP / 2.0:
                 if self.health.firstAidBoxHP > 0:
                     if self.fsm.isCurrentState("Heal") == False:
                         self.fsm.changeCurrentState(decisionMaking.Heal())
@@ -215,8 +215,7 @@ class Graph:
         return ((0 <= mapPosition[0] and mapPosition[0] < self.map.tileCount[0]) and (0 <= mapPosition[1] and mapPosition[1] < self.map.tileCount[1]))
 
     def isWalkable(self, mapPosition):
-        tileType = self.map.getTileType(mapPosition)
-        return self.isInBounds(mapPosition) and tileType != TileType.NONE and tileType != TileType.WALL
+        return self.isInBounds(mapPosition) and self.map.getTileType(mapPosition) != TileType.NONE and self.map.getTileType(mapPosition) != TileType.WALL
 
     def getNeighbors(self, mapPosition, diagonals):
         north = (mapPosition[0], mapPosition[1] + 1)
