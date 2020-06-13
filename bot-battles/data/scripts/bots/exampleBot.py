@@ -45,8 +45,8 @@ class ExampleBot(bot.Bot):
                         self.fsm.changeCurrentState(decisionMaking.Heal())
                 else:
                     if self.fsm.isCurrentState("GoToHealthSpawner") == False:
-                        closestHealthSpawner = self.getClosestHealthSpawner()
-                        worldDestinationPosition = self.map.getWorldPosition(closestHealthSpawner)
+                        farthestHealthSpawner = self.getFarthestHealthSpawner(seenBotInfo.transform.position)
+                        worldDestinationPosition = self.map.getWorldPosition(farthestHealthSpawner)
                         self.fsm.changeCurrentState(decisionMaking.GoToHealthSpawner(self.transform.position, worldDestinationPosition))
             # Weapon
             elif self.weapon.currentAmmo > 0:
@@ -164,6 +164,23 @@ class ExampleBot(bot.Bot):
                 closestHealthSpawnerTile = healthSpawnerTile
 
         return closestHealthSpawnerTile
+
+    def getFarthestHealthSpawner(self, worldPosition):
+        healthSpawnerTiles = self.graph.getTilesOfType(TileType.HEALTH_SPAWNER)
+        farthestHealthSpawnerTile = None
+        for healthSpawnerTile in healthSpawnerTiles:
+            if farthestHealthSpawnerTile == None:
+                farthestHealthSpawnerTile = healthSpawnerTile
+                continue
+
+            farthestHealthSpawnerWorldPosition = self.map.getWorldPosition(farthestHealthSpawnerTile)
+            farthestHealthSpawnerDistance = glm.distance(glm.vec2(farthestHealthSpawnerWorldPosition[0], farthestHealthSpawnerWorldPosition[1]), glm.vec2(worldPosition[0], worldPosition[1]))
+            healthSpawnerWorldPosition = self.map.getWorldPosition(healthSpawnerTile)
+            healthSpawnerDistance = glm.distance(glm.vec2(healthSpawnerWorldPosition[0], healthSpawnerWorldPosition[1]), glm.vec2(worldPosition[0], worldPosition[1]))
+            if healthSpawnerDistance > farthestHealthSpawnerDistance:
+                farthestHealthSpawnerTile = healthSpawnerTile
+
+        return farthestHealthSpawnerTile
 
     def getClosestCenter(self):
         center = (self.map.tileCount[0] // 2, self.map.tileCount[1] // 2)
