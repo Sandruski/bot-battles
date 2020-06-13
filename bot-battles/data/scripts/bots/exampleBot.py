@@ -56,7 +56,7 @@ class ExampleBot(bot.Bot):
             elif self.weapon.ammoBoxAmmo <= 0:
                 self.fsm.changeCurrentState(decisionMaking.GoToClosestWeaponSpawner())
             else:
-                self.fsm.changeCurrentState(decisionMaking.Idle())
+                self.fsm.changeCurrentState(decisionMaking.GoToCenterMap())
 
         self.fsm.updateCurrentState(input)
         self.agent.update(input)

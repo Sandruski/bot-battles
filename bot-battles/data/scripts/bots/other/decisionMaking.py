@@ -64,6 +64,19 @@ class LookAt(State):
     def enter(self, bot):
         bot.agent.lookAt(self.worldDestinationDirection)
 
+class GoToCenterMap(State):
+    def enter(self, bot):
+        centerTile = (bot.map.tileCount[0] // 2, bot.map.tileCount[1] // 2)
+        logging.info('tile is %i %i', centerTile[0], centerTile[1])
+        worldDestinationPosition = bot.map.getWorldPosition(centerTile)
+        bot.agent.goToPosition(bot.transform.position, worldDestinationPosition)
+        bot.agent.followPath = True
+        bot.agent.autoRotate = True
+
+    def exit(self, bot):
+        bot.agent.followPath = False
+        bot.agent.autoRotate = False
+
 class GoToClosestWeaponSpawner(State):
     def enter(self, bot):
         weaponSpawnerTiles = bot.graph.getTilesOfType(TileType.WEAPON_SPAWNER)
@@ -171,7 +184,7 @@ class Reload(State):
         bot.agent.stopRotate = True
 
     def update(self, bot, input):
-        input.Reload()
+        input.reload()
 
     def exit(self, bot):
         bot.agent.stopMove = False
@@ -205,7 +218,7 @@ class Heal(State):
         bot.agent.stopRotate = True
 
     def update(self, bot, input):
-        input.Heal()
+        input.heal()
 
     def enter(self, bot):
         bot.agent.stopMove = False
