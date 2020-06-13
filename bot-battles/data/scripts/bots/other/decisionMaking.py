@@ -119,7 +119,9 @@ class ShootPrimaryWeapon(State):
             return
 
         vector = glm.vec2(seenBotInfo.transform.position[0] - bot.transform.position[0], seenBotInfo.transform.position[1] - bot.transform.position[1])
-        direction = glm.normalize(vector)
+        direction = glm.vec2(0.0, 0.0)
+        if glm.length(vector) > 0.0:
+            direction = glm.normalize(vector)
         bot.agent.lookAt((direction.x, direction.y))
 
         if bot.agent.finishedRotate == True:
@@ -153,9 +155,11 @@ class ShootSecondaryWeapon(State):
             return
 
         vector = glm.vec2(seenBotInfo.transform.position[0] - bot.transform.position[0], seenBotInfo.transform.position[1] - bot.transform.position[1])
-        direction = glm.normalize(vector)
+        direction = glm.vec2(0.0, 0.0)
+        if glm.length(vector) > 0.0:
+            direction = glm.normalize(vector)
         bot.agent.lookAt((direction.x, direction.y))
-        logging.info('update shoot secondary %f %f', direction.x, direction.y)
+
         if bot.agent.finishedRotate == True:
             input.shootSecondaryWeapon()
 

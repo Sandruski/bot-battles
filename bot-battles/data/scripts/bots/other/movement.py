@@ -132,7 +132,6 @@ class Agent:
             angularVelocity = self.rotate()
             if angularVelocity == 0.0:
                 self.finishedRotate = True
-
             input.angularVelocity = angularVelocity
         else:
             input.angularVelocity = 0.0
@@ -165,7 +164,9 @@ class Agent:
     def rotate(self):
         if self.autoRotate == True:
             vector = glm.vec2(self.bot.rigidbody.linearVelocity[0], self.bot.rigidbody.linearVelocity[1])
-            direction = glm.normalize(vector)
+            direction = glm.vec2(0.0, 0.0)
+            if glm.length(vector) > 0.0:
+                direction = glm.normalize(vector)
             self.lookAt((direction.x, direction.y))
 
         angularVelocity = 0.0
@@ -208,7 +209,9 @@ class Agent:
         if glm.length(vector) <= self.minSeekDistance:
             return glm.vec2(0.0, 0.0)
         
-        direction = glm.normalize(vector)
+        direction = glm.vec2(0.0, 0.0)
+        if glm.length(vector) > 0.0:
+            direction = glm.normalize(vector)
         acceleration = direction * self.bot.rigidbody.maxLinearVelocity
         return acceleration
 

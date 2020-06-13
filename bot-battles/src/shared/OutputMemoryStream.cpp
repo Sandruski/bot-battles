@@ -42,6 +42,7 @@ void OutputMemoryStream::WriteBits(U8 data, U32 bitCount)
 {
     U32 nextHead = m_head + bitCount;
     if (nextHead > m_capacity) {
+        assert(false);
         Realloc(std::max(m_capacity * 2, nextHead));
     }
 
