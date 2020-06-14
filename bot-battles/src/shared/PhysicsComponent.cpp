@@ -62,7 +62,7 @@ void ContactListener::EndContact(b2Contact* contact)
 }
 
 //----------------------------------------------------------------------------------------------------
-RayCastCallback::RayCastCallback()
+RayCastCallback::HitBody::HitBody()
     : m_body(nullptr)
     , m_point(0.0f, 0.0f)
     , m_normal(0.0f, 0.0f)
@@ -70,13 +70,34 @@ RayCastCallback::RayCastCallback()
 }
 
 //----------------------------------------------------------------------------------------------------
+RayCastCallback::RayCastCallback()
+    : m_hitBodies()
+{
+}
+
+//----------------------------------------------------------------------------------------------------
 float32 RayCastCallback::ReportFixture(b2Fixture* fixture, const b2Vec2& point, const b2Vec2& normal, float32 fraction)
 {
-    m_body = fixture->GetBody();
-    m_point = point;
-    m_normal = normal;
+    F32 ret = fraction;
 
-    return fraction;
+    b2Body* body = fixture->GetBody();
+    if (body != nullptr) {
+        Entity entity = *static_cast<Entity*>(body->GetUserData());
+        std::weak_ptr<ColliderComponent> colliderComponent = g_game->GetComponentManager().GetComponent<ColliderComponent>(entity);
+        if (!colliderComponent.expired()) {
+            if (colliderComponent.lock()->m_isTrigger) {
+                ret = 1;
+            }
+        }
+    }
+
+    HitBody hitBody;
+    hitBody.m_body = body;
+    hitBody.m_point = point;
+    hitBody.m_normal = normal;
+    m_hitBodies.emplace_back(hitBody);
+
+    return ret;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -94,10 +115,16 @@ bool QueryCallback::ReportFixture(b2Fixture* fixture)
 }
 
 //----------------------------------------------------------------------------------------------------
-PhysicsComponent::RaycastHit::RaycastHit()
+PhysicsComponent::RaycastHit::HitEntity::HitEntity()
     : m_entity(INVALID_ENTITY)
     , m_point(0.0f, 0.0f)
     , m_normal(0.0f, 0.0f)
+{
+}
+
+//----------------------------------------------------------------------------------------------------
+PhysicsComponent::RaycastHit::RaycastHit()
+    : m_hitEntities()
 {
 }
 
@@ -148,10 +175,14 @@ bool PhysicsComponent::Raycast(const glm::vec2& origin, const glm::vec2& destina
 
     RayCastCallback rayCastCallback;
     m_world.RayCast(&rayCastCallback, b2Vec2(PIXELS_TO_METERS(origin.x), PIXELS_TO_METERS(origin.y)), b2Vec2(PIXELS_TO_METERS(destination.x), PIXELS_TO_METERS(destination.y)));
-    if (rayCastCallback.m_body != nullptr) {
-        hitInfo.m_entity = *static_cast<Entity*>(rayCastCallback.m_body->GetUserData());
-        hitInfo.m_point = glm::vec2(METERS_TO_PIXELS(rayCastCallback.m_point.x), METERS_TO_PIXELS(rayCastCallback.m_point.y));
-        hitInfo.m_normal = glm::vec2(METERS_TO_PIXELS(rayCastCallback.m_normal.x), METERS_TO_PIXELS(rayCastCallback.m_normal.y));
+    if (!rayCastCallback.m_hitBodies.empty()) {
+        for (const auto& hitBody : rayCastCallback.m_hitBodies) {
+            RaycastHit::HitEntity hitEntity;
+            hitEntity.m_entity = *static_cast<Entity*>(hitBody.m_body->GetUserData());
+            hitEntity.m_point = glm::vec2(METERS_TO_PIXELS(hitBody.m_point.x), METERS_TO_PIXELS(hitBody.m_point.y));
+            hitEntity.m_normal = glm::vec2(METERS_TO_PIXELS(hitBody.m_normal.x), METERS_TO_PIXELS(hitBody.m_normal.y));
+            hitInfo.m_hitEntities.emplace_back(hitEntity);
+        }
 
         ret = true;
     }

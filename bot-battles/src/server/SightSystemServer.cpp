@@ -189,9 +189,13 @@ bool SightSystemServer::IsInLoS(std::weak_ptr<PhysicsComponent> physicsComponent
     glm::vec2 directionToTarget = glm::normalize(vectorToTarget);
     glm::vec2 distanceToTarget = position + directionToTarget * distance;
 
-    PhysicsComponent::RaycastHit raycastHit;
-    if (physicsComponent.lock()->Raycast(position, distanceToTarget, raycastHit)) {
-        return raycastHit.m_entity == entity;
+    PhysicsComponent::RaycastHit hitInfo;
+    if (physicsComponent.lock()->Raycast(position, distanceToTarget, hitInfo)) {
+        for (const auto& hitEntity : hitInfo.m_hitEntities) {
+            if (hitEntity.m_entity == entity) {
+                return true;
+            }
+        }
     }
 
     return false;
