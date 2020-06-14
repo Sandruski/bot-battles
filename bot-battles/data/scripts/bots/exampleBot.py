@@ -110,7 +110,7 @@ class ExampleBot(bot.Bot):
                         worldDestinationPosition = self.map.getWorldPosition(closestHealthSpawner)
                         self.fsm.changeCurrentState(decisionMaking.GoToHealthSpawner(self.transform.position, worldDestinationPosition))
             # Weapon
-            elif self.weapon.currentAmmo < self.weapon.maxAmmo:
+            elif self.weapon.maxAmmo == 0 or self.weapon.currentAmmo < self.weapon.maxAmmo:
                 if self.weapon.ammoBoxAmmo > 0:
                     if self.fsm.isCurrentState("Reload") == False:
                         self.fsm.changeCurrentState(decisionMaking.Reload())
