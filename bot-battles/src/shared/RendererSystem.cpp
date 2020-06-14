@@ -81,6 +81,10 @@ bool RendererSystem::StartUp()
     const std::vector<MeshResource::Vertex> quadVertices = MeshResource::GetQuadVertices();
     rendererComponent.lock()->m_quadMeshResource.lock()->ReLoadVertices(quadVertices);
 
+    rendererComponent.lock()->m_backgroundMeshResource = g_game->GetResourceManager().AddResource<MeshResource>("", "", false);
+    rendererComponent.lock()->m_backgroundMeshResource.lock()->ForceLoad();
+    rendererComponent.lock()->m_backgroundMeshResource.lock()->ReLoadVertices(quadVertices);
+    rendererComponent.lock()->m_backgroundMeshResource.lock()->m_isStatic = true;
     rendererComponent.lock()->m_mapMeshResource = g_game->GetResourceManager().AddResource<MeshResource>("", "", false);
     rendererComponent.lock()->m_mapMeshResource.lock()->ForceLoad();
     rendererComponent.lock()->m_mapMeshResource.lock()->ReLoadVertices(quadVertices);
@@ -113,6 +117,14 @@ bool RendererSystem::Render()
     std::weak_ptr<RendererComponent> rendererComponent = g_game->GetRendererComponent();
 
     ResourceManager& resourceManager = g_game->GetResourceManager();
+    std::weak_ptr<SpriteResource> mainMenuSpriteResource = resourceManager.GetResourceByFile<SpriteResource>(rendererComponent.lock()->m_mainMenuTextureName.c_str());
+    if (!mainMenuSpriteResource.expired()) {
+        rendererComponent.lock()->DrawBackgroundTexturedQuad(mainMenuSpriteResource.lock()->GetTexture());
+    }
+    std::weak_ptr<SpriteResource> scoreboardSpriteResource = resourceManager.GetResourceByFile<SpriteResource>(rendererComponent.lock()->m_scoreboardTextureName.c_str());
+    if (!scoreboardSpriteResource.expired()) {
+        rendererComponent.lock()->DrawBackgroundTexturedQuad(scoreboardSpriteResource.lock()->GetTexture());
+    }
     std::weak_ptr<SpriteResource> mapSpriteResource = resourceManager.GetResourceByFile<SpriteResource>("map.png");
     if (!mapSpriteResource.expired()) {
         rendererComponent.lock()->DrawMapTexturedQuad(mapSpriteResource.lock()->GetTexture());
@@ -197,8 +209,12 @@ void RendererSystem::OnSystemEntityAdded(Entity entity) const
         return;
     }
 
+    std::weak_ptr<RendererComponent> rendererComponent = g_game->GetRendererComponent();
+
     const std::string textureFile = spriteComponent.lock()->m_spriteResource.lock()->GetFile();
-    if (textureFile == "map.png") {
+    if (textureFile == rendererComponent.lock()->m_mainMenuTextureName.c_str() || textureFile == rendererComponent.lock()->m_scoreboardTextureName.c_str()) {
+        RecalculateBackgroundMesh();
+    } else if (textureFile == "map.png") {
         RecalculateMapMesh();
     } else if (textureFile == "characters.png") {
         RecalculateCharactersMesh();
@@ -218,8 +234,12 @@ void RendererSystem::OnSystemEntityRemoved(Entity entity) const
         return;
     }
 
+    std::weak_ptr<RendererComponent> rendererComponent = g_game->GetRendererComponent();
+
     const std::string textureFile = spriteComponent.lock()->m_spriteResource.lock()->GetFile();
-    if (textureFile == "map.png") {
+    if (textureFile == rendererComponent.lock()->m_mainMenuTextureName.c_str() || textureFile == rendererComponent.lock()->m_scoreboardTextureName.c_str()) {
+        RecalculateBackgroundMesh();
+    } else if (textureFile == "map.png") {
         RecalculateMapMesh();
     } else if (textureFile == "characters.png") {
         RecalculateCharactersMesh();
@@ -260,14 +280,78 @@ void RendererSystem::OnComponentMemberChanged(U64 dirtyState, Entity entity) con
         return;
     }
 
+    std::weak_ptr<RendererComponent> rendererComponent = g_game->GetRendererComponent();
+
     const std::string textureFile = spriteComponent.lock()->m_spriteResource.lock()->GetFile();
-    if (textureFile == "map.png") {
+    if (textureFile == rendererComponent.lock()->m_mainMenuTextureName.c_str() || textureFile == rendererComponent.lock()->m_scoreboardTextureName.c_str()) {
+        RecalculateBackgroundMesh();
+    } else if (textureFile == "map.png") {
         RecalculateMapMesh();
     } else if (textureFile == "characters.png") {
         RecalculateCharactersMesh();
     } else if (textureFile == "objects.png") {
         RecalculateObjectsMesh();
     }
+}
+
+//----------------------------------------------------------------------------------------------------
+void RendererSystem::RecalculateBackgroundMesh() const
+{
+    OPTICK_EVENT();
+
+    std::weak_ptr<RendererComponent> rendererComponent = g_game->GetRendererComponent();
+    std::weak_ptr<WindowComponent> windowComponent = g_game->GetWindowComponent();
+    glm::vec2 proportion = windowComponent.lock()->GetProportion();
+
+    std::vector<MeshResource::Instance> instances;
+    for (const auto& entity : m_entities) {
+        std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
+        if (!spriteComponent.lock()->m_isVisible || spriteComponent.lock()->m_spriteResource.expired()) {
+            continue;
+        }
+
+        const std::string textureFile = spriteComponent.lock()->m_spriteResource.lock()->GetFile();
+        if (textureFile != rendererComponent.lock()->m_mainMenuTextureName.c_str() && textureFile != rendererComponent.lock()->m_scoreboardTextureName.c_str()) {
+            continue;
+        }
+
+        MeshResource::Instance instance;
+
+        std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
+        glm::vec3 position = transformComponent.lock()->GetPositionAndLayer();
+        F32 rotation = transformComponent.lock()->m_rotation;
+        glm::uvec4 textureCoords = spriteComponent.lock()->GetSpriteTextureCoords();
+        glm::vec3 scale = glm::vec3(static_cast<F32>(textureCoords.z), static_cast<F32>(textureCoords.w), 0.0f);
+        scale *= transformComponent.lock()->m_scale;
+
+        glm::mat4 model = glm::mat4(1.0f);
+        position.x *= proportion.x;
+        position.y *= proportion.y;
+        position.y *= -1.0f;
+        model = glm::translate(model, position);
+        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, -1.0f));
+        scale.x *= proportion.x;
+        scale.y *= proportion.y;
+        model = glm::scale(model, scale);
+        instance.m_model = model;
+
+        glm::uvec2 textureSize = spriteComponent.lock()->m_spriteResource.lock()->GetSize();
+        glm::vec2 texCoords0 = glm::vec2(textureCoords.x / static_cast<F32>(textureSize.x), 1.0f - textureCoords.y / static_cast<F32>(textureSize.y));
+        instance.m_spriteCoords[0] = texCoords0;
+        glm::vec2 texCoords1 = glm::vec2((textureCoords.x + textureCoords.z) / static_cast<F32>(textureSize.x), 1.0f - textureCoords.y / static_cast<F32>(textureSize.y));
+        instance.m_spriteCoords[1] = texCoords1;
+        glm::vec2 texCoords2 = glm::vec2(textureCoords.x / static_cast<F32>(textureSize.x), 1.0f - (textureCoords.y + textureCoords.w) / static_cast<F32>(textureSize.y));
+        instance.m_spriteCoords[2] = texCoords2;
+        glm::vec2 texCoords3 = glm::vec2((textureCoords.x + textureCoords.z) / static_cast<F32>(textureSize.x), 1.0f - (textureCoords.y + textureCoords.w) / static_cast<F32>(textureSize.y));
+        instance.m_spriteCoords[3] = texCoords3;
+
+        instance.m_color = spriteComponent.lock()->m_color;
+        instance.m_pct = spriteComponent.lock()->m_pct;
+
+        instances.emplace_back(instance);
+    }
+
+    rendererComponent.lock()->m_backgroundMeshResource.lock()->ReLoadInstances(instances);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -459,6 +543,7 @@ void RendererSystem::RecalculateAllMeshes() const
     std::weak_ptr<WindowComponent> windowComponent = g_game->GetWindowComponent();
     glm::vec2 proportion = windowComponent.lock()->GetProportion();
 
+    std::vector<MeshResource::Instance> backgroundInstances;
     std::vector<MeshResource::Instance> mapInstances;
     std::vector<MeshResource::Instance> charactersInstances;
     std::vector<MeshResource::Instance> objectsInstances;
@@ -502,7 +587,9 @@ void RendererSystem::RecalculateAllMeshes() const
         instance.m_pct = spriteComponent.lock()->m_pct;
 
         const std::string textureFile = spriteComponent.lock()->m_spriteResource.lock()->GetFile();
-        if (textureFile == "map.png") {
+        if (textureFile == rendererComponent.lock()->m_mainMenuTextureName.c_str() || textureFile == rendererComponent.lock()->m_scoreboardTextureName.c_str()) {
+            backgroundInstances.emplace_back(instance);
+        } else if (textureFile == "map.png") {
             mapInstances.emplace_back(instance);
         } else if (textureFile == "characters.png") {
             charactersInstances.emplace_back(instance);
@@ -511,6 +598,7 @@ void RendererSystem::RecalculateAllMeshes() const
         }
     }
 
+    rendererComponent.lock()->m_backgroundMeshResource.lock()->ReLoadInstances(backgroundInstances);
     rendererComponent.lock()->m_mapMeshResource.lock()->ReLoadInstances(mapInstances);
     rendererComponent.lock()->m_charactersMeshResource.lock()->ReLoadInstances(charactersInstances);
     rendererComponent.lock()->m_objectsMeshResource.lock()->ReLoadInstances(objectsInstances);

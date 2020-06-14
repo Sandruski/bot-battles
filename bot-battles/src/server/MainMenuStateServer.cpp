@@ -52,7 +52,7 @@ bool MainMenuStateServer::Enter() const
     std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().AddComponent<TransformComponent>(background);
     transformComponent.lock()->m_position += static_cast<glm::vec2>(windowComponent.lock()->m_baseResolution) / 2.0f;
     transformComponent.lock()->m_layerType = LayerType::BACKGROUND;
-    std::weak_ptr<SpriteResource> spriteResource = g_gameServer->GetResourceManager().AddResource<SpriteResource>("mainMenuBackground.png", TEXTURES_DIR, true);
+    std::weak_ptr<SpriteResource> spriteResource = g_gameServer->GetResourceManager().AddResource<SpriteResource>("mainMenuServer.png", TEXTURES_DIR, true);
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().AddComponent<SpriteComponent>(background);
     spriteComponent.lock()->m_spriteResource = spriteResource;
 
@@ -62,7 +62,7 @@ bool MainMenuStateServer::Enter() const
     authorTransformComponent.lock()->m_position.y = static_cast<F32>(windowComponent.lock()->m_baseResolution.y);
     std::weak_ptr<LabelComponent> authorLabelComponent = g_gameServer->GetComponentManager().AddComponent<LabelComponent>(mainMenuComponent.lock()->m_author);
     authorLabelComponent.lock()->m_text = "(c) 2020 Sandra Alvarez";
-    authorLabelComponent.lock()->m_color = White;
+    authorLabelComponent.lock()->m_color = Black;
     ImVec2 authorTextSize = ImGui::CalcTextSize(authorLabelComponent.lock()->m_text.c_str());
     authorLabelComponent.lock()->m_offset = glm::vec2(5.0f, -5.0f);
     authorLabelComponent.lock()->m_extraOffset = glm::vec2(authorTextSize.x / 2.0f, -authorTextSize.y / 2.0f);
@@ -73,7 +73,7 @@ bool MainMenuStateServer::Enter() const
     versionTransformComponent.lock()->m_position.y = static_cast<F32>(windowComponent.lock()->m_baseResolution.y);
     std::weak_ptr<LabelComponent> versionLabelComponent = g_gameServer->GetComponentManager().AddComponent<LabelComponent>(mainMenuComponent.lock()->m_version);
     versionLabelComponent.lock()->m_text = "v0.8 Beta";
-    versionLabelComponent.lock()->m_color = White;
+    versionLabelComponent.lock()->m_color = Black;
     ImVec2 versionTextSize = ImGui::CalcTextSize(versionLabelComponent.lock()->m_text.c_str());
     versionLabelComponent.lock()->m_offset = glm::vec2(-5.0f, -5.0f);
     versionLabelComponent.lock()->m_extraOffset = glm::vec2(-versionTextSize.x / 2.0f, -versionTextSize.y / 2.0f);

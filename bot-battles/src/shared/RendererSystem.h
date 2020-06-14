@@ -31,6 +31,7 @@ private:
     void OnComponentMemberChanged(U64 dirtyState, Entity entity) const;
 
 private:
+    void RecalculateBackgroundMesh() const;
     void RecalculateMapMesh() const;
     void RecalculateCharactersMesh() const;
     void RecalculateObjectsMesh() const;

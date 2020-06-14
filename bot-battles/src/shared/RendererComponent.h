@@ -25,6 +25,7 @@ struct RendererComponent {
     void DrawMapTexturedQuad(U32 texture);
     void DrawCharactersTexturedQuad(U32 texture);
     void DrawObjectsTexturedQuad(U32 texture);
+    void DrawBackgroundTexturedQuad(U32 texture);
 
     std::weak_ptr<ShaderResource> m_defaultShaderResource;
     std::weak_ptr<ShaderResource> m_instancingShaderResource;
@@ -35,8 +36,12 @@ struct RendererComponent {
     std::weak_ptr<MeshResource> m_mapMeshResource;
     std::weak_ptr<MeshResource> m_charactersMeshResource;
     std::weak_ptr<MeshResource> m_objectsMeshResource;
+    std::weak_ptr<MeshResource> m_backgroundMeshResource;
 
     glm::vec4 m_backgroundColor;
+
+    std::string m_mainMenuTextureName;
+    std::string m_scoreboardTextureName;
 
     bool m_isVSync;
     bool m_isCap;

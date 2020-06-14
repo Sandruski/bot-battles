@@ -18,7 +18,15 @@ RendererComponent::RendererComponent()
     , m_mapMeshResource()
     , m_charactersMeshResource()
     , m_objectsMeshResource()
+    , m_backgroundMeshResource()
     , m_backgroundColor(0.0f, 0.0f, 0.0f, 0.0f)
+#ifdef _CLIENT
+    , m_mainMenuTextureName("mainMenuClient.png")
+    , m_scoreboardTextureName("scoreboardClient.png")
+#elif defined(_SERVER)
+    , m_mainMenuTextureName("mainMenuServer.png")
+    , m_scoreboardTextureName("scoreboardServer.png")
+#endif
     , m_isVSync(true)
     , m_isDebugDraw(false)
     , m_isDebugDrawColliders(true)
@@ -275,6 +283,29 @@ void RendererComponent::DrawObjectsTexturedQuad(U32 texture)
 
     glBindVertexArray(m_objectsMeshResource.lock()->GetVAO());
     glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, static_cast<GLsizei>(m_objectsMeshResource.lock()->GetVertices().size()), static_cast<GLsizei>(m_objectsMeshResource.lock()->GetInstances().size()));
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glBindVertexArray(0);
+}
+
+//----------------------------------------------------------------------------------------------------
+void RendererComponent::DrawBackgroundTexturedQuad(U32 texture)
+{
+    glUseProgram(m_instancingShaderResource.lock()->GetProgram());
+
+    std::weak_ptr<WindowComponent> windowComponent = g_game->GetWindowComponent();
+    glm::mat4 projection = glm::ortho(0.0f, static_cast<F32>(windowComponent.lock()->m_currentResolution.x), -static_cast<F32>(windowComponent.lock()->m_currentResolution.y), 0.0f, static_cast<F32>(LayerType::NEAR_PLANE), -static_cast<F32>(LayerType::FAR_PLANE));
+    U32 projectionLoc = glGetUniformLocation(m_instancingShaderResource.lock()->GetProgram(), "projection");
+    glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+    U32 pctLoc = glGetUniformLocation(m_instancingShaderResource.lock()->GetProgram(), "pct");
+    glUniform1f(pctLoc, 0.0f);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    glBindVertexArray(m_backgroundMeshResource.lock()->GetVAO());
+    glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, static_cast<GLsizei>(m_backgroundMeshResource.lock()->GetVertices().size()), static_cast<GLsizei>(m_backgroundMeshResource.lock()->GetInstances().size()));
 
     glBindTexture(GL_TEXTURE_2D, 0);
     glBindVertexArray(0);
