@@ -20,13 +20,11 @@ enum class SystemType : U16 {
     PHYSICS,
     COLLISION,
 
-    //
     SIGHT,
     MOVEMENT,
     WEAPON,
     REMOTE_PLAYER_WEAPON,
     HEALTH,
-    //
 
     MAP,
 
@@ -49,14 +47,12 @@ enum class SystemType : U16 {
     PHYSICS,
     COLLISION,
 
-    //
     SIGHT,
     MOVEMENT,
     WEAPON,
     HEALTH,
-    //
-
     BOT,
+
     MAP,
 
     OUTPUT,
