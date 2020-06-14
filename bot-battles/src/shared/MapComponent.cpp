@@ -56,8 +56,8 @@ glm::uvec2 MapComponent::WorldToMap(const glm::vec2& worldPosition) const
 {
     glm::uvec2 map;
 
-    map.x = static_cast<U32>(worldPosition.x / static_cast<F32>(m_tileSize.x));
-    map.y = static_cast<U32>(worldPosition.y / static_cast<F32>(m_tileSize.y));
+    map.x = static_cast<U32>(std::round(worldPosition.x / static_cast<F32>(m_tileSize.x)));
+    map.y = static_cast<U32>(std::round(worldPosition.y / static_cast<F32>(m_tileSize.y)));
 
     return map;
 }
