@@ -168,7 +168,7 @@ bool WeaponSystemServer::Update()
 
                 std::weak_ptr<PhysicsComponent> physicsComponent = g_gameServer->GetPhysicsComponent();
                 PhysicsComponent::RaycastHit hitInfo;
-                const bool hasIntersected = physicsComponent.lock()->Raycast(weaponComponent.lock()->m_originLastShot, weaponComponent.lock()->m_destinationLastShot, hitInfo);
+                const bool hasIntersected = physicsComponent.lock()->Raycast(weaponComponent.lock()->m_originLastShot, weaponComponent.lock()->m_destinationLastShot, INVALID_ENTITY, hitInfo);
                 if (hasIntersected) {
                     std::weak_ptr<TransformComponent> hitEntityTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(hitInfo.m_entity);
                     if (!hitEntityTransformComponent.expired()) {

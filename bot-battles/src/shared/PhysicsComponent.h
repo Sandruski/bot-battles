@@ -73,7 +73,7 @@ struct PhysicsComponent : public Subject {
     bool PreUpdate();
 
     void Step();
-    bool Raycast(const glm::vec2& origin, const glm::vec2& destination, RaycastHit& hitInfo);
+    bool Raycast(const glm::vec2& origin, const glm::vec2& destination, Entity entity, RaycastHit& hitInfo);
     bool Overlap(const glm::vec2& center, const glm::vec2& extents, std::vector<Entity>& entities);
 
     void OnCollisionEnter(Entity entityA, Entity entityB, glm::vec2 linearVelocityA, glm::vec2 linearVelocityB, glm::vec2 normal);

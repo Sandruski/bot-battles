@@ -4,6 +4,7 @@
 #include "ComponentManager.h"
 #include "Game.h"
 #include "RigidbodyComponent.h"
+#include "WallComponent.h"
 
 namespace sand {
 
@@ -135,14 +136,29 @@ void PhysicsComponent::Step()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool PhysicsComponent::Raycast(const glm::vec2& origin, const glm::vec2& destination, RaycastHit& hitInfo)
+bool PhysicsComponent::Raycast(const glm::vec2& origin, const glm::vec2& destination, Entity entity, RaycastHit& hitInfo)
 {
     bool ret = false;
 
     for (b2Body* body = m_world.GetBodyList(); body != nullptr; body = body->GetNext()) {
         b2BodyType type = body->GetType();
-        if (type == b2BodyType::b2_dynamicBody) {
+        switch (type) {
+        case b2BodyType::b2_staticBody: {
+            Entity bodyEntity = *static_cast<Entity*>(body->GetUserData());
+            if (bodyEntity == entity) {
+                continue;
+            }
+
+            std::weak_ptr<WallComponent> wallComponent = g_game->GetComponentManager().GetComponent<WallComponent>(bodyEntity);
+            if (wallComponent.expired()) {
+                body->SetActive(false);
+            }
+            break;
+        }
+        case b2BodyType::b2_dynamicBody: {
             body->SetActive(true);
+            break;
+        }
         }
     }
 
@@ -158,8 +174,23 @@ bool PhysicsComponent::Raycast(const glm::vec2& origin, const glm::vec2& destina
 
     for (b2Body* body = m_world.GetBodyList(); body != nullptr; body = body->GetNext()) {
         b2BodyType type = body->GetType();
-        if (type == b2BodyType::b2_dynamicBody) {
+        switch (type) {
+        case b2BodyType::b2_staticBody: {
+            Entity bodyEntity = *static_cast<Entity*>(body->GetUserData());
+            if (bodyEntity == entity) {
+                continue;
+            }
+
+            std::weak_ptr<WallComponent> wallComponent = g_game->GetComponentManager().GetComponent<WallComponent>(bodyEntity);
+            if (wallComponent.expired()) {
+                body->SetActive(true);
+            }
+            break;
+        }
+        case b2BodyType::b2_dynamicBody: {
             body->SetActive(false);
+            break;
+        }
         }
     }
 
