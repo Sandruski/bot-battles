@@ -210,12 +210,12 @@
                         {
                          "name":"healthHP",
                          "type":"int",
-                         "value":30
+                         "value":40
                         }, 
                         {
                          "name":"healthTimeHeal",
                          "type":"float",
-                         "value":5
+                         "value":3
                         }],
                  "rotation":0,
                  "type":"HealthSpawner",
@@ -248,12 +248,12 @@
                         {
                          "name":"healthHP",
                          "type":"int",
-                         "value":30
+                         "value":40
                         }, 
                         {
                          "name":"healthTimeHeal",
                          "type":"float",
-                         "value":5
+                         "value":3
                         }],
                  "rotation":0,
                  "type":"HealthSpawner",

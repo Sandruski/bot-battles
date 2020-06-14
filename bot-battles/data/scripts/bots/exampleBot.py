@@ -120,19 +120,13 @@ class ExampleBot(bot.Bot):
                     if self.fsm.isCurrentState("GoToWeaponSpawner") == False:
                         closestWeaponSpawner = self.getClosestWeaponSpawner()
                         worldDestinationPosition = self.map.getWorldPosition(closestWeaponSpawner)
-                        self.fsm.changeCurrentState(decisionMaking.GoToWeaponSpawner(self.transform.position, worldDestinationPosition))
+                        self.fsm.changeCurrentState(decisionMaking.GoToWeaponSpawner(self.transform.position, worldDestinationPosition))            
             # ...
             elif self.lastKnownDirection != None:
-                if self.fsm.isCurrentState("LookAtBullet") == True:
-                    if self.agent.finishedRotate == True:
-                        self.lastKnownDirection = None
-                else:
+                if self.fsm.isCurrentState("LookAtBullet") == False:
                     self.fsm.changeCurrentState(decisionMaking.LookAtBullet(self.lastKnownDirection))
             elif self.lastKnownPosition != None:
-                if self.fsm.isCurrentState("GoToLastKnownPosition") == True:
-                    if self.agent.finishedMove == True:
-                        self.lastKnownPosition = None
-                else:
+                if self.fsm.isCurrentState("GoToLastKnownPosition") == False:
                     self.fsm.changeCurrentState(decisionMaking.GoToLastKnownPosition(self.transform.position, self.lastKnownPosition))
             else:
                 if glm.distance(glm.vec2(self.closestCenterWorldPosition[0], self.closestCenterWorldPosition[1]),  glm.vec2(self.transform.position[0], self.transform.position[1])) <= self.agent.minSeekDistance:
@@ -142,6 +136,9 @@ class ExampleBot(bot.Bot):
                     if self.fsm.isCurrentState("GoToCenterMap") == False:
                         worldDestinationPosition = self.closestCenterWorldPosition
                         self.fsm.changeCurrentState(decisionMaking.GoToCenterMap(self.transform.position, worldDestinationPosition))
+                      
+        self.lastKnownDirection = None
+        self.lastKnownPosition = None
 
     def getClosestWeaponSpawner(self):
         weaponSpawnerTiles = self.graph.getTilesOfType(TileType.WEAPON_SPAWNER)

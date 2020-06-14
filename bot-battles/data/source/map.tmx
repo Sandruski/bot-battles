@@ -66,8 +66,8 @@
     <property name="amountSpawn" type="int" value="-1"/>
     <property name="cooldownSpawn" type="float" value="15"/>
     <property name="healthCooldownHeal" type="float" value="0"/>
-    <property name="healthHP" type="int" value="30"/>
-    <property name="healthTimeHeal" type="float" value="5"/>
+    <property name="healthHP" type="int" value="40"/>
+    <property name="healthTimeHeal" type="float" value="3"/>
    </properties>
   </object>
   <object id="53" name="healthSpawner" type="HealthSpawner" gid="359" x="320" y="384" width="64" height="64">
@@ -75,8 +75,8 @@
     <property name="amountSpawn" type="int" value="-1"/>
     <property name="cooldownSpawn" type="float" value="15"/>
     <property name="healthCooldownHeal" type="float" value="0"/>
-    <property name="healthHP" type="int" value="30"/>
-    <property name="healthTimeHeal" type="float" value="5"/>
+    <property name="healthHP" type="int" value="40"/>
+    <property name="healthTimeHeal" type="float" value="3"/>
    </properties>
   </object>
  </objectgroup>
