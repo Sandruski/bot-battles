@@ -13,7 +13,6 @@ enum class SystemType : U16 {
     CLIENT,
 
     REMOTE_PLAYER_MOVEMENT,
-    REMOTE_PLAYER_WEAPON,
 
     SCRIPTING,
     INPUT,
@@ -25,6 +24,7 @@ enum class SystemType : U16 {
     SIGHT,
     MOVEMENT,
     WEAPON,
+    REMOTE_PLAYER_WEAPON,
     HEALTH,
     //
 
