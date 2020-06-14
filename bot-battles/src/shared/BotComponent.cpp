@@ -7,8 +7,8 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 BotComponent::BotComponent()
     : m_actionType(ActionType::NONE)
-#ifdef _SERVER
     , m_timeAction(0.0f)
+#ifdef _SERVER
     , m_cooldownAction(0.0f)
     , m_timerAction()
 #endif
@@ -22,6 +22,9 @@ void BotComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /*fr
     if (dirtyState & static_cast<U64>(ComponentMemberType::BOT_ACTION_TYPE)) {
         inputStream.Read(m_actionType);
     }
+    if (dirtyState & static_cast<U64>(ComponentMemberType::BOT_TIME_ACTION)) {
+        inputStream.Read(m_timeAction);
+    }
 }
 #elif defined(_SERVER)
 //----------------------------------------------------------------------------------------------------
@@ -32,6 +35,10 @@ U64 BotComponent::Write(OutputMemoryStream& outputStream, U64 dirtyState) const
     if (dirtyState & static_cast<U64>(ComponentMemberType::BOT_ACTION_TYPE)) {
         outputStream.Write(m_actionType);
         writtenState |= static_cast<U64>(ComponentMemberType::BOT_ACTION_TYPE);
+    }
+    if (dirtyState & static_cast<U64>(ComponentMemberType::BOT_TIME_ACTION)) {
+        outputStream.Write(m_timeAction);
+        writtenState |= static_cast<U64>(ComponentMemberType::BOT_TIME_ACTION);
     }
 
     return writtenState;

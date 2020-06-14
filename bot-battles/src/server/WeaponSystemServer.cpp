@@ -91,6 +91,7 @@ bool WeaponSystemServer::Update()
                 botComponent.lock()->m_actionType = BotComponent::ActionType::RELOAD;
                 characterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_ACTION_TYPE);
                 botComponent.lock()->m_timeAction = weaponComponent.lock()->m_timeReload;
+                characterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_TIME_ACTION);
                 botComponent.lock()->m_cooldownAction = weaponComponent.lock()->m_cooldownReload;
                 botComponent.lock()->m_timerAction.Start();
             }
@@ -114,6 +115,7 @@ bool WeaponSystemServer::Update()
                     botComponent.lock()->m_actionType = BotComponent::ActionType::SHOOT_PRIMARY;
                     characterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_ACTION_TYPE);
                     botComponent.lock()->m_timeAction = weaponComponent.lock()->m_timeShootPrimary;
+                    characterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_TIME_ACTION);
                     botComponent.lock()->m_cooldownAction = weaponComponent.lock()->m_cooldownShootPrimary;
                     botComponent.lock()->m_timerAction.Start();
                 } else {
@@ -130,6 +132,7 @@ bool WeaponSystemServer::Update()
                     botComponent.lock()->m_actionType = BotComponent::ActionType::SHOOT_SECONDARY;
                     characterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_ACTION_TYPE);
                     botComponent.lock()->m_timeAction = weaponComponent.lock()->m_timeShootSecondary;
+                    characterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_TIME_ACTION);
                     botComponent.lock()->m_cooldownAction = weaponComponent.lock()->m_cooldownShootSecondary;
                     botComponent.lock()->m_timerAction.Start();
                 }
@@ -216,6 +219,8 @@ bool WeaponSystemServer::Render()
 {
     OPTICK_EVENT();
 
+    F32 dt = MyTime::GetInstance().GetDt();
+
     std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
     for (const auto& entity : m_entities) {
         PlayerID playerID = serverComponent.lock()->GetPlayerID(entity);
@@ -230,6 +235,10 @@ bool WeaponSystemServer::Render()
         }
 
         std::weak_ptr<WeaponComponent> weaponComponent = g_gameServer->GetComponentManager().GetComponent<WeaponComponent>(entity);
+        weaponComponent.lock()->m_alpha -= dt / botComponent.lock()->m_timeAction;
+        if (weaponComponent.lock()->m_alpha <= 0.0f) {
+            weaponComponent.lock()->m_alpha = 0.0f;
+        }
         Draw(playerID, weaponComponent);
     }
 

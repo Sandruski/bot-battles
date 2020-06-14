@@ -102,6 +102,8 @@ bool WeaponSystemClient::Render()
 {
     OPTICK_EVENT();
 
+    F32 dt = MyTime::GetInstance().GetDt();
+
     std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
     LinkingContext& linkingContext = g_gameClient->GetLinkingContext();
     for (const auto& entity : m_entities) {
@@ -136,6 +138,10 @@ bool WeaponSystemClient::Render()
             }
         }
         std::weak_ptr<WeaponComponent> weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(entity);
+        weaponComponent.lock()->m_alpha -= dt / botComponent.lock()->m_timeAction;
+        if (weaponComponent.lock()->m_alpha <= 0.0f) {
+            weaponComponent.lock()->m_alpha = 0.0f;
+        }
         Draw(playerID, weaponComponent);
     }
 

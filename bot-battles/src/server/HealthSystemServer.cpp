@@ -82,6 +82,7 @@ bool HealthSystemServer::Update()
                 botComponent.lock()->m_actionType = BotComponent::ActionType::HEAL;
                 characterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_ACTION_TYPE);
                 botComponent.lock()->m_timeAction = healthComponent.lock()->m_timeHeal;
+                characterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_TIME_ACTION);
                 botComponent.lock()->m_cooldownAction = healthComponent.lock()->m_cooldownHeal;
                 botComponent.lock()->m_timerAction.Start();
             }
