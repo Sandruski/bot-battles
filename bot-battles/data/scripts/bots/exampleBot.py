@@ -32,6 +32,29 @@ class ExampleBot(bot.Bot):
         self.closestCenterWorldPosition = self.map.getWorldPosition(closestCenter)
 
     def tick(self, input : InputComponent):
+        if self.action.canPerformAction:
+            self.think()
+        
+        self.fsm.updateCurrentState(input)
+        self.agent.update(input)
+
+    def onSeenNewBot(self, input, seenBotEntity):
+        logging.info('EVENT: onSeenNewBot')
+        self.lastSeenBotEntity = seenBotEntity
+
+    def onSeenLostBot(self, input, seenBotEntity):
+        logging.info('EVENT: onSeenLostBot')
+        self.lastSeenBotEntity = None
+
+        seenBotInfo = self.sight.getSeenBotInfo(seenBotEntity)
+        self.lastKnownPosition = seenBotInfo.transform.position
+
+    def onHitByBullet(self, input, health, direction):
+        logging.info('EVENT: onHitByBullet')
+
+        self.lastKnownDirection = (-direction[0], -direction[1])
+
+    def think(self):
         if self.lastSeenBotEntity != None:
             seenBotInfo = self.sight.getSeenBotInfo(self.lastSeenBotEntity)
             distance = glm.distance(glm.vec2(seenBotInfo.transform.position[0], seenBotInfo.transform.position[1]),  glm.vec2(self.transform.position[0], self.transform.position[1]))
@@ -119,26 +142,6 @@ class ExampleBot(bot.Bot):
                     if self.fsm.isCurrentState("GoToCenterMap") == False:
                         worldDestinationPosition = self.closestCenterWorldPosition
                         self.fsm.changeCurrentState(decisionMaking.GoToCenterMap(self.transform.position, worldDestinationPosition))
-
-        self.fsm.updateCurrentState(input)
-        self.agent.update(input)
-
-    def onSeenNewBot(self, input, seenBotEntity):
-        logging.info('EVENT: onSeenNewBot')
-        self.lastSeenBotEntity = seenBotEntity
-
-    def onSeenLostBot(self, input, seenBotEntity):
-        logging.info('EVENT: onSeenLostBot')
-        self.lastSeenBotEntity = None
-
-        seenBotInfo = self.sight.getSeenBotInfo(seenBotEntity)
-        self.lastKnownPosition = seenBotInfo.transform.position
-        logging.info('lkp is %f %f', self.lastKnownPosition[0], self.lastKnownPosition[1])
-
-    def onHitByBullet(self, input, health, direction):
-        logging.info('EVENT: onHitByBullet')
-
-        self.lastKnownDirection = (-direction[0], -direction[1])
 
     def getClosestWeaponSpawner(self):
         weaponSpawnerTiles = self.graph.getTilesOfType(TileType.WEAPON_SPAWNER)
