@@ -111,7 +111,6 @@ void ReplicationManagerServer::Write(OutputMemoryStream& outputStream, Replicati
             || (isReplicated && !wasReplicated)
             || (isReplicated && hasReplication)) {
             NetworkID networkID = pair.first;
-            ILOG("Write networkID %u", networkID);
             outputStream.Write(networkID);
             outputStream.Write(isReplicated);
             outputStream.Write(wasReplicated);

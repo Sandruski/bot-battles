@@ -36,8 +36,6 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream)
         inputStream.Read(isReplicated);
         bool wasReplicated = false;
         inputStream.Read(wasReplicated);
-        ILOG("NEW LOOP for networkID %u", networkID);
-        ILOG("remainingbitcount %u length %u", inputStream.GetRemainingBitCount(), inputStream.GetByteLength());
         bool hasReplication = false;
         inputStream.Read(hasReplication);
 

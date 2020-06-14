@@ -165,7 +165,6 @@ void ClientSystem::ReceiveIncomingPackets(std::weak_ptr<ClientComponent> clientC
             if (readByteCount > 0) {
                 packet.SetCapacity(readByteCount);
                 packet.ResetHead();
-                ILOG("readByteCount %i", readByteCount);
                 ReceivePacket(clientComponent, packet);
                 ++receivedPacketCount;
             } else if (readByteCount == -WSAECONNRESET || readByteCount == 0) {
@@ -217,7 +216,6 @@ void ClientSystem::ReceivePacket(std::weak_ptr<ClientComponent> clientComponent,
 {
     ServerMessageType type;
     inputStream.Read(type);
-    ILOG("Packet size %u", inputStream.GetByteCapacity());
 
     switch (type) {
 

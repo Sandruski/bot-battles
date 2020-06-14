@@ -203,7 +203,6 @@ void ServerSystem::ReceiveIncomingPackets(std::weak_ptr<ServerComponent> serverC
                     } else {
                         InputMemoryStream packet;
                         I32 readByteCount = TCPSock->Receive(packet.GetPtr(), packet.GetByteCapacity());
-                        ILOG("readByteCount %i", readByteCount);
                         if (readByteCount > 0) {
                             packet.SetCapacity(readByteCount);
                             packet.ResetHead();
