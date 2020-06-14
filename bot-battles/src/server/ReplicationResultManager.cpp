@@ -63,7 +63,6 @@ void ReplicationResultManager::HandleDeliveryFailure(const DeliveryManagerServer
         ReplicationCommand replicationCommand = pair.second;
         switch (replicationCommand.m_replicationActionType) {
         case ReplicationActionType::CREATE: {
-            ILOG("Create delivery failure for networkID %u", networkID);
             HandleCreateDeliveryFailure(networkID);
             break;
         }
@@ -99,7 +98,6 @@ void ReplicationResultManager::HandleCreateDeliverySuccess(NetworkID networkID) 
     if (entity < INVALID_ENTITY) {
         m_replicationManager.lock()->SetUpdate(networkID);
     }
-    ILOG("Create delivery success for networkID %u", networkID);
 }
 
 //----------------------------------------------------------------------------------------------------

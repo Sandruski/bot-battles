@@ -140,8 +140,8 @@ void DeliveryManagerServer::ReadPendingAcks(InputMemoryStream& inputStream)
             } else if (sequenceNumber < nextAckdSequenceNumber) {
                 Delivery deliveryCopy = delivery;
                 m_deliveries.pop_front();
-                HandleDeliveryFailure(deliveryCopy);
                 ILOG("Normal failure");
+                HandleDeliveryFailure(deliveryCopy);
             } else {
                 ++nextAckdSequenceNumber;
             }

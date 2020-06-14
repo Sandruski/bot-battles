@@ -36,18 +36,17 @@ class PathFinder:
         self.graph = graph
 
     def reconstructPath(self, origin, destination, cameFrom):
-       logging.info('origin %i %i, destination %i %i', origin[0], origin[1], destination[0], destination[1])
-       current = destination
-       path = []
-       while current != origin:
-           path.append(current)
-           current = cameFrom[current]
-           if current == None:
-               logging.info('current is none')
-           logging.info('current %i %i', current[0], current[1])
-       path.append(origin)
-       path.reverse()
-       return path
+        if len(cameFrom) == 0:
+            return None
+
+        current = destination
+        path = []
+        while current != origin:
+            path.append(current)
+            current = cameFrom[current]
+        path.append(origin)
+        path.reverse()
+        return path
 
     def calculateHeuristic(self, a, b):
         (x1, y1) = a
