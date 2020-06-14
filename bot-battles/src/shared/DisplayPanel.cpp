@@ -21,7 +21,7 @@ bool DisplayPanel::RenderHeader() const
 //----------------------------------------------------------------------------------------------------
 bool DisplayPanel::RenderBody() const
 {
-    ImGui::Text("Window", GetName().c_str());
+    ImGui::Text("%s", GetName().c_str());
     ImGui::Separator();
     ImGui::Spacing();
 
@@ -44,10 +44,6 @@ bool DisplayPanel::RenderBody() const
 
     ImGui::InputFloat("FPS cap", &windowComponent.lock()->m_fps);
 
-    ImGui::Spacing();
-
-    ImGui::Text("Renderer", GetName().c_str());
-    ImGui::Separator();
     ImGui::Spacing();
 
     std::weak_ptr<RendererComponent> rendererComponent = g_game->GetRendererComponent();

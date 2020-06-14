@@ -97,6 +97,9 @@ class LookAt(State):
     def exit(self, bot):
         bot.agent.stopMove = False
 
+class LookAtBullet(LookAt):
+    ...
+
 class Rotate(State):
     def __init__(self, angularVelocity):
         self.angularVelocity = angularVelocity
@@ -191,13 +194,13 @@ class FSM:
         if newState == None:
             return
 
+        logging.info('STATE: %s', newState.getName())
+
         if self.currentState != None:
            self.currentState.exit(self.bot)
 
         self.currentState = newState
         self.currentState.enter(self.bot)
-
-        logging.info('STATE: %s', self.currentState.getName())
 
     def updateCurrentState(self, input):
         if self.currentState != None:

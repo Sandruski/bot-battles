@@ -27,6 +27,7 @@ bool GraphicsPanel::RenderBody() const
     std::weak_ptr<RendererComponent> rendererComponent = g_game->GetRendererComponent();
     ImGui::Checkbox("Debug Draw", &rendererComponent.lock()->m_isDebugDraw);
     if (rendererComponent.lock()->m_isDebugDraw) {
+        ImGui::Indent();
         ImGui::Checkbox("Colliders", &rendererComponent.lock()->m_isDebugDrawColliders);
         ImGui::Checkbox("Bot", &rendererComponent.lock()->m_isDebugDrawBot);
         ImGui::Checkbox("Map", &rendererComponent.lock()->m_isDebugDrawMap);

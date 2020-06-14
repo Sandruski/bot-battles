@@ -25,21 +25,20 @@ class ExampleBot(bot.Bot):
         self.agent = movement.Agent(self)
         self.fsm = decisionMaking.FSM(self)
         self.lastSeenBotEntity = None
-        self.hitByBullet = False
+        self.lastKnownPosition = None
+        self.lastKnownDirection = None
 
         closestCenter = self.getClosestCenter()
         self.closestCenterWorldPosition = self.map.getWorldPosition(closestCenter)
 
     def tick(self, input : InputComponent):
         if self.lastSeenBotEntity != None:
-            self.hitByBullet = False
-
             seenBotInfo = self.sight.getSeenBotInfo(self.lastSeenBotEntity)
             distance = glm.distance(glm.vec2(seenBotInfo.transform.position[0], seenBotInfo.transform.position[1]),  glm.vec2(self.transform.position[0], self.transform.position[1]))
             colliderRange = self.collider.size[0] / 2.0 + seenBotInfo.collider.size[0] / 2.0
 
             # Health
-            if self.health.currentHP < seenBotInfo.health.currentHP:
+            if self.health.currentHP < self.health.maxHP / 2.0 or self.health.currentHP < seenBotInfo.health.currentHP / 2.0:
                 if self.health.firstAidBoxHP > 0:
                     if self.fsm.isCurrentState("Heal") == False:
                         self.fsm.changeCurrentState(decisionMaking.Heal())
@@ -78,7 +77,7 @@ class ExampleBot(bot.Bot):
                     if self.fsm.isCurrentState("GoForward") == False:
                         worldDestinationDirection = self.transform.direction
                         self.fsm.changeCurrentState(decisionMaking.GoForward(worldDestinationDirection))  
-        elif self.hitByBullet == False:
+        else:
             # Health
             if self.health.currentHP < self.health.maxHP / 2.0:
                 if self.health.firstAidBoxHP > 0:
@@ -100,6 +99,18 @@ class ExampleBot(bot.Bot):
                         worldDestinationPosition = self.map.getWorldPosition(closestWeaponSpawner)
                         self.fsm.changeCurrentState(decisionMaking.GoToWeaponSpawner(self.transform.position, worldDestinationPosition))
             # ...
+            elif self.lastKnownDirection != None:
+                if self.fsm.isCurrentState("LookAtBullet") == True:
+                    if self.agent.finishedRotate == True:
+                        self.lastKnownDirection = None
+                else:
+                    self.fsm.changeCurrentState(decisionMaking.LookAtBullet(self.lastKnownDirection))
+            elif self.lastKnownPosition != None:
+                if self.fsm.isCurrentState("GoToLastKnownPosition") == True:
+                    if self.agent.finishedMove == True:
+                        self.lastKnownPosition = None
+                else:
+                    self.fsm.changeCurrentState(decisionMaking.GoToLastKnownPosition(self.transform.position, self.lastKnownPosition))
             else:
                 if glm.distance(glm.vec2(self.closestCenterWorldPosition[0], self.closestCenterWorldPosition[1]),  glm.vec2(self.transform.position[0], self.transform.position[1])) <= self.agent.minSeekDistance:
                     if self.fsm.isCurrentState("Rotate") == False:
@@ -121,13 +132,13 @@ class ExampleBot(bot.Bot):
         self.lastSeenBotEntity = None
 
         seenBotInfo = self.sight.getSeenBotInfo(seenBotEntity)
-        self.fsm.changeCurrentState(decisionMaking.GoToLastKnownPosition(self.transform.position, seenBotInfo.transform.position))
+        self.lastKnownPosition = seenBotInfo.transform.position
+        logging.info('lkp is %f %f', self.lastKnownPosition[0], self.lastKnownPosition[1])
 
     def onHitByBullet(self, input, health, direction):
         logging.info('EVENT: onHitByBullet')
-        self.hitByBullet = True
 
-        self.fsm.changeCurrentState(decisionMaking.LookAt((-direction[0], -direction[1])))
+        self.lastKnownDirection = (-direction[0], -direction[1])
 
     def getClosestWeaponSpawner(self):
         weaponSpawnerTiles = self.graph.getTilesOfType(TileType.WEAPON_SPAWNER)
