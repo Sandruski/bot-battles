@@ -317,7 +317,7 @@
                         {
                          "name":"weaponRange",
                          "type":"float",
-                         "value":100
+                         "value":250
                         }, 
                         {
                          "name":"weaponTimeReload",
@@ -380,7 +380,7 @@
                         {
                          "name":"weaponRange",
                          "type":"float",
-                         "value":100
+                         "value":250
                         }, 
                         {
                          "name":"weaponTimeReload",

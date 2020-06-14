@@ -90,7 +90,7 @@
     <property name="weaponCooldownShoot" type="float" value="1"/>
     <property name="weaponDamage" type="int" value="10"/>
     <property name="weaponMaxAmmo" type="int" value="3"/>
-    <property name="weaponRange" type="float" value="100"/>
+    <property name="weaponRange" type="float" value="250"/>
     <property name="weaponTimeReload" type="float" value="2"/>
     <property name="weaponTimeShoot" type="float" value="1"/>
    </properties>
@@ -104,7 +104,7 @@
     <property name="weaponCooldownShoot" type="float" value="1"/>
     <property name="weaponDamage" type="int" value="10"/>
     <property name="weaponMaxAmmo" type="int" value="3"/>
-    <property name="weaponRange" type="float" value="100"/>
+    <property name="weaponRange" type="float" value="250"/>
     <property name="weaponTimeReload" type="float" value="2"/>
     <property name="weaponTimeShoot" type="float" value="1"/>
    </properties>
