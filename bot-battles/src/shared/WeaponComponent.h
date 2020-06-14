@@ -128,8 +128,10 @@ struct WeaponComponent : public Component
     // Local
     F32 m_alpha;
 
+#ifdef _SERVER
     /// Server
     bool m_isPickedUp;
+#endif
 };
 }
 

@@ -11,7 +11,9 @@ HealthComponent::HealthComponent()
     , m_HP(0)
     , m_timeHeal(0.0f)
     , m_cooldownHeal(0.0f)
+#ifdef _SERVER
     , m_isPickedUp(false)
+#endif
 {
 }
 

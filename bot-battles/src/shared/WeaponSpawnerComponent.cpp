@@ -4,6 +4,7 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 WeaponSpawnerComponent::WeaponSpawnerComponent()
+#ifdef _SERVER
     : m_weaponDamage(0)
     , m_weaponMaxAmmo(0)
     , m_weaponAmmo(0)
@@ -17,6 +18,7 @@ WeaponSpawnerComponent::WeaponSpawnerComponent()
     , m_timerSpawn()
     , m_entitySpawned(INVALID_ENTITY)
     , m_amountSpawned(0)
+#endif
 {
 }
 }

@@ -7,9 +7,11 @@ namespace sand {
 //----------------------------------------------------------------------------------------------------
 BotComponent::BotComponent()
     : m_actionType(ActionType::NONE)
+#ifdef _SERVER
     , m_timeAction(0.0f)
     , m_cooldownAction(0.0f)
     , m_timerAction()
+#endif
 {
 }
 

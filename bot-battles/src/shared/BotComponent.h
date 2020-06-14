@@ -57,10 +57,12 @@ struct BotComponent : public Component
     // Networked
     ActionType m_actionType;
 
+#ifdef _SERVER
     // Local (server)
     F32 m_timeAction;
     F32 m_cooldownAction;
     MyTimer m_timerAction;
+#endif
 };
 }
 #endif

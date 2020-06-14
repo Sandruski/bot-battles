@@ -13,6 +13,7 @@ struct WeaponSpawnerComponent : public Component {
 
     WeaponSpawnerComponent();
 
+#ifdef _SERVER
     // Local (server)
     /// Weapon (primary)
     U32 m_weaponDamage;
@@ -30,6 +31,7 @@ struct WeaponSpawnerComponent : public Component {
     MyTimer m_timerSpawn;
     Entity m_entitySpawned;
     U32 m_amountSpawned;
+#endif
 };
 }
 

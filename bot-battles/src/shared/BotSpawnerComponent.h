@@ -13,6 +13,7 @@ struct BotSpawnerComponent : public Component {
 
     BotSpawnerComponent();
 
+#ifdef _SERVER
     // Local (server)
     PlayerID m_playerID;
 
@@ -35,6 +36,7 @@ struct BotSpawnerComponent : public Component {
     /// Sight
     F32 m_sightAngle;
     F32 m_sightDistance;
+#endif
 };
 }
 

@@ -72,8 +72,10 @@ struct HealthComponent : public Component
     F32 m_timeHeal;
     F32 m_cooldownHeal;
 
+#ifdef _SERVER
     // Local (server)
     bool m_isPickedUp;
+#endif
 };
 }
 

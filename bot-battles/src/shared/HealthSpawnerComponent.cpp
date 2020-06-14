@@ -4,6 +4,7 @@ namespace sand {
 
 //----------------------------------------------------------------------------------------------------
 HealthSpawnerComponent::HealthSpawnerComponent()
+#ifdef _SERVER
     : m_healthHP(0)
     , m_healthTimeHeal(0.0f)
     , m_healthCooldownHeal(0.0f)
@@ -12,6 +13,7 @@ HealthSpawnerComponent::HealthSpawnerComponent()
     , m_timerSpawn()
     , m_entitySpawned(INVALID_ENTITY)
     , m_amountSpawned(0)
+#endif
 {
 }
 }

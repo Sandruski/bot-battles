@@ -21,7 +21,9 @@ WeaponComponent::WeaponComponent()
     , m_timeReload(0.0f)
     , m_cooldownReload(0.0f)
     , m_alpha(0.0f)
+#ifdef _SERVER
     , m_isPickedUp(false)
+#endif
 {
 }
 

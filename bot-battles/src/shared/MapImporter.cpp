@@ -216,6 +216,7 @@ void MapImporter::Create(const Tilemap& tilemap) const
                 MapComponent::TileType& tileType = mapComponent.lock()->GetTileType(mapPosition);
                 tileType = MapComponent::TileType::BOT_SPAWNER;
 
+#ifdef _SERVER
                 std::weak_ptr<BotSpawnerComponent> botSpawnerComponent = g_game->GetComponentManager().AddComponent<BotSpawnerComponent>(entity);
                 for (const auto& property : object.m_properties) {
                     if (property.m_name == "player") {
@@ -242,6 +243,7 @@ void MapImporter::Create(const Tilemap& tilemap) const
                         botSpawnerComponent.lock()->m_sightDistance = property.m_value.floatValue;
                     }
                 }
+#endif
             }
 
             // WeaponSpawner
@@ -251,6 +253,7 @@ void MapImporter::Create(const Tilemap& tilemap) const
                 MapComponent::TileType& tileType = mapComponent.lock()->GetTileType(mapPosition);
                 tileType = MapComponent::TileType::WEAPON_SPAWNER;
 
+#ifdef _SERVER
                 std::weak_ptr<WeaponSpawnerComponent> weaponSpawnerComponent = g_game->GetComponentManager().AddComponent<WeaponSpawnerComponent>(entity);
                 for (const auto& property : object.m_properties) {
                     if (property.m_name == "weaponDamage") {
@@ -275,6 +278,7 @@ void MapImporter::Create(const Tilemap& tilemap) const
                         weaponSpawnerComponent.lock()->m_cooldownSpawn = property.m_value.floatValue;
                     }
                 }
+#endif
             }
 
             if (object.m_type == "HealthSpawner") {
@@ -283,6 +287,7 @@ void MapImporter::Create(const Tilemap& tilemap) const
                 MapComponent::TileType& tileType = mapComponent.lock()->GetTileType(mapPosition);
                 tileType = MapComponent::TileType::HEALTH_SPAWNER;
 
+#ifdef _SERVER
                 std::weak_ptr<HealthSpawnerComponent> healthSpawnerComponent = g_game->GetComponentManager().AddComponent<HealthSpawnerComponent>(entity);
                 for (const auto& property : object.m_properties) {
                     if (property.m_name == "healthHP") {
@@ -297,6 +302,7 @@ void MapImporter::Create(const Tilemap& tilemap) const
                         healthSpawnerComponent.lock()->m_cooldownSpawn = property.m_value.floatValue;
                     }
                 }
+#endif
             }
         }
     }

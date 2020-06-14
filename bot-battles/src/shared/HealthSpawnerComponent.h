@@ -13,7 +13,9 @@ struct HealthSpawnerComponent : public Component {
 
     HealthSpawnerComponent();
 
+#ifdef _SERVER
     // Local (server)
+    /// Health
     U32 m_healthHP;
     F32 m_healthTimeHeal;
     F32 m_healthCooldownHeal;
@@ -24,6 +26,7 @@ struct HealthSpawnerComponent : public Component {
     MyTimer m_timerSpawn;
     Entity m_entitySpawned;
     U32 m_amountSpawned;
+#endif
 };
 }
 
