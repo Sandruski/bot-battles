@@ -21,7 +21,7 @@ bool DisplayPanel::RenderHeader() const
 //----------------------------------------------------------------------------------------------------
 bool DisplayPanel::RenderBody() const
 {
-    ImGui::Text("%s", GetName().c_str());
+    ImGui::Text("Window", GetName().c_str());
     ImGui::Separator();
     ImGui::Spacing();
 
@@ -37,12 +37,18 @@ bool DisplayPanel::RenderBody() const
 
     const char* displayModes[] = { "Fullscreen", "Windowed", "Borderless" };
     I32 currentDisplayMode = windowComponent.lock()->m_displayMode;
-    if (ImGui::Combo("Display Mode", &currentDisplayMode, displayModes, IM_ARRAYSIZE(displayModes))) {
+    if (ImGui::Combo("Display", &currentDisplayMode, displayModes, IM_ARRAYSIZE(displayModes))) {
         windowComponent.lock()->m_displayMode = static_cast<WindowComponent::DisplayMode>(currentDisplayMode);
         windowComponent.lock()->UpdateDisplayMode();
     }
 
     ImGui::InputFloat("FPS cap", &windowComponent.lock()->m_fps);
+
+    ImGui::Spacing();
+
+    ImGui::Text("Renderer", GetName().c_str());
+    ImGui::Separator();
+    ImGui::Spacing();
 
     std::weak_ptr<RendererComponent> rendererComponent = g_game->GetRendererComponent();
     if (ImGui::Checkbox("VSync", &rendererComponent.lock()->m_isVSync)) {

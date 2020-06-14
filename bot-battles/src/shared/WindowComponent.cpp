@@ -40,8 +40,8 @@ void WindowComponent::LoadFromConfig(const rapidjson::Value& value)
         UpdateCurrentResolution();
     }
 
-    if (value.HasMember("displayMode") && value["displayMode"].IsString()) {
-        std::string displayMode = value["displayMode"].GetString();
+    if (value.HasMember("display") && value["display"].IsString()) {
+        std::string displayMode = value["display"].GetString();
         if (displayMode == "fullscreen") {
             m_displayMode = DisplayMode::FULLSCREEN;
         } else if (displayMode == "windowed") {
