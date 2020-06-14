@@ -66,7 +66,7 @@ class GoToHealthSpawner(GoToPosition):
 class GoToLastKnownPosition(GoToPosition):
     ...
 
-class GoToCenterMap(GoToPosition):
+class GoToRandomPosition(GoToPosition):
     ...
 
 class GoToDirection(State):
@@ -122,7 +122,7 @@ class ShootPrimaryWeapon(State):
 
     def update(self, bot, input):
         seenBotInfo = bot.sight.getSeenBotInfo(self.seenBotEntity)
-        if seenBotInfo == None:
+        if seenBotInfo.transform == None:
             return
 
         vector = glm.vec2(seenBotInfo.transform.position[0] - bot.transform.position[0], seenBotInfo.transform.position[1] - bot.transform.position[1])
@@ -158,7 +158,7 @@ class ShootSecondaryWeapon(State):
 
     def update(self, bot, input):
         seenBotInfo = bot.sight.getSeenBotInfo(self.seenBotEntity)
-        if seenBotInfo == None:
+        if seenBotInfo.transform == None:
             return
 
         vector = glm.vec2(seenBotInfo.transform.position[0] - bot.transform.position[0], seenBotInfo.transform.position[1] - bot.transform.position[1])

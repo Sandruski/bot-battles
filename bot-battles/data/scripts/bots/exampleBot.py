@@ -3,6 +3,7 @@
 import glm
 import heapq
 import logging
+import random
 
 import bot
 import movement
@@ -27,9 +28,6 @@ class ExampleBot(bot.Bot):
         self.lastSeenBotEntity = None
         self.lastKnownPosition = None
         self.lastKnownDirection = None
-
-        closestCenter = self.getClosestCenter()
-        self.closestCenterWorldPosition = self.map.getWorldPosition(closestCenter)
 
     def tick(self, input : InputComponent):
         if self.action.canPerformAction:
@@ -129,13 +127,13 @@ class ExampleBot(bot.Bot):
                 if self.fsm.isCurrentState("GoToLastKnownPosition") == False:
                     self.fsm.changeCurrentState(decisionMaking.GoToLastKnownPosition(self.transform.position, self.lastKnownPosition))
             else:
-                if glm.distance(glm.vec2(self.closestCenterWorldPosition[0], self.closestCenterWorldPosition[1]),  glm.vec2(self.transform.position[0], self.transform.position[1])) <= self.agent.minSeekDistance:
-                    if self.fsm.isCurrentState("Rotate") == False:
-                        self.fsm.changeCurrentState(decisionMaking.Rotate(self.rigidbody.maxAngularVelocity / 2.0))
+                if self.fsm.isCurrentState("GoToRandomPosition") == True:
+                    if self.agent.finishedMove == True:
+                        self.fsm.changeCurrentState(decisionMaking.Idle())
                 else:
-                    if self.fsm.isCurrentState("GoToCenterMap") == False:
-                        worldDestinationPosition = self.closestCenterWorldPosition
-                        self.fsm.changeCurrentState(decisionMaking.GoToCenterMap(self.transform.position, worldDestinationPosition))
+                    randomTile = self.getRandomTile()
+                    worldDestinationPosition = self.map.getWorldPosition(randomTile)
+                    self.fsm.changeCurrentState(decisionMaking.GoToRandomPosition(self.transform.position, worldDestinationPosition))
                       
         self.lastKnownDirection = None
         self.lastKnownPosition = None
@@ -188,28 +186,34 @@ class ExampleBot(bot.Bot):
                 farthestHealthSpawnerTile = healthSpawnerTile
         return farthestHealthSpawnerTile
 
-    def getClosestCenter(self):
-        center = (self.map.tileCount[0] // 2, self.map.tileCount[1] // 2)
-        if self.graph.isWalkable(center) == True:
-            return center
+    def getRandomTile(self):
+        x = random.randint(0, self.map.tileCount[0] - 1)
+        y = random.randint(0, self.map.tileCount[1] - 1)
+        randomTile = (x, y)
+        closestWalkableTile = self.getClosestWalkableTile(randomTile)
+        return closestWalkableTile
 
-        closestCenterTile = None
+    def getClosestWalkableTile(self, tile):
+        if self.graph.isWalkable(tile) == True:
+            return tile
+
+        closestWalkableTile = None
         for i in range(0, self.map.tileCount[0]):
             for j in range(0, self.map.tileCount[1]):
-                tile = (i, j)
+                walkableTile = (i, j)
 
-                if self.graph.isWalkable(tile) == False:
+                if self.graph.isWalkable(walkableTile) == False:
                     continue
 
-                if closestCenterTile == None:
-                    closestCenterTile = tile
+                if closestWalkableTile == None:
+                    closestWalkableTile = walkableTile
                     continue
 
-                closestCenterDistance = glm.distance(glm.vec2(closestCenterTile[0], closestCenterTile[1]), glm.vec2(center[0], center[1]))
-                tileDistance = glm.distance(glm.vec2(tile[0], tile[1]), glm.vec2(center[0], center[1]))
-                if tileDistance < closestCenterDistance:
-                    closestCenterTile = tile
-        return closestCenterTile
+                closestWalkableTileDistance = glm.distance(glm.vec2(closestWalkableTile[0], closestWalkableTile[1]), glm.vec2(tile[0], tile[1]))
+                walkableTileDistance = glm.distance(glm.vec2(walkableTile[0], walkableTile[1]), glm.vec2(tile[0], tile[1]))
+                if walkableTileDistance < closestWalkableTileDistance:
+                    closestWalkableTileDistance = walkableTileDistance
+        return closestWalkableTile
 
 class Graph:
     def __init__(self, map : MapComponent):

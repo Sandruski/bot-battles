@@ -36,9 +36,6 @@ class PathFinder:
         self.graph = graph
 
     def reconstructPath(self, origin, destination, cameFrom):
-        if len(cameFrom) == 0:
-            return None
-
         current = destination
         path = []
         while current != origin:
