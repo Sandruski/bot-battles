@@ -170,30 +170,23 @@ bool WeaponSystemServer::Update()
                 PhysicsComponent::RaycastHit hitInfo;
                 const bool hasIntersected = physicsComponent.lock()->Raycast(weaponComponent.lock()->m_originLastShot, weaponComponent.lock()->m_destinationLastShot, hitInfo);
                 if (hasIntersected) {
-                    for (const auto& hitEntity : hitInfo.m_hitEntities) {
-                        PlayerID hitEntityPlayerID = serverComponent.lock()->GetPlayerID(hitEntity.m_entity);
-                        if (hitEntityPlayerID >= INVALID_PLAYER_ID) {
-                            continue;
-                        }
+                    std::weak_ptr<TransformComponent> hitEntityTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(hitInfo.m_entity);
+                    if (!hitEntityTransformComponent.expired()) {
+                        weaponComponent.lock()->m_destinationLastShot = hitInfo.m_point;
+                    }
 
-                        std::weak_ptr<TransformComponent> hitEntityTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(hitEntity.m_entity);
-                        if (!hitEntityTransformComponent.expired()) {
-                            weaponComponent.lock()->m_destinationLastShot = hitEntity.m_point;
-                        }
+                    if (hitInfo.m_entity != entity) {
+                        std::weak_ptr<HealthComponent> hitEntityHealthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(hitInfo.m_entity);
+                        if (!hitEntityHealthComponent.expired()) {
+                            weaponComponent.lock()->m_hitEntityLastShot = hitInfo.m_entity;
 
-                        if (hitEntity.m_entity != entity) {
-                            std::weak_ptr<HealthComponent> hitEntityHealthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(hitEntity.m_entity);
-                            if (!hitEntityHealthComponent.expired()) {
-                                weaponComponent.lock()->m_hitEntityLastShot = hitEntity.m_entity;
-
-                                Event newWeaponEvent;
-                                newWeaponEvent.eventType = EventType::WEAPON_HIT;
-                                newWeaponEvent.weapon.shooterEntity = entity;
-                                newWeaponEvent.weapon.targetEntity = hitEntity.m_entity;
-                                newWeaponEvent.weapon.damage = hasShootPrimaryWeapon ? weaponComponent.lock()->m_damagePrimary : weaponComponent.lock()->m_damageSecondary;
-                                newWeaponEvent.weapon.direction = glm::normalize(weaponComponent.lock()->m_destinationLastShot - weaponComponent.lock()->m_originLastShot);
-                                PushEvent(newWeaponEvent);
-                            }
+                            Event newWeaponEvent;
+                            newWeaponEvent.eventType = EventType::WEAPON_HIT;
+                            newWeaponEvent.weapon.shooterEntity = entity;
+                            newWeaponEvent.weapon.targetEntity = hitInfo.m_entity;
+                            newWeaponEvent.weapon.damage = hasShootPrimaryWeapon ? weaponComponent.lock()->m_damagePrimary : weaponComponent.lock()->m_damageSecondary;
+                            newWeaponEvent.weapon.direction = glm::normalize(weaponComponent.lock()->m_destinationLastShot - weaponComponent.lock()->m_originLastShot);
+                            PushEvent(newWeaponEvent);
                         }
                     }
                 }

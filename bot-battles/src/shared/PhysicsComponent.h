@@ -25,23 +25,15 @@ public:
 //----------------------------------------------------------------------------------------------------
 class RayCastCallback : public b2RayCastCallback {
 public:
-    struct HitBody {
-
-        HitBody();
-
-        b2Body* m_body;
-        b2Vec2 m_point;
-        b2Vec2 m_normal;
-    };
-
-public:
     RayCastCallback();
 
     float32 ReportFixture(b2Fixture* fixture, const b2Vec2& point,
         const b2Vec2& normal, float32 fraction) override;
 
 public:
-    std::vector<HitBody> m_hitBodies;
+    b2Body* m_body;
+    b2Vec2 m_point;
+    b2Vec2 m_normal;
 };
 
 //----------------------------------------------------------------------------------------------------
@@ -50,18 +42,11 @@ struct PhysicsComponent : public Subject {
 
     struct RaycastHit {
 
-        struct HitEntity {
-
-            HitEntity();
-
-            Entity m_entity;
-            glm::vec2 m_point;
-            glm::vec2 m_normal;
-        };
-
         RaycastHit();
 
-        std::vector<HitEntity> m_hitEntities;
+        Entity m_entity;
+        glm::vec2 m_point;
+        glm::vec2 m_normal;
     };
 
     struct Collision {
