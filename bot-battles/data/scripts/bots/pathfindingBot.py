@@ -19,7 +19,7 @@ from botbattles import MapComponent
 from botbattles import InputComponent
 from botbattles import TileType
 
-class ExampleBot(bot.Bot):
+class PathfindingBot(bot.Bot):
     def __init__(self, transformComponent : TransformComponent, colliderComponent : ColliderComponent, rigidbodyComponent : RigidbodyComponent, weaponComponent : WeaponComponent, healthComponent : HealthComponent, sightComponent : SightComponent, actionComponent : ActionComponent, mapComponent : MapComponent):
         super().__init__(transformComponent, colliderComponent, rigidbodyComponent, weaponComponent, healthComponent, sightComponent, actionComponent, mapComponent)
         self.graph = Graph(self.map)
@@ -119,7 +119,7 @@ class ExampleBot(bot.Bot):
                         closestWeaponSpawner = self.getClosestWeaponSpawner()
                         worldDestinationPosition = self.map.getWorldPosition(closestWeaponSpawner)
                         self.fsm.changeCurrentState(decisionMaking.GoToWeaponSpawner(self.transform.position, worldDestinationPosition))            
-            # ...
+            # Other
             elif self.lastKnownDirection != None:
                 if self.fsm.isCurrentState("LookAtBullet") == False:
                     self.fsm.changeCurrentState(decisionMaking.LookAtBullet(self.lastKnownDirection))
