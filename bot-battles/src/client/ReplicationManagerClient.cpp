@@ -20,7 +20,6 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream)
 {
     U32 frame = 0;
     inputStream.Read(frame);
-    ILOG("Frame received %u", frame);
 
     std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
     if (clientComponent.lock()->m_isEntityInterpolation) {
@@ -39,7 +38,10 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream)
         inputStream.Read(wasReplicated);
         ILOG("NEW LOOP for networkID %u", networkID);
         ILOG("remainingbitcount %u length %u", inputStream.GetRemainingBitCount(), inputStream.GetByteLength());
-        if (isReplicated) {
+        bool hasReplication = false;
+        inputStream.Read(hasReplication);
+
+        if (hasReplication) {
             ReplicationActionType replicationActionType = ReplicationActionType::NONE;
             inputStream.Read(replicationActionType, 2);
 
@@ -63,9 +65,14 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream)
                 break;
             }
 
+            case ReplicationActionType::NONE: {
+                ILOG("NONE RECEIVED");
+                break;
+            }
+
             default: {
-                assert(false);
                 WLOG("Unknown replication action received from networkID %u", networkID);
+                assert(false);
                 break;
             }
             }
@@ -150,9 +157,7 @@ void ReplicationManagerClient::ReadCreateAction(InputMemoryStream& inputStream, 
 void ReplicationManagerClient::ReadUpdateAction(InputMemoryStream& inputStream, NetworkID networkID, U32 frame) const
 {
     Entity entity = g_gameClient->GetLinkingContext().GetEntity(networkID);
-    if (entity >= INVALID_ENTITY) {
-        return;
-    }
+    assert(entity < INVALID_ENTITY);
 
     Signature signature = g_gameClient->GetEntityManager().GetSignature(entity);
 
@@ -182,9 +187,7 @@ void ReplicationManagerClient::ReadUpdateAction(InputMemoryStream& inputStream, 
 void ReplicationManagerClient::ReadRemoveAction(NetworkID networkID) const
 {
     Entity entity = g_gameClient->GetLinkingContext().GetEntity(networkID);
-    if (entity >= INVALID_ENTITY) {
-        return;
-    }
+    assert(entity < INVALID_ENTITY);
 
     std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
     if (entity == clientComponent.lock()->m_entity) {

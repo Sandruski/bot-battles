@@ -6,8 +6,8 @@ namespace sand {
 ReplicationCommand::ReplicationCommand()
     : m_replicationActionType(ReplicationActionType::CREATE)
     , m_dirtyState(0)
-    , m_isReplicated(true)
-    , m_wasReplicated(true)
+    , m_isReplicated(false)
+    , m_wasReplicated(false)
     , m_hasReplicated(false)
 {
 }

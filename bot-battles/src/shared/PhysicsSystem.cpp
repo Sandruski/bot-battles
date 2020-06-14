@@ -31,6 +31,8 @@ void PhysicsSystem::OnNotify(const Event& event)
 //----------------------------------------------------------------------------------------------------
 void PhysicsSystem::OnRigidbodyComponentAdded(Entity entity) const
 {
+    assert(entity < INVALID_ENTITY);
+
     std::weak_ptr<TransformComponent> transformComponent = g_game->GetComponentManager().GetComponent<TransformComponent>(entity);
     std::weak_ptr<ColliderComponent> colliderComponent = g_game->GetComponentManager().GetComponent<ColliderComponent>(entity);
     std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_game->GetComponentManager().GetComponent<RigidbodyComponent>(entity);

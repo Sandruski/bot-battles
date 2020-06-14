@@ -226,6 +226,8 @@ void ScriptingSystem::InitScripts() const
 //----------------------------------------------------------------------------------------------------
 void ScriptingSystem::OnCollisionEnter(Entity entityA, Entity entityB, glm::vec2 linearVelocityA, glm::vec2 linearVelocityB, glm::vec2 normal) const
 {
+    assert(entityA < INVALID_ENTITY && entityB < INVALID_ENTITY);
+
     std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
     Entity entity = INVALID_ENTITY;
     if (entityA == clientComponent.lock()->m_entity) {
@@ -261,9 +263,7 @@ void ScriptingSystem::OnCollisionEnter(Entity entityA, Entity entityB, glm::vec2
 //----------------------------------------------------------------------------------------------------
 void ScriptingSystem::OnSeenNewEntity(Entity seenEntity) const
 {
-    if (seenEntity >= INVALID_ENTITY) {
-        return;
-    }
+    assert(seenEntity < INVALID_ENTITY);
 
     std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
     if (seenEntity == clientComponent.lock()->m_entity) {
@@ -307,9 +307,7 @@ void ScriptingSystem::OnSeenNewEntity(Entity seenEntity) const
 //----------------------------------------------------------------------------------------------------
 void ScriptingSystem::OnSeenLostEntity(Entity seenEntity) const
 {
-    if (seenEntity >= INVALID_ENTITY) {
-        return;
-    }
+    assert(seenEntity < INVALID_ENTITY);
 
     std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
     if (seenEntity == clientComponent.lock()->m_entity) {

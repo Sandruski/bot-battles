@@ -53,6 +53,8 @@ void BotSpawnerSystem::OnNotify(const Event& event)
 //----------------------------------------------------------------------------------------------------
 Entity BotSpawnerSystem::SpawnBot(PlayerID playerID) const
 {
+    assert(playerID < INVALID_PLAYER_ID);
+
     Entity botSpawner = INVALID_ENTITY;
     for (const auto& entity : m_entities) {
         std::weak_ptr<BotSpawnerComponent> botSpawnerBotSpawnerComponent = g_gameServer->GetComponentManager().GetComponent<BotSpawnerComponent>(entity);
@@ -181,6 +183,8 @@ Entity BotSpawnerSystem::SpawnBot(PlayerID playerID) const
 //----------------------------------------------------------------------------------------------------
 void BotSpawnerSystem::DespawnBot(Entity entity) const
 {
+    assert(entity < INVALID_ENTITY);
+
     g_gameServer->GetLinkingContext().RemoveEntity(entity);
     g_gameServer->GetEntityManager().RemoveEntity(entity);
 }
@@ -188,6 +192,8 @@ void BotSpawnerSystem::DespawnBot(Entity entity) const
 //----------------------------------------------------------------------------------------------------
 void BotSpawnerSystem::OnPlayerAdded(PlayerID playerID) const
 {
+    assert(playerID < INVALID_PLAYER_ID);
+
     std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
     Entity entity = serverComponent.lock()->GetEntity(playerID);
     if (entity < INVALID_ENTITY) {
@@ -202,6 +208,10 @@ void BotSpawnerSystem::OnPlayerAdded(PlayerID playerID) const
 //----------------------------------------------------------------------------------------------------
 void BotSpawnerSystem::OnPlayerRemoved(Entity entity) const
 {
+    if (entity >= INVALID_ENTITY) {
+        return;
+    }
+
     DespawnBot(entity);
     std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
     serverComponent.lock()->RemoveEntity(entity);

@@ -142,6 +142,8 @@ void HealthSystemServer::OnNotify(const Event& event)
 //----------------------------------------------------------------------------------------------------
 void HealthSystemServer::OnCollisionEnter(Entity entityA, Entity entityB) const
 {
+    assert(entityA < INVALID_ENTITY && entityB < INVALID_ENTITY);
+
     std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
     PlayerID playerIDA = serverComponent.lock()->GetPlayerID(entityA);
     PlayerID playerIDB = serverComponent.lock()->GetPlayerID(entityB);
@@ -183,6 +185,8 @@ void HealthSystemServer::OnCollisionEnter(Entity entityA, Entity entityB) const
 //----------------------------------------------------------------------------------------------------
 void HealthSystemServer::OnWeaponHit(Entity shooterEntity, Entity targetEntity, U32 damage, const glm::vec2& direction) const
 {
+    assert(shooterEntity < INVALID_ENTITY && targetEntity < INVALID_ENTITY);
+
     std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(targetEntity);
     if (healthComponent.expired()) {
         return;

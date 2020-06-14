@@ -81,6 +81,8 @@ void WeaponSpawnerSystem::OnNotify(const Event& event)
 //----------------------------------------------------------------------------------------------------
 Entity WeaponSpawnerSystem::SpawnWeapon(Entity spawner) const
 {
+    assert(spawner < INVALID_ENTITY);
+
     std::weak_ptr<WeaponSpawnerComponent> weaponSpawnerComponent = g_gameServer->GetComponentManager().GetComponent<WeaponSpawnerComponent>(spawner);
     std::weak_ptr<TransformComponent> weaponSpawnerTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(spawner);
 
@@ -133,6 +135,8 @@ Entity WeaponSpawnerSystem::SpawnWeapon(Entity spawner) const
 //----------------------------------------------------------------------------------------------------
 void WeaponSpawnerSystem::DespawnWeapon(Entity entity) const
 {
+    assert(entity < INVALID_ENTITY);
+
     g_gameServer->GetLinkingContext().RemoveEntity(entity);
     g_gameServer->GetEntityManager().RemoveEntity(entity);
 }
@@ -140,6 +144,8 @@ void WeaponSpawnerSystem::DespawnWeapon(Entity entity) const
 //----------------------------------------------------------------------------------------------------
 bool WeaponSpawnerSystem::PickUpWeapon(Entity character, Entity weapon) const
 {
+    assert(character < INVALID_ENTITY && weapon < INVALID_ENTITY);
+
     std::weak_ptr<WeaponComponent> weaponWeaponComponent = g_gameServer->GetComponentManager().GetComponent<WeaponComponent>(weapon);
     std::weak_ptr<BotComponent> characterBotComponent = g_gameServer->GetComponentManager().GetComponent<BotComponent>(character);
     std::weak_ptr<WeaponComponent> characterWeaponComponent = g_gameServer->GetComponentManager().GetComponent<WeaponComponent>(character);
@@ -196,6 +202,8 @@ bool WeaponSpawnerSystem::PickUpWeapon(Entity character, Entity weapon) const
 //----------------------------------------------------------------------------------------------------
 void WeaponSpawnerSystem::OnCollisionEnter(Entity entityA, Entity entityB) const
 {
+    assert(entityA < INVALID_ENTITY && entityB < INVALID_ENTITY);
+
     std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
     PlayerID playerIDA = serverComponent.lock()->GetPlayerID(entityA);
     PlayerID playerIDB = serverComponent.lock()->GetPlayerID(entityB);
@@ -226,6 +234,10 @@ void WeaponSpawnerSystem::OnCollisionEnter(Entity entityA, Entity entityB) const
 //----------------------------------------------------------------------------------------------------
 void WeaponSpawnerSystem::OnEntityRemoved(Entity entityRemoved) const
 {
+    if (entityRemoved >= INVALID_ENTITY) {
+        return;
+    }
+
     for (auto& entity : m_entities) {
         std::weak_ptr<WeaponSpawnerComponent> weaponSpawnerComponent = g_gameServer->GetComponentManager().GetComponent<WeaponSpawnerComponent>(entity);
         if (!weaponSpawnerComponent.expired()) {

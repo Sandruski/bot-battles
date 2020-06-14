@@ -99,23 +99,25 @@ void ReplicationManagerServer::Remove(NetworkID networkID)
 void ReplicationManagerServer::Write(OutputMemoryStream& outputStream, ReplicationResultManager& replicationResultManager)
 {
     U32 frame = MyTime::GetInstance().GetFrame();
-    ILOG("Frame sent %u", frame);
     outputStream.Write(frame);
 
     for (auto& pair : m_networkIDToReplicationCommand) {
         ReplicationCommand& replicationCommand = pair.second;
+
         const bool isReplicated = replicationCommand.GetIsReplicated();
         const bool wasReplicated = replicationCommand.GetWasReplicated();
-        const bool hasDirtyState = replicationCommand.HasDirtyState();
-        const bool hasReplicationAction = replicationCommand.m_replicationActionType != ReplicationActionType::NONE;
-        if ((!isReplicated && wasReplicated) || (isReplicated && !wasReplicated) || (isReplicated && hasDirtyState && hasReplicationAction)) {
+        const bool hasReplication = replicationCommand.m_replicationActionType != ReplicationActionType::NONE && replicationCommand.HasDirtyState();
+        if ((!isReplicated && wasReplicated)
+            || (isReplicated && !wasReplicated)
+            || (isReplicated && hasReplication)) {
             NetworkID networkID = pair.first;
             ILOG("Write networkID %u", networkID);
             outputStream.Write(networkID);
             outputStream.Write(isReplicated);
             outputStream.Write(wasReplicated);
+            outputStream.Write(hasReplication);
 
-            if (isReplicated) {
+            if (hasReplication) {
                 outputStream.Write(replicationCommand.m_replicationActionType, 2);
 
                 U64 writtenState = 0;
@@ -139,24 +141,32 @@ void ReplicationManagerServer::Write(OutputMemoryStream& outputStream, Replicati
                     break;
                 }
 
+                case ReplicationActionType::NONE: {
+                    ILOG("NONE SENT");
+                    break;
+                }
+
                 default: {
-                    WLOG("Unknown replication action received from networkID %u", networkID);
+                    WLOG("Unknown replication action sent to networkID %u", networkID);
+                    assert(false);
                     break;
                 }
                 }
-            }
 
-            replicationResultManager.AddDelivery(networkID, replicationCommand);
+                replicationResultManager.AddDelivery(networkID, replicationCommand);
 
-            if (isReplicated) {
                 replicationCommand.RemoveDirtyState(static_cast<U64>(ComponentMemberType::ALL));
-                //replicationCommand.RemoveDirtyState(writtenState);
+
                 replicationCommand.SetHasReplicated(true);
 
                 if (replicationCommand.m_replicationActionType == ReplicationActionType::CREATE
                     || replicationCommand.m_replicationActionType == ReplicationActionType::REMOVE) {
                     replicationCommand.m_replicationActionType = ReplicationActionType::NONE;
                 }
+            } else {
+                ReplicationCommand newReplicationCommand = ReplicationCommand(replicationCommand);
+                newReplicationCommand.m_replicationActionType = ReplicationActionType::NONE;
+                replicationResultManager.AddDelivery(networkID, newReplicationCommand);
             }
 
             if (!isReplicated && wasReplicated) {

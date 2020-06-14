@@ -189,6 +189,8 @@ void RendererSystem::OnNotify(const Event& event)
 //----------------------------------------------------------------------------------------------------
 void RendererSystem::OnSystemEntityAdded(Entity entity) const
 {
+    assert(entity < INVALID_ENTITY);
+
     std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
     if (spriteComponent.expired() || spriteComponent.lock()->m_spriteResource.expired()) {
         RecalculateAllMeshes();
@@ -208,6 +210,8 @@ void RendererSystem::OnSystemEntityAdded(Entity entity) const
 //----------------------------------------------------------------------------------------------------
 void RendererSystem::OnSystemEntityRemoved(Entity entity) const
 {
+    assert(entity < INVALID_ENTITY);
+
     std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
     if (spriteComponent.expired() || spriteComponent.lock()->m_spriteResource.expired()) {
         RecalculateAllMeshes();
@@ -233,6 +237,8 @@ void RendererSystem::OnWindowResized() const
 //----------------------------------------------------------------------------------------------------
 void RendererSystem::OnComponentMemberChanged(U64 dirtyState, Entity entity) const
 {
+    assert(entity < INVALID_ENTITY);
+
     std::vector<Entity>::const_iterator it = std::find(m_entities.begin(), m_entities.end(), entity);
     if (it == m_entities.end()) {
         return;

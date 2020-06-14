@@ -81,6 +81,8 @@ void HealthSpawnerSystem::OnNotify(const Event& event)
 //----------------------------------------------------------------------------------------------------
 Entity HealthSpawnerSystem::SpawnHealth(Entity spawner) const
 {
+    assert(spawner < INVALID_ENTITY);
+
     std::weak_ptr<HealthSpawnerComponent> healthSpawnerComponent = g_gameServer->GetComponentManager().GetComponent<HealthSpawnerComponent>(spawner);
     std::weak_ptr<TransformComponent> healthSpawnerTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(spawner);
 
@@ -128,6 +130,8 @@ Entity HealthSpawnerSystem::SpawnHealth(Entity spawner) const
 //----------------------------------------------------------------------------------------------------
 void HealthSpawnerSystem::DespawnHealth(Entity entity) const
 {
+    assert(entity < INVALID_ENTITY);
+
     g_gameServer->GetLinkingContext().RemoveEntity(entity);
     g_gameServer->GetEntityManager().RemoveEntity(entity);
 }
@@ -135,6 +139,8 @@ void HealthSpawnerSystem::DespawnHealth(Entity entity) const
 //----------------------------------------------------------------------------------------------------
 bool HealthSpawnerSystem::PickUpHealth(Entity character, Entity health) const
 {
+    assert(character < INVALID_ENTITY && health < INVALID_ENTITY);
+
     std::weak_ptr<HealthComponent> healthHealthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(health);
     std::weak_ptr<BotComponent> characterBotComponent = g_gameServer->GetComponentManager().GetComponent<BotComponent>(character);
     std::weak_ptr<SpriteComponent> characterSpriteComponent = g_gameServer->GetComponentManager().GetComponent<SpriteComponent>(character);
@@ -178,6 +184,8 @@ bool HealthSpawnerSystem::PickUpHealth(Entity character, Entity health) const
 //----------------------------------------------------------------------------------------------------
 void HealthSpawnerSystem::OnCollisionEnter(Entity entityA, Entity entityB) const
 {
+    assert(entityA < INVALID_ENTITY && entityB < INVALID_ENTITY);
+
     std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
     PlayerID playerIDA = serverComponent.lock()->GetPlayerID(entityA);
     PlayerID playerIDB = serverComponent.lock()->GetPlayerID(entityB);
@@ -208,6 +216,10 @@ void HealthSpawnerSystem::OnCollisionEnter(Entity entityA, Entity entityB) const
 //----------------------------------------------------------------------------------------------------
 void HealthSpawnerSystem::OnEntityRemoved(Entity entityRemoved) const
 {
+    if (entityRemoved >= INVALID_ENTITY) {
+        return;
+    }
+
     for (auto& entity : m_entities) {
         std::weak_ptr<HealthSpawnerComponent> healthSpawnerComponent = g_gameServer->GetComponentManager().GetComponent<HealthSpawnerComponent>(entity);
         if (healthSpawnerComponent.lock()->m_entitySpawned == entityRemoved) {
