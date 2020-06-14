@@ -84,7 +84,7 @@ bool ScoreboardStateClient::RenderGui() const
     std::weak_ptr<WindowComponent> windowComponent = g_gameClient->GetWindowComponent();
     ImVec2 position = ImVec2(static_cast<F32>(windowComponent.lock()->m_currentResolution.x) / 2.0f, static_cast<F32>(windowComponent.lock()->m_currentResolution.y) / 2.0f);
     ImGui::SetNextWindowPos(position, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-    ImVec2 size = ImVec2(static_cast<F32>(windowComponent.lock()->m_currentResolution.y) / 2.0f, static_cast<F32>(windowComponent.lock()->m_currentResolution.x) / 2.0f);
+    ImVec2 size = ImVec2(static_cast<F32>(windowComponent.lock()->m_currentResolution.y) / 1.5f, static_cast<F32>(windowComponent.lock()->m_currentResolution.x) / 2.5f);
     ImGui::SetNextWindowSize(size, ImGuiCond_Always);
 
     if (ImGui::Begin(GetName().c_str(), nullptr, windowFlags)) {
