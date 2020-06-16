@@ -80,10 +80,16 @@ bool ResultsStateServer::RenderGui() const
         std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
         const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.lock()->GetPlayerIDToClientProxyMap();
         for (const auto& pair : playerIDToClientProxy) {
+            PlayerID playerID = pair.first;
             std::shared_ptr<ClientProxy> clientProxy = pair.second;
 
             ImGui::Separator();
-            ImGui::TextWrapped(clientProxy->GetName());
+            std::string playerString = clientProxy->GetName();
+            U32 playerNumber = playerID + 1;
+            playerString.append(" (");
+            playerString.append(std::to_string(playerNumber));
+            playerString.append(")");
+            ImGui::TextWrapped(playerString.c_str());
             ImGui::NextColumn();
             ImGui::TextWrapped(std::to_string(clientProxy->m_damageInflicted).c_str());
             ImGui::NextColumn();
