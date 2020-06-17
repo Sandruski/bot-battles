@@ -249,9 +249,6 @@
     <ClCompile Include="SightComponentClient.cpp">
       <Filter>Source Files\Components\Entity Components</Filter>
     </ClCompile>
-    <ClCompile Include="RemotePlayerWeaponSystem.cpp">
-      <Filter>Source Files\Systems\Shared</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ReplicationManagerClient.h">
@@ -342,9 +339,6 @@
       <Filter>Header Files\Systems\Unique</Filter>
     </ClInclude>
     <ClInclude Include="HealthSystemClient.h">
-      <Filter>Header Files\Systems\Shared</Filter>
-    </ClInclude>
-    <ClInclude Include="RemotePlayerWeaponSystem.h">
       <Filter>Header Files\Systems\Shared</Filter>
     </ClInclude>
   </ItemGroup>

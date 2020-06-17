@@ -23,7 +23,6 @@ enum class SystemType : U16 {
     SIGHT,
     MOVEMENT,
     WEAPON,
-    REMOTE_PLAYER_WEAPON,
     HEALTH,
 
     MAP,
