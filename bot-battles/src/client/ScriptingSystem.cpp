@@ -207,15 +207,15 @@ void ScriptingSystem::InitScripts() const
         }
 
         std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
-        std::weak_ptr<ColliderComponent> colliderComponent = g_gameClient->GetComponentManager().GetComponent<ColliderComponent>(entity);
         std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameClient->GetComponentManager().GetComponent<RigidbodyComponent>(entity);
+        std::weak_ptr<ColliderComponent> colliderComponent = g_gameClient->GetComponentManager().GetComponent<ColliderComponent>(entity);
         std::weak_ptr<HealthComponent> healthComponent = g_gameClient->GetComponentManager().GetComponent<HealthComponent>(entity);
         std::weak_ptr<WeaponComponent> weaponComponent = g_gameClient->GetComponentManager().GetComponent<WeaponComponent>(entity);
         std::weak_ptr<SightComponent> sightComponent = g_gameClient->GetComponentManager().GetComponent<SightComponent>(entity);
         std::weak_ptr<BotComponent> botComponent = g_gameClient->GetComponentManager().GetComponent<BotComponent>(entity);
         std::weak_ptr<MapComponent> mapComponent = g_gameClient->GetMapComponent();
         try {
-            scriptingComponent.lock()->m_mainModule.attr("init")(clientComponent.lock()->m_bot.c_str(), clientComponent.lock()->m_playerID, transformComponent.lock(), colliderComponent.lock(), rigidbodyComponent.lock(), weaponComponent.lock(), healthComponent.lock(), sightComponent.lock(), botComponent.lock(), mapComponent.lock());
+            scriptingComponent.lock()->m_mainModule.attr("init")(clientComponent.lock()->m_bot.c_str(), clientComponent.lock()->m_playerID, transformComponent.lock(), rigidbodyComponent.lock(), colliderComponent.lock(), weaponComponent.lock(), healthComponent.lock(), sightComponent.lock(), botComponent.lock(), mapComponent.lock());
         } catch (const std::runtime_error& re) {
             OutputDebugStringA(re.what());
             ::MessageBoxA(NULL, re.what(), "Error initializing script", MB_OK);

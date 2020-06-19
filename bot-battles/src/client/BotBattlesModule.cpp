@@ -42,14 +42,14 @@ PYBIND11_EMBEDDED_MODULE(botbattles, m)
         .def_property_readonly("rotation", &TransformComponent::GetPyRotation)
         .def_property_readonly("direction", &TransformComponent::GetPyDirection);
 
-    py::class_<ColliderComponent, std::shared_ptr<ColliderComponent>>(m, "ColliderComponent")
-        .def_property_readonly("size", &ColliderComponent::GetPySize);
-
     py::class_<RigidbodyComponent, std::shared_ptr<RigidbodyComponent>>(m, "RigidbodyComponent")
         .def_property_readonly("maxLinearVelocity", &RigidbodyComponent::GetPyMaxLinearVelocity)
         .def_property_readonly("maxAngularVelocity", &RigidbodyComponent::GetPyMaxAngularVelocity)
         .def_property_readonly("linearVelocity", &RigidbodyComponent::GetPyLinearVelocity)
         .def_property_readonly("angularVelocity", &RigidbodyComponent::GetPyAngularVelocity);
+
+    py::class_<ColliderComponent, std::shared_ptr<ColliderComponent>>(m, "ColliderComponent")
+        .def_property_readonly("size", &ColliderComponent::GetPySize);
 
     py::class_<WeaponComponent, std::shared_ptr<WeaponComponent>>(m, "WeaponComponent")
         .def_property_readonly("primaryWeaponDamage", &WeaponComponent::GetPyPrimaryWeaponDamage)

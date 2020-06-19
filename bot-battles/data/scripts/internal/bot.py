@@ -10,10 +10,10 @@ from botbattles import ActionComponent
 from botbattles import MapComponent
 
 class Bot:
-    def __init__(self, transformComponent : TransformComponent,  colliderComponent : ColliderComponent, rigidbodyComponent : RigidbodyComponent, weaponComponent : WeaponComponent, healthComponent : HealthComponent, sightComponent : SightComponent, actionComponent : ActionComponent, mapComponent : MapComponent):
+    def __init__(self, transformComponent : TransformComponent, rigidbodyComponent : RigidbodyComponent, colliderComponent : ColliderComponent, weaponComponent : WeaponComponent, healthComponent : HealthComponent, sightComponent : SightComponent, actionComponent : ActionComponent, mapComponent : MapComponent):
         self.transform = transformComponent
-        self.collider = colliderComponent
         self.rigidbody = rigidbodyComponent
+        self.collider = colliderComponent
         self.weapon = weaponComponent
         self.health = healthComponent
         self.sight = sightComponent
