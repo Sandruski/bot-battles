@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.3.4" orientation="orthogonal" renderorder="left-down" width="14" height="8" tilewidth="64" tileheight="64" infinite="0" nextlayerid="11" nextobjectid="61">
+<map version="1.2" tiledversion="1.3.4" orientation="orthogonal" renderorder="left-down" width="14" height="8" tilewidth="64" tileheight="64" infinite="0" nextlayerid="11" nextobjectid="66">
  <editorsettings>
   <export target="../maps/map.json" format="json"/>
  </editorsettings>
@@ -70,7 +70,34 @@
     <property name="healthTimeHeal" type="float" value="3"/>
    </properties>
   </object>
-  <object id="53" name="healthSpawner" type="HealthSpawner" gid="359" x="448" y="320" width="64" height="64">
+  <object id="53" name="healthSpawner" type="HealthSpawner" gid="359" x="128" y="384" width="64" height="64">
+   <properties>
+    <property name="amountSpawn" type="int" value="-1"/>
+    <property name="cooldownSpawn" type="float" value="15"/>
+    <property name="healthCooldownHeal" type="float" value="0"/>
+    <property name="healthHP" type="int" value="40"/>
+    <property name="healthTimeHeal" type="float" value="3"/>
+   </properties>
+  </object>
+  <object id="62" name="healthSpawner" type="HealthSpawner" gid="359" x="640" y="448" width="64" height="64">
+   <properties>
+    <property name="amountSpawn" type="int" value="-1"/>
+    <property name="cooldownSpawn" type="float" value="15"/>
+    <property name="healthCooldownHeal" type="float" value="0"/>
+    <property name="healthHP" type="int" value="40"/>
+    <property name="healthTimeHeal" type="float" value="3"/>
+   </properties>
+  </object>
+  <object id="63" name="healthSpawner" type="HealthSpawner" gid="359" x="64" y="128" width="64" height="64">
+   <properties>
+    <property name="amountSpawn" type="int" value="-1"/>
+    <property name="cooldownSpawn" type="float" value="15"/>
+    <property name="healthCooldownHeal" type="float" value="0"/>
+    <property name="healthHP" type="int" value="40"/>
+    <property name="healthTimeHeal" type="float" value="3"/>
+   </properties>
+  </object>
+  <object id="65" name="healthSpawner" type="HealthSpawner" gid="359" x="448" y="256" width="64" height="64">
    <properties>
     <property name="amountSpawn" type="int" value="-1"/>
     <property name="cooldownSpawn" type="float" value="15"/>
@@ -81,7 +108,7 @@
   </object>
  </objectgroup>
  <objectgroup id="8" name="weaponSpawner">
-  <object id="54" name="weaponSpawner" type="WeaponSpawner" gid="368" x="128" y="384" width="64" height="64">
+  <object id="54" name="weaponSpawner" type="WeaponSpawner" gid="368" x="320" y="128" width="64" height="64">
    <properties>
     <property name="amountSpawn" type="int" value="-1"/>
     <property name="cooldownSpawn" type="float" value="10"/>
@@ -96,6 +123,34 @@
    </properties>
   </object>
   <object id="59" name="weaponSpawner" type="WeaponSpawner" gid="368" x="704" y="192" width="64" height="64">
+   <properties>
+    <property name="amountSpawn" type="int" value="-1"/>
+    <property name="cooldownSpawn" type="float" value="10"/>
+    <property name="weaponAmmo" type="int" value="6"/>
+    <property name="weaponCooldownReload" type="float" value="0"/>
+    <property name="weaponCooldownShoot" type="float" value="1"/>
+    <property name="weaponDamage" type="int" value="10"/>
+    <property name="weaponMaxAmmo" type="int" value="3"/>
+    <property name="weaponRange" type="float" value="250"/>
+    <property name="weaponTimeReload" type="float" value="2"/>
+    <property name="weaponTimeShoot" type="float" value="1"/>
+   </properties>
+  </object>
+  <object id="61" name="weaponSpawner" type="WeaponSpawner" gid="368" x="64" y="192" width="64" height="64">
+   <properties>
+    <property name="amountSpawn" type="int" value="-1"/>
+    <property name="cooldownSpawn" type="float" value="10"/>
+    <property name="weaponAmmo" type="int" value="6"/>
+    <property name="weaponCooldownReload" type="float" value="0"/>
+    <property name="weaponCooldownShoot" type="float" value="1"/>
+    <property name="weaponDamage" type="int" value="10"/>
+    <property name="weaponMaxAmmo" type="int" value="3"/>
+    <property name="weaponRange" type="float" value="250"/>
+    <property name="weaponTimeReload" type="float" value="2"/>
+    <property name="weaponTimeShoot" type="float" value="1"/>
+   </properties>
+  </object>
+  <object id="64" name="weaponSpawner" type="WeaponSpawner" gid="368" x="768" y="384" width="64" height="64">
    <properties>
     <property name="amountSpawn" type="int" value="-1"/>
     <property name="cooldownSpawn" type="float" value="10"/>

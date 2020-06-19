@@ -32,6 +32,7 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream)
     while (inputStream.GetRemainingBitCount() >= 8) {
         NetworkID networkID = INVALID_NETWORK_ID;
         inputStream.Read(networkID);
+        ILOG("Received networkID %u", networkID);
         bool isReplicated = false;
         inputStream.Read(isReplicated);
         bool wasReplicated = false;
@@ -39,6 +40,7 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream)
         bool hasReplication = false;
         inputStream.Read(hasReplication);
 
+        Entity entity = linkingContext.GetEntity(networkID);
         if (hasReplication) {
             ReplicationActionType replicationActionType = ReplicationActionType::NONE;
             inputStream.Read(replicationActionType, 2);
@@ -47,18 +49,18 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream)
 
             case ReplicationActionType::CREATE: {
                 ILOG("CREATE RECEIVED");
-                ReadCreateAction(inputStream, networkID, frame);
+                ReadCreateAction(inputStream, entity, networkID, frame);
                 break;
             }
 
             case ReplicationActionType::UPDATE: {
                 ILOG("UPDATE RECEIVED");
-                ReadUpdateAction(inputStream, networkID, frame);
+                ReadUpdateAction(inputStream, entity, frame);
                 break;
             }
 
             case ReplicationActionType::REMOVE: {
-                ReadRemoveAction(networkID);
+                ReadRemoveAction(entity);
                 ILOG("REMOVE RECEIVED");
                 break;
             }
@@ -76,18 +78,18 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream)
             }
         }
 
-        if (!isReplicated && wasReplicated) {
-            Event newEvent;
-            newEvent.eventType = EventType::SEEN_LOST_ENTITY;
-            Entity entity = linkingContext.GetEntity(networkID);
-            newEvent.sight.seenEntity = entity;
-            PushEvent(newEvent);
-        } else if (isReplicated && !wasReplicated) {
-            Event newEvent;
-            newEvent.eventType = EventType::SEEN_NEW_ENTITY;
-            Entity entity = linkingContext.GetEntity(networkID);
-            newEvent.sight.seenEntity = entity;
-            PushEvent(newEvent);
+        if (entity < INVALID_ENTITY) {
+            if (isReplicated && !wasReplicated) {
+                Event newEvent;
+                newEvent.eventType = EventType::SEEN_NEW_ENTITY;
+                newEvent.sight.seenEntity = entity;
+                PushEvent(newEvent);
+            } else if (!isReplicated && wasReplicated) {
+                Event newEvent;
+                newEvent.eventType = EventType::SEEN_LOST_ENTITY;
+                newEvent.sight.seenEntity = entity;
+                PushEvent(newEvent);
+            }
         }
     }
 
@@ -122,12 +124,11 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream)
 }
 
 //----------------------------------------------------------------------------------------------------
-void ReplicationManagerClient::ReadCreateAction(InputMemoryStream& inputStream, NetworkID networkID, U32 frame) const
+void ReplicationManagerClient::ReadCreateAction(InputMemoryStream& inputStream, Entity entity, NetworkID networkID, U32 frame) const
 {
     PlayerID playerID = INVALID_PLAYER_ID;
     inputStream.Read(playerID);
 
-    Entity entity = g_gameClient->GetLinkingContext().GetEntity(networkID);
     if (entity >= INVALID_ENTITY) {
         entity = g_gameClient->GetEntityManager().AddEntity();
         g_gameClient->GetLinkingContext().AddEntity(entity, networkID);
@@ -148,13 +149,12 @@ void ReplicationManagerClient::ReadCreateAction(InputMemoryStream& inputStream, 
         }
     }
 
-    ReadUpdateAction(inputStream, networkID, frame);
+    ReadUpdateAction(inputStream, entity, frame);
 }
 
 //----------------------------------------------------------------------------------------------------
-void ReplicationManagerClient::ReadUpdateAction(InputMemoryStream& inputStream, NetworkID networkID, U32 frame) const
+void ReplicationManagerClient::ReadUpdateAction(InputMemoryStream& inputStream, Entity entity, U32 frame) const
 {
-    Entity entity = g_gameClient->GetLinkingContext().GetEntity(networkID);
     assert(entity < INVALID_ENTITY);
 
     Signature signature = g_gameClient->GetEntityManager().GetSignature(entity);
@@ -182,10 +182,11 @@ void ReplicationManagerClient::ReadUpdateAction(InputMemoryStream& inputStream, 
 }
 
 //----------------------------------------------------------------------------------------------------
-void ReplicationManagerClient::ReadRemoveAction(NetworkID networkID) const
+void ReplicationManagerClient::ReadRemoveAction(Entity entity) const
 {
-    Entity entity = g_gameClient->GetLinkingContext().GetEntity(networkID);
-    assert(entity < INVALID_ENTITY);
+    if (entity >= INVALID_ENTITY) {
+        return;
+    }
 
     std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
     if (entity == clientComponent.lock()->m_entity) {

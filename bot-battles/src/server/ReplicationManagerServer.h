@@ -19,8 +19,8 @@ public:
     void SetUpdate(NetworkID networkID);
     void SetRemove(NetworkID networkID);
     void SetIsReplicated(NetworkID networkID, bool isReplicated);
+    void SetWasReplicated(NetworkID networkID, bool wasReplicated);
     void AddDirtyState(NetworkID networkID, U64 dirtyState);
-    void Remove(NetworkID networkID);
 
     void Write(OutputMemoryStream& outputStream, ReplicationResultManager& replicationResultManager);
     U64 WriteCreateAction(OutputMemoryStream& outputStream, NetworkID networkID, U64 dirtyState) const;

@@ -27,7 +27,7 @@ bool ReplicationManagerServer::AddCommand(NetworkID networkID, U64 dirtyState, b
         return false;
     }
 
-    m_networkIDToReplicationCommand[networkID] = ReplicationCommand(ReplicationActionType::CREATE, dirtyState, isReplicated, false);
+    m_networkIDToReplicationCommand[networkID] = ReplicationCommand(ReplicationActionType::CREATE, dirtyState, isReplicated);
 
     return true;
 }
@@ -78,21 +78,15 @@ void ReplicationManagerServer::SetIsReplicated(NetworkID networkID, bool isRepli
 }
 
 //----------------------------------------------------------------------------------------------------
-void ReplicationManagerServer::AddDirtyState(NetworkID networkID, U64 dirtyState)
+void ReplicationManagerServer::SetWasReplicated(NetworkID networkID, bool wasReplicated)
 {
-    m_networkIDToReplicationCommand.at(networkID).AddDirtyState(dirtyState);
+    m_networkIDToReplicationCommand.at(networkID).SetWasReplicated(wasReplicated);
 }
 
 //----------------------------------------------------------------------------------------------------
-void ReplicationManagerServer::Remove(NetworkID networkID)
+void ReplicationManagerServer::AddDirtyState(NetworkID networkID, U64 dirtyState)
 {
-    ReplicationCommand& replicationCommand = m_networkIDToReplicationCommand.at(networkID);
-    const bool hasReplicated = replicationCommand.GetHasReplicated();
-    if (hasReplicated) {
-        SetRemove(networkID);
-    } else {
-        RemoveCommand(networkID);
-    }
+    m_networkIDToReplicationCommand.at(networkID).AddDirtyState(dirtyState);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -112,6 +106,7 @@ void ReplicationManagerServer::Write(OutputMemoryStream& outputStream, Replicati
             || (isReplicated && hasReplication)) {
             NetworkID networkID = pair.first;
             outputStream.Write(networkID);
+            ILOG("Sent networkID %u", networkID);
             outputStream.Write(isReplicated);
             outputStream.Write(wasReplicated);
             outputStream.Write(hasReplication);
@@ -156,16 +151,10 @@ void ReplicationManagerServer::Write(OutputMemoryStream& outputStream, Replicati
 
                 replicationCommand.RemoveDirtyState(static_cast<U64>(ComponentMemberType::ALL));
 
-                replicationCommand.SetHasReplicated(true);
-
                 if (replicationCommand.m_replicationActionType == ReplicationActionType::CREATE
                     || replicationCommand.m_replicationActionType == ReplicationActionType::REMOVE) {
                     replicationCommand.m_replicationActionType = ReplicationActionType::NONE;
                 }
-            } else {
-                ReplicationCommand newReplicationCommand = ReplicationCommand(replicationCommand);
-                newReplicationCommand.m_replicationActionType = ReplicationActionType::NONE;
-                replicationResultManager.AddDelivery(networkID, newReplicationCommand);
             }
 
             if (!isReplicated && wasReplicated) {

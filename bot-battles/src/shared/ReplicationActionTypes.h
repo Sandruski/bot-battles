@@ -8,9 +8,7 @@ enum class ReplicationActionType : U16 {
     NONE,
     CREATE,
     UPDATE,
-    REMOVE,
-
-    COUNT
+    REMOVE
 };
 }
 

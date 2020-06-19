@@ -792,7 +792,7 @@ void ServerSystem::OnNetworkEntityRemoved(NetworkID networkID) const
     const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.lock()->GetPlayerIDToClientProxyMap();
     for (const auto& pair : playerIDToClientProxy) {
 
-        pair.second->m_replicationManager->Remove(networkID);
+        pair.second->m_replicationManager->SetRemove(networkID);
     }
 }
 
