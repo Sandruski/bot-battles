@@ -123,10 +123,7 @@ class PathfindingBot(bot.Bot):
                 if self.fsm.isCurrentState("GoToLastKnownPosition") == False:
                     self.fsm.changeCurrentState(decisionMaking.GoToLastKnownPosition(self.transform.position, self.lastKnownPosition))
             else:
-                if self.fsm.isCurrentState("GoToRandomPosition") == True:
-                    if self.agent.finishedMove == True:
-                        self.fsm.changeCurrentState(decisionMaking.Idle())
-                else:
+                if self.agent.finishedMove == True:
                     randomTile = self.getRandomTile()
                     worldDestinationPosition = self.map.getWorldPosition(randomTile)
                     self.fsm.changeCurrentState(decisionMaking.GoToRandomPosition(self.transform.position, worldDestinationPosition))
@@ -208,7 +205,7 @@ class PathfindingBot(bot.Bot):
                 closestWalkableTileDistance = glm.distance(glm.vec2(closestWalkableTile[0], closestWalkableTile[1]), glm.vec2(tile[0], tile[1]))
                 walkableTileDistance = glm.distance(glm.vec2(walkableTile[0], walkableTile[1]), glm.vec2(tile[0], tile[1]))
                 if walkableTileDistance < closestWalkableTileDistance:
-                    closestWalkableTileDistance = walkableTileDistance
+                    closestWalkableTile = walkableTile
         return closestWalkableTile
 
 class Graph:
