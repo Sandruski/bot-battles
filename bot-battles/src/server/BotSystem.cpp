@@ -97,11 +97,8 @@ bool BotSystem::Update()
             break;
         }
 
-        case BotComponent::ActionType::DIE: {
+        case BotComponent::ActionType::LOSE: {
             if (botComponent.lock()->m_timerAction.ReadSec() >= botComponent.lock()->m_timeAction) {
-                botComponent.lock()->m_actionType = BotComponent::ActionType::NONE;
-                characterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_ACTION_TYPE);
-
                 Event newHealthEvent;
                 newHealthEvent.eventType = EventType::HEALTH_HURT;
                 newHealthEvent.health.targetEntity = entity;
@@ -110,6 +107,7 @@ bool BotSystem::Update()
             break;
         }
 
+        case BotComponent::ActionType::WIN:
         case BotComponent::ActionType::NONE:
         default: {
             break;

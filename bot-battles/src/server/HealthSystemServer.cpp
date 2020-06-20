@@ -140,54 +140,59 @@ void HealthSystemServer::OnWeaponHit(Entity shooterEntity, Entity targetEntity, 
 {
     assert(shooterEntity < INVALID_ENTITY && targetEntity < INVALID_ENTITY);
 
-    std::weak_ptr<HealthComponent> healthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(targetEntity);
-    std::weak_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().GetComponent<SpriteComponent>(targetEntity);
-    std::weak_ptr<SpriteComponent> otherSpriteComponent = g_gameServer->GetComponentManager().GetComponent<SpriteComponent>(shooterEntity);
-    std::weak_ptr<BotComponent> botComponent = g_gameServer->GetComponentManager().GetComponent<BotComponent>(targetEntity);
+    std::weak_ptr<HealthComponent> targetHealthComponent = g_gameServer->GetComponentManager().GetComponent<HealthComponent>(targetEntity);
+    std::weak_ptr<SpriteComponent> targetSpriteComponent = g_gameServer->GetComponentManager().GetComponent<SpriteComponent>(targetEntity);
+    std::weak_ptr<BotComponent> shooterBotComponent = g_gameServer->GetComponentManager().GetComponent<BotComponent>(shooterEntity);
+    std::weak_ptr<BotComponent> targetBotComponent = g_gameServer->GetComponentManager().GetComponent<BotComponent>(targetEntity);
 
-    if (healthComponent.lock()->m_currentHP == 0) {
-        return;
+    U64 shooterCharacterDirtyState = 0;
+    U64 targetCharacterDirtyState = 0;
+
+    I32 oldCurrentHP = targetHealthComponent.lock()->m_currentHP;
+    targetHealthComponent.lock()->m_currentHP -= damage;
+    if (targetHealthComponent.lock()->m_currentHP <= 0) {
+        targetHealthComponent.lock()->m_currentHP = 0;
     }
+    targetCharacterDirtyState |= static_cast<U64>(ComponentMemberType::HEALTH_CURRENT_HP);
+    if (targetHealthComponent.lock()->m_currentHP == 0) {
+        targetSpriteComponent.lock()->m_spriteName = "die";
+        targetCharacterDirtyState |= static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME);
 
-    U64 characterDirtyState = 0;
-
-    I32 oldCurrentHP = healthComponent.lock()->m_currentHP;
-    healthComponent.lock()->m_currentHP -= damage;
-    if (healthComponent.lock()->m_currentHP <= 0) {
-        healthComponent.lock()->m_currentHP = 0;
+        shooterBotComponent.lock()->m_actionType = BotComponent::ActionType::WIN;
+        shooterCharacterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_ACTION_TYPE);
+        targetBotComponent.lock()->m_actionType = BotComponent::ActionType::LOSE;
+        targetCharacterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_ACTION_TYPE);
+        targetBotComponent.lock()->m_timeAction = 3.0f;
+        targetBotComponent.lock()->m_timerAction.Start();
     }
-    characterDirtyState |= static_cast<U64>(ComponentMemberType::HEALTH_CURRENT_HP);
-    if (healthComponent.lock()->m_currentHP == 0) {
-        spriteComponent.lock()->m_spriteName = "die";
-        characterDirtyState |= static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME);
+    targetHealthComponent.lock()->m_directionLastShot = direction;
+    targetCharacterDirtyState |= static_cast<U64>(ComponentMemberType::HEALTH_DIRECTION_LAST_SHOT);
+    targetHealthComponent.lock()->m_hitEntityLastShot = shooterEntity;
+    targetCharacterDirtyState |= static_cast<U64>(ComponentMemberType::HEALTH_HIT_ENTITY_LAST_SHOT);
 
-        botComponent.lock()->m_actionType = BotComponent::ActionType::DIE;
-        characterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_ACTION_TYPE);
-        botComponent.lock()->m_timeAction = 3.0f;
-        botComponent.lock()->m_timerAction.Start();
-    }
-    healthComponent.lock()->m_directionLastShot = direction;
-    characterDirtyState |= static_cast<U64>(ComponentMemberType::HEALTH_DIRECTION_LAST_SHOT);
-    healthComponent.lock()->m_hitEntityLastShot = shooterEntity;
-    characterDirtyState |= static_cast<U64>(ComponentMemberType::HEALTH_HIT_ENTITY_LAST_SHOT);
-
-    I32 currentHPDiff = oldCurrentHP - healthComponent.lock()->m_currentHP;
+    I32 currentHPDiff = oldCurrentHP - targetHealthComponent.lock()->m_currentHP;
     std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
     PlayerID shooterPlayerID = serverComponent.lock()->GetPlayerID(shooterEntity);
     std::weak_ptr<ClientProxy> shooterClientProxy = serverComponent.lock()->GetClientProxy(shooterPlayerID);
-    //if (!shooterClientProxy.expired()) {
     shooterClientProxy.lock()->m_damageInflicted += currentHPDiff;
-    //}
     PlayerID targetPlayerID = serverComponent.lock()->GetPlayerID(targetEntity);
     std::weak_ptr<ClientProxy> targetClientProxy = serverComponent.lock()->GetClientProxy(targetPlayerID);
-    //if (!targetClientProxy.expired()) {
     targetClientProxy.lock()->m_damageReceived += currentHPDiff;
-    //}
 
-    Event newComponentEvent;
-    newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
-    newComponentEvent.component.dirtyState = characterDirtyState;
-    newComponentEvent.component.entity = targetEntity;
-    NotifyEvent(newComponentEvent);
+    if (targetCharacterDirtyState > 0) {
+        Event newComponentEvent;
+        newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
+        newComponentEvent.component.dirtyState = targetCharacterDirtyState;
+        newComponentEvent.component.entity = targetEntity;
+        NotifyEvent(newComponentEvent);
+    }
+
+    if (shooterCharacterDirtyState > 0) {
+        Event newComponentEvent;
+        newComponentEvent.eventType = EventType::COMPONENT_MEMBER_CHANGED;
+        newComponentEvent.component.dirtyState = shooterCharacterDirtyState;
+        newComponentEvent.component.entity = shooterEntity;
+        NotifyEvent(newComponentEvent);
+    }
 }
 }
