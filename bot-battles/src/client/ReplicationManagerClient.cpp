@@ -124,7 +124,7 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream)
 }
 
 //----------------------------------------------------------------------------------------------------
-void ReplicationManagerClient::ReadCreateAction(InputMemoryStream& inputStream, Entity entity, NetworkID networkID, U32 frame) const
+void ReplicationManagerClient::ReadCreateAction(InputMemoryStream& inputStream, Entity& entity, NetworkID networkID, U32 frame) const
 {
     PlayerID playerID = INVALID_PLAYER_ID;
     inputStream.Read(playerID);
