@@ -158,9 +158,9 @@ void HealthSystemServer::OnWeaponHit(Entity shooterEntity, Entity targetEntity, 
         targetSpriteComponent.lock()->m_spriteName = "die";
         targetCharacterDirtyState |= static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME);
 
-        shooterBotComponent.lock()->m_actionType = BotComponent::ActionType::WIN;
+        shooterBotComponent.lock()->m_actionType = BotComponent::ActionType::KILL;
         shooterCharacterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_ACTION_TYPE);
-        targetBotComponent.lock()->m_actionType = BotComponent::ActionType::LOSE;
+        targetBotComponent.lock()->m_actionType = BotComponent::ActionType::DIE;
         targetCharacterDirtyState |= static_cast<U64>(ComponentMemberType::BOT_ACTION_TYPE);
         targetBotComponent.lock()->m_timeAction = 3.0f;
         targetBotComponent.lock()->m_timerAction.Start();

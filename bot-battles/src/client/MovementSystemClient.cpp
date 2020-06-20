@@ -57,7 +57,7 @@ bool MovementSystemClient::Update()
             if (clientComponent.lock()->m_isLastMovementInputPending) {
                 clientComponent.lock()->m_isLastMovementInputPending = false;
 
-                if (botComponent.lock()->m_actionType == BotComponent::ActionType::WIN || botComponent.lock()->m_actionType == BotComponent::ActionType::LOSE) {
+                if (botComponent.lock()->m_actionType == BotComponent::ActionType::KILL || botComponent.lock()->m_actionType == BotComponent::ActionType::DIE) {
                     continue;
                 }
 

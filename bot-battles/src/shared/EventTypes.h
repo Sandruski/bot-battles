@@ -81,8 +81,8 @@ enum class EventType : U64 {
     SEEN_NEW_ENTITY,
     SEEN_LOST_ENTITY,
 
-    WIN,
-    LOSE,
+    KILL,
+    DEATH,
 
     COUNT
 };

@@ -97,7 +97,7 @@ bool BotSystem::Update()
             break;
         }
 
-        case BotComponent::ActionType::LOSE: {
+        case BotComponent::ActionType::DIE: {
             if (botComponent.lock()->m_timerAction.ReadSec() >= botComponent.lock()->m_timeAction) {
                 Event newHealthEvent;
                 newHealthEvent.eventType = EventType::HEALTH_HURT;
@@ -107,7 +107,7 @@ bool BotSystem::Update()
             break;
         }
 
-        case BotComponent::ActionType::WIN:
+        case BotComponent::ActionType::KILL:
         case BotComponent::ActionType::NONE:
         default: {
             break;

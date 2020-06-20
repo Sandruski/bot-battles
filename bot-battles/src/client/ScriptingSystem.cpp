@@ -161,13 +161,13 @@ void ScriptingSystem::OnNotify(const Event& event)
         break;
     }
 
-    case EventType::WIN: {
-        OnWin(event.entity.entity);
+    case EventType::KILL: {
+        OnKill(event.entity.entity);
         break;
     }
 
-    case EventType::LOSE: {
-        OnLose(event.entity.entity);
+    case EventType::DEATH: {
+        OnDeath(event.entity.entity);
         break;
     }
 
@@ -491,7 +491,7 @@ void ScriptingSystem::OnHealthPickedUp(Entity targetEntity) const
 }
 
 //----------------------------------------------------------------------------------------------------
-void ScriptingSystem::OnWin(Entity entity) const
+void ScriptingSystem::OnKill(Entity entity) const
 {
     assert(entity < INVALID_ENTITY);
 
@@ -502,14 +502,14 @@ void ScriptingSystem::OnWin(Entity entity) const
 
     std::weak_ptr<ScriptingComponent> scriptingComponent = g_gameClient->GetScriptingComponent();
     try {
-        scriptingComponent.lock()->m_mainModule.attr("onWin")();
+        scriptingComponent.lock()->m_mainModule.attr("onKill")();
         scriptingComponent.lock()->m_mainModule.attr("log")();
     } catch (const std::runtime_error& /*re*/) {
     }
 }
 
 //----------------------------------------------------------------------------------------------------
-void ScriptingSystem::OnLose(Entity entity) const
+void ScriptingSystem::OnDeath(Entity entity) const
 {
     assert(entity < INVALID_ENTITY);
 
@@ -520,7 +520,7 @@ void ScriptingSystem::OnLose(Entity entity) const
 
     std::weak_ptr<ScriptingComponent> scriptingComponent = g_gameClient->GetScriptingComponent();
     try {
-        scriptingComponent.lock()->m_mainModule.attr("onLose")();
+        scriptingComponent.lock()->m_mainModule.attr("onDeath")();
         scriptingComponent.lock()->m_mainModule.attr("log")();
     } catch (const std::runtime_error& /*re*/) {
     }

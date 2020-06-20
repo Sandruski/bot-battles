@@ -14,17 +14,17 @@ void BotComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /*fr
         inputStream.Read(m_actionType);
 
         switch (m_actionType) {
-        case BotComponent::ActionType::WIN: {
+        case BotComponent::ActionType::KILL: {
             Event newEntityEvent;
-            newEntityEvent.eventType = EventType::WIN;
+            newEntityEvent.eventType = EventType::KILL;
             newEntityEvent.entity.entity = entity;
             std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
             clientComponent.lock()->m_replicationManager.NotifyEvent(newEntityEvent);
             break;
         }
-        case BotComponent::ActionType::LOSE: {
+        case BotComponent::ActionType::DIE: {
             Event newEntityEvent;
-            newEntityEvent.eventType = EventType::LOSE;
+            newEntityEvent.eventType = EventType::DEATH;
             newEntityEvent.entity.entity = entity;
             std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
             clientComponent.lock()->m_replicationManager.NotifyEvent(newEntityEvent);

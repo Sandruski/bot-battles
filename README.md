@@ -54,6 +54,7 @@ The code is written in C++ and follows the ISO C++ 17 Standard.
 
 ## Assets
 - [Kenney's Topdown Shooter pack](https://www.kenney.nl/assets/topdown-shooter)
+- [Kenney's Topdown Tanks Redux pack](https://www.kenney.nl/assets/topdown-tanks-redux)
 - [Kenney's Kenney Fonts pack](https://www.kenney.nl/assets/kenney-fonts)
 
 # License

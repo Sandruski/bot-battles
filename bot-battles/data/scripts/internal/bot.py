@@ -1,7 +1,5 @@
 # coding: utf-8
 
-import logging
-
 from botbattles import TransformComponent
 from botbattles import ColliderComponent
 from botbattles import RigidbodyComponent
@@ -67,8 +65,8 @@ class Bot:
     def onHitWall(self, input, collision):
         pass
 
-    def onWin(self):
+    def onKill(self):
         pass
 
-    def onLose(self):
+    def onDeath(self):
         pass

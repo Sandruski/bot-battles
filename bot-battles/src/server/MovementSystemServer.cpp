@@ -61,7 +61,7 @@ bool MovementSystemServer::Update()
             std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameServer->GetComponentManager().GetComponent<RigidbodyComponent>(entity);
             std::weak_ptr<BotComponent> botComponent = g_gameServer->GetComponentManager().GetComponent<BotComponent>(entity);
 
-            if (botComponent.lock()->m_actionType == BotComponent::ActionType::WIN || botComponent.lock()->m_actionType == BotComponent::ActionType::LOSE) {
+            if (botComponent.lock()->m_actionType == BotComponent::ActionType::KILL || botComponent.lock()->m_actionType == BotComponent::ActionType::DIE) {
                 continue;
             }
 

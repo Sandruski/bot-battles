@@ -127,15 +127,15 @@ def onHitWall(input, collision):
     except:
         pass
 
-def onWin():
+def onKill():
     try:
-        myBot.onWin()
+        myBot.onKill()
     except:
         pass
 
-def onLose():
+def onDeath():
     try:
-        myBot.onLose()
+        myBot.onDeath()
     except:
         pass
 
