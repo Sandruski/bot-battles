@@ -123,14 +123,16 @@ class Agent:
             self.linearVelocity = self.move()
         else:
             self.linearVelocity = glm.vec2(0.0, 0.0)
+        if glm.length(self.linearVelocity) == 0.0:
+            self.finishedMove = True
 
         # Rotation
         if self.stopRotate == False:
             self.angularVelocity = self.rotate()
-            if self.angularVelocity == 0.0:
-                self.finishedRotate = True
         else:
             self.angularVelocity = 0.0
+        if self.angularVelocity == 0.0:
+            self.finishedRotate = True
         
         input.linearVelocityX = self.linearVelocity.x
         input.linearVelocityY = self.linearVelocity.y
@@ -141,23 +143,24 @@ class Agent:
         if self.followPath == True:
             mapDestinationPosition = self.pathFollower.getWaypoint()
             if mapDestinationPosition == None:
-                self.finishedMove = True
+                return glm.vec2(0.0, 0.0)
+
+            worldDestinationPosition = self.bot.map.getWorldPosition(mapDestinationPosition)
+            vector = glm.vec2(worldDestinationPosition[0] - self.bot.transform.position[0], worldDestinationPosition[1] - self.bot.transform.position[1])
+            if glm.length(vector) <= self.minSeekDistance:
+                self.pathFollower.increaseWaypoint()
+
+            mapDestinationPosition = self.pathFollower.getWaypoint()
+            if mapDestinationPosition == None:
                 return glm.vec2(0.0, 0.0)
 
             worldDestinationPosition = self.bot.map.getWorldPosition(mapDestinationPosition)
             linearVelocity = self.seekPosition(self.bot.transform.position, worldDestinationPosition)
-
-            if glm.length(linearVelocity) == 0.0:
-                if self.pathFollower.increaseWaypoint() == False:
-                    self.finishedMove = True
         else:
             if self.worldDestinationDirection == None:
-                self.finishedMove = True
                 return glm.vec2(0.0, 0.0)
 
             linearVelocity = self.seekDirection(self.worldDestinationDirection)
-            if glm.length(linearVelocity) == 0.0:
-                self.finishedMove = True
         return linearVelocity
 
     def rotate(self):
@@ -219,19 +222,11 @@ class Agent:
 
     def align(self, worldOriginRotation, worldDestinationRotation): # rotations
         angle = worldDestinationRotation - worldOriginRotation
-        logging.info('worldDestinationRotation %f, worldOriginRotation %f', worldDestinationRotation, worldOriginRotation)
-        logging.info('preangle %f', angle)
         angle = (angle + 180.0) % 360.0 - 180.0
-        logging.info('angle %f', angle)
         absAngle = glm.abs(angle)
-        logging.info('absangle %f', absAngle)
         if absAngle <= self.minAlignDistance:
             return 0.0
 
         direction = angle / absAngle
         angularAcceleration = direction * self.bot.rigidbody.maxAngularVelocity
-        logging.info('angular acceleration %f', angularAcceleration)
-        #if absAngle <= self.slowAlignDistance:
-        #    angularAcceleration *= absAngle / self.slowAlignDistance
-
         return angularAcceleration
