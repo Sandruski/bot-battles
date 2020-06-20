@@ -21,15 +21,15 @@
 129,129,129,129,129,129,129,129,129,129,129,129,129,129,
 129,0,0,0,0,0,0,0,0,0,0,0,0,129,
 129,0,0,130,0,0,0,0,0,0,0,0,0,129,
-129,0,130,130,0,0,0,0,0,0,0,0,0,129,
-129,0,0,0,0,0,130,0,0,0,130,130,0,129,
-129,0,0,0,0,0,0,0,0,0,130,0,0,129,
+129,0,130,130,110,110,110,110,110,110,0,0,0,129,
+129,0,0,0,110,0,0,0,0,110,130,130,0,129,
+129,0,0,0,110,110,110,110,110,110,130,0,0,129,
 129,0,0,0,0,0,0,0,0,0,0,0,0,129,
 129,129,129,129,129,129,129,129,129,129,129,129,129,129
 </data>
  </layer>
  <objectgroup draworder="index" id="6" name="botSpawner">
-  <object id="18" name="botSpawner2" type="BotSpawner" gid="198" x="128" y="192" width="64" height="64">
+  <object id="18" name="botSpawner2" type="BotSpawner" gid="198" x="320" y="320" width="64" height="64">
    <properties>
     <property name="healthMaxHP" type="int" value="100"/>
     <property name="player" type="int" value="0"/>
@@ -39,12 +39,12 @@
     <property name="sightDistance" type="float" value="300"/>
     <property name="transformRotation" type="float" value="180"/>
     <property name="weaponCooldownShoot" type="float" value="0.5"/>
-    <property name="weaponDamage" type="int" value="5"/>
+    <property name="weaponDamage" type="int" value="20"/>
     <property name="weaponRange" type="float" value="150"/>
     <property name="weaponTimeShoot" type="float" value="0.5"/>
    </properties>
   </object>
-  <object id="17" name="botSpawner1" type="BotSpawner" gid="198" x="704" y="384" width="64" height="64">
+  <object id="17" name="botSpawner1" type="BotSpawner" gid="198" x="512" y="320" width="64" height="64">
    <properties>
     <property name="healthMaxHP" type="int" value="100"/>
     <property name="player" type="int" value="1"/>
@@ -54,7 +54,7 @@
     <property name="sightDistance" type="float" value="300"/>
     <property name="transformRotation" type="float" value="0"/>
     <property name="weaponCooldownShoot" type="float" value="0.5"/>
-    <property name="weaponDamage" type="int" value="5"/>
+    <property name="weaponDamage" type="int" value="20"/>
     <property name="weaponRange" type="float" value="150"/>
     <property name="weaponTimeShoot" type="float" value="0.5"/>
    </properties>

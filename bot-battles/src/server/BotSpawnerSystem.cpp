@@ -93,6 +93,8 @@ Entity BotSpawnerSystem::SpawnBot(PlayerID playerID) const
         spriteComponent.lock()->AddSprite("shootPrimary", shootPrimaryTextureCoords);
         glm::vec4 reloadTextureCoords = glm::vec4(183.0f, 1.0f, 42.0f, 43.0f);
         spriteComponent.lock()->AddSprite("reload", reloadTextureCoords);
+        glm::vec4 dieTextureCoords = glm::vec4(1.0f, 89.0f, 64.0f, 63.0f);
+        spriteComponent.lock()->AddSprite("die", dieTextureCoords);
         break;
     }
     case 2: {
@@ -106,6 +108,8 @@ Entity BotSpawnerSystem::SpawnBot(PlayerID playerID) const
         spriteComponent.lock()->AddSprite("shootPrimary", shootPrimaryTextureCoords);
         glm::vec4 reloadTextureCoords = glm::vec4(183.0f, 45.0f, 41.0f, 43.0f);
         spriteComponent.lock()->AddSprite("reload", reloadTextureCoords);
+        glm::vec4 dieTextureCoords = glm::vec4(1.0f, 89.0f, 64.0f, 63.0f);
+        spriteComponent.lock()->AddSprite("die", dieTextureCoords);
         break;
     }
     default: {

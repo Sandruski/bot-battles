@@ -13,7 +13,6 @@ SpriteComponent::SpriteComponent()
     , m_spriteName("default")
     , m_color(White)
     , m_pct(0.0f)
-    , m_isVisible(true)
 {
 }
 

@@ -273,10 +273,10 @@ void RendererSystem::OnComponentMemberChanged(U64 dirtyState, Entity entity) con
     const bool hasRotation = dirtyState & static_cast<U64>(ComponentMemberType::TRANSFORM_ROTATION);
     const bool hasScale = dirtyState & static_cast<U64>(ComponentMemberType::TRANSFORM_SCALE);
     const bool hasSpriteNameToTextureCoords = dirtyState & static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME_TO_TEXTURE_COORDS);
+    const bool hasSpriteName = dirtyState & static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME);
     const bool hasColor = dirtyState & static_cast<U64>(ComponentMemberType::SPRITE_COLOR);
     const bool hasPct = dirtyState & static_cast<U64>(ComponentMemberType::SPRITE_PCT);
-    const bool hasIsVisible = dirtyState & static_cast<U64>(ComponentMemberType::SPRITE_VISIBLE);
-    if (!hasPosition && !hasRotation && !hasScale && !hasSpriteNameToTextureCoords && !hasColor && !hasPct && !hasIsVisible) {
+    if (!hasPosition && !hasRotation && !hasScale && !hasSpriteNameToTextureCoords && !hasSpriteName && !hasColor && !hasPct) {
         return;
     }
 
@@ -306,7 +306,7 @@ void RendererSystem::RecalculateBackgroundMesh() const
     std::vector<MeshResource::Instance> instances;
     for (const auto& entity : m_entities) {
         std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
-        if (!spriteComponent.lock()->m_isVisible || spriteComponent.lock()->m_spriteResource.expired()) {
+        if (spriteComponent.lock()->m_spriteResource.expired()) {
             continue;
         }
 
@@ -366,7 +366,7 @@ void RendererSystem::RecalculateMapMesh() const
     std::vector<MeshResource::Instance> instances;
     for (const auto& entity : m_entities) {
         std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
-        if (!spriteComponent.lock()->m_isVisible || spriteComponent.lock()->m_spriteResource.expired()) {
+        if (spriteComponent.lock()->m_spriteResource.expired()) {
             continue;
         }
 
@@ -426,7 +426,7 @@ void RendererSystem::RecalculateCharactersMesh() const
     std::vector<MeshResource::Instance> instances;
     for (const auto& entity : m_entities) {
         std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
-        if (!spriteComponent.lock()->m_isVisible || spriteComponent.lock()->m_spriteResource.expired()) {
+        if (spriteComponent.lock()->m_spriteResource.expired()) {
             continue;
         }
 
@@ -486,7 +486,7 @@ void RendererSystem::RecalculateObjectsMesh() const
     std::vector<MeshResource::Instance> instances;
     for (const auto& entity : m_entities) {
         std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
-        if (!spriteComponent.lock()->m_isVisible || spriteComponent.lock()->m_spriteResource.expired()) {
+        if (spriteComponent.lock()->m_spriteResource.expired()) {
             continue;
         }
 
@@ -549,7 +549,7 @@ void RendererSystem::RecalculateAllMeshes() const
     std::vector<MeshResource::Instance> objectsInstances;
     for (const auto& entity : m_entities) {
         std::weak_ptr<SpriteComponent> spriteComponent = g_game->GetComponentManager().GetComponent<SpriteComponent>(entity);
-        if (!spriteComponent.lock()->m_isVisible || spriteComponent.lock()->m_spriteResource.expired()) {
+        if (spriteComponent.lock()->m_spriteResource.expired()) {
             continue;
         }
 

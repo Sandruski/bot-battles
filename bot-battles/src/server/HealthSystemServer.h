@@ -23,7 +23,6 @@ public:
     void OnNotify(const Event& event) override;
 
 private:
-    void OnCollisionEnter(Entity entityA, Entity entityB) const;
     void OnWeaponHit(Entity shooterEntity, Entity targetEntity, U32 damage, const glm::vec2& direction) const;
 };
 }

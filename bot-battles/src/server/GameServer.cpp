@@ -146,14 +146,6 @@ bool GameServer::Init()
     if (!ret) {
         return ret;
     }
-    ret = healthSystemServer.lock()->AddObserver(std::weak_ptr<Observer>(m_fsm));
-    if (!ret) {
-        return ret;
-    }
-    ret = m_physicsComponent->AddObserver(healthSystemServer);
-    if (!ret) {
-        return ret;
-    }
     std::weak_ptr<SightSystemServer> sightSystemServer = m_systemManager->GetSystem<SightSystemServer>();
     ret = sightSystemServer.lock()->AddObserver(serverSystem);
     if (!ret) {
@@ -187,6 +179,10 @@ bool GameServer::Init()
     }
     std::weak_ptr<BotSystem> botSystem = m_systemManager->GetSystem<BotSystem>();
     ret = botSystem.lock()->AddObserver(serverSystem);
+    if (!ret) {
+        return ret;
+    }
+    ret = botSystem.lock()->AddObserver(std::weak_ptr<Observer>(m_fsm));
     if (!ret) {
         return ret;
     }

@@ -32,7 +32,6 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream)
     while (inputStream.GetRemainingBitCount() >= 8) {
         NetworkID networkID = INVALID_NETWORK_ID;
         inputStream.Read(networkID);
-        ILOG("Received networkID %u", networkID);
         bool isReplicated = false;
         inputStream.Read(isReplicated);
         bool wasReplicated = false;
@@ -141,8 +140,8 @@ void ReplicationManagerClient::ReadCreateAction(InputMemoryStream& inputStream, 
             if (!hasLocalPlayer) {
                 g_gameClient->GetComponentManager().AddComponent<LocalPlayerComponent>(entity);
             }
-        } else /*if (playerID != INVALID_PLAYER_ID)*/ {
-            const bool hasRemotePlayer = signature & static_cast<U16>(ComponentType::REMOTE_PLAYER); // TODO: remote players are bots and ammo
+        } else {
+            const bool hasRemotePlayer = signature & static_cast<U16>(ComponentType::REMOTE_PLAYER);
             if (!hasRemotePlayer) {
                 g_gameClient->GetComponentManager().AddComponent<RemotePlayerComponent>(entity);
             }

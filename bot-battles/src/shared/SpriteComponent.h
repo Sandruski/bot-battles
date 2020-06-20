@@ -45,7 +45,6 @@ struct SpriteComponent : public Component
     std::string m_spriteName;
     glm::vec4 m_color;
     F32 m_pct;
-    bool m_isVisible;
 };
 }
 

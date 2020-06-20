@@ -29,10 +29,7 @@ void SpriteComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /
     }
     if (dirtyState & static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME)) {
         inputStream.Read(m_spriteName);
-    }
-    if (dirtyState & static_cast<U64>(ComponentMemberType::SPRITE_VISIBLE)) {
-        inputStream.Read(m_isVisible);
-        characterDirtyState |= static_cast<U64>(ComponentMemberType::SPRITE_VISIBLE);
+        characterDirtyState |= static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME);
     }
 
     if (characterDirtyState > 0) {

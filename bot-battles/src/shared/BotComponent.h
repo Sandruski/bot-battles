@@ -31,7 +31,8 @@ struct BotComponent : public Component
         RELOAD,
         COOLDOWN_RELOAD,
         HEAL,
-        COOLDOWN_HEAL
+        COOLDOWN_HEAL,
+        DIE
     };
 
     static ComponentType GetType() { return ComponentType::BOT; }

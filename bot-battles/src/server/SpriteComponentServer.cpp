@@ -23,10 +23,6 @@ U64 SpriteComponent::Write(OutputMemoryStream& outputStream, U64 dirtyState) con
         outputStream.Write(m_spriteName);
         writtenState |= static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME);
     }
-    if (dirtyState & static_cast<U64>(ComponentMemberType::SPRITE_VISIBLE)) {
-        outputStream.Write(m_isVisible);
-        writtenState |= static_cast<U64>(ComponentMemberType::SPRITE_VISIBLE);
-    }
 
     return writtenState;
 }
