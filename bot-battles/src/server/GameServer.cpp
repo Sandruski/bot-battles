@@ -191,6 +191,18 @@ bool GameServer::Init()
     if (!ret) {
         return ret;
     }
+    ret = weaponSystemServer.lock()->AddObserver(rendererSystem);
+    if (!ret) {
+        return ret;
+    }
+    ret = healthSystemServer.lock()->AddObserver(rendererSystem);
+    if (!ret) {
+        return ret;
+    }
+    ret = botSystem.lock()->AddObserver(rendererSystem);
+    if (!ret) {
+        return ret;
+    }
 
     return ret;
 }

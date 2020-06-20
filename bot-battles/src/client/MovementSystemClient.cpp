@@ -1,5 +1,6 @@
 #include "MovementSystemClient.h"
 
+#include "BotComponent.h"
 #include "ClientComponent.h"
 #include "ComponentManager.h"
 #include "ComponentMemberTypes.h"
@@ -48,11 +49,18 @@ bool MovementSystemClient::Update()
 
         std::weak_ptr<TransformComponent> transformComponent = g_gameClient->GetComponentManager().GetComponent<TransformComponent>(entity);
         std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameClient->GetComponentManager().GetComponent<RigidbodyComponent>(entity);
+        std::weak_ptr<BotComponent> botComponent = g_gameClient->GetComponentManager().GetComponent<BotComponent>(entity);
 
         if (clientComponent.lock()->m_isLastMovementInputPending || clientComponent.lock()->m_isLastWeaponInputPending) {
             const Input& input = clientComponent.lock()->m_inputBuffer.GetLast();
 
             if (clientComponent.lock()->m_isLastMovementInputPending) {
+                clientComponent.lock()->m_isLastMovementInputPending = false;
+
+                if (botComponent.lock()->m_actionType == BotComponent::ActionType::WIN || botComponent.lock()->m_actionType == BotComponent::ActionType::LOSE) {
+                    continue;
+                }
+
                 glm::vec2 linearVelocity = glm::vec2(0.0f, 0.0f);
                 F32 angularVelocity = 0.0f;
 
@@ -100,7 +108,6 @@ bool MovementSystemClient::Update()
                     transformComponent.lock()->m_position = glm::vec2(METERS_TO_PIXELS(physicsPosition.x), METERS_TO_PIXELS(physicsPosition.y));
                     float32 physicsRotation = rigidbodyComponent.lock()->m_body->GetAngle();
                     transformComponent.lock()->m_rotation = glm::degrees(physicsRotation);
-                    ILOG("Client position at frame %u is %f %f rot %f", input.GetFrame(), transformComponent.lock()->m_position.x, transformComponent.lock()->m_position.y, transformComponent.lock()->m_rotation);
 
                     rigidbodyComponent.lock()->m_body->SetActive(false);
 
@@ -110,8 +117,6 @@ bool MovementSystemClient::Update()
                     newComponentEvent.component.entity = entity;
                     NotifyEvent(newComponentEvent);
                 }
-
-                clientComponent.lock()->m_isLastMovementInputPending = false;
             }
 
             Transform transform = Transform(transformComponent.lock()->m_position, transformComponent.lock()->m_rotation, input.GetFrame());

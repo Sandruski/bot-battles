@@ -1,5 +1,6 @@
 #include "MovementSystemServer.h"
 
+#include "BotComponent.h"
 #include "ClientProxy.h"
 #include "ComponentManager.h"
 #include "ComponentMemberTypes.h"
@@ -58,6 +59,11 @@ bool MovementSystemServer::Update()
 
             std::weak_ptr<TransformComponent> transformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(entity);
             std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_gameServer->GetComponentManager().GetComponent<RigidbodyComponent>(entity);
+            std::weak_ptr<BotComponent> botComponent = g_gameServer->GetComponentManager().GetComponent<BotComponent>(entity);
+
+            if (botComponent.lock()->m_actionType == BotComponent::ActionType::WIN || botComponent.lock()->m_actionType == BotComponent::ActionType::LOSE) {
+                continue;
+            }
 
             glm::vec2 linearVelocity = glm::vec2(0.0f, 0.0f);
             F32 angularVelocity = 0.0f;
