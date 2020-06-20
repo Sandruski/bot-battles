@@ -593,9 +593,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)WindowSystem.cpp">
       <Filter>Source Files\Systems\Unique</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)BotComponent.cpp">
-      <Filter>Source Files\Components\Entity Components</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)PhysicsSystem.cpp">
       <Filter>Source Files\Systems\Unique</Filter>
     </ClCompile>
@@ -655,6 +652,9 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)GuiSystem.cpp">
       <Filter>Source Files\Systems\Unique</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)BotComponent.cpp">
+      <Filter>Source Files\Components\Entity Components</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

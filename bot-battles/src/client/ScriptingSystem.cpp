@@ -161,6 +161,16 @@ void ScriptingSystem::OnNotify(const Event& event)
         break;
     }
 
+    case EventType::WIN: {
+        OnWin(event.entity.entity);
+        break;
+    }
+
+    case EventType::LOSE: {
+        OnLose(event.entity.entity);
+        break;
+    }
+
     default: {
         break;
     }
@@ -475,6 +485,42 @@ void ScriptingSystem::OnHealthPickedUp(Entity targetEntity) const
     std::weak_ptr<InputComponent> inputComponent = g_gameClient->GetInputComponent();
     try {
         scriptingComponent.lock()->m_mainModule.attr("onHealthPickedUp")(inputComponent.lock());
+        scriptingComponent.lock()->m_mainModule.attr("log")();
+    } catch (const std::runtime_error& /*re*/) {
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
+void ScriptingSystem::OnWin(Entity entity) const
+{
+    assert(entity < INVALID_ENTITY);
+
+    std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
+    if (entity != clientComponent.lock()->m_entity) {
+        return;
+    }
+
+    std::weak_ptr<ScriptingComponent> scriptingComponent = g_gameClient->GetScriptingComponent();
+    try {
+        scriptingComponent.lock()->m_mainModule.attr("onWin")();
+        scriptingComponent.lock()->m_mainModule.attr("log")();
+    } catch (const std::runtime_error& /*re*/) {
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
+void ScriptingSystem::OnLose(Entity entity) const
+{
+    assert(entity < INVALID_ENTITY);
+
+    std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
+    if (entity != clientComponent.lock()->m_entity) {
+        return;
+    }
+
+    std::weak_ptr<ScriptingComponent> scriptingComponent = g_gameClient->GetScriptingComponent();
+    try {
+        scriptingComponent.lock()->m_mainModule.attr("onLose")();
         scriptingComponent.lock()->m_mainModule.attr("log")();
     } catch (const std::runtime_error& /*re*/) {
     }

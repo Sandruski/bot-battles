@@ -127,6 +127,18 @@ def onHitWall(input, collision):
     except:
         pass
 
+def onWin():
+    try:
+        myBot.onWin()
+    except:
+        pass
+
+def onLose():
+    try:
+        myBot.onLose()
+    except:
+        pass
+
 def log():
     content = stream.getvalue()
     for line in content.splitlines(False):

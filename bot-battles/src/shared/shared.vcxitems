@@ -123,11 +123,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)AckRange.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)BotComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)BotSpawnerComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)HealthComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)HealthSpawnerComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)HealthSystem.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)BotComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ColliderComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)CollisionSystem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Colors.cpp" />

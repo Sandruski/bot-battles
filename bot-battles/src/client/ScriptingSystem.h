@@ -41,6 +41,8 @@ private:
     void OnHealthHurt(Entity targetEntity, U32 health, const glm::vec2& direction) const;
     void OnHealthHealed(Entity targetEntity, U32 health) const;
     void OnHealthPickedUp(Entity targetEntity) const;
+    void OnWin(Entity entity) const;
+    void OnLose(Entity entity) const;
 };
 }
 

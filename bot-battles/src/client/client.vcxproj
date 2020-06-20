@@ -190,6 +190,7 @@
     <ClCompile Include="..\dependencies\source\imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\dependencies\source\stb\stb_image.cpp" />
     <ClCompile Include="BotBattlesModule.cpp" />
+    <ClCompile Include="BotComponentClient.cpp" />
     <ClCompile Include="ClientComponent.cpp" />
     <ClCompile Include="ClientSystem.cpp" />
     <ClCompile Include="CollisionSystemClient.cpp" />

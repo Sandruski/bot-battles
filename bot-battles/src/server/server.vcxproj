@@ -201,6 +201,7 @@
     <ClCompile Include="..\dependencies\source\imgui\imgui_stdlib.cpp" />
     <ClCompile Include="..\dependencies\source\imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\dependencies\source\stb\stb_image.cpp" />
+    <ClCompile Include="BotComponentServer.cpp" />
     <ClCompile Include="BotSystem.cpp" />
     <ClCompile Include="HealthComponentServer.cpp" />
     <ClCompile Include="HealthSpawnerSystem.cpp" />
