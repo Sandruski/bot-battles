@@ -125,6 +125,7 @@ class PathfindingBot(bot.Bot):
             else:
                 if self.agent.finishedMove == True:
                     randomTile = self.getRandomTile()
+                    logging.info('Random Tile: %i %i', randomTile[0], randomTile[1])
                     worldDestinationPosition = self.map.getWorldPosition(randomTile)
                     self.fsm.changeCurrentState(decisionMaking.GoToRandomPosition(self.transform.position, worldDestinationPosition))
                       

@@ -115,7 +115,7 @@ class Agent:
         self.useAngularVelocity = False
         self.worldDestinationRotation = None
         self.angularVelocity = None
-        self.minAlignDistance = 1.0
+        self.minAlignDistance = 1.5
 
     def update(self, input):
         # Movement
