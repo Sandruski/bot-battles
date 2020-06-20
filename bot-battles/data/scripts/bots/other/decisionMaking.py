@@ -80,12 +80,6 @@ class GoToDirection(State):
     def exit(self, bot):
         bot.agent.autoRotate = False
 
-class GoForward(GoToDirection):
-    ...
-
-class GoBackward(GoToDirection):
-    ...
-
 class LookAt(State):
     def __init__(self, worldDestinationDirection):
         self.worldDestinationDirection = worldDestinationDirection
@@ -99,6 +93,38 @@ class LookAt(State):
 
 class LookAtBullet(LookAt):
     ...
+
+class MoveTowardsBot(State):
+    def __init__(self, seenBotEntity):
+        self.seenBotEntity = seenBotEntity
+
+    def update(self, bot, input):
+        seenBotInfo = bot.sight.getSeenBotInfo(self.seenBotEntity)
+        if seenBotInfo.transform == None:
+            return
+
+        vector = glm.vec2(seenBotInfo.transform.position[0] - bot.transform.position[0], seenBotInfo.transform.position[1] - bot.transform.position[1])
+        direction = glm.vec2(0.0, 0.0)
+        if glm.length(vector) > 0.0:
+            direction = glm.normalize(vector)
+        bot.agent.goToDirection((direction.x, direction.y))
+        bot.agent.lookAt((direction.x, direction.y))
+
+class MoveAwayFromBot(State):
+    def __init__(self, seenBotEntity):
+        self.seenBotEntity = seenBotEntity
+
+    def update(self, bot, input):
+        seenBotInfo = bot.sight.getSeenBotInfo(self.seenBotEntity)
+        if seenBotInfo.transform == None:
+            return
+
+        vector = glm.vec2(bot.transform.position[0] - seenBotInfo.transform.position[0], bot.transform.position[1] - seenBotInfo.transform.position[1])
+        direction = glm.vec2(0.0, 0.0)
+        if glm.length(vector) > 0.0:
+            direction = glm.normalize(vector)
+        bot.agent.goToDirection((direction.x, direction.y))
+        bot.agent.lookAt((direction.x, direction.y))
 
 class Rotate(State):
     def __init__(self, angularVelocity):

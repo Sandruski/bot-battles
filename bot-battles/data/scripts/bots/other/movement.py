@@ -100,6 +100,7 @@ class Agent:
     def __init__(self, bot):
         self.bot = bot
         # Movement
+        self.linearVelocity = None
         self.stopMove = False
         self.finishedMove = False
         self.followPath = False
@@ -107,33 +108,33 @@ class Agent:
         self.worldDestinationDirection = None
         self.minSeekDistance = 1.0
         # Rotation
+        self.angularVelocity = None
         self.stopRotate = False
         self.finishedRotate = False
         self.autoRotate = False
         self.useAngularVelocity = False
         self.worldDestinationRotation = None
         self.angularVelocity = None
-        self.minAlignDistance = 1.5
+        self.minAlignDistance = 1.0
 
     def update(self, input):
         # Movement
         if self.stopMove == False:
-            linearVelocity = self.move()
-
-            input.linearVelocityX = linearVelocity.x
-            input.linearVelocityY = linearVelocity.y
+            self.linearVelocity = self.move()
         else:
-            input.linearVelocityX = 0.0
-            input.linearVelocityY = 0.0
+            self.linearVelocity = glm.vec2(0.0, 0.0)
 
         # Rotation
         if self.stopRotate == False:
-            angularVelocity = self.rotate()
-            if angularVelocity == 0.0:
+            self.angularVelocity = self.rotate()
+            if self.angularVelocity == 0.0:
                 self.finishedRotate = True
-            input.angularVelocity = angularVelocity
         else:
-            input.angularVelocity = 0.0
+            self.angularVelocity = 0.0
+        
+        input.linearVelocityX = self.linearVelocity.x
+        input.linearVelocityY = self.linearVelocity.y
+        input.angularVelocity = self.angularVelocity
 
     def move(self):
         linearVelocity = glm.vec2(0.0, 0.0)
@@ -161,11 +162,9 @@ class Agent:
 
     def rotate(self):
         if self.autoRotate == True:
-            vector = glm.vec2(self.bot.rigidbody.linearVelocity[0], self.bot.rigidbody.linearVelocity[1])
-            direction = glm.vec2(0.0, 0.0)
-            if glm.length(vector) > 0.0:
-                direction = glm.normalize(vector)
-            self.lookAt((direction.x, direction.y))
+            if glm.length(self.linearVelocity) > 0.0:
+                direction = glm.normalize(self.linearVelocity)
+                self.lookAt((direction.x, direction.y))
 
         angularVelocity = 0.0
         if self.useAngularVelocity == True:
@@ -220,11 +219,19 @@ class Agent:
 
     def align(self, worldOriginRotation, worldDestinationRotation): # rotations
         angle = worldDestinationRotation - worldOriginRotation
+        logging.info('worldDestinationRotation %f, worldOriginRotation %f', worldDestinationRotation, worldOriginRotation)
+        logging.info('preangle %f', angle)
         angle = (angle + 180.0) % 360.0 - 180.0
+        logging.info('angle %f', angle)
         absAngle = glm.abs(angle)
+        logging.info('absangle %f', absAngle)
         if absAngle <= self.minAlignDistance:
             return 0.0
 
         direction = angle / absAngle
         angularAcceleration = direction * self.bot.rigidbody.maxAngularVelocity
+        logging.info('angular acceleration %f', angularAcceleration)
+        #if absAngle <= self.slowAlignDistance:
+        #    angularAcceleration *= absAngle / self.slowAlignDistance
+
         return angularAcceleration

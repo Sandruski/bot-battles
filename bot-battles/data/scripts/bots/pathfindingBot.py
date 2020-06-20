@@ -75,13 +75,11 @@ class PathfindingBot(bot.Bot):
                         if self.fsm.isCurrentState("ShootPrimaryWeapon") == False:
                             self.fsm.changeCurrentState(decisionMaking.ShootPrimaryWeapon(self.lastSeenBotEntity))
                     else:
-                        if self.fsm.isCurrentState("GoBackward") == False:
-                            worldDestinationDirection = (-self.transform.direction[0], -self.transform.direction[1])
-                            self.fsm.changeCurrentState(decisionMaking.GoBackward(worldDestinationDirection))
+                        if self.fsm.isCurrentState("MoveAwayFromBot") == False:
+                            self.fsm.changeCurrentState(decisionMaking.MoveAwayFromBot(self.lastSeenBotEntity))
                 else:
-                    if self.fsm.isCurrentState("GoForward") == False:
-                        worldDestinationDirection = self.transform.direction
-                        self.fsm.changeCurrentState(decisionMaking.GoForward(worldDestinationDirection))  
+                    if self.fsm.isCurrentState("MoveTowardsBot") == False:
+                        self.fsm.changeCurrentState(decisionMaking.MoveTowardsBot(self.lastSeenBotEntity))  
             elif self.weapon.ammoBoxAmmo > 0:
                 if self.fsm.isCurrentState("Reload") == False:
                     self.fsm.changeCurrentState(decisionMaking.Reload())
@@ -91,13 +89,11 @@ class PathfindingBot(bot.Bot):
                         if self.fsm.isCurrentState("ShootSecondaryWeapon") == False:
                             self.fsm.changeCurrentState(decisionMaking.ShootSecondaryWeapon(self.lastSeenBotEntity))
                     else:
-                        if self.fsm.isCurrentState("GoBackward") == False:
-                            worldDestinationDirection = (-self.transform.direction[0], -self.transform.direction[1])
-                            self.fsm.changeCurrentState(decisionMaking.GoBackward(worldDestinationDirection))
+                        if self.fsm.isCurrentState("MoveAwayFromBot") == False:
+                            self.fsm.changeCurrentState(decisionMaking.MoveAwayFromBot(self.lastSeenBotEntity))
                 else:
-                    if self.fsm.isCurrentState("GoForward") == False:
-                        worldDestinationDirection = self.transform.direction
-                        self.fsm.changeCurrentState(decisionMaking.GoForward(worldDestinationDirection))  
+                    if self.fsm.isCurrentState("MoveTowardsBot") == False:
+                        self.fsm.changeCurrentState(decisionMaking.MoveTowardsBot(self.lastSeenBotEntity))  
         else:
             # Health
             if self.health.currentHP < self.health.maxHP / 2.0:
