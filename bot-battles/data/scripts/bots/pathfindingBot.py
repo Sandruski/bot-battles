@@ -55,7 +55,7 @@ class PathfindingBot(bot.Bot):
     def think(self):
         if self.lastSeenBotEntity != None:
             seenBotInfo = self.sight.getSeenBotInfo(self.lastSeenBotEntity)
-            distance = glm.distance(glm.vec2(seenBotInfo.transform.position[0], seenBotInfo.transform.position[1]),  glm.vec2(self.transform.position[0], self.transform.position[1]))
+            distance = glm.distance(glm.vec2(seenBotInfo.transform.position[0], seenBotInfo.transform.position[1]), glm.vec2(self.transform.position[0], self.transform.position[1]))
             colliderRange = self.collider.size[0] / 2.0 + seenBotInfo.collider.size[0] / 2.0
 
             # Health
@@ -116,22 +116,24 @@ class PathfindingBot(bot.Bot):
                         worldDestinationPosition = self.map.getWorldPosition(closestWeaponSpawner)
                         self.fsm.changeCurrentState(decisionMaking.GoToWeaponSpawner(self.transform.position, worldDestinationPosition))            
             # Other
-            elif self.lastKnownDirection != None:
-                if self.fsm.isCurrentState("LookAtBullet") == False:
-                    self.fsm.changeCurrentState(decisionMaking.LookAtBullet(self.lastKnownDirection))
-            elif self.lastKnownPosition != None:
-                if self.fsm.isCurrentState("GoToLastKnownPosition") == False:
-                    self.fsm.changeCurrentState(decisionMaking.GoToLastKnownPosition(self.transform.position, self.lastKnownPosition))
             else:
-                if self.agent.finishedMove == True:
-                    randomTile = self.getRandomTile()
-                    logging.info('Random Tile: %i %i', randomTile[0], randomTile[1])
-                    worldDestinationPosition = self.map.getWorldPosition(randomTile)
-                    self.fsm.changeCurrentState(decisionMaking.GoToRandomPosition(self.transform.position, worldDestinationPosition))
-                      
-        self.lastKnownDirection = None
-        self.lastKnownPosition = None
-
+                if self.lastKnownDirection != None:
+                    if self.fsm.isCurrentState("LookAtBullet") == True:
+                        if self.agent.finishedRotate == True:
+                            self.lastKnownDirection = None
+                    else:
+                        self.fsm.changeCurrentState(decisionMaking.LookAtBullet(self.lastKnownDirection))
+                elif self.lastKnownPosition != None:
+                    if self.fsm.isCurrentState("GoToLastKnownPosition") == True:
+                        self.lastKnownPosition = None
+                    else:
+                        self.fsm.changeCurrentState(decisionMaking.GoToLastKnownPosition(self.transform.position, self.lastKnownPosition))
+                else:
+                    if self.agent.finishedMove == True:
+                        randomTile = self.getRandomTile()
+                        worldDestinationPosition = self.map.getWorldPosition(randomTile)
+                        self.fsm.changeCurrentState(decisionMaking.GoToRandomPosition(self.transform.position, worldDestinationPosition))
+                         
     def getClosestWeaponSpawner(self):
         weaponSpawnerTiles = self.graph.getTilesOfType(TileType.WEAPON_SPAWNER)
         closestWeaponSpawnerTile = None
