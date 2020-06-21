@@ -53,6 +53,17 @@ class PathfindingBot(bot.Bot):
         self.lastKnownDirection = (-direction[0], -direction[1])
 
     def think(self):
+        toWorldPosition = self.map.getWorldPosition((2, 2))
+        for i in range(0, self.map.tileCount[0]):
+            for j in range(0, self.map.tileCount[1]):
+                tile = (i, j)
+                fromWorldPosition = self.map.getWorldPosition(tile)
+                result = self.map.isVisible(fromWorldPosition, toWorldPosition)
+                if result:
+                    logging.info('from tile %i %i IS VISIBLE', i, j)
+                else:
+                    logging.info('from tile %i %i IS NOT VISIBLE', i, j)
+
         if self.lastSeenBotEntity != None:
             seenBotInfo = self.sight.getSeenBotInfo(self.lastSeenBotEntity)
             distance = glm.distance(glm.vec2(seenBotInfo.transform.position[0], seenBotInfo.transform.position[1]), glm.vec2(self.transform.position[0], self.transform.position[1]))

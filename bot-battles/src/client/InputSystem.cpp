@@ -28,60 +28,6 @@ bool InputSystem::Update()
         return true;
     }
 
-    /*
-    std::weak_ptr<InputComponent> inputComponent = g_gameClient->GetInputComponent();
-    inputComponent.m_linearVelocity = glm::vec2(0.0f, 0.0f);
-    inputComponent.m_angularVelocity = 0.0f;
-    std::weak_ptr<EventComponent> eventComponent = g_game->GetEventComponent();
-    U64 dirtyState = 0;
-    if (EventComponent.m_keyboard.at(SDL_SCANCODE_A) == EventComponent::KeyState::REPEAT) {
-        inputComponent.m_linearVelocity.x = -1.0f;
-        dirtyState |= static_cast<U64>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
-        dirtyState |= static_cast<U64>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
-
-        clientComponent.m_isLastInputTransformPending = true;
-    }
-    if (EventComponent.m_keyboard.at(SDL_SCANCODE_D) == EventComponent::KeyState::REPEAT) {
-        inputComponent.m_linearVelocity.x = 1.0f;
-        dirtyState |= static_cast<U64>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
-        dirtyState |= static_cast<U64>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
-
-        clientComponent.m_isLastInputTransformPending = true;
-    }
-    if (EventComponent.m_keyboard.at(SDL_SCANCODE_W) == EventComponent::KeyState::REPEAT) {
-        inputComponent.m_linearVelocity.y = -1.0f;
-        dirtyState |= static_cast<U64>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
-        dirtyState |= static_cast<U64>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
-
-        clientComponent.m_isLastInputTransformPending = true;
-    }
-    if (EventComponent.m_keyboard.at(SDL_SCANCODE_S) == EventComponent::KeyState::REPEAT) {
-        inputComponent.m_linearVelocity.y = 1.0f;
-        dirtyState |= static_cast<U64>(InputComponentMemberType::INPUT_LINEAR_VELOCITY);
-        dirtyState |= static_cast<U64>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
-
-        clientComponent.m_isLastInputTransformPending = true;
-    }
-    if (EventComponent.m_keyboard.at(SDL_SCANCODE_LEFT) == EventComponent::KeyState::REPEAT) {
-        inputComponent.m_angularVelocity = -1.0f;
-        dirtyState |= static_cast<U64>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
-        clientComponent.m_isLastInputTransformPending = true;
-    }
-    if (EventComponent.m_keyboard.at(SDL_SCANCODE_RIGHT) == EventComponent::KeyState::REPEAT) {
-        inputComponent.m_angularVelocity = 1.0f;
-        dirtyState |= static_cast<U64>(InputComponentMemberType::INPUT_ANGULAR_VELOCITY);
-        clientComponent.m_isLastInputTransformPending = true;
-    }
-    if (EventComponent.m_keyboard.at(SDL_SCANCODE_SPACE) == EventComponent::KeyState::DOWN) {
-        dirtyState |= static_cast<U64>(InputComponentMemberType::INPUT_SHOOT);
-        clientComponent.m_isLastInputWeaponPending = true;
-    }
-
-    glm::normalize(inputComponent.m_linearVelocity);
-    inputComponent.m_linearVelocity *= inputComponent.m_maxLinearVelocity;
-    inputComponent.m_angularVelocity *= inputComponent.m_maxAngularVelocity;
-    */
-
     std::weak_ptr<InputComponent> inputComponent = g_gameClient->GetInputComponent();
     if (inputComponent.lock()->m_dirtyState != 0) {
         if (!clientComponent.lock()->m_inputBuffer.IsFull()) {

@@ -171,7 +171,7 @@ bool WeaponSystemServer::Update()
 
                 std::weak_ptr<PhysicsComponent> physicsComponent = g_gameServer->GetPhysicsComponent();
                 PhysicsComponent::RaycastHit hitInfo;
-                const bool hasIntersected = physicsComponent.lock()->Raycast(weaponComponent.lock()->m_originLastShot, weaponComponent.lock()->m_destinationLastShot, INVALID_ENTITY, hitInfo);
+                const bool hasIntersected = physicsComponent.lock()->Raycast(weaponComponent.lock()->m_originLastShot, weaponComponent.lock()->m_destinationLastShot, INVALID_ENTITY, RigidbodyComponent::BodyType::NONE, hitInfo);
                 if (hasIntersected) {
                     std::weak_ptr<TransformComponent> hitEntityTransformComponent = g_gameServer->GetComponentManager().GetComponent<TransformComponent>(hitInfo.m_entity);
                     if (!hitEntityTransformComponent.expired()) {
@@ -188,7 +188,12 @@ bool WeaponSystemServer::Update()
                             newWeaponEvent.weapon.shooterEntity = entity;
                             newWeaponEvent.weapon.targetEntity = hitInfo.m_entity;
                             newWeaponEvent.weapon.damage = hasShootPrimaryWeapon ? weaponComponent.lock()->m_damagePrimary : weaponComponent.lock()->m_damageSecondary;
-                            newWeaponEvent.weapon.direction = glm::normalize(weaponComponent.lock()->m_destinationLastShot - weaponComponent.lock()->m_originLastShot);
+                            glm::vec2 vector = weaponComponent.lock()->m_destinationLastShot - weaponComponent.lock()->m_originLastShot;
+                            glm::vec2 direction = vector;
+                            if (glm::length(vector) > 0.0f) {
+                                direction = glm::normalize(vector);
+                            }
+                            newWeaponEvent.weapon.direction = direction;
                             PushEvent(newWeaponEvent);
                         }
                     }

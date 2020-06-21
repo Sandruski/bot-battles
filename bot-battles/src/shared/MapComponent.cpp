@@ -1,6 +1,8 @@
 #include "MapComponent.h"
 
 #include "Game.h"
+#include "PhysicsComponent.h"
+#include "RigidbodyComponent.h"
 #include "WindowComponent.h"
 
 namespace sand {
@@ -24,6 +26,40 @@ MapComponent::TileType& MapComponent::GetTileType(const glm::uvec2& mapPosition)
 MapComponent::TileType MapComponent::GetTileType(const glm::uvec2& mapPosition) const
 {
     return m_tileTypes.at(mapPosition.x + m_tileCount.x * mapPosition.y);
+}
+
+//----------------------------------------------------------------------------------------------------
+glm::uvec2 MapComponent::GetMapSize() const
+{
+    return m_tileSize * m_tileCount;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool MapComponent::IsVisible(const glm::vec2& fromWorldPosition, const glm::vec2& toWorldPosition) const
+{
+    glm::uvec2 mapPosition = RealWorldToMap(fromWorldPosition);
+    TileType tileType = GetTileType(mapPosition);
+    if (tileType == TileType::NONE || tileType == TileType::WALL) {
+        return false;
+    }
+
+    glm::vec2 vectorToTarget = toWorldPosition - fromWorldPosition;
+    glm::vec2 directionToTarget = vectorToTarget;
+    if (glm::length(vectorToTarget) > 0.0f) {
+        directionToTarget = glm::normalize(vectorToTarget);
+    }
+    F32 distance = glm::length(vectorToTarget);
+    glm::vec2 distanceToTarget = fromWorldPosition + directionToTarget * distance;
+
+    std::weak_ptr<PhysicsComponent> physicsComponent = g_game->GetPhysicsComponent();
+    PhysicsComponent::RaycastHit raycastHit;
+    if (physicsComponent.lock()->Raycast(fromWorldPosition, distanceToTarget, INVALID_ENTITY, RigidbodyComponent::BodyType::STATIC, raycastHit)) {
+        return raycastHit.m_entity == INVALID_ENTITY;
+    } else {
+        return true;
+    }
+
+    return false;
 }
 
 //----------------------------------------------------------------------------------------------------

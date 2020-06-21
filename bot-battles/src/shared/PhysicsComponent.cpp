@@ -3,7 +3,6 @@
 #include "ColliderComponent.h"
 #include "ComponentManager.h"
 #include "Game.h"
-#include "RigidbodyComponent.h"
 #include "WallComponent.h"
 
 namespace sand {
@@ -136,14 +135,23 @@ void PhysicsComponent::Step()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool PhysicsComponent::Raycast(const glm::vec2& origin, const glm::vec2& destination, Entity entity, RaycastHit& hitInfo)
+bool PhysicsComponent::Raycast(const glm::vec2& origin, const glm::vec2& destination, Entity entity, RigidbodyComponent::BodyType bodyType, RaycastHit& hitInfo)
 {
     bool ret = false;
+
+    if (origin == destination) {
+        ret = true;
+        return ret;
+    }
 
     for (b2Body* body = m_world.GetBodyList(); body != nullptr; body = body->GetNext()) {
         b2BodyType type = body->GetType();
         switch (type) {
         case b2BodyType::b2_staticBody: {
+            if (bodyType != RigidbodyComponent::BodyType::NONE && bodyType != RigidbodyComponent::BodyType::STATIC) {
+                continue;
+            }
+
             Entity bodyEntity = *static_cast<Entity*>(body->GetUserData());
             if (bodyEntity == entity) {
                 continue;
@@ -156,6 +164,10 @@ bool PhysicsComponent::Raycast(const glm::vec2& origin, const glm::vec2& destina
             break;
         }
         case b2BodyType::b2_dynamicBody: {
+            if (bodyType != RigidbodyComponent::BodyType::NONE && bodyType != RigidbodyComponent::BodyType::DYNAMIC) {
+                continue;
+            }
+
             body->SetActive(true);
             break;
         }
@@ -176,6 +188,10 @@ bool PhysicsComponent::Raycast(const glm::vec2& origin, const glm::vec2& destina
         b2BodyType type = body->GetType();
         switch (type) {
         case b2BodyType::b2_staticBody: {
+            if (bodyType != RigidbodyComponent::BodyType::NONE && bodyType != RigidbodyComponent::BodyType::STATIC) {
+                continue;
+            }
+
             Entity bodyEntity = *static_cast<Entity*>(body->GetUserData());
             if (bodyEntity == entity) {
                 continue;
@@ -188,6 +204,10 @@ bool PhysicsComponent::Raycast(const glm::vec2& origin, const glm::vec2& destina
             break;
         }
         case b2BodyType::b2_dynamicBody: {
+            if (bodyType != RigidbodyComponent::BodyType::NONE && bodyType != RigidbodyComponent::BodyType::DYNAMIC) {
+                continue;
+            }
+
             body->SetActive(false);
             break;
         }

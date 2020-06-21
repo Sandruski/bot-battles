@@ -103,7 +103,7 @@ void MapImporter::Create(const Tilemap& tilemap) const
     std::weak_ptr<MapComponent> mapComponent = g_game->GetMapComponent();
     mapComponent.lock()->m_tileCount = tilemap.m_tileCount;
     mapComponent.lock()->m_tileSize = tilemap.m_tileSize;
-    glm::uvec2 mapSize = mapComponent.lock()->m_tileCount * mapComponent.lock()->m_tileSize;
+    glm::uvec2 mapSize = mapComponent.lock()->GetMapSize();
     glm::vec2 proportion = static_cast<glm::vec2>(windowComponent.lock()->m_baseResolution) / static_cast<glm::vec2>(mapSize);
     mapComponent.lock()->m_mapScale = proportion.x <= proportion.y ? proportion.x : proportion.y;
     U32 tileCount = mapComponent.lock()->m_tileCount.x * mapComponent.lock()->m_tileCount.y;

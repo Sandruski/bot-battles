@@ -23,8 +23,8 @@ public:
     bool Render() override;
 
 private:
-    bool IsInFoV(glm::vec2 position, glm::vec2 targetPosition, glm::vec2 direction, F32 angle) const;
-    bool IsInLoS(std::weak_ptr<PhysicsComponent> physicsComponent, glm::vec2 position, glm::vec2 targetPosition, F32 distance, Entity entity) const;
+    bool IsInFoV(const glm::vec2& position, const glm::vec2& targetPosition, const glm::vec2& direction, F32 angle) const;
+    bool IsInLoS(std::weak_ptr<PhysicsComponent> physicsComponent, const glm::vec2& position, const glm::vec2& targetPosition, F32 distance, Entity entity) const;
 };
 }
 

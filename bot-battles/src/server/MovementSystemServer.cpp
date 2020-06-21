@@ -101,7 +101,9 @@ bool MovementSystemServer::Update()
 
                 F32 linearVelocityLength = glm::length(linearVelocity);
                 if (linearVelocityLength > rigidbodyComponent.lock()->m_maxLinearVelocity) {
-                    linearVelocity = glm::normalize(linearVelocity);
+                    if (glm::length(linearVelocity) > 0.0f) {
+                        linearVelocity = glm::normalize(linearVelocity);
+                    }
                     linearVelocity *= rigidbodyComponent.lock()->m_maxLinearVelocity;
                 }
 

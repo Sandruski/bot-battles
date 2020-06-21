@@ -174,23 +174,29 @@ bool SightSystemServer::Render()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool SightSystemServer::IsInFoV(glm::vec2 position, glm::vec2 targetPosition, glm::vec2 direction, F32 angle) const
+bool SightSystemServer::IsInFoV(const glm::vec2& position, const glm::vec2& targetPosition, const glm::vec2& direction, F32 angle) const
 {
     glm::vec2 vectorToTarget = targetPosition - position;
-    glm::vec2 directionToTarget = glm::normalize(vectorToTarget);
+    glm::vec2 directionToTarget = vectorToTarget;
+    if (glm::length(vectorToTarget) > 0.0f) {
+        directionToTarget = glm::normalize(vectorToTarget);
+    }
     F32 angleToTarget = glm::degrees(glm::angle(direction, directionToTarget));
     return angleToTarget <= angle * 0.5f;
 }
 
 //----------------------------------------------------------------------------------------------------
-bool SightSystemServer::IsInLoS(std::weak_ptr<PhysicsComponent> physicsComponent, glm::vec2 position, glm::vec2 targetPosition, F32 distance, Entity entity) const
+bool SightSystemServer::IsInLoS(std::weak_ptr<PhysicsComponent> physicsComponent, const glm::vec2& position, const glm::vec2& targetPosition, F32 distance, Entity entity) const
 {
     glm::vec2 vectorToTarget = targetPosition - position;
-    glm::vec2 directionToTarget = glm::normalize(vectorToTarget);
+    glm::vec2 directionToTarget = vectorToTarget;
+    if (glm::length(vectorToTarget) > 0.0f) {
+        directionToTarget = glm::normalize(vectorToTarget);
+    }
     glm::vec2 distanceToTarget = position + directionToTarget * distance;
 
     PhysicsComponent::RaycastHit raycastHit;
-    if (physicsComponent.lock()->Raycast(position, distanceToTarget, entity, raycastHit)) {
+    if (physicsComponent.lock()->Raycast(position, distanceToTarget, entity, RigidbodyComponent::BodyType::NONE, raycastHit)) {
         return raycastHit.m_entity == entity;
     }
 
