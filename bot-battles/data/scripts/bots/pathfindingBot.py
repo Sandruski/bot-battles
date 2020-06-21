@@ -59,10 +59,16 @@ class PathfindingBot(bot.Bot):
             colliderRange = self.collider.size[0] / 2.0 + seenBotInfo.collider.size[0] / 2.0
 
             # Health
-            if self.health.currentHP < seenBotInfo.health.currentHP / 2.0:
-                if self.health.firstAidBoxHP > 0:
+            if self.fsm.isCurrentState("GoToCover") == True:
+                if self.agent.finishedMove == True:
                     if self.fsm.isCurrentState("Heal") == False:
                         self.fsm.changeCurrentState(decisionMaking.Heal())
+            elif self.health.currentHP < seenBotInfo.health.currentHP * 0.75:
+                if self.health.firstAidBoxHP > 0:
+                    if self.fsm.isCurrentState("GoToCover") == False:
+                        closestCover = self.getClosestCover(seenBotInfo.transform.position)
+                        worldDestinationPosition = self.map.getWorldPosition(closestCover)
+                        self.fsm.changeCurrentState(decisionMaking.GoToCover(self.transform.position, worldDestinationPosition))                
                 else:
                     if self.fsm.isCurrentState("GoToHealthSpawner") == False:
                         farthestHealthSpawner = self.getFarthestHealthSpawner(seenBotInfo.transform.position)
@@ -95,8 +101,12 @@ class PathfindingBot(bot.Bot):
                     if self.fsm.isCurrentState("MoveTowardsBot") == False:
                         self.fsm.changeCurrentState(decisionMaking.MoveTowardsBot(self.lastSeenBotEntity))  
         else:
+            if self.fsm.isCurrentState("GoToCover") == True:
+                if self.agent.finishedMove == True:
+                    if self.fsm.isCurrentState("Heal") == False:
+                        self.fsm.changeCurrentState(decisionMaking.Heal())
             # Health
-            if self.health.currentHP < self.health.maxHP / 2.0:
+            elif self.health.currentHP < self.health.maxHP / 2.0:
                 if self.health.firstAidBoxHP > 0:
                     if self.fsm.isCurrentState("Heal") == False:
                         self.fsm.changeCurrentState(decisionMaking.Heal())
@@ -125,7 +135,8 @@ class PathfindingBot(bot.Bot):
                         self.fsm.changeCurrentState(decisionMaking.LookAtBullet(self.lastKnownDirection))
                 elif self.lastKnownPosition != None:
                     if self.fsm.isCurrentState("GoToLastKnownPosition") == True:
-                        self.lastKnownPosition = None
+                        if self.agent.finishedMove == True:
+                            self.lastKnownPosition = None
                     else:
                         self.fsm.changeCurrentState(decisionMaking.GoToLastKnownPosition(self.transform.position, self.lastKnownPosition))
                 else:
@@ -183,7 +194,7 @@ class PathfindingBot(bot.Bot):
         closestTile = None
         for tile in tiles:
             tileWorldPosition = self.map.getWorldPosition(tile)
-            if self.map.isVisible(worldPosition, tileWorldPosition) == False:
+            if self.map.isVisible(worldPosition, tileWorldPosition) == True:
                 continue
 
             if closestTile == None:

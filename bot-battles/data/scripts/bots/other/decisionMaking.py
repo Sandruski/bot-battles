@@ -63,6 +63,9 @@ class GoToWeaponSpawner(GoToPosition):
 class GoToHealthSpawner(GoToPosition):
     ...
 
+class GoToCover(GoToPosition):
+    ...
+
 class GoToLastKnownPosition(GoToPosition):
     ...
 
