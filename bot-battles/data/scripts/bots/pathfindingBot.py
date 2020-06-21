@@ -40,6 +40,9 @@ class PathfindingBot(bot.Bot):
         logging.info('EVENT: onSeenNewBot')
         self.lastSeenBotEntity = seenBotEntity
 
+        self.lastKnownDirection = None
+        self.lastKnownPosition = None
+
     def onSeenLostBot(self, input, seenBotEntity):
         logging.info('EVENT: onSeenLostBot')
         self.lastSeenBotEntity = None
@@ -67,17 +70,11 @@ class PathfindingBot(bot.Bot):
                     if self.fsm.isCurrentState("Reload") == False:
                         self.fsm.changeCurrentState(decisionMaking.Reload())
             # Heal
-            elif self.health.currentHP < seenBotInfo.health.currentHP * 0.75:
-                if self.health.firstAidBoxHP > 0:
-                    if self.fsm.isCurrentState("TakeHealthCover") == False:
-                        closestCover = self.getClosestCover(seenBotInfo.transform.position)
-                        worldDestinationPosition = self.map.getWorldPosition(closestCover)
-                        self.fsm.changeCurrentState(decisionMaking.TakeHealthCover(self.transform.position, worldDestinationPosition))                
-                else:
-                    if self.fsm.isCurrentState("GoToHealthSpawner") == False:
-                        farthestHealthSpawner = self.getFarthestHealthSpawner(seenBotInfo.transform.position)
-                        worldDestinationPosition = self.map.getWorldPosition(farthestHealthSpawner)
-                        self.fsm.changeCurrentState(decisionMaking.GoToHealthSpawner(self.transform.position, worldDestinationPosition))
+            elif self.health.currentHP < seenBotInfo.health.currentHP * 0.75 and self.health.firstAidBoxHP > 0:
+                if self.fsm.isCurrentState("TakeHealthCover") == False:
+                    closestCover = self.getClosestCover(seenBotInfo.transform.position, self.transform.position)
+                    worldDestinationPosition = self.map.getWorldPosition(closestCover)
+                    self.fsm.changeCurrentState(decisionMaking.TakeHealthCover(self.transform.position, worldDestinationPosition))                
             # Shoot
             elif self.weapon.currentAmmo > 0:
                 if distance <= self.weapon.primaryWeaponRange:
@@ -93,7 +90,7 @@ class PathfindingBot(bot.Bot):
             # Reload
             elif self.weapon.ammoBoxAmmo > 0:
                 if self.fsm.isCurrentState("TakeWeaponCover") == False:
-                    closestCover = self.getClosestCover(seenBotInfo.transform.position)
+                    closestCover = self.getClosestCover(seenBotInfo.transform.position, self.transform.position)
                     worldDestinationPosition = self.map.getWorldPosition(closestCover)
                     self.fsm.changeCurrentState(decisionMaking.TakeWeaponCover(self.transform.position, worldDestinationPosition))
             # Shoot
@@ -120,9 +117,8 @@ class PathfindingBot(bot.Bot):
             # Heal
             elif self.health.currentHP < self.health.maxHP * 0.5:
                 if self.health.firstAidBoxHP > 0:
-                    if self.fsm.isCurrentState("TakeHealthCover") == False:
-                        if self.fsm.isCurrentState("Heal") == False:
-                            self.fsm.changeCurrentState(decisionMaking.Heal())               
+                    if self.fsm.isCurrentState("Heal") == False:
+                        self.fsm.changeCurrentState(decisionMaking.Heal())               
                 else:
                     if self.fsm.isCurrentState("GoToHealthSpawner") == False:
                         closestHealthSpawner = self.getClosestHealthSpawner(self.transform.position)
@@ -202,12 +198,12 @@ class PathfindingBot(bot.Bot):
                 farthestTile = tile
         return farthestTile
 
-    def getClosestCover(self, worldPosition):
+    def getClosestCover(self, coverWorldPosition, closeWorldPosition):
         tiles = self.graph.getWalkableTiles()
         closestTile = None
         for tile in tiles:
             tileWorldPosition = self.map.getWorldPosition(tile)
-            if self.map.isVisible(worldPosition, tileWorldPosition) == True:
+            if self.map.isVisible(coverWorldPosition, tileWorldPosition) == True:
                 continue
 
             if closestTile == None:
@@ -215,9 +211,28 @@ class PathfindingBot(bot.Bot):
                 continue
 
             closestTileWorldPosition = self.map.getWorldPosition(closestTile)
-            closestTileDistance = glm.distance(glm.vec2(closestTileWorldPosition[0], closestTileWorldPosition[1]), glm.vec2(worldPosition[0], worldPosition[1]))
-            tileDistance = glm.distance(glm.vec2(tileWorldPosition[0], tileWorldPosition[1]), glm.vec2(worldPosition[0], worldPosition[1]))
+            closestTileDistance = glm.distance(glm.vec2(closestTileWorldPosition[0], closestTileWorldPosition[1]), glm.vec2(closeWorldPosition[0], closeWorldPosition[1]))
+            tileDistance = glm.distance(glm.vec2(tileWorldPosition[0], tileWorldPosition[1]), glm.vec2(closeWorldPosition[0], closeWorldPosition[1]))
             if tileDistance < closestTileDistance:
+                closestTile = tile
+        return closestTile
+
+    def getFarthestCover(self, coverWorldPosition, farWorldPosition):
+        tiles = self.graph.getWalkableTiles()
+        closestTile = None
+        for tile in tiles:
+            tileWorldPosition = self.map.getWorldPosition(tile)
+            if self.map.isVisible(coverWorldPosition, tileWorldPosition) == True:
+                continue
+
+            if closestTile == None:
+                closestTile = tile
+                continue
+
+            closestTileWorldPosition = self.map.getWorldPosition(closestTile)
+            closestTileDistance = glm.distance(glm.vec2(closestTileWorldPosition[0], closestTileWorldPosition[1]), glm.vec2(farWorldPosition[0], farWorldPosition[1]))
+            tileDistance = glm.distance(glm.vec2(tileWorldPosition[0], tileWorldPosition[1]), glm.vec2(farWorldPosition[0], farWorldPosition[1]))
+            if tileDistance > closestTileDistance:
                 closestTile = tile
         return closestTile
 
