@@ -68,6 +68,7 @@ bool WeaponSystemClient::Update()
                 }
 
                 spriteComponent.lock()->m_spriteName = "reload";
+                botComponent.lock()->m_actionType = BotComponent::ActionType::RELOAD;
             }
 
             // Shoot
@@ -81,6 +82,7 @@ bool WeaponSystemClient::Update()
                     }
 
                     spriteComponent.lock()->m_spriteName = "shootPrimary";
+                    botComponent.lock()->m_actionType = BotComponent::ActionType::SHOOT_PRIMARY;
                 } else {
                     const bool result = weaponComponent.lock()->CanShootSecondary();
                     if (!result) {
@@ -88,6 +90,7 @@ bool WeaponSystemClient::Update()
                     }
 
                     spriteComponent.lock()->m_spriteName = "shootSecondary";
+                    botComponent.lock()->m_actionType = BotComponent::ActionType::SHOOT_SECONDARY;
                 }
             }
         }

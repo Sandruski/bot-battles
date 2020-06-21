@@ -69,6 +69,7 @@ bool HealthSystemClient::Update()
                 }
 
                 spriteComponent.lock()->m_spriteName = "heal";
+                botComponent.lock()->m_actionType = BotComponent::ActionType::HEAL;
             }
         }
     }
