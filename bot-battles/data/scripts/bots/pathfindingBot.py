@@ -58,23 +58,27 @@ class PathfindingBot(bot.Bot):
             distance = glm.distance(glm.vec2(seenBotInfo.transform.position[0], seenBotInfo.transform.position[1]), glm.vec2(self.transform.position[0], self.transform.position[1]))
             colliderRange = self.collider.size[0] / 2.0 + seenBotInfo.collider.size[0] / 2.0
 
-            # Health
-            if self.fsm.isCurrentState("GoToCover") == True:
+            if self.fsm.isCurrentState("TakeHealthCover") == True:
                 if self.agent.finishedMove == True:
                     if self.fsm.isCurrentState("Heal") == False:
                         self.fsm.changeCurrentState(decisionMaking.Heal())
+            elif self.fsm.isCurrentState("TakeWeaponCover") == True:
+                if self.agent.finishedMove == True:
+                    if self.fsm.isCurrentState("Reload") == False:
+                        self.fsm.changeCurrentState(decisionMaking.Reload())
+            # Heal
             elif self.health.currentHP < seenBotInfo.health.currentHP * 0.75:
                 if self.health.firstAidBoxHP > 0:
-                    if self.fsm.isCurrentState("GoToCover") == False:
+                    if self.fsm.isCurrentState("TakeHealthCover") == False:
                         closestCover = self.getClosestCover(seenBotInfo.transform.position)
                         worldDestinationPosition = self.map.getWorldPosition(closestCover)
-                        self.fsm.changeCurrentState(decisionMaking.GoToCover(self.transform.position, worldDestinationPosition))                
+                        self.fsm.changeCurrentState(decisionMaking.TakeHealthCover(self.transform.position, worldDestinationPosition))                
                 else:
                     if self.fsm.isCurrentState("GoToHealthSpawner") == False:
                         farthestHealthSpawner = self.getFarthestHealthSpawner(seenBotInfo.transform.position)
                         worldDestinationPosition = self.map.getWorldPosition(farthestHealthSpawner)
                         self.fsm.changeCurrentState(decisionMaking.GoToHealthSpawner(self.transform.position, worldDestinationPosition))
-            # Weapon
+            # Shoot
             elif self.weapon.currentAmmo > 0:
                 if distance <= self.weapon.primaryWeaponRange:
                     if distance >= colliderRange:
@@ -85,10 +89,14 @@ class PathfindingBot(bot.Bot):
                             self.fsm.changeCurrentState(decisionMaking.MoveAwayFromBot(self.lastSeenBotEntity))
                 else:
                     if self.fsm.isCurrentState("MoveTowardsBot") == False:
-                        self.fsm.changeCurrentState(decisionMaking.MoveTowardsBot(self.lastSeenBotEntity))  
+                        self.fsm.changeCurrentState(decisionMaking.MoveTowardsBot(self.lastSeenBotEntity))
+            # Reload
             elif self.weapon.ammoBoxAmmo > 0:
-                if self.fsm.isCurrentState("Reload") == False:
-                    self.fsm.changeCurrentState(decisionMaking.Reload())
+                if self.fsm.isCurrentState("TakeWeaponCover") == False:
+                    closestCover = self.getClosestCover(seenBotInfo.transform.position)
+                    worldDestinationPosition = self.map.getWorldPosition(closestCover)
+                    self.fsm.changeCurrentState(decisionMaking.TakeWeaponCover(self.transform.position, worldDestinationPosition))
+            # Shoot
             else:
                 if distance <= self.weapon.secondaryWeaponRange:
                     if distance >= colliderRange:
@@ -101,21 +109,26 @@ class PathfindingBot(bot.Bot):
                     if self.fsm.isCurrentState("MoveTowardsBot") == False:
                         self.fsm.changeCurrentState(decisionMaking.MoveTowardsBot(self.lastSeenBotEntity))  
         else:
-            if self.fsm.isCurrentState("GoToCover") == True:
+            if self.fsm.isCurrentState("TakeHealthCover") == True:
                 if self.agent.finishedMove == True:
                     if self.fsm.isCurrentState("Heal") == False:
                         self.fsm.changeCurrentState(decisionMaking.Heal())
-            # Health
-            elif self.health.currentHP < self.health.maxHP / 2.0:
+            elif self.fsm.isCurrentState("TakeWeaponCover") == True:
+                if self.agent.finishedMove == True:
+                    if self.fsm.isCurrentState("Reload") == False:
+                        self.fsm.changeCurrentState(decisionMaking.Reload())
+            # Heal
+            elif self.health.currentHP < self.health.maxHP * 0.5:
                 if self.health.firstAidBoxHP > 0:
-                    if self.fsm.isCurrentState("Heal") == False:
-                        self.fsm.changeCurrentState(decisionMaking.Heal())
+                    if self.fsm.isCurrentState("TakeHealthCover") == False:
+                        if self.fsm.isCurrentState("Heal") == False:
+                            self.fsm.changeCurrentState(decisionMaking.Heal())               
                 else:
                     if self.fsm.isCurrentState("GoToHealthSpawner") == False:
                         closestHealthSpawner = self.getClosestHealthSpawner(self.transform.position)
                         worldDestinationPosition = self.map.getWorldPosition(closestHealthSpawner)
                         self.fsm.changeCurrentState(decisionMaking.GoToHealthSpawner(self.transform.position, worldDestinationPosition))
-            # Weapon
+            # Reload
             elif self.weapon.maxAmmo == 0 or self.weapon.currentAmmo < self.weapon.maxAmmo:
                 if self.weapon.ammoBoxAmmo > 0:
                     if self.fsm.isCurrentState("Reload") == False:
@@ -125,7 +138,7 @@ class PathfindingBot(bot.Bot):
                         closestWeaponSpawner = self.getClosestWeaponSpawner(self.transform.position)
                         worldDestinationPosition = self.map.getWorldPosition(closestWeaponSpawner)
                         self.fsm.changeCurrentState(decisionMaking.GoToWeaponSpawner(self.transform.position, worldDestinationPosition))            
-            # Other
+            # Search
             else:
                 if self.lastKnownDirection != None:
                     if self.fsm.isCurrentState("LookAtBullet") == True:

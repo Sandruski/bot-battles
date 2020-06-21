@@ -63,7 +63,10 @@ class GoToWeaponSpawner(GoToPosition):
 class GoToHealthSpawner(GoToPosition):
     ...
 
-class GoToCover(GoToPosition):
+class TakeWeaponCover(GoToPosition):
+    ...
+
+class TakeHealthCover(GoToPosition):
     ...
 
 class GoToLastKnownPosition(GoToPosition):
