@@ -72,7 +72,7 @@ bool MainMenuStateServer::Enter() const
     versionTransformComponent.lock()->m_position.x = static_cast<F32>(windowComponent.lock()->m_baseResolution.x);
     versionTransformComponent.lock()->m_position.y = static_cast<F32>(windowComponent.lock()->m_baseResolution.y);
     std::weak_ptr<LabelComponent> versionLabelComponent = g_gameServer->GetComponentManager().AddComponent<LabelComponent>(mainMenuComponent.lock()->m_version);
-    versionLabelComponent.lock()->m_text = "v0.8 Beta";
+    versionLabelComponent.lock()->m_text = "v1.0";
     versionLabelComponent.lock()->m_color = Black;
     ImVec2 versionTextSize = ImGui::CalcTextSize(versionLabelComponent.lock()->m_text.c_str());
     versionLabelComponent.lock()->m_offset = glm::vec2(-5.0f, -5.0f);

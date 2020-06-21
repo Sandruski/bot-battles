@@ -29,12 +29,6 @@ MapComponent::TileType MapComponent::GetTileType(const glm::uvec2& mapPosition) 
 }
 
 //----------------------------------------------------------------------------------------------------
-glm::uvec2 MapComponent::GetMapSize() const
-{
-    return m_tileSize * m_tileCount;
-}
-
-//----------------------------------------------------------------------------------------------------
 bool MapComponent::IsVisible(const glm::vec2& fromWorldPosition, const glm::vec2& toWorldPosition) const
 {
     glm::uvec2 mapPosition = RealWorldToMap(fromWorldPosition);

@@ -39,7 +39,7 @@
     <property name="sightDistance" type="float" value="300"/>
     <property name="transformRotation" type="float" value="180"/>
     <property name="weaponCooldownShoot" type="float" value="0.5"/>
-    <property name="weaponDamage" type="int" value="20"/>
+    <property name="weaponDamage" type="int" value="8"/>
     <property name="weaponRange" type="float" value="150"/>
     <property name="weaponTimeShoot" type="float" value="0.5"/>
    </properties>
@@ -54,7 +54,7 @@
     <property name="sightDistance" type="float" value="300"/>
     <property name="transformRotation" type="float" value="0"/>
     <property name="weaponCooldownShoot" type="float" value="0.5"/>
-    <property name="weaponDamage" type="int" value="20"/>
+    <property name="weaponDamage" type="int" value="8"/>
     <property name="weaponRange" type="float" value="150"/>
     <property name="weaponTimeShoot" type="float" value="0.5"/>
    </properties>

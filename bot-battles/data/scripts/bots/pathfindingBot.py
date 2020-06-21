@@ -59,7 +59,7 @@ class PathfindingBot(bot.Bot):
             colliderRange = self.collider.size[0] / 2.0 + seenBotInfo.collider.size[0] / 2.0
 
             # Health
-            if self.health.currentHP < self.health.maxHP / 2.0 or self.health.currentHP < seenBotInfo.health.currentHP / 2.0:
+            if self.health.currentHP < seenBotInfo.health.currentHP / 2.0:
                 if self.health.firstAidBoxHP > 0:
                     if self.fsm.isCurrentState("Heal") == False:
                         self.fsm.changeCurrentState(decisionMaking.Heal())

@@ -21,7 +21,6 @@ struct MapComponent {
 
     TileType& GetTileType(const glm::uvec2& mapPosition);
     TileType GetTileType(const glm::uvec2& mapPosition) const;
-    glm::uvec2 GetMapSize() const;
 
     bool IsVisible(const glm::vec2& fromWorldPosition, const glm::vec2& toWorldPosition) const;
 
