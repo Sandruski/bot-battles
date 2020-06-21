@@ -53,17 +53,6 @@ class PathfindingBot(bot.Bot):
         self.lastKnownDirection = (-direction[0], -direction[1])
 
     def think(self):
-        toWorldPosition = self.map.getWorldPosition((2, 2))
-        for i in range(0, self.map.tileCount[0]):
-            for j in range(0, self.map.tileCount[1]):
-                tile = (i, j)
-                fromWorldPosition = self.map.getWorldPosition(tile)
-                result = self.map.isVisible(fromWorldPosition, toWorldPosition)
-                if result:
-                    logging.info('from tile %i %i IS VISIBLE', i, j)
-                else:
-                    logging.info('from tile %i %i IS NOT VISIBLE', i, j)
-
         if self.lastSeenBotEntity != None:
             seenBotInfo = self.sight.getSeenBotInfo(self.lastSeenBotEntity)
             distance = glm.distance(glm.vec2(seenBotInfo.transform.position[0], seenBotInfo.transform.position[1]), glm.vec2(self.transform.position[0], self.transform.position[1]))
@@ -113,7 +102,7 @@ class PathfindingBot(bot.Bot):
                         self.fsm.changeCurrentState(decisionMaking.Heal())
                 else:
                     if self.fsm.isCurrentState("GoToHealthSpawner") == False:
-                        closestHealthSpawner = self.getClosestHealthSpawner()
+                        closestHealthSpawner = self.getClosestHealthSpawner(self.transform.position)
                         worldDestinationPosition = self.map.getWorldPosition(closestHealthSpawner)
                         self.fsm.changeCurrentState(decisionMaking.GoToHealthSpawner(self.transform.position, worldDestinationPosition))
             # Weapon
@@ -123,7 +112,7 @@ class PathfindingBot(bot.Bot):
                         self.fsm.changeCurrentState(decisionMaking.Reload())
                 else:
                     if self.fsm.isCurrentState("GoToWeaponSpawner") == False:
-                        closestWeaponSpawner = self.getClosestWeaponSpawner()
+                        closestWeaponSpawner = self.getClosestWeaponSpawner(self.transform.position)
                         worldDestinationPosition = self.map.getWorldPosition(closestWeaponSpawner)
                         self.fsm.changeCurrentState(decisionMaking.GoToWeaponSpawner(self.transform.position, worldDestinationPosition))            
             # Other
@@ -145,82 +134,91 @@ class PathfindingBot(bot.Bot):
                         worldDestinationPosition = self.map.getWorldPosition(randomTile)
                         self.fsm.changeCurrentState(decisionMaking.GoToRandomPosition(self.transform.position, worldDestinationPosition))
                          
-    def getClosestWeaponSpawner(self):
-        weaponSpawnerTiles = self.graph.getTilesOfType(TileType.WEAPON_SPAWNER)
-        closestWeaponSpawnerTile = None
-        for weaponSpawnerTile in weaponSpawnerTiles:
-            if closestWeaponSpawnerTile == None:
-                closestWeaponSpawnerTile = weaponSpawnerTile
+    def getClosestWeaponSpawner(self, worldPosition):
+        return self.getClosestTileOfType(TileType.WEAPON_SPAWNER, worldPosition)
+
+    def getClosestHealthSpawner(self, worldPosition):
+        return self.getClosestTileOfType(TileType.HEALTH_SPAWNER, worldPosition)
+
+    def getClosestTileOfType(self, type, worldPosition):
+        tiles = self.graph.getTilesOfType(type)
+        closestTile = None
+        for tile in tiles:
+            if closestTile == None:
+                closestTile = tile
                 continue
 
-            closestWeaponSpawnerWorldPosition = self.map.getWorldPosition(closestWeaponSpawnerTile)
-            closestWeaponSpawnerDistance = glm.distance(glm.vec2(closestWeaponSpawnerWorldPosition[0], closestWeaponSpawnerWorldPosition[1]), glm.vec2(self.transform.position[0], self.transform.position[1]))
-            weaponSpawnerWorldPosition = self.map.getWorldPosition(weaponSpawnerTile)
-            weaponSpawnerDistance = glm.distance(glm.vec2(weaponSpawnerWorldPosition[0], weaponSpawnerWorldPosition[1]), glm.vec2(self.transform.position[0], self.transform.position[1]))
-            if weaponSpawnerDistance < closestWeaponSpawnerDistance:
-                closestWeaponSpawnerTile = weaponSpawnerTile     
-        return closestWeaponSpawnerTile
+            closestTileWorldPosition = self.map.getWorldPosition(closestTile)
+            closestTileDistance = glm.distance(glm.vec2(closestTileWorldPosition[0], closestTileWorldPosition[1]), glm.vec2(worldPosition[0], worldPosition[1]))
+            tileWorldPosition = self.map.getWorldPosition(tile)
+            tileDistance = glm.distance(glm.vec2(tileWorldPosition[0], tileWorldPosition[1]), glm.vec2(worldPosition[0], worldPosition[1]))
+            if tileDistance < closestTileDistance:
+                closestTile = tile
+        return closestTile
 
-    def getClosestHealthSpawner(self):
-        healthSpawnerTiles = self.graph.getTilesOfType(TileType.HEALTH_SPAWNER)
-        closestHealthSpawnerTile = None
-        for healthSpawnerTile in healthSpawnerTiles:
-            if closestHealthSpawnerTile == None:
-                closestHealthSpawnerTile = healthSpawnerTile
-                continue
-
-            closestHealthSpawnerWorldPosition = self.map.getWorldPosition(closestHealthSpawnerTile)
-            closestHealthSpawnerDistance = glm.distance(glm.vec2(closestHealthSpawnerWorldPosition[0], closestHealthSpawnerWorldPosition[1]), glm.vec2(self.transform.position[0], self.transform.position[1]))
-            healthSpawnerWorldPosition = self.map.getWorldPosition(healthSpawnerTile)
-            healthSpawnerDistance = glm.distance(glm.vec2(healthSpawnerWorldPosition[0], healthSpawnerWorldPosition[1]), glm.vec2(self.transform.position[0], self.transform.position[1]))
-            if healthSpawnerDistance < closestHealthSpawnerDistance:
-                closestHealthSpawnerTile = healthSpawnerTile
-        return closestHealthSpawnerTile
+    def getFarthestWeaponSpawner(self, worldPosition):
+        return self.getFarthestTileOfType(TileType.WEAPON_SPAWNER, worldPosition)
 
     def getFarthestHealthSpawner(self, worldPosition):
-        healthSpawnerTiles = self.graph.getTilesOfType(TileType.HEALTH_SPAWNER)
-        farthestHealthSpawnerTile = None
-        for healthSpawnerTile in healthSpawnerTiles:
-            if farthestHealthSpawnerTile == None:
-                farthestHealthSpawnerTile = healthSpawnerTile
+        return self.getFarthestTileOfType(TileType.HEALTH_SPAWNER, worldPosition)
+
+    def getFarthestTileOfType(self, type, worldPosition):
+        tiles = self.graph.getTilesOfType(type)
+        farthestTile = None
+        for tile in tiles:
+            if farthestTile == None:
+                farthestTile = tile
                 continue
 
-            farthestHealthSpawnerWorldPosition = self.map.getWorldPosition(farthestHealthSpawnerTile)
-            farthestHealthSpawnerDistance = glm.distance(glm.vec2(farthestHealthSpawnerWorldPosition[0], farthestHealthSpawnerWorldPosition[1]), glm.vec2(worldPosition[0], worldPosition[1]))
-            healthSpawnerWorldPosition = self.map.getWorldPosition(healthSpawnerTile)
-            healthSpawnerDistance = glm.distance(glm.vec2(healthSpawnerWorldPosition[0], healthSpawnerWorldPosition[1]), glm.vec2(worldPosition[0], worldPosition[1]))
-            if healthSpawnerDistance > farthestHealthSpawnerDistance:
-                farthestHealthSpawnerTile = healthSpawnerTile
-        return farthestHealthSpawnerTile
+            farthestTileWorldPosition = self.map.getWorldPosition(farthestTile)
+            farthestTileDistance = glm.distance(glm.vec2(farthestTileWorldPosition[0], farthestTileWorldPosition[1]), glm.vec2(worldPosition[0], worldPosition[1]))
+            tileWorldPosition = self.map.getWorldPosition(tile)
+            tileDistance = glm.distance(glm.vec2(tileWorldPosition[0], tileWorldPosition[1]), glm.vec2(worldPosition[0], worldPosition[1]))
+            if tileDistance > farthestTileDistance:
+                farthestTile = tile
+        return farthestTile
+
+    def getClosestCover(self, worldPosition):
+        tiles = self.graph.getWalkableTiles()
+        closestTile = None
+        for tile in tiles:
+            tileWorldPosition = self.map.getWorldPosition(tile)
+            if self.map.isVisible(worldPosition, tileWorldPosition) == False:
+                continue
+
+            if closestTile == None:
+                closestTile = tile
+                continue
+
+            closestTileWorldPosition = self.map.getWorldPosition(closestTile)
+            closestTileDistance = glm.distance(glm.vec2(closestTileWorldPosition[0], closestTileWorldPosition[1]), glm.vec2(worldPosition[0], worldPosition[1]))
+            tileDistance = glm.distance(glm.vec2(tileWorldPosition[0], tileWorldPosition[1]), glm.vec2(worldPosition[0], worldPosition[1]))
+            if tileDistance < closestTileDistance:
+                closestTile = tile
+        return closestTile
 
     def getRandomTile(self):
         x = random.randint(0, self.map.tileCount[0] - 1)
         y = random.randint(0, self.map.tileCount[1] - 1)
         randomTile = (x, y)
-        closestWalkableTile = self.getClosestWalkableTile(randomTile)
-        return closestWalkableTile
+        return self.getClosestWalkable(randomTile)
 
-    def getClosestWalkableTile(self, tile):
-        if self.graph.isWalkable(tile) == True:
-            return tile
+    def getClosestWalkable(self, mapPosition):
+        if self.graph.isWalkable(mapPosition) == True:
+            return mapPosition
 
-        closestWalkableTile = None
-        for i in range(0, self.map.tileCount[0]):
-            for j in range(0, self.map.tileCount[1]):
-                walkableTile = (i, j)
+        tiles = self.graph.getWalkableTiles()
+        closestTile = None
+        for tile in tiles:
+            if closestTile == None:
+                closestTile = tile
+                continue
 
-                if self.graph.isWalkable(walkableTile) == False:
-                    continue
-
-                if closestWalkableTile == None:
-                    closestWalkableTile = walkableTile
-                    continue
-
-                closestWalkableTileDistance = glm.distance(glm.vec2(closestWalkableTile[0], closestWalkableTile[1]), glm.vec2(tile[0], tile[1]))
-                walkableTileDistance = glm.distance(glm.vec2(walkableTile[0], walkableTile[1]), glm.vec2(tile[0], tile[1]))
-                if walkableTileDistance < closestWalkableTileDistance:
-                    closestWalkableTile = walkableTile
-        return closestWalkableTile
+            closestTileDistance = glm.distance(glm.vec2(closestTile[0], closestTile[1]), glm.vec2(mapPosition[0], mapPosition[1]))
+            tileDistance = glm.distance(glm.vec2(tile[0], tile[1]), glm.vec2(mapPosition[0], mapPosition[1]))
+            if tileDistance < closestTileDistance:
+                closestTile = tile
+        return closestTile
 
 class Graph:
     def __init__(self, map : MapComponent):
@@ -235,33 +233,43 @@ class Graph:
     def isWalkable(self, mapPosition):
         return self.isInBounds(mapPosition) and self.map.getTileType(mapPosition) != TileType.NONE and self.map.getTileType(mapPosition) != TileType.WALL
 
-    def getNeighbors(self, mapPosition, diagonals):
+    def getNeighborTiles(self, mapPosition, diagonals):
         north = (mapPosition[0], mapPosition[1] + 1)
         south = (mapPosition[0], mapPosition[1] - 1)
         east = (mapPosition[0] + 1, mapPosition[1])
         west = (mapPosition[0] - 1, mapPosition[1])
-        neighbors = [north, south, east, west]
+        tiles = [north, south, east, west]
 
         if diagonals == True:
             northEast = (mapPosition[0] + 1, mapPosition[1] + 1)
             northWest = (mapPosition[0] - 1, mapPosition[1] + 1)
             southEast = (mapPosition[0] + 1, mapPosition[1] - 1)
             southWest = (mapPosition[0] - 1, mapPosition[1] - 1)
-            neighbors.append(northEast)
-            neighbors.append(northWest)
-            neighbors.append(southEast)
-            neighbors.append(southWest)
+            tiles.append(northEast)
+            tiles.append(northWest)
+            tiles.append(southEast)
+            tiles.append(southWest)
         
-        neighbors = filter(self.isWalkable, neighbors)
-        return neighbors
+        tiles = filter(self.isWalkable, tiles)
+        return tiles
+
+    def getWalkableTiles(self):
+        tiles = []
+
+        for i in range(0, self.map.tileCount[0]):
+            for j in range(0, self.map.tileCount[1]):
+                tile = (i, j)
+                if self.isWalkable(tile) == True:
+                    tiles.append(tile)
+        return tiles
 
     def getTilesOfType(self, type):
         tiles = []
 
         for i in range(0, self.map.tileCount[0]):
             for j in range(0, self.map.tileCount[1]):
-                mapPosition = (i, j)
-                tileType = self.map.getTileType(mapPosition)
+                tile = (i, j)
+                tileType = self.map.getTileType(tile)
                 if tileType == type:
-                    tiles.append(mapPosition)
+                    tiles.append(tile)
         return tiles

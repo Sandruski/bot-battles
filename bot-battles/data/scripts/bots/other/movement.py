@@ -64,7 +64,7 @@ class PathFinder:
             if current == destination:
                 break
             
-            for next in self.graph.getNeighbors(current, False):
+            for next in self.graph.getNeighborTiles(current, False):
                 newCost = costSoFar[current] + self.graph.getCost(next)
                 if next not in costSoFar or newCost < costSoFar[next]:
                     costSoFar[next] = newCost
