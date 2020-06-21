@@ -234,7 +234,7 @@ void ScriptingSystem::InitScripts() const
 }
 
 //----------------------------------------------------------------------------------------------------
-void ScriptingSystem::OnCollisionEnter(Entity entityA, Entity entityB, glm::vec2 linearVelocityA, glm::vec2 linearVelocityB, glm::vec2 normal) const
+void ScriptingSystem::OnCollisionEnter(Entity entityA, Entity entityB, const glm::vec2& linearVelocityA, const glm::vec2& linearVelocityB, const glm::vec2& normal) const
 {
     assert(entityA < INVALID_ENTITY && entityB < INVALID_ENTITY);
 

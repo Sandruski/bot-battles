@@ -136,15 +136,6 @@ void OutputMemoryStream::Write(const glm::uvec4& uvec4)
 }
 
 //----------------------------------------------------------------------------------------------------
-void OutputMemoryStream::WritePosition(const glm::vec2& vec2) // TODO: this should be done properly and without hard-coded values
-{
-    U32 x = FLOAT_TO_FIXED(vec2.x, -2000.0f, 0.1f);
-    U32 y = FLOAT_TO_FIXED(vec2.y, -2000.0f, 0.1f);
-    Write(x);
-    Write(y);
-}
-
-//----------------------------------------------------------------------------------------------------
 const char* OutputMemoryStream::GetPtr() const
 {
     return m_buffer;

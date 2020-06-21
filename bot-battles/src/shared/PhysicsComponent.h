@@ -78,8 +78,8 @@ struct PhysicsComponent : public Subject {
     bool Raycast(const glm::vec2& origin, const glm::vec2& destination, Entity entity, RigidbodyComponent::BodyType bodyType, RaycastHit& hitInfo);
     bool Overlap(const glm::vec2& center, const glm::vec2& extents, std::vector<Entity>& entities);
 
-    void OnCollisionEnter(Entity entityA, Entity entityB, glm::vec2 linearVelocityA, glm::vec2 linearVelocityB, glm::vec2 normal);
-    void OnCollisionExit(Entity entityA, Entity entityB, glm::vec2 linearVelocityA, glm::vec2 linearVelocityB, glm::vec2 normal);
+    void OnCollisionEnter(Entity entityA, Entity entityB, const glm::vec2& linearVelocityA, const glm::vec2& linearVelocityB, const glm::vec2& normal);
+    void OnCollisionExit(Entity entityA, Entity entityB, const glm::vec2& linearVelocityA, const glm::vec2& linearVelocityB, const glm::vec2& normal);
 
     b2World m_world;
     ContactListener m_contactListener;

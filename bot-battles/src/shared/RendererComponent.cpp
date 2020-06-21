@@ -99,7 +99,7 @@ void RendererComponent::UpdateBackgroundColor() const
 }
 
 //----------------------------------------------------------------------------------------------------
-void RendererComponent::DrawLine(glm::vec2 fromPosition, glm::vec2 toPosition, F32 positionZ, glm::vec4 color)
+void RendererComponent::DrawLine(const glm::vec2& fromPosition, const glm::vec2& toPosition, F32 positionZ, const glm::vec4& color)
 {
     glUseProgram(m_defaultShaderResource.lock()->GetProgram());
 
@@ -131,7 +131,7 @@ void RendererComponent::DrawLine(glm::vec2 fromPosition, glm::vec2 toPosition, F
 }
 
 //----------------------------------------------------------------------------------------------------
-void RendererComponent::DrawCircle(glm::vec3 position, F32 rotation, glm::vec3 scale, U32 sides, F32 angle, F32 radius, glm::vec4 color, bool filled)
+void RendererComponent::DrawCircle(const glm::vec3& position, F32 rotation, const glm::vec3& scale, U32 sides, F32 angle, F32 radius, const glm::vec4& color, bool filled)
 {
     glUseProgram(m_defaultShaderResource.lock()->GetProgram());
 
@@ -143,14 +143,16 @@ void RendererComponent::DrawCircle(glm::vec3 position, F32 rotation, glm::vec3 s
     glm::vec2 proportion = windowComponent.lock()->GetProportion();
 
     glm::mat4 model = glm::mat4(1.0f);
-    position.x *= proportion.x;
-    position.y *= proportion.y;
-    position.y *= -1.0f;
-    model = glm::translate(model, position);
+    glm::vec3 finalPosition = position;
+    finalPosition.x *= proportion.x;
+    finalPosition.y *= proportion.y;
+    finalPosition.y *= -1.0f;
+    model = glm::translate(model, finalPosition);
     model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, -1.0f));
-    scale.x *= proportion.x;
-    scale.y *= proportion.y;
-    model = glm::scale(model, scale);
+    glm::vec3 finalScale = scale;
+    finalScale.x *= proportion.x;
+    finalScale.y *= proportion.y;
+    model = glm::scale(model, finalScale);
 
     std::vector<MeshResource::Vertex> circleVertices = MeshResource::GetCircleVertices(sides, angle, radius);
     m_circleMeshResource.lock()->ReLoadVertices(circleVertices);
@@ -177,7 +179,7 @@ void RendererComponent::DrawCircle(glm::vec3 position, F32 rotation, glm::vec3 s
 }
 
 //----------------------------------------------------------------------------------------------------
-void RendererComponent::DrawQuad(glm::vec3 position, F32 rotation, glm::vec3 scale, glm::vec4 color, bool filled)
+void RendererComponent::DrawQuad(const glm::vec3& position, F32 rotation, const glm::vec3& scale, const glm::vec4& color, bool filled)
 {
     glUseProgram(m_defaultShaderResource.lock()->GetProgram());
 
@@ -189,14 +191,16 @@ void RendererComponent::DrawQuad(glm::vec3 position, F32 rotation, glm::vec3 sca
     glm::vec2 proportion = windowComponent.lock()->GetProportion();
 
     glm::mat4 model = glm::mat4(1.0f);
-    position.x *= proportion.x;
-    position.y *= proportion.y;
-    position.y *= -1.0f;
-    model = glm::translate(model, position);
+    glm::vec3 finalPosition = position;
+    finalPosition.x *= proportion.x;
+    finalPosition.y *= proportion.y;
+    finalPosition.y *= -1.0f;
+    model = glm::translate(model, finalPosition);
     model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, -1.0f));
-    scale.x *= proportion.x;
-    scale.y *= proportion.y;
-    model = glm::scale(model, scale);
+    glm::vec3 finalScale = scale;
+    finalScale.x *= proportion.x;
+    finalScale.y *= proportion.y;
+    model = glm::scale(model, finalScale);
 
     U32 modelLoc = glGetUniformLocation(m_defaultShaderResource.lock()->GetProgram(), "model");
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));

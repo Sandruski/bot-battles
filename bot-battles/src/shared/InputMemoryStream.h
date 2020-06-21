@@ -41,7 +41,6 @@ public:
     void Read(glm::uvec2& uvec2);
     void Read(glm::uvec3& uvec3);
     void Read(glm::uvec4& uvec4);
-    void ReadPosition(glm::vec2& vec2);
 
     char* GetPtr() const;
     U32 GetByteLength() const;

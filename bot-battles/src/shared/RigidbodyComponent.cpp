@@ -81,7 +81,7 @@ U64 RigidbodyComponent::Write(OutputMemoryStream& outputStream, U64 dirtyState) 
 #endif
 
 //----------------------------------------------------------------------------------------------------
-void RigidbodyComponent::SetAsCircle(glm::vec2 position, F32 rotation, F32 radius, const Entity& entity)
+void RigidbodyComponent::SetAsCircle(const glm::vec2& position, F32 rotation, F32 radius, const Entity& entity)
 {
     if (m_body != nullptr) {
         return;
@@ -109,7 +109,7 @@ void RigidbodyComponent::SetAsCircle(glm::vec2 position, F32 rotation, F32 radiu
 }
 
 //----------------------------------------------------------------------------------------------------
-void RigidbodyComponent::SetAsBox(glm::vec2 position, F32 rotation, glm::vec2 halfSize, const Entity& entity)
+void RigidbodyComponent::SetAsBox(const glm::vec2& position, F32 rotation, const glm::vec2& halfSize, const Entity& entity)
 {
     if (m_body != nullptr) {
         return;

@@ -257,7 +257,7 @@ bool PhysicsComponent::Overlap(const glm::vec2& center, const glm::vec2& extents
 }
 
 //----------------------------------------------------------------------------------------------------
-void PhysicsComponent::OnCollisionEnter(Entity entityA, Entity entityB, glm::vec2 linearVelocityA, glm::vec2 linearVelocityB, glm::vec2 normal)
+void PhysicsComponent::OnCollisionEnter(Entity entityA, Entity entityB, const glm::vec2& linearVelocityA, const glm::vec2& linearVelocityB, const glm::vec2& normal)
 {
     Event newEvent;
     newEvent.eventType = EventType::COLLISION_ENTER;
@@ -270,7 +270,7 @@ void PhysicsComponent::OnCollisionEnter(Entity entityA, Entity entityB, glm::vec
 }
 
 //----------------------------------------------------------------------------------------------------
-void PhysicsComponent::OnCollisionExit(Entity entityA, Entity entityB, glm::vec2 linearVelocityA, glm::vec2 linearVelocityB, glm::vec2 normal)
+void PhysicsComponent::OnCollisionExit(Entity entityA, Entity entityB, const glm::vec2& linearVelocityA, const glm::vec2& linearVelocityB, const glm::vec2& normal)
 {
     Event newEvent;
     newEvent.eventType = EventType::COLLISION_EXIT;

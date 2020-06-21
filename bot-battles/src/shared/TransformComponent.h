@@ -30,7 +30,7 @@ struct TransformComponent : public Component
 
 #ifdef _CLIENT
     void Read(InputMemoryStream& inputStream, U64 dirtyState, U32 frame, ReplicationActionType replicationActionType, Entity entity) override;
-    void Replay(bool updatePosition, bool updateRotation, glm::vec2 newPosition, F32 newRotation, Entity entity);
+    void Replay(bool updatePosition, bool updateRotation, const glm::vec2& newPosition, F32 newRotation, Entity entity);
 #elif defined(_SERVER)
     U64 Write(OutputMemoryStream& outputStream, U64 dirtyState) const override;
 #endif

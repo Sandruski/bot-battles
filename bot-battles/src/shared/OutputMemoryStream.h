@@ -29,7 +29,6 @@ public:
     void Write(const glm::uvec2& uvec2);
     void Write(const glm::uvec3& uvec3);
     void Write(const glm::uvec4& uvec4);
-    void WritePosition(const glm::vec2& vec2);
 
     const char* GetPtr() const;
     U32 GetByteLength() const;

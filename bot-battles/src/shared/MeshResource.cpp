@@ -7,7 +7,7 @@
 namespace sand {
 
 //----------------------------------------------------------------------------------------------------
-const std::vector<MeshResource::Vertex> MeshResource::GetLineVertices(glm::vec2 fromPosition, glm::vec2 toPosition)
+const std::vector<MeshResource::Vertex> MeshResource::GetLineVertices(const glm::vec2& fromPosition, const glm::vec2& toPosition)
 {
     std::weak_ptr<WindowComponent> windowComponent = g_game->GetWindowComponent();
     glm::vec2 proportion = windowComponent.lock()->GetProportion();

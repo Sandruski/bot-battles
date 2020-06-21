@@ -104,13 +104,13 @@ class MoveTowardsBot(State):
     def __init__(self, seenBotEntity):
         self.seenBotEntity = seenBotEntity
 
-    def update(self, bot, input):
+    def update(self, bot, input : InputComponent):
         seenBotInfo = bot.sight.getSeenBotInfo(self.seenBotEntity)
         if seenBotInfo.transform == None:
             return
 
         vector = glm.vec2(seenBotInfo.transform.position[0] - bot.transform.position[0], seenBotInfo.transform.position[1] - bot.transform.position[1])
-        direction = glm.vec2(0.0, 0.0)
+        direction = vector
         if glm.length(vector) > 0.0:
             direction = glm.normalize(vector)
         bot.agent.goToDirection((direction.x, direction.y))
@@ -120,13 +120,13 @@ class MoveAwayFromBot(State):
     def __init__(self, seenBotEntity):
         self.seenBotEntity = seenBotEntity
 
-    def update(self, bot, input):
+    def update(self, bot, input : InputComponent):
         seenBotInfo = bot.sight.getSeenBotInfo(self.seenBotEntity)
         if seenBotInfo.transform == None:
             return
 
         vector = glm.vec2(bot.transform.position[0] - seenBotInfo.transform.position[0], bot.transform.position[1] - seenBotInfo.transform.position[1])
-        direction = glm.vec2(0.0, 0.0)
+        direction = vector
         if glm.length(vector) > 0.0:
             direction = glm.normalize(vector)
         bot.agent.goToDirection((direction.x, direction.y))
@@ -152,13 +152,13 @@ class ShootPrimaryWeapon(State):
     def enter(self, bot):
         bot.agent.stopMove = True
 
-    def update(self, bot, input):
+    def update(self, bot, input : InputComponent):
         seenBotInfo = bot.sight.getSeenBotInfo(self.seenBotEntity)
         if seenBotInfo.transform == None:
             return
 
         vector = glm.vec2(seenBotInfo.transform.position[0] - bot.transform.position[0], seenBotInfo.transform.position[1] - bot.transform.position[1])
-        direction = glm.vec2(0.0, 0.0)
+        direction = vector
         if glm.length(vector) > 0.0:
             direction = glm.normalize(vector)
         bot.agent.lookAt((direction.x, direction.y))
@@ -174,7 +174,7 @@ class Reload(State):
         bot.agent.stopMove = True
         bot.agent.stopRotate = True
 
-    def update(self, bot, input):
+    def update(self, bot, input : InputComponent):
         input.reload()
 
     def exit(self, bot):
@@ -188,13 +188,13 @@ class ShootSecondaryWeapon(State):
     def enter(self, bot):
         bot.agent.stopMove = True
 
-    def update(self, bot, input):
+    def update(self, bot, input : InputComponent):
         seenBotInfo = bot.sight.getSeenBotInfo(self.seenBotEntity)
         if seenBotInfo.transform == None:
             return
 
         vector = glm.vec2(seenBotInfo.transform.position[0] - bot.transform.position[0], seenBotInfo.transform.position[1] - bot.transform.position[1])
-        direction = glm.vec2(0.0, 0.0)
+        direction = vector
         if glm.length(vector) > 0.0:
             direction = glm.normalize(vector)
         bot.agent.lookAt((direction.x, direction.y))
@@ -210,7 +210,7 @@ class Heal(State):
         bot.agent.stopMove = True
         bot.agent.stopRotate = True
 
-    def update(self, bot, input):
+    def update(self, bot, input : InputComponent):
         input.heal()
 
     def exit(self, bot):
@@ -234,7 +234,7 @@ class FSM:
         self.currentState = newState
         self.currentState.enter(self.bot)
 
-    def updateCurrentState(self, input):
+    def updateCurrentState(self, input : InputComponent):
         if self.currentState != None:
             self.currentState.update(self.bot, input)
 

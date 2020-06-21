@@ -117,7 +117,7 @@ class Agent:
         self.angularVelocity = None
         self.minAlignDistance = 1.5
 
-    def update(self, input):
+    def update(self, input : InputComponent):
         # Movement
         if self.stopMove == False:
             self.linearVelocity = self.move()
@@ -209,7 +209,7 @@ class Agent:
         if glm.length(vector) <= self.minSeekDistance:
             return glm.vec2(0.0, 0.0)
         
-        direction = glm.vec2(0.0, 0.0)
+        direction = vector
         if glm.length(vector) > 0.0:
             direction = glm.normalize(vector)
         acceleration = direction * self.bot.rigidbody.maxLinearVelocity

@@ -143,17 +143,6 @@ void InputMemoryStream::Read(glm::uvec4& uvec4)
 }
 
 //----------------------------------------------------------------------------------------------------
-void InputMemoryStream::ReadPosition(glm::vec2& vec2) // TODO: this should be done properly and without hardcoded values
-{
-    U32 x = 0;
-    Read(x);
-    U32 y = 0;
-    Read(y);
-    vec2.x = FIXED_TO_FLOAT(x, -2000.0f, 0.1f);
-    vec2.y = FIXED_TO_FLOAT(y, -2000.0f, 0.1f);
-}
-
-//----------------------------------------------------------------------------------------------------
 char* InputMemoryStream::GetPtr() const
 {
     return m_buffer;

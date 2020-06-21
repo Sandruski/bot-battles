@@ -151,7 +151,7 @@ void TransformComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U3
 }
 
 //----------------------------------------------------------------------------------------------------
-void TransformComponent::Replay(bool updatePosition, bool updateRotation, glm::vec2 newPosition, F32 newRotation, Entity entity)
+void TransformComponent::Replay(bool updatePosition, bool updateRotation, const glm::vec2& newPosition, F32 newRotation, Entity entity)
 {
     std::weak_ptr<ClientComponent> clientComponent = g_gameClient->GetClientComponent();
     if (m_inputTransformBuffer.IsEmpty() || clientComponent.lock()->m_inputBuffer.IsEmpty()) {
