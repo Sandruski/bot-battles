@@ -1,54 +1,15 @@
--Vision (perception), memory (world knowledge).
--Pathfinding.
--Ammo on floor and pick up ammo.
-
--Create Location struct (for a tile) and Bot struct (for an enemy bot object?) for scripting purposes.
--Pathfinding stuff, mapping Location from world to map positions.
--Send onCollision Entity struct to scripting. E.g. if it is a wall, the properties. If it is an entity, the position.
-
--Debug draw for AI stuff (gameplay): raycasts, etc.
-
-/////
-
--Perception (sight): I see you, you see me
--Pathfinding: navigation grid component
--Shooting: rotate gun, cooldowns, and reload
--Pick guns from floor: interact() ? with the sprite with the hands forward
--Add animations to every action that the bot can perform
--Add hints to Python bindings, so players know what they are writing
-
-NOTES: COLLISION events per LOCAL entities i SIGHT events per REMOTE entities (AKA NETWORKED)
-
-
-*How do we handle turns?
--Test game between two computers. Test for physics floating point errors.
--Sandbots
--Capture the flag? :)
--Reload the script when Play Again or it does not make any sense to do it?
--Check BUG: the client executed from the exe takes no time to connect and the one just compiled takes a lot. Why???
+-Sandbots.
 -Add the ImGui code editor in the client Main Menu to open the selected script, edit it and compile it.
--Posar a la build final la Changelist de cada versió.
--Els sistemes s'haurien de subscriure a events, no a altres sistemes tirant events.
 
 NETWORKING:
 -Cap MAX_INPUTS_PER_PACKET/similar also for State packets (already doing it for Input packets).
--Remove Networking inheritance for those components that are actually not being networked or do not need to be networked (see MAX_NETWORK_COMPONENTS). E.g. if Health is not printed then why would the player want it?
-
-GAMEPLAY:
--Add animations when the bots perform certain actions.
--Add 'Random map' option with ImGui to select a map from all the existing maps.
 
 ENGINE:
 -Change FSM to not be based on the type of the state and be a vector instead.
--ifdef _DRAW. Do it in all places where something related to draw is used! Try to compile without draw and see what happens.
-
-PLAYLIST:
--Check that 2 players can connect to the game from different computers with/without different routers.
+-Els sistemes s'haurien de subscriure a events, no a altres sistemes tirant events.
 
 BUGS (Should Fix):
--ReHello arrives to the server.
--Server replies with ReWelcome.
--ReWecome does not reach client.
+-ReHello arrives to the server>Server replies with ReWelcome>ReWecome does not reach client.
 
 KNOWN ISSUES (Will Not Fix):
 -EXPLOIT: remote entities are replicated (updated) when the state is Start. When state is Play and local entity is updated, remote entities are not at the spawn position anymore -> Remote entity shoots at you when you cannot move yet and kills you.
