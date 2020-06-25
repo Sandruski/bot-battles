@@ -21,10 +21,11 @@ from botbattles import TileType
 
 class ExampleBot(bot.Bot):
     def __init__(self, transformComponent : TransformComponent, rigidbodyComponent : RigidbodyComponent, colliderComponent : ColliderComponent, weaponComponent : WeaponComponent, healthComponent : HealthComponent, sightComponent : SightComponent, actionComponent : ActionComponent, mapComponent : MapComponent, 
-                 delay, miss):
+                 delay, miss, pickUp):
         super().__init__(transformComponent, rigidbodyComponent, colliderComponent, weaponComponent, healthComponent, sightComponent, actionComponent, mapComponent)
         self.delay = delay
         self.miss = miss
+        self.pickUp = pickUp
 
         self.graph = Graph(self.map)
         self.agent = movement.Agent(self)
@@ -121,25 +122,23 @@ class ExampleBot(bot.Bot):
                     if self.fsm.isCurrentState("Reload") == False:
                         self.fsm.changeCurrentState(decisionMaking.Reload())
             # Heal
-            elif self.health.currentHP < self.health.maxHP * 0.5:
-                if self.health.firstAidBoxHP > 0:
-                    if self.fsm.isCurrentState("Heal") == False:
-                        self.fsm.changeCurrentState(decisionMaking.Heal())               
-                else:
-                    if self.fsm.isCurrentState("GoToHealthSpawner") == False:
-                        closestHealthSpawner = self.getClosestHealthSpawner(self.transform.position)
-                        worldDestinationPosition = self.map.getWorldPosition(closestHealthSpawner)
-                        self.fsm.changeCurrentState(decisionMaking.GoToHealthSpawner(self.transform.position, worldDestinationPosition))
+            elif self.health.currentHP < self.health.maxHP * 0.5 and self.health.firstAidBoxHP > 0:
+                if self.fsm.isCurrentState("Heal") == False:
+                    self.fsm.changeCurrentState(decisionMaking.Heal())               
+            elif self.health.currentHP < self.health.maxHP * 0.5 and self.pickUp:
+                if self.fsm.isCurrentState("GoToHealthSpawner") == False:
+                    closestHealthSpawner = self.getClosestHealthSpawner(self.transform.position)
+                    worldDestinationPosition = self.map.getWorldPosition(closestHealthSpawner)
+                    self.fsm.changeCurrentState(decisionMaking.GoToHealthSpawner(self.transform.position, worldDestinationPosition))
             # Reload
-            elif self.weapon.maxAmmo == 0 or self.weapon.currentAmmo < self.weapon.maxAmmo:
-                if self.weapon.ammoBoxAmmo > 0:
-                    if self.fsm.isCurrentState("Reload") == False:
-                        self.fsm.changeCurrentState(decisionMaking.Reload())
-                else:
-                    if self.fsm.isCurrentState("GoToWeaponSpawner") == False:
-                        closestWeaponSpawner = self.getClosestWeaponSpawner(self.transform.position)
-                        worldDestinationPosition = self.map.getWorldPosition(closestWeaponSpawner)
-                        self.fsm.changeCurrentState(decisionMaking.GoToWeaponSpawner(self.transform.position, worldDestinationPosition))            
+            elif (self.weapon.maxAmmo == 0 or self.weapon.currentAmmo < self.weapon.maxAmmo) and self.weapon.ammoBoxAmmo > 0:
+                if self.fsm.isCurrentState("Reload") == False:
+                    self.fsm.changeCurrentState(decisionMaking.Reload())
+            elif (self.weapon.maxAmmo == 0 or self.weapon.currentAmmo < self.weapon.maxAmmo) and self.pickUp:
+                if self.fsm.isCurrentState("GoToWeaponSpawner") == False:
+                    closestWeaponSpawner = self.getClosestWeaponSpawner(self.transform.position)
+                    worldDestinationPosition = self.map.getWorldPosition(closestWeaponSpawner)
+                    self.fsm.changeCurrentState(decisionMaking.GoToWeaponSpawner(self.transform.position, worldDestinationPosition))            
             # Search
             else:
                 if self.lastKnownDirection != None:
