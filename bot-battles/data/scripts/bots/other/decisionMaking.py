@@ -7,6 +7,7 @@ import logging
 import bot
 import movement
 import decisionMaking
+import timer
 from botbattles import TransformComponent
 from botbattles import ColliderComponent
 from botbattles import RigidbodyComponent
@@ -34,6 +35,7 @@ class State:
     def exit(self, bot):
         pass
 
+# Movement
 class Idle(State):
     def enter(self, bot):
         bot.agent.stopMove = True
@@ -79,7 +81,7 @@ class MoveTowardsBot(State):
     def __init__(self, seenBotEntity):
         self.seenBotEntity = seenBotEntity
 
-    def update(self, bot, input : InputComponent):
+    def update(self, bot, input):
         seenBotInfo = bot.sight.getSeenBotInfo(self.seenBotEntity)
         if seenBotInfo.transform == None:
             return
@@ -95,7 +97,7 @@ class MoveAwayFromBot(State):
     def __init__(self, seenBotEntity):
         self.seenBotEntity = seenBotEntity
 
-    def update(self, bot, input : InputComponent):
+    def update(self, bot, input):
         seenBotInfo = bot.sight.getSeenBotInfo(self.seenBotEntity)
         if seenBotInfo.transform == None:
             return
@@ -121,27 +123,18 @@ class LookAt(State):
 class LookAtBullet(LookAt):
     ...
 
-class Rotate(State):
-    def __init__(self, angularVelocity):
-        self.angularVelocity = angularVelocity
-
-    def enter(self, bot):
-        bot.agent.stopMove = True
-        bot.agent.angularVelocity = self.angularVelocity
-        bot.agent.useAngularVelocity = True
-
-    def exit(self, bot):
-        bot.agent.stopMove = False
-        bot.agent.useAngularVelocity = False
-
+# Actions
 class ShootPrimaryWeapon(State):
     def __init__(self, seenBotEntity):
         self.seenBotEntity = seenBotEntity
+        self.timer = timer.Timer()
 
     def enter(self, bot):
+        self.timer.start()
+
         bot.agent.stopMove = True
 
-    def update(self, bot, input : InputComponent):
+    def update(self, bot, input):
         seenBotInfo = bot.sight.getSeenBotInfo(self.seenBotEntity)
         if seenBotInfo.transform == None:
             return
@@ -152,32 +145,50 @@ class ShootPrimaryWeapon(State):
             direction = glm.normalize(vector)
         bot.agent.lookAt((direction.x, direction.y))
 
+        if self.timer.read() < bot.delay:
+            return
+
         if bot.agent.finishedRotate == True:
             input.shootPrimaryWeapon()
 
     def exit(self, bot):
+        self.timer.stop()
+
         bot.agent.stopMove = False
 
 class Reload(State):
+    def __init__(self):
+        self.timer = timer.Timer()
+
     def enter(self, bot):
+        self.timer.start()
+
         bot.agent.stopMove = True
         bot.agent.stopRotate = True
 
-    def update(self, bot, input : InputComponent):
+    def update(self, bot, input):
+        if self.timer.read() < bot.delay:
+            return
+
         input.reload()
 
     def exit(self, bot):
+        self.timer.stop()
+
         bot.agent.stopMove = False
         bot.agent.stopRotate = False
 
 class ShootSecondaryWeapon(State):
     def __init__(self, seenBotEntity):
         self.seenBotEntity = seenBotEntity
+        self.timer = timer.Timer()
 
     def enter(self, bot):
+        self.timer.start()
+
         bot.agent.stopMove = True
 
-    def update(self, bot, input : InputComponent):
+    def update(self, bot, input):
         seenBotInfo = bot.sight.getSeenBotInfo(self.seenBotEntity)
         if seenBotInfo.transform == None:
             return
@@ -188,21 +199,36 @@ class ShootSecondaryWeapon(State):
             direction = glm.normalize(vector)
         bot.agent.lookAt((direction.x, direction.y))
 
+        if self.timer.read() < bot.delay:
+            return
+
         if bot.agent.finishedRotate == True:
             input.shootSecondaryWeapon()
 
     def exit(self, bot):
+        self.timer.stop()
+
         bot.agent.stopMove = False
 
 class Heal(State):
+    def __init__(self):
+        self.timer = timer.Timer()
+
     def enter(self, bot):
+        self.timer.start()
+
         bot.agent.stopMove = True
         bot.agent.stopRotate = True
 
-    def update(self, bot, input : InputComponent):
+    def update(self, bot, input):
+        if self.timer.read() < bot.delay:
+            return
+
         input.heal()
 
     def exit(self, bot):
+        self.timer.stop()
+
         bot.agent.stopMove = False
         bot.agent.stopRotate = False
 
@@ -223,7 +249,7 @@ class FSM:
         self.currentState = newState
         self.currentState.enter(self.bot)
 
-    def updateCurrentState(self, input : InputComponent):
+    def updateCurrentState(self, input):
         if self.currentState != None:
             self.currentState.update(self.bot, input)
 

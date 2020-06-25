@@ -10,7 +10,7 @@ class Timer:
 
         self._startTime = time.perf_counter()
 
-    def getTime(self):
+    def read(self):
         if self._startTime == None:
             return
 
