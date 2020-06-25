@@ -75,31 +75,6 @@ class GoToLastKnownPosition(GoToPosition):
 class GoToRandomPosition(GoToPosition):
     ...
 
-class GoToDirection(State):
-    def __init__(self, worldDestinationDirection):
-        self.worldDestinationDirection = worldDestinationDirection
-
-    def enter(self, bot):
-        bot.agent.goToDirection(self.worldDestinationDirection)
-        bot.agent.autoRotate = True
-
-    def exit(self, bot):
-        bot.agent.autoRotate = False
-
-class LookAt(State):
-    def __init__(self, worldDestinationDirection):
-        self.worldDestinationDirection = worldDestinationDirection
-
-    def enter(self, bot):
-        bot.agent.stopMove = True
-        bot.agent.lookAt(self.worldDestinationDirection)
-
-    def exit(self, bot):
-        bot.agent.stopMove = False
-
-class LookAtBullet(LookAt):
-    ...
-
 class MoveTowardsBot(State):
     def __init__(self, seenBotEntity):
         self.seenBotEntity = seenBotEntity
@@ -131,6 +106,20 @@ class MoveAwayFromBot(State):
             direction = glm.normalize(vector)
         bot.agent.goToDirection((direction.x, direction.y))
         bot.agent.lookAt((direction.x, direction.y))
+
+class LookAt(State):
+    def __init__(self, worldDestinationDirection):
+        self.worldDestinationDirection = worldDestinationDirection
+
+    def enter(self, bot):
+        bot.agent.stopMove = True
+        bot.agent.lookAt(self.worldDestinationDirection)
+
+    def exit(self, bot):
+        bot.agent.stopMove = False
+
+class LookAtBullet(LookAt):
+    ...
 
 class Rotate(State):
     def __init__(self, angularVelocity):
