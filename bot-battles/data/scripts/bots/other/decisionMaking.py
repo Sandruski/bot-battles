@@ -132,8 +132,7 @@ class ShootPrimaryWeapon(State):
 
     def enter(self, bot):
         self.timer.start()
-        self.randomAimOffset = (random.uniform(0.0, bot.aimOffset), random.uniform(0.0, bot.aimOffset))   
-        logging.info('randomAimOffset %f %f', self.randomAimOffset[0], self.randomAimOffset[1])
+        self.randomAimOffset = (random.uniform(-bot.aimOffset, bot.aimOffset), random.uniform(-bot.aimOffset, bot.aimOffset))
 
         bot.agent.stopMove = True
 
@@ -180,8 +179,7 @@ class ShootSecondaryWeapon(State):
 
     def enter(self, bot):
         self.timer.start()
-        self.randomAimOffset = (random.uniform(0.0, bot.aimOffset), random.uniform(0.0, bot.aimOffset))   
-        logging.info('randomAimOffset %f %f', self.randomAimOffset[0], self.randomAimOffset[1])
+        self.randomAimOffset = (random.uniform(-bot.aimOffset, bot.aimOffset), random.uniform(-bot.aimOffset, bot.aimOffset))
 
         bot.agent.stopMove = True
 
