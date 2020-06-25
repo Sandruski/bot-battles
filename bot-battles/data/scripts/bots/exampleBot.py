@@ -8,6 +8,7 @@ import random
 import bot
 import movement
 import decisionMaking
+import timer
 from botbattles import TransformComponent
 from botbattles import ColliderComponent
 from botbattles import RigidbodyComponent
@@ -21,14 +22,16 @@ from botbattles import TileType
 
 class ExampleBot(bot.Bot):
     def __init__(self, transformComponent : TransformComponent, rigidbodyComponent : RigidbodyComponent, colliderComponent : ColliderComponent, weaponComponent : WeaponComponent, healthComponent : HealthComponent, sightComponent : SightComponent, actionComponent : ActionComponent, mapComponent : MapComponent, 
-                 shootDelay, hitReaction, aimOffset, canPickUpObjects, canTakeCover):
+                 shootDelay, seeDelay, hitReaction, aimOffset, canPickUpObjects, canTakeCover):
         super().__init__(transformComponent, rigidbodyComponent, colliderComponent, weaponComponent, healthComponent, sightComponent, actionComponent, mapComponent)
         self.shootDelay = shootDelay
+        self.seeDelay = seeDelay
         self.aimOffset = aimOffset
         self.hitReaction = hitReaction
         self.canPickUpObjects = canPickUpObjects
         self.canTakeCover = canTakeCover
 
+        self.timer = timer.Timer()
         self.graph = Graph(self.map)
         self.agent = movement.Agent(self)
         self.fsm = decisionMaking.FSM(self)
@@ -49,6 +52,8 @@ class ExampleBot(bot.Bot):
 
         self.lastKnownDirection = None
         self.lastKnownPosition = None
+
+        self.timer.restart()
 
     def onSeenLostBot(self, input, seenBotEntity):
         logging.info('EVENT: onSeenLostBot')
@@ -79,7 +84,7 @@ class ExampleBot(bot.Bot):
             self.lastKnownDirection = (-direction[0], -direction[1])
 
     def think(self):
-        if self.lastSeenBotEntity != None:
+        if self.lastSeenBotEntity != None and self.timer.read() >= self.seeDelay:
             seenBotInfo = self.sight.getSeenBotInfo(self.lastSeenBotEntity)
             distance = glm.distance(glm.vec2(seenBotInfo.transform.position[0], seenBotInfo.transform.position[1]), glm.vec2(self.transform.position[0], self.transform.position[1]))
             colliderRange = self.collider.size[0] / 2.0 + seenBotInfo.collider.size[0] / 2.0

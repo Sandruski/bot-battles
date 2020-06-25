@@ -4,6 +4,10 @@ class Timer:
     def __init__(self):
         self._startTime = None
 
+    def restart(self):
+        self.stop()
+        self.start()
+
     def start(self):
         if self._startTime != None:
             return
