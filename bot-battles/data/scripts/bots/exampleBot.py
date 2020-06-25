@@ -21,11 +21,12 @@ from botbattles import TileType
 
 class ExampleBot(bot.Bot):
     def __init__(self, transformComponent : TransformComponent, rigidbodyComponent : RigidbodyComponent, colliderComponent : ColliderComponent, weaponComponent : WeaponComponent, healthComponent : HealthComponent, sightComponent : SightComponent, actionComponent : ActionComponent, mapComponent : MapComponent, 
-                 delay, miss, pickUp):
+                 actionDelay, reactionProbability, canPickUpObjects, canTakeCover):
         super().__init__(transformComponent, rigidbodyComponent, colliderComponent, weaponComponent, healthComponent, sightComponent, actionComponent, mapComponent)
-        self.delay = delay
-        self.miss = miss
-        self.pickUp = pickUp
+        self.actionDelay = actionDelay
+        self.reactionProbability = reactionProbability
+        self.canPickUpObjects = canPickUpObjects
+        self.canTakeCover = canTakeCover
 
         self.graph = Graph(self.map)
         self.agent = movement.Agent(self)
@@ -58,8 +59,8 @@ class ExampleBot(bot.Bot):
     def onHitByBullet(self, input, health, direction):
         logging.info('EVENT: onHitByBullet')
 
-        miss = bool(random.getrandbits(1))
-        if self.miss == False or miss == True:
+        reaction = random.uniform(0.0, 1.0)
+        if reaction <= self.reactionProbability:
             self.lastKnownDirection = (-direction[0], -direction[1])
 
     def think(self):
@@ -78,10 +79,14 @@ class ExampleBot(bot.Bot):
                         self.fsm.changeCurrentState(decisionMaking.Reload())
             # Heal
             elif self.health.currentHP < seenBotInfo.health.currentHP * 0.75 and self.health.firstAidBoxHP > 0:
-                if self.fsm.isCurrentState("TakeHealthCover") == False:
-                    closestCover = self.getClosestCover(seenBotInfo.transform.position, self.transform.position)
-                    worldDestinationPosition = self.map.getWorldPosition(closestCover)
-                    self.fsm.changeCurrentState(decisionMaking.TakeHealthCover(self.transform.position, worldDestinationPosition))                
+                if self.canTakeCover == True:
+                    if self.fsm.isCurrentState("TakeHealthCover") == False:
+                        closestCover = self.getClosestCover(seenBotInfo.transform.position, self.transform.position)
+                        worldDestinationPosition = self.map.getWorldPosition(closestCover)
+                        self.fsm.changeCurrentState(decisionMaking.TakeHealthCover(self.transform.position, worldDestinationPosition))
+                else:
+                    if self.fsm.isCurrentState("Heal") == False:
+                        self.fsm.changeCurrentState(decisionMaking.Heal())
             # Shoot
             elif self.weapon.currentAmmo > 0:
                 if distance <= self.weapon.primaryWeaponRange:
@@ -96,10 +101,14 @@ class ExampleBot(bot.Bot):
                         self.fsm.changeCurrentState(decisionMaking.MoveTowardsBot(self.lastSeenBotEntity))
             # Reload
             elif self.weapon.ammoBoxAmmo > 0:
-                if self.fsm.isCurrentState("TakeWeaponCover") == False:
-                    closestCover = self.getClosestCover(seenBotInfo.transform.position, self.transform.position)
-                    worldDestinationPosition = self.map.getWorldPosition(closestCover)
-                    self.fsm.changeCurrentState(decisionMaking.TakeWeaponCover(self.transform.position, worldDestinationPosition))
+                if self.canTakeCover == True:
+                    if self.fsm.isCurrentState("TakeWeaponCover") == False:
+                        closestCover = self.getClosestCover(seenBotInfo.transform.position, self.transform.position)
+                        worldDestinationPosition = self.map.getWorldPosition(closestCover)
+                        self.fsm.changeCurrentState(decisionMaking.TakeWeaponCover(self.transform.position, worldDestinationPosition))
+                else:
+                    if self.fsm.isCurrentState("Reload") == False:
+                        self.fsm.changeCurrentState(decisionMaking.Reload())
             # Shoot
             else:
                 if distance <= self.weapon.secondaryWeaponRange:
@@ -125,7 +134,7 @@ class ExampleBot(bot.Bot):
             elif self.health.currentHP < self.health.maxHP * 0.5 and self.health.firstAidBoxHP > 0:
                 if self.fsm.isCurrentState("Heal") == False:
                     self.fsm.changeCurrentState(decisionMaking.Heal())               
-            elif self.health.currentHP < self.health.maxHP * 0.5 and self.pickUp:
+            elif self.health.currentHP < self.health.maxHP * 0.5 and self.canPickUpObjects:
                 if self.fsm.isCurrentState("GoToHealthSpawner") == False:
                     closestHealthSpawner = self.getClosestHealthSpawner(self.transform.position)
                     worldDestinationPosition = self.map.getWorldPosition(closestHealthSpawner)
@@ -134,7 +143,7 @@ class ExampleBot(bot.Bot):
             elif (self.weapon.maxAmmo == 0 or self.weapon.currentAmmo < self.weapon.maxAmmo) and self.weapon.ammoBoxAmmo > 0:
                 if self.fsm.isCurrentState("Reload") == False:
                     self.fsm.changeCurrentState(decisionMaking.Reload())
-            elif (self.weapon.maxAmmo == 0 or self.weapon.currentAmmo < self.weapon.maxAmmo) and self.pickUp:
+            elif (self.weapon.maxAmmo == 0 or self.weapon.currentAmmo < self.weapon.maxAmmo) and self.canPickUpObjects:
                 if self.fsm.isCurrentState("GoToWeaponSpawner") == False:
                     closestWeaponSpawner = self.getClosestWeaponSpawner(self.transform.position)
                     worldDestinationPosition = self.map.getWorldPosition(closestWeaponSpawner)

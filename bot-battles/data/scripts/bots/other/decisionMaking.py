@@ -145,7 +145,7 @@ class ShootPrimaryWeapon(State):
             direction = glm.normalize(vector)
         bot.agent.lookAt((direction.x, direction.y))
 
-        if self.timer.read() < bot.delay:
+        if self.timer.read() < bot.actionDelay:
             return
 
         if bot.agent.finishedRotate == True:
@@ -167,7 +167,7 @@ class Reload(State):
         bot.agent.stopRotate = True
 
     def update(self, bot, input):
-        if self.timer.read() < bot.delay:
+        if self.timer.read() < bot.actionDelay:
             return
 
         input.reload()
@@ -199,7 +199,7 @@ class ShootSecondaryWeapon(State):
             direction = glm.normalize(vector)
         bot.agent.lookAt((direction.x, direction.y))
 
-        if self.timer.read() < bot.delay:
+        if self.timer.read() < bot.actionDelay:
             return
 
         if bot.agent.finishedRotate == True:
@@ -221,7 +221,7 @@ class Heal(State):
         bot.agent.stopRotate = True
 
     def update(self, bot, input):
-        if self.timer.read() < bot.delay:
+        if self.timer.read() < bot.actionDelay:
             return
 
         input.heal()
