@@ -21,10 +21,11 @@ from botbattles import TileType
 
 class ExampleBot(bot.Bot):
     def __init__(self, transformComponent : TransformComponent, rigidbodyComponent : RigidbodyComponent, colliderComponent : ColliderComponent, weaponComponent : WeaponComponent, healthComponent : HealthComponent, sightComponent : SightComponent, actionComponent : ActionComponent, mapComponent : MapComponent, 
-                 actionDelay, reactionProbability, canPickUpObjects, canTakeCover):
+                 shootDelay, hitReaction, aimOffset, canPickUpObjects, canTakeCover):
         super().__init__(transformComponent, rigidbodyComponent, colliderComponent, weaponComponent, healthComponent, sightComponent, actionComponent, mapComponent)
-        self.actionDelay = actionDelay
-        self.reactionProbability = reactionProbability
+        self.shootDelay = shootDelay
+        self.aimOffset = aimOffset
+        self.hitReaction = hitReaction
         self.canPickUpObjects = canPickUpObjects
         self.canTakeCover = canTakeCover
 
@@ -56,13 +57,6 @@ class ExampleBot(bot.Bot):
         seenBotInfo = self.sight.getSeenBotInfo(seenBotEntity)
         self.lastKnownPosition = seenBotInfo.transform.position
 
-    def onHitByBullet(self, input, health, direction):
-        logging.info('EVENT: onHitByBullet')
-
-        reaction = random.uniform(0.0, 1.0)
-        if reaction <= self.reactionProbability:
-            self.lastKnownDirection = (-direction[0], -direction[1])
-
     def onBulletHit(self, input):
         logging.info('EVENT: onBulletHit')
 
@@ -77,19 +71,12 @@ class ExampleBot(bot.Bot):
             self.fsm.currentState.exit(self)
             self.fsm.currentState.enter(self)
 
-    def onReloaded(self, input, ammo):
-        logging.info('EVENT: onReloaded')
+    def onHitByBullet(self, input, health, direction):
+        logging.info('EVENT: onHitByBullet')
 
-        if self.fsm.isCurrentState("Reload") == True:
-            self.fsm.currentState.exit(self)
-            self.fsm.currentState.enter(self)
-    
-    def onHealed(self, input, health):
-        logging.info('EVENT: onHealed')
-
-        if self.fsm.isCurrentState("Heal") == True:
-            self.fsm.currentState.exit(self)
-            self.fsm.currentState.enter(self)
+        randomHitReaction = random.uniform(0.0, 1.0)
+        if randomHitReaction <= self.hitReaction:
+            self.lastKnownDirection = (-direction[0], -direction[1])
 
     def think(self):
         if self.lastSeenBotEntity != None:

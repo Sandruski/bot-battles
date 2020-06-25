@@ -3,6 +3,7 @@
 import glm
 import heapq
 import logging
+import random
 
 import bot
 import movement
@@ -131,6 +132,8 @@ class ShootPrimaryWeapon(State):
 
     def enter(self, bot):
         self.timer.start()
+        self.randomAimOffset = (random.uniform(0.0, bot.aimOffset), random.uniform(0.0, bot.aimOffset))   
+        logging.info('randomAimOffset %f %f', self.randomAimOffset[0], self.randomAimOffset[1])
 
         bot.agent.stopMove = True
 
@@ -139,13 +142,14 @@ class ShootPrimaryWeapon(State):
         if seenBotInfo.transform == None:
             return
 
-        vector = glm.vec2(seenBotInfo.transform.position[0] - bot.transform.position[0], seenBotInfo.transform.position[1] - bot.transform.position[1])
+        destination = (seenBotInfo.transform.position[0] + self.randomAimOffset[0], seenBotInfo.transform.position[1] + self.randomAimOffset[1])
+        vector = glm.vec2(destination[0] - bot.transform.position[0], destination[1] - bot.transform.position[1])
         direction = vector
         if glm.length(vector) > 0.0:
             direction = glm.normalize(vector)
         bot.agent.lookAt((direction.x, direction.y))
 
-        if self.timer.read() < bot.actionDelay:
+        if self.timer.read() < bot.shootDelay:
             return
 
         if bot.agent.finishedRotate == True:
@@ -157,24 +161,14 @@ class ShootPrimaryWeapon(State):
         bot.agent.stopMove = False
 
 class Reload(State):
-    def __init__(self):
-        self.timer = timer.Timer()
-
     def enter(self, bot):
-        self.timer.start()
-
         bot.agent.stopMove = True
         bot.agent.stopRotate = True
 
     def update(self, bot, input):
-        if self.timer.read() < bot.actionDelay:
-            return
-
         input.reload()
 
     def exit(self, bot):
-        self.timer.stop()
-
         bot.agent.stopMove = False
         bot.agent.stopRotate = False
 
@@ -182,9 +176,12 @@ class ShootSecondaryWeapon(State):
     def __init__(self, seenBotEntity):
         self.seenBotEntity = seenBotEntity
         self.timer = timer.Timer()
+        self.randomAimOffset = None
 
     def enter(self, bot):
         self.timer.start()
+        self.randomAimOffset = (random.uniform(0.0, bot.aimOffset), random.uniform(0.0, bot.aimOffset))   
+        logging.info('randomAimOffset %f %f', self.randomAimOffset[0], self.randomAimOffset[1])
 
         bot.agent.stopMove = True
 
@@ -193,13 +190,14 @@ class ShootSecondaryWeapon(State):
         if seenBotInfo.transform == None:
             return
 
-        vector = glm.vec2(seenBotInfo.transform.position[0] - bot.transform.position[0], seenBotInfo.transform.position[1] - bot.transform.position[1])
+        destination = (seenBotInfo.transform.position[0] + self.randomAimOffset[0], seenBotInfo.transform.position[1] + self.randomAimOffset[1])
+        vector = glm.vec2(destination[0] - bot.transform.position[0], destination[1] - bot.transform.position[1])
         direction = vector
         if glm.length(vector) > 0.0:
             direction = glm.normalize(vector)
         bot.agent.lookAt((direction.x, direction.y))
 
-        if self.timer.read() < bot.actionDelay:
+        if self.timer.read() < bot.shootDelay:
             return
 
         if bot.agent.finishedRotate == True:
@@ -211,24 +209,14 @@ class ShootSecondaryWeapon(State):
         bot.agent.stopMove = False
 
 class Heal(State):
-    def __init__(self):
-        self.timer = timer.Timer()
-
     def enter(self, bot):
-        self.timer.start()
-
         bot.agent.stopMove = True
         bot.agent.stopRotate = True
 
     def update(self, bot, input):
-        if self.timer.read() < bot.actionDelay:
-            return
-
         input.heal()
 
     def exit(self, bot):
-        self.timer.stop()
-
         bot.agent.stopMove = False
         bot.agent.stopRotate = False
 
