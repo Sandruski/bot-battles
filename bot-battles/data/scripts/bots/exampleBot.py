@@ -63,6 +63,34 @@ class ExampleBot(bot.Bot):
         if reaction <= self.reactionProbability:
             self.lastKnownDirection = (-direction[0], -direction[1])
 
+    def onBulletHit(self, input):
+        logging.info('EVENT: onBulletHit')
+
+        if self.fsm.isCurrentState("ShootPrimaryWeapon") == True or self.fsm.isCurrentState("ShootSecondaryWeapon") == True:
+            self.fsm.currentState.exit(self)
+            self.fsm.currentState.enter(self)
+
+    def onBulletMiss(self, input):
+        logging.info('EVENT: onBulletMiss')
+
+        if self.fsm.isCurrentState("ShootPrimaryWeapon") == True or self.fsm.isCurrentState("ShootSecondaryWeapon") == True:
+            self.fsm.currentState.exit(self)
+            self.fsm.currentState.enter(self)
+
+    def onReloaded(self, input, ammo):
+        logging.info('EVENT: onReloaded')
+
+        if self.fsm.isCurrentState("Reload") == True:
+            self.fsm.currentState.exit(self)
+            self.fsm.currentState.enter(self)
+    
+    def onHealed(self, input, health):
+        logging.info('EVENT: onHealed')
+
+        if self.fsm.isCurrentState("Heal") == True:
+            self.fsm.currentState.exit(self)
+            self.fsm.currentState.enter(self)
+
     def think(self):
         if self.lastSeenBotEntity != None:
             seenBotInfo = self.sight.getSeenBotInfo(self.lastSeenBotEntity)
