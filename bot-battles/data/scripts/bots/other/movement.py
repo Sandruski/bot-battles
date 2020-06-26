@@ -115,7 +115,7 @@ class Agent:
         self.finishedRotate = False
         self.autoRotate = False
         self.worldDestinationRotation = None
-        self.minAlignDistance = 1.5
+        self.minAlignDistance = 2.0
 
     def update(self, input : InputComponent):
         # Movement
