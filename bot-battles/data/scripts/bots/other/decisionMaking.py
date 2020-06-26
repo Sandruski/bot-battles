@@ -72,6 +72,12 @@ class GoToHealthSpawner(GoToPosition):
         bot.agent.maxLinearVelocity = bot.rigidbody.maxLinearVelocity * 0.75
         bot.agent.maxAngularVelocity = bot.rigidbody.maxAngularVelocity * 0.9
 
+class TakeCover(GoToPosition):
+    def enter(self, bot):
+        super().enter(bot)
+        bot.agent.maxLinearVelocity = bot.rigidbody.maxLinearVelocity
+        bot.agent.maxAngularVelocity = bot.rigidbody.maxAngularVelocity
+
 class TakeWeaponCover(GoToPosition):
     def enter(self, bot):
         super().enter(bot)

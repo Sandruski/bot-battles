@@ -89,7 +89,12 @@ class ExampleBot(bot.Bot):
             distance = glm.distance(glm.vec2(seenBotInfo.transform.position[0], seenBotInfo.transform.position[1]), glm.vec2(self.transform.position[0], self.transform.position[1]))
             colliderRange = self.collider.size[0] / 2.0 + seenBotInfo.collider.size[0] / 2.0
 
-            if self.fsm.isCurrentState("TakeHealthCover") == True:
+            # Cover
+            if self.fsm.isCurrentState("TakeCover") == True:
+                if self.agent.finishedMove == True:
+                    if self.fsm.isCurrentState("Idle") == False:
+                        self.fsm.changeCurrentState(decisionMaking.Idle())
+            elif self.fsm.isCurrentState("TakeHealthCover") == True:
                 if self.agent.finishedMove == True:
                     if self.fsm.isCurrentState("Heal") == False:
                         self.fsm.changeCurrentState(decisionMaking.Heal())
@@ -98,15 +103,21 @@ class ExampleBot(bot.Bot):
                     if self.fsm.isCurrentState("Reload") == False:
                         self.fsm.changeCurrentState(decisionMaking.Reload())
             # Heal
-            elif self.health.currentHP < seenBotInfo.health.currentHP * 0.75 and self.health.firstAidBoxHP > 0:
-                if self.canTakeCover == True:
-                    if self.fsm.isCurrentState("TakeHealthCover") == False:
-                        closestCover = self.getClosestCover(seenBotInfo.transform.position, self.transform.position)
-                        worldDestinationPosition = self.map.getWorldPosition(closestCover)
-                        self.fsm.changeCurrentState(decisionMaking.TakeHealthCover(self.transform.position, worldDestinationPosition))
+            elif self.health.currentHP < seenBotInfo.health.currentHP * 0.75:
+                if self.health.firstAidBoxHP > 0:
+                    if self.canTakeCover == True:
+                        if self.fsm.isCurrentState("TakeHealthCover") == False:
+                            closestCover = self.getClosestCover(seenBotInfo.transform.position, self.transform.position)
+                            worldDestinationPosition = self.map.getWorldPosition(closestCover)
+                            self.fsm.changeCurrentState(decisionMaking.TakeHealthCover(self.transform.position, worldDestinationPosition))
+                    else:
+                        if self.fsm.isCurrentState("Heal") == False:
+                            self.fsm.changeCurrentState(decisionMaking.Heal())
                 else:
-                    if self.fsm.isCurrentState("Heal") == False:
-                        self.fsm.changeCurrentState(decisionMaking.Heal())
+                    if self.fsm.isCurrentState("TakeCover") == False:
+                        farthestCover = self.getFarthestCover(seenBotInfo.transform.position, self.transform.position)
+                        worldDestinationPosition = self.map.getWorldPosition(farthestCover)
+                        self.fsm.changeCurrentState(decisionMaking.TakeCover(self.transform.position, worldDestinationPosition))
             # Shoot
             elif self.weapon.currentAmmo > 0:
                 if distance <= self.weapon.primaryWeaponRange:
@@ -142,7 +153,12 @@ class ExampleBot(bot.Bot):
                     if self.fsm.isCurrentState("MoveTowardsBot") == False:
                         self.fsm.changeCurrentState(decisionMaking.MoveTowardsBot(self.lastSeenBotEntity))  
         else:
-            if self.fsm.isCurrentState("TakeHealthCover") == True:
+            # Cover
+            if self.fsm.isCurrentState("TakeCover") == True:
+                if self.agent.finishedMove == True:
+                    if self.fsm.isCurrentState("Idle") == False:
+                        self.fsm.changeCurrentState(decisionMaking.Idle())
+            elif self.fsm.isCurrentState("TakeHealthCover") == True:
                 if self.agent.finishedMove == True:
                     if self.fsm.isCurrentState("Heal") == False:
                         self.fsm.changeCurrentState(decisionMaking.Heal())
