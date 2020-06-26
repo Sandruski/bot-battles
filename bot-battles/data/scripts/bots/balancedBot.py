@@ -20,7 +20,7 @@ from botbattles import MapComponent
 from botbattles import InputComponent
 from botbattles import TileType
 
-class ExampleBot(bot.Bot):
+class BalancedBot(bot.Bot):
     def __init__(self, transformComponent : TransformComponent, rigidbodyComponent : RigidbodyComponent, colliderComponent : ColliderComponent, weaponComponent : WeaponComponent, healthComponent : HealthComponent, sightComponent : SightComponent, actionComponent : ActionComponent, mapComponent : MapComponent, 
                  shootDelay, seeDelay, hitReaction, aimOffset, canPickUpObjects, canTakeCover):
         super().__init__(transformComponent, rigidbodyComponent, colliderComponent, weaponComponent, healthComponent, sightComponent, actionComponent, mapComponent)
