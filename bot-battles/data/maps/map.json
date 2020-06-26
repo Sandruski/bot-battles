@@ -58,7 +58,7 @@
                         {
                          "name":"rigidbodyMaxAngularVelocity",
                          "type":"float",
-                         "value":240
+                         "value":200
                         }, 
                         {
                          "name":"rigidbodyMaxLinearVelocity",
