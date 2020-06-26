@@ -154,7 +154,7 @@ class ExampleBot(bot.Bot):
             elif self.health.currentHP < self.health.maxHP * 0.5 and self.health.firstAidBoxHP > 0:
                 if self.fsm.isCurrentState("Heal") == False:
                     self.fsm.changeCurrentState(decisionMaking.Heal())               
-            elif (self.health.currentHP < self.health.maxHP * 0.5 or self.health.firstAidBoxHP == 0) and self.canPickUpObjects:
+            elif self.health.currentHP < self.health.maxHP * 0.5 and self.canPickUpObjects:
                 if self.fsm.isCurrentState("GoToHealthSpawner") == False:
                     closestHealthSpawner = self.getClosestHealthSpawner(self.transform.position)
                     worldDestinationPosition = self.map.getWorldPosition(closestHealthSpawner)
@@ -163,11 +163,23 @@ class ExampleBot(bot.Bot):
             elif self.weapon.currentAmmo < self.weapon.maxAmmo and self.weapon.ammoBoxAmmo > 0:
                 if self.fsm.isCurrentState("Reload") == False:
                     self.fsm.changeCurrentState(decisionMaking.Reload())
-            elif (self.weapon.currentAmmo < self.weapon.maxAmmo or self.weapon.ammoBoxAmmo == 0) and self.canPickUpObjects:
+            elif self.weapon.currentAmmo < self.weapon.maxAmmo and self.canPickUpObjects:
                 if self.fsm.isCurrentState("GoToWeaponSpawner") == False:
                     closestWeaponSpawner = self.getClosestWeaponSpawner(self.transform.position)
                     worldDestinationPosition = self.map.getWorldPosition(closestWeaponSpawner)
-                    self.fsm.changeCurrentState(decisionMaking.GoToWeaponSpawner(self.transform.position, worldDestinationPosition))            
+                    self.fsm.changeCurrentState(decisionMaking.GoToWeaponSpawner(self.transform.position, worldDestinationPosition))
+            # Reload
+            elif self.weapon.ammoBoxAmmo == 0 and self.canPickUpObjects:
+                if self.fsm.isCurrentState("GoToWeaponSpawner") == False:
+                    closestWeaponSpawner = self.getClosestWeaponSpawner(self.transform.position)
+                    worldDestinationPosition = self.map.getWorldPosition(closestWeaponSpawner)
+                    self.fsm.changeCurrentState(decisionMaking.GoToWeaponSpawner(self.transform.position, worldDestinationPosition))
+            # Heal
+            elif self.health.firstAidBoxHP == 0 and self.canPickUpObjects:
+                if self.fsm.isCurrentState("GoToHealthSpawner") == False:
+                    closestHealthSpawner = self.getClosestHealthSpawner(self.transform.position)
+                    worldDestinationPosition = self.map.getWorldPosition(closestHealthSpawner)
+                    self.fsm.changeCurrentState(decisionMaking.GoToHealthSpawner(self.transform.position, worldDestinationPosition))
             # Search
             else:
                 if self.lastKnownDirection != None:
