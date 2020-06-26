@@ -61,26 +61,48 @@ class GoToPosition(State):
         bot.agent.autoRotate = False
 
 class GoToWeaponSpawner(GoToPosition):
-    ...
+    def enter(self, bot):
+        super().enter(bot)
+        bot.agent.maxLinearVelocity = bot.rigidbody.maxLinearVelocity * 0.75
+        bot.agent.maxAngularVelocity = bot.rigidbody.maxAngularVelocity * 0.75
 
 class GoToHealthSpawner(GoToPosition):
-    ...
+    def enter(self, bot):
+        super().enter(bot)
+        bot.agent.maxLinearVelocity = bot.rigidbody.maxLinearVelocity * 0.75
+        bot.agent.maxAngularVelocity = bot.rigidbody.maxAngularVelocity * 0.75
 
 class TakeWeaponCover(GoToPosition):
-    ...
+    def enter(self, bot):
+        super().enter(bot)
+        bot.agent.maxLinearVelocity = bot.rigidbody.maxLinearVelocity
+        bot.agent.maxAngularVelocity = bot.rigidbody.maxAngularVelocity
 
 class TakeHealthCover(GoToPosition):
-    ...
+    def enter(self, bot):
+        super().enter(bot)
+        bot.agent.maxLinearVelocity = bot.rigidbody.maxLinearVelocity
+        bot.agent.maxAngularVelocity = bot.rigidbody.maxAngularVelocity
 
 class GoToLastKnownPosition(GoToPosition):
-    ...
+    def enter(self, bot):
+        super().enter(bot)
+        bot.agent.maxLinearVelocity = bot.rigidbody.maxLinearVelocity
+        bot.agent.maxAngularVelocity = bot.rigidbody.maxAngularVelocity
 
 class GoToRandomPosition(GoToPosition):
-    ...
+    def enter(self, bot):
+        super().enter(bot)
+        bot.agent.maxLinearVelocity = bot.rigidbody.maxLinearVelocity * 0.75
+        bot.agent.maxAngularVelocity = bot.rigidbody.maxAngularVelocity * 0.75
 
 class MoveTowardsBot(State):
     def __init__(self, seenBotEntity):
         self.seenBotEntity = seenBotEntity
+
+    def enter(self, bot):
+        bot.agent.maxLinearVelocity = bot.rigidbody.maxLinearVelocity
+        bot.agent.maxAngularVelocity = bot.rigidbody.maxAngularVelocity
 
     def update(self, bot, input):
         seenBotInfo = bot.sight.getSeenBotInfo(self.seenBotEntity)
@@ -97,6 +119,10 @@ class MoveTowardsBot(State):
 class MoveAwayFromBot(State):
     def __init__(self, seenBotEntity):
         self.seenBotEntity = seenBotEntity
+
+    def enter(self, bot):
+        bot.agent.maxLinearVelocity = bot.rigidbody.maxLinearVelocity
+        bot.agent.maxAngularVelocity = bot.rigidbody.maxAngularVelocity
 
     def update(self, bot, input):
         seenBotInfo = bot.sight.getSeenBotInfo(self.seenBotEntity)
@@ -122,7 +148,9 @@ class LookAt(State):
         bot.agent.stopMove = False
 
 class LookAtBullet(LookAt):
-    ...
+    def enter(self, bot):
+        super().enter(bot)
+        bot.agent.maxAngularVelocity = bot.rigidbody.maxAngularVelocity
 
 # Actions
 class ShootPrimaryWeapon(State):
@@ -135,6 +163,7 @@ class ShootPrimaryWeapon(State):
         self.randomAimOffset = (random.uniform(-bot.aimOffset, bot.aimOffset), random.uniform(-bot.aimOffset, bot.aimOffset))
 
         bot.agent.stopMove = True
+        bot.agent.maxAngularVelocity = bot.rigidbody.maxAngularVelocity
 
     def update(self, bot, input):
         seenBotInfo = bot.sight.getSeenBotInfo(self.seenBotEntity)
@@ -182,6 +211,7 @@ class ShootSecondaryWeapon(State):
         self.randomAimOffset = (random.uniform(-bot.aimOffset, bot.aimOffset), random.uniform(-bot.aimOffset, bot.aimOffset))
 
         bot.agent.stopMove = True
+        bot.agent.maxAngularVelocity = bot.rigidbody.maxAngularVelocity
 
     def update(self, bot, input):
         seenBotInfo = bot.sight.getSeenBotInfo(self.seenBotEntity)

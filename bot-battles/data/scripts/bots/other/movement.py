@@ -101,6 +101,7 @@ class Agent:
         self.bot = bot
         # Movement
         self.linearVelocity = None
+        self.maxLinearVelocity = 0
         self.stopMove = False
         self.finishedMove = False
         self.followPath = False
@@ -109,12 +110,11 @@ class Agent:
         self.minSeekDistance = 1.0
         # Rotation
         self.angularVelocity = None
+        self.maxAngularVelocity = 0
         self.stopRotate = False
         self.finishedRotate = False
         self.autoRotate = False
-        self.useAngularVelocity = False
         self.worldDestinationRotation = None
-        self.angularVelocity = None
         self.minAlignDistance = 1.5
 
     def update(self, input : InputComponent):
@@ -169,17 +169,10 @@ class Agent:
                 direction = glm.normalize(self.linearVelocity)
                 self.lookAt((direction.x, direction.y))
 
-        angularVelocity = 0.0
-        if self.useAngularVelocity == True:
-            if self.angularVelocity == None:
-                return 0.0
+        if self.worldDestinationRotation == None:
+            return 0.0
 
-            angularVelocity = self.angularVelocity
-        else:
-            if self.worldDestinationRotation == None:
-                return 0.0
-
-            angularVelocity = self.align(self.bot.transform.rotation, self.worldDestinationRotation)
+        angularVelocity = self.align(self.bot.transform.rotation, self.worldDestinationRotation)
         return angularVelocity
 
     def goToPosition(self, worldOriginPosition, worldDestinationPosition): # positions
@@ -212,12 +205,12 @@ class Agent:
         direction = vector
         if glm.length(vector) > 0.0:
             direction = glm.normalize(vector)
-        acceleration = direction * self.bot.rigidbody.maxLinearVelocity
+        acceleration = direction * self.maxLinearVelocity
         return acceleration
 
     def seekDirection(self, worldDestinationDirection): # direction
         direction = glm.vec2(worldDestinationDirection[0], worldDestinationDirection[1])
-        acceleration = direction * self.bot.rigidbody.maxLinearVelocity
+        acceleration = direction * self.maxLinearVelocity
         return acceleration
 
     def align(self, worldOriginRotation, worldDestinationRotation): # rotations
@@ -228,5 +221,5 @@ class Agent:
             return 0.0
 
         direction = angle / absAngle
-        angularAcceleration = direction * self.bot.rigidbody.maxAngularVelocity
+        angularAcceleration = direction * self.maxAngularVelocity
         return angularAcceleration
