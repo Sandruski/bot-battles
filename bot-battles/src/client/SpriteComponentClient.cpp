@@ -31,6 +31,14 @@ void SpriteComponent::Read(InputMemoryStream& inputStream, U64 dirtyState, U32 /
         inputStream.Read(m_spriteName);
         characterDirtyState |= static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME);
     }
+    if (dirtyState & static_cast<U64>(ComponentMemberType::SPRITE_FLIPPED_HORIZONTALLY)) {
+        inputStream.Read(m_isFlippedHorizontally);
+        characterDirtyState |= static_cast<U64>(ComponentMemberType::SPRITE_FLIPPED_HORIZONTALLY);
+    }
+    if (dirtyState & static_cast<U64>(ComponentMemberType::SPRITE_FLIPPED_VERTICALLY)) {
+        inputStream.Read(m_isFlippedVertically);
+        characterDirtyState |= static_cast<U64>(ComponentMemberType::SPRITE_FLIPPED_VERTICALLY);
+    }
 
     if (characterDirtyState > 0) {
         Event newComponentEvent;

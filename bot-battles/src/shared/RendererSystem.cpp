@@ -274,9 +274,11 @@ void RendererSystem::OnComponentMemberChanged(U64 dirtyState, Entity entity) con
     const bool hasScale = dirtyState & static_cast<U64>(ComponentMemberType::TRANSFORM_SCALE);
     const bool hasSpriteNameToTextureCoords = dirtyState & static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME_TO_TEXTURE_COORDS);
     const bool hasSpriteName = dirtyState & static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME);
+    const bool isFlippedHorizontally = dirtyState & static_cast<U64>(ComponentMemberType::SPRITE_FLIPPED_HORIZONTALLY);
+    const bool isFlippedVertically = dirtyState & static_cast<U64>(ComponentMemberType::SPRITE_FLIPPED_VERTICALLY);
     const bool hasColor = dirtyState & static_cast<U64>(ComponentMemberType::SPRITE_COLOR);
     const bool hasPct = dirtyState & static_cast<U64>(ComponentMemberType::SPRITE_PCT);
-    if (!hasPosition && !hasRotation && !hasScale && !hasSpriteNameToTextureCoords && !hasSpriteName && !hasColor && !hasPct) {
+    if (!hasPosition && !hasRotation && !hasScale && !hasSpriteNameToTextureCoords && !hasSpriteName && !isFlippedHorizontally && !isFlippedVertically && !hasColor && !hasPct) {
         return;
     }
 
@@ -323,6 +325,12 @@ void RendererSystem::RecalculateBackgroundMesh() const
         glm::uvec4 textureCoords = spriteComponent.lock()->GetSpriteTextureCoords();
         glm::vec3 scale = glm::vec3(static_cast<F32>(textureCoords.z), static_cast<F32>(textureCoords.w), 0.0f);
         scale *= transformComponent.lock()->m_scale;
+        if (spriteComponent.lock()->m_isFlippedHorizontally) {
+            scale.x *= -1.0f;
+        }
+        if (spriteComponent.lock()->m_isFlippedVertically) {
+            scale.y *= -1.0f;
+        }
 
         glm::mat4 model = glm::mat4(1.0f);
         position.x *= proportion.x;
@@ -383,6 +391,12 @@ void RendererSystem::RecalculateMapMesh() const
         glm::uvec4 textureCoords = spriteComponent.lock()->GetSpriteTextureCoords();
         glm::vec3 scale = glm::vec3(static_cast<F32>(textureCoords.z), static_cast<F32>(textureCoords.w), 0.0f);
         scale *= transformComponent.lock()->m_scale;
+        if (spriteComponent.lock()->m_isFlippedHorizontally) {
+            scale.x *= -1.0f;
+        }
+        if (spriteComponent.lock()->m_isFlippedVertically) {
+            scale.y *= -1.0f;
+        }
 
         glm::mat4 model = glm::mat4(1.0f);
         position.x *= proportion.x;
@@ -443,6 +457,12 @@ void RendererSystem::RecalculateCharactersMesh() const
         glm::uvec4 textureCoords = spriteComponent.lock()->GetSpriteTextureCoords();
         glm::vec3 scale = glm::vec3(static_cast<F32>(textureCoords.z), static_cast<F32>(textureCoords.w), 0.0f);
         scale *= transformComponent.lock()->m_scale;
+        if (spriteComponent.lock()->m_isFlippedHorizontally) {
+            scale.x *= -1.0f;
+        }
+        if (spriteComponent.lock()->m_isFlippedVertically) {
+            scale.y *= -1.0f;
+        }
 
         glm::mat4 model = glm::mat4(1.0f);
         position.x *= proportion.x;
@@ -503,6 +523,12 @@ void RendererSystem::RecalculateObjectsMesh() const
         glm::uvec4 textureCoords = spriteComponent.lock()->GetSpriteTextureCoords();
         glm::vec3 scale = glm::vec3(static_cast<F32>(textureCoords.z), static_cast<F32>(textureCoords.w), 0.0f);
         scale *= transformComponent.lock()->m_scale;
+        if (spriteComponent.lock()->m_isFlippedHorizontally) {
+            scale.x *= -1.0f;
+        }
+        if (spriteComponent.lock()->m_isFlippedVertically) {
+            scale.y *= -1.0f;
+        }
 
         glm::mat4 model = glm::mat4(1.0f);
         position.x *= proportion.x;
@@ -561,6 +587,12 @@ void RendererSystem::RecalculateAllMeshes() const
         glm::uvec4 textureCoords = spriteComponent.lock()->GetSpriteTextureCoords();
         glm::vec3 scale = glm::vec3(static_cast<F32>(textureCoords.z), static_cast<F32>(textureCoords.w), 0.0f);
         scale *= transformComponent.lock()->m_scale;
+        if (spriteComponent.lock()->m_isFlippedHorizontally) {
+            scale.x *= -1.0f;
+        }
+        if (spriteComponent.lock()->m_isFlippedVertically) {
+            scale.y *= -1.0f;
+        }
 
         glm::mat4 model = glm::mat4(1.0f);
         position.x *= proportion.x;

@@ -23,6 +23,14 @@ U64 SpriteComponent::Write(OutputMemoryStream& outputStream, U64 dirtyState) con
         outputStream.Write(m_spriteName);
         writtenState |= static_cast<U64>(ComponentMemberType::SPRITE_SPRITE_NAME);
     }
+    if (dirtyState & static_cast<U64>(ComponentMemberType::SPRITE_FLIPPED_HORIZONTALLY)) {
+        outputStream.Write(m_isFlippedHorizontally);
+        writtenState |= static_cast<U64>(ComponentMemberType::SPRITE_FLIPPED_HORIZONTALLY);
+    }
+    if (dirtyState & static_cast<U64>(ComponentMemberType::SPRITE_FLIPPED_VERTICALLY)) {
+        outputStream.Write(m_isFlippedVertically);
+        writtenState |= static_cast<U64>(ComponentMemberType::SPRITE_FLIPPED_VERTICALLY);
+    }
 
     return writtenState;
 }

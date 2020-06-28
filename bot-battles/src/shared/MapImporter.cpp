@@ -152,7 +152,7 @@ void MapImporter::Create(const Tilemap& tilemap) const
 
                 // UNIQUE
                 // Wall
-                if (tilelayer.m_name == "wall") {
+                if (tilelayer.m_name == "collision") {
                     // Walkability
                     glm::uvec2 mapPosition = mapComponent.lock()->RealWorldToMap(transformComponent.lock()->m_position);
                     MapComponent::TileType& tileType = mapComponent.lock()->GetTileType(mapPosition);
@@ -210,16 +210,39 @@ void MapImporter::Create(const Tilemap& tilemap) const
                 glm::uvec4 textureCoords = tileset.GetTextureCoords(objectGid);
                 spriteComponent.lock()->m_spriteResource = g_game->GetResourceManager().AddResource<SpriteResource>(tileset.m_spriteFile.c_str(), TEXTURES_DIR, true);
                 spriteComponent.lock()->AddSprite("default", textureCoords);
+                spriteComponent.lock()->m_isFlippedHorizontally = object.m_isFlippedHorizontally;
+                spriteComponent.lock()->m_isFlippedVertically = object.m_isFlippedVertically;
             }
 
             // UNIQUE
+            // Wall
+            if (objectlayer.m_name == "collision") {
+                // Walkability
+                glm::uvec2 mapPosition = mapComponent.lock()->RealWorldToMap(transformComponent.lock()->m_position);
+                MapComponent::TileType& tileType = mapComponent.lock()->GetTileType(mapPosition);
+                tileType = MapComponent::TileType::WALL;
+                g_game->GetComponentManager().AddComponent<WallComponent>(entity);
+
+                // Collider
+                std::weak_ptr<ColliderComponent> colliderComponent = g_game->GetComponentManager().AddComponent<ColliderComponent>(entity);
+                colliderComponent.lock()->m_size = static_cast<glm::vec2>(tilemap.m_tileSize);
+                colliderComponent.lock()->m_size *= transformComponent.lock()->m_scale;
+                colliderComponent.lock()->m_shapeType = ColliderComponent::ShapeType::BOX;
+
+                // Rigidbody
+                std::weak_ptr<RigidbodyComponent> rigidbodyComponent = g_game->GetComponentManager().AddComponent<RigidbodyComponent>(entity);
+                rigidbodyComponent.lock()->m_bodyType = RigidbodyComponent::BodyType::STATIC;
+                rigidbodyComponent.lock()->UpdateBodyType();
+                rigidbodyComponent.lock()->m_groupIndex = 0;
+                rigidbodyComponent.lock()->UpdateGroupIndex();
+            }
+
             // BotSpawner
             if (object.m_type == "BotSpawner") {
                 // Walkability
                 glm::uvec2 mapPosition = mapComponent.lock()->RealWorldToMap(transformComponent.lock()->m_position);
                 MapComponent::TileType& tileType = mapComponent.lock()->GetTileType(mapPosition);
                 tileType = MapComponent::TileType::BOT_SPAWNER;
-
 #ifdef _SERVER
                 std::weak_ptr<BotSpawnerComponent> botSpawnerComponent = g_game->GetComponentManager().AddComponent<BotSpawnerComponent>(entity);
                 for (const auto& property : object.m_properties) {
@@ -249,14 +272,12 @@ void MapImporter::Create(const Tilemap& tilemap) const
                 }
 #endif
             }
-
             // WeaponSpawner
-            if (object.m_type == "WeaponSpawner") {
+            else if (object.m_type == "WeaponSpawner") {
                 // Walkability
                 glm::uvec2 mapPosition = mapComponent.lock()->RealWorldToMap(transformComponent.lock()->m_position);
                 MapComponent::TileType& tileType = mapComponent.lock()->GetTileType(mapPosition);
                 tileType = MapComponent::TileType::WEAPON_SPAWNER;
-
 #ifdef _SERVER
                 std::weak_ptr<WeaponSpawnerComponent> weaponSpawnerComponent = g_game->GetComponentManager().AddComponent<WeaponSpawnerComponent>(entity);
                 for (const auto& property : object.m_properties) {
@@ -283,14 +304,11 @@ void MapImporter::Create(const Tilemap& tilemap) const
                     }
                 }
 #endif
-            }
-
-            if (object.m_type == "HealthSpawner") {
+            } else if (object.m_type == "HealthSpawner") {
                 // Walkability
                 glm::uvec2 mapPosition = mapComponent.lock()->RealWorldToMap(transformComponent.lock()->m_position);
                 MapComponent::TileType& tileType = mapComponent.lock()->GetTileType(mapPosition);
                 tileType = MapComponent::TileType::HEALTH_SPAWNER;
-
 #ifdef _SERVER
                 std::weak_ptr<HealthSpawnerComponent> healthSpawnerComponent = g_game->GetComponentManager().AddComponent<HealthSpawnerComponent>(entity);
                 for (const auto& property : object.m_properties) {
@@ -450,19 +468,21 @@ bool MapImporter::LoadObject(const rapidjson::Value& value, Object& object) cons
     if (!ret) {
         return ret;
     }
-    object.m_gid = value["gid"].GetUint();
-    ret = value.HasMember("properties");
-    if (!ret) {
-        return ret;
-    }
-    object.m_properties.reserve(value["properties"].Size());
-    for (rapidjson::Value::ConstValueIterator it = value["properties"].Begin(); it != value["properties"].End(); ++it) {
-        Property property;
-        ret = LoadProperty(*it, property);
-        if (!ret) {
-            return ret;
+    U32 gid = value["gid"].GetUint();
+    object.m_isFlippedHorizontally = gid & 0x80000000;
+    object.m_isFlippedVertically = gid & 0x40000000;
+    object.m_gid = gid & ~(0x80000000 | 0x40000000 | 0x20000000);
+    const bool hasProperties = value.HasMember("properties");
+    if (hasProperties) {
+        object.m_properties.reserve(value["properties"].Size());
+        for (rapidjson::Value::ConstValueIterator it = value["properties"].Begin(); it != value["properties"].End(); ++it) {
+            Property property;
+            ret = LoadProperty(*it, property);
+            if (!ret) {
+                return ret;
+            }
+            object.m_properties.emplace_back(property);
         }
-        object.m_properties.emplace_back(property);
     }
 
     return ret;

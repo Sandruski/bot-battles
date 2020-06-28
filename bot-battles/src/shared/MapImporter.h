@@ -82,6 +82,8 @@ public:
             : m_position(0.0f, 0.0f)
             , m_size(0.0f, 0.0f)
             , m_rotation(0.0f)
+            , m_isFlippedHorizontally(false)
+            , m_isFlippedVertically(false)
             , m_name()
             , m_gid(0)
             , m_properties()
@@ -91,6 +93,8 @@ public:
         glm::vec2 m_position;
         glm::vec2 m_size;
         F32 m_rotation;
+        bool m_isFlippedHorizontally;
+        bool m_isFlippedVertically;
         std::string m_name;
         std::string m_type;
         U32 m_gid;
