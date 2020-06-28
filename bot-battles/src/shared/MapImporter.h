@@ -174,7 +174,7 @@ public:
     void Create(const Tilemap& tilemap) const;
 
 private:
-    bool LoadTilesets(const rapidjson::Value& value, std::vector<Tileset>& tilesets) const;
+    bool LoadTileset(const rapidjson::Value& value, Tileset& tileset) const;
     bool LoadTilelayer(const rapidjson::Value& value, Tilelayer& tileLayer) const;
     bool LoadObjectLayer(const rapidjson::Value& value, Objectlayer& objectLayer) const;
     bool LoadObject(const rapidjson::Value& value, Object& object) const;

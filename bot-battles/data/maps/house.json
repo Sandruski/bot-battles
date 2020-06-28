@@ -4,46 +4,138 @@
      "export":
         {
          "format":"json",
-         "target":"map.json"
+         "target":"house.json"
         }
     },
- "height":8,
+ "height":13,
  "infinite":false,
  "layers":[
         {
-         "data":[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-         "height":8,
-         "id":1,
-         "name":"base",
+         "data":[42, 11, 118, 450, 506, 534, 323, 0, 21, 0, 0, 0, 0, 0, 0, 491, 0, 529, 0, 0, 450, 102, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 447, 449, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         "height":13,
+         "id":6,
+         "name":"palette",
          "opacity":1,
          "type":"tilelayer",
-         "visible":true,
-         "width":14,
+         "visible":false,
+         "width":13,
          "x":0,
          "y":0
         }, 
         {
-         "data":[129, 129, 129, 129, 129, 129, 129, 129, 129, 129, 129, 129, 129, 129, 129, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 129, 129, 0, 0, 130, 0, 0, 0, 0, 0, 0, 0, 0, 0, 129, 129, 0, 130, 130, 0, 0, 0, 0, 0, 0, 0, 0, 0, 129, 129, 0, 0, 0, 0, 0, 0, 0, 0, 0, 130, 130, 0, 129, 129, 0, 0, 130, 130, 130, 130, 0, 0, 0, 130, 0, 0, 129, 129, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 129, 129, 129, 129, 129, 129, 129, 129, 129, 129, 129, 129, 129, 129, 129],
-         "height":8,
+         "data":[46, 46, 46, 46, 42, 42, 42, 42, 42, 42, 42, 42, 42, 46, 46, 46, 46, 42, 42, 42, 42, 42, 42, 42, 42, 42, 46, 46, 46, 46, 42, 42, 42, 42, 42, 42, 42, 42, 42, 46, 46, 46, 46, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 46, 46, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 46, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 46, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 46, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 46, 42, 42, 42, 42, 42, 42, 42, 42, 42, 46, 46, 42, 46, 42, 42, 42, 42, 42, 42, 42, 42, 46, 46, 46, 46, 46, 42, 42, 42, 42, 42, 42, 42, 42, 46, 46, 46, 46, 46, 42, 42, 42, 42, 42, 42, 42, 42, 46, 46, 46, 46, 46, 42, 42, 42, 42, 42, 42, 42, 42],
+         "height":13,
+         "id":5,
+         "name":"floor",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":13,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 266, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 265, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 265, 0, 0, 0, 265, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 266, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 266, 0, 0, 0, 0, 0, 0, 266, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         "height":13,
          "id":7,
+         "name":"decoration",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":13,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "data":[118, 120, 120, 120, 120, 123, 464, 464, 205, 464, 464, 151, 119, 147, 51, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 147, 147, 78, 0, 0, 0, 0, 0, 0, 538, 0, 0, 0, 124, 147, 105, 0, 0, 150, 0, 0, 0, 0, 0, 0, 0, 438, 147, 0, 0, 0, 147, 0, 0, 474, 475, 476, 0, 0, 438, 148, 120, 120, 120, 146, 0, 0, 0, 0, 0, 0, 0, 150, 147, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 147, 124, 0, 0, 0, 0, 0, 0, 0, 118, 120, 120, 120, 149, 437, 0, 0, 0, 538, 0, 0, 0, 147, 0, 0, 0, 147, 437, 0, 0, 0, 0, 0, 0, 0, 124, 0, 0, 48, 147, 150, 0, 0, 447, 448, 449, 0, 0, 0, 0, 0, 75, 147, 147, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 102, 147, 145, 123, 465, 465, 205, 465, 465, 151, 120, 120, 120, 120, 146],
+         "height":13,
+         "id":1,
          "name":"wall",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
-         "width":14,
+         "width":13,
          "x":0,
          "y":0
         }, 
         {
-         "draworder":"index",
-         "id":6,
+         "draworder":"topdown",
+         "id":2,
          "name":"botSpawner",
          "objects":[
                 {
                  "gid":198,
                  "height":64,
-                 "id":18,
-                 "name":"botSpawner2",
+                 "id":1,
+                 "name":"botSpawner",
+                 "properties":[
+                        {
+                         "name":"healthMaxHP",
+                         "type":"int",
+                         "value":100
+                        }, 
+                        {
+                         "name":"player",
+                         "type":"int",
+                         "value":1
+                        }, 
+                        {
+                         "name":"rigidbodyMaxAngularVelocity",
+                         "type":"float",
+                         "value":200
+                        }, 
+                        {
+                         "name":"rigidbodyMaxLinearVelocity",
+                         "type":"float",
+                         "value":100
+                        }, 
+                        {
+                         "name":"sightAngle",
+                         "type":"float",
+                         "value":90
+                        }, 
+                        {
+                         "name":"sightDistance",
+                         "type":"float",
+                         "value":300
+                        }, 
+                        {
+                         "name":"transformRotation",
+                         "type":"float",
+                         "value":180
+                        }, 
+                        {
+                         "name":"weaponCooldownShoot",
+                         "type":"float",
+                         "value":0.5
+                        }, 
+                        {
+                         "name":"weaponDamage",
+                         "type":"int",
+                         "value":5
+                        }, 
+                        {
+                         "name":"weaponRange",
+                         "type":"float",
+                         "value":150
+                        }, 
+                        {
+                         "name":"weaponTimeShoot",
+                         "type":"float",
+                         "value":0.5
+                        }],
+                 "rotation":0,
+                 "type":"BotSpawner",
+                 "visible":true,
+                 "width":64,
+                 "x":640,
+                 "y":640
+                }, 
+                {
+                 "gid":198,
+                 "height":64,
+                 "id":2,
+                 "name":"botSpawner",
                  "properties":[
                         {
                          "name":"healthMaxHP",
@@ -105,75 +197,7 @@
                  "visible":true,
                  "width":64,
                  "x":128,
-                 "y":192
-                }, 
-                {
-                 "gid":198,
-                 "height":64,
-                 "id":17,
-                 "name":"botSpawner1",
-                 "properties":[
-                        {
-                         "name":"healthMaxHP",
-                         "type":"int",
-                         "value":100
-                        }, 
-                        {
-                         "name":"player",
-                         "type":"int",
-                         "value":1
-                        }, 
-                        {
-                         "name":"rigidbodyMaxAngularVelocity",
-                         "type":"float",
-                         "value":200
-                        }, 
-                        {
-                         "name":"rigidbodyMaxLinearVelocity",
-                         "type":"float",
-                         "value":100
-                        }, 
-                        {
-                         "name":"sightAngle",
-                         "type":"float",
-                         "value":90
-                        }, 
-                        {
-                         "name":"sightDistance",
-                         "type":"float",
-                         "value":300
-                        }, 
-                        {
-                         "name":"transformRotation",
-                         "type":"float",
-                         "value":180
-                        }, 
-                        {
-                         "name":"weaponCooldownShoot",
-                         "type":"float",
-                         "value":0.5
-                        }, 
-                        {
-                         "name":"weaponDamage",
-                         "type":"int",
-                         "value":5
-                        }, 
-                        {
-                         "name":"weaponRange",
-                         "type":"float",
-                         "value":150
-                        }, 
-                        {
-                         "name":"weaponTimeShoot",
-                         "type":"float",
-                         "value":0.5
-                        }],
-                 "rotation":0,
-                 "type":"BotSpawner",
-                 "visible":true,
-                 "width":64,
-                 "x":704,
-                 "y":384
+                 "y":256
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -183,100 +207,13 @@
         }, 
         {
          "draworder":"topdown",
-         "id":9,
-         "name":"healthSpawner",
-         "objects":[
-                {
-                 "gid":359,
-                 "height":64,
-                 "id":53,
-                 "name":"healthSpawner",
-                 "properties":[
-                        {
-                         "name":"amountSpawn",
-                         "type":"int",
-                         "value":-1
-                        }, 
-                        {
-                         "name":"cooldownSpawn",
-                         "type":"float",
-                         "value":15
-                        }, 
-                        {
-                         "name":"healthCooldownHeal",
-                         "type":"float",
-                         "value":0
-                        }, 
-                        {
-                         "name":"healthHP",
-                         "type":"int",
-                         "value":50
-                        }, 
-                        {
-                         "name":"healthTimeHeal",
-                         "type":"float",
-                         "value":3
-                        }],
-                 "rotation":0,
-                 "type":"HealthSpawner",
-                 "visible":true,
-                 "width":64,
-                 "x":320,
-                 "y":320
-                }, 
-                {
-                 "gid":359,
-                 "height":64,
-                 "id":66,
-                 "name":"healthSpawner",
-                 "properties":[
-                        {
-                         "name":"amountSpawn",
-                         "type":"int",
-                         "value":-1
-                        }, 
-                        {
-                         "name":"cooldownSpawn",
-                         "type":"float",
-                         "value":15
-                        }, 
-                        {
-                         "name":"healthCooldownHeal",
-                         "type":"float",
-                         "value":0
-                        }, 
-                        {
-                         "name":"healthHP",
-                         "type":"int",
-                         "value":50
-                        }, 
-                        {
-                         "name":"healthTimeHeal",
-                         "type":"float",
-                         "value":3
-                        }],
-                 "rotation":0,
-                 "type":"HealthSpawner",
-                 "visible":true,
-                 "width":64,
-                 "x":512,
-                 "y":384
-                }],
-         "opacity":1,
-         "type":"objectgroup",
-         "visible":true,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "draworder":"topdown",
-         "id":8,
+         "id":3,
          "name":"weaponSpawner",
          "objects":[
                 {
-                 "gid":368,
+                 "gid":369,
                  "height":64,
-                 "id":54,
+                 "id":4,
                  "name":"weaponSpawner",
                  "properties":[
                         {
@@ -333,13 +270,13 @@
                  "type":"WeaponSpawner",
                  "visible":true,
                  "width":64,
-                 "x":512,
-                 "y":256
+                 "x":128,
+                 "y":704
                 }, 
                 {
-                 "gid":368,
+                 "gid":369,
                  "height":64,
-                 "id":67,
+                 "id":6,
                  "name":"weaponSpawner",
                  "properties":[
                         {
@@ -396,8 +333,57 @@
                  "type":"WeaponSpawner",
                  "visible":true,
                  "width":64,
-                 "x":256,
+                 "x":640,
                  "y":192
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":4,
+         "name":"healthSpawner",
+         "objects":[
+                {
+                 "gid":360,
+                 "height":64,
+                 "id":3,
+                 "name":"healthSpawner",
+                 "properties":[
+                        {
+                         "name":"amountSpawn",
+                         "type":"int",
+                         "value":-1
+                        }, 
+                        {
+                         "name":"cooldownSpawn",
+                         "type":"float",
+                         "value":15
+                        }, 
+                        {
+                         "name":"healthCooldownHeal",
+                         "type":"float",
+                         "value":0
+                        }, 
+                        {
+                         "name":"healthHP",
+                         "type":"int",
+                         "value":50
+                        }, 
+                        {
+                         "name":"healthTimeHeal",
+                         "type":"float",
+                         "value":3
+                        }],
+                 "rotation":0,
+                 "type":"HealthSpawner",
+                 "visible":true,
+                 "width":64,
+                 "x":384,
+                 "y":448
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -405,10 +391,10 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":11,
- "nextobjectid":68,
+ "nextlayerid":8,
+ "nextobjectid":7,
  "orientation":"orthogonal",
- "renderorder":"left-down",
+ "renderorder":"right-up",
  "tiledversion":"1.3.4",
  "tileheight":64,
  "tilesets":[
@@ -428,5 +414,5 @@
  "tilewidth":64,
  "type":"map",
  "version":1.2,
- "width":14
+ "width":13
 }

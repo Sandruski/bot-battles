@@ -60,10 +60,14 @@ bool MapImporter::Load(const std::string& path, Tilemap& tilemap) const
     if (!ret) {
         return ret;
     }
-    const rapidjson::Value& tilesetsValue = document["tilesets"];
-    ret = LoadTilesets(tilesetsValue, tilemap.m_tilesets);
-    if (!ret) {
-        return ret;
+    tilemap.m_tilesets.reserve(document["tilesets"].Size());
+    for (rapidjson::Value::ConstValueIterator it = document["tilesets"].Begin(); it != document["tilesets"].End(); ++it) {
+        Tileset tileset;
+        ret = LoadTileset(*it, tileset);
+        if (!ret) {
+            return ret;
+        }
+        tilemap.m_tilesets.emplace_back(tileset);
     }
 
     ret = document.HasMember("layers");
@@ -309,80 +313,52 @@ void MapImporter::Create(const Tilemap& tilemap) const
 }
 
 //----------------------------------------------------------------------------------------------------
-bool MapImporter::LoadTilesets(const rapidjson::Value& value, std::vector<Tileset>& tilesets) const
+bool MapImporter::LoadTileset(const rapidjson::Value& value, Tileset& tileset) const
 {
-    bool ret = false;
-
-    tilesets.reserve(value.Size());
-
-    for (rapidjson::Value::ConstValueIterator it = value.Begin(); it != value.End(); ++it) {
-        Tileset tileset;
-
-        ret = it->HasMember("firstgid");
-        if (!ret) {
-            return ret;
-        }
-        tileset.m_firstGid = (*it)["firstgid"].GetUint();
-        ret = it->HasMember("source");
-        if (!ret) {
-            return ret;
-        }
-        std::string source;
-        source.append(TILESETS_DIR);
-        source.append((*it)["source"].GetString());
-
-        rapidjson::Document document;
-        ret = g_game->GetFileSystem().ParseJsonFromFile(source, document);
-        if (!ret) {
-            ELOG("%s file could not be loaded", source.c_str());
-            return ret;
-        }
-        ret = document.IsObject();
-        if (!ret) {
-            return ret;
-        }
-
-        ret = document.HasMember("image");
-        if (!ret) {
-            return ret;
-        }
-        std::string image = document["image"].GetString();
-        image = image.substr(image.find_last_of("/") + 1, image.size());
-        tileset.m_spriteFile = image;
-        ret = document.HasMember("tilewidth");
-        if (!ret) {
-            return ret;
-        }
-        tileset.m_tileSize.x = document["tilewidth"].GetUint();
-        ret = document.HasMember("tileheight");
-        if (!ret) {
-            return ret;
-        }
-        tileset.m_tileSize.y = document["tileheight"].GetUint();
-        ret = document.HasMember("columns");
-        if (!ret) {
-            return ret;
-        }
-        tileset.m_tileCount.x = document["columns"].GetUint();
-        ret = document.HasMember("tilecount");
-        if (!ret) {
-            return ret;
-        }
-        U32 tileCount = document["tilecount"].GetUint();
-        tileset.m_tileCount.y = tileCount / tileset.m_tileCount.x;
-        ret = document.HasMember("margin");
-        if (!ret) {
-            return ret;
-        }
-        tileset.m_margin = document["margin"].GetUint();
-        ret = document.HasMember("spacing");
-        if (!ret) {
-            return ret;
-        }
-        tileset.m_spacing = document["spacing"].GetUint();
-
-        tilesets.emplace_back(tileset);
+    bool ret = value.HasMember("firstgid");
+    if (!ret) {
+        return ret;
     }
+    tileset.m_firstGid = value["firstgid"].GetUint();
+
+    ret = value.HasMember("image");
+    if (!ret) {
+        return ret;
+    }
+    std::string image = value["image"].GetString();
+    image = image.substr(image.find_last_of("/") + 1, image.size());
+    tileset.m_spriteFile = image;
+    ret = value.HasMember("tilewidth");
+    if (!ret) {
+        return ret;
+    }
+    tileset.m_tileSize.x = value["tilewidth"].GetUint();
+    ret = value.HasMember("tileheight");
+    if (!ret) {
+        return ret;
+    }
+    tileset.m_tileSize.y = value["tileheight"].GetUint();
+    ret = value.HasMember("columns");
+    if (!ret) {
+        return ret;
+    }
+    tileset.m_tileCount.x = value["columns"].GetUint();
+    ret = value.HasMember("tilecount");
+    if (!ret) {
+        return ret;
+    }
+    U32 tileCount = value["tilecount"].GetUint();
+    tileset.m_tileCount.y = tileCount / tileset.m_tileCount.x;
+    ret = value.HasMember("margin");
+    if (!ret) {
+        return ret;
+    }
+    tileset.m_margin = value["margin"].GetUint();
+    ret = value.HasMember("spacing");
+    if (!ret) {
+        return ret;
+    }
+    tileset.m_spacing = value["spacing"].GetUint();
 
     return ret;
 }
@@ -398,7 +374,6 @@ bool MapImporter::LoadTilelayer(const rapidjson::Value& value, Tilelayer& tilela
     for (rapidjson::Value::ConstValueIterator it = value["data"].Begin(); it != value["data"].End(); ++it) {
         tilelayer.m_data.emplace_back(it->GetUint());
     }
-
     ret = value.HasMember("name");
     if (!ret) {
         return ret;
@@ -424,7 +399,6 @@ bool MapImporter::LoadObjectLayer(const rapidjson::Value& value, Objectlayer& ob
         }
         objectlayer.m_objects.emplace_back(object);
     }
-
     ret = value.HasMember("name");
     if (!ret) {
         return ret;
