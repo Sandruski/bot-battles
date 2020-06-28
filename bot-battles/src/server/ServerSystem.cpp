@@ -791,8 +791,9 @@ void ServerSystem::OnNetworkEntityRemoved(NetworkID networkID) const
     std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
     const std::unordered_map<PlayerID, std::shared_ptr<ClientProxy>>& playerIDToClientProxy = serverComponent.lock()->GetPlayerIDToClientProxyMap();
     for (const auto& pair : playerIDToClientProxy) {
-
-        pair.second->m_replicationManager->SetRemove(networkID);
+        std::shared_ptr<ClientProxy> clientProxy = pair.second;
+        clientProxy->m_replicationManager->SetIsReplicated(networkID, true);
+        clientProxy->m_replicationManager->SetRemove(networkID);
     }
 }
 
