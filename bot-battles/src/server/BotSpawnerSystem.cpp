@@ -10,6 +10,7 @@
 #include "HealthComponent.h"
 #include "LabelComponent.h"
 #include "LinkingContext.h"
+#include "MapComponent.h"
 #include "PlayerComponent.h"
 #include "RendererComponent.h"
 #include "ResourceManager.h"
@@ -74,7 +75,8 @@ Entity BotSpawnerSystem::SpawnBot(PlayerID playerID) const
     transformComponent.lock()->m_position = botSpawnerTransformComponent.lock()->m_position;
     transformComponent.lock()->m_layerType = LayerType::PLAYER;
     transformComponent.lock()->m_rotation = botSpawnerComponent.lock()->m_transformRotation;
-    transformComponent.lock()->m_scale = 1.0f;
+    std::weak_ptr<MapComponent> mapComponent = g_game->GetMapComponent();
+    transformComponent.lock()->m_scale = mapComponent.lock()->m_mapScale;
 
     // Sprite
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().AddComponent<SpriteComponent>(character);

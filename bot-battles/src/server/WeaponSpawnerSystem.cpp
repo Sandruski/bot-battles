@@ -8,6 +8,7 @@
 #include "GameServer.h"
 #include "GameplayComponent.h"
 #include "LinkingContext.h"
+#include "MapComponent.h"
 #include "ResourceManager.h"
 #include "RigidbodyComponent.h"
 #include "ServerComponent.h"
@@ -94,7 +95,8 @@ Entity WeaponSpawnerSystem::SpawnWeapon(Entity spawner) const
     transformComponent.lock()->m_position = weaponSpawnerTransformComponent.lock()->m_position;
     transformComponent.lock()->m_layerType = LayerType::OBJECT;
     transformComponent.lock()->m_rotation = 0.0f;
-    transformComponent.lock()->m_scale = 1.0f;
+    std::weak_ptr<MapComponent> mapComponent = g_game->GetMapComponent();
+    transformComponent.lock()->m_scale = mapComponent.lock()->m_mapScale;
 
     // Sprite
     std::weak_ptr<SpriteComponent> spriteComponent = g_gameServer->GetComponentManager().AddComponent<SpriteComponent>(entity);
