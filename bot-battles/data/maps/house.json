@@ -337,7 +337,7 @@
                         {
                          "name":"transformRotation",
                          "type":"float",
-                         "value":180
+                         "value":0
                         }, 
                         {
                          "name":"weaponCooldownShoot",

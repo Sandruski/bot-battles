@@ -75,6 +75,7 @@
   <object id="1" name="botSpawner" type="BotSpawner" gid="198" x="640" y="640" width="64" height="64">
    <properties>
     <property name="player" type="int" value="1"/>
+    <property name="transformRotation" type="float" value="180"/>
    </properties>
   </object>
   <object id="2" name="botSpawner" type="BotSpawner" gid="198" x="128" y="256" width="64" height="64"/>

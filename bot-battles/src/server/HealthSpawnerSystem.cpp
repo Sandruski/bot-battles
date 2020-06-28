@@ -105,6 +105,8 @@ Entity HealthSpawnerSystem::SpawnHealth(Entity spawner) const
     glm::vec4 textureCoords = glm::vec4(1.0f, 12.0f, 64.0f, 64.0f);
     spriteComponent.lock()->AddSprite("default", textureCoords);
     spriteComponent.lock()->m_spriteName = "default";
+    spriteComponent.lock()->m_isFlippedHorizontally = RandomInt(0, 1);
+    spriteComponent.lock()->m_isFlippedVertically = RandomInt(0, 1);
 
     // Collider
     std::weak_ptr<ColliderComponent> colliderComponent = g_game->GetComponentManager().AddComponent<ColliderComponent>(entity);

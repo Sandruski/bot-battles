@@ -32,7 +32,7 @@ void HealthSystem::Draw(PlayerID playerID, std::weak_ptr<HealthComponent> health
         break;
     }
     }
-    glm::vec4 backgroundColor = Black;
+    glm::vec4 backgroundColor = White;
     backgroundColor.a = 0.5f;
     rendererComponent.lock()->DrawQuad(backgroundPosition, rotation, backgroundScale, backgroundColor, true);
 
