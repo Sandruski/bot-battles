@@ -252,12 +252,14 @@ void MapImporter::Create(const Tilemap& tilemap) const
                         botSpawnerComponent.lock()->m_transformRotation = property.m_value.floatValue;
                     } else if (property.m_name == "rigidbodyMaxLinearVelocity") {
                         botSpawnerComponent.lock()->m_rigidbodyMaxLinearVelocity = property.m_value.floatValue;
+                        botSpawnerComponent.lock()->m_rigidbodyMaxLinearVelocity *= mapComponent.lock()->m_mapScale;
                     } else if (property.m_name == "rigidbodyMaxAngularVelocity") {
                         botSpawnerComponent.lock()->m_rigidbodyMaxAngularVelocity = property.m_value.floatValue;
                     } else if (property.m_name == "weaponDamage") {
                         botSpawnerComponent.lock()->m_weaponDamage = property.m_value.intValue;
                     } else if (property.m_name == "weaponRange") {
                         botSpawnerComponent.lock()->m_weaponRange = property.m_value.floatValue;
+                        botSpawnerComponent.lock()->m_weaponRange *= mapComponent.lock()->m_mapScale;
                     } else if (property.m_name == "weaponTimeShoot") {
                         botSpawnerComponent.lock()->m_weaponTimeShoot = property.m_value.floatValue;
                     } else if (property.m_name == "weaponCooldownShoot") {
@@ -268,6 +270,7 @@ void MapImporter::Create(const Tilemap& tilemap) const
                         botSpawnerComponent.lock()->m_sightAngle = property.m_value.floatValue;
                     } else if (property.m_name == "sightDistance") {
                         botSpawnerComponent.lock()->m_sightDistance = property.m_value.floatValue;
+                        botSpawnerComponent.lock()->m_sightDistance *= mapComponent.lock()->m_mapScale;
                     }
                 }
 #endif
@@ -289,6 +292,7 @@ void MapImporter::Create(const Tilemap& tilemap) const
                         weaponSpawnerComponent.lock()->m_weaponAmmo = property.m_value.intValue;
                     } else if (property.m_name == "weaponRange") {
                         weaponSpawnerComponent.lock()->m_weaponRange = property.m_value.floatValue;
+                        weaponSpawnerComponent.lock()->m_weaponRange *= mapComponent.lock()->m_mapScale;
                     } else if (property.m_name == "weaponTimeShoot") {
                         weaponSpawnerComponent.lock()->m_weaponTimeShoot = property.m_value.floatValue;
                     } else if (property.m_name == "weaponCooldownShoot") {
