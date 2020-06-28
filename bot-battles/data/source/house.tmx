@@ -1,26 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.3.4" orientation="orthogonal" renderorder="right-up" width="13" height="13" tilewidth="64" tileheight="64" infinite="0" nextlayerid="9" nextobjectid="8">
+<map version="1.2" tiledversion="1.3.4" orientation="orthogonal" renderorder="right-up" width="13" height="13" tilewidth="64" tileheight="64" infinite="0" nextlayerid="9" nextobjectid="26">
  <editorsettings>
-  <export target="../maps/2house.json" format="json"/>
+  <export target="../maps/house.json" format="json"/>
  </editorsettings>
  <tileset firstgid="1" source="../tilesets/mapTileset.json"/>
- <layer id="6" name="palette" width="13" height="13" visible="0">
-  <data encoding="csv">
-42,11,118,450,506,534,323,0,21,0,0,0,0,
-0,0,491,0,529,0,0,450,102,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,447,449,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0
-</data>
- </layer>
  <layer id="5" name="floor" width="13" height="13">
   <data encoding="csv">
 46,46,46,46,42,42,42,42,42,42,42,42,42,
@@ -41,8 +24,8 @@
  <layer id="7" name="decoration" width="13" height="13">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,266,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,266,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,265,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,265,0,0,
@@ -58,22 +41,35 @@
  <layer id="1" name="collision" width="13" height="13">
   <data encoding="csv">
 118,120,120,120,120,123,464,464,205,464,464,151,119,
-147,51,0,0,0,0,0,0,0,0,0,0,147,
-147,78,0,0,0,0,0,0,538,0,0,0,124,
-147,105,0,0,150,0,0,0,0,0,0,0,438,
-147,0,0,0,147,0,0,474,475,476,0,0,438,
+147,0,0,0,0,0,0,0,0,0,0,0,147,
+147,0,0,0,0,0,0,0,0,0,0,0,124,
+147,0,0,0,150,0,0,0,0,0,0,0,438,
+147,0,0,0,147,0,0,0,0,0,0,0,438,
 148,120,120,120,146,0,0,0,0,0,0,0,150,
 147,0,0,0,0,0,0,0,0,0,0,0,147,
 124,0,0,0,0,0,0,0,118,120,120,120,149,
-437,0,0,0,538,0,0,0,147,0,0,0,147,
-437,0,0,0,0,0,0,0,124,0,0,48,147,
-150,0,0,447,448,449,0,0,0,0,0,75,147,
-147,0,0,0,0,0,0,0,0,0,0,102,147,
+437,0,0,0,0,0,0,0,147,0,0,0,147,
+437,0,0,0,0,0,0,0,124,0,0,0,147,
+150,0,0,0,0,0,0,0,0,0,0,0,147,
+147,0,0,0,0,0,0,0,0,0,0,0,147,
 145,123,465,465,205,465,465,151,120,120,120,120,146
 </data>
  </layer>
  <objectgroup id="8" name="collision">
-  <object id="7" name="chair" gid="3221225922" x="192" y="512" width="64" height="64"/>
+  <object id="8" gid="1073741929" x="64" y="128" width="64" height="64"/>
+  <object id="9" gid="1073741902" x="64" y="192" width="64" height="64"/>
+  <object id="10" gid="1073741875" x="64" y="256" width="64" height="64"/>
+  <object id="11" gid="102" x="704" y="768" width="64" height="64"/>
+  <object id="12" gid="75" x="704" y="704" width="64" height="64"/>
+  <object id="13" gid="48" x="704" y="640" width="64" height="64"/>
+  <object id="14" gid="449" x="320" y="704" width="64" height="64"/>
+  <object id="15" gid="448" x="256" y="704" width="64" height="64"/>
+  <object id="16" gid="447" x="192" y="704" width="64" height="64"/>
+  <object id="17" gid="538" x="256" y="576" width="64" height="64"/>
+  <object id="18" gid="538" x="512" y="320" width="64" height="64"/>
+  <object id="19" gid="1073742300" x="576" y="192" width="64" height="64"/>
+  <object id="20" gid="1073742299" x="512" y="192" width="64" height="64"/>
+  <object id="21" gid="1073742298" x="448" y="192" width="64" height="64"/>
  </objectgroup>
  <objectgroup id="2" name="botSpawner">
   <object id="1" name="botSpawner" type="BotSpawner" gid="198" x="640" y="640" width="64" height="64">
