@@ -103,7 +103,7 @@ class BalancedBot(bot.Bot):
                     if self.fsm.isCurrentState("Reload") == False:
                         self.fsm.changeCurrentState(decisionMaking.Reload())
             # Heal
-            elif self.health.currentHP < seenBotInfo.health.currentHP * 0.75:
+            elif self.health.currentHP < seenBotInfo.health.currentHP * 0.9:
                 if self.health.firstAidBoxHP > 0:
                     if self.canTakeCover == True:
                         if self.fsm.isCurrentState("TakeHealthCover") == False:
