@@ -3,22 +3,22 @@
  <editorsettings>
   <export target="../maps/backyard.json" format="json"/>
  </editorsettings>
- <tileset firstgid="1" source="../tilesets/mapTileset.json"/>
+ <tileset firstgid="1" source="tileset.json"/>
  <layer id="1" name="floor" width="18" height="10">
   <data encoding="csv">
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+3,4,3,1,3,401,4,1,4,4,401,4,401,3,401,3,3,1,
+3,401,3,3,3,4,2,4,4,2,1,1,4,3,1,2,401,3,
+401,4,401,401,3,3,3,4,4,401,1,401,1,3,1,3,3,3,
+1,1,1,3,4,401,3,401,3,3,3,3,4,4,3,1,1,3,
+1,3,4,3,3,3,1,1,3,401,1,3,401,4,3,1,4,401,
+4,4,3,3,3,3,3,401,401,4,1,4,3,3,3,1,401,4,
+401,1,3,3,4,401,401,4,401,401,3,401,401,1,401,4,401,4,
+3,401,1,3,1,1,401,2,3,4,3,401,401,3,3,3,2,401,
+401,4,1,401,401,4,4,401,401,4,3,4,401,3,401,3,2,401,
+1,1,4,1,1,401,4,2,4,4,1,4,401,1,1,4,2,1
 </data>
  </layer>
- <layer id="7" name="decorations" width="18" height="10">
+ <layer id="7" name="decoration" width="18" height="10">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,213,0,0,0,0,0,0,0,0,0,0,210,0,
@@ -65,11 +65,11 @@
   </object>
   <object id="2" name="botSpawner" type="BotSpawner" gid="198" x="64" y="128" width="64" height="64"/>
  </objectgroup>
- <objectgroup id="4" name="weaponSpawner">
+ <objectgroup id="4" name="weaponSpawner" visible="0">
   <object id="3" name="weaponSpawner" type="WeaponSpawner" gid="369" x="1024" y="384" width="64" height="64"/>
   <object id="4" name="weaponSpawner" type="WeaponSpawner" gid="369" x="64" y="320" width="64" height="64"/>
  </objectgroup>
- <objectgroup id="5" name="healthSpawner">
+ <objectgroup id="5" name="healthSpawner" visible="0">
   <object id="5" name="healthSpawner" type="HealthSpawner" gid="360" x="512" y="64" width="64" height="64"/>
   <object id="6" name="healthSpawner" type="HealthSpawner" gid="360" x="576" y="640" width="64" height="64"/>
  </objectgroup>

@@ -3,7 +3,7 @@
  <editorsettings>
   <export target="../maps/map.json" format="json"/>
  </editorsettings>
- <tileset firstgid="1" source="../tilesets/mapTileset.json"/>
+ <tileset firstgid="1" source="tileset.json"/>
  <layer id="1" name="base" width="14" height="8">
   <data encoding="csv">
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,

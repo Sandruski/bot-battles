@@ -108,7 +108,7 @@ void MapImporter::Create(const Tilemap& tilemap) const
     mapComponent.lock()->m_tileCount = tilemap.m_tileCount;
     mapComponent.lock()->m_tileSize = tilemap.m_tileSize;
     glm::uvec2 mapSize = mapComponent.lock()->m_tileSize * mapComponent.lock()->m_tileCount;
-    glm::vec2 proportion = static_cast<glm::vec2>(windowComponent.lock()->m_baseResolution) / static_cast<glm::vec2>(mapSize);
+    glm::vec2 proportion = (static_cast<glm::vec2>(windowComponent.lock()->m_baseResolution) - glm::vec2(0.0f, 70.0f)) / static_cast<glm::vec2>(mapSize);
     mapComponent.lock()->m_mapScale = proportion.x <= proportion.y ? proportion.x : proportion.y;
     U32 tileCount = mapComponent.lock()->m_tileCount.x * mapComponent.lock()->m_tileCount.y;
 
@@ -139,7 +139,7 @@ void MapImporter::Create(const Tilemap& tilemap) const
                 worldPosition -= static_cast<glm::vec2>(tilemap.m_tileSize * tilemap.m_tileCount);
                 worldPosition *= 0.5f;
                 worldPosition *= transformComponent.lock()->m_scale;
-                worldPosition += static_cast<glm::vec2>(windowComponent.lock()->m_baseResolution) / 2.0f;
+                worldPosition += (static_cast<glm::vec2>(windowComponent.lock()->m_baseResolution) + glm::vec2(0.0f, 50.0f)) / 2.0f;
                 transformComponent.lock()->m_position = worldPosition;
                 transformComponent.lock()->m_layerType = LayerType::FLOOR;
 
@@ -197,7 +197,7 @@ void MapImporter::Create(const Tilemap& tilemap) const
             worldPosition -= static_cast<glm::vec2>(tilemap.m_tileSize * tilemap.m_tileCount);
             worldPosition *= 0.5f;
             worldPosition *= transformComponent.lock()->m_scale;
-            worldPosition += static_cast<glm::vec2>(windowComponent.lock()->m_baseResolution) / 2.0f;
+            worldPosition += (static_cast<glm::vec2>(windowComponent.lock()->m_baseResolution) + glm::vec2(0.0f, 50.0f)) / 2.0f;
             transformComponent.lock()->m_position = worldPosition;
             transformComponent.lock()->m_layerType = LayerType::FLOOR;
             transformComponent.lock()->m_rotation = object.m_rotation;

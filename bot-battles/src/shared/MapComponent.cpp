@@ -77,7 +77,7 @@ glm::vec2 MapComponent::MapToRealWorld(const glm::uvec2& mapPosition) const
     realWorld *= 0.5f;
     realWorld *= m_mapScale;
     std::weak_ptr<WindowComponent> windowComponent = g_game->GetWindowComponent();
-    realWorld += static_cast<glm::vec2>(windowComponent.lock()->m_baseResolution) / 2.0f;
+    realWorld += (static_cast<glm::vec2>(windowComponent.lock()->m_baseResolution) + glm::vec2(0.0f, 50.0f)) / 2.0f;
     return realWorld;
 }
 
@@ -97,7 +97,7 @@ glm::uvec2 MapComponent::RealWorldToMap(const glm::vec2& worldPosition) const
 {
     glm::vec2 world = worldPosition;
     std::weak_ptr<WindowComponent> windowComponent = g_game->GetWindowComponent();
-    world -= static_cast<glm::vec2>(windowComponent.lock()->m_baseResolution) / 2.0f;
+    world -= (static_cast<glm::vec2>(windowComponent.lock()->m_baseResolution) + glm::vec2(0.0f, 50.0f)) / 2.0f;
     world /= m_mapScale;
     world /= 0.5f;
     world += static_cast<glm::vec2>(m_tileSize * m_tileCount);
