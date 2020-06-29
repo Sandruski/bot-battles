@@ -23,13 +23,13 @@ Have fun!
 - F1: toggle Debug Options menu
 - Left Shift + W: end the match
 
-# Versions
+# Known Issues
+
+# Changelog
 ## Vertical Slice
 ## Alpha
 ## Beta
 ## Gold
-
-# Known Issues
 
 # About
 The code is written in C++ and follows the ISO C++ 17 Standard.
