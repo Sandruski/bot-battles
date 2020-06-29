@@ -4,9 +4,6 @@ import glm
 import heapq
 import logging
 
-import bot
-import movement
-import decisionMaking
 from botbattles import TransformComponent
 from botbattles import ColliderComponent
 from botbattles import RigidbodyComponent

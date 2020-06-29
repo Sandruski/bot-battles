@@ -1,7 +1,6 @@
 # coding: utf-8
 
 import glm
-import heapq
 import logging
 import random
 

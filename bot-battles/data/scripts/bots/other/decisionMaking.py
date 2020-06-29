@@ -1,13 +1,9 @@
 # coding: utf-8
 
 import glm
-import heapq
-import logging
 import random
+import logging
 
-import bot
-import movement
-import decisionMaking
 import timer
 from botbattles import TransformComponent
 from botbattles import ColliderComponent
