@@ -34,7 +34,7 @@ Only gameplay:
 ## Gold
 
 # About
-The code is written in C++ and follows the ISO C++ 17 Standard.
+The application is written in C++ and follows the ISO C++ 17 Standard. The scripts are written in Python.
 
 ## Tools
 - Microsoft Visual Studio
