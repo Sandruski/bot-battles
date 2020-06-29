@@ -18,9 +18,11 @@ To import the example script:
 Have fun!
 
 # Controls
-- O: toggle Log output
 - Esc: toggle Settings menu
 - F1: toggle Debug Options menu
+
+Only gameplay:
+- O: toggle Log output
 - Left Shift + W: end the match
 
 # Known Issues
