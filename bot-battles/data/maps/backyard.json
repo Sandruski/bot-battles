@@ -192,7 +192,7 @@
                         {
                          "name":"sightDistance",
                          "type":"float",
-                         "value":300
+                         "value":350
                         }, 
                         {
                          "name":"transformRotation",
@@ -260,7 +260,7 @@
                         {
                          "name":"sightDistance",
                          "type":"float",
-                         "value":300
+                         "value":350
                         }, 
                         {
                          "name":"transformRotation",
@@ -319,12 +319,12 @@
                         {
                          "name":"cooldownSpawn",
                          "type":"float",
-                         "value":10
+                         "value":20
                         }, 
                         {
                          "name":"weaponAmmo",
                          "type":"int",
-                         "value":6
+                         "value":9
                         }, 
                         {
                          "name":"weaponCooldownReload",
@@ -382,12 +382,12 @@
                         {
                          "name":"cooldownSpawn",
                          "type":"float",
-                         "value":10
+                         "value":20
                         }, 
                         {
                          "name":"weaponAmmo",
                          "type":"int",
-                         "value":6
+                         "value":9
                         }, 
                         {
                          "name":"weaponCooldownReload",
@@ -433,7 +433,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }, 
@@ -456,7 +456,7 @@
                         {
                          "name":"cooldownSpawn",
                          "type":"float",
-                         "value":15
+                         "value":30
                         }, 
                         {
                          "name":"healthCooldownHeal",
@@ -494,7 +494,7 @@
                         {
                          "name":"cooldownSpawn",
                          "type":"float",
-                         "value":15
+                         "value":30
                         }, 
                         {
                          "name":"healthCooldownHeal",
@@ -520,7 +520,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }],

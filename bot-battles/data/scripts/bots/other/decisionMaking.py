@@ -63,13 +63,13 @@ class GoToPosition(State):
 class GoToWeaponSpawner(GoToPosition):
     def enter(self, bot):
         super().enter(bot)
-        bot.agent.maxLinearVelocity = bot.rigidbody.maxLinearVelocity * 0.75
+        bot.agent.maxLinearVelocity = bot.rigidbody.maxLinearVelocity * 0.9
         bot.agent.maxAngularVelocity = bot.rigidbody.maxAngularVelocity * 0.9
 
 class GoToHealthSpawner(GoToPosition):
     def enter(self, bot):
         super().enter(bot)
-        bot.agent.maxLinearVelocity = bot.rigidbody.maxLinearVelocity * 0.75
+        bot.agent.maxLinearVelocity = bot.rigidbody.maxLinearVelocity * 0.9
         bot.agent.maxAngularVelocity = bot.rigidbody.maxAngularVelocity * 0.9
 
 class TakeCover(GoToPosition):
@@ -99,7 +99,7 @@ class GoToLastKnownPosition(GoToPosition):
 class GoToRandomPosition(GoToPosition):
     def enter(self, bot):
         super().enter(bot)
-        bot.agent.maxLinearVelocity = bot.rigidbody.maxLinearVelocity * 0.75
+        bot.agent.maxLinearVelocity = bot.rigidbody.maxLinearVelocity * 0.9
         bot.agent.maxAngularVelocity = bot.rigidbody.maxAngularVelocity * 0.9
 
 class MoveTowardsBot(State):

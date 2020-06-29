@@ -396,7 +396,7 @@
                         {
                          "name":"weaponAmmo",
                          "type":"int",
-                         "value":6
+                         "value":8
                         }, 
                         {
                          "name":"weaponCooldownReload",
@@ -416,7 +416,7 @@
                         {
                          "name":"weaponMaxAmmo",
                          "type":"int",
-                         "value":3
+                         "value":4
                         }, 
                         {
                          "name":"weaponRange",
@@ -459,7 +459,7 @@
                         {
                          "name":"weaponAmmo",
                          "type":"int",
-                         "value":6
+                         "value":8
                         }, 
                         {
                          "name":"weaponCooldownReload",
@@ -479,7 +479,7 @@
                         {
                          "name":"weaponMaxAmmo",
                          "type":"int",
-                         "value":3
+                         "value":4
                         }, 
                         {
                          "name":"weaponRange",
