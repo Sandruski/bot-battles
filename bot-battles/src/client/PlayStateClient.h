@@ -24,8 +24,8 @@ public:
     void OnNotify(const Event& event) override;
 
 private:
-    void ChangeToScoreboard() const; // RESULTS (game end or another player disconnected and game was forced to end abruptly)
-    void ChangeToMainMenu() const; // if disconnected or server disconnected
+    void ChangeToScoreboard() const;
+    void ChangeToMainMenu() const;
 };
 }
 

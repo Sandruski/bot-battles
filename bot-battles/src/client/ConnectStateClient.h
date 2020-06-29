@@ -24,8 +24,8 @@ public:
     void OnNotify(const Event& event) override;
 
 private:
-    void ChangeToGameplay() const; // WELCOME
-    void ChangeToSetup() const; // if button or disconnected or server disconnected
+    void ChangeToGameplay() const;
+    void ChangeToSetup() const;
 };
 }
 

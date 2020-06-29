@@ -50,7 +50,7 @@ inline bool SystemManager::RegisterSystem()
     std::size_t systemIndex = static_cast<std::size_t>(systemType);
     std::shared_ptr<System> system = m_systems.at(systemIndex);
     if (system != nullptr) {
-        WLOG("System %u is already registered!", systemIndex);
+        WLOG("System %u is already registered", systemIndex);
         return false;
     }
 
@@ -70,7 +70,7 @@ inline bool SystemManager::DeRegisterSystem()
     std::size_t systemIndex = static_cast<std::size_t>(systemType);
     std::shared_ptr<System> system = m_systems.at(systemIndex);
     if (system == nullptr) {
-        WLOG("System %u is not registered!", systemIndex);
+        WLOG("System %u is not registered", systemIndex);
         return false;
     }
 

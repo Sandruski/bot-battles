@@ -24,8 +24,8 @@ public:
     void OnNotify(const Event& event) override;
 
 private:
-    void ChangeToRestart() const; // if button
-    void ChangeToMainMenu() const; // if timer or button or disconnected or server disconnected
+    void ChangeToRestart() const;
+    void ChangeToMainMenu() const;
 };
 }
 

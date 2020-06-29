@@ -159,7 +159,6 @@ void PlayStateServer::OnHealthHurt() const
         }
     }
 
-    // V X
     if (aliveCount == 0 || aliveCount == 1) {
         std::weak_ptr<ScoreboardComponent> scoreboardComponent = g_gameServer->GetScoreboardComponent();
         scoreboardComponent.lock()->m_winnerPlayerID = serverComponent.lock()->GetPlayerID(winnerEntity);

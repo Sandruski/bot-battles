@@ -743,7 +743,7 @@ void ServerSystem::Disconnect(std::weak_ptr<ServerComponent> serverComponent, Pl
         return;
     }
 
-    ILOG("Remote player disconnected...");
+    ILOG("Player disconnected...");
 
     serverComponent.lock()->RemoveTCPSocket(clientProxy.lock()->GetSocketAddress());
     ILOG("TCP socket removed");

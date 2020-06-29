@@ -39,7 +39,6 @@ bool RestartStateClient::Update() const
     }
 
     F32 mainMenuCurrentTime = static_cast<F32>(scoreboardComponent.lock()->m_mainMenuTimer.ReadSec());
-    // X
     if (mainMenuCurrentTime >= scoreboardComponent.lock()->m_mainMenuTimeout) {
         Event newEvent;
         newEvent.eventType = EventType::SEND_BYE;
@@ -84,7 +83,6 @@ bool RestartStateClient::RenderGui() const
     ImVec2 cancelButtonSize = ImVec2(cancelTextSize.x + framePadding.x * 2.0f, cancelTextSize.y + framePadding.y * 2.0f);
     ImGui::SetCursorPosX(contentRegionMax.x - cancelButtonSize.x);
     ImGui::SetCursorPosY(contentRegionMax.y - cancelButtonSize.y);
-    // X
     if (ImGui::Button(cancelString.c_str())) {
         ChangeToResults();
     }
@@ -105,13 +103,11 @@ void RestartStateClient::OnNotify(const Event& event)
 {
     switch (event.eventType) {
 
-        // V
     case EventType::REWELCOME_RECEIVED: {
         ChangeToGameplay();
         break;
     }
 
-        // X
     case EventType::PLAYER_REMOVED: {
         ChangeToMainMenu();
         break;

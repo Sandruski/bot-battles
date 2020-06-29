@@ -96,7 +96,6 @@ bool SetupStateServer::RenderGui() const
         ImVec2 startButtonSize = ImVec2(startTextSize.x + framePadding.x * 2.0f, startTextSize.y + framePadding.y * 2.0f);
         ImGui::SetCursorPosX(contentRegionMax.x - startButtonSize.x);
         ImGui::SetCursorPosY(contentRegionMax.y - startButtonSize.y);
-        // V
         if (ImGui::Button(startText.c_str())) {
             Event newEvent;
             newEvent.eventType = EventType::TRY_CONNECT;

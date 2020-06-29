@@ -26,7 +26,6 @@ bool ResultsStateClient::Update() const
 {
     std::weak_ptr<ScoreboardComponent> scoreboardComponent = g_gameClient->GetScoreboardComponent();
     F32 mainMenuCurrentTime = static_cast<F32>(scoreboardComponent.lock()->m_mainMenuTimer.ReadSec());
-    // X
     if (mainMenuCurrentTime >= scoreboardComponent.lock()->m_mainMenuTimeout) {
         Event newEvent;
         newEvent.eventType = EventType::SEND_BYE;
@@ -112,13 +111,11 @@ bool ResultsStateClient::RenderGui() const
     ImVec2 mainMenuButtonSize = ImVec2(mainMenuTextSize.x + framePadding.x * 2.0f, mainMenuTextSize.y + framePadding.y * 2.0f);
     ImGui::SetCursorPosX(contentRegionMax.x - playAgainButtonSize.x - mainMenuButtonSize.x - itemSpacing.x);
     ImGui::SetCursorPosY(contentRegionMax.y - playAgainButtonSize.y);
-    // V
     if (ImGui::Button(playAgainString.c_str())) {
         ChangeToRestart();
     }
     ImGui::SetCursorPosX(contentRegionMax.x - mainMenuButtonSize.x);
     ImGui::SetCursorPosY(contentRegionMax.y - mainMenuButtonSize.y);
-    // X
     if (ImGui::Button(mainMenuString.c_str())) {
         Event newEvent;
         newEvent.eventType = EventType::SEND_BYE;
@@ -143,7 +140,6 @@ void ResultsStateClient::OnNotify(const Event& event)
 {
     switch (event.eventType) {
 
-        // X
     case EventType::PLAYER_REMOVED: {
         ChangeToMainMenu();
         break;

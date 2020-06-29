@@ -26,7 +26,7 @@ public:
 private:
     void OnHealthHurt() const;
 
-    void ChangeToScoreboard() const; // OnHealthEmptied (== 1 player alive) or player disconnected
+    void ChangeToScoreboard() const;
 };
 }
 

@@ -204,14 +204,12 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, const 
     }
 
     if (replayPosition || replayRotation) {
-        ILOG("REPLAY");
-        ILOG("Current vs new positions at frame %u is %f %f and %f %f", clientComponent.lock()->m_lastAckdFrame, position.x, position.y, newPosition.x, newPosition.y);
+        ILOG("Replay");
 
         position = newPosition;
         rotation = newRotation;
         rigidbodyComponent.lock()->m_body->SetTransform(b2Vec2(PIXELS_TO_METERS(position.x), PIXELS_TO_METERS(position.y)), glm::radians(rotation));
 
-        ILOG("We loop %u transforms", clientComponent.lock()->m_inputBuffer.m_back - index - 1);
         for (U32 i = index + 1; i < clientComponent.lock()->m_inputBuffer.m_back; ++i) {
             const Input& input = clientComponent.lock()->m_inputBuffer.Get(i);
             const InputComponent& inputComponent = input.GetInputComponent();
@@ -273,9 +271,7 @@ void TransformComponent::Replay(bool updatePosition, bool updateRotation, const 
         }
 
         Transform& lastTransform = m_inputTransformBuffer.GetLast();
-        ILOG("My position is %f %f compared to %f %f", m_position.x, m_position.y, lastTransform.m_position.x, lastTransform.m_position.y);
         m_position = lastTransform.m_position;
-        ILOG("My rotation is %f compared to %f", m_rotation, lastTransform.m_rotation);
         m_rotation = lastTransform.m_rotation;
     }
 }

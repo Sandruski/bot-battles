@@ -47,25 +47,25 @@ void ReplicationManagerClient::Read(InputMemoryStream& inputStream)
             switch (replicationActionType) {
 
             case ReplicationActionType::CREATE: {
-                ILOG("CREATE RECEIVED");
+                ILOG("Create received");
                 ReadCreateAction(inputStream, entity, networkID, frame);
                 break;
             }
 
             case ReplicationActionType::UPDATE: {
-                ILOG("UPDATE RECEIVED");
+                ILOG("Update received");
                 ReadUpdateAction(inputStream, entity, frame);
                 break;
             }
 
             case ReplicationActionType::REMOVE: {
                 ReadRemoveAction(entity);
-                ILOG("REMOVE RECEIVED");
+                ILOG("Remove received");
                 break;
             }
 
             case ReplicationActionType::NONE: {
-                ILOG("NONE RECEIVED");
+                ILOG("None received");
                 break;
             }
 

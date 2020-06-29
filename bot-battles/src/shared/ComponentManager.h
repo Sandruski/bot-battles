@@ -187,7 +187,7 @@ inline bool ComponentManager::RegisterComponent()
     std::size_t componentIndex = static_cast<std::size_t>(componentType);
     std::shared_ptr<IComponentArray> componentArray = m_componentArrays.at(componentIndex);
     if (componentArray != nullptr) {
-        WLOG("Component array %u is already registered!", componentIndex);
+        WLOG("Component array %u is already registered", componentIndex);
         return false;
     }
 
@@ -207,7 +207,7 @@ inline bool ComponentManager::DeRegisterComponent()
     std::size_t componentIndex = static_cast<std::size_t>(componentType);
     std::shared_ptr<IComponentArray> componentArray = m_componentArrays.at(componentIndex);
     if (componentArray == nullptr) {
-        WLOG("Component array %u is not registered!", componentIndex);
+        WLOG("Component array %u is not registered", componentIndex);
         return false;
     }
 

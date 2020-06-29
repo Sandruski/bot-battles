@@ -147,13 +147,11 @@ void PlayStateClient::OnNotify(const Event& event)
 {
     switch (event.eventType) {
 
-        // V
     case EventType::RESULTS_RECEIVED: {
         ChangeToScoreboard();
         break;
     }
 
-        // X
     case EventType::PLAYER_REMOVED: {
         ChangeToMainMenu();
         break;

@@ -27,7 +27,6 @@ bool StartStateClient::Update() const
 {
     std::weak_ptr<GameplayComponent> gameplayComponent = g_gameClient->GetGameplayComponent();
     F32 mainMenuCurrentTime = static_cast<F32>(gameplayComponent.lock()->m_mainMenuTimer.ReadSec());
-    // X
     if (mainMenuCurrentTime >= gameplayComponent.lock()->m_mainMenuTimeout) {
         Event newEvent;
         newEvent.eventType = EventType::SEND_BYE;
@@ -72,7 +71,6 @@ bool StartStateClient::RenderGui() const
         ImVec2 mainMenuButtonSize = ImVec2(mainMenuTextSize.x + framePadding.x * 2.0f, mainMenuTextSize.y + framePadding.y * 2.0f);
         ImGui::SetCursorPosX(contentRegionMax.x - mainMenuButtonSize.x);
         ImGui::SetCursorPosY(contentRegionMax.y - mainMenuButtonSize.y);
-        // X
         if (ImGui::Button(mainMenuString.c_str())) {
             Event newEvent;
             newEvent.eventType = EventType::SEND_BYE;
@@ -100,13 +98,11 @@ void StartStateClient::OnNotify(const Event& event)
 {
     switch (event.eventType) {
 
-        // V
     case EventType::PLAY_RECEIVED: {
         ChangeToPlay();
         break;
     }
 
-        // X
     case EventType::PLAYER_REMOVED: {
         ChangeToMainMenu();
         break;

@@ -49,7 +49,7 @@ inline bool GuiComponent::RegisterSettingsPanel()
     std::size_t panelIndex = static_cast<std::size_t>(panelType);
     std::shared_ptr<Panel> panel = m_settingsPanels.at(panelIndex);
     if (panel != nullptr) {
-        WLOG("Panel %u is already registered!", panelIndex);
+        WLOG("Panel %u is already registered", panelIndex);
         return false;
     }
 
@@ -70,7 +70,7 @@ inline bool GuiComponent::RegisterDebugOptionsPanel()
     std::size_t panelIndex = static_cast<std::size_t>(panelType);
     std::shared_ptr<Panel> panel = m_debugOptionsPanels.at(panelIndex);
     if (panel != nullptr) {
-        WLOG("Panel %u is already registered!", panelIndex);
+        WLOG("Panel %u is already registered", panelIndex);
         return false;
     }
 
@@ -91,7 +91,7 @@ inline bool GuiComponent::DeRegisterSettingsPanel()
     std::size_t panelIndex = static_cast<std::size_t>(panelType);
     std::shared_ptr<Panel> panel = m_settingsPanels.at(panelIndex);
     if (panel == nullptr) {
-        WLOG("Panel %u is not registered!", panelIndex);
+        WLOG("Panel %u is not registered", panelIndex);
         return false;
     }
 
@@ -111,7 +111,7 @@ inline bool GuiComponent::DeRegisterDebugOptionsPanel()
     std::size_t panelIndex = static_cast<std::size_t>(panelType);
     std::shared_ptr<Panel> panel = m_debugOptionsPanels.at(panelIndex);
     if (panel == nullptr) {
-        WLOG("Panel %u is not registered!", panelIndex);
+        WLOG("Panel %u is not registered", panelIndex);
         return false;
     }
 
@@ -131,7 +131,7 @@ inline bool GuiComponent::SetCurrentSettingsPanel()
     std::size_t panelIndex = static_cast<std::size_t>(panelType);
     std::shared_ptr<Panel> panel = m_settingsPanels.at(panelIndex);
     if (panel == nullptr) {
-        WLOG("Panel could not be set to %u!", panelIndex);
+        WLOG("Panel could not be set to %u", panelIndex);
         return false;
     }
 
@@ -151,7 +151,7 @@ inline bool GuiComponent::SetCurrentDebugOptionsPanel()
     std::size_t panelIndex = static_cast<std::size_t>(panelType);
     std::shared_ptr<Panel> panel = m_debugOptionsPanels.at(panelIndex);
     if (panel == nullptr) {
-        WLOG("Panel could not be set to %u!", panelIndex);
+        WLOG("Panel could not be set to %u", panelIndex);
         return false;
     }
 

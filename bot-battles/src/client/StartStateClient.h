@@ -24,8 +24,8 @@ public:
     void OnNotify(const Event& event) override;
 
 private:
-    void ChangeToPlay() const; // PLAY
-    void ChangeToMainMenu() const; // if disconnected or server disconnected
+    void ChangeToPlay() const;
+    void ChangeToMainMenu() const;
 };
 }
 

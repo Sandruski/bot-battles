@@ -49,7 +49,7 @@ inline bool FSM::RegisterState()
     std::size_t stateIndex = static_cast<std::size_t>(stateType);
     std::shared_ptr<State> state = m_states.at(stateIndex);
     if (state != nullptr) {
-        WLOG("State %u is already registered!", stateIndex);
+        WLOG("State %u is already registered", stateIndex);
         return false;
     }
 
@@ -71,7 +71,7 @@ inline bool FSM::DeRegisterState()
     std::size_t stateIndex = static_cast<std::size_t>(stateType);
     std::shared_ptr<State> state = m_states.at(stateIndex);
     if (state == nullptr) {
-        WLOG("State %u is not registered!", stateIndex);
+        WLOG("State %u is not registered", stateIndex);
         return false;
     }
 
@@ -107,7 +107,7 @@ inline bool FSM::ChangeState()
     std::size_t stateIndex = static_cast<std::size_t>(stateType);
     std::shared_ptr<State> state = m_states.at(stateIndex);
     if (state == nullptr) {
-        WLOG("State could not be changed to %u!", stateIndex);
+        WLOG("State could not be changed to %u", stateIndex);
         return false;
     }
 

@@ -16,7 +16,7 @@ bool Subject::AddObserver(std::weak_ptr<Observer> observer)
         return observer.lock() == value.lock();
     });
     if (it != m_observers.end()) {
-        WLOG("Observer is already registered!");
+        WLOG("Observer is already registered");
         return false;
     }
 
@@ -32,7 +32,7 @@ bool Subject::RemoveObserver(std::weak_ptr<Observer> observer)
         return observer.lock() == value.lock();
     });
     if (it == m_observers.end()) {
-        WLOG("Observer is not registered!");
+        WLOG("Observer is not registered");
         return false;
     }
 

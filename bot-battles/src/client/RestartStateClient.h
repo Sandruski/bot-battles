@@ -24,9 +24,9 @@ public:
     void OnNotify(const Event& event) override;
 
 private:
-    void ChangeToGameplay() const; // REWELCOME
-    void ChangeToResults() const; // if button
-    void ChangeToMainMenu() const; // if timer or disconnected or server disconnected
+    void ChangeToGameplay() const;
+    void ChangeToResults() const;
+    void ChangeToMainMenu() const;
 };
 }
 

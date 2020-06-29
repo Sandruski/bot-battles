@@ -687,7 +687,7 @@ void ClientSystem::ConnectionReset(std::weak_ptr<ClientComponent> clientComponen
 //----------------------------------------------------------------------------------------------------
 void ClientSystem::Disconnect(std::weak_ptr<ClientComponent> clientComponent)
 {
-    ILOG("Local player disconnected...");
+    ILOG("Player disconnected...");
 
     clientComponent.lock()->Reset();
     clientComponent.lock()->m_playerID = INVALID_PLAYER_ID;

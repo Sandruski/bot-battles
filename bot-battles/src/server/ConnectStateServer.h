@@ -23,7 +23,7 @@ public:
     void OnNotify(const Event& event) override;
 
 private:
-    void ChangeToGameplay() const; // auto
+    void ChangeToGameplay() const;
 };
 }
 

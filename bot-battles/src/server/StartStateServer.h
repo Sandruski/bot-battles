@@ -25,8 +25,8 @@ public:
 private:
     void OnPlayerAdded() const;
 
-    void ChangeToPlay() const; // OnPlayerAdded (== all players added)
-    void ChangeToMainMenu() const; // if button
+    void ChangeToPlay() const;
+    void ChangeToMainMenu() const;
 };
 }
 

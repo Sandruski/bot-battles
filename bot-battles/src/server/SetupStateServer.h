@@ -23,7 +23,7 @@ public:
     void OnNotify(const Event& event) override;
 
 private:
-    void ChangeToConnect() const; // if button
+    void ChangeToConnect() const;
 
     void ImportMap() const;
 };

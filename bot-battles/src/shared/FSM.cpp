@@ -111,7 +111,7 @@ bool FSM::ChangeState(const std::string& name)
         }
     }
 
-    WLOG("State could not be changed to %s!", name.c_str());
+    WLOG("State could not be changed to %s", name.c_str());
 
     return false;
 }

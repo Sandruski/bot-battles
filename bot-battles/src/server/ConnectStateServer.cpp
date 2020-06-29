@@ -48,7 +48,6 @@ void ConnectStateServer::OnNotify(const Event& event)
 {
     switch (event.eventType) {
 
-        // V
     case EventType::SOCKETS_CONNECTED: {
         ChangeToGameplay();
         break;

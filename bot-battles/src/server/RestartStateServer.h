@@ -21,7 +21,7 @@ public:
     bool Exit() const override;
 
 private:
-    void ChangeToGameplay() const; // auto
+    void ChangeToGameplay() const;
 };
 }
 

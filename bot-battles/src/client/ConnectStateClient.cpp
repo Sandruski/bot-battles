@@ -68,7 +68,6 @@ bool ConnectStateClient::RenderGui() const
     ImVec2 cancelButtonSize = ImVec2(cancelTextSize.x + framePadding.x * 2.0f, cancelTextSize.y + framePadding.y * 2.0f);
     ImGui::SetCursorPosX(contentRegionMax.x - cancelButtonSize.x);
     ImGui::SetCursorPosY(contentRegionMax.y - cancelButtonSize.y);
-    // X
     if (ImGui::Button(cancelString.c_str())) {
         Event newEvent;
         newEvent.eventType = EventType::DISCONNECT_SOCKETS;
@@ -109,13 +108,11 @@ void ConnectStateClient::OnNotify(const Event& event)
         break;
     }
 
-        // V
     case EventType::WELCOME_RECEIVED: {
         ChangeToGameplay();
         break;
     }
 
-        // X
     case EventType::UNWELCOME_RECEIVED: {
         Event newEvent;
         newEvent.eventType = EventType::DISCONNECT_SOCKETS;

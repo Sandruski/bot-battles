@@ -56,7 +56,6 @@ bool StartStateServer::RenderGui() const
         ImVec2 mainMenuButtonSize = ImVec2(mainMenuTextSize.x + framePadding.x * 2.0f, mainMenuTextSize.y + framePadding.y * 2.0f);
         ImGui::SetCursorPosX(contentRegionMax.x - mainMenuButtonSize.x);
         ImGui::SetCursorPosY(contentRegionMax.y - mainMenuButtonSize.y);
-        // X
         if (ImGui::Button(mainMenuString.c_str())) {
             Event newEvent;
             newEvent.eventType = EventType::SEND_BYE;
@@ -116,7 +115,6 @@ void StartStateServer::OnPlayerAdded() const
 {
     std::weak_ptr<ServerComponent> serverComponent = g_gameServer->GetServerComponent();
     U32 entityCount = serverComponent.lock()->GetEntityCount();
-    // V
     if (entityCount == MAX_PLAYER_IDS) {
         ChangeToPlay();
     }

@@ -21,8 +21,8 @@ public:
     bool Exit() const override;
 
 private:
-    void ChangeToRestart() const; // if button
-    void ChangeToMainMenu() const; // if button
+    void ChangeToRestart() const;
+    void ChangeToMainMenu() const;
 };
 }
 

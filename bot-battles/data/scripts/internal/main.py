@@ -37,11 +37,11 @@ def init(scriptName, player, transformComponent, rigidbodyComponent, colliderCom
     logger.addHandler(streamHandler)
     logger.addHandler(fileHandler)
 
-def tick(input): # TODO: uncomment
-    #try:
-    myBot.tick(input)
-    #except:
-        #pass
+def tick(input):
+    try:
+        myBot.tick(input)
+    except:
+        pass
 
 def onSeenNewBot(input, seenBotEntity):
     try:

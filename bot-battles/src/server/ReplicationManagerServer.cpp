@@ -118,24 +118,24 @@ void ReplicationManagerServer::Write(OutputMemoryStream& outputStream, Replicati
                 switch (replicationCommand.m_replicationActionType) {
 
                 case ReplicationActionType::CREATE: {
-                    ILOG("CREATE SENT");
+                    ILOG("Create sent");
                     writtenState = WriteCreateAction(outputStream, networkID, replicationCommand.GetDirtyState());
                     break;
                 }
 
                 case ReplicationActionType::UPDATE: {
-                    ILOG("UPDATE SENT");
+                    ILOG("Update sent");
                     writtenState = WriteUpdateAction(outputStream, networkID, replicationCommand.GetDirtyState());
                     break;
                 }
 
                 case ReplicationActionType::REMOVE: {
-                    ILOG("REMOVE SENT");
+                    ILOG("Remove sent");
                     break;
                 }
 
                 case ReplicationActionType::NONE: {
-                    ILOG("NONE SENT");
+                    ILOG("None sent");
                     break;
                 }
 
