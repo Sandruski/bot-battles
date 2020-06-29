@@ -3,14 +3,19 @@
 #include "Colors.h"
 #include "ComponentManager.h"
 #include "ComponentMemberTypes.h"
+#include "FSM.h"
 #include "Game.h"
+#include "GameplayComponent.h"
+#include "MainMenuComponent.h"
 #include "MeshResource.h"
 #include "RendererComponent.h"
 #include "ResourceManager.h"
+#include "ScoreboardComponent.h"
 #include "ShaderResource.h"
 #include "SightComponent.h"
 #include "SpriteComponent.h"
 #include "SpriteResource.h"
+#include "State.h"
 #include "TransformComponent.h"
 #include "WindowComponent.h"
 
@@ -115,27 +120,41 @@ bool RendererSystem::Render()
     OPTICK_EVENT();
 
     std::weak_ptr<RendererComponent> rendererComponent = g_game->GetRendererComponent();
-
     ResourceManager& resourceManager = g_game->GetResourceManager();
-    std::weak_ptr<SpriteResource> mainMenuSpriteResource = resourceManager.GetResourceByFile<SpriteResource>(rendererComponent.lock()->m_mainMenuTextureName.c_str());
-    if (!mainMenuSpriteResource.expired()) {
-        rendererComponent.lock()->DrawBackgroundTexturedQuad(mainMenuSpriteResource.lock()->GetTexture());
+
+    std::weak_ptr<MainMenuComponent> mainMenuComponent = g_game->GetMainMenuComponent();
+    std::weak_ptr<State> mainMenuCurrentState = mainMenuComponent.lock()->m_fsm.GetCurrentState();
+    if (!mainMenuCurrentState.expired()) {
+        std::weak_ptr<SpriteResource> mainMenuSpriteResource = resourceManager.GetResourceByFile<SpriteResource>(rendererComponent.lock()->m_mainMenuTextureName.c_str());
+        if (!mainMenuSpriteResource.expired()) {
+            rendererComponent.lock()->DrawBackgroundTexturedQuad(mainMenuSpriteResource.lock()->GetTexture());
+        }
     }
-    std::weak_ptr<SpriteResource> scoreboardSpriteResource = resourceManager.GetResourceByFile<SpriteResource>(rendererComponent.lock()->m_scoreboardTextureName.c_str());
-    if (!scoreboardSpriteResource.expired()) {
-        rendererComponent.lock()->DrawBackgroundTexturedQuad(scoreboardSpriteResource.lock()->GetTexture());
+
+    std::weak_ptr<GameplayComponent> gameplayComponent = g_game->GetGameplayComponent();
+    std::weak_ptr<State> gameplayCurrentState = gameplayComponent.lock()->m_fsm.GetCurrentState();
+    if (!gameplayCurrentState.expired()) {
+        std::weak_ptr<SpriteResource> mapSpriteResource = resourceManager.GetResourceByFile<SpriteResource>("map.png");
+        if (!mapSpriteResource.expired()) {
+            rendererComponent.lock()->DrawMapTexturedQuad(mapSpriteResource.lock()->GetTexture());
+        }
+        std::weak_ptr<SpriteResource> charactersSpriteResource = resourceManager.GetResourceByFile<SpriteResource>("characters.png");
+        if (!charactersSpriteResource.expired()) {
+            rendererComponent.lock()->DrawCharactersTexturedQuad(charactersSpriteResource.lock()->GetTexture());
+        }
+        std::weak_ptr<SpriteResource> objectsSpriteResource = resourceManager.GetResourceByFile<SpriteResource>("objects.png");
+        if (!objectsSpriteResource.expired()) {
+            rendererComponent.lock()->DrawObjectsTexturedQuad(objectsSpriteResource.lock()->GetTexture());
+        }
     }
-    std::weak_ptr<SpriteResource> mapSpriteResource = resourceManager.GetResourceByFile<SpriteResource>("map.png");
-    if (!mapSpriteResource.expired()) {
-        rendererComponent.lock()->DrawMapTexturedQuad(mapSpriteResource.lock()->GetTexture());
-    }
-    std::weak_ptr<SpriteResource> charactersSpriteResource = resourceManager.GetResourceByFile<SpriteResource>("characters.png");
-    if (!charactersSpriteResource.expired()) {
-        rendererComponent.lock()->DrawCharactersTexturedQuad(charactersSpriteResource.lock()->GetTexture());
-    }
-    std::weak_ptr<SpriteResource> objectsSpriteResource = resourceManager.GetResourceByFile<SpriteResource>("objects.png");
-    if (!objectsSpriteResource.expired()) {
-        rendererComponent.lock()->DrawObjectsTexturedQuad(objectsSpriteResource.lock()->GetTexture());
+
+    std::weak_ptr<ScoreboardComponent> scoreboardComponent = g_game->GetScoreboardComponent();
+    std::weak_ptr<State> scoreboardCurrentState = scoreboardComponent.lock()->m_fsm.GetCurrentState();
+    if (!scoreboardCurrentState.expired()) {
+        std::weak_ptr<SpriteResource> scoreboardSpriteResource = resourceManager.GetResourceByFile<SpriteResource>(rendererComponent.lock()->m_scoreboardTextureName.c_str());
+        if (!scoreboardSpriteResource.expired()) {
+            rendererComponent.lock()->DrawBackgroundTexturedQuad(scoreboardSpriteResource.lock()->GetTexture());
+        }
     }
 
     return true;
