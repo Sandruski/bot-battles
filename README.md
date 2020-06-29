@@ -1,8 +1,6 @@
 # Bot Battles
 [Bot Battles](https://github.com/Sandruski/bot-battles) is a 2D multiplayer game about programming your own bot and battling against others.
 
-The project is in the Beta stage.
-
 # Requirements
 - Python 3.8
 
@@ -30,6 +28,9 @@ Have fun!
 ## Vertical Slice
 ## Alpha
 ## Beta
+## Gold
+
+# Known Issues
 
 # About
 The code is written in C++ and follows the ISO C++ 17 Standard.

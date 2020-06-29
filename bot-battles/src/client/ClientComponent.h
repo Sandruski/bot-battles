@@ -65,7 +65,7 @@ struct ClientComponent : public Component {
     U32 m_interpolationFromFrame;
     U32 m_interpolationToFrame;
     F32 m_interpolationPercentage;
-    F32 m_entityInterpolationPeriod; // TODO: *2? https://developer.valvesoftware.com/wiki/Source_Multiplayer_Networking#Entity_interpolation
+    F32 m_entityInterpolationPeriod;
 
     CircularBuffer<Frame, MAX_FRAMES> m_frameBuffer; // client-side only
     /*

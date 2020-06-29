@@ -13,13 +13,6 @@
 #include "UtilsClient.h"
 #include "WeaponComponent.h"
 
-// TODO: remove this. We already have it in the pchClient.h
-#include <embed.h>
-#include <pybind11.h>
-#include <stl.h>
-
-namespace py = pybind11;
-
 namespace sand {
 
 PYBIND11_EMBEDDED_MODULE(botbattles, m)
