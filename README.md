@@ -18,9 +18,6 @@ To import the example script:
 Have fun!
 
 # Controls
-- WASD: move character
-- Left and right arrows: rotate character
-- Spacebar: shoot
 - O: toggle Log output
 - Esc: toggle Settings menu
 - F1: toggle Debug Options menu
