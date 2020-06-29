@@ -43,7 +43,7 @@ class BalancedBot(bot.Bot):
         if self.action.canPerformAction:
             self.think()
         
-        self.fsm.updateCurrentState(input)
+        self.fsm.update(input)
         self.agent.update(input)
 
     def onSeenNewBot(self, input, seenBotEntity):

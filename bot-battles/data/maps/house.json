@@ -264,7 +264,7 @@
                         {
                          "name":"sightDistance",
                          "type":"float",
-                         "value":300
+                         "value":350
                         }, 
                         {
                          "name":"transformRotation",
@@ -332,7 +332,7 @@
                         {
                          "name":"sightDistance",
                          "type":"float",
-                         "value":300
+                         "value":350
                         }, 
                         {
                          "name":"transformRotation",
@@ -391,12 +391,12 @@
                         {
                          "name":"cooldownSpawn",
                          "type":"float",
-                         "value":10
+                         "value":20
                         }, 
                         {
                          "name":"weaponAmmo",
                          "type":"int",
-                         "value":8
+                         "value":9
                         }, 
                         {
                          "name":"weaponCooldownReload",
@@ -416,7 +416,7 @@
                         {
                          "name":"weaponMaxAmmo",
                          "type":"int",
-                         "value":4
+                         "value":3
                         }, 
                         {
                          "name":"weaponRange",
@@ -454,12 +454,12 @@
                         {
                          "name":"cooldownSpawn",
                          "type":"float",
-                         "value":10
+                         "value":20
                         }, 
                         {
                          "name":"weaponAmmo",
                          "type":"int",
-                         "value":8
+                         "value":9
                         }, 
                         {
                          "name":"weaponCooldownReload",
@@ -479,7 +479,7 @@
                         {
                          "name":"weaponMaxAmmo",
                          "type":"int",
-                         "value":4
+                         "value":3
                         }, 
                         {
                          "name":"weaponRange",
@@ -528,7 +528,7 @@
                         {
                          "name":"cooldownSpawn",
                          "type":"float",
-                         "value":15
+                         "value":30
                         }, 
                         {
                          "name":"healthCooldownHeal",

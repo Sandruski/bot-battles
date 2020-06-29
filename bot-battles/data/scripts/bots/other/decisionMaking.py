@@ -271,7 +271,7 @@ class FSM:
         self.currentState = newState
         self.currentState.enter(self.bot)
 
-    def updateCurrentState(self, input):
+    def update(self, input):
         if self.currentState != None:
             self.currentState.update(self.bot, input)
 
