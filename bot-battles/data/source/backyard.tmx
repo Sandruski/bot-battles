@@ -65,11 +65,11 @@
   </object>
   <object id="2" name="botSpawner" type="BotSpawner" gid="198" x="64" y="128" width="64" height="64"/>
  </objectgroup>
- <objectgroup id="4" name="weaponSpawner" visible="0">
+ <objectgroup id="4" name="weaponSpawner">
   <object id="3" name="weaponSpawner" type="WeaponSpawner" gid="369" x="1024" y="384" width="64" height="64"/>
   <object id="4" name="weaponSpawner" type="WeaponSpawner" gid="369" x="64" y="320" width="64" height="64"/>
  </objectgroup>
- <objectgroup id="5" name="healthSpawner" visible="0">
+ <objectgroup id="5" name="healthSpawner">
   <object id="5" name="healthSpawner" type="HealthSpawner" gid="360" x="512" y="64" width="64" height="64"/>
   <object id="6" name="healthSpawner" type="HealthSpawner" gid="360" x="576" y="640" width="64" height="64"/>
  </objectgroup>
