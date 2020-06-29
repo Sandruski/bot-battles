@@ -1,5 +1,5 @@
 # Bot Battles
-[Bot Battles](https://github.com/Sandruski/bot-battles) is a 2D multiplayer game about programming your own bot and battling against others.
+[Bot Battles](https://github.com/Sandruski/bot-battles) is a 2D online multiplayer shooter video game about programming your own bot and battling against others. Two clients compete in a server.
 
 ![in_game](https://github.com/Sandruski/bot-battles/blob/master/in_game.png)
 
