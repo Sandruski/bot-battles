@@ -99,7 +99,7 @@ Only during gameplay:
 - Implemented the Scripting System together with its Scripting Component to manage the Python communication.
 - Implemented the Bot Battles Module for the binding code.
 - Added a panel in the game and a file in its folder to print the logs of the bots.
-- Chosen Python as the scripting language.
+- Chose Python as the scripting language.
 - Passed the Input Component by reference to the script every update.
 - Passed the components of the bot by reference to the script on initialization.
 - Sent events from client updates to the script.
