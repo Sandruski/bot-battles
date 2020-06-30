@@ -53,10 +53,10 @@ Only during gameplay:
 ## Proof of Concept
 - Implemented simple utilities, such as math utilities.
 - Implemented a Resource Manager, an ECS with an Entity Manager, a Component Manager, and a System Manager, and a FSM.
-- Added the resources Sprite Resource, Font Resource, and Text Resource, with their respective importers.
-- Added the systems Event System, Window System, Renderer System, Label System, Collision System, Input System, Movement System, and Spawner System.
-- Added the components Transform Component, Sprite Component, Label Component, Collider Component, Event Component, Window Component, Renderer Component, and Input Component.
-- Added the scenes Main Menu State and Gameplay State.
+- Added the resources Sprite Resource, Font Resource, and Text Resource, with their respective importers.
+- Added the systems Event System, Window System, Renderer System, Label System, Collision System, Input System, Movement System, and Spawner System.
+- Added the components Transform Component, Sprite Component, Label Component, Collider Component, Event Component, Window Component, Renderer Component, and Input Component.
+- Added the scenes Main Menu State and Gameplay State.
 - Implemented the Client System together with its Client Component and Server System together with its Server Component to manage the network communication.
 - Defined client’s Hello and Input messages and server’s Welcome and State messages to establish and maintain the communication.
 - Implemented input and output memory streams to serialize the game data.
@@ -70,17 +70,17 @@ Only during gameplay:
 
 ## Vertical Slice
 - Rendered using OpenGL directly rather than SDL to integrate Dear ImGui.
-- Added draw layers.
-- Replaced the math utilities with GLM to fit with OpenGL.
-- Implemented a simple raycaster utility to perform scene queries.
-- Added the resources Mesh Resource and Shader Resource, with their respective importers.
-- Added the Map Importer.
-- Removed the resources Font Resource and Text Resource.
-- Renamed the resource Sprite Resource to Texture Resource.
-- Added the systems GUI System, Weapon System, and Health System.
-- Added the components GUI Component, Weapon Component, Health Component, Player Component, Local Player Component, Remote Player Component, Spawner Component, Main Menu Component, Gameplay Component, and Scoreboard Component.
-- Added the Debug Options panel and the Settings panel.
-- Added the scene Scoreboard State.
+- Added draw layers.
+- Replaced the math utilities with GLM to fit with OpenGL.
+- Implemented a simple raycaster utility to perform scene queries.
+- Added the resources Mesh Resource and Shader Resource, with their respective importers.
+- Added the Map Importer.
+- Removed the resources Font Resource and Text Resource.
+- Renamed the resource Sprite Resource to Texture Resource.
+- Added the systems GUI System, Weapon System, and Health System.
+- Added the components GUI Component, Weapon Component, Health Component, Player Component, Local Player Component, Remote Player Component, Spawner Component, Main Menu Component, Gameplay Component, and Scoreboard Component.
+- Added the Debug Options panel and the Settings panel.
+- Added the scene Scoreboard State.
 - Defined server’s Play, Results, and Bye messages and client’s Bye message to maintain and close the communication.
 - Also used TCP sockets to transfer packets.
 - Defined server’s Unwelcome message to limit the amount of players per session.
@@ -92,10 +92,10 @@ Only during gameplay:
 
 ## Alpha
 - Replaced the raycaster utility with Box2D to guarantee more accurate and realistic physics.
-- Handled floating-point errors.
+- Handled floating-point errors.
 - Added the system Physics System.
-- Added the components Physics Component, Rigidbody Component, Bot Component, and Wall Component.
-- Added client’s Output panel.
+- Added the components Physics Component, Rigidbody Component, Bot Component, and Wall Component.
+- Added client’s Output panel.
 - Implemented the Scripting System together with its Scripting Component to manage the Python communication.
 - Implemented the Bot Battles Module for the binding code.
 - Added a panel in the game and a file in its folder to print the logs of the bots.
@@ -107,13 +107,13 @@ Only during gameplay:
 
 ## Beta
 - Integrated Optick for profiling.
-- Rendered using instancing to improve the performance.
-- Added debug draw for lines, circles, and quads.
-- Renamed the system Spawner System to Bot Spawner System.
-- Added the systems Sight System, Bot System, Map System, Weapon Spawner System, and Health Spawner System.
-- Renamed the component Spawner Component to Bot Spawner Component.
-- Added the components Sight Component, Weapon Spawner Component, Health Spawner Component, and Map Component.
-- Included triggers in the Collider Component.
+- Rendered using instancing to improve the performance.
+- Added debug draw for lines, circles, and quads.
+- Renamed the system Spawner System to Bot Spawner System.
+- Added the systems Sight System, Bot System, Map System, Weapon Spawner System, and Health Spawner System.
+- Renamed the component Spawner Component to Bot Spawner Component.
+- Added the components Sight Component, Weapon Spawner Component, Health Spawner Component, and Map Component.
+- Included triggers in the Collider Component.
 - Changed the icon of the window.
 - Performed input validation of the inputs of players.
 - Added spawners of weapons and ammunition boxes and first aid boxes.
