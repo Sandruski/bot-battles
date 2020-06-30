@@ -27,10 +27,16 @@ Attribute | Description
 linearVelocityX | The desired linear velocity of the bot on the horizontal axis (x-axis).
 linearVelocityY | The desired linear velocity of the bot on the vertical axis (y-axis).
 angularVelocity | The desired angular velocity of the bot.
-
 Method | Description
 ------------ | -------------
 shootPrimaryWeapon | Fires a bullet with the primary weapon of the bot (if any) in the direction that the bot is facing. It only shoots if the primary weapon has currentAmmo.
 shootSecondaryWeapon | Fires a bullet with the secondary weapon of the bot in the direction that the bot is facing.
 reload | Reloads the primary weapon of the bot (if any). It consumes the necessary ammunition from an ammunition box (if any) from the bot's inventory. It only reloads if the primary weapon's currentAmmo is less than maxAmmo and the bot has ammoBoxAmmo.
 heal | Heals the bot. It consumes all HP from a first aid box (if any) from the bot's inventory. It only heals if the bot has firstAidBoxHP.
+
+## Transform Component
+Attribute | Description
+------------ | -------------
+
+Method | Description
+------------ | -------------
