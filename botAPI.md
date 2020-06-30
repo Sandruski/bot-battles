@@ -1,4 +1,6 @@
-# Bot events
+# Bot API
+
+## Bot events
 
 Method | Description
 ------------ | -------------
