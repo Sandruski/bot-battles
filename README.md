@@ -15,6 +15,28 @@ To use the example bots:
 3. Go to bin>bin86 for the 32-bit version or bin>bin64 for the 64-bit version.
 4. Run one instance of server.exe and two instances of client.exe.
 
+# How to play
+## Create a bot
+1. Go to data>scripts>bots.
+2. Copy exampleBot.py in the same folder.
+3. Open it in Visual Studio.
+4. Go to data>scripts>stubs.
+5. Open botbattles.pyi in Visual Studio too.
+6. Open botAPI.md.
+7. Code your bot.
+
+## Create a map
+1. Download [Tiled](https://www.mapeditor.org/) and install it.
+2. Go to data>source.
+3. Open backyard.tmx or house.tmx or create a new map in Tiled.
+4. Edit your map.
+5. Export it as a .json in data>maps.
+
+## Play a deathmatch
+1. On the client, write the IP and the port of the server, your name, and select the bot that you want to play with.
+2. On the server, write its port, and select the map that you want to play in and the duration of the game.
+3. Wait until the connection between the client and the server is established.
+
 Have fun!
 
 # Controls
@@ -25,7 +47,7 @@ Only during gameplay:
 - O: toggle Log output
 - Left Shift + W: end the match
 
-# Known Issues
+# Known issues
 
 # Changelog
 ## Vertical Slice
