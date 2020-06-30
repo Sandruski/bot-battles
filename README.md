@@ -18,7 +18,7 @@ To use the example bots:
 # How to play
 ## Create a bot
 1. Go to data>scripts>bots.
-2. Copy exampleBot.py in the same folder.
+2. Copy exampleBot.py or create a new .py file in the same folder.
 3. Open it in Visual Studio.
 4. Go to data>scripts>stubs.
 5. Open botbattles.pyi in Visual Studio too.
