@@ -52,7 +52,7 @@ Only during gameplay:
 # Changelog
 ## Proof of Concept
 - Implemented simple utilities, such as math utilities.
-- Implemented a Resource Manager, an ECS with an Entity Manager, a Component Manager, and a System Manager, and a FSM.
+- Implemented a Resource Manager, an ECS with an Entity Manager, a Component Manager, and a System Manager, and a FSM.
 - Added the resources Sprite Resource, Font Resource, and Text Resource, with their respective importers.
 - Added the systems Event System, Window System, Renderer System, Label System, Collision System, Input System, Movement System, and Spawner System.
 - Added the components Transform Component, Sprite Component, Label Component, Collider Component, Event Component, Window Component, Renderer Component, and Input Component.
