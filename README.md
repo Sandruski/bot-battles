@@ -10,10 +10,10 @@ To use the example bots:
 - PyGLM
 
 # Installation
-1. Go to [Releases](https://github.com/Sandruski/bot-battles/releases).
-2. Download the latest release.
-3. Unzip it.
-4. Launch one instance of the server executable and two instances of the client executable.
+1. Go to [Releases](https://github.com/Sandruski/bot-battles/releases) and download the latest release.
+2. Unzip the game and open its folder.
+3. Go to bin>bin86 for the 32-bit version or bin>bin64 for the 64-bit version.
+4. Run one instance of server.exe and two instances of client.exe.
 
 Have fun!
 
