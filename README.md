@@ -50,60 +50,9 @@ Only during gameplay:
 - Left Shift + W: end the match
 
 # Changelog
-## Proof of Concept
-- Implemented simple utilities, such as math utilities.
-- Implemented a Resource Manager, an ECS with an Entity Manager, a Component Manager, and a System Manager, and a FSM.
-- Added the resources Sprite Resource, Font Resource, and Text Resource, with their respective importers.
-- Added the systems Event System, Window System, Renderer System, Label System, Collision System, Input System, Movement System, and Spawner System.
-- Added the components Transform Component, Sprite Component, Label Component, Collider Component, Event Component, Window Component, Renderer Component, and Input Component.
-- Added the scenes Main Menu State and Gameplay State.
-- Implemented the Client System together with its Client Component and Server System together with its Server Component to manage the network communication.
-- Defined client’s Hello and Input messages and server’s Welcome and State messages to establish and maintain the communication.
-- Implemented input and output memory streams to serialize the game data.
-- Implemented a linking context to serialize the game data.
-- Implement a replication manager to replicate the game data.
-- Used UDP sockets to transfer packets.
-- Wrote an algorithm to simulate real world conditions to test the netcode.
-- Implemented a technique for client-side prediction and server reconciliation to hide the abrupt movement of the local character present with lag.
-- Implemented a technique for entity interpolation to hide the abrupt movement of remote characters present with lag.
-- Spawned a character object for the player when a player joined the session to allow the player to control it.
-
-## Vertical Slice
-- Rendered using OpenGL directly rather than SDL to integrate Dear ImGui.
-- Added draw layers.
-- Replaced the math utilities with GLM to fit with OpenGL.
-- Implemented a simple raycaster utility to perform scene queries.
-- Added the resources Mesh Resource and Shader Resource, with their respective importers.
-- Added the Map Importer.
-- Removed the resources Font Resource and Text Resource.
-- Renamed the resource Sprite Resource to Texture Resource.
-- Added the systems GUI System, Weapon System, and Health System.
-- Added the components GUI Component, Weapon Component, Health Component, Player Component, Local Player Component, Remote Player Component, Spawner Component, Main Menu Component, Gameplay Component, and Scoreboard Component.
-- Added the Debug Options panel and the Settings panel.
-- Added the scene Scoreboard State.
-- Defined server’s Play, Results, and Bye messages and client’s Bye message to maintain and close the communication.
-- Also used TCP sockets to transfer packets.
-- Defined server’s Unwelcome message to limit the amount of players per session.
-- Established a win-lose condition.
-- Spawned all element objects of the map when the session is created to allow players to interact with them.
-- Added a weapon to the character object to allow it to shoot.
-- Erased the algorithm to simulate real world conditions to test netcode with Clumsy instead.
-- Implemented a technique for lag compensation to prevent unexpected results from occurring when shooting with lag.
-
-## Alpha
-- Replaced the raycaster utility with Box2D to guarantee more accurate and realistic physics.
-- Handled floating-point errors.
-- Added the system Physics System.
-- Added the components Physics Component, Rigidbody Component, Bot Component, and Wall Component.
-- Added client’s Output panel.
-- Implemented the Scripting System together with its Scripting Component to manage the Python communication.
-- Implemented the Bot Battles Module for the binding code.
-- Added a panel in the game and a file in its folder to print the logs of the bots.
-- Chose Python as the scripting language.
-- Passed the Input Component by reference to the script every update.
-- Passed the components of the bot by reference to the script on initialization.
-- Sent events from client updates to the script.
-- Wrote a main script, a script for the base class of a bot, and a script for an example bot derived from the base class.
+## Gold
+- Listed all the variables and methods of the bot API in a file located in the game folder.
+- Wrote two scripts derived from the example bot class, one for an easy bot and one for a hard bot.
 
 ## Beta
 - Integrated Optick for profiling.
@@ -127,9 +76,60 @@ Only during gameplay:
 - Sent events from server updates to the script.
 - Replicated only the objects seen by the bots.
 
-## Gold
-- Listed all the variables and methods of the bot API in a file located in the game folder.
-- Wrote two scripts derived from the example bot class, one for an easy bot and one for a hard bot.
+## Alpha
+- Replaced the raycaster utility with Box2D to guarantee more accurate and realistic physics.
+- Handled floating-point errors.
+- Added the system Physics System.
+- Added the components Physics Component, Rigidbody Component, Bot Component, and Wall Component.
+- Added client’s Output panel.
+- Implemented the Scripting System together with its Scripting Component to manage the Python communication.
+- Implemented the Bot Battles Module for the binding code.
+- Added a panel in the game and a file in its folder to print the logs of the bots.
+- Chose Python as the scripting language.
+- Passed the Input Component by reference to the script every update.
+- Passed the components of the bot by reference to the script on initialization.
+- Sent events from client updates to the script.
+- Wrote a main script, a script for the base class of a bot, and a script for an example bot derived from the base class.
+
+## Vertical Slice
+- Rendered using OpenGL directly rather than SDL to integrate Dear ImGui.
+- Added draw layers.
+- Replaced the math utilities with GLM to fit with OpenGL.
+- Implemented a simple raycaster utility to perform scene queries.
+- Added the resources Mesh Resource and Shader Resource, with their respective importers.
+- Added the Map Importer.
+- Removed the resources Font Resource and Text Resource.
+- Renamed the resource Sprite Resource to Texture Resource.
+- Added the systems GUI System, Weapon System, and Health System.
+- Added the components GUI Component, Weapon Component, Health Component, Player Component, Local Player Component, Remote Player Component, Spawner Component, Main Menu Component, Gameplay Component, and Scoreboard Component.
+- Added the Debug Options panel and the Settings panel.
+- Added the scene Scoreboard State.
+- Defined server’s Play, Results, and Bye messages and client’s Bye message to maintain and close the communication.
+- Also used TCP sockets to transfer packets.
+- Defined server’s Unwelcome message to limit the amount of players per session.
+- Established a win-lose condition.
+- Spawned all element objects of the map when the session is created to allow players to interact with them.
+- Added a weapon to the character object to allow it to shoot.
+- Erased the algorithm to simulate real world conditions to test netcode with Clumsy instead.
+- Implemented a technique for lag compensation to prevent unexpected results from occurring when shooting with lag.
+
+## Proof of Concept
+- Implemented simple utilities, such as math utilities.
+- Implemented a Resource Manager, an ECS with an Entity Manager, a Component Manager, and a System Manager, and a FSM.
+- Added the resources Sprite Resource, Font Resource, and Text Resource, with their respective importers.
+- Added the systems Event System, Window System, Renderer System, Label System, Collision System, Input System, Movement System, and Spawner System.
+- Added the components Transform Component, Sprite Component, Label Component, Collider Component, Event Component, Window Component, Renderer Component, and Input Component.
+- Added the scenes Main Menu State and Gameplay State.
+- Implemented the Client System together with its Client Component and Server System together with its Server Component to manage the network communication.
+- Defined client’s Hello and Input messages and server’s Welcome and State messages to establish and maintain the communication.
+- Implemented input and output memory streams to serialize the game data.
+- Implemented a linking context to serialize the game data.
+- Implement a replication manager to replicate the game data.
+- Used UDP sockets to transfer packets.
+- Wrote an algorithm to simulate real world conditions to test the netcode.
+- Implemented a technique for client-side prediction and server reconciliation to hide the abrupt movement of the local character present with lag.
+- Implemented a technique for entity interpolation to hide the abrupt movement of remote characters present with lag.
+- Spawned a character object for the player when a player joined the session to allow the player to control it.
 
 # About
 The application is written in C++ and follows the ISO C++ 17 Standard. The scripts are written in Python.
