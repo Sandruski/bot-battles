@@ -38,6 +38,9 @@ To use the example bots:
 1. On the client, write the IP and the port of the server, your name, and select the bot that you want to play with. The bot can be one of the example bots (easyBot or hardBot) or your own bot.
 2. On the server, write its port, and select the map that you want to play in and the duration of the game. The map can be one of the example maps (backyard or house) or your own map.
 3. Wait until the connection between the client and the server is established.
+4. Enjoy the deathmatch.
+5. Once it is over, go to the directory of the executable of the game.
+6. Open the .log file to check the output of your bot.
 
 Have fun!
 
