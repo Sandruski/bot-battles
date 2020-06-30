@@ -4,10 +4,10 @@
 ![in_game](in_game.png)
 
 # Requirements
-- Python 3.8
+- [Python 3.8](https://www.python.org/downloads/release/python-380/)
 
 To use the example bots:
-- PyGLM
+- [PyGLM](https://pypi.org/project/PyGLM/)
 
 # Installation
 1. Go to [Releases](https://github.com/Sandruski/bot-battles/releases) and download the latest release.
