@@ -22,9 +22,10 @@ To use the example bots:
 3. Open it in Visual Studio.
 4. Go to data>scripts>stubs.
 5. Open botbattles.pyi in Visual Studio too.
-6. Open botAPI.md.
-7. Code your bot.
-8. Once you're done, save it.
+6. Go to docs.
+7. Open botAPI.md.
+8. Code your bot.
+9. Once you're done, save it.
 
 ## Create a map
 1. Download [Tiled](https://www.mapeditor.org/) and install it.
