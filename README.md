@@ -24,13 +24,14 @@ To use the example bots:
 5. Open botbattles.pyi in Visual Studio too.
 6. Open botAPI.md.
 7. Code your bot.
+8. Once you're done, save it.
 
 ## Create a map
 1. Download [Tiled](https://www.mapeditor.org/) and install it.
 2. Go to data>source.
 3. Open backyard.tmx or house.tmx or create a new map in Tiled.
 4. Edit your map.
-5. Export it as a .json in data>maps.
+5. Once you're done, export it as a .json in data>maps.
 
 ## Play a deathmatch
 1. On the client, write the IP and the port of the server, your name, and select the bot that you want to play with.
