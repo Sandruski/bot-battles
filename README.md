@@ -6,14 +6,14 @@
 # Requirements
 - Python 3.8
 
-To import the example script:
+To use the example bots:
 - PyGLM
 
 # Installation
-1. Go to the Releases section of the repository.
-2. Download any release of the game.
+1. Go to [Releases](https://github.com/Sandruski/bot-battles/releases).
+2. Download the latest release.
 3. Unzip it.
-4. Run one instance of the server executable and two instances of the client executable.
+4. Launch one instance of the server executable and two instances of the client executable.
 
 Have fun!
 
@@ -21,7 +21,7 @@ Have fun!
 - Esc: toggle Settings menu
 - F1: toggle Debug Options menu
 
-Only gameplay:
+Only during gameplay:
 - O: toggle Log output
 - Left Shift + W: end the match
 
