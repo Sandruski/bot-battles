@@ -88,7 +88,7 @@ class BalancedBot(bot.Bot):
             distance = glm.distance(glm.vec2(seenBotInfo.transform.position[0], seenBotInfo.transform.position[1]), glm.vec2(self.transform.position[0], self.transform.position[1]))
             colliderRange = self.collider.size[0] / 2.0 + seenBotInfo.collider.size[0] / 2.0
 
-            # Cover
+            # Take cover
             if self.fsm.isCurrentState("TakeCover") == True:
                 if self.agent.finishedMove == True:
                     if self.fsm.isCurrentState("Idle") == False:
@@ -101,7 +101,7 @@ class BalancedBot(bot.Bot):
                 if self.agent.finishedMove == True:
                     if self.fsm.isCurrentState("Reload") == False:
                         self.fsm.changeCurrentState(decisionMaking.Reload())
-            # Heal
+            # Heal or retreat
             elif self.health.currentHP < seenBotInfo.health.currentHP * 0.9:
                 if self.health.firstAidBoxHP > 0:
                     if self.canTakeCover == True:
@@ -129,6 +129,18 @@ class BalancedBot(bot.Bot):
                 else:
                     if self.fsm.isCurrentState("MoveTowardsBot") == False:
                         self.fsm.changeCurrentState(decisionMaking.MoveTowardsBot(self.lastSeenBotEntity))
+            # Shoot
+            elif seenBotInfo.health.currentHP - self.weapon.secondaryWeaponDamage * 3 <= 0:
+                if distance <= self.weapon.secondaryWeaponRange:
+                    if distance >= colliderRange:
+                        if self.fsm.isCurrentState("ShootSecondaryWeapon") == False:
+                            self.fsm.changeCurrentState(decisionMaking.ShootSecondaryWeapon(self.lastSeenBotEntity))
+                    else:
+                        if self.fsm.isCurrentState("MoveAwayFromBot") == False:
+                            self.fsm.changeCurrentState(decisionMaking.MoveAwayFromBot(self.lastSeenBotEntity))
+                else:
+                    if self.fsm.isCurrentState("MoveTowardsBot") == False:
+                        self.fsm.changeCurrentState(decisionMaking.MoveTowardsBot(self.lastSeenBotEntity))  
             # Reload
             elif self.weapon.ammoBoxAmmo > 0:
                 if self.canTakeCover == True:
@@ -152,7 +164,7 @@ class BalancedBot(bot.Bot):
                     if self.fsm.isCurrentState("MoveTowardsBot") == False:
                         self.fsm.changeCurrentState(decisionMaking.MoveTowardsBot(self.lastSeenBotEntity))  
         else:
-            # Cover
+            # Take cover
             if self.fsm.isCurrentState("TakeCover") == True:
                 if self.agent.finishedMove == True:
                     if self.fsm.isCurrentState("Idle") == False:
