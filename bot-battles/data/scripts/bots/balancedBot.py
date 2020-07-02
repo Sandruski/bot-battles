@@ -195,6 +195,19 @@ class BalancedBot(bot.Bot):
                     closestWeaponSpawner = self.getClosestWeaponSpawner(self.transform.position)
                     worldDestinationPosition = self.map.getWorldPosition(closestWeaponSpawner)
                     self.fsm.changeCurrentState(decisionMaking.GoToWeaponSpawner(self.transform.position, worldDestinationPosition))
+            # Search
+            elif self.lastKnownDirection != None:
+                if self.fsm.isCurrentState("LookAtBullet") == True:
+                    if self.agent.finishedRotate == True:
+                        self.lastKnownDirection = None
+                else:
+                    self.fsm.changeCurrentState(decisionMaking.LookAtBullet(self.lastKnownDirection))
+            elif self.lastKnownPosition != None:
+                if self.fsm.isCurrentState("GoToLastKnownPosition") == True:
+                    if self.agent.finishedMove == True:
+                        self.lastKnownPosition = None
+                else:
+                    self.fsm.changeCurrentState(decisionMaking.GoToLastKnownPosition(self.transform.position, self.lastKnownPosition))
             # Reload
             elif self.weapon.ammoBoxAmmo == 0 and self.canPickUpObjects:
                 if self.fsm.isCurrentState("GoToWeaponSpawner") == False:
@@ -209,23 +222,10 @@ class BalancedBot(bot.Bot):
                     self.fsm.changeCurrentState(decisionMaking.GoToHealthSpawner(self.transform.position, worldDestinationPosition))
             # Search
             else:
-                if self.lastKnownDirection != None:
-                    if self.fsm.isCurrentState("LookAtBullet") == True:
-                        if self.agent.finishedRotate == True:
-                            self.lastKnownDirection = None
-                    else:
-                        self.fsm.changeCurrentState(decisionMaking.LookAtBullet(self.lastKnownDirection))
-                elif self.lastKnownPosition != None:
-                    if self.fsm.isCurrentState("GoToLastKnownPosition") == True:
-                        if self.agent.finishedMove == True:
-                            self.lastKnownPosition = None
-                    else:
-                        self.fsm.changeCurrentState(decisionMaking.GoToLastKnownPosition(self.transform.position, self.lastKnownPosition))
-                else:
-                    if self.agent.finishedMove == True:
-                        randomTile = self.getRandomTile()
-                        worldDestinationPosition = self.map.getWorldPosition(randomTile)
-                        self.fsm.changeCurrentState(decisionMaking.GoToRandomPosition(self.transform.position, worldDestinationPosition))
+                if self.agent.finishedMove == True:
+                    randomTile = self.getRandomTile()
+                    worldDestinationPosition = self.map.getWorldPosition(randomTile)
+                    self.fsm.changeCurrentState(decisionMaking.GoToRandomPosition(self.transform.position, worldDestinationPosition))
                          
     def getClosestWeaponSpawner(self, worldPosition):
         return self.getClosestTileOfType(TileType.WEAPON_SPAWNER, worldPosition)
