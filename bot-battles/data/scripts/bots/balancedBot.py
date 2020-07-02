@@ -187,10 +187,10 @@ class BalancedBot(bot.Bot):
                     worldDestinationPosition = self.map.getWorldPosition(closestHealthSpawner)
                     self.fsm.changeCurrentState(decisionMaking.GoToHealthSpawner(self.transform.position, worldDestinationPosition))
             # Reload
-            elif self.weapon.currentAmmo < self.weapon.maxAmmo and self.weapon.ammoBoxAmmo > 0:
+            elif self.weapon.currentAmmo < self.weapon.maxAmmo * 0.5 and self.weapon.ammoBoxAmmo > 0:
                 if self.fsm.isCurrentState("Reload") == False:
                     self.fsm.changeCurrentState(decisionMaking.Reload())
-            elif self.weapon.currentAmmo < self.weapon.maxAmmo and self.canPickUpObjects:
+            elif self.weapon.currentAmmo < self.weapon.maxAmmo * 0.5 and self.canPickUpObjects:
                 if self.fsm.isCurrentState("GoToWeaponSpawner") == False:
                     closestWeaponSpawner = self.getClosestWeaponSpawner(self.transform.position)
                     worldDestinationPosition = self.map.getWorldPosition(closestWeaponSpawner)
