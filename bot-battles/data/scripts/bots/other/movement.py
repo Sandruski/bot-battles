@@ -4,16 +4,20 @@ import glm
 import heapq
 import logging
 
+from botbattles import InputComponent
 from botbattles import TransformComponent
 from botbattles import ColliderComponent
 from botbattles import RigidbodyComponent
 from botbattles import WeaponComponent
 from botbattles import HealthComponent
 from botbattles import SightComponent
+from botbattles import SeenBotInfo
+from botbattles import SeenWeaponInfo
+from botbattles import SeenHealthInfo
 from botbattles import ActionComponent
 from botbattles import MapComponent
-from botbattles import InputComponent
 from botbattles import TileType
+from botbattles import CollisionEvent
 
 class PriorityQueue:
     def __init__(self):
