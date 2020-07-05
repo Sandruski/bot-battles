@@ -16,7 +16,7 @@ To use the example bots:
 4. Run one instance of server.exe and two instances of client.exe.
 
 # How to play
-## Create a bot
+## Code a bot
 1. Go to data>scripts>bots.
 2. Copy exampleBot.py or create a new .py file in the same folder.
 3. Open it in Visual Studio.
@@ -34,7 +34,7 @@ To use the example bots:
 4. Edit your map.
 5. Once you're done, export it as a .json in data>maps.
 
-## Play a deathmatch
+## Battle
 1. On the client, write the IP and the port of the server, your name, and select the bot that you want to play with. The bot can be one of the example bots (easyBot or hardBot) or your own bot.
 2. On the server, write its port, and select the map that you want to play in and the duration of the game. The map can be one of the example maps (backyard or house) or your own map.
 3. Wait until the connection between the client and the server is established.

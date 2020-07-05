@@ -8,9 +8,11 @@
 
 <iframe src="https://player.vimeo.com/video/435451400" width="640" height="329" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
 
+<br>
+
 # How to play
 
-## Create a bot
+## Code a bot
 
 1. Go to data>scripts>bots.
 2. Copy exampleBot.py or create a new .py file in the same folder.
@@ -30,7 +32,7 @@
 4. Edit your map.
 5. Once you're done, export it as a .json in data>maps.
 
-## Play a deathmatch
+## Battle
 
 1. On the client, write the IP and the port of the server, your name, and select the bot that you want to play with. The bot can be one of the example bots (easyBot or hardBot) or your own bot.
 2. On the server, write its port, and select the map that you want to play in and the duration of the game. The map can be one of the example maps (backyard or house) or your own map.
