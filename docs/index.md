@@ -3,6 +3,12 @@
 
 <iframe src="https://player.vimeo.com/video/435450816" width="640" height="329" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
 
+<iframe src="https://player.vimeo.com/video/435451334" width="640" height="329" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+
+<iframe src="https://player.vimeo.com/video/435451400" width="640" height="329" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+
+<br>
+
 # How to play
 ## Create a bot
 1. Go to data>scripts>bots.
