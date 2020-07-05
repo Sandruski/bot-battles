@@ -1,4 +1,5 @@
 # Bot Battles
+
 [Bot Battles](https://github.com/Sandruski/bot-battles) is a 2D online multiplayer shooter video game about programming your own bot and battling against others. Two clients compete in a server.
 
 <iframe src="https://player.vimeo.com/video/435450816" width="640" height="329" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
@@ -7,10 +8,10 @@
 
 <iframe src="https://player.vimeo.com/video/435451400" width="640" height="329" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
 
-<br>
-
 # How to play
+
 ## Create a bot
+
 1. Go to data>scripts>bots.
 2. Copy exampleBot.py or create a new .py file in the same folder.
 3. Open it in Visual Studio.
@@ -22,6 +23,7 @@
 9. Once you're done, save it.
 
 ## Create a map
+
 1. Download [Tiled](https://www.mapeditor.org/) and install it.
 2. Go to data>source.
 3. Open backyard.tmx or house.tmx or create a new map in Tiled.
@@ -29,6 +31,7 @@
 5. Once you're done, export it as a .json in data>maps.
 
 ## Play a deathmatch
+
 1. On the client, write the IP and the port of the server, your name, and select the bot that you want to play with. The bot can be one of the example bots (easyBot or hardBot) or your own bot.
 2. On the server, write its port, and select the map that you want to play in and the duration of the game. The map can be one of the example maps (backyard or house) or your own map.
 3. Wait until the connection between the client and the server is established.
@@ -39,7 +42,9 @@
 Have fun!
 
 # Reference
+
 ## Events
+
 Method | Description
 ------------ | -------------
 onSeenNewBot | It is called when the bot starts seeing another bot.
@@ -60,6 +65,7 @@ onKill | It is called when the bot kills its opponent.
 onDeath | It is called when the bot is killed by its opponent.
 
 ## Input Component
+
 Attribute | Description
 ------------ | -------------
 linearVelocityX | The desired linear velocity of the bot on the horizontal axis (x-axis).
@@ -74,6 +80,7 @@ reload | Reloads the primary weapon of the bot (if any). It consumes the necessa
 heal | Heals the bot. It consumes all HP from a first aid box (if any) from the bot's inventory. It only heals if the bot has firstAidBoxHP.
 
 ## Transform Component
+
 Attribute | Description
 ------------ | -------------
 position | The position of the bot measured in pixels. (0,0) is at the top left of the battlefield.
@@ -81,6 +88,7 @@ rotation | The rotation of the bot measured in degrees. 0 is towards the right o
 direction | The normalized vector of the rotation of the bot measured in pixels. (1,0) is towards the right of the battlefield.
 
 ## Rigidbody Component
+
 Attribute | Description
 ------------ | -------------
 linearVelocity | The linear velocity of the bot measured in pixels/second.
@@ -89,11 +97,13 @@ maxLinearVelocity | The maximum value that the linear velocity of the bot can ta
 maxAngularVelocity | The maximum value that the angular velocity of the bot can take.
 
 ## Collider Component
+
 Attribute | Description
 ------------ | -------------
 size | The dimensions of the collider of the bot measured in pixels.
 
 ## Sight Component
+
 Attribute | Description
 ------------ | -------------
 seenBotEntities | A list of the entities of the seen bots.
@@ -107,6 +117,7 @@ getSeenWeaponInfo | Returns a snapshot of the entity of a seen weapon and ammuni
 getSeenHealthInfo | Returns a snapshot of the entity of a seen first aid box. The snapshot is of its transform, collider, and health components.
 
 ## Weapon Component
+
 Attribute | Description
 ------------ | -------------
 primaryWeaponDamage | The damage dealt by a bullet fired with the primary weapon.
@@ -124,6 +135,7 @@ reloadingTime | The seconds that it takes for the bot to reload the primary weap
 reloadingCooldown | The seconds that the bot has to wait to perform another action after reloading the primary weapon.
 
 ## Health Component
+
 Attribute | Description
 ------------ | -------------
 currentHP | The health points.
@@ -133,11 +145,13 @@ healingTime | The seconds that it takes for the bot to heal itself.
 healingCooldown | The seconds that the bot has to wait to perform another action after healing itself.
 
 ## Action Component
+
 Attribute | Description
 ------------ | -------------
 canPerformAction | Whether a bot is ready to perform a new action.
 
 ## Map Component
+
 Attribute | Description
 ------------ | -------------
 tileCount | The number of tiles in the map.
@@ -150,6 +164,7 @@ getWorldPosition | Returns the world position of a tile.
 getMapPosition | Returns the tile of a world position.
 
 ## Collision
+
 Attribute | Description
 ------------ | -------------
 normal | The normal of the contact point measured in pixels.
