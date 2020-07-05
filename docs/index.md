@@ -1,7 +1,7 @@
 # Bot Battles
 [Bot Battles](https://github.com/Sandruski/bot-battles) is a 2D online multiplayer shooter video game about programming your own bot and battling against others. Two clients compete in a server.
 
-[![in_game](thumbnail.jpg)](https://vimeo.com/435450816)
+<iframe src="https://vimeo.com/435450816" width="640" height="360" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
 
 # Requirements
 - [Python 3.8](https://www.python.org/downloads/release/python-380/)
