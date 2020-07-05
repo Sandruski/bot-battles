@@ -3,11 +3,10 @@
 [Bot Battles](https://github.com/Sandruski/bot-battles) is a 2D online multiplayer shooter video game about programming your own bot and battling against others. Two clients compete in an authoritative server.
 
 <iframe src="https://player.vimeo.com/video/435450816" width="640" height="329" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
-
+<br>
 <iframe src="https://player.vimeo.com/video/435451334" width="640" height="329" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
-
+<br>
 <iframe src="https://player.vimeo.com/video/435451400" width="640" height="329" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
-
 <br>
 
 # How to play
