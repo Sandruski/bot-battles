@@ -4,7 +4,7 @@
 ![in_game](in_game.png)
 
 # Requirements
-- [Python 3.8.3](https://www.python.org/downloads/release/python-383/)
+- [Python 3.8.3](https://www.python.org/downloads/release/python-383/) (make sure to add it to PATH)
 
 To use the example bots:
 - [PyGLM](https://pypi.org/project/PyGLM/)
